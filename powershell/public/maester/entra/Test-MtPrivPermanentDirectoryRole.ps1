@@ -51,17 +51,17 @@
           $DirectAssignments | Where-Object { $_.principal.userType -eq 'Guest' }
           $testDescription = "
   Take attention on B2B collaboration user with Entra ID directory role assignments on $($FilteredAccessLevel).
-  Verify the affected external users, the user source (e.g., MSSP/partner or managing tenant) and if the privileged accounts pass your requirements for Conditional Access, Lifecycle Workflow and Identity Protection.
+  Verify the affected external users, the user source (e.g., MSSP/partner or managing tenant) and if the privileged accounts pass your requirements for Conditional Access, Lifecycle Workflow and Microsoft Entra ID Protection.
   Learn more about the best practices for privileges users:
-    - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)"
+    - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)"
         }
         HybridUser {
           $DirectAssignments | Where-Object { $null -ne $_.principal.onPremisesImmutableId -and $_.principal.OnPremisesSyncEnabled -eq $true }
           $testDescription = "
   It's recommended to use cloud-only accounts for privileges with $($FilteredAccessLevel) privileges to avoid attack paths from on-premises environment.
   Learn more about the best practices for privileges users:
-    - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)
-    - [Protecting Microsoft 365 from on-premises attacks](https://learn.microsoft.com/en-us/entra/architecture/protect-m365-from-on-premises-attacks#isolate-privileged-identities)
+    - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)
+    - [Protecting Microsoft 365 from on-premises attacks](https://learn.microsoft.com/entra/architecture/protect-m365-from-on-premises-attacks#isolate-privileged-identities)
   "
         }
         ServicePrincipalClientSecret {
@@ -84,8 +84,8 @@
   Review your Service Principals with Client Secrets and $($FilteredAccessLevel) privileges.
   It's recommended to use certificates for Service Principals. Review if you can replace client secrets by certificates or use managed identities instead of a Service Principal.
   Learn more about the best practices for issuing certificates for Service Principals:
-    - [Securing service principals in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/architecture/service-accounts-principal#service-principal-authentication)
-    - [Best practices for all isolation architectures - Service Principal Credentials](https://learn.microsoft.com/en-us/entra/architecture/secure-best-practices#service-principals-credentials)
+    - [Securing service principals in Microsoft Entra ID](https://learn.microsoft.com/entra/architecture/service-accounts-principal#service-principal-authentication)
+    - [Best practices for all isolation architectures - Service Principal Credentials](https://learn.microsoft.com/entra/architecture/secure-best-practices#service-principals-credentials)
   "
         }
         ServicePrincipal {
@@ -94,8 +94,8 @@
   Take attention on Service Principals with $($FilteredAccessLevel) privileges.
   In general, it's recommended to use managed identities over service principals (with client secrets or certificates) to avoid managing credentials and simplify lifecycle management.
   Learn more about the different type and best practices for workload identities:
-    - [Types of Microsoft Entra service accounts](https://learn.microsoft.com/en-us/entra/architecture/secure-service-accounts#managed-identities)
-    - [Managed identity best practice recommendations](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/managed-identity-best-practice-recommendations)
+    - [Types of Microsoft Entra service accounts](https://learn.microsoft.com/entra/architecture/secure-service-accounts#managed-identities)
+    - [Managed identity best practice recommendations](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/managed-identity-best-practice-recommendations)
   "
         }
         UserMailbox {
@@ -104,7 +104,7 @@
   Take attention on mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
   It's recommended to use mail forwarding to regular work account which allows to avoid direct mail access and phishing attacks on privileged user.
   Learn more about the best practices for securing privileged user accounts:
-    - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)
+    - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)
   "
         }
       }

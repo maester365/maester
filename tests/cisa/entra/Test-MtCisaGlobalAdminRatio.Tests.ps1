@@ -3,7 +3,7 @@ Describe "CISA" -Tag "MS.AAD", "MS.AAD.7.2", "CISA.MS.AAD.7.2", "CISA",  "Entra 
         $result = Test-MtCisaGlobalAdminRatio
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "more granular role assignments exist than global admin assignments."
+            $result | Should -Be $true -Because "more granular role assignments exist than Global Administrator assignments."
         }
     }
 }

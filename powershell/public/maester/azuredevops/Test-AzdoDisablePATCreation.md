@@ -2,8 +2,10 @@ Personal Access Token creation **should be** restricted at the organization leve
 
 Rationale: Restricting PAT creation reduces the risk of long-lived credentials being used to access your Azure DevOps organization. Existing personal access tokens remain valid until expiration when the policy is enabled.
 
-#### Remediation action:
+#### Remediation action
+
 Enable the policy to restrict Personal Access Token creation.
+
 1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Policies, locate the "Restrict personal access token (PAT) creation" policy and toggle it to on.
@@ -13,4 +15,4 @@ With the policy enabled, users cannot create new Personal Access Tokens unless e
 
 #### Related links
 
-* [Learn - Manage PATs with policies for administrators](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops)
+* [Learn - Manage PATs with policies for administrators](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops)

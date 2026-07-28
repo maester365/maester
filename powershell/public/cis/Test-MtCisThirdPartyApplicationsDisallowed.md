@@ -10,7 +10,7 @@ Third-party integrated applications connection to services should be disabled un
 
 The implementation of this change will impact both end users and administrators. End users will not be able to integrate third-party applications that they may wish to use. Administrators are likely to receive requests from end users to grant them permission to the necessary third-party applications.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** > **Users** select **Users settings**.
@@ -21,6 +21,7 @@ The implementation of this change will impact both end users and administrators.
 
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"`
 2. Run the following commands:
+
 ```powershell
 $param = @{ AllowedToCreateApps = "$false" }
 Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $param
@@ -29,7 +30,7 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $param
 #### Related links
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
-* [How and why applications are added to Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/how-applications-are-added)
+* [How and why applications are added to Microsoft Entra ID](https://learn.microsoft.com/entra/identity-platform/how-applications-are-added)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 173](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

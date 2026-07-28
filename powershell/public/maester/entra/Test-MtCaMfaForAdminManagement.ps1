@@ -1,11 +1,11 @@
 ﻿function Test-MtCaMfaForAdminManagement {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring multifactor authentication to access Azure management.
+    Checks if the tenant has at least one Conditional Access policy requiring multifactor authentication to access Azure management.
 
     .Description
     MFA for Azure management is a critical security control. This function checks if the tenant has at least one
-    conditional access policy requiring multifactor authentication to access Azure management.
+    Conditional Access policy requiring multifactor authentication to access Azure management.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-azure-management
@@ -76,9 +76,9 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for azure management:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require multi-factor authentication for Azure management:`n`n%TestResult%"
         } else {
-            $testResult = 'No conditional access policy requires multi-factor authentication for azure management resources.'
+            $testResult = 'No Conditional Access policy requires multi-factor authentication for Azure management resources.'
         }
         Add-MtTestResultDetail -Description $testDescription -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 

@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaPhishResistant {
     <#
     .SYNOPSIS
-    Checks if Conditional Access Policy using Phishing-Resistant Authentication Strengths is enabled
+    Checks if a Conditional Access policy using Phishing-Resistant Authentication Strengths is enabled
 
     .DESCRIPTION
     Phishing-resistant MFA SHALL be enforced for all users
@@ -41,7 +41,7 @@
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require Phishing Resistant Authentication Strengths :`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that require Phishing Resistant Authentication Strengths."
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that require Phishing Resistant Authentication Strengths."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
 

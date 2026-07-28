@@ -1,10 +1,10 @@
 ﻿function Test-MtCaEnforceNonPersistentBrowserSession {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy enforcing non persistent browser session
+    Checks if the tenant has at least one Conditional Access policy enforcing non persistent browser session
 
     .Description
-    Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device.
+    Non persistent browser session Conditional Access policy can be helpful to minimize the risk of data leakage from an unmanaged device.
 
     Learn more:
     https://aka.ms/CATemplatesBrowserSession
@@ -32,10 +32,10 @@
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
         $testDescription = '
-Microsoft recommends disabling browser persistence for users accessing the tenant from a unmanaged device.
+Microsoft recommends disabling browser persistence for users accessing the tenant from an unmanaged device.
 
 See [Require reauthentication and disable browser persistence - Microsoft Learn](https://aka.ms/CATemplatesBrowserSession)'
-        $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"
+        $testResult = "These Conditional Access policies enforce a non-persistent browser session:`n`n"
 
         $result = $false
         foreach ($policy in $policies) {
@@ -85,7 +85,7 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         }
 
         if ($result -eq $false) {
-            $testResult = 'There was no conditional access policy enforcing non persistent browser session for non-corporate devices.'
+            $testResult = 'There was no Conditional Access policy enforcing non persistent browser session for non-corporate devices.'
         }
 
         Add-MtTestResultDetail -Description $testDescription -Result $testResult

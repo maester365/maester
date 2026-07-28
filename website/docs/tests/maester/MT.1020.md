@@ -1,6 +1,6 @@
 ---
 title: "MT.1020 - All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them."
-description: "The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID. These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users. Entra ID connect does not support multifactor authentication. Restrict access with t…"
+description: "The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID. These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users. Entra ID connect does not support multifactor authentication. Restrict access with t…"
 slug: /tests/MT.1020
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,12 +17,12 @@ keywords:
 
 # MT.1020 - All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/magnusjak" title="Magnus Jakobsen · Co-contributor"><img src="https://github.com/magnusjak.png" alt="Magnus Jakobsen" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/magnusjak" title="Magnus Jakobsen · Co-contributor"><img src="https://github.com/magnusjak.png" alt="Magnus Jakobsen" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
+These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
 Entra ID connect does not support multifactor authentication.
 Restrict access with these accounts to trusted networks.
 

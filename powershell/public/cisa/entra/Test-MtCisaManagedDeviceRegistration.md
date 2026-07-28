@@ -4,11 +4,11 @@ Rationale: Reduce risk of an adversary using stolen user credentials and then re
 
 #### Remediation action:
 
-Create a conditional access policy requiring a user to be on a managed device when registering for MFA.
+Create a Conditional Access policy requiring a user to be on a managed device when registering for MFA.
 
 1. In **Entra** under **Protection** and **Conditional Access**, select **[Policies](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies/fromNav/)**.
 2. Click on **New policy**
-3. Under **New Conditional Access policy**, configure the following policy settings in the new conditional access policy, per the values below:
+3. Under **New Conditional Access policy**, configure the following policy settings in the new Conditional Access policy, per the values below:
     * Users > Include > **All users**
     * Target resources > User actions > **Register security information**
     * Access controls > Grant > Grant Access > **Require device to be marked as compliant** and **Require Microsoft Entra hybrid joined device** > For multiple controls > **Require one of the selected controls**

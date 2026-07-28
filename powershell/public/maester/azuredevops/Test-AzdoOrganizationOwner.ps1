@@ -6,7 +6,7 @@
     Checks if the Azure DevOps Organization owner is a individual or a service/admin account.
     Returns a true boolean if the users matches adm|admin|btg|svc|service.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops
+    https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops
 
 .EXAMPLE
     ```

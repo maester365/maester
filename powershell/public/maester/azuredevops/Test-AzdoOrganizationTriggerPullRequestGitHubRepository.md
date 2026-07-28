@@ -2,8 +2,10 @@ Azure DevOps pipelines should not automatically build on every pull request and 
 
 Rationale: Code should not be automatically built from GitHub.
 
-#### Remediation action:
+#### Remediation action
+
 Enable the policy to stop building from GitHub repositories.
+
 1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines.
@@ -11,4 +13,4 @@ Enable the policy to stop building from GitHub repositories.
 
 #### Related links
 
-* [Learn - Validate contributions from forks](https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks)
+* [Learn - Validate contributions from forks](https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks)

@@ -6,7 +6,7 @@
     Checks if checks and approvals are applied when accessing repositories from YAML pipelines.
     Also, generate a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access
+    https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access
 
 .EXAMPLE
     ```

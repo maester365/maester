@@ -1,10 +1,10 @@
 ﻿function Test-MtCaEmergencyAccessExists {
     <#
     .Synopsis
-    Checks if the tenant has at least one emergency/break glass account or account group excluded from all conditional access policies
+    Checks if the tenant has at least one emergency/break glass account or account group excluded from all Conditional Access policies
 
     .Description
-    It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
+    It is recommended to have at least one emergency/break glass account or account group excluded from all Conditional Access policies.
     This allows for emergency access to the tenant in case of a misconfiguration or other issues.
 
     Learn more:
@@ -77,7 +77,7 @@
                 }
             }
 
-            $testResult += "These conditional access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
+            $testResult += "These Conditional Access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
             Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess -Result $testResult
             return $result
 
@@ -173,7 +173,7 @@
             }
             if ($policiesWithoutEmergency.Count -eq 0) {
                 $result = $true
-                $testResult = "All conditional access policies exclude the configured emergency access accounts or groups:`n`n"
+                $testResult = "All Conditional Access policies exclude the configured emergency access accounts or groups:`n`n"
                 $ResolvedEmergencyAccessAccounts | ForEach-Object {
                     $typeLabel = if ($_.type -eq 'group') { 'Group' } else { 'User' }
                     if ($_.displayName) {
@@ -194,7 +194,7 @@
                         $testResult += "* $typeLabel`: $($_.ObjectId)`n"
                     }
                 }
-                $testResult += "`n`nThese conditional access policies don't have the configured emergency access accounts and groups excluded:`n`n%TestResult%"
+                $testResult += "`n`nThese Conditional Access policies don't have the configured emergency access accounts and groups excluded:`n`n%TestResult%"
                 Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess -Result $testResult
                 return $result
             }

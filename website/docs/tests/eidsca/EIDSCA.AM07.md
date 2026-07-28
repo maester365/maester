@@ -19,15 +19,14 @@ keywords:
 
 # EIDSCA.AM07 - Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Object Id or scope of users which will be showing app information in the Authenticator App.
 
-
-
 #### Test script
+
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.displayAppInformationRequiredState.includeTarget.id -eq 'all_users'
@@ -35,8 +34,8 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 
 #### Related links
 
-- [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
-- [microsoftAuthenticatorAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/microsoftauthenticatorauthenticationmethodconfiguration)
+- [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
+- [microsoftAuthenticatorAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/microsoftauthenticatorauthenticationmethodconfiguration)
 
 ## Test Metadata
 

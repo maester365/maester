@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if extensions are allowed to access resources on the local network.
 
-    https://learn.microsoft.com/en-us/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops
+    https://learn.microsoft.com/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops
 
 .EXAMPLE
     ```

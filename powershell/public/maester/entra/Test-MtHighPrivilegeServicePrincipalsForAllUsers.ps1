@@ -61,7 +61,7 @@
 
         # Apps without a local service principal can still appear in sign-in logs. Creating the service principal
         # is required before user assignment can be enforced, so absence is a non-compliant state.
-        $referenceLink = 'https://learn.microsoft.com/en-us/entra/identity-platform/howto-restrict-your-app-to-a-set-of-users'
+        $referenceLink = 'https://learn.microsoft.com/entra/identity-platform/howto-restrict-your-app-to-a-set-of-users'
         $entraPortalUrl = $__MtSession.AdminPortalUrl.Entra
 
         $appRows = foreach ($app in $highPrivilegeApps) {

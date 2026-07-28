@@ -2,7 +2,7 @@ Check the validity of the Apple Volume Purchase Program (VPP) token for Intune. 
 
 #### Remediation action
 
-See the [Microsoft learn instructions to Renew Apple VPP token](https://learn.microsoft.com/en-us/intune-education/renew-ios-certificate-token#renew-vpp-token).
+See the [Microsoft learn instructions to Renew Apple VPP token](https://learn.microsoft.com/intune-education/renew-ios-certificate-token#renew-vpp-token).
 
 <!--- Results --->
 %TestResult%

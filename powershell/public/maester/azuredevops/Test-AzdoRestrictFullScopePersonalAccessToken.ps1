@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if Personal Access Token full scope restrictions are configured.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-full-scope-personal-access-tokens
+    https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-full-scope-personal-access-tokens
 
 
 .EXAMPLE
@@ -34,7 +34,7 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
     $Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictFullScopePersonalAccessToken -Force
     if ($null -eq $Policy) {
         $Message = "Tenant Policy for RestrictFullScopePersonalAccessToken not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
-        Please see [Manage Tenant Policies](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
+        Please see [Manage Tenant Policies](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
         Write-Verbose $Message
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
     }

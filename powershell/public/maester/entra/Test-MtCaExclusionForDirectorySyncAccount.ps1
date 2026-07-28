@@ -1,11 +1,11 @@
 ﻿function Test-MtCaExclusionForDirectorySyncAccount {
     <#
     .Synopsis
-    Checks if all conditional access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
+    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
 
     .Description
     The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-    These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
+    These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
     Entra ID connect does not support multifactor authentication.
     Restrict access with these accounts to trusted networks.
 
@@ -24,8 +24,8 @@
         return $null
     }
 
-    $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all conditional access policies scoped to all cloud apps.'
-    $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
+    $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all Conditional Access policies scoped to all cloud apps.'
+    $testResult = "The following Conditional Access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
     try {
         $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
@@ -144,7 +144,7 @@
         }
 
         if ( $result ) {
-            $testResult = 'All conditional access policies scoped to all cloud apps exclude the directory synchronization accounts.'
+            $testResult = 'All Conditional Access policies scoped to all cloud apps exclude the directory synchronization accounts.'
         }
 
         Add-MtTestResultDetail -Description $testDescription -Result $testResult

@@ -62,7 +62,7 @@
         #Hacky sort, doesn't handle IPv6
         #$spfRecord.spfLookups.IPAddress|sort -Property {[system.version]($_ -replace "\/\d{1,3}$","")}
         #Proper but will need to update Resolve-SPFRecord
-        #Too: https://learn.microsoft.com/en-us/dotnet/api/system.net.ipnetwork
+        #Too: https://learn.microsoft.com/dotnet/api/system.net.ipnetwork
         #[ipaddress]::HostToNetworkOrder(([ipaddress]$_).address)
 
         $spfRecords += $spfRecord

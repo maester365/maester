@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if Personal Access Token creation is restricted at the organization level.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops
+    https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops
 
 .EXAMPLE
     ```

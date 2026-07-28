@@ -59,5 +59,5 @@ Update-MgPolicyDeviceRegistrationPolicy -BodyParameter $params
 
 #### Related links
 
-- [Manage device identities in Entra ID](https://learn.microsoft.com/en-us/azure/active-directory/devices/overview)
-- [Device registration policy in Entra ID](https://learn.microsoft.com/en-us/graph/api/resources/deviceregistrationpolicy)
+- [Manage device identities in Entra ID](https://learn.microsoft.com/azure/active-directory/devices/overview)
+- [Device registration policy in Entra ID](https://learn.microsoft.com/graph/api/resources/deviceregistrationpolicy)

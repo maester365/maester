@@ -1027,12 +1027,12 @@
     {
       "Id": "MT.1050",
       "Severity": "High",
-      "Title": "Apps with high-risk permissions having a direct path to Global Admin"
+      "Title": "Apps with high-risk permissions having a direct path to Global Administrator"
     },
     {
       "Id": "MT.1051",
       "Severity": "High",
-      "Title": "Apps with high-risk permissions having an indirect path to Global Admin"
+      "Title": "Apps with high-risk permissions having an indirect path to Global Administrator"
     },
     {
       "Id": "MT.1052",
@@ -1132,7 +1132,7 @@
     {
       "Id": "MT.1072",
       "Severity": "High",
-      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+      "Title": "Conditional Access policies should not use the deprecated Approved Client App grant."
     },
     {
       "Id": "MT.1073",
@@ -1217,7 +1217,7 @@
     {
       "Id": "MT.1090",
       "Severity": "Medium",
-      "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
+      "Title": "Global Administrator role should not be added as local administrator on the device during Microsoft Entra join"
     },
     {
       "Id": "MT.1091",

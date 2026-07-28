@@ -17,7 +17,7 @@ keywords:
 
 # MT.1174 - Insider Risk Management policy for Risky AI usage is enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -36,7 +36,7 @@ The test requires Microsoft 365 E5 or the Insider Risk Management add-on. The te
 
 The test passes when at least one Insider Risk policy with an AI-related scenario / template is enabled.
 
-#### Remediation action:
+#### Remediation action
 
 1. Open the [Microsoft Purview portal — Insider Risk Management — Policies](https://purview.microsoft.com/insiderriskmgmt/policies).
 2. Click **+ Create policy**.
@@ -48,9 +48,9 @@ The test passes when at least one Insider Risk policy with an AI-related scenari
 
 #### Related links
 
-- [Microsoft Learn — Insider Risk Management policies](https://learn.microsoft.com/en-us/purview/insider-risk-management-policies)
-- [Microsoft Learn — Detect risky use of AI with Insider Risk Management](https://learn.microsoft.com/en-us/purview/insider-risk-management-policy-templates)
-- [Microsoft Learn — Microsoft Purview AI Hub & DSPM for AI](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview)
+- [Microsoft Learn — Insider Risk Management policies](https://learn.microsoft.com/purview/insider-risk-management-policies)
+- [Microsoft Learn — Detect risky use of AI with Insider Risk Management](https://learn.microsoft.com/purview/insider-risk-management-policy-templates)
+- [Microsoft Learn — Microsoft Purview AI Hub & DSPM for AI](https://learn.microsoft.com/purview/ai-microsoft-purview)
 
 ## Test Metadata
 

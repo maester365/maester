@@ -15,7 +15,8 @@ prevents accidental or malicious use of overly permissive tokens.
 #### Remediation action
 
 Enable the tenant policy to restrict creation of full-scoped personal access tokens.
-1. Sign in to your organization (https://dev.azure.com/{yourorganization}).
+
+1. Sign in to your organization (<https://dev.azure.com/{yourorganization}>).
 2. Select Organization settings (gear icon).
 3. Select Microsoft Entra, find the "Restrict creation of full-scoped personal access tokens" policy.
 4. Move the toggle to On.
@@ -35,7 +36,6 @@ When enabled, new personal access tokens (PATs) must have limited, defined
 scopes. Creation of full-scope PATs (tokens that grant all accessible scopes)
 will be blocked for users who are not on the allowlist.
 
-
 #### Related links
 
-* [Learn - Restrict creation of full-scoped PATs (tenant policy)](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy)
+- [Learn - Restrict creation of full-scoped PATs (tenant policy)](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy)

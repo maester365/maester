@@ -15,7 +15,7 @@
 
     For more information on DMARC record maturity and best practices, please refer to the following resources:
     - DMARC.org: https://dmarc.org/
-    - Microsoft Documentation on DMARC: https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/use-dmarc-to-validate-email?view=o365-worldwide
+    - Microsoft Documentation on DMARC: https://docs.microsoft.com/microsoft-365/security/office-365-security/use-dmarc-to-validate-email?view=o365-worldwide
 
     .EXAMPLE
     Test-MtDomainsDmarcRecordMaturity

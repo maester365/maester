@@ -10,7 +10,7 @@ Without additional verification like mail flow rules, email from sources in the 
 
 This is the default behavior. IP Allow lists may reduce false positives, however, this benefit is outweighed by the importance of a policy which scans all messages regardless of the origin. This supports the principle of zero trust.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com).
 2. Click to expand **Email & collaboration** select **Policies & rules**> **Threat policies**.
@@ -24,6 +24,7 @@ This is the default behavior. IP Allow lists may reduce false positives, however
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following PowerShell command:
+
 ```powershell
 Set-HostedConnectionFilterPolicy -Identity Default -EnableSafeList $false
 ```
@@ -31,9 +32,9 @@ Set-HostedConnectionFilterPolicy -Identity Default -EnableSafeList $false
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Configure connection filtering in cloud organizations](https://learn.microsoft.com/en-us/defender-office-365/connection-filter-policies-configure)
-* [Create sender allowlists for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/create-safe-sender-lists-in-office-365#use-the-ip-allow-list)
-* [When user and organization settings conflict](https://learn.microsoft.com/en-us/defender-office-365/how-policies-and-protections-are-combined#user-and-tenant-settings-conflict)
+* [Configure connection filtering in cloud organizations](https://learn.microsoft.com/defender-office-365/connection-filter-policies-configure)
+* [Create sender allowlists for cloud mailboxes](https://learn.microsoft.com/defender-office-365/create-safe-sender-lists-in-office-365#use-the-ip-allow-list)
+* [When user and organization settings conflict](https://learn.microsoft.com/defender-office-365/how-policies-and-protections-are-combined#user-and-tenant-settings-conflict)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 119](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

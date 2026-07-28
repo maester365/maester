@@ -4,11 +4,11 @@ Rationale: The security risk of an adversary authenticating to the tenant from t
 
 #### Remediation action:
 
-Create a conditional access policy requiring a user's device to be either Microsoft Entra hybrid joined or compliant during authentication. Configure the following policy settings in the new conditional access policy, per the values below:
+Create a Conditional Access policy requiring a user's device to be either Microsoft Entra hybrid joined or compliant during authentication. Configure the following policy settings in the new Conditional Access policy, per the values below:
 
 1. In **Entra** under **Protection** and **Conditional Access**, select **[Policies](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies/fromNav/)**.
 2. Click on **New policy**
-3. Under **New Conditional Access policy**, configure the following policy settings in the new conditional access policy, per the values below:
+3. Under **New Conditional Access policy**, configure the following policy settings in the new Conditional Access policy, per the values below:
     * Users > Include > **All users**
     * Target resources > Cloud apps > **All cloud apps**
     * Access controls > Grant > Grant Access > **Require device to be marked as compliant** and **Require Microsoft Entra hybrid joined device** > For multiple controls > **Require one of the selected controls**

@@ -13,15 +13,17 @@ help to dissuade the use of non-approved storage providers.
 
 The impact associated with this change is highly dependent upon current practices in the tenant. If users do not use other storage providers, then minimal impact is likely. However, if users do regularly utilize providers outside of the tenant this will affect their ability to continue to do so.
 
-#### Remediation action:
+#### Remediation action
 
 To change third-party cloud services using the UI:
+
 1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
 2. Select **Settings & policies > Global (Org-wide default) settings.**
 3. Click **Teams** to open the **Teams settings** section.
 4. Under files set storages providers to **Off** unless they have first been authorized by the organization.
 
 To change third-party cloud services using PowerShell:
+
 1. Connect to Teams using **Connect-MicrosoftTeams**.
 2. Run the following PowerShell command to disable external providers that are not authorized. (the example disables Citrix Files, DropBox, Box, Google Drive and Egnyte)
 
@@ -41,7 +43,7 @@ Set-CsTeamsClientConfiguration @Params
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [Manage Teams with Microsoft Teams PowerShell](https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-managing-teams)
+* [Manage Teams with Microsoft Teams PowerShell](https://learn.microsoft.com/microsoftteams/teams-powershell-managing-teams)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 401](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

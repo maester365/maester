@@ -3,7 +3,7 @@ Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.2", "CISA.MS.AAD.3.2", "CISA",  "Entra 
         $result = Test-MtCisaMfa
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "an enabled conditional access policy requires MFA for all apps."
+            $result | Should -Be $true -Because "an enabled Conditional Access policy requires MFA for all apps."
         }
     }
 }
