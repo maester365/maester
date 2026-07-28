@@ -1,6 +1,6 @@
 Users detected as high risk SHALL be blocked.
 
-Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. This prevents compromised accounts from accessing the tenant.
+Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant.
 
 #### Remediation action:
 

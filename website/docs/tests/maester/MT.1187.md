@@ -26,7 +26,7 @@ The Microsoft 365 traffic forwarding profile routes Microsoft 365 traffic (Excha
 
 Enabling the Microsoft 365 profile unlocks:
 
-* **Source IP restoration** for Microsoft 365 sign-in logs and Microsoft Entra ID Protection detections
+* **Source IP restoration** for Microsoft 365 sign-in logs and Identity Protection detections
 * The **Compliant Network** signal in Conditional Access (token replay protection)
 * **Universal Tenant Restrictions** to help prevent data exfiltration to other tenants
 * **Network access traffic logs** (`NetworkAccessTraffic`) for security operations
