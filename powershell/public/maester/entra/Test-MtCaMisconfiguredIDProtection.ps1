@@ -7,7 +7,7 @@
     Conditional Access policies access controls are enforced only if ALL conditions are met. Therefore, sign-in risk and user risk should be configured separately.
 
     Learn more:
-    https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies
+    https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies
 
     .Example
     Test-MtCaMisconfiguredIDProtection

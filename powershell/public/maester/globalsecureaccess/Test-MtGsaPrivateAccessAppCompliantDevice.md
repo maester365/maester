@@ -4,7 +4,7 @@ A policy satisfies the requirement when it grants **Require device to be marked 
 
 This check evaluates application coverage only; it does not evaluate whether the policy applies to every user of the app.
 
-#### Remediation action:
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Conditional Access Administrator**.
 2. Browse to **Entra ID** > **Conditional Access** > **Policies**.

@@ -20,7 +20,7 @@
     param()
 
     try {
-        Write-Verbose 'Getting Global Admin role'
+        Write-Verbose 'Getting Global Administrator role'
         $role = Get-MtRole | Where-Object {
             $_.id -eq '62e90394-69f5-4237-9190-012177145e10'
         } # Global Administrator

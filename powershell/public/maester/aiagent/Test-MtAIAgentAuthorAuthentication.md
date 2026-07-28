@@ -6,7 +6,7 @@ When a connector tool uses **author authentication**, the agent accesses externa
 
 In Copilot Studio, review the agent's tools and change each connector's authentication setting from **Agent author authentication** to **User authentication**. This ensures the agent accesses external services using the chatting user's own credentials and permission scope.
 
-Learn more: [Configure user authentication in Copilot Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/configure-enduser-authentication)
+Learn more: [Configure user authentication in Copilot Studio](https://learn.microsoft.com/microsoft-copilot-studio/configure-enduser-authentication)
 
 <!--- Results --->
 %TestResult%

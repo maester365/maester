@@ -89,6 +89,10 @@
         Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
     }
 
+    It "MT.1181: Conditional Access policy is present that blocks high agent risk sign-ins. See https://maester.dev/docs/tests/MT.1181" -Tag "MT.1181" {
+        Test-MtCaAgentRiskBlockPolicy | Should -Be $true -Because "there is no policy that blocks high-risk agent identities."
+    }
+
     It "MT.1184: Conditional Access policy without any target resources configured. See https://maester.dev/docs/tests/MT.1184" -Tag "MT.1184" {
         Test-MtCaUntargetedPolicy | Should -Be $true -Because "there are one or more policies not targeted to any resource."
     }

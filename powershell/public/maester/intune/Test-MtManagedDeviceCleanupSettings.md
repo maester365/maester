@@ -4,7 +4,7 @@ This test checks if the device clean-up rule is configured.
 
 Set your Intune device cleanup rules to delete Intune MDM enrolled devices that appear inactive, stale, or unresponsive. Intune applies cleanup rules immediately and continuously so that your device records remain current.
 
-#### Remediation action:
+#### Remediation action
 
 To enable device clean-up rules:
 
@@ -18,7 +18,7 @@ To enable device clean-up rules:
 
 #### Related links
 
-- [Automatically hide devices with cleanup rules](https://learn.microsoft.com/en-us/intune/intune-service/remote-actions/devices-wipe#automatically-hide-devices-with-cleanup-rules)
+- [Automatically hide devices with cleanup rules](https://learn.microsoft.com/intune/intune-service/remote-actions/devices-wipe#automatically-hide-devices-with-cleanup-rules)
 
 <!--- Results --->
 %TestResult%

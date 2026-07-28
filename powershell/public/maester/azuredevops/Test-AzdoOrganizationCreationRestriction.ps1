@@ -8,7 +8,7 @@
     Requires Azure DevOps organization backed by a Microsoft Entra tenant and
     Azure DevOps Administrator permissions.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy
+    https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy
 
 
 .EXAMPLE
@@ -38,7 +38,7 @@ function Test-AzdoOrganizationCreationRestriction {
     $result = [bool]$Policy.value
     if ($null -eq $Policy) {
         $Message = "Tenant Policy for OrganizationCreationRestriction not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
-        Please see [Manage Tenant Policies](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
+        Please see [Manage Tenant Policies](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
         Write-Verbose $Message
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
     }

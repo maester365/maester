@@ -50,20 +50,20 @@
     $testDescription = '
 Microsoft recommends requiring device compliance for administrators that are members of the following roles:
 
-* Global administrator
-* Application administrator
+* Global Administrator
+* Application Administrator
 * Authentication Administrator
-* Billing administrator
-* Cloud application administrator
-* Conditional Access administrator
-* Exchange administrator
-* Helpdesk administrator
-* Password administrator
-* Privileged authentication administrator
+* Billing Administrator
+* Cloud Application Administrator
+* Conditional Access Administrator
+* Exchange Administrator
+* Helpdesk Administrator
+* Password Administrator
+* Privileged Authentication Administrator
 * Privileged Role Administrator
-* Security administrator
-* SharePoint administrator
-* User administrator
+* Security Administrator
+* SharePoint Administrator
+* User Administrator
 
 See [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)'
     $testResult = "These Conditional Access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"

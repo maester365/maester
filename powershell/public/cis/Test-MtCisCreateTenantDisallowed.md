@@ -10,7 +10,7 @@ Restricting tenant creation prevents unauthorized or uncontrolled deployment of 
 
 Non-admin users will need to contact I.T. if they have a valid reason to create a tenant.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** > **Users** > **User settings**.
@@ -20,6 +20,7 @@ Non-admin users will need to contact I.T. if they have a valid reason to create 
 
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"`
 2. Run the following commands:
+
 ```powershell
 # Create hashtable and update the auth policy
 $params = @{ AllowedToCreateTenants = $false }
@@ -29,7 +30,7 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $params
 #### Related links
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
-* [Restrict member users' default permissions](https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions#restrict-member-users-default-permissions)
+* [Restrict member users' default permissions](https://learn.microsoft.com/entra/fundamentals/users-default-permissions#restrict-member-users-default-permissions)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 175](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

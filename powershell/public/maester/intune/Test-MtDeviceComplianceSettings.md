@@ -16,7 +16,7 @@ To change the built-in device compliance policy:
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Intune - Compliance](https://intune.microsoft.com/?ref=AdminCenter#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)
-* [Compliance policy settings](https://learn.microsoft.com/de-de/mem/intune/protect/device-compliance-get-started#compliance-policy-settings)
+* [Compliance policy settings](https://learn.microsoft.com/mem/intune/protect/device-compliance-get-started#compliance-policy-settings)
 
 <!--- Results --->
 %TestResult%

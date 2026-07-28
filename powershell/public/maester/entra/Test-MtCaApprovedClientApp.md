@@ -5,7 +5,8 @@ The approved client app grant is retiring in early March 2026. Organizations mus
 After March 2026, Microsoft will stop enforcing require approved client app control, and it will be as if this grant isn't selected. Use the following steps before March 2026 to protect your organization’s data.
 
 ## Learn more
-- [Migrate approved client app to application protection policy in Conditional Access](https://learn.microsoft.com/en-us/entra/identity/conditional-access/migrate-approved-client-app)
+
+- [Migrate approved client app to application protection policy in Conditional Access](https://learn.microsoft.com/entra/identity/conditional-access/migrate-approved-client-app)
 
 <!--- Results --->
 %TestResult%

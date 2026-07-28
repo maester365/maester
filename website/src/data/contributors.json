@@ -1810,6 +1810,59 @@
       "recentCommits": 0
     },
     {
+      "id": "BuckeyeGuyJFlo",
+      "github": "BuckeyeGuyJFlo",
+      "name": "John Flores",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/BuckeyeGuyJFlo.png",
+      "firstContribution": "2026-07-28",
+      "testsAuthored": [],
+      "testsContributed": [
+        "CIS.M365.1.1.1",
+        "CIS.M365.1.1.3",
+        "CIS.M365.3.1.1",
+        "CIS.M365.5.1.4.6",
+        "CIS.M365.5.1.5.2",
+        "CISA.MS.AAD.2.1",
+        "CISA.MS.AAD.2.2",
+        "CISA.MS.AAD.2.3",
+        "CISA.MS.AAD.7.2",
+        "CISA.MS.AAD.7.4",
+        "CISA.MS.AAD.7.5",
+        "CISA.MS.AAD.7.6",
+        "CISA.MS.AAD.7.8",
+        "CISA.MS.AAD.7.9",
+        "EIDSCA.AG02",
+        "MT.1006",
+        "MT.1014",
+        "MT.1025",
+        "MT.1026",
+        "MT.1027",
+        "MT.1028",
+        "MT.1035",
+        "MT.1050",
+        "MT.1051",
+        "MT.1056",
+        "MT.1068",
+        "MT.1085",
+        "MT.1090",
+        "MT.1187",
+        "MT.1188",
+        "MT.1191",
+        "MT.1195"
+      ],
+      "initials": "JF",
+      "recentCommits": 2
+    },
+    {
       "id": "JeanPhilippeGeorge",
       "github": "JeanPhilippeGeorge",
       "name": "Jean-Philippe George",
@@ -2308,6 +2361,28 @@
       "testsContributed": [],
       "initials": "EO",
       "recentCommits": 0
+    },
+    {
+      "id": "ExeqZ",
+      "github": "ExeqZ",
+      "name": "ExeqZ",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/ExeqZ.png",
+      "firstContribution": "2026-06-02",
+      "testsAuthored": [
+        "MT.1181"
+      ],
+      "testsContributed": [],
+      "initials": "E",
+      "recentCommits": 1
     },
     {
       "id": "jflieben",
@@ -2915,6 +2990,7 @@
         "MT.1057",
         "MT.1058",
         "MT.1084",
+        "MT.1181",
         "MT.1187",
         "MT.1188",
         "MT.1189",
@@ -2993,7 +3069,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 14
+      "recentCommits": 15
     }
   ],
   "attributions": {
@@ -3022,7 +3098,8 @@
       "contributors": [
         "NZLostboy",
         "SamErde",
-        "Mynster9361"
+        "Mynster9361",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CIS.M365.1.1.3": {
@@ -3032,7 +3109,8 @@
         "SamErde",
         "mrdos010",
         "Mynster9361",
-        "merill"
+        "merill",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CIS.M365.1.2.1": {
@@ -3219,7 +3297,8 @@
         "SamErde",
         "ic3lotus",
         "thomas-s-schmidt",
-        "Mynster9361"
+        "Mynster9361",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CIS.M365.4.1": {
@@ -3257,7 +3336,9 @@
     },
     "CIS.M365.5.1.4.6": {
       "author": "BakkerJan",
-      "contributors": []
+      "contributors": [
+        "BuckeyeGuyJFlo"
+      ]
     },
     "CIS.M365.5.1.5.1": {
       "author": "oed-metzb",
@@ -3272,7 +3353,8 @@
       "contributors": [
         "Mynster9361",
         "merill",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CIS.M365.5.1.6.2": {
@@ -3404,7 +3486,8 @@
         "fflaten",
         "soulemike",
         "weyCC81",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.2.2": {
@@ -3414,7 +3497,8 @@
         "PetterFauske",
         "fflaten",
         "blindzero",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.2.3": {
@@ -3424,7 +3508,8 @@
         "fflaten",
         "soulemike",
         "weyCC81",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.3.1": {
@@ -3588,7 +3673,8 @@
         "fflaten",
         "magnusjak",
         "mrdos010",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.7.3": {
@@ -3611,7 +3697,8 @@
         "fflaten",
         "thomas-s-schmidt",
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.7.5": {
@@ -3622,7 +3709,8 @@
         "michaelmsonne",
         "fflaten",
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.7.6": {
@@ -3633,7 +3721,8 @@
         "fflaten",
         "ThorNicolai",
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.7.7": {
@@ -3654,7 +3743,8 @@
         "michaelmsonne",
         "fflaten",
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.7.9": {
@@ -3664,7 +3754,8 @@
         "michaelmsonne",
         "fflaten",
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "BuckeyeGuyJFlo"
       ]
     },
     "CISA.MS.AAD.8.1": {
@@ -4114,7 +4205,8 @@
       "contributors": [
         "merill",
         "f-bader",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "EIDSCA.AG03": {
@@ -4464,7 +4556,8 @@
         "fflaten",
         "PTMohr",
         "SamErde",
-        "l-gosling"
+        "l-gosling",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1007": {
@@ -4546,7 +4639,8 @@
         "fflaten",
         "PTMohr",
         "SamErde",
-        "l-gosling"
+        "l-gosling",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1015": {
@@ -4657,7 +4751,8 @@
         "rafalfitt",
         "SamErde",
         "JeanPhilippeGeorge",
-        "kij"
+        "kij",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1026": {
@@ -4669,7 +4764,8 @@
         "rafalfitt",
         "SamErde",
         "JeanPhilippeGeorge",
-        "kij"
+        "kij",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1027": {
@@ -4681,7 +4777,8 @@
         "rafalfitt",
         "SamErde",
         "JeanPhilippeGeorge",
-        "kij"
+        "kij",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1028": {
@@ -4693,7 +4790,8 @@
         "rafalfitt",
         "SamErde",
         "JeanPhilippeGeorge",
-        "kij"
+        "kij",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1029": {
@@ -4763,7 +4861,8 @@
         "weyCC81",
         "thomas-s-schmidt",
         "SamErde",
-        "mrdos010"
+        "mrdos010",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1036": {
@@ -4898,14 +4997,16 @@
       "author": "HenrikPiecha",
       "contributors": [
         "merill",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1051": {
       "author": "HenrikPiecha",
       "contributors": [
         "merill",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1052": {
@@ -4950,7 +5051,8 @@
       "contributors": [
         "merill",
         "SamErde",
-        "brianveldman"
+        "brianveldman",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1057": {
@@ -5023,7 +5125,8 @@
     "MT.1068": {
       "author": "marcel-ngn",
       "contributors": [
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1069": {
@@ -5127,7 +5230,8 @@
       "author": "Cloud-Architekt",
       "contributors": [
         "f-bader",
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1086": {
@@ -5158,7 +5262,8 @@
     "MT.1090": {
       "author": "nicolonsky",
       "contributors": [
-        "SamErde"
+        "SamErde",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1091": {
@@ -5480,6 +5585,12 @@
       "author": "OfirGavish",
       "contributors": []
     },
+    "MT.1181": {
+      "author": "ExeqZ",
+      "contributors": [
+        "merill"
+      ]
+    },
     "MT.1182": {
       "author": "blindzero",
       "contributors": []
@@ -5503,13 +5614,15 @@
     "MT.1187": {
       "author": "crmhh",
       "contributors": [
-        "merill"
+        "merill",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1188": {
       "author": "crmhh",
       "contributors": [
-        "merill"
+        "merill",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1189": {
@@ -5527,7 +5640,8 @@
     "MT.1191": {
       "author": "crmhh",
       "contributors": [
-        "merill"
+        "merill",
+        "BuckeyeGuyJFlo"
       ]
     },
     "MT.1192": {
@@ -5551,7 +5665,8 @@
     "MT.1195": {
       "author": "crmhh",
       "contributors": [
-        "merill"
+        "merill",
+        "BuckeyeGuyJFlo"
       ]
     },
     "ORCA.100": {
@@ -6161,23 +6276,23 @@
   "tests": {
     "CIS.GH.1.2.2": {
       "title": "(L1) Ensure repository creation is limited to specific members",
-      "path": "/docs/next/tests/CIS.GH.1.2.2"
+      "path": "/docs/tests/CIS.GH.1.2.2"
     },
     "CIS.GH.1.2.3": {
       "title": "(L1) Ensure repository deletion is limited to specific users",
-      "path": "/docs/next/tests/CIS.GH.1.2.3"
+      "path": "/docs/tests/CIS.GH.1.2.3"
     },
     "CIS.GH.1.2.4": {
       "title": "(L1) Ensure issue deletion is limited to specific users",
-      "path": "/docs/next/tests/CIS.GH.1.2.4"
+      "path": "/docs/tests/CIS.GH.1.2.4"
     },
     "CIS.GH.1.3.2": {
       "title": "(L1) Ensure team creation is limited to specific members",
-      "path": "/docs/next/tests/CIS.GH.1.3.2"
+      "path": "/docs/tests/CIS.GH.1.3.2"
     },
     "CIS.GH.1.3.8": {
       "title": "(L1) Ensure strict base permissions are set for repositories",
-      "path": "/docs/next/tests/CIS.GH.1.3.8"
+      "path": "/docs/tests/CIS.GH.1.3.8"
     },
     "CIS.M365.1.1.1": {
       "title": "(L1) Ensure Administrative accounts are cloud-only",
@@ -6289,7 +6404,7 @@
     },
     "CIS.M365.5.1.4.6": {
       "title": "Ensure users are restricted from recovering BitLocker keys",
-      "path": "/docs/next/tests/CIS.M365.5.1.4.6"
+      "path": "/docs/tests/CIS.M365.5.1.4.6"
     },
     "CIS.M365.5.1.5.1": {
       "title": "Ensure user consent to apps accessing company data on their behalf is not allowed",
@@ -6313,27 +6428,27 @@
     },
     "CIS.M365.7.2.2": {
       "title": "Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
-      "path": "/docs/next/tests/CIS.M365.7.2.2"
+      "path": "/docs/tests/CIS.M365.7.2.2"
     },
     "CIS.M365.7.2.5": {
       "title": "Ensure that SharePoint guest users cannot share items they don",
-      "path": "/docs/next/tests/CIS.M365.7.2.5"
+      "path": "/docs/tests/CIS.M365.7.2.5"
     },
     "CIS.M365.7.2.7": {
       "title": "Ensure link sharing is restricted in SharePoint and OneDrive",
-      "path": "/docs/next/tests/CIS.M365.7.2.7"
+      "path": "/docs/tests/CIS.M365.7.2.7"
     },
     "CIS.M365.7.2.9": {
       "title": "Ensure guest access to a site or OneDrive will expire automatically",
-      "path": "/docs/next/tests/CIS.M365.7.2.9"
+      "path": "/docs/tests/CIS.M365.7.2.9"
     },
     "CIS.M365.7.2.11": {
       "title": "Ensure the SharePoint default sharing link permission is set",
-      "path": "/docs/next/tests/CIS.M365.7.2.11"
+      "path": "/docs/tests/CIS.M365.7.2.11"
     },
     "CIS.M365.7.3.1": {
       "title": "Ensure Office 365 SharePoint infected files are disallowed for download",
-      "path": "/docs/next/tests/CIS.M365.7.3.1"
+      "path": "/docs/tests/CIS.M365.7.3.1"
     },
     "CIS.M365.8.1.1": {
       "title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
@@ -6649,7 +6764,7 @@
     },
     "CISA.MS.SHAREPOINT.1.2": {
       "title": "External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization.",
-      "path": "/docs/next/tests/CISA.MS.SHAREPOINT.1.2"
+      "path": "/docs/tests/CISA.MS.SHAREPOINT.1.2"
     },
     "CISA.MS.SHAREPOINT.1.3": {
       "title": "External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.",
@@ -6657,23 +6772,23 @@
     },
     "CISA.MS.SHAREPOINT.2.1": {
       "title": "File and folder default sharing scope SHALL be set to Specific People.",
-      "path": "/docs/next/tests/CISA.MS.SHAREPOINT.2.1"
+      "path": "/docs/tests/CISA.MS.SHAREPOINT.2.1"
     },
     "CISA.MS.SHAREPOINT.2.2": {
       "title": "File and folder default sharing permissions SHALL be set to View only.",
-      "path": "/docs/next/tests/CISA.MS.SHAREPOINT.2.2"
+      "path": "/docs/tests/CISA.MS.SHAREPOINT.2.2"
     },
     "CISA.MS.SHAREPOINT.3.1": {
       "title": "Expiration days for Anyone links SHALL be set to 30 days or less.",
-      "path": "/docs/next/tests/CISA.MS.SHAREPOINT.3.1"
+      "path": "/docs/tests/CISA.MS.SHAREPOINT.3.1"
     },
     "CISA.MS.SHAREPOINT.3.2": {
       "title": "Allowable file and folder permissions for Anyone links SHALL be set to View only.",
-      "path": "/docs/next/tests/CISA.MS.SHAREPOINT.3.2"
+      "path": "/docs/tests/CISA.MS.SHAREPOINT.3.2"
     },
     "CISA.MS.SHAREPOINT.3.3": {
       "title": "Reauthentication days for people who use a verification code SHALL be set to 30 days or less.",
-      "path": "/docs/next/tests/CISA.MS.SHAREPOINT.3.3"
+      "path": "/docs/tests/CISA.MS.SHAREPOINT.3.3"
     },
     "EIDSCA.AF01": {
       "title": "Authentication Method - FIDO2 security key - State.",
@@ -7044,11 +7159,11 @@
       "path": "/docs/tests/MT.1049"
     },
     "MT.1050": {
-      "title": "Apps with high-risk permissions having a direct path to Global Admin",
+      "title": "Apps with high-risk permissions having a direct path to Global Administrator",
       "path": "/docs/tests/MT.1050"
     },
     "MT.1051": {
-      "title": "Apps with high-risk permissions having an indirect path to Global Admin",
+      "title": "Apps with high-risk permissions having an indirect path to Global Administrator",
       "path": "/docs/tests/MT.1051"
     },
     "MT.1052": {
@@ -7196,7 +7311,7 @@
       "path": "/docs/tests/MT.1089"
     },
     "MT.1090": {
-      "title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join",
+      "title": "Global Administrator role should not be added as local administrator on the device during Microsoft Entra join",
       "path": "/docs/tests/MT.1090"
     },
     "MT.1091": {
@@ -7429,95 +7544,99 @@
     },
     "MT.1172": {
       "title": "Unified audit log ingestion is enabled",
-      "path": "/docs/next/tests/MT.1172"
+      "path": "/docs/tests/MT.1172"
     },
     "MT.1173": {
       "title": "Sensitivity labels are published for files used by Microsoft 365 Copilot",
-      "path": "/docs/next/tests/MT.1173"
+      "path": "/docs/tests/MT.1173"
     },
     "MT.1174": {
       "title": "Insider Risk Management policy for Risky AI usage is enabled",
-      "path": "/docs/next/tests/MT.1174"
+      "path": "/docs/tests/MT.1174"
     },
     "MT.1175": {
       "title": "DLP policy is configured for the Microsoft 365 Copilot location",
-      "path": "/docs/next/tests/MT.1175"
+      "path": "/docs/tests/MT.1175"
     },
     "MT.1176": {
       "title": "Retention policy is configured for the Microsoft Copilot location",
-      "path": "/docs/next/tests/MT.1176"
+      "path": "/docs/tests/MT.1176"
     },
     "MT.1177": {
       "title": "Ensure LAPS Configuration Policy is properly set",
-      "path": "/docs/next/tests/MT.1177"
+      "path": "/docs/tests/MT.1177"
     },
     "MT.1178": {
       "title": "Ensure ASR Rules are configured correctly",
-      "path": "/docs/next/tests/MT.1178"
+      "path": "/docs/tests/MT.1178"
     },
     "MT.1179": {
       "title": "Ensure App Control for Business is enabled",
-      "path": "/docs/next/tests/MT.1179"
+      "path": "/docs/tests/MT.1179"
     },
     "MT.1180": {
       "title": "Ensure Managed Installer Rules are configured correctly",
-      "path": "/docs/next/tests/MT.1180"
+      "path": "/docs/tests/MT.1180"
+    },
+    "MT.1181": {
+      "title": "Conditional Access policy is present that blocks high agent risk signins",
+      "path": "/docs/next/tests/MT.1181"
     },
     "MT.1182": {
       "title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100).",
-      "path": "/docs/next/tests/MT.1182"
+      "path": "/docs/tests/MT.1182"
     },
     "MT.1183": {
       "title": "Temporary bypass for onPremisesObjectIdentifier updates should be disabled",
-      "path": "/docs/next/tests/MT.1183"
+      "path": "/docs/tests/MT.1183"
     },
     "MT.1184": {
       "title": "Conditional Access policy without any target resources configured",
-      "path": "/docs/next/tests/MT.1184"
+      "path": "/docs/tests/MT.1184"
     },
     "MT.1185": {
       "title": "Block legacy MSOnline (MSOL) PowerShell module",
-      "path": "/docs/next/tests/MT.1185"
+      "path": "/docs/tests/MT.1185"
     },
     "MT.1186": {
       "title": "High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users.",
-      "path": "/docs/next/tests/MT.1186"
+      "path": "/docs/tests/MT.1186"
     },
     "MT.1187": {
       "title": "The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled",
-      "path": "/docs/next/tests/MT.1187"
+      "path": "/docs/tests/MT.1187"
     },
     "MT.1188": {
       "title": "Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device",
-      "path": "/docs/next/tests/MT.1188"
+      "path": "/docs/tests/MT.1188"
     },
     "MT.1189": {
       "title": "Groups assigned to Global Secure Access traffic forwarding profiles should not be nested",
-      "path": "/docs/next/tests/MT.1189"
+      "path": "/docs/tests/MT.1189"
     },
     "MT.1190": {
       "title": "Entra Private Access applications should not use the Default connector group",
-      "path": "/docs/next/tests/MT.1190"
+      "path": "/docs/tests/MT.1190"
     },
     "MT.1191": {
       "title": "Break-glass accounts should be excluded from the Compliant Network Conditional Access policy",
-      "path": "/docs/next/tests/MT.1191"
+      "path": "/docs/tests/MT.1191"
     },
     "MT.1192": {
       "title": "Groups assigned to Entra Private Access applications should not be nested",
-      "path": "/docs/next/tests/MT.1192"
+      "path": "/docs/tests/MT.1192"
     },
     "MT.1193": {
       "title": "Entra Private Access application segments should avoid broad or risky destinations",
-      "path": "/docs/next/tests/MT.1193"
+      "path": "/docs/tests/MT.1193"
     },
     "MT.1194": {
       "title": "The baseline Global Secure Access security profile should enforce a threat-intelligence floor",
-      "path": "/docs/next/tests/MT.1194"
+      "path": "/docs/tests/MT.1194"
     },
     "MT.1195": {
       "title": "The Quick Access app should not be subject to a sign-in frequency Conditional Access control",
-      "path": "/docs/next/tests/MT.1195"
+      "path": "/docs/tests/MT.1195"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if SSH key expiration validation is configured.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies
+    https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies
 
 
 .EXAMPLE
