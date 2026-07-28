@@ -12,7 +12,7 @@ To test your DMARC configuration, consider using one of many publicly available 
 
 `Resolve-DnsName _dmarc.example.com txt`
 
-If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=mailto:reports@dmarc.cyber.dhs.gov, mailto:reports@example.com; ruf=mailto:reports@example.com` will be returned, though by necessity, the contents of the record will vary by agency. In this example, the policy indicates all emails failing the SPF/DKIM checks are to be rejected and aggregate reports sent to <reports@dmarc.cyber.dhs.gov> and <reports@example.com>. Failure reports will be sent to <reports@example.com>.
+If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=mailto:reports@dmarc.cyber.dhs.gov, mailto:reports@example.com; ruf=mailto:reports@example.com` will be returned, though by necessity, the contents of the record will vary by agency. In this example, the policy indicates all emails failing the SPF/DKIM checks are to be rejected and aggregate reports sent to `reports@dmarc.cyber.dhs.gov` and `reports@example.com`. Failure reports will be sent to `reports@example.com`.
 
 #### Related links
 

@@ -4,8 +4,8 @@ This use case is explicitly described in the Defender XDR documentation:
 A user might have two accounts, one for everyday work and another with elevated permissions for administrative tasks.
 Example
 
-<john.smith@company.com> (regular account)
-<john.smith.admin@company.com> (privileged account)
+`john.smith@company.com` (regular account)
+`john.smith.admin@company.com` (privileged account)
 
 ### How to fix
 
