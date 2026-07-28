@@ -51,7 +51,7 @@
             return $true
         }
 
-        # Classify members: user accounts (subject to CA policies) vs. service principals (not subject to CA).
+        # Classify members: user accounts (subject to Conditional Access policies) vs. service principals (not subject to CA).
         # As of Microsoft Entra Connect v2.5.76.0, directory sync supports Application-Based Authentication
         # (ABA), where sync is performed by a registered service principal rather than a dedicated user
         # account. Service principals are not subject to Conditional Access policies and do not need to be
@@ -118,7 +118,7 @@
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
                 continue
             } elseif ( $memberIds.Count -eq 0 ) {
-                # All members are service principals; they are not subject to CA policies and therefore this policy can be skipped
+                # All members are service principals; they are not subject to Conditional Access policies and therefore this policy can be skipped
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) — only service principal members - $CurrentResult"
                 continue

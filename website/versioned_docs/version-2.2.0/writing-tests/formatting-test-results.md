@@ -19,7 +19,7 @@ You can copy and paste the following code and add it to the end of the `ContosoE
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "CA", "Contoso" {
-   It "CT0001: Disabled CA policies must have reason for being disabled" {
+   It "CT0001: Disabled Conditional Access policies must have reason for being disabled" {
 
        try {
           $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -54,7 +54,7 @@ Copy and paste this code to any `*.Tests.ps1` file in the `Custom` folder to try
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0001: Disabled CA policies must have reason for being disabled" {
+    It "CT0001: Disabled Conditional Access policies must have reason for being disabled" {
 
         try {
             $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -100,7 +100,7 @@ Here's the updated test with the graph objects that you can try out.
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0001: Disabled CA policies must have reason for being disabled" {
+    It "CT0001: Disabled Conditional Access policies must have reason for being disabled" {
 
         try {
             $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -141,7 +141,7 @@ This example also shows how you can directly use the `Invoke-MtGraphRequest` fun
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag  "Contoso" {
-    It "CT0002: Read-only CA policies should be reviewed" {
+    It "CT0002: Read-only Conditional Access policies should be reviewed" {
 
         $policies = Invoke-MtGraphRequest -RelativeUri "identity/conditionalAccess/policies"
 
@@ -166,11 +166,11 @@ Describe "ContosoEntraConfig" -Tag  "Contoso" {
 }
 ```
 
-Here's an alternative version using the out of the box Maester cmdlets for getting CA policies and displaying the results.
+Here's an alternative version using the out of the box Maester cmdlets for getting Conditional Access policies and displaying the results.
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag  "Contoso" {
-    It "CT0003: Read-only CA policies should be reviewed" {
+    It "CT0003: Read-only Conditional Access policies should be reviewed" {
 
         $policies = Get-MtConditionalAccessPolicy
 
@@ -200,7 +200,7 @@ Here's an example of how you can use a markdown table to display the results inc
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0003: Disabled CA policies must have reason for being disabled" {
+    It "CT0003: Disabled Conditional Access policies must have reason for being disabled" {
 
         try {
             $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -218,7 +218,7 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
             $portalLink = "https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
             if($disabledWithReason.Count -gt 0 -or $disabledWithoutReason.Count -gt 0){
                 $result += "`n`n"
-                $result += "| Disabled CA Policy | Reason for disabling policy |`n"
+                $result += "| Disabled Conditional Access policy | Reason for disabling policy |`n"
                 $result += "| --- | --- |`n"
                 foreach($policy in $disabledWithReason){
                     $nameSplit = $policy.DisplayName -split ":Disabled:"

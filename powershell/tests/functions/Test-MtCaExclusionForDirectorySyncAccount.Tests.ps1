@@ -26,7 +26,7 @@
             '@odata.type' = '#microsoft.graph.servicePrincipal'
         }
 
-        # Helper: build a minimal enabled CA policy object
+        # Helper: build a minimal enabled Conditional Access policy object
         function New-CaPolicy {
             param(
                 [string]   $Id = 'policy1',
@@ -115,7 +115,7 @@
             }
         }
 
-        It 'Should return true because ABA service principals are not subject to CA policies' {
+        It 'Should return true because ABA service principals are not subject to Conditional Access policies' {
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
         }
     }

@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaBlockLegacyAuth
 
-    Returns true if one or more CA policies exist that block legacy authentication.
+    Returns true if one or more Conditional Access policies exist that block legacy authentication.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaBlockLegacyAuth

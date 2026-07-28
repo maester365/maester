@@ -36,7 +36,7 @@
         $deviceRegSettings = Invoke-MtGraphRequest -RelativeUri "policies/deviceRegistrationPolicy" -apiVersion "beta"
         Write-Verbose "Retrieved device registration settings:`n $deviceRegSettings"
 
-        # Get all the CA policies that require MFA for device registration
+        # Get all the Conditional Access policies that require MFA for device registration
         $deviceRegPolicies = $policies | Where-Object { $_.conditions.applications.includeUserActions -contains "urn:user:registerdevice" }
         $deviceRegPoliciesCount = ($deviceRegPolicies | Measure-Object).Count
 

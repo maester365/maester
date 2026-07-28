@@ -12,9 +12,9 @@ Implementing this setting is a first step in adopting compliance policies for de
 
 #### Impact
 
-Any devices without a compliance policy will be marked not compliant. Care should be taken to first deploy any new compliance policies with a Conditional Access (CA) policy that is in the Report-only state. After the environment's device compliance is better understood it is then appropriate to finally align with **Mark devices with no compliance policy assigned as** and enable any CA policies that enforce actions based on device compliance.
+Any devices without a compliance policy will be marked not compliant. Care should be taken to first deploy any new compliance policies with a Conditional Access policy that is in the Report-only state. After the environment's device compliance is better understood it is then appropriate to finally align with **Mark devices with no compliance policy assigned as** and enable any Conditional Access policies that enforce actions based on device compliance.
 
-If a mature environment already has an existing device compliance CA policy and a large number of devices without an assigned compliance policy, this could cause disruption as those devices would then be suddenly considered not compliant.
+If a mature environment already has an existing device compliance Conditional Access policy and a large number of devices without an assigned compliance policy, this could cause disruption as those devices would then be suddenly considered not compliant.
 
 #### Remediation action
 

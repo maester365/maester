@@ -203,7 +203,7 @@ Tags are used by Maester to identify and group related tests. They can also be u
 
 - **Practices or Capabilities**: Tags that denote specific security practices or capabilities within the security domain, such as:
   - Authentication (May include related topics such as MFA, SSPR, etc.)
-  - Conditional Access (CA)
+  - Conditional Access
   - Data Loss Prevention (DLP)
   - Extended Security Posture Management (XSPM)
   - Hybrid Identity

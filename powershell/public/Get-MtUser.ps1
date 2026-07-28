@@ -135,7 +135,7 @@
                 # Handling Emergency Access Groups
                 Write-Verbose "Emergency access group: $EmergencyAccessGroups"
                 foreach ( $EmergencyAccessGroup in $EmergencyAccessGroups ) {
-                    # Skip null or empty group IDs that can occur when CA policies have no group exclusions
+                    # Skip null or empty group IDs that can occur when Conditional Access policies have no group exclusions
                     if ([string]::IsNullOrEmpty($EmergencyAccessGroup)) {
                         Write-Verbose "Skipping null or empty emergency access group ID."
                         continue

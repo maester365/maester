@@ -23,10 +23,10 @@ Describe 'Get-MtUser' {
                 state      = 'enabled'
                 conditions = [PSCustomObject]@{
                     applications = [PSCustomObject]@{
-                        includeApplications                          = @('All')
-                        includeAuthenticationContextClassReferences  = $null
+                        includeApplications                         = @('All')
+                        includeAuthenticationContextClassReferences = $null
                     }
-                    users = [PSCustomObject]@{
+                    users        = [PSCustomObject]@{
                         includeUsers  = @('All')
                         excludeUsers  = $ExcludeUsers
                         excludeGroups = $ExcludeGroups
@@ -53,7 +53,7 @@ Describe 'Get-MtUser' {
         }
     }
 
-    Context 'When CA policies have no group exclusions' {
+    Context 'When Conditional Access policies have no group exclusions' {
         BeforeAll {
             $policies = @((New-MockCaPolicy), (New-MockCaPolicy))
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
@@ -125,7 +125,7 @@ Describe 'Get-MtUser' {
         }
     }
 
-    Context 'When two groups are tied in CA policy exclusion count (one large, one small)' {
+    Context 'When two groups are tied in Conditional Access policy exclusion count (one large, one small)' {
         BeforeAll {
             # Both excluded from all 3 policies — tied, so both are selected
             $policies = @(

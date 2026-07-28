@@ -51,7 +51,7 @@ Describe 'Test-MtCaEnforceNonPersistentBrowserSession' {
         }
 
         It 'Include: Non Compliant device filter (no-hybrid) should Pass' {
-            # Should work with CA policies that only check for compliant devices
+            # Should work with Conditional Access policies that only check for compliant devices
             # See https://github.com/maester365/maester/issues/433
             $policy = Get-BaselinePolicy
             $policy.conditions.devices.deviceFilter.mode = "include"
@@ -71,7 +71,7 @@ Describe 'Test-MtCaEnforceNonPersistentBrowserSession' {
         }
 
         It 'Exclude: Compliant device filter (no-hybrid) should Pass' {
-            # Should work with CA policies that only check for compliant devices
+            # Should work with Conditional Access policies that only check for compliant devices
             # See https://github.com/maester365/maester/issues/433
             $policy = Get-BaselinePolicy
             $policy.conditions.devices.deviceFilter.mode = "exclude"
