@@ -1,6 +1,6 @@
 This test checks if tenant creation is restricted to admin users only.
 
-"Yes" restricts the creation of Microsoft Entra ID tenants to the global administrator or tenant creator roles. "No" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the global administrator for that tenant.
+"Yes" restricts the creation of Microsoft Entra ID tenants to the Global Administrator or Tenant Creator roles. "No" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the Global Administrator for that tenant.
 
 Tenant creation should be restricted to admin users who have undergone proper training and understand the responsibilities of tenant management, security governance, and compliance requirements.
 

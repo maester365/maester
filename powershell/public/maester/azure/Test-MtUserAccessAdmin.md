@@ -6,7 +6,7 @@ Ensure that no User Access Administrator permissions at the Root Scope are appli
 
 #### Remediation action
 
-To remove all Admins with Root Scope permissions, as a Global Admin:
+To remove all Admins with Root Scope permissions, as a Global Administrator:
 
 1. Navigate to Microsoft Azure Portal [https://portal.azure.com](https://portal.azure.com).
 2. Search for **Microsoft Entra ID** and select **Microsoft Entra ID**.

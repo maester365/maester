@@ -1,14 +1,14 @@
 1.1.3 (L1) Ensure that between two and four global admins are designated
 
-Between two and four global administrators should be designated in the tenant. Ideally, these accounts will not have licenses assigned to them which supports additional controls found in this benchmark.
+Between two and four Global Administrators should be designated in the tenant. Ideally, these accounts will not have licenses assigned to them which supports additional controls found in this benchmark.
 
 #### Rationale
 
-If there is only one global administrator, they could perform malicious activities without being detected by another admin. Designating multiple global administrators eliminates this risk and ensures redundancy if the sole remaining global administrator leaves the organization. However, to minimize the attack surface, there should be no more than four global admins set for any tenant. A large number of global admins increases the likelihood of a successful account breach by an external attacker.
+If there is only one Global Administrator, they could perform malicious activities without being detected by another admin. Designating multiple Global Administrators eliminates this risk and ensures redundancy if the sole remaining Global Administrator leaves the organization. However, to minimize the attack surface, there should be no more than four global admins set for any tenant. A large number of global admins increases the likelihood of a successful account breach by an external attacker.
 
 #### Impact
 
-The potential impact associated with ensuring compliance with this requirement is dependent upon the current number of global administrators configured in the tenant. If there is only one global administrator in a tenant, an additional global administrator will need to be identified and configured. If there are more than four global administrators, a review of role requirements for current global administrators will be required to identify which of the users require global administrator access.
+The potential impact associated with ensuring compliance with this requirement is dependent upon the current number of Global Administrators configured in the tenant. If there is only one Global Administrator in a tenant, an additional Global Administrator will need to be identified and configured. If there are more than four Global Administrators, a review of role requirements for current Global Administrators will be required to identify which of the users require Global Administrator access.
 
 #### Remediation action
 
@@ -17,7 +17,7 @@ To correct the number of global tenant administrators:
 1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Select **Users** > **Active Users**.
 3. In the Search field enter the name of the user to be made a Global Administrator.
-4. To create a new Global Admin:
+4. To create a new Global Administrator:
 5. Select the user's name.
 6. A window will appear to the right.
 7. Select **Manage roles**.

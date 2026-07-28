@@ -3,7 +3,7 @@ Describe "CISA" -Tag "MS.AAD", "MS.AAD.7.8", "CISA.MS.AAD.7.8", "CISA",  "Entra 
         $result = Test-MtCisaActivationNotification -GlobalAdminOnly
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "notifications are set for activation of the Global Admin role."
+            $result | Should -Be $true -Because "notifications are set for activation of the Global Administrator role."
         }
     }
 }

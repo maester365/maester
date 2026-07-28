@@ -1,4 +1,4 @@
-Microsoft provides an approval step for assets that do not meet the automatic classification threshold. Assets with a lower classification confidence score must be approved by a security administrator.
+Microsoft provides an approval step for assets that do not meet the automatic classification threshold. Assets with a lower classification confidence score must be approved by a Security Administrator.
 Stale pending approvals can lead to limited visibility in Microsoft Defender XDR and potential security risks if critical assets are not properly identified.
 
 Therefore, you should regularly [review critical assets](https://learn.microsoft.com/security-exposure-management/classify-critical-assets#review-critical-assets) to ensure the correct classification has been applied to your assets.

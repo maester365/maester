@@ -1,6 +1,6 @@
 3.1.1 (L1) Ensure Microsoft 365 audit log search is Enabled
 
-When audit log search is enabled in the Microsoft Purview compliance portal, user and admin activity within the organization is recorded in the audit log and retained for 180 days by default. However, some organizations may prefer to use a third-party security information and event management (SIEM) application to access their auditing data. In this scenario, a global admin can choose to turn off audit log search in Microsoft 365.
+When audit log search is enabled in the Microsoft Purview compliance portal, user and admin activity within the organization is recorded in the audit log and retained for 180 days by default. However, some organizations may prefer to use a third-party security information and event management (SIEM) application to access their auditing data. In this scenario, a Global Administrator can choose to turn off audit log search in Microsoft 365.
 
 #### Rationale
 
