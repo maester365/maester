@@ -30,7 +30,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/direc
 #### Related links
 
 * [Microsoft Entra Connect: When you have an existing tenant | Microsoft Learn](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-install-existing-tenant)
-* [Update-MgDirectoryOnPremiseSynchronization | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/de-de/powershell/module/microsoft.graph.identity.directorymanagement/update-mgdirectoryonpremisesynchronization?view=graph-powershell-1.0)
+* [Update-MgDirectoryOnPremiseSynchronization | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/powershell/module/microsoft.graph.identity.directorymanagement/update-mgdirectoryonpremisesynchronization?view=graph-powershell-1.0)
 
 <!--- Results --->
 %TestResult%
