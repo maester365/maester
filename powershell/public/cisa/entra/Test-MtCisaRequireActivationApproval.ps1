@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaRequireActivationApproval
 
-    Returns true if the Global Admin role requires approval on activation
+    Returns true if the Global Administrator role requires approval on activation
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaRequireActivationApproval

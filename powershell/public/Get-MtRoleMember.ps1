@@ -11,17 +11,17 @@ function Get-MtRoleMember {
     .Example
     Get-MtRoleMember -Role GlobalAdministrator
 
-    Returns all the Global administrators and includes both Eligible and Active members.
+    Returns all the Global Administrators and includes both Eligible and Active members.
 
     .Example
     Get-MtRoleMember -Role GlobalAdministrator -MemberStatus Active
 
-    Returns all the Global administrators that are currently active and excludes those that are eligible but not yet active.
+    Returns all the Global Administrators that are currently active and excludes those that are eligible but not yet active.
 
     .EXAMPLE
     Get-MtRoleMember -Role GlobalAdministrator,PrivilegedRoleAdministrator
 
-    Returns all the Global administrators and Privileged Role administrators and includes both Eligible and Active members.
+    Returns all the Global Administrators and Privileged Role administrators and includes both Eligible and Active members.
 
     .Example
     Get-MtRoleMember -RoleId "00000000-0000-0000-0000-000000000000"
