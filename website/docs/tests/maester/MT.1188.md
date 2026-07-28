@@ -19,7 +19,7 @@ keywords:
 
 # MT.1188 - Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -29,7 +29,7 @@ A policy satisfies the requirement when it grants **Require device to be marked 
 
 This check evaluates application coverage only; it does not evaluate whether the policy applies to every user of the app.
 
-#### Remediation action:
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Conditional Access Administrator**.
 2. Browse to **Entra ID** > **Conditional Access** > **Policies**.

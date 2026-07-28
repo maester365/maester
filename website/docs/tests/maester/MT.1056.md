@@ -18,7 +18,7 @@ keywords:
 
 # MT.1056 - Ensure that no person has permanent access to all Azure subscriptions at the root scope
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oppedijk" title="Erik Oppedijk · Original author"><img src="https://github.com/Oppedijk.png" alt="Erik Oppedijk" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/brianveldman" title="Beerd Veldman · Co-contributor"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oppedijk">Erik Oppedijk</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oppedijk" title="Erik Oppedijk · Original author"><img src="https://github.com/Oppedijk.png" alt="Erik Oppedijk" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/brianveldman" title="Beerd Veldman · Co-contributor"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oppedijk">Erik Oppedijk</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -28,18 +28,20 @@ User Access Administrator is a role that allows an Administrator to perform ever
 
 Ensure that no User Access Administrator permissions at the Root Scope are applied.
 
-#### Remediation action:
+#### Remediation action
 
-To remove all Admins with Root Scope permissions, as a Global Admin:
+To remove all Admins with Root Scope permissions, as a Global Administrator:
+
 1. Navigate to Microsoft Azure Portal [https://portal.azure.com](https://portal.azure.com).
 2. Search for **Microsoft Entra ID** and select **Microsoft Entra ID**.
 3. Expand the **Manage** menu and select **Properties**.
-3. On the **Properties** page, go to the **Access management for Azure resources** section.
-4. In the information bar, click **Manage elevated access users**.
-5. Select all User Access Administrators and click **Remove**.
-6. Also check other role assignments, as they need to be removed to pass the tests.
+4. On the **Properties** page, go to the **Access management for Azure resources** section.
+5. In the information bar, click **Manage elevated access users**.
+6. Select all User Access Administrators and click **Remove**.
+7. Also check other role assignments, as they need to be removed to pass the tests.
 
 To remove the admins through CLI:
+
 ```powershell
 az role assignment delete --role "User Access Administrator" --assignee adminname@yourdomain.com --scope "/"
 ```
