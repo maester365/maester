@@ -38,7 +38,7 @@
     It "AZDO.1005: IP Conditional Access policy validation. See https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops" -Tag "AZDO.1005" {
         $result = Test-AzdoEnforceAADConditionalAccess
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "Microsoft Entra ID should always perform validation for any Conditional Access Policies (CAPs) set by tenant administrators."
+            $result | Should -Be $true -Because "Microsoft Entra ID should always perform validation for any Conditional Access policies set by tenant administrators."
         }
     }
 

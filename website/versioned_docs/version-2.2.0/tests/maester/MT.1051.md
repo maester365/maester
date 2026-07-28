@@ -37,7 +37,7 @@ There are several use cases where Tier-0 permissions with an indirect attack pat
 Following table is a shortened copy from [Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0), Date: 05.03.2025, Release v2.1.0
 
 | Application permission | Path type | Known shortest path |
-|---|---|---|
+| --- | --- | --- |
 | [AdministrativeUnit.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#administrativeunitreadwriteall) | Indirect | When combined with other types of access allowing to reset user passwords, can remove a Global Admin from a [Restricted Management Administrative Unit (RMAU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management) and take it over. |
 | [Application.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#applicationreadwriteall) | Indirect | Can impersonate any SP with more privileged application permissions granted for MS Graph, and impersonate it to escalate to Global Admin. |
 | [Application.ReadWrite.OwnedBy](https://learn.microsoft.com/en-us/graph/permissions-reference#applicationreadwriteownedby) | Indirect | Same as Application.ReadWrite.All, but the impersonation is limited to the SP(s) for which the compromised SP is an owner. |
@@ -51,7 +51,7 @@ Following table is a shortened copy from [Application permissions - Tier 0: Fami
 | [GroupMember.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#groupmemberreadwriteall) | Indirect | Same as Directory.ReadWrite.All. |
 | [Organization.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#organizationreadwriteall) | Indirect | If Certificate Based Authentication (CBA) is enabled in the tenant, can upload a trusted root certificate to Entra ID and impersonate a Global Admin. |
 | [Policy.ReadWrite.AuthenticationMethod](https://learn.microsoft.com/en-us/graph/permissions-reference#policyreadwriteauthenticationmethod) | Indirect | When combined with UserAuthenticationMethod.ReadWrite.All, can enable the [Temporary Access Pass (TAP)](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-temporary-access-pass) authentication method to help leveraging and follow the same path as that permission. |
-| [Policy.ReadWrite.ConditionalAccess](https://learn.microsoft.com/en-us/graph/permissions-reference#policyreadwriteconditionalaccess) | Direct | Can create a CAP blocking all users (including break-glass accounts) for all applications (making the tenant unavailable), and ask for a ransomware to remove the malicious CAP. <br />Note: this role is "Global-Admin-like", as it affects the availability of the tenant in the same way as a Global Admin. |
+| [Policy.ReadWrite.ConditionalAccess](https://learn.microsoft.com/en-us/graph/permissions-reference#policyreadwriteconditionalaccess) | Direct | Can create a Conditional Access policy blocking all users (including break-glass accounts) for all applications (making the tenant unavailable), and ask for a ransomware to remove the malicious Conditional Access policy. <br />Note: this role is "Global-Admin-like", as it affects the availability of the tenant in the same way as a Global Admin. |
 | [Policy.ReadWrite.PermissionGrant](https://learn.microsoft.com/en-us/graph/permissions-reference#policyreadwritepermissiongrant) | Indirect | Can create a [permission grant policy](https://learn.microsoft.com/en-us/graph/api/permissiongrantpolicy-post-includes?view=graph-rest-1.0&tabs=http) for the compromised SP with the [RoleManagement.ReadWrite.Directory](https://learn.microsoft.com/en-us/graph/permissions-reference#rolemanagementreadwritedirectory) permission, and leverage that policy to follow the same path as that permission and escalate to Global Admin. |
 | [PrivilegedAssignmentSchedule.ReadWrite.AzureADGroup](https://learn.microsoft.com/en-us/graph/permissions-reference#privilegedassignmentschedulereadwriteazureadgroup) | Direct | Same as PrivilegedAccess.ReadWrite.AzureADGroup. |
 | [PrivilegedEligibilitySchedule.ReadWrite.AzureADGroup](https://learn.microsoft.com/en-us/graph/permissions-reference#privilegedeligibilityschedulereadwriteazureadgroup) | Indirect | Can make a controlled user account eligible to a group with an active Global Admin assignment, and activate the group membership to escalate to Global Admin. |
@@ -66,9 +66,10 @@ Following table is a shortened copy from [Application permissions - Tier 0: Fami
 | [User-PasswordProfile.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#user-passwordprofilereadwriteall) | Indirect | Same as Directory.ReadWrite.All. |
 | [UserAuthenticationMethod.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#userauthenticationmethodreadwriteall) | Direct | Can generate a [Temporary Access Pass (TAP)](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-temporary-access-pass) and take over any user account in the tenant. <br /> Note: if TAP is not an enabled authentication method in the tenant, this path needs to be combined with Policy.ReadWrite.AuthenticationMethod to be successful. |
 
-#### Remediation action:
+#### Remediation action
 
 To check the applications permissions:
+
 1. Navigate to Microsoft Entra admin center [https://entra.microsoft.com/](https://entra.microsoft.com/).
 2. Click to expand **Applications** then select **App registrations**.
 3. Select **All applications**.
@@ -97,5 +98,5 @@ To check the applications permissions:
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtHighRiskAppPermissions.ps1`
+* Pester test: `tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1`
+* PowerShell source: `powershell/public/maester/entra/Test-MtHighRiskAppPermissions.ps1`

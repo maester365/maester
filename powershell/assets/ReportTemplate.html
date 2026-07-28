@@ -663,10 +663,10 @@ Your tenant does not have the [Authentication Methods](https://entra.microsoft.c
 | Microsoft Authenticator state | ✅ Pass |
 | Included Targets | ✅ Pass |
 | Allow use of Microsoft Authenticator OTP set to *No* | ❌ Fail |
-| Show application name in push and passwordless notifications status | ✅ Pass | 
-| Show application name in push and passwordless notifications included target | ✅ Pass | 
-| Show geographic location in push and passwordless notifications status | ✅ Pass | 
-| Show geographic location in push and passwordless notifications included target | ✅ Pass | 
+| Show application name in push and passwordless notifications status | ✅ Pass |
+| Show application name in push and passwordless notifications included target | ✅ Pass |
+| Show geographic location in push and passwordless notifications status | ✅ Pass |
+| Show geographic location in push and passwordless notifications included target | ✅ Pass |
 
 `,Severity:``,Service:null,TestSkipped:``}},{Index:12,Id:`CISA.MS.AAD.3.4`,Title:`The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.`,Name:`CISA.MS.AAD.3.4: The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.`,HelpUrl:``,Severity:`High`,Tag:[`MS.AAD`,`MS.AAD.3.4`,`CISA.MS.AAD.3.4`,`CISA`,`Entra ID P1`],Result:`Passed`,ScriptBlock:`
         $result = Test-MtCisaMethodsMigration
@@ -2850,7 +2850,7 @@ Well done. The configuration in your tenant and recommended value is **'false'**
         Test-MtEidscaControl -CheckId AT01 | Should -Be 'enabled'
     `,ScriptBlockFile:`/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1`,ErrorRecord:[],Block:`EIDSCA`,Duration:`00:00:00`,ResultDetail:{TestTitle:`EIDSCA.AT01: Authentication Method - Temporary Access Pass - State. See https://maester.dev/docs/tests/EIDSCA.AT01`,SkippedReason:null,TestDescription:`Whether the Temporary Access Pass is enabled in the tenant.
 
-Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy.
+Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access policy.
 
 #### Test script
 \`\`\`
@@ -2898,7 +2898,7 @@ Well done. The configuration in your tenant and recommended value is **'true'** 
         Test-MtEidscaControl -CheckId AV01 | Should -Be 'disabled'
     `,ScriptBlockFile:`/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1`,ErrorRecord:[],Block:`EIDSCA`,Duration:`00:00:00`,ResultDetail:{TestTitle:`EIDSCA.AV01: Authentication Method - Voice call - State. See https://maester.dev/docs/tests/EIDSCA.AV01`,SkippedReason:null,TestDescription:`Whether the Voice call is enabled in the tenant.
 
-Choose authentication methods with number matching (Authenticator) 
+Choose authentication methods with number matching (Authenticator)
 
 #### Test script
 \`\`\`
@@ -4176,7 +4176,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 7. After validating the new credential, navigate back to App registrations > Certificates and Secrets for the app and remove the old credential.
 
-**Impact:** 
+**Impact:**
 
 #### Related links:
 
@@ -4268,7 +4268,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 #### Related links:
 
-* [Enable policy to block legacy authentication - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 0 of 71 users that don’t have legacy authentication blocked. 
+* [Enable policy to block legacy authentication - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 0 of 71 users that don’t have legacy authentication blocked.
 
 ➡️ Open [Recommendation - Enable policy to block legacy authentication](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/) in the Entra admin portal.
 
@@ -4502,7 +4502,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 3. For more information about this recommendation and the associated features, see [Adaptive Protection and Insider Risk Conditional Access recommendation.](https://go.microsoft.com/fwlink/?linkid=2260505).
 
-**Impact:** Upon policy activation, user actions will align with administrator configurations. Potential actions encompass the user being "Blocked" from application usage or activation of "Terms of Use" conditions. 
+**Impact:** Upon policy activation, user actions will align with administrator configurations. Potential actions encompass the user being "Blocked" from application usage or activation of "Terms of Use" conditions.
 
 #### Related links:
 
@@ -4711,7 +4711,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 #### Related links:
 
-* [Ensure all users can complete multifactor authentication - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 52 of 78 users that aren’t registered with MFA. 
+* [Ensure all users can complete multifactor authentication - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 52 of 78 users that aren’t registered with MFA.
 
 #### Impacted resources
 
@@ -5114,7 +5114,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 #### Related links:
 
-* [Use least privileged administrative roles  - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You currently have 11 users with privileged administrative roles. 
+* [Use least privileged administrative roles  - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You currently have 11 users with privileged administrative roles.
 
 ➡️ Open [Recommendation - Use least privileged administrative roles ](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/) in the Entra admin portal.
 
@@ -5190,7 +5190,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 #### Related links:
 
-* [Enable self-service password reset - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 0 of  users who don't have self-service password reset enabled. 
+* [Enable self-service password reset - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 0 of  users who don't have self-service password reset enabled.
 
 ➡️ Open [Recommendation - Enable self-service password reset](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/) in the Entra admin portal.
 
@@ -5254,7 +5254,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
         # Actual test
         $_.status | Should -Be "completedBySystem" -Because $_.benefits
-    `,ScriptBlockFile:`/Users/merill/GitHub/maester/tests/Maester/Entra/Test-EntraRecommendations.Tests.ps1`,ErrorRecord:[],Block:`Maester/Entra`,Duration:`00:00:00`,ResultDetail:{TestTitle:`MT.1024.servicePrincipalKeyExpiry: Renew expiring service principal credentials. See https://maester.dev/docs/tests/MT.1024`,SkippedReason:null,TestDescription:`Renewing the service principal credential(s) before expiration ensures the application continues to function and reduces the possibility of downtime due to an expired credential. 
+    `,ScriptBlockFile:`/Users/merill/GitHub/maester/tests/Maester/Entra/Test-EntraRecommendations.Tests.ps1`,ErrorRecord:[],Block:`Maester/Entra`,Duration:`00:00:00`,ResultDetail:{TestTitle:`MT.1024.servicePrincipalKeyExpiry: Renew expiring service principal credentials. See https://maester.dev/docs/tests/MT.1024`,SkippedReason:null,TestDescription:`Renewing the service principal credential(s) before expiration ensures the application continues to function and reduces the possibility of downtime due to an expired credential.
 
 #### Remediation action:
 
@@ -5270,7 +5270,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 6. If the service principal does not show any credentials after navigating to the enterprise apps blade, we recommend checking the 'passwordCredentials' and 'keyCredentials' property of the service principal object using PowerShell or Microsoft Graph service principal API and use the Microsoft Graph API to rotate credentials.
 
-**Impact:** 
+**Impact:**
 
 #### Related links:
 
@@ -5379,7 +5379,7 @@ at Run-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.p
 at Invoke-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2500
 at Invoke-Pester<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 5046
 at Invoke-Maester, /Users/merill/GitHub/maester/powershell/public/Invoke-Maester.ps1: line 448
-at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/Entra`,Duration:`00:00:00`,ResultDetail:{TestTitle:`MT.1024.signinRiskPolicy: Protect all users with a sign-in risk policy. See https://maester.dev/docs/tests/MT.1024`,SkippedReason:null,TestDescription:`Turning on the sign-in risk policy ensures that suspicious sign-ins are challenged for multifactor authentication (MFA). 
+at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/Entra`,Duration:`00:00:00`,ResultDetail:{TestTitle:`MT.1024.signinRiskPolicy: Protect all users with a sign-in risk policy. See https://maester.dev/docs/tests/MT.1024`,SkippedReason:null,TestDescription:`Turning on the sign-in risk policy ensures that suspicious sign-ins are challenged for multifactor authentication (MFA).
 
 #### Remediation action:
 
@@ -5596,7 +5596,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 5. In the instance where the origin of the credential in the recommendation is marked as service principal but there are no SAML certificates, you can use the Microsoft Graph API to query specific properties and remove the credential from the Service Principal. For more information, see [Recommendation to remove unused credentials from apps](https://learn.microsoft.com/entra/identity/monitoring-health/recommendation-remove-unused-credential-from-apps?tabs=microsoft-entra-admin-center).
 
-**Impact:** 
+**Impact:**
 
 #### Related links:
 
@@ -5729,7 +5729,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 6. For more information, see [Recommendation to remove unused apps.](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/recommendation-remove-unused-apps).
 
-**Impact:** 
+**Impact:**
 
 #### Related links:
 
@@ -5892,7 +5892,7 @@ at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`Maester/E
 
 #### Related links:
 
-* [Protect all users with a user risk policy  - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 3 of 78 users that don’t have a user risk policy enabled. 
+* [Protect all users with a user risk policy  - Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/)`,TestResult:`You have 3 of 78 users that don’t have a user risk policy enabled.
 
 #### Impacted resources
 
@@ -6220,11 +6220,11 @@ Assign users the least privileged role they need.
    -  Madura Sonnadara (madura@elapora.com)
 
 Get more details from the PIM alert [There are too many global administrators](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/TooManyGlobalAdminsAssignedToTenantAlert/resourceId/0817c655-a853-4d8f-9723-3a333b5b9235) in the Azure Portal.
-`,Severity:``,Service:null,TestSkipped:``}},{Index:122,Id:`MT.1035`,Title:`All security groups assigned to Conditional Access Policies should be protected by RMAU.`,Name:`MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU.`,HelpUrl:`https://maester.dev/docs/tests/MT.1035`,Severity:`High`,Tag:[`Maester`,`CA`,`MT.1035`],Result:`Passed`,ScriptBlock:`
+`,Severity:``,Service:null,TestSkipped:``}},{Index:122,Id:`MT.1035`,Title:`All security groups assigned to Conditional Access policies should be protected by RMAU.`,Name:`MT.1035: All security groups assigned to Conditional Access policies should be protected by RMAU.`,HelpUrl:`https://maester.dev/docs/tests/MT.1035`,Severity:`High`,Tag:[`Maester`,`CA`,`MT.1035`],Result:`Passed`,ScriptBlock:`
         Test-MtCaGroupsRestricted | Should -Be $true -Because "there are one or more policies without protection of included or excluded groups"
-    `,ScriptBlockFile:`/Users/merill/GitHub/maester/tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`,ErrorRecord:[],Block:`Maester/Entra`,Duration:`00:00:00`,ResultDetail:{TestTitle:`MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035`,SkippedReason:null,TestDescription:`Security Groups will be used to exclude and include users from Conditional Access Policies. Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access Policies.
+    `,ScriptBlockFile:`/Users/merill/GitHub/maester/tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`,ErrorRecord:[],Block:`Maester/Entra`,Duration:`00:00:00`,ResultDetail:{TestTitle:`MT.1035: All security groups assigned to Conditional Access policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035`,SkippedReason:null,TestDescription:`Security Groups will be used to exclude and include users from Conditional Access policies. Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access policies.
 
-To prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups. Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups. This test checks if all groups used in Conditional Access Policies are protected.
+To prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups. Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups. This test checks if all groups used in Conditional Access policies are protected.
 
 See [Restricted management administrative units in Microsoft Entra ID - Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)`,TestResult:`Well done! All security groups with assignment in Conditional Access are protected.`,Severity:``,Service:null,TestSkipped:``}},{Index:123,Id:`MT.1036`,Title:`All excluded objects should have a fallback include in another policy.`,Name:`MT.1036: All excluded objects should have a fallback include in another policy.`,HelpUrl:`https://maester.dev/docs/tests/MT.1036`,Severity:`Medium`,Tag:[`Maester`,`CA`,`MT.1036`],Result:`Failed`,ScriptBlock:`
         Test-MtCaGap | Should -Be $true -Because "there are one or more objects excluded without a corresponding fallback in another policy."
@@ -6365,9 +6365,9 @@ These Conditional Access policies are referencing deleted security groups.
 
 #### Impacted Conditional Access policies
 
- | Conditional Access policy | Deleted security group | Condition | 
+ | Conditional Access policy | Deleted security group | Condition |
 | --- | --- | --- |
-| [Browser only access for Fabrikam users](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/e7d58a81-cdae-4b18-85cc-e90d858f504b) | 60929ea8-1d05-4f5c-801b-ce09a1f1566b | exclude | 
+| [Browser only access for Fabrikam users](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/e7d58a81-cdae-4b18-85cc-e90d858f504b) | 60929ea8-1d05-4f5c-801b-ce09a1f1566b | exclude |
 
 
 Note: Names are not available for deleted groups. If the group was deleted in the last 30 days it may be available under [Entra admin centre - Deleted groups](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/GroupsManagementMenuBlade/~/DeletedGroups/menuId/DeletedGroups).
@@ -6921,11 +6921,11 @@ These Conditional Access policies reference non-existent users, groups, or roles
 
 #### Impacted Conditional Access policies
 
-| Conditional Access policy | Non-existent object | Object type | Condition | 
+| Conditional Access policy | Non-existent object | Object type | Condition |
 | --- | --- | --- | --- |
-| [ACSC - L2](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/dd4e567d-47ae-4d1f-acaa-6d4ff1cd14e4) | 899b7633-4cef-46b8-a815-473aedbd3b70 | User | include | 
-| [Guest-Meferna-Woodgrove-PhishingResistantAuthStrength](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/0f0a0c1c-41b0-4c18-ae20-d02492d03737) | eccfa723-051d-4ec1-9019-7cff9768d5b6 | User | include | 
-| [Browser only access for Fabrikam users](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/e7d58a81-cdae-4b18-85cc-e90d858f504b) | 60929ea8-1d05-4f5c-801b-ce09a1f1566b | Group | exclude | 
+| [ACSC - L2](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/dd4e567d-47ae-4d1f-acaa-6d4ff1cd14e4) | 899b7633-4cef-46b8-a815-473aedbd3b70 | User | include |
+| [Guest-Meferna-Woodgrove-PhishingResistantAuthStrength](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/0f0a0c1c-41b0-4c18-ae20-d02492d03737) | eccfa723-051d-4ec1-9019-7cff9768d5b6 | User | include |
+| [Browser only access for Fabrikam users](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/e7d58a81-cdae-4b18-85cc-e90d858f504b) | 60929ea8-1d05-4f5c-801b-ce09a1f1566b | Group | exclude |
 
 
 Note: Names are not available for deleted objects. If the object was deleted recently, it may be available in the recycle bin (for groups and users) or may need to be re-created (for roles).
@@ -13138,7 +13138,7 @@ Line |
      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      | POST https://graph.microsoft.com/beta/security/runHuntingQuery HTTP/2.0 400 Bad Request Vary: Accept-Encoding Strict-Transport-Security: max-age=31536000 request-id:
      | 30ac1358-5b8f-430f-b9bc-736e6079b710 client-request-id: ffd2abae-1abe-42a1-be27-0f52ad7e4280 x-ms-ags-diagnostic: {"ServerInfo":{"DataCenter":"Australia
-     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json 
+     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json
      | {"error":{"code":"BadRequest","message":"'getschema' operator: Failed to resolve table or column expression named 'DeviceInfo'. Fix semantic errors in your
      | query.","innerError":{"date":"2025-11-27T10:32:33","request-id":"30ac1358-5b8f-430f-b9bc-736e6079b710","client-request-id":"ffd2abae-1abe-42a1-be27-0f52ad7e4280"}}}
 
@@ -13156,7 +13156,7 @@ Line |
      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      | POST https://graph.microsoft.com/beta/security/runHuntingQuery HTTP/2.0 400 Bad Request Vary: Accept-Encoding Strict-Transport-Security: max-age=31536000 request-id:
      | 30ac1358-5b8f-430f-b9bc-736e6079b710 client-request-id: ffd2abae-1abe-42a1-be27-0f52ad7e4280 x-ms-ags-diagnostic: {"ServerInfo":{"DataCenter":"Australia
-     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json 
+     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json
      | {"error":{"code":"BadRequest","message":"'getschema' operator: Failed to resolve table or column expression named 'DeviceInfo'. Fix semantic errors in your
      | query.","innerError":{"date":"2025-11-27T10:32:33","request-id":"30ac1358-5b8f-430f-b9bc-736e6079b710","client-request-id":"ffd2abae-1abe-42a1-be27-0f52ad7e4280"}}}
 
@@ -13211,7 +13211,7 @@ Line |
      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      | POST https://graph.microsoft.com/beta/security/runHuntingQuery HTTP/2.0 400 Bad Request Vary: Accept-Encoding Strict-Transport-Security: max-age=31536000 request-id:
      | 30ac1358-5b8f-430f-b9bc-736e6079b710 client-request-id: ffd2abae-1abe-42a1-be27-0f52ad7e4280 x-ms-ags-diagnostic: {"ServerInfo":{"DataCenter":"Australia
-     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json 
+     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json
      | {"error":{"code":"BadRequest","message":"'getschema' operator: Failed to resolve table or column expression named 'DeviceInfo'. Fix semantic errors in your
      | query.","innerError":{"date":"2025-11-27T10:32:33","request-id":"30ac1358-5b8f-430f-b9bc-736e6079b710","client-request-id":"ffd2abae-1abe-42a1-be27-0f52ad7e4280"}}}
 
@@ -13296,7 +13296,7 @@ Line |
      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
      | POST https://graph.microsoft.com/beta/security/runHuntingQuery HTTP/2.0 400 Bad Request Vary: Accept-Encoding Strict-Transport-Security: max-age=31536000 request-id:
      | 30ac1358-5b8f-430f-b9bc-736e6079b710 client-request-id: ffd2abae-1abe-42a1-be27-0f52ad7e4280 x-ms-ags-diagnostic: {"ServerInfo":{"DataCenter":"Australia
-     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json 
+     | Southeast","Slice":"E","Ring":"3","ScaleUnit":"000","RoleInstance":"ML1PEPF00004AEB"}} Date: Thu, 27 Nov 2025 10:32:33 GMT Content-Type: application/json
      | {"error":{"code":"BadRequest","message":"'getschema' operator: Failed to resolve table or column expression named 'DeviceInfo'. Fix semantic errors in your
      | query.","innerError":{"date":"2025-11-27T10:32:33","request-id":"30ac1358-5b8f-430f-b9bc-736e6079b710","client-request-id":"ffd2abae-1abe-42a1-be27-0f52ad7e4280"}}}
 
@@ -13362,8 +13362,8 @@ Set the Bulk Complaint Level threshold to be 6.
 
 #### Related Links
 
-* [Bulk Complaint Level values](https://aka.ms/orca-antispam-docs-1) 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Bulk Complaint Level values](https://aka.ms/orca-antispam-docs-1)
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:250,Id:`ORCA.101`,Title:`Bulk is marked as spam.`,Name:`ORCA.101: Bulk is marked as spam.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.101`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA101
@@ -13415,7 +13415,7 @@ Set the anti-spam policy to mark bulk mail as spam.
 
 #### Related Links
 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 * [Set-HostedContentFilterPolicy](https://aka.ms/orca-antispam-docs-9)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:251,Id:`ORCA.102`,Title:`Advanced Spam filter options are turned off.`,Name:`ORCA.102: Advanced Spam filter options are turned off.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.102`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA102
@@ -13467,7 +13467,7 @@ Turn off Advanced Spam filter (ASF) options in Anti-Spam filter policies.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:252,Id:`ORCA.103`,Title:`Outbound spam filter policy settings configured.`,Name:`ORCA.103: Outbound spam filter policy settings configured.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.103`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA103
@@ -13519,7 +13519,7 @@ Set RecipientLimitExternalPerHour to 500, RecipientLimitInternalPerHour to 1000,
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:253,Id:`ORCA.104`,Title:`High Confidence Phish action set to Quarantine message.`,Name:`ORCA.104: High Confidence Phish action set to Quarantine message.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.104`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA104
@@ -13571,7 +13571,7 @@ Change High Confidence Phish action to Quarantine message.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:254,Id:`ORCA.105`,Title:`Safe Links Synchronous URL detonation is enabled.`,Name:`ORCA.105: Safe Links Synchronous URL detonation is enabled.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.105`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA105
@@ -13623,8 +13623,8 @@ Enable Safe Links Synchronous URL detonation.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
-* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
+* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 * [Set up Microsoft Defender for Office 365 Safe Links policies](https://aka.ms/orca-atpp-docs-10)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:255,Id:`ORCA.106`,Title:`Quarantine retention period is 30 days.`,Name:`ORCA.106: Quarantine retention period is 30 days.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.106`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA106
@@ -13676,8 +13676,8 @@ Configure the Quarantine retention period to 30 days.
 
 #### Related Links
 
-* [Manage quarantined messages and files as an administrator in Office 365](https://aka.ms/orca-antispam-docs-6) 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Manage quarantined messages and files as an administrator in Office 365](https://aka.ms/orca-antispam-docs-6)
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:256,Id:`ORCA.107`,Title:`End-user spam notification is enabled.`,Name:`ORCA.107: End-user spam notification is enabled.`,HelpUrl:``,Severity:`Low`,Tag:[`ORCA`,`ORCA.107`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA107
@@ -13729,8 +13729,8 @@ Enable End-user Spam notifications on a quarantine policy.
 
 #### Related Links
 
-* [Configure end-user spam notifications in Exchange Online](https://aka.ms/orca-antispam-docs-2) 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Configure end-user spam notifications in Exchange Online](https://aka.ms/orca-antispam-docs-2)
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:257,Id:`ORCA.108`,Title:`DKIM signing is set up for all your custom domains.`,Name:`ORCA.108: DKIM signing is set up for all your custom domains.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.108`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA108
@@ -13782,7 +13782,7 @@ Set up DKIM signing to sign your emails.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - DKIM](https://security.microsoft.com/authentication?viewid=DKIM) 
+* [Microsoft 365 Defender Portal - DKIM](https://security.microsoft.com/authentication?viewid=DKIM)
 * [Use DKIM to validate outbound email sent from your custom domain in Office 365](https://aka.ms/orca-dkim-docs-1)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:258,Id:`ORCA.108.1`,Title:`DNS Records have been set up to support DKIM.`,Name:`ORCA.108.1: DNS Records have been set up to support DKIM.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.108.1`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA108_1
@@ -13885,8 +13885,8 @@ Remove allow listing on senders.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
+* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 * [Use Anti-Spam Policy Sender/Domain Allow lists](https://aka.ms/orca-antispam-docs-4)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:260,Id:`ORCA.110`,Title:`Internal Sender notifications are disabled.`,Name:`ORCA.110: Internal Sender notifications are disabled.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.110`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA110
@@ -13938,7 +13938,7 @@ Disable notifying internal senders of malware detection.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2) 
+* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2)
 * [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:261,Id:`ORCA.111`,Title:`Anti-phishing policy exists and EnableUnauthenticatedSender is true.`,Name:`ORCA.111: Anti-phishing policy exists and EnableUnauthenticatedSender is true.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.111`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA111
@@ -13990,8 +13990,8 @@ Enable unauthenticated sender tagging in Anti-phishing policy.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
-* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
+* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 * [Unverified Sender](https://aka.ms/orca-atpp-docs-12)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:262,Id:`ORCA.112`,Title:`Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy.`,Name:`ORCA.112: Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.112`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA112
@@ -14043,8 +14043,8 @@ Configure Anti-spoofing protection action to Move message to the recipients' Jun
 
 #### Related Links
 
-* [Configuring the anti-spoofing policy](https://aka.ms/orca-atpp-docs-5) 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Configuring the anti-spoofing policy](https://aka.ms/orca-atpp-docs-5)
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:263,Id:`ORCA.113`,Title:`AllowClickThrough is disabled in Safe Links policies.`,Name:`ORCA.113: AllowClickThrough is disabled in Safe Links policies.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.113`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA113
@@ -14089,15 +14089,15 @@ at Run-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.p
 at Invoke-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2500
 at Invoke-Pester<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 5046
 at Invoke-Maester, /Users/merill/GitHub/maester/powershell/public/Invoke-Maester.ps1: line 448
-at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`ORCA`,Duration:`00:00:00`,ResultDetail:{TestTitle:`ORCA.113: AllowClickThrough is disabled in Safe Links policies.`,SkippedReason:`Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,TestDescription:`Microsoft Defender for Office 365 Safe Links can help protect your organization by providing time-of-click verification of  web addresses (URLs) in email messages and Office documents. It is possible to allow users click through Safe Links to the original URL. It is recommended to configure Safe Links policies to not let users click through safe links. 
+at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`ORCA`,Duration:`00:00:00`,ResultDetail:{TestTitle:`ORCA.113: AllowClickThrough is disabled in Safe Links policies.`,SkippedReason:`Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,TestDescription:`Microsoft Defender for Office 365 Safe Links can help protect your organization by providing time-of-click verification of  web addresses (URLs) in email messages and Office documents. It is possible to allow users click through Safe Links to the original URL. It is recommended to configure Safe Links policies to not let users click through safe links.
 
 #### Remediation action
 Do not let users click through safe links to original URL.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
-* [Microsoft Defender for Office 365 Safe Links policies](https://aka.ms/orca-atpp-docs-11) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
+* [Microsoft Defender for Office 365 Safe Links policies](https://aka.ms/orca-atpp-docs-11)
 * [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-8)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:264,Id:`ORCA.114`,Title:`No IP Allow Lists have been configured.`,Name:`ORCA.114: No IP Allow Lists have been configured.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.114`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA114
@@ -14149,7 +14149,7 @@ Remove IP addresses from IP allow list.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Use Anti-Spam Policy IP Allow lists](https://aka.ms/orca-antispam-docs-3)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:265,Id:`ORCA.115`,Title:`Mailbox intelligence based impersonation protection is enabled in anti-phishing policies.`,Name:`ORCA.115: Mailbox intelligence based impersonation protection is enabled in anti-phishing policies.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.115`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA115
@@ -14201,8 +14201,8 @@ Enable Mailbox intelligence based impersonation protection in anti-phishing poli
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 * [Set up Microsoft Defender for Office 365 anti-phishing and anti-phishing policies](https://aka.ms/orca-atpp-docs-9)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:266,Id:`ORCA.116`,Title:`Mailbox intelligence based impersonation protection action set to move message to junk mail folder.`,Name:`ORCA.116: Mailbox intelligence based impersonation protection action set to move message to junk mail folder.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.116`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA116
@@ -14254,8 +14254,8 @@ Change Mailbox intelligence based impersonation protection action to move messag
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 * [Set up Microsoft Defender for Office 365 anti-phishing and anti-phishing policies](https://aka.ms/orca-atpp-docs-9)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:267,Id:`ORCA.118.1`,Title:`Domains are not being allow listed in an unsafe manner in Anti-Spam Policies.`,Name:`ORCA.118.1: Domains are not being allow listed in an unsafe manner in Anti-Spam Policies.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.118.1`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA118_1
@@ -14307,7 +14307,7 @@ Remove allow listing on domains.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Use Anti-Spam Policy Sender/Domain Allow lists](https://aka.ms/orca-antispam-docs-4)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:268,Id:`ORCA.118.2`,Title:`Domains are not being allow listed in an unsafe manner in Transport Rules.`,Name:`ORCA.118.2: Domains are not being allow listed in an unsafe manner in Transport Rules.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.118.2`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA118_2
@@ -14359,7 +14359,7 @@ Remove allow listed domains.
 
 #### Related Links
 
-* [Exchange admin center in Exchange Online](https://outlook.office365.com/ecp/) 
+* [Exchange admin center in Exchange Online](https://outlook.office365.com/ecp/)
 * [Using Exchange Transport Rules (ETRs) to allow specific senders](https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/create-safe-sender-lists-in-office-365#using-exchange-transport-rules-etrs-to-allow-specific-senders-recommended)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:269,Id:`ORCA.118.3`,Title:`Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies.`,Name:`ORCA.118.3: Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.118.3`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA118_3
@@ -14411,7 +14411,7 @@ Remove allow listing on domains belonging to your organisation.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Use Anti-Spam Policy Sender/Domain Allow lists](https://aka.ms/orca-antispam-docs-4)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:270,Id:`ORCA.118.4`,Title:`Your own domains are not being allow listed in an unsafe manner in Transport Rules.`,Name:`ORCA.118.4: Your own domains are not being allow listed in an unsafe manner in Transport Rules.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.118.4`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA118_4
@@ -14463,7 +14463,7 @@ Remove allow listing on domains belonging to your organisation.
 
 #### Related Links
 
-* [Exchange admin center in Exchange Online](https://outlook.office365.com/ecp/) 
+* [Exchange admin center in Exchange Online](https://outlook.office365.com/ecp/)
 * [Using Exchange Transport Rules (ETRs) to allow specific senders](https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/create-safe-sender-lists-in-office-365#using-exchange-transport-rules-etrs-to-allow-specific-senders-recommended)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:271,Id:`ORCA.119`,Title:`Similar Domains Safety Tips is enabled.`,Name:`ORCA.119: Similar Domains Safety Tips is enabled.`,HelpUrl:``,Severity:`Info`,Tag:[`ORCA`,`ORCA.119`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA119
@@ -14515,7 +14515,7 @@ Enable Similar Domains Safety Tips so that users can receive visible indication 
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:272,Id:`ORCA.120.1`,Title:`Zero Hour Autopurge Enabled for Phish.`,Name:`ORCA.120.1: Zero Hour Autopurge Enabled for Phish.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.120.1`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA120_phish
@@ -14567,8 +14567,8 @@ Enable Zero Hour Autopurge.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 * [Zero-hour auto purge - protection against spam and malware](https://aka.ms/orca-zha-docs-2)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:273,Id:`ORCA.120.2`,Title:`Zero Hour Autopurge Enabled for Malware.`,Name:`ORCA.120.2: Zero Hour Autopurge Enabled for Malware.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.120.2`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA120_malware
@@ -14620,7 +14620,7 @@ Enable Zero Hour Autopurge.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2) 
+* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:274,Id:`ORCA.120.3`,Title:`Zero Hour Autopurge Enabled for Spam.`,Name:`ORCA.120.3: Zero Hour Autopurge Enabled for Spam.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.120.3`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA120_spam
@@ -14672,8 +14672,8 @@ Enable Zero Hour Autopurge.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 * [Zero-hour auto purge - protection against spam and malware](https://aka.ms/orca-zha-docs-2)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:275,Id:`ORCA.121`,Title:`Supported filter policy action used.`,Name:`ORCA.121: Supported filter policy action used.`,HelpUrl:``,Severity:`Low`,Tag:[`ORCA`,`ORCA.121`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA121
@@ -14725,7 +14725,7 @@ Change filter policy action to support Zero Hour Auto Purge.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Zero-hour auto purge - protection against spam and malware](https://aka.ms/orca-zha-docs-2)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:276,Id:`ORCA.123`,Title:`Unusual Characters Safety Tips is enabled.`,Name:`ORCA.123: Unusual Characters Safety Tips is enabled.`,HelpUrl:``,Severity:`Info`,Tag:[`ORCA`,`ORCA.123`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA123
@@ -14777,7 +14777,7 @@ Enable Unusual Characters Safety Tips so that users can receive visible indicati
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:277,Id:`ORCA.124`,Title:`Safe attachments unknown malware response set to block messages.`,Name:`ORCA.124: Safe attachments unknown malware response set to block messages.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.124`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA124
@@ -14829,7 +14829,7 @@ Set Safe attachments unknown malware response to block messages.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:278,Id:`ORCA.139`,Title:`Spam action set to move message to junk mail folder or quarantine.`,Name:`ORCA.139: Spam action set to move message to junk mail folder or quarantine.`,HelpUrl:``,Severity:`Low`,Tag:[`ORCA`,`ORCA.139`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA139
@@ -14881,7 +14881,7 @@ Change Spam action to move message to Junk Email Folder.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:279,Id:`ORCA.140`,Title:`High Confidence Spam action set to Quarantine message.`,Name:`ORCA.140: High Confidence Spam action set to Quarantine message.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.140`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA140
@@ -14933,7 +14933,7 @@ Change High Confidence Spam action to Quarantine message.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:280,Id:`ORCA.141`,Title:`Bulk action set to Move message to Junk Email Folder.`,Name:`ORCA.141: Bulk action set to Move message to Junk Email Folder.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.141`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA141
@@ -14985,7 +14985,7 @@ Change bulk action to move messages to junk mail folder.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:281,Id:`ORCA.142`,Title:`Phish action set to Quarantine message.`,Name:`ORCA.142: Phish action set to Quarantine message.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.142`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA142
@@ -15037,7 +15037,7 @@ Change Phish action to Quarantine message.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:282,Id:`ORCA.143`,Title:`Safety Tips are enabled.`,Name:`ORCA.143: Safety Tips are enabled.`,HelpUrl:``,Severity:`Info`,Tag:[`ORCA`,`ORCA.143`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA143
@@ -15089,7 +15089,7 @@ Safety Tips should be enabled.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-antispam-docs-8)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:283,Id:`ORCA.156`,Title:`Safe Links Policies are tracking when user clicks on safe links.`,Name:`ORCA.156: Safe Links Policies are tracking when user clicks on safe links.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.156`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA156
@@ -15141,7 +15141,7 @@ Enable tracking of user clicks in Safe Links Policies.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:284,Id:`ORCA.158`,Title:`Safe Attachments is enabled for SharePoint and Teams.`,Name:`ORCA.158: Safe Attachments is enabled for SharePoint and Teams.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.158`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA158
@@ -15193,7 +15193,7 @@ Enable Safe Attachments for SharePoint and Teams.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:285,Id:`ORCA.179`,Title:`Safe Links is enabled intra-organization.`,Name:`ORCA.179: Safe Links is enabled intra-organization.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.179`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA179
@@ -15245,7 +15245,7 @@ Enable Safe Links between internal users.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:286,Id:`ORCA.180`,Title:`Anti-phishing policy exists and EnableSpoofIntelligence is true.`,Name:`ORCA.180: Anti-phishing policy exists and EnableSpoofIntelligence is true.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.180`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA180
@@ -15297,8 +15297,8 @@ Enable anti-spoofing protection in Anti-phishing policy.
 
 #### Related Links
 
-* [Anti-spoofing protection in Office 365](https:/aka.ms/orca-atpp-docs-3) 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Anti-spoofing protection in Office 365](https:/aka.ms/orca-atpp-docs-3)
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:287,Id:`ORCA.189`,Title:`Safe Attachments is not bypassed.`,Name:`ORCA.189: Safe Attachments is not bypassed.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.189`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA189
@@ -15452,8 +15452,8 @@ Enable common attachment type filter.
 
 #### Related Links
 
-* [Configure anti-malware policies](https://aka.ms/orca-mfp-docs-1) 
-* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2) 
+* [Configure anti-malware policies](https://aka.ms/orca-mfp-docs-1)
+* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-6)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:290,Id:`ORCA.220`,Title:`Advanced Phish filter Threshold level is adequate.`,Name:`ORCA.220: Advanced Phish filter Threshold level is adequate.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.220`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA220
@@ -15505,7 +15505,7 @@ Set Advanced Phish filter Threshold to 3 or 4.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:291,Id:`ORCA.221`,Title:`Mailbox intelligence is enabled in anti-phishing policies.`,Name:`ORCA.221: Mailbox intelligence is enabled in anti-phishing policies.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.221`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA221
@@ -15557,7 +15557,7 @@ Enable mailbox intelligence in anti-phishing policies.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:292,Id:`ORCA.222`,Title:`Domain Impersonation action is set to move to Quarantine.`,Name:`ORCA.222: Domain Impersonation action is set to move to Quarantine.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.222`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA222
@@ -15609,7 +15609,7 @@ Configure domain impersonation action to Quarantine.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:293,Id:`ORCA.223`,Title:`User impersonation action is set to move to Quarantine.`,Name:`ORCA.223: User impersonation action is set to move to Quarantine.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.223`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA223
@@ -15661,7 +15661,7 @@ Configure user impersonation action to Quarantine.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:294,Id:`ORCA.224`,Title:`Similar Users Safety Tips is enabled.`,Name:`ORCA.224: Similar Users Safety Tips is enabled.`,HelpUrl:``,Severity:`Info`,Tag:[`ORCA`,`ORCA.224`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA224
@@ -15713,7 +15713,7 @@ Enable Similar Users Safety Tips so that users can receive visible indication on
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:295,Id:`ORCA.225`,Title:`Safe Documents is enabled for Office clients.`,Name:`ORCA.225: Safe Documents is enabled for Office clients.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.225`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA225
@@ -15765,8 +15765,8 @@ Enable Safe Documents for Office clients.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 * [Safe Documents in Microsoft 365 E5](https://aka.ms/orca-atpp-docs-1)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:296,Id:`ORCA.226`,Title:`Each domain has a Safe Link policy applied to it.`,Name:`ORCA.226: Each domain has a Safe Link policy applied to it.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.226`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA226
@@ -15818,8 +15818,8 @@ Apply a Safe Links policy to every domain.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
-* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
+* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:297,Id:`ORCA.227`,Title:`Each domain has a Safe Attachments policy applied to it.`,Name:`ORCA.227: Each domain has a Safe Attachments policy applied to it.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.227`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA227
@@ -15871,8 +15871,8 @@ Apply a Safe Attachments policy to every domain.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
-* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4) 
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)
+* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:298,Id:`ORCA.228`,Title:`No trusted senders in Anti-phishing policy.`,Name:`ORCA.228: No trusted senders in Anti-phishing policy.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.228`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA228
@@ -15924,7 +15924,7 @@ Remove allow listing on senders in Anti-phishing policy.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:299,Id:`ORCA.229`,Title:`No trusted domains in Anti-phishing policy.`,Name:`ORCA.229: No trusted domains in Anti-phishing policy.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.229`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA229
@@ -15976,7 +15976,7 @@ Remove allow listing on domains in Anti-phishing policy.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:300,Id:`ORCA.230`,Title:`Each domain has a Anti-phishing policy applied to it, or the default policy is being used.`,Name:`ORCA.230: Each domain has a Anti-phishing policy applied to it, or the default policy is being used.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.230`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA230
@@ -16028,9 +16028,9 @@ Check your anti-phishing policies for duplicate rules. Some policies and setting
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Antiphishing policies](https://security.microsoft.com/antiphishing) 
-* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Antiphishing policies](https://security.microsoft.com/antiphishing)
+* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 * [Setting up antiphishing policies](https://aka.ms/orca-atpp-docs-2)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:301,Id:`ORCA.231`,Title:`Each domain has a anti-spam policy applied to it, or the default policy is being used.`,Name:`ORCA.231: Each domain has a anti-spam policy applied to it, or the default policy is being used.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.231`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA231
@@ -16082,7 +16082,7 @@ Check your anti-spam policies for duplicate rules. Some policies and settings ma
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam policies](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam policies](https://security.microsoft.com/antispam)
 * [Order and precedence of email protection](https://aka.ms/orca-antispam-docs-5)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:302,Id:`ORCA.232`,Title:`Each domain has a malware filter policy applied to it, or the default policy is being used.`,Name:`ORCA.232: Each domain has a malware filter policy applied to it, or the default policy is being used.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.232`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA232
@@ -16134,7 +16134,7 @@ Check your malware filter policies for duplicate rules. Some policies and settin
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-malware policies](https://security.microsoft.com/antimalwarev2) 
+* [Microsoft 365 Defender Portal - Anti-malware policies](https://security.microsoft.com/antimalwarev2)
 * [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:303,Id:`ORCA.233`,Title:`Domains are pointed directly at EOP or enhanced filtering is used.`,Name:`ORCA.233: Domains are pointed directly at EOP or enhanced filtering is used.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.233`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA233
@@ -16186,7 +16186,7 @@ Send mail directly to EOP or configure enhanced filtering.
 
 #### Related Links
 
-* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1) 
+* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1)
 * [Microsoft 365 Defender Portal - Enhanced Filtering](https://aka.ms/orca-connectors-action-skiplisting)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:304,Id:`ORCA.233.1`,Title:`Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors.`,Name:`ORCA.233.1: Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.233.1`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA233_1
@@ -16238,7 +16238,7 @@ Configure enhanced filtering on connectors when email path is not direct to EOP.
 
 #### Related Links
 
-* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1) 
+* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1)
 * [Microsoft 365 Defender Portal - Enhanced Filtering](https://aka.ms/orca-connectors-action-skiplisting)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:305,Id:`ORCA.234`,Title:`Click through is disabled for Safe Documents.`,Name:`ORCA.234: Click through is disabled for Safe Documents.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.234`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA234
@@ -16290,8 +16290,8 @@ Do not let usres click through Protected View if Safe Documents identified the f
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 * [Safe Documents in Microsoft 365 E5](https://aka.ms/orca-atpp-docs-1)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:306,Id:`ORCA.235`,Title:`SPF records is set up for all your custom domains.`,Name:`ORCA.235: SPF records is set up for all your custom domains.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.235`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA235
@@ -16394,7 +16394,7 @@ Enable Safe Links policy action for unknown potentially malicious URLs in emails
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:308,Id:`ORCA.237`,Title:`Safe Links is enabled for teams messages.`,Name:`ORCA.237: Safe Links is enabled for teams messages.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.237`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA237
@@ -16446,7 +16446,7 @@ Enable Safe Links policy action for unknown potentially malicious URLs in teams 
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:309,Id:`ORCA.238`,Title:`Safe Links is enabled for office documents.`,Name:`ORCA.238: Safe Links is enabled for office documents.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.238`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA238
@@ -16498,7 +16498,7 @@ Enable Safe Links policy action for unknown potentially malicious URLs in office
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:310,Id:`ORCA.239`,Title:`No exclusions for the built-in protection policies.`,Name:`ORCA.239: No exclusions for the built-in protection policies.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.239`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA239
@@ -16550,7 +16550,7 @@ Remove exclusions from the built-in protection policies.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:311,Id:`ORCA.240`,Title:`Outlook is configured to display external tags for external emails.`,Name:`ORCA.240: Outlook is configured to display external tags for external emails.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.240`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA240
@@ -16602,7 +16602,7 @@ Configure external tags to highlight emails which are sent from external.
 
 #### Related Links
 
-* [Native external in Outlook](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098) 
+* [Native external in Outlook](https://techcommunity.microsoft.com/t5/exchange-team-blog/native-external-sender-callouts-on-email-in-outlook/ba-p/2250098)
 * [Set External in Outlook (Set-ExternalInOutlook)](https://learn.microsoft.com/en-us/powershell/module/exchange/set-externalinoutlook?view=exchange-ps)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:312,Id:`ORCA.241`,Title:`Anti-phishing policy exists and EnableFirstContactSafetyTips is true.`,Name:`ORCA.241: Anti-phishing policy exists and EnableFirstContactSafetyTips is true.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.241`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA241
@@ -16654,7 +16654,7 @@ Enable first contact safety tips to highlight suspicious messages to users.
 
 #### Related Links
 
-* [First Contact Safety Tip](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/anti-phishing-policies-about?view=o365-worldwide#first-contact-safety-tip) 
+* [First Contact Safety Tip](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/anti-phishing-policies-about?view=o365-worldwide#first-contact-safety-tip)
 * [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:313,Id:`ORCA.242`,Title:`Important protection alerts responsible for AIR activities are enabled.`,Name:`ORCA.242: Important protection alerts responsible for AIR activities are enabled.`,HelpUrl:``,Severity:`High`,Tag:[`ORCA`,`ORCA.242`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA242
@@ -16757,7 +16757,7 @@ Enable Authenticated Receive Chain (ARC) trusted sealers for domains not pointed
 
 #### Related Links
 
-* [Configuring trusted ARC sealers](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/email-authentication-arc-configure?view=o365-worldwide) 
+* [Configuring trusted ARC sealers](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/email-authentication-arc-configure?view=o365-worldwide)
 * [Improving 'Defense in Depth' with Trusted ARC Sealers for Microsoft Defender for Office 365](https://techcommunity.microsoft.com/t5/microsoft-defender-for-office/improving-defense-in-depth-with-trusted-arc-sealers-for/ba-p/3440707)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}},{Index:315,Id:`ORCA.244`,Title:`Policies are configured to honor sending domains DMARC.`,Name:`ORCA.244: Policies are configured to honor sending domains DMARC.`,HelpUrl:``,Severity:`Medium`,Tag:[`ORCA`,`ORCA.244`,`EXO`,`Security`],Result:`Skipped`,ScriptBlock:`
         $result = Test-ORCA244
@@ -16802,14 +16802,14 @@ at Run-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.p
 at Invoke-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2500
 at Invoke-Pester<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 5046
 at Invoke-Maester, /Users/merill/GitHub/maester/powershell/public/Invoke-Maester.ps1: line 448
-at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`ORCA`,Duration:`00:00:00`,ResultDetail:{TestTitle:`ORCA.244: Policies are configured to honor sending domains DMARC.`,SkippedReason:`Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,TestDescription:`Domain-based Message Authentication, Reporting & Conformance (DMARC) is a standard that helps prevent spoofing by verifying the senders identity. If an email fails DMARC validation, it often means that the sender is not who they claim to be, and the email could be fraudulent. The owner of the sending domain controls the DMARC policy for their domain, and provides recommendations to receivers on what action should be performed when DMARC fails. When the Honor DMARC Policy setting is set to False, the organisations policy is not considered. It is recommended to honor this policy. 
+at <ScriptBlock>, <No file>: line 1`,PipelineIterationInfo:[]}],Block:`ORCA`,Duration:`00:00:00`,ResultDetail:{TestTitle:`ORCA.244: Policies are configured to honor sending domains DMARC.`,SkippedReason:`Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,TestDescription:`Domain-based Message Authentication, Reporting & Conformance (DMARC) is a standard that helps prevent spoofing by verifying the senders identity. If an email fails DMARC validation, it often means that the sender is not who they claim to be, and the email could be fraudulent. The owner of the sending domain controls the DMARC policy for their domain, and provides recommendations to receivers on what action should be performed when DMARC fails. When the Honor DMARC Policy setting is set to False, the organisations policy is not considered. It is recommended to honor this policy.
 
 #### Remediation action
 Configure anti-phish policy to honor sending domains DMARC configuration.
 
 #### Related Links
 
-* [Announcing New DMARC Policy Handling Defaults for Enhanced Email Security](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-new-dmarc-policy-handling-defaults-for-enhanced-email/ba-p/3878883) 
+* [Announcing New DMARC Policy Handling Defaults for Enhanced Email Security](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-new-dmarc-policy-handling-defaults-for-enhanced-email/ba-p/3878883)
 * [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
 `,TestResult:`Skipped. Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)`,Severity:``,Service:null,TestSkipped:`NotConnectedExchange`}}],Blocks:[{Name:`Identity Protection`,Result:`Investigate`,FailedCount:0,PassedCount:0,ErrorCount:0,InvestigateCount:2,SkippedCount:0,NotRunCount:0,TotalCount:2,Tag:[`Identity`,`Investigate`]},{Name:`Applications`,Result:`Investigate`,FailedCount:0,PassedCount:0,ErrorCount:0,InvestigateCount:1,SkippedCount:0,NotRunCount:0,TotalCount:1,Tag:[`Applications`,`Investigate`]},{Name:`Exposure Management`,Result:`Passed`,FailedCount:0,PassedCount:1,ErrorCount:0,InvestigateCount:0,SkippedCount:0,NotRunCount:9,TotalCount:10,Tag:[`Entra`,`Graph`,`XSPM`]},{Name:`EIDSCA`,Result:`Passed`,FailedCount:11,PassedCount:27,ErrorCount:0,InvestigateCount:0,SkippedCount:6,NotRunCount:0,TotalCount:44,Tag:[`EIDSCA`,`EIDSCA.AP01`]},{Name:`CISA`,Result:`Passed`,FailedCount:21,PassedCount:10,ErrorCount:0,InvestigateCount:0,SkippedCount:42,NotRunCount:0,TotalCount:73,Tag:[`MS.EXO`,`MS.EXO.12.1`,`CISA.MS.EXO.12.1`,`CISA`,`Security`]},{Name:`Custom Security Tests`,Result:`Passed`,FailedCount:0,PassedCount:1,ErrorCount:0,InvestigateCount:0,SkippedCount:0,NotRunCount:0,TotalCount:1,Tag:[`Custom`,`Device`]},{Name:`CIS`,Result:`Failed`,FailedCount:3,PassedCount:1,ErrorCount:0,InvestigateCount:0,SkippedCount:21,NotRunCount:0,TotalCount:25,Tag:[`CIS.M365.1.2.1`,`L2`,`CIS E3 Level 2`,`CIS E3`,`CIS`,`CIS M365 v5.0.0`]},{Name:`Maester/Exchange`,Result:`Passed`,FailedCount:0,PassedCount:1,ErrorCount:0,InvestigateCount:0,SkippedCount:8,NotRunCount:0,TotalCount:9,Tag:[`Maester`,`Exchange`]},{Name:`AzureConfig`,Result:`Failed`,FailedCount:2,PassedCount:1,ErrorCount:0,SkippedCount:0,InvestigateCount:0,NotRunCount:0,TotalCount:3,Tag:[`Governance`,`Azure`]},{Name:`Maester/Teams`,Result:`Failed`,FailedCount:1,PassedCount:0,ErrorCount:0,SkippedCount:5,InvestigateCount:0,NotRunCount:0,TotalCount:6,Tag:[`Maester`,`Teams`,`MeetingPolicy`]},{Name:`Maester/Intune`,Result:`Failed`,FailedCount:2,PassedCount:0,ErrorCount:0,SkippedCount:0,InvestigateCount:0,NotRunCount:0,TotalCount:2,Tag:[`Maester`,`Intune`]},{Name:`Maester/Entra`,Result:`Passed`,FailedCount:30,PassedCount:31,ErrorCount:2,SkippedCount:1,InvestigateCount:10,NotRunCount:10,TotalCount:84,Tag:[`Maester`,`App`,`Security`]},{Name:`Defender for Identity health issues`,Result:`Passed`,FailedCount:0,PassedCount:1,ErrorCount:0,SkippedCount:0,InvestigateCount:0,NotRunCount:0,TotalCount:1,Tag:[`Maester`,`Defender`,`MDI`,`MT.1059`]},{Name:`ORCA`,Result:`Passed`,FailedCount:0,PassedCount:0,ErrorCount:0,SkippedCount:67,InvestigateCount:0,NotRunCount:0,TotalCount:67,Tag:[`ORCA`,`ORCA.100`,`EXO`,`Security`]}],OutputFiles:{OutputFolder:`./test-results`,OutputFolderFileName:`TestResults-2025-11-27-212901`,OutputHtmlFile:`./test-results/TestResults-2025-11-27-212901.html`,OutputMarkdownFile:`./test-results/TestResults-2025-11-27-212901.md`,OutputJsonFile:`./test-results/TestResults-2025-11-27-212901.json`,OutputCsvFile:null,OutputExcelFile:null},EndOfJson:`EndOfJson`};function z(e,t){var n={};for(var r in e)Object.prototype.hasOwnProperty.call(e,r)&&t.indexOf(r)<0&&(n[r]=e[r]);if(e!=null&&typeof Object.getOwnPropertySymbols==`function`)for(var i=0,r=Object.getOwnPropertySymbols(e);i<r.length;i++)t.indexOf(r[i])<0&&Object.prototype.propertyIsEnumerable.call(e,r[i])&&(n[r[i]]=e[r[i]]);return n}function Fs(e,t,n){if(n||arguments.length===2)for(var r=0,i=t.length,a;r<i;r++)(a||!(r in t))&&(a||=Array.prototype.slice.call(t,0,r),a[r]=t[r]);return e.concat(a||Array.prototype.slice.call(t))}var Is,B=o((()=>{Is=function(){return Is=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n],t)Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},Is.apply(this,arguments)}})),Ls=s(((e,t)=>{t.exports=Array.isArray})),Rs=s(((e,t)=>{t.exports=typeof global==`object`&&global&&global.Object===Object&&global})),zs=s(((e,t)=>{var n=Rs(),r=typeof self==`object`&&self&&self.Object===Object&&self;t.exports=n||r||Function(`return this`)()})),Bs=s(((e,t)=>{t.exports=zs().Symbol})),Vs=s(((e,t)=>{var n=Bs(),r=Object.prototype,i=r.hasOwnProperty,a=r.toString,o=n?n.toStringTag:void 0;function s(e){var t=i.call(e,o),n=e[o];try{e[o]=void 0;var r=!0}catch{}var s=a.call(e);return r&&(t?e[o]=n:delete e[o]),s}t.exports=s})),Hs=s(((e,t)=>{var n=Object.prototype.toString;function r(e){return n.call(e)}t.exports=r})),Us=s(((e,t)=>{var n=Bs(),r=Vs(),i=Hs(),a=`[object Null]`,o=`[object Undefined]`,s=n?n.toStringTag:void 0;function c(e){return e==null?e===void 0?o:a:s&&s in Object(e)?r(e):i(e)}t.exports=c})),Ws=s(((e,t)=>{function n(e){return typeof e==`object`&&!!e}t.exports=n})),Gs=s(((e,t)=>{var n=Us(),r=Ws(),i=`[object Symbol]`;function a(e){return typeof e==`symbol`||r(e)&&n(e)==i}t.exports=a})),Ks=s(((e,t)=>{var n=Ls(),r=Gs(),i=/\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,a=/^\w*$/;function o(e,t){if(n(e))return!1;var o=typeof e;return o==`number`||o==`symbol`||o==`boolean`||e==null||r(e)?!0:a.test(e)||!i.test(e)||t!=null&&e in Object(t)}t.exports=o})),qs=s(((e,t)=>{function n(e){var t=typeof e;return e!=null&&(t==`object`||t==`function`)}t.exports=n})),Js=s(((e,t)=>{var n=Us(),r=qs(),i=`[object AsyncFunction]`,a=`[object Function]`,o=`[object GeneratorFunction]`,s=`[object Proxy]`;function c(e){if(!r(e))return!1;var t=n(e);return t==a||t==o||t==i||t==s}t.exports=c})),Ys=s(((e,t)=>{t.exports=zs()[`__core-js_shared__`]})),Xs=s(((e,t)=>{var n=Ys(),r=function(){var e=/[^.]+$/.exec(n&&n.keys&&n.keys.IE_PROTO||``);return e?`Symbol(src)_1.`+e:``}();function i(e){return!!r&&r in e}t.exports=i})),Zs=s(((e,t)=>{var n=Function.prototype.toString;function r(e){if(e!=null){try{return n.call(e)}catch{}try{return e+``}catch{}}return``}t.exports=r})),Qs=s(((e,t)=>{var n=Js(),r=Xs(),i=qs(),a=Zs(),o=/[\\^$.*+?()[\]{}|]/g,s=/^\[object .+?Constructor\]$/,c=Function.prototype,l=Object.prototype,u=c.toString,d=l.hasOwnProperty,f=RegExp(`^`+u.call(d).replace(o,`\\$&`).replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,`$1.*?`)+`$`);function p(e){return!i(e)||r(e)?!1:(n(e)?f:s).test(a(e))}t.exports=p})),$s=s(((e,t)=>{function n(e,t){return e?.[t]}t.exports=n})),ec=s(((e,t)=>{var n=Qs(),r=$s();function i(e,t){var i=r(e,t);return n(i)?i:void 0}t.exports=i})),tc=s(((e,t)=>{t.exports=ec()(Object,`create`)})),nc=s(((e,t)=>{var n=tc();function r(){this.__data__=n?n(null):{},this.size=0}t.exports=r})),rc=s(((e,t)=>{function n(e){var t=this.has(e)&&delete this.__data__[e];return this.size-=+!!t,t}t.exports=n})),ic=s(((e,t)=>{var n=tc(),r=`__lodash_hash_undefined__`,i=Object.prototype.hasOwnProperty;function a(e){var t=this.__data__;if(n){var a=t[e];return a===r?void 0:a}return i.call(t,e)?t[e]:void 0}t.exports=a})),ac=s(((e,t)=>{var n=tc(),r=Object.prototype.hasOwnProperty;function i(e){var t=this.__data__;return n?t[e]!==void 0:r.call(t,e)}t.exports=i})),oc=s(((e,t)=>{var n=tc(),r=`__lodash_hash_undefined__`;function i(e,t){var i=this.__data__;return this.size+=+!this.has(e),i[e]=n&&t===void 0?r:t,this}t.exports=i})),sc=s(((e,t)=>{var n=nc(),r=rc(),i=ic(),a=ac(),o=oc();function s(e){var t=-1,n=e==null?0:e.length;for(this.clear();++t<n;){var r=e[t];this.set(r[0],r[1])}}s.prototype.clear=n,s.prototype.delete=r,s.prototype.get=i,s.prototype.has=a,s.prototype.set=o,t.exports=s})),cc=s(((e,t)=>{function n(){this.__data__=[],this.size=0}t.exports=n})),lc=s(((e,t)=>{function n(e,t){return e===t||e!==e&&t!==t}t.exports=n})),uc=s(((e,t)=>{var n=lc();function r(e,t){for(var r=e.length;r--;)if(n(e[r][0],t))return r;return-1}t.exports=r})),dc=s(((e,t)=>{var n=uc(),r=Array.prototype.splice;function i(e){var t=this.__data__,i=n(t,e);return i<0?!1:(i==t.length-1?t.pop():r.call(t,i,1),--this.size,!0)}t.exports=i})),iee=s(((e,t)=>{var n=uc();function r(e){var t=this.__data__,r=n(t,e);return r<0?void 0:t[r][1]}t.exports=r})),fc=s(((e,t)=>{var n=uc();function r(e){return n(this.__data__,e)>-1}t.exports=r})),pc=s(((e,t)=>{var n=uc();function r(e,t){var r=this.__data__,i=n(r,e);return i<0?(++this.size,r.push([e,t])):r[i][1]=t,this}t.exports=r})),mc=s(((e,t)=>{var n=cc(),r=dc(),i=iee(),a=fc(),o=pc();function s(e){var t=-1,n=e==null?0:e.length;for(this.clear();++t<n;){var r=e[t];this.set(r[0],r[1])}}s.prototype.clear=n,s.prototype.delete=r,s.prototype.get=i,s.prototype.has=a,s.prototype.set=o,t.exports=s})),hc=s(((e,t)=>{t.exports=ec()(zs(),`Map`)})),gc=s(((e,t)=>{var n=sc(),r=mc(),i=hc();function a(){this.size=0,this.__data__={hash:new n,map:new(i||r),string:new n}}t.exports=a})),_c=s(((e,t)=>{function n(e){var t=typeof e;return t==`string`||t==`number`||t==`symbol`||t==`boolean`?e!==`__proto__`:e===null}t.exports=n})),vc=s(((e,t)=>{var n=_c();function r(e,t){var r=e.__data__;return n(t)?r[typeof t==`string`?`string`:`hash`]:r.map}t.exports=r})),yc=s(((e,t)=>{var n=vc();function r(e){var t=n(this,e).delete(e);return this.size-=+!!t,t}t.exports=r})),bc=s(((e,t)=>{var n=vc();function r(e){return n(this,e).get(e)}t.exports=r})),xc=s(((e,t)=>{var n=vc();function r(e){return n(this,e).has(e)}t.exports=r})),Sc=s(((e,t)=>{var n=vc();function r(e,t){var r=n(this,e),i=r.size;return r.set(e,t),this.size+=r.size==i?0:1,this}t.exports=r})),Cc=s(((e,t)=>{var n=gc(),r=yc(),i=bc(),a=xc(),o=Sc();function s(e){var t=-1,n=e==null?0:e.length;for(this.clear();++t<n;){var r=e[t];this.set(r[0],r[1])}}s.prototype.clear=n,s.prototype.delete=r,s.prototype.get=i,s.prototype.has=a,s.prototype.set=o,t.exports=s})),wc=s(((e,t)=>{var n=Cc(),r=`Expected a function`;function i(e,t){if(typeof e!=`function`||t!=null&&typeof t!=`function`)throw TypeError(r);var a=function(){var n=arguments,r=t?t.apply(this,n):n[0],i=a.cache;if(i.has(r))return i.get(r);var o=e.apply(this,n);return a.cache=i.set(r,o)||i,o};return a.cache=new(i.Cache||n),a}i.Cache=n,t.exports=i})),Tc=s(((e,t)=>{var n=wc(),r=500;function i(e){var t=n(e,function(e){return i.size===r&&i.clear(),e}),i=t.cache;return t}t.exports=i})),Ec=s(((e,t)=>{var n=Tc(),r=/[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g,i=/\\(\\)?/g;t.exports=n(function(e){var t=[];return e.charCodeAt(0)===46&&t.push(``),e.replace(r,function(e,n,r,a){t.push(r?a.replace(i,`$1`):n||e)}),t})})),Dc=s(((e,t)=>{function n(e,t){for(var n=-1,r=e==null?0:e.length,i=Array(r);++n<r;)i[n]=t(e[n],n,e);return i}t.exports=n})),Oc=s(((e,t)=>{var n=Bs(),r=Dc(),i=Ls(),a=Gs(),o=1/0,s=n?n.prototype:void 0,c=s?s.toString:void 0;function l(e){if(typeof e==`string`)return e;if(i(e))return r(e,l)+``;if(a(e))return c?c.call(e):``;var t=e+``;return t==`0`&&1/e==-o?`-0`:t}t.exports=l})),kc=s(((e,t)=>{var n=Oc();function r(e){return e==null?``:n(e)}t.exports=r})),Ac=s(((e,t)=>{var n=Ls(),r=Ks(),i=Ec(),a=kc();function o(e,t){return n(e)?e:r(e,t)?[e]:i(a(e))}t.exports=o})),jc=s(((e,t)=>{var n=Gs(),r=1/0;function i(e){if(typeof e==`string`||n(e))return e;var t=e+``;return t==`0`&&1/e==-r?`-0`:t}t.exports=i})),Mc=s(((e,t)=>{var n=Ac(),r=jc();function i(e,t){t=n(t,e);for(var i=0,a=t.length;e!=null&&i<a;)e=e[r(t[i++])];return i&&i==a?e:void 0}t.exports=i})),Nc=s(((e,t)=>{var n=Mc();function r(e,t,r){var i=e==null?void 0:n(e,t);return i===void 0?r:i}t.exports=r})),Pc=s(((e,t)=>{function n(e){return e==null}t.exports=n})),Fc=s(((e,t)=>{var n=Us(),r=Ls(),i=Ws(),a=`[object String]`;function o(e){return typeof e==`string`||!r(e)&&i(e)&&n(e)==a}t.exports=o})),Ic=s((e=>{var t=Symbol.for(`react.element`),n=Symbol.for(`react.portal`),r=Symbol.for(`react.fragment`),i=Symbol.for(`react.strict_mode`),a=Symbol.for(`react.profiler`),o=Symbol.for(`react.provider`),s=Symbol.for(`react.context`),c=Symbol.for(`react.server_context`),l=Symbol.for(`react.forward_ref`),u=Symbol.for(`react.suspense`),d=Symbol.for(`react.suspense_list`),f=Symbol.for(`react.memo`),p=Symbol.for(`react.lazy`);function m(e){if(typeof e==`object`&&e){var m=e.$$typeof;switch(m){case t:switch(e=e.type,e){case r:case a:case i:case u:case d:return e;default:switch(e&&=e.$$typeof,e){case c:case s:case l:case p:case f:case o:return e;default:return m}}case n:return m}}}e.isFragment=function(e){return m(e)===r}})),aee=s(((e,t)=>{t.exports=Ic()})),Lc=s(((e,t)=>{var n=Us(),r=Ws(),i=`[object Number]`;function a(e){return typeof e==`number`||r(e)&&n(e)==i}t.exports=a})),Rc=s(((e,t)=>{var n=Lc();function r(e){return n(e)&&e!=+e}t.exports=r}));function zc(e,t,n){return!e||!e.length?null:e.find(function(e){return e&&(typeof t==`function`?t(e):(0,Hc.default)(e,t))===n})}var Bc,Vc,Hc,Uc,Wc,Gc,Kc,V,qc,Jc,Yc,Xc,Zc,Qc,$c,el,tl,nl,rl=o((()=>{Bc=u(Fc()),Vc=u(Rc()),Hc=u(Nc()),Uc=u(Lc()),Wc=u(Pc()),Gc=function(e){return e===0?0:e>0?1:-1},Kc=function(e){return(0,Bc.default)(e)&&e.indexOf(`%`)===e.length-1},V=function(e){return(0,Uc.default)(e)&&!(0,Vc.default)(e)},qc=function(e){return(0,Wc.default)(e)},Jc=function(e){return V(e)||(0,Bc.default)(e)},Yc=0,Xc=function(e){var t=++Yc;return`${e||``}${t}`},Zc=function(e,t){var n=arguments.length>2&&arguments[2]!==void 0?arguments[2]:0,r=arguments.length>3&&arguments[3]!==void 0?arguments[3]:!1;if(!V(e)&&!(0,Bc.default)(e))return n;var i;if(Kc(e)){var a=e.indexOf(`%`);i=t*parseFloat(e.slice(0,a))/100}else i=+e;return(0,Vc.default)(i)&&(i=n),r&&i>t&&(i=t),i},Qc=function(e){if(!e)return null;var t=Object.keys(e);return t&&t.length?e[t[0]]:null},$c=function(e){if(!Array.isArray(e))return!1;for(var t=e.length,n={},r=0;r<t;r++)if(!n[e[r]])n[e[r]]=!0;else return!0;return!1},el=function(e,t){return V(e)&&V(t)?function(n){return e+n*(t-e)}:function(){return t}},tl=function(e){if(!e||!e.length)return null;for(var t=e.length,n=0,r=0,i=0,a=0,o=1/0,s=-1/0,c=0,l=0,u=0;u<t;u++)c=e[u].cx||0,l=e[u].cy||0,n+=c,r+=l,i+=c*l,a+=c*c,o=Math.min(o,c),s=Math.max(s,c);var d=t*a===n*n?0:(t*i-n*r)/(t*a-n*n);return{xmin:o,xmax:s,a:d,b:(r-d*n)/t}},nl=function(e,t){return V(e)&&V(t)?e-t:(0,Bc.default)(e)&&(0,Bc.default)(t)?e.localeCompare(t):e instanceof Date&&t instanceof Date?e.getTime()-t.getTime():String(e).localeCompare(String(t))}}));function il(e,t){for(var n in e)if({}.hasOwnProperty.call(e,n)&&(!{}.hasOwnProperty.call(t,n)||e[n]!==t[n]))return!1;for(var r in t)if({}.hasOwnProperty.call(t,r)&&!{}.hasOwnProperty.call(e,r))return!1;return!0}var al=o((()=>{}));function ol(e){"@babel/helpers - typeof";return ol=typeof Symbol==`function`&&typeof Symbol.iterator==`symbol`?function(e){return typeof e}:function(e){return e&&typeof Symbol==`function`&&e.constructor===Symbol&&e!==Symbol.prototype?`symbol`:typeof e},ol(e)}var sl,cl,ll,ul,dl,fl,pl,ml,hl,gl,_l=o((()=>{sl=u(f()),cl=u(qs()),ll=[`viewBox`,`children`],ul=`aria-activedescendant.aria-atomic.aria-autocomplete.aria-busy.aria-checked.aria-colcount.aria-colindex.aria-colspan.aria-controls.aria-current.aria-describedby.aria-details.aria-disabled.aria-errormessage.aria-expanded.aria-flowto.aria-haspopup.aria-hidden.aria-invalid.aria-keyshortcuts.aria-label.aria-labelledby.aria-level.aria-live.aria-modal.aria-multiline.aria-multiselectable.aria-orientation.aria-owns.aria-placeholder.aria-posinset.aria-pressed.aria-readonly.aria-relevant.aria-required.aria-roledescription.aria-rowcount.aria-rowindex.aria-rowspan.aria-selected.aria-setsize.aria-sort.aria-valuemax.aria-valuemin.aria-valuenow.aria-valuetext.className.color.height.id.lang.max.media.method.min.name.style.target.width.role.tabIndex.accentHeight.accumulate.additive.alignmentBaseline.allowReorder.alphabetic.amplitude.arabicForm.ascent.attributeName.attributeType.autoReverse.azimuth.baseFrequency.baselineShift.baseProfile.bbox.begin.bias.by.calcMode.capHeight.clip.clipPath.clipPathUnits.clipRule.colorInterpolation.colorInterpolationFilters.colorProfile.colorRendering.contentScriptType.contentStyleType.cursor.cx.cy.d.decelerate.descent.diffuseConstant.direction.display.divisor.dominantBaseline.dur.dx.dy.edgeMode.elevation.enableBackground.end.exponent.externalResourcesRequired.fill.fillOpacity.fillRule.filter.filterRes.filterUnits.floodColor.floodOpacity.focusable.fontFamily.fontSize.fontSizeAdjust.fontStretch.fontStyle.fontVariant.fontWeight.format.from.fx.fy.g1.g2.glyphName.glyphOrientationHorizontal.glyphOrientationVertical.glyphRef.gradientTransform.gradientUnits.hanging.horizAdvX.horizOriginX.href.ideographic.imageRendering.in2.in.intercept.k1.k2.k3.k4.k.kernelMatrix.kernelUnitLength.kerning.keyPoints.keySplines.keyTimes.lengthAdjust.letterSpacing.lightingColor.limitingConeAngle.local.markerEnd.markerHeight.markerMid.markerStart.markerUnits.markerWidth.mask.maskContentUnits.maskUnits.mathematical.mode.numOctaves.offset.opacity.operator.order.orient.orientation.origin.overflow.overlinePosition.overlineThickness.paintOrder.panose1.pathLength.patternContentUnits.patternTransform.patternUnits.pointerEvents.pointsAtX.pointsAtY.pointsAtZ.preserveAlpha.preserveAspectRatio.primitiveUnits.r.radius.refX.refY.renderingIntent.repeatCount.repeatDur.requiredExtensions.requiredFeatures.restart.result.rotate.rx.ry.seed.shapeRendering.slope.spacing.specularConstant.specularExponent.speed.spreadMethod.startOffset.stdDeviation.stemh.stemv.stitchTiles.stopColor.stopOpacity.strikethroughPosition.strikethroughThickness.string.stroke.strokeDasharray.strokeDashoffset.strokeLinecap.strokeLinejoin.strokeMiterlimit.strokeOpacity.strokeWidth.surfaceScale.systemLanguage.tableValues.targetX.targetY.textAnchor.textDecoration.textLength.textRendering.to.transform.u1.u2.underlinePosition.underlineThickness.unicode.unicodeBidi.unicodeRange.unitsPerEm.vAlphabetic.values.vectorEffect.version.vertAdvY.vertOriginX.vertOriginY.vHanging.vIdeographic.viewTarget.visibility.vMathematical.widths.wordSpacing.writingMode.x1.x2.x.xChannelSelector.xHeight.xlinkActuate.xlinkArcrole.xlinkHref.xlinkRole.xlinkShow.xlinkTitle.xlinkType.xmlBase.xmlLang.xmlns.xmlnsXlink.xmlSpace.y1.y2.y.yChannelSelector.z.zoomAndPan.ref.key.angle`.split(`.`),dl=[`points`,`pathLength`],fl={svg:ll,polygon:dl,polyline:dl},pl=`dangerouslySetInnerHTML.onCopy.onCopyCapture.onCut.onCutCapture.onPaste.onPasteCapture.onCompositionEnd.onCompositionEndCapture.onCompositionStart.onCompositionStartCapture.onCompositionUpdate.onCompositionUpdateCapture.onFocus.onFocusCapture.onBlur.onBlurCapture.onChange.onChangeCapture.onBeforeInput.onBeforeInputCapture.onInput.onInputCapture.onReset.onResetCapture.onSubmit.onSubmitCapture.onInvalid.onInvalidCapture.onLoad.onLoadCapture.onError.onErrorCapture.onKeyDown.onKeyDownCapture.onKeyPress.onKeyPressCapture.onKeyUp.onKeyUpCapture.onAbort.onAbortCapture.onCanPlay.onCanPlayCapture.onCanPlayThrough.onCanPlayThroughCapture.onDurationChange.onDurationChangeCapture.onEmptied.onEmptiedCapture.onEncrypted.onEncryptedCapture.onEnded.onEndedCapture.onLoadedData.onLoadedDataCapture.onLoadedMetadata.onLoadedMetadataCapture.onLoadStart.onLoadStartCapture.onPause.onPauseCapture.onPlay.onPlayCapture.onPlaying.onPlayingCapture.onProgress.onProgressCapture.onRateChange.onRateChangeCapture.onSeeked.onSeekedCapture.onSeeking.onSeekingCapture.onStalled.onStalledCapture.onSuspend.onSuspendCapture.onTimeUpdate.onTimeUpdateCapture.onVolumeChange.onVolumeChangeCapture.onWaiting.onWaitingCapture.onAuxClick.onAuxClickCapture.onClick.onClickCapture.onContextMenu.onContextMenuCapture.onDoubleClick.onDoubleClickCapture.onDrag.onDragCapture.onDragEnd.onDragEndCapture.onDragEnter.onDragEnterCapture.onDragExit.onDragExitCapture.onDragLeave.onDragLeaveCapture.onDragOver.onDragOverCapture.onDragStart.onDragStartCapture.onDrop.onDropCapture.onMouseDown.onMouseDownCapture.onMouseEnter.onMouseLeave.onMouseMove.onMouseMoveCapture.onMouseOut.onMouseOutCapture.onMouseOver.onMouseOverCapture.onMouseUp.onMouseUpCapture.onSelect.onSelectCapture.onTouchCancel.onTouchCancelCapture.onTouchEnd.onTouchEndCapture.onTouchMove.onTouchMoveCapture.onTouchStart.onTouchStartCapture.onPointerDown.onPointerDownCapture.onPointerMove.onPointerMoveCapture.onPointerUp.onPointerUpCapture.onPointerCancel.onPointerCancelCapture.onPointerEnter.onPointerEnterCapture.onPointerLeave.onPointerLeaveCapture.onPointerOver.onPointerOverCapture.onPointerOut.onPointerOutCapture.onGotPointerCapture.onGotPointerCaptureCapture.onLostPointerCapture.onLostPointerCaptureCapture.onScroll.onScrollCapture.onWheel.onWheelCapture.onAnimationStart.onAnimationStartCapture.onAnimationEnd.onAnimationEndCapture.onAnimationIteration.onAnimationIterationCapture.onTransitionEnd.onTransitionEndCapture`.split(`.`),ml=function(e,t){if(!e||typeof e==`function`||typeof e==`boolean`)return null;var n=e;if((0,sl.isValidElement)(e)&&(n=e.props),!(0,cl.default)(n))return null;var r={};return Object.keys(n).forEach(function(e){pl.includes(e)&&(r[e]=t||function(t){return n[e](n,t)})}),r},hl=function(e,t,n){return function(r){return e(t,n,r),null}},gl=function(e,t,n){if(!(0,cl.default)(e)||ol(e)!==`object`)return null;var r=null;return Object.keys(e).forEach(function(i){var a=e[i];pl.includes(i)&&typeof a==`function`&&(r||={},r[i]=hl(a,t,n))}),r}}));function vl(e,t){if(e==null)return{};var n=yl(e,t),r,i;if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(i=0;i<a.length;i++)r=a[i],!(t.indexOf(r)>=0)&&Object.prototype.propertyIsEnumerable.call(e,r)&&(n[r]=e[r])}return n}function yl(e,t){if(e==null)return{};var n={};for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){if(t.indexOf(r)>=0)continue;n[r]=e[r]}return n}function bl(e){"@babel/helpers - typeof";return bl=typeof Symbol==`function`&&typeof Symbol.iterator==`symbol`?function(e){return typeof e}:function(e){return e&&typeof Symbol==`function`&&e.constructor===Symbol&&e!==Symbol.prototype?`symbol`:typeof e},bl(e)}function xl(e,t){var n=[],r=[];return r=Array.isArray(t)?t.map(function(e){return Nl(e)}):[Nl(t)],Il(e).forEach(function(e){var t=(0,Cl.default)(e,`type.displayName`)||(0,Cl.default)(e,`type.name`);r.indexOf(t)!==-1&&n.push(e)}),n}function Sl(e,t){var n=xl(e,t);return n&&n[0]}var Cl,wl,Tl,El,Dl,Ol,kl,Al,jl,Ml,Nl,Pl,Fl,Il,Ll,Rl,zl,Bl,Vl,H,Hl,Ul,Wl,Gl,Kl,ql=o((()=>{Cl=u(Nc()),wl=u(Pc()),Tl=u(Fc()),El=u(Js()),Dl=u(qs()),Ol=u(f()),kl=aee(),rl(),al(),_l(),Al=[`children`],jl=[`children`],Ml={click:`onClick`,mousedown:`onMouseDown`,mouseup:`onMouseUp`,mouseover:`onMouseOver`,mousemove:`onMouseMove`,mouseout:`onMouseOut`,mouseenter:`onMouseEnter`,mouseleave:`onMouseLeave`,touchcancel:`onTouchCancel`,touchend:`onTouchEnd`,touchmove:`onTouchMove`,touchstart:`onTouchStart`,contextmenu:`onContextMenu`,dblclick:`onDoubleClick`},Nl=function(e){return typeof e==`string`?e:e?e.displayName||e.name||`Component`:``},Pl=null,Fl=null,Il=function e(t){if(t===Pl&&Array.isArray(Fl))return Fl;var n=[];return Ol.Children.forEach(t,function(t){(0,wl.default)(t)||((0,kl.isFragment)(t)?n=n.concat(e(t.props.children)):n.push(t))}),Fl=n,Pl=t,n},Ll=function(e){if(!e||!e.props)return!1;var t=e.props,n=t.width,r=t.height;return!(!V(n)||n<=0||!V(r)||r<=0)},Rl=`a.altGlyph.altGlyphDef.altGlyphItem.animate.animateColor.animateMotion.animateTransform.circle.clipPath.color-profile.cursor.defs.desc.ellipse.feBlend.feColormatrix.feComponentTransfer.feComposite.feConvolveMatrix.feDiffuseLighting.feDisplacementMap.feDistantLight.feFlood.feFuncA.feFuncB.feFuncG.feFuncR.feGaussianBlur.feImage.feMerge.feMergeNode.feMorphology.feOffset.fePointLight.feSpecularLighting.feSpotLight.feTile.feTurbulence.filter.font.font-face.font-face-format.font-face-name.font-face-url.foreignObject.g.glyph.glyphRef.hkern.image.line.lineGradient.marker.mask.metadata.missing-glyph.mpath.path.pattern.polygon.polyline.radialGradient.rect.script.set.stop.style.svg.switch.symbol.text.textPath.title.tref.tspan.use.view.vkern`.split(`.`),zl=function(e){return e&&e.type&&(0,Tl.default)(e.type)&&Rl.indexOf(e.type)>=0},Bl=function(e){return e&&bl(e)===`object`&&`clipDot`in e},Vl=function(e,t,n,r){var i=fl?.[r]??[];return t.startsWith(`data-`)||!(0,El.default)(e)&&(r&&i.includes(t)||ul.includes(t))||n&&pl.includes(t)},H=function(e,t,n){if(!e||typeof e==`function`||typeof e==`boolean`)return null;var r=e;if((0,Ol.isValidElement)(e)&&(r=e.props),!(0,Dl.default)(r))return null;var i={};return Object.keys(r).forEach(function(e){Vl(r?.[e],e,t,n)&&(i[e]=r[e])}),i},Hl=function e(t,n){if(t===n)return!0;var r=Ol.Children.count(t);if(r!==Ol.Children.count(n))return!1;if(r===0)return!0;if(r===1)return Ul(Array.isArray(t)?t[0]:t,Array.isArray(n)?n[0]:n);for(var i=0;i<r;i++){var a=t[i],o=n[i];if(Array.isArray(a)||Array.isArray(o)){if(!e(a,o))return!1}else if(!Ul(a,o))return!1}return!0},Ul=function(e,t){if((0,wl.default)(e)&&(0,wl.default)(t))return!0;if(!(0,wl.default)(e)&&!(0,wl.default)(t)){var n=e.props||{},r=n.children,i=vl(n,Al),a=t.props||{},o=a.children,s=vl(a,jl);return r&&o?il(i,s)&&Hl(r,o):!r&&!o?il(i,s):!1}return!1},Wl=function(e,t){var n=[],r={};return Il(e).forEach(function(e,i){if(zl(e))n.push(e);else if(e){var a=Nl(e.type),o=t[a]||{},s=o.handler,c=o.once;if(s&&(!c||!r[a])){var l=s(e,a,i);n.push(l),r[a]=!0}}}),n},Gl=function(e){var t=e&&e.type;return t&&Ml[t]?Ml[t]:null},Kl=function(e,t){return Il(t).indexOf(e)}}));function Jl(){return Jl=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Jl.apply(this,arguments)}function Yl(e,t){if(e==null)return{};var n=Xl(e,t),r,i;if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(i=0;i<a.length;i++)r=a[i],!(t.indexOf(r)>=0)&&Object.prototype.propertyIsEnumerable.call(e,r)&&(n[r]=e[r])}return n}function Xl(e,t){if(e==null)return{};var n={};for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){if(t.indexOf(r)>=0)continue;n[r]=e[r]}return n}function Zl(e){var t=e.children,n=e.width,r=e.height,i=e.viewBox,a=e.className,o=e.style,s=e.title,c=e.desc,l=Yl(e,$l),u=i||{width:n,height:r,x:0,y:0},d=qn(`recharts-surface`,a);return Ql.createElement(`svg`,Jl({},H(l,!0,`svg`),{className:d,width:n,height:r,style:o,viewBox:`${u.x} ${u.y} ${u.width} ${u.height}`}),Ql.createElement(`title`,null,s),Ql.createElement(`desc`,null,c),t)}var Ql,$l,eu=o((()=>{Ql=u(f()),Jn(),ql(),$l=[`children`,`width`,`height`,`viewBox`,`className`,`style`,`title`,`desc`]}));function tu(){return tu=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},tu.apply(this,arguments)}function nu(e,t){if(e==null)return{};var n=ru(e,t),r,i;if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(i=0;i<a.length;i++)r=a[i],!(t.indexOf(r)>=0)&&Object.prototype.propertyIsEnumerable.call(e,r)&&(n[r]=e[r])}return n}function ru(e,t){if(e==null)return{};var n={};for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){if(t.indexOf(r)>=0)continue;n[r]=e[r]}return n}var iu,au,ou,su=o((()=>{iu=u(f()),Jn(),ql(),au=[`children`,`className`],ou=iu.forwardRef(function(e,t){var n=e.children,r=e.className,i=nu(e,au),a=qn(`recharts-layer`,r);return iu.createElement(`g`,tu({className:a},H(i,!0),{ref:t}),n)})})),cu,lu=o((()=>{cu=function(e,t){}})),uu=s(((e,t)=>{function n(e,t,n){var r=-1,i=e.length;t<0&&(t=-t>i?0:i+t),n=n>i?i:n,n<0&&(n+=i),i=t>n?0:n-t>>>0,t>>>=0;for(var a=Array(i);++r<i;)a[r]=e[r+t];return a}t.exports=n})),du=s(((e,t)=>{var n=uu();function r(e,t,r){var i=e.length;return r=r===void 0?i:r,!t&&r>=i?e:n(e,t,r)}t.exports=r})),fu=s(((e,t)=>{var n=RegExp(`[\\u200d\\ud800-\\udfff\\u0300-\\u036f\\ufe20-\\ufe2f\\u20d0-\\u20ff\\ufe0e\\ufe0f]`);function r(e){return n.test(e)}t.exports=r})),pu=s(((e,t)=>{function n(e){return e.split(``)}t.exports=n})),mu=s(((e,t)=>{var n=`\\ud800-\\udfff`,r=`\\u0300-\\u036f\\ufe20-\\ufe2f\\u20d0-\\u20ff`,i=`\\ufe0e\\ufe0f`,a=`[`+n+`]`,o=`[`+r+`]`,s=`\\ud83c[\\udffb-\\udfff]`,c=`(?:`+o+`|`+s+`)`,l=`[^`+n+`]`,u=`(?:\\ud83c[\\udde6-\\uddff]){2}`,d=`[\\ud800-\\udbff][\\udc00-\\udfff]`,f=`\\u200d`,p=c+`?`,m=`[`+i+`]?`,h=`(?:`+f+`(?:`+[l,u,d].join(`|`)+`)`+m+p+`)*`,g=m+p+h,_=`(?:`+[l+o+`?`,o,u,d,a].join(`|`)+`)`,v=RegExp(s+`(?=`+s+`)|`+_+g,`g`);function y(e){return e.match(v)||[]}t.exports=y})),hu=s(((e,t)=>{var n=pu(),r=fu(),i=mu();function a(e){return r(e)?i(e):n(e)}t.exports=a})),gu=s(((e,t)=>{var n=du(),r=fu(),i=hu(),a=kc();function o(e){return function(t){t=a(t);var o=r(t)?i(t):void 0,s=o?o[0]:t.charAt(0),c=o?n(o,1).join(``):t.slice(1);return s[e]()+c}}t.exports=o})),_u=s(((e,t)=>{t.exports=gu()(`toUpperCase`)}));function vu(e){return function(){return e}}var yu=o((()=>{})),bu,xu,Su,Cu,wu,Tu=o((()=>{bu=Math.cos,xu=Math.sin,Su=Math.sqrt,Cu=Math.PI,Cu/2,wu=2*Cu}));function Eu(e){this._+=e[0];for(let t=1,n=e.length;t<n;++t)this._+=arguments[t]+e[t]}function Du(e){let t=Math.floor(e);if(!(t>=0))throw Error(`invalid digits: ${e}`);if(t>15)return Eu;let n=10**t;return function(e){this._+=e[0];for(let t=1,r=e.length;t<r;++t)this._+=Math.round(arguments[t]*n)/n+e[t]}}function Ou(){return new Nu}var ku,Au,ju,Mu,Nu,Pu=o((()=>{ku=Math.PI,Au=2*ku,ju=1e-6,Mu=Au-ju,Nu=class{constructor(e){this._x0=this._y0=this._x1=this._y1=null,this._=``,this._append=e==null?Eu:Du(e)}moveTo(e,t){this._append`M${this._x0=this._x1=+e},${this._y0=this._y1=+t}`}closePath(){this._x1!==null&&(this._x1=this._x0,this._y1=this._y0,this._append`Z`)}lineTo(e,t){this._append`L${this._x1=+e},${this._y1=+t}`}quadraticCurveTo(e,t,n,r){this._append`Q${+e},${+t},${this._x1=+n},${this._y1=+r}`}bezierCurveTo(e,t,n,r,i,a){this._append`C${+e},${+t},${+n},${+r},${this._x1=+i},${this._y1=+a}`}arcTo(e,t,n,r,i){if(e=+e,t=+t,n=+n,r=+r,i=+i,i<0)throw Error(`negative radius: ${i}`);let a=this._x1,o=this._y1,s=n-e,c=r-t,l=a-e,u=o-t,d=l*l+u*u;if(this._x1===null)this._append`M${this._x1=e},${this._y1=t}`;else if(d>ju)if(!(Math.abs(u*s-c*l)>ju)||!i)this._append`L${this._x1=e},${this._y1=t}`;else{let f=n-a,p=r-o,m=s*s+c*c,h=f*f+p*p,g=Math.sqrt(m),_=Math.sqrt(d),v=i*Math.tan((ku-Math.acos((m+d-h)/(2*g*_)))/2),y=v/_,b=v/g;Math.abs(y-1)>ju&&this._append`L${e+y*l},${t+y*u}`,this._append`A${i},${i},0,0,${+(u*f>l*p)},${this._x1=e+b*s},${this._y1=t+b*c}`}}arc(e,t,n,r,i,a){if(e=+e,t=+t,n=+n,a=!!a,n<0)throw Error(`negative radius: ${n}`);let o=n*Math.cos(r),s=n*Math.sin(r),c=e+o,l=t+s,u=1^a,d=a?r-i:i-r;this._x1===null?this._append`M${c},${l}`:(Math.abs(this._x1-c)>ju||Math.abs(this._y1-l)>ju)&&this._append`L${c},${l}`,n&&(d<0&&(d=d%Au+Au),d>Mu?this._append`A${n},${n},0,1,${u},${e-o},${t-s}A${n},${n},0,1,${u},${this._x1=c},${this._y1=l}`:d>ju&&this._append`A${n},${n},0,${+(d>=ku)},${u},${this._x1=e+n*Math.cos(i)},${this._y1=t+n*Math.sin(i)}`)}rect(e,t,n,r){this._append`M${this._x0=this._x1=+e},${this._y0=this._y1=+t}h${n=+n}v${+r}h${-n}Z`}toString(){return this._}},Ou.prototype=Nu.prototype})),Fu=o((()=>{Pu()}));function Iu(e){let t=3;return e.digits=function(n){if(!arguments.length)return t;if(n==null)t=null;else{let e=Math.floor(n);if(!(e>=0))throw RangeError(`invalid digits: ${n}`);t=e}return e},()=>new Nu(t)}var Lu=o((()=>{Fu()}));function Ru(e){return typeof e==`object`&&`length`in e?e:Array.from(e)}var zu=o((()=>{Array.prototype.slice}));function Bu(e){this._context=e}function Vu(e){return new Bu(e)}var Hu=o((()=>{Bu.prototype={areaStart:function(){this._line=0},areaEnd:function(){this._line=NaN},lineStart:function(){this._point=0},lineEnd:function(){(this._line||this._line!==0&&this._point===1)&&this._context.closePath(),this._line=1-this._line},point:function(e,t){switch(e=+e,t=+t,this._point){case 0:this._point=1,this._line?this._context.lineTo(e,t):this._context.moveTo(e,t);break;case 1:this._point=2;default:this._context.lineTo(e,t);break}}}}));function Uu(e){return e[0]}function Wu(e){return e[1]}var Gu=o((()=>{}));function Ku(e,t){var n=vu(!0),r=null,i=Vu,a=null,o=Iu(s);e=typeof e==`function`?e:e===void 0?Uu:vu(e),t=typeof t==`function`?t:t===void 0?Wu:vu(t);function s(s){var c,l=(s=Ru(s)).length,u,d=!1,f;for(r??(a=i(f=o())),c=0;c<=l;++c)!(c<l&&n(u=s[c],c,s))===d&&((d=!d)?a.lineStart():a.lineEnd()),d&&a.point(+e(u,c,s),+t(u,c,s));if(f)return a=null,f+``||null}return s.x=function(t){return arguments.length?(e=typeof t==`function`?t:vu(+t),s):e},s.y=function(e){return arguments.length?(t=typeof e==`function`?e:vu(+e),s):t},s.defined=function(e){return arguments.length?(n=typeof e==`function`?e:vu(!!e),s):n},s.curve=function(e){return arguments.length?(i=e,r!=null&&(a=i(r)),s):i},s.context=function(e){return arguments.length?(e==null?r=a=null:a=i(r=e),s):r},s}var qu=o((()=>{zu(),yu(),Hu(),Lu(),Gu()}));function Ju(e,t,n){var r=null,i=vu(!0),a=null,o=Vu,s=null,c=Iu(l);e=typeof e==`function`?e:e===void 0?Uu:vu(+e),t=typeof t==`function`?t:vu(t===void 0?0:+t),n=typeof n==`function`?n:n===void 0?Wu:vu(+n);function l(l){var u,d,f,p=(l=Ru(l)).length,m,h=!1,g,_=Array(p),v=Array(p);for(a??(s=o(g=c())),u=0;u<=p;++u){if(!(u<p&&i(m=l[u],u,l))===h)if(h=!h)d=u,s.areaStart(),s.lineStart();else{for(s.lineEnd(),s.lineStart(),f=u-1;f>=d;--f)s.point(_[f],v[f]);s.lineEnd(),s.areaEnd()}h&&(_[u]=+e(m,u,l),v[u]=+t(m,u,l),s.point(r?+r(m,u,l):_[u],n?+n(m,u,l):v[u]))}if(g)return s=null,g+``||null}function u(){return Ku().defined(i).curve(o).context(a)}return l.x=function(t){return arguments.length?(e=typeof t==`function`?t:vu(+t),r=null,l):e},l.x0=function(t){return arguments.length?(e=typeof t==`function`?t:vu(+t),l):e},l.x1=function(e){return arguments.length?(r=e==null?null:typeof e==`function`?e:vu(+e),l):r},l.y=function(e){return arguments.length?(t=typeof e==`function`?e:vu(+e),n=null,l):t},l.y0=function(e){return arguments.length?(t=typeof e==`function`?e:vu(+e),l):t},l.y1=function(e){return arguments.length?(n=e==null?null:typeof e==`function`?e:vu(+e),l):n},l.lineX0=l.lineY0=function(){return u().x(e).y(t)},l.lineY1=function(){return u().x(e).y(n)},l.lineX1=function(){return u().x(r).y(t)},l.defined=function(e){return arguments.length?(i=typeof e==`function`?e:vu(!!e),l):i},l.curve=function(e){return arguments.length?(o=e,a!=null&&(s=o(a)),l):o},l.context=function(e){return arguments.length?(e==null?a=s=null:s=o(a=e),l):a},l}var Yu=o((()=>{zu(),yu(),Hu(),qu(),Lu(),Gu()}));function Xu(e){return new Qu(e,!0)}function Zu(e){return new Qu(e,!1)}var Qu,$u=o((()=>{Qu=class{constructor(e,t){this._context=e,this._x=t}areaStart(){this._line=0}areaEnd(){this._line=NaN}lineStart(){this._point=0}lineEnd(){(this._line||this._line!==0&&this._point===1)&&this._context.closePath(),this._line=1-this._line}point(e,t){switch(e=+e,t=+t,this._point){case 0:this._point=1,this._line?this._context.lineTo(e,t):this._context.moveTo(e,t);break;case 1:this._point=2;default:this._x?this._context.bezierCurveTo(this._x0=(this._x0+e)/2,this._y0,this._x0,t,e,t):this._context.bezierCurveTo(this._x0,this._y0=(this._y0+t)/2,e,this._y0,e,t);break}this._x0=e,this._y0=t}}})),ed,td=o((()=>{Tu(),ed={draw(e,t){let n=Su(t/Cu);e.moveTo(n,0),e.arc(0,0,n,0,wu)}}})),nd,rd=o((()=>{Tu(),nd={draw(e,t){let n=Su(t/5)/2;e.moveTo(-3*n,-n),e.lineTo(-n,-n),e.lineTo(-n,-3*n),e.lineTo(n,-3*n),e.lineTo(n,-n),e.lineTo(3*n,-n),e.lineTo(3*n,n),e.lineTo(n,n),e.lineTo(n,3*n),e.lineTo(-n,3*n),e.lineTo(-n,n),e.lineTo(-3*n,n),e.closePath()}}})),id,ad,od,sd=o((()=>{Tu(),id=Su(1/3),ad=id*2,od={draw(e,t){let n=Su(t/ad),r=n*id;e.moveTo(0,-n),e.lineTo(r,0),e.lineTo(0,n),e.lineTo(-r,0),e.closePath()}}})),cd,ld=o((()=>{Tu(),cd={draw(e,t){let n=Su(t),r=-n/2;e.rect(r,r,n,n)}}})),ud,dd,fd,pd,md,hd=o((()=>{Tu(),ud=.8908130915292852,dd=xu(Cu/10)/xu(7*Cu/10),fd=xu(wu/10)*dd,pd=-bu(wu/10)*dd,md={draw(e,t){let n=Su(t*ud),r=fd*n,i=pd*n;e.moveTo(0,-n),e.lineTo(r,i);for(let t=1;t<5;++t){let a=wu*t/5,o=bu(a),s=xu(a);e.lineTo(s*n,-o*n),e.lineTo(o*r-s*i,s*r+o*i)}e.closePath()}}})),gd,_d,vd=o((()=>{Tu(),gd=Su(3),_d={draw(e,t){let n=-Su(t/(gd*3));e.moveTo(0,n*2),e.lineTo(-gd*n,-n),e.lineTo(gd*n,-n),e.closePath()}}})),yd,bd,xd,Sd,Cd,wd=o((()=>{Tu(),yd=-.5,bd=Su(3)/2,xd=1/Su(12),Sd=(xd/2+1)*3,Cd={draw(e,t){let n=Su(t/Sd),r=n/2,i=n*xd,a=r,o=n*xd+n,s=-a,c=o;e.moveTo(r,i),e.lineTo(a,o),e.lineTo(s,c),e.lineTo(yd*r-bd*i,bd*r+yd*i),e.lineTo(yd*a-bd*o,bd*a+yd*o),e.lineTo(yd*s-bd*c,bd*s+yd*c),e.lineTo(yd*r+bd*i,yd*i-bd*r),e.lineTo(yd*a+bd*o,yd*o-bd*a),e.lineTo(yd*s+bd*c,yd*c-bd*s),e.closePath()}}}));function Td(e,t){let n=null,r=Iu(i);e=typeof e==`function`?e:vu(e||ed),t=typeof t==`function`?t:vu(t===void 0?64:+t);function i(){let i;if(n||=i=r(),e.apply(this,arguments).draw(n,+t.apply(this,arguments)),i)return n=null,i+``||null}return i.type=function(t){return arguments.length?(e=typeof t==`function`?t:vu(t),i):e},i.size=function(e){return arguments.length?(t=typeof e==`function`?e:vu(+e),i):t},i.context=function(e){return arguments.length?(n=e??null,i):n},i}var Ed=o((()=>{yu(),Lu(),td()}));function Dd(){}var Od=o((()=>{}));function kd(e,t,n){e._context.bezierCurveTo((2*e._x0+e._x1)/3,(2*e._y0+e._y1)/3,(e._x0+2*e._x1)/3,(e._y0+2*e._y1)/3,(e._x0+4*e._x1+t)/6,(e._y0+4*e._y1+n)/6)}function Ad(e){this._context=e}function oee(e){return new Ad(e)}var jd=o((()=>{Ad.prototype={areaStart:function(){this._line=0},areaEnd:function(){this._line=NaN},lineStart:function(){this._x0=this._x1=this._y0=this._y1=NaN,this._point=0},lineEnd:function(){switch(this._point){case 3:kd(this,this._x1,this._y1);case 2:this._context.lineTo(this._x1,this._y1);break}(this._line||this._line!==0&&this._point===1)&&this._context.closePath(),this._line=1-this._line},point:function(e,t){switch(e=+e,t=+t,this._point){case 0:this._point=1,this._line?this._context.lineTo(e,t):this._context.moveTo(e,t);break;case 1:this._point=2;break;case 2:this._point=3,this._context.lineTo((5*this._x0+this._x1)/6,(5*this._y0+this._y1)/6);default:kd(this,e,t);break}this._x0=this._x1,this._x1=e,this._y0=this._y1,this._y1=t}}}));function Md(e){this._context=e}function see(e){return new Md(e)}var Nd=o((()=>{Od(),jd(),Md.prototype={areaStart:Dd,areaEnd:Dd,lineStart:function(){this._x0=this._x1=this._x2=this._x3=this._x4=this._y0=this._y1=this._y2=this._y3=this._y4=NaN,this._point=0},lineEnd:function(){switch(this._point){case 1:this._context.moveTo(this._x2,this._y2),this._context.closePath();break;case 2:this._context.moveTo((this._x2+2*this._x3)/3,(this._y2+2*this._y3)/3),this._context.lineTo((this._x3+2*this._x2)/3,(this._y3+2*this._y2)/3),this._context.closePath();break;case 3:this.point(this._x2,this._y2),this.point(this._x3,this._y3),this.point(this._x4,this._y4);break}},point:function(e,t){switch(e=+e,t=+t,this._point){case 0:this._point=1,this._x2=e,this._y2=t;break;case 1:this._point=2,this._x3=e,this._y3=t;break;case 2:this._point=3,this._x4=e,this._y4=t,this._context.moveTo((this._x0+4*this._x1+e)/6,(this._y0+4*this._y1+t)/6);break;default:kd(this,e,t);break}this._x0=this._x1,this._x1=e,this._y0=this._y1,this._y1=t}}}));function Pd(e){this._context=e}function Fd(e){return new Pd(e)}var Id=o((()=>{jd(),Pd.prototype={areaStart:function(){this._line=0},areaEnd:function(){this._line=NaN},lineStart:function(){this._x0=this._x1=this._y0=this._y1=NaN,this._point=0},lineEnd:function(){(this._line||this._line!==0&&this._point===3)&&this._context.closePath(),this._line=1-this._line},point:function(e,t){switch(e=+e,t=+t,this._point){case 0:this._point=1;break;case 1:this._point=2;break;case 2:this._point=3;var n=(this._x0+4*this._x1+e)/6,r=(this._y0+4*this._y1+t)/6;this._line?this._context.lineTo(n,r):this._context.moveTo(n,r);break;case 3:this._point=4;default:kd(this,e,t);break}this._x0=this._x1,this._x1=e,this._y0=this._y1,this._y1=t}}}));function Ld(e){this._context=e}function Rd(e){return new Ld(e)}var zd=o((()=>{Od(),Ld.prototype={areaStart:Dd,areaEnd:Dd,lineStart:function(){this._point=0},lineEnd:function(){this._point&&this._context.closePath()},point:function(e,t){e=+e,t=+t,this._point?this._context.lineTo(e,t):(this._point=1,this._context.moveTo(e,t))}}}));function Bd(e){return e<0?-1:1}function Vd(e,t,n){var r=e._x1-e._x0,i=t-e._x1,a=(e._y1-e._y0)/(r||i<0&&-0),o=(n-e._y1)/(i||r<0&&-0),s=(a*i+o*r)/(r+i);return(Bd(a)+Bd(o))*Math.min(Math.abs(a),Math.abs(o),.5*Math.abs(s))||0}function Hd(e,t){var n=e._x1-e._x0;return n?(3*(e._y1-e._y0)/n-t)/2:t}function Ud(e,t,n){var r=e._x0,i=e._y0,a=e._x1,o=e._y1,s=(a-r)/3;e._context.bezierCurveTo(r+s,i+s*t,a-s,o-s*n,a,o)}function Wd(e){this._context=e}function Gd(e){this._context=new Kd(e)}function Kd(e){this._context=e}function qd(e){return new Wd(e)}function Jd(e){return new Gd(e)}var Yd=o((()=>{Wd.prototype={areaStart:function(){this._line=0},areaEnd:function(){this._line=NaN},lineStart:function(){this._x0=this._x1=this._y0=this._y1=this._t0=NaN,this._point=0},lineEnd:function(){switch(this._point){case 2:this._context.lineTo(this._x1,this._y1);break;case 3:Ud(this,this._t0,Hd(this,this._t0));break}(this._line||this._line!==0&&this._point===1)&&this._context.closePath(),this._line=1-this._line},point:function(e,t){var n=NaN;if(e=+e,t=+t,!(e===this._x1&&t===this._y1)){switch(this._point){case 0:this._point=1,this._line?this._context.lineTo(e,t):this._context.moveTo(e,t);break;case 1:this._point=2;break;case 2:this._point=3,Ud(this,Hd(this,n=Vd(this,e,t)),n);break;default:Ud(this,this._t0,n=Vd(this,e,t));break}this._x0=this._x1,this._x1=e,this._y0=this._y1,this._y1=t,this._t0=n}}},(Gd.prototype=Object.create(Wd.prototype)).point=function(e,t){Wd.prototype.point.call(this,t,e)},Kd.prototype={moveTo:function(e,t){this._context.moveTo(t,e)},closePath:function(){this._context.closePath()},lineTo:function(e,t){this._context.lineTo(t,e)},bezierCurveTo:function(e,t,n,r,i,a){this._context.bezierCurveTo(t,e,r,n,a,i)}}}));function Xd(e){this._context=e}function Zd(e){var t,n=e.length-1,r,i=Array(n),a=Array(n),o=Array(n);for(i[0]=0,a[0]=2,o[0]=e[0]+2*e[1],t=1;t<n-1;++t)i[t]=1,a[t]=4,o[t]=4*e[t]+2*e[t+1];for(i[n-1]=2,a[n-1]=7,o[n-1]=8*e[n-1]+e[n],t=1;t<n;++t)r=i[t]/a[t-1],a[t]-=r,o[t]-=r*o[t-1];for(i[n-1]=o[n-1]/a[n-1],t=n-2;t>=0;--t)i[t]=(o[t]-i[t+1])/a[t];for(a[n-1]=(e[n]+i[n-1])/2,t=0;t<n-1;++t)a[t]=2*e[t+1]-i[t+1];return[i,a]}function Qd(e){return new Xd(e)}var $d=o((()=>{Xd.prototype={areaStart:function(){this._line=0},areaEnd:function(){this._line=NaN},lineStart:function(){this._x=[],this._y=[]},lineEnd:function(){var e=this._x,t=this._y,n=e.length;if(n)if(this._line?this._context.lineTo(e[0],t[0]):this._context.moveTo(e[0],t[0]),n===2)this._context.lineTo(e[1],t[1]);else for(var r=Zd(e),i=Zd(t),a=0,o=1;o<n;++a,++o)this._context.bezierCurveTo(r[0][a],i[0][a],r[1][a],i[1][a],e[o],t[o]);(this._line||this._line!==0&&n===1)&&this._context.closePath(),this._line=1-this._line,this._x=this._y=null},point:function(e,t){this._x.push(+e),this._y.push(+t)}}}));function ef(e,t){this._context=e,this._t=t}function tf(e){return new ef(e,.5)}function nf(e){return new ef(e,0)}function rf(e){return new ef(e,1)}var af=o((()=>{ef.prototype={areaStart:function(){this._line=0},areaEnd:function(){this._line=NaN},lineStart:function(){this._x=this._y=NaN,this._point=0},lineEnd:function(){0<this._t&&this._t<1&&this._point===2&&this._context.lineTo(this._x,this._y),(this._line||this._line!==0&&this._point===1)&&this._context.closePath(),this._line>=0&&(this._t=1-this._t,this._line=1-this._line)},point:function(e,t){switch(e=+e,t=+t,this._point){case 0:this._point=1,this._line?this._context.lineTo(e,t):this._context.moveTo(e,t);break;case 1:this._point=2;default:if(this._t<=0)this._context.lineTo(this._x,t),this._context.lineTo(e,t);else{var n=this._x*(1-this._t)+e*this._t;this._context.lineTo(n,this._y),this._context.lineTo(n,t)}break}this._x=e,this._y=t}}}));function of(e,t){if((o=e.length)>1)for(var n=1,r,i,a=e[t[0]],o,s=a.length;n<o;++n)for(i=a,a=e[t[n]],r=0;r<s;++r)a[r][1]+=a[r][0]=isNaN(i[r][1])?i[r][0]:i[r][1]}var sf=o((()=>{}));function cf(e){for(var t=e.length,n=Array(t);--t>=0;)n[t]=t;return n}var lf=o((()=>{}));function uf(e,t){return e[t]}function df(e){let t=[];return t.key=e,t}function ff(){var e=vu([]),t=cf,n=of,r=uf;function i(i){var a=Array.from(e.apply(this,arguments),df),o,s=a.length,c=-1,l;for(let e of i)for(o=0,++c;o<s;++o)(a[o][c]=[0,+r(e,a[o].key,c,i)]).data=e;for(o=0,l=Ru(t(a));o<s;++o)a[l[o]].index=o;return n(a,l),a}return i.keys=function(t){return arguments.length?(e=typeof t==`function`?t:vu(Array.from(t)),i):e},i.value=function(e){return arguments.length?(r=typeof e==`function`?e:vu(+e),i):r},i.order=function(e){return arguments.length?(t=e==null?cf:typeof e==`function`?e:vu(Array.from(e)),i):t},i.offset=function(e){return arguments.length?(n=e??of,i):n},i}var pf=o((()=>{zu(),yu(),sf(),lf()}));function mf(e,t){if((r=e.length)>0){for(var n,r,i=0,a=e[0].length,o;i<a;++i){for(o=n=0;n<r;++n)o+=e[n][i][1]||0;if(o)for(n=0;n<r;++n)e[n][i][1]/=o}of(e,t)}}var hf=o((()=>{sf()}));function gf(e,t){if((i=e.length)>0){for(var n=0,r=e[t[0]],i,a=r.length;n<a;++n){for(var o=0,s=0;o<i;++o)s+=e[o][n][1]||0;r[n][1]+=r[n][0]=-s/2}of(e,t)}}var _f=o((()=>{sf()}));function vf(e,t){if(!(!((o=e.length)>0)||!((a=(i=e[t[0]]).length)>0))){for(var n=0,r=1,i,a,o;r<a;++r){for(var s=0,c=0,l=0;s<o;++s){for(var u=e[t[s]],d=u[r][1]||0,f=(d-(u[r-1][1]||0))/2,p=0;p<s;++p){var m=e[t[p]],h=m[r][1]||0,g=m[r-1][1]||0;f+=h-g}c+=d,l+=f*d}i[r-1][1]+=i[r-1][0]=n,c&&(n-=l/c)}i[r-1][1]+=i[r-1][0]=n,of(e,t)}}var yf=o((()=>{sf()})),bf=o((()=>{yu(),Tu(),Lu(),Yu(),qu(),zu(),Hu(),$u(),Ed(),td(),rd(),sd(),ld(),hd(),vd(),wd(),Nd(),Id(),jd(),Od(),zd(),Yd(),$d(),af(),pf(),hf(),sf(),_f(),yf(),lf()})),xf=o((()=>{bf()}));function Sf(e){"@babel/helpers - typeof";return Sf=typeof Symbol==`function`&&typeof Symbol.iterator==`symbol`?function(e){return typeof e}:function(e){return e&&typeof Symbol==`function`&&e.constructor===Symbol&&e!==Symbol.prototype?`symbol`:typeof e},Sf(e)}function Cf(){return Cf=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Cf.apply(this,arguments)}function wf(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter(function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable})),n.push.apply(n,r)}return n}function Tf(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]==null?{}:arguments[t];t%2?wf(Object(n),!0).forEach(function(t){Ef(e,t,n[t])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):wf(Object(n)).forEach(function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(n,t))})}return e}function Ef(e,t,n){return t=Df(t),t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function Df(e){var t=Of(e,`string`);return Sf(t)==`symbol`?t:t+``}function Of(e,t){if(Sf(e)!=`object`||!e)return e;var n=e[Symbol.toPrimitive];if(n!==void 0){var r=n.call(e,t||`default`);if(Sf(r)!=`object`)return r;throw TypeError(`@@toPrimitive must return a primitive value.`)}return(t===`string`?String:Number)(e)}function kf(e,t){if(e==null)return{};var n=Af(e,t),r,i;if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(i=0;i<a.length;i++)r=a[i],!(t.indexOf(r)>=0)&&Object.prototype.propertyIsEnumerable.call(e,r)&&(n[r]=e[r])}return n}function Af(e,t){if(e==null)return{};var n={};for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){if(t.indexOf(r)>=0)continue;n[r]=e[r]}return n}var jf,Mf,Nf,Pf,Ff,If,Lf,Rf,zf,Bf=o((()=>{jf=u(f()),Mf=u(_u()),xf(),Jn(),ql(),Nf=[`type`,`size`,`sizeType`],Pf={symbolCircle:ed,symbolCross:nd,symbolDiamond:od,symbolSquare:cd,symbolStar:md,symbolTriangle:_d,symbolWye:Cd},Ff=Math.PI/180,If=function(e){return Pf[`symbol${(0,Mf.default)(e)}`]||ed},Lf=function(e,t,n){if(t===`area`)return e;switch(n){case`cross`:return 5*e*e/9;case`diamond`:return .5*e*e/Math.sqrt(3);case`square`:return e*e;case`star`:var r=18*Ff;return 1.25*e*e*(Math.tan(r)-Math.tan(r*2)*Math.tan(r)**2);case`triangle`:return Math.sqrt(3)*e*e/4;case`wye`:return(21-10*Math.sqrt(3))*e*e/8;default:return Math.PI*e*e/4}},Rf=function(e,t){Pf[`symbol${(0,Mf.default)(e)}`]=t},zf=function(e){var t=e.type,n=t===void 0?`circle`:t,r=e.size,i=r===void 0?64:r,a=e.sizeType,o=a===void 0?`area`:a,s=Tf(Tf({},kf(e,Nf)),{},{type:n,size:i,sizeType:o}),c=function(){var e=If(n);return Td().type(e).size(Lf(i,o,n))()},l=s.className,u=s.cx,d=s.cy,f=H(s,!0);return u===+u&&d===+d&&i===+i?jf.createElement(`path`,Cf({},f,{className:qn(`recharts-symbols`,l),transform:`translate(${u}, ${d})`,d:c()})):null},zf.registerSymbol=Rf}));function Vf(e){"@babel/helpers - typeof";return Vf=typeof Symbol==`function`&&typeof Symbol.iterator==`symbol`?function(e){return typeof e}:function(e){return e&&typeof Symbol==`function`&&e.constructor===Symbol&&e!==Symbol.prototype?`symbol`:typeof e},Vf(e)}function Hf(){return Hf=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},Hf.apply(this,arguments)}function Uf(e,t){var n=Object.keys(e);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(e);t&&(r=r.filter(function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable})),n.push.apply(n,r)}return n}function Wf(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]==null?{}:arguments[t];t%2?Uf(Object(n),!0).forEach(function(t){tp(e,t,n[t])}):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):Uf(Object(n)).forEach(function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(n,t))})}return e}function Gf(e,t){if(!(e instanceof t))throw TypeError(`Cannot call a class as a function`)}function Kf(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,`value`in r&&(r.writable=!0),Object.defineProperty(e,np(r.key),r)}}function qf(e,t,n){return t&&Kf(e.prototype,t),n&&Kf(e,n),Object.defineProperty(e,"prototype",{writable:!1}),e}function Jf(e,t,n){return t=Qf(t),Yf(e,Zf()?Reflect.construct(t,n||[],Qf(e).constructor):t.apply(e,n))}function Yf(e,t){if(t&&(Vf(t)===`object`||typeof t==`function`))return t;if(t!==void 0)throw TypeError(`Derived constructors may only return object or undefined`);return Xf(e)}function Xf(e){if(e===void 0)throw ReferenceError(`this hasn't been initialised - super() hasn't been called`);return e}function Zf(){try{var e=!Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],function(){}))}catch{}return(Zf=function(){return!!e})()}function Qf(e){return Qf=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(e){return e.__proto__||Object.getPrototypeOf(e)},Qf(e)}function $f(e,t){if(typeof t!=`function`&&t!==null)throw TypeError(`Super expression must either be null or a function`);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),Object.defineProperty(e,"prototype",{writable:!1}),t&&ep(e,t)}function ep(e,t){return ep=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(e,t){return e.__proto__=t,e},ep(e,t)}function tp(e,t,n){return t=np(t),t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function np(e){var t=rp(e,`string`);return Vf(t)==`symbol`?t:t+``}function rp(e,t){if(Vf(e)!=`object`||!e)return e;var n=e[Symbol.toPrimitive];if(n!==void 0){var r=n.call(e,t||`default`);if(Vf(r)!=`object`)return r;throw TypeError(`@@toPrimitive must return a primitive value.`)}return(t===`string`?String:Number)(e)}var ip,ap,op,sp,cp=o((()=>{ip=u(f()),ap=u(Js()),Jn(),lu(),eu(),Bf(),_l(),op=32,sp=function(e){function t(){return Gf(this,t),Jf(this,t,arguments)}return $f(t,e),qf(t,[{key:`renderIcon`,value:function(e){var t=this.props.inactiveColor,n=op/2,r=op/6,i=op/3,a=e.inactive?t:e.color;if(e.type===`plainline`)return ip.createElement(`line`,{strokeWidth:4,fill:`none`,stroke:a,strokeDasharray:e.payload.strokeDasharray,x1:0,y1:n,x2:op,y2:n,className:`recharts-legend-icon`});if(e.type===`line`)return ip.createElement(`path`,{strokeWidth:4,fill:`none`,stroke:a,d:`M0,${n}h${i}
             A${r},${r},0,1,1,${2*i},${n}
@@ -16899,23 +16899,23 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     margin-right: ${s}px ${r};
     `,n===`padding`&&`padding-right: ${s}px ${r};`].filter(Boolean).join(``)}
   }
-  
+
   .${M3} {
     right: ${s}px ${r};
   }
-  
+
   .${N3} {
     margin-right: ${s}px ${r};
   }
-  
+
   .${M3} .${M3} {
     right: 0 ${r};
   }
-  
+
   .${N3} .${N3} {
     margin-right: 0 ${r};
   }
-  
+
   body[${G3}] {
     ${NAe}: ${s}px;
   }

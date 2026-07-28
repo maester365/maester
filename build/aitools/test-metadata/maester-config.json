@@ -984,7 +984,7 @@
     },
     {
       "Id": "MT.1035",
-      "Title": "All security groups assigned to Conditional Access Policies should be protected by RMAU.",
+      "Title": "All security groups assigned to Conditional Access policies should be protected by RMAU.",
       "Severity": "High"
     },
     {

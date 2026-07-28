@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Checks the status of when you sign in to the web portal of a Microsoft Entra ID-backed organization,
-    Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators.
+    Microsoft Entra ID always performs validation for any Conditional Access policies set by tenant administrators.
 
     https://learn.microsoft.com/azure/devops/organizations/accounts/manage-conditional-access?view=azure-devops&tabs=preview-page
 
@@ -34,9 +34,9 @@ function Test-AzdoEnforceAADConditionalAccess {
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.EnforceAADConditionalAccess'
     $result = $Policy.effectiveValue
     if ($result) {
-        $resultMarkdown = "Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators."
+        $resultMarkdown = "Microsoft Entra ID always performs validation for any Conditional Access policies set by tenant administrators."
     } else {
-        $resultMarkdown = "Your tenant should always perform validation for any Conditional Access Policies (CAPs) set by tenant administrators. "
+        $resultMarkdown = "Your tenant should always perform validation for any Conditional Access policies set by tenant administrators. "
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown

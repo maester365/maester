@@ -48,7 +48,7 @@ That's it — Maester detects the Azure DevOps connection and runs the tests aut
 | AZDO.1002 | High | Auditing should be enabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing) |
 | AZDO.1003 | High | Public projects should be disabled. | [Learn more](https://aka.ms/vsts-anon-access) |
 | AZDO.1004 | High | Externally sourced package versions should be manually approved for internal use to prevent malicious packages from a public registry being inadvertently consumed. | [Learn more](https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/) |
-| AZDO.1005 | High | Conditional Access Policies should be configured for Microsoft Entra ID-backed organizations. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops) |
+| AZDO.1005 | High | Conditional Access policies should be configured for Microsoft Entra ID-backed organizations. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops) |
 | AZDO.1006 | High | External guest access to Azure DevOps should be a controlled process. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access) |
 | AZDO.1007 | High | Access to Azure DevOps should be a controlled process managed by the IAM team or the appropriate Azure DevOps administrator roles. | [Learn more](https://aka.ms/azure-devops-invitations-policy) |
 | AZDO.1008 | Medium | Request access to Azure DevOps by email notifications to administrators should be disabled. | [Learn more](https://go.microsoft.com/fwlink/?linkid=2113172) |
@@ -91,6 +91,7 @@ That's it — Maester detects the Azure DevOps connection and runs the tests aut
 For automated monitoring, the following pipeline runs Maester tests (including the Azure DevOps tests) on a schedule and publishes the results to an Azure Web App. The pipeline connects to both Microsoft Graph (for Entra ID tests) and Azure DevOps.
 
 **Prerequisites:**
+
 - An **app registration** with the required [Maester permissions](https://maester.dev/docs/installation#configure-permissions)
 - A **workload identity federation service connection** in Azure DevOps
 - An **Azure Web App** to host the report (see [Maester results on Azure Web App](/blog/maester-with-azdo-webapp))

@@ -52,7 +52,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1032](./MT.1032.md) | Limited number of Global Admins are assigned. | High | Privileged |
 | [MT.1033](./MT.1033.md) | MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName)) | Unknown | CA |
 | [MT.1034](./MT.1034.md) | MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName)) | Unknown | CA |
-| [MT.1035](./MT.1035.md) | All security groups assigned to Conditional Access Policies should be protected by RMAU. | High | CA |
+| [MT.1035](./MT.1035.md) | All security groups assigned to Conditional Access policies should be protected by RMAU. | High | CA |
 | [MT.1036](./MT.1036.md) | All excluded objects should have a fallback include in another policy. | Medium | CA |
 | [MT.1037](./MT.1037.md) | Only users with Presenter role are allowed to present in Teams meetings | High | Teams |
 | [MT.1038](./MT.1038.md) | Conditional Access policies should not include or exclude deleted groups. | Medium | CA |

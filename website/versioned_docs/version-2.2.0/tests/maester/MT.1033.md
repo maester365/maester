@@ -1,6 +1,6 @@
 ---
 title: "MT.1033 - MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName))"
-description: "Checks if the Conditional Access Policies for blocking legacy authentication is active and used. See Block legacy authentication - Microsoft Learn"
+description: "Checks if the Conditional Access policies for blocking legacy authentication is active and used. See Block legacy authentication - Microsoft Learn"
 slug: /tests/MT.1033
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -23,7 +23,7 @@ keywords:
 
 ## Overview
 
-Checks if the Conditional Access Policies for blocking legacy authentication is active and used.
+Checks if the Conditional Access policies for blocking legacy authentication is active and used.
 
 See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)
 

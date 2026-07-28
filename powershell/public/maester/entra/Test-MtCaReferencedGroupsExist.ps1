@@ -4,9 +4,9 @@
     Checks if any Conditional Access policies include or exclude groups that have been deleted.
 
     .Description
-    Security Groups will be used to exclude and include users from Conditional Access Policies.
+    Security Groups will be used to exclude and include users from Conditional Access policies.
     Assignments are still visible in the policy definition in Microsoft Graph API even the group is deleted.
-    This test checks if all groups used in Conditional Access Policies still exist and shows invalid or deleted items.
+    This test checks if all groups used in Conditional Access policies still exist and shows invalid or deleted items.
 
     .Example
     Test-MtCaReferencedGroupsExist

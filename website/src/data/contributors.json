@@ -7530,7 +7530,7 @@
       "path": "/docs/tests/MT.1034"
     },
     "MT.1035": {
-      "title": "All security groups assigned to Conditional Access Policies should be protected by RMAU.",
+      "title": "All security groups assigned to Conditional Access policies should be protected by RMAU.",
       "path": "/docs/tests/MT.1035"
     },
     "MT.1036": {

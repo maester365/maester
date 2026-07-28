@@ -56,7 +56,7 @@
     It "MT.1020: All Conditional Access policies are configured to exclude Directory/OnPremises synchronization accounts or do not scope them. See https://maester.dev/docs/tests/MT.1020" -Tag "MT.1020" {
         Test-MtCaExclusionForDirectorySyncAccount | Should -Be $true -Because "there is no policy that excludes Directory/OnPremises synchronization accounts"
     }
-    It "MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035" -Tag "MT.1035" {
+    It "MT.1035: All security groups assigned to Conditional Access policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035" -Tag "MT.1035" {
         Test-MtCaGroupsRestricted | Should -Be $true -Because "there are one or more policies without protection of included or excluded groups"
     }
     It "MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036" -Tag "MT.1036" {

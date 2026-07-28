@@ -137,7 +137,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.EXO.3.1](./CISA.MS.EXO.3.1) | DKIM SHOULD be enabled for all domains. | CISA | Medium | exchange |
 | [CISA.MS.EXO.4.1](./CISA.MS.EXO.4.1) | A DMARC policy SHALL be published for every second-level domain. | CISA | Medium | exchange |
 | [CISA.MS.EXO.4.2](./CISA.MS.EXO.4.2) | The DMARC message rejection option SHALL be p=reject. | CISA | High | exchange |
-| [CISA.MS.EXO.4.3](./CISA.MS.EXO.4.3) | The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov. | CISA | Medium | exchange |
+| [CISA.MS.EXO.4.3](./CISA.MS.EXO.4.3) | The DMARC point of contact for aggregate reports SHALL include <reports@dmarc.cyber.dhs.gov>. | CISA | Medium | exchange |
 | [CISA.MS.EXO.5.1](./CISA.MS.EXO.5.1) | SMTP AUTH SHALL be disabled. | CISA | High | exchange |
 | [CISA.MS.EXO.6.1](./CISA.MS.EXO.6.1) | Contact folders SHALL NOT be shared with all domains. | CISA | Medium | exchange |
 | [CISA.MS.EXO.6.2](./CISA.MS.EXO.6.2) | Calendar details SHALL NOT be shared with all domains. | CISA | Medium | exchange |
@@ -237,7 +237,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1032](./MT.1032) | Limited number of Global Admins are assigned. | Maester | High | Privileged |
 | [MT.1033](./MT.1033) | MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName)) | Maester | Unknown | CA |
 | [MT.1034](./MT.1034) | MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName)) | Maester | Unknown | CA |
-| [MT.1035](./MT.1035) | All security groups assigned to Conditional Access Policies should be protected by RMAU. | Maester | High | CA |
+| [MT.1035](./MT.1035) | All security groups assigned to Conditional Access policies should be protected by RMAU. | Maester | High | CA |
 | [MT.1036](./MT.1036) | All excluded objects should have a fallback include in another policy. | Maester | Medium | CA |
 | [MT.1037](./MT.1037) | Only users with Presenter role are allowed to present in Teams meetings | Maester | High | Teams |
 | [MT.1038](./MT.1038) | Conditional Access policies should not include or exclude deleted groups. | Maester | Medium | CA |

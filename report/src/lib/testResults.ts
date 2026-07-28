@@ -3629,7 +3629,7 @@ export const testResults = {
       "ResultDetail": {
         "TestTitle": "EIDSCA.AT01: Authentication Method - Temporary Access Pass - State. See https://maester.dev/docs/tests/EIDSCA.AT01",
         "SkippedReason": null,
-        "TestDescription": "Whether the Temporary Access Pass is enabled in the tenant.\n\nUse Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy.\n\n#### Test script\n```\nhttps://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')\n.state -eq 'enabled'\n```\n\n#### Related links\n\n- [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)\n- [temporaryAccessPassAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/temporaryaccesspassauthenticationmethodconfiguration)\n\n\n",
+        "TestDescription": "Whether the Temporary Access Pass is enabled in the tenant.\n\nUse Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access policy.\n\n#### Test script\n```\nhttps://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')\n.state -eq 'enabled'\n```\n\n#### Related links\n\n- [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)\n- [temporaryAccessPassAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/temporaryaccesspassauthenticationmethodconfiguration)\n\n\n",
         "TestResult": "\nWell done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**\n",
         "Severity": "High",
         "Service": null,
@@ -6843,8 +6843,8 @@ export const testResults = {
     {
       "Index": 122,
       "Id": "MT.1035",
-      "Title": "All security groups assigned to Conditional Access Policies should be protected by RMAU.",
-      "Name": "MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU.",
+      "Title": "All security groups assigned to Conditional Access policies should be protected by RMAU.",
+      "Name": "MT.1035: All security groups assigned to Conditional Access policies should be protected by RMAU.",
       "HelpUrl": "https://maester.dev/docs/tests/MT.1035",
       "Severity": "High",
       "Tag": [
@@ -6859,9 +6859,9 @@ export const testResults = {
       "Block": "Maester/Entra",
       "Duration": "00:00:00",
       "ResultDetail": {
-        "TestTitle": "MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035",
+        "TestTitle": "MT.1035: All security groups assigned to Conditional Access policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035",
         "SkippedReason": null,
-        "TestDescription": "Security Groups will be used to exclude and include users from Conditional Access Policies. Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access Policies.\n\nTo prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups. Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups. This test checks if all groups used in Conditional Access Policies are protected.\n\nSee [Restricted management administrative units in Microsoft Entra ID - Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)",
+        "TestDescription": "Security Groups will be used to exclude and include users from Conditional Access policies. Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access policies.\n\nTo prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups. Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups. This test checks if all groups used in Conditional Access policies are protected.\n\nSee [Restricted management administrative units in Microsoft Entra ID - Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)",
         "TestResult": "Well done! All security groups with assignment in Conditional Access are protected.",
         "Severity": "",
         "Service": null,
