@@ -17,7 +17,7 @@ keywords:
 
 # MT.1176 - Retention policy is configured for the Microsoft Copilot location
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -36,7 +36,7 @@ Microsoft Purview now exposes Copilot retention through two surfaces:
 
 The test passes when at least one enabled Microsoft Purview retention policy targets Microsoft Copilot interactions on **either** surface.
 
-#### Remediation action:
+#### Remediation action
 
 1. Open the [Microsoft Purview portal — Data Lifecycle Management — Policies](https://purview.microsoft.com/datalifecyclemanagement/policies).
 2. Click **+ New retention policy**.
@@ -53,9 +53,9 @@ The test passes when at least one enabled Microsoft Purview retention policy tar
 
 #### Related links
 
-- [Microsoft Learn — Retention policies for Microsoft 365 Copilot](https://learn.microsoft.com/en-us/purview/retention-policies-copilot)
-- [Microsoft Learn — Learn about retention](https://learn.microsoft.com/en-us/purview/retention)
-- [Microsoft Learn — Audit and eDiscovery for Microsoft 365 Copilot](https://learn.microsoft.com/en-us/purview/audit-copilot)
+- [Microsoft Learn — Retention policies for Microsoft 365 Copilot](https://learn.microsoft.com/purview/retention-policies-copilot)
+- [Microsoft Learn — Learn about retention](https://learn.microsoft.com/purview/retention)
+- [Microsoft Learn — Audit and eDiscovery for Microsoft 365 Copilot](https://learn.microsoft.com/purview/audit-copilot)
 
 ## Test Metadata
 

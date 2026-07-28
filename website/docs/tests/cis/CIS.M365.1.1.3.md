@@ -62,9 +62,9 @@ To remove Global Admins:
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [Get-MgDirectoryRole](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.directorymanagement/get-mgdirectoryrole?view=graph-powershell-1.0)
-* [All roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#all-roles)
-* [5. Limit the number of Global Administrators to less than 5](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices#5-limit-the-number-of-global-administrators-to-less-than-5)
+* [Get-MgDirectoryRole](https://learn.microsoft.com/powershell/module/microsoft.graph.identity.directorymanagement/get-mgdirectoryrole?view=graph-powershell-1.0)
+* [All roles](https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference#all-roles)
+* [5. Limit the number of Global Administrators to less than 5](https://learn.microsoft.com/entra/identity/role-based-access-control/best-practices#5-limit-the-number-of-global-administrators-to-less-than-5)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 27](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
