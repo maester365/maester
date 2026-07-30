@@ -17,7 +17,7 @@
     param(
         [Parameter(Mandatory = $false)]
         [ValidateSet("Enabled", "Disabled")]
-        # Only return methods in the spcecified state. Can be Enabled or Disabled.
+        # Only return methods in the specified state. Can be Enabled or Disabled.
         [string]$State
     )
 

@@ -425,7 +425,7 @@ body:has(.home-page) .home-page > div:first-child > header:first-child {
   }
 }
 
-/* Override non-category links to be horizonally compact */
+/* Override non-category links to be horizontally compact */
 
 .powershell a::before {
   padding-right: 0.2rem;

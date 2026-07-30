@@ -96,7 +96,7 @@ The following PowerShell script will enable you to:
 - Define the key aspects of your environment
 - Update any Maester tests each time the container is run
 - Connect to the environment as the container's managed identity
-- Obtain the private key of your Serivce Principal to authenticate against Entra with
+- Obtain the private key of your Service Principal to authenticate against Entra with
 - Connect to the environment as the Service Principal
 - Run Maester
 - Sync the results with an Azure Storage Account
@@ -113,7 +113,7 @@ $keyVaultName = "<Key Vault Name>"
 $storageAccountName = "<Storage Account Name>"
 $storageAccountResourceGroupName = "<Name of Resource Group Storage Account exists>"
 Update-MaesterTests
-#Connect to serivce provider tenant
+#Connect to Service provider tenant
 Connect-MgGraph -Identity -NoWelcome
 Connect-AzAccount -Identity
 #Get SPN credential

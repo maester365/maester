@@ -255,7 +255,7 @@ Class ORCACheckConfig
 
     # Config is disabled
     $ConfigDisabled
-    # Config will apply, has a rule, not overriden by something
+    # Config will apply, has a rule, not overridden by something
     $ConfigWontApply
     [string]$ConfigPolicyGuid
     $InfoText

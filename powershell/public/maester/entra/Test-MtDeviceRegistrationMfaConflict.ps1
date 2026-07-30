@@ -18,7 +18,7 @@
     [OutputType([bool])]
     param ()
 
-    # Testing conneciton with graph
+    # Testing connection with graph
     if (-not (Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

@@ -1,6 +1,6 @@
 ---
 title: "ORCA.234 - Click through is disabled for Safe Documents."
-description: "Safe Documents can assist protecting files opened in Office appplications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365. It is possible to allow users click through Protected View even if S…"
+description: "Safe Documents can assist protecting files opened in Office applications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365. It is possible to allow users click through Protected View even if S…"
 slug: /tests/ORCA.234
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -22,7 +22,7 @@ keywords:
 
 ## Overview
 
-Safe Documents can assist protecting files opened in Office appplications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365. It is possible to allow users click through Protected View even if Safe Documents identified the file as malicious. It is recommended to configure Safe Documents to not let users click through Pretected View.
+Safe Documents can assist protecting files opened in Office applications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365. It is possible to allow users click through Protected View even if Safe Documents identified the file as malicious. It is recommended to configure Safe Documents to not let users click through Pretected View.
 
 #### Remediation action
 Do not let usres click through Protected View if Safe Documents identified the file as malicious.

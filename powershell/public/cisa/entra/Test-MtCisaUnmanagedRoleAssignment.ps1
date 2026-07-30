@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaUnmanagedRoleAssignment {
     <#
     .SYNOPSIS
-    Checks for active role assingments with no start time
+    Checks for active role assignments with no start time
 
     .DESCRIPTION
     Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
