@@ -41,20 +41,14 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
     }
 
     $Organization = (Get-ADOPSConnection).Organization
-    $Uri = "https://advsec.dev.azure.com/$Organization/_apis/management/enablement?includeAllProperties=true&api-version=7.2-preview.3"
+    $Fetch = Get-AzdoAdvancedSecurityEnablement -Organization $Organization -IncludeAllProperties
 
-    $Enablement = $null
-    $RequestError = $null
-    try {
-        $Enablement = Invoke-ADOPSRestMethod -Uri $Uri -Method Get
-    } catch {
-        $RequestError = $_
-    }
-
-    if ($null -ne $RequestError) {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $RequestError
+    if ($null -ne $Fetch.RequestError) {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $Fetch.RequestError
         return $null
     }
+
+    $Enablement = $Fetch.Enablement
 
     if ($Enablement.isBundledSKU) {
         $Message = "This organization uses the bundled GitHub Advanced Security for Azure DevOps SKU, where Secret Protection is not enabled as a separate plan."
@@ -97,16 +91,8 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
     }
 
     if (-not $result) {
-        # Resolve project GUIDs to names with a single call so the table is readable.
-        $ProjectNames = @{}
-        try {
-            Get-ADOPSProject | ForEach-Object { $ProjectNames[$_.id] = $_.name }
-        } catch {
-            Write-Verbose "Failed to resolve Azure DevOps project names: $($_.Exception.Message)"
-        }
-        $Grouped = $Unprotected | ForEach-Object {
-            if ($ProjectNames.ContainsKey($_.projectId)) { $ProjectNames[$_.projectId] } else { $_.projectId }
-        } | Group-Object | Sort-Object -Property @{Expression = 'Count'; Descending = $true }, @{Expression = 'Name'; Descending = $false }
+
+        $Grouped = Group-AzdoRepositoryByProject -Repository $Unprotected
 
         $resultMarkdown += "`nEnrolled repositories that do not block pushes, by project:`n`n"
         $resultMarkdown += "| Project | Repositories not blocking pushes |`n"
