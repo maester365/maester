@@ -272,4 +272,53 @@
             $result | Should -Be $false -Because "Extensions should not be allowed to access resources on the local network to prevent SSRF attacks."
         }
     }
+
+It "AZDO.1039: (Organization) Secret Protection: new repositories enrolled automatically. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1039" {
+        $result = Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "New Git repositories should automatically be protected by push protection and secret scanning instead of relying on manual onboarding."
+        }
+    }
+
+    It "AZDO.1040: (Organization) Secret Protection: existing repositories enrolled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1040" {
+        $result = Test-AzdoOrganizationSecretProtectionEnrollment
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "automatic enablement only covers new repositories, so existing repositories stay unscanned for secrets until they are explicitly enrolled."
+        }
+    }
+
+    It "AZDO.1041: (Organization) Secret Protection: push protection blocks secret commits. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-secret-scanning" -Tag "AZDO.1041" {
+        $result = Test-AzdoOrganizationSecretProtectionPushProtection
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "push protection prevents secrets from being committed, whereas secret alerts only report exposures that have already happened."
+        }
+    }
+
+    It "AZDO.1042: (Organization) Code Security: new repositories enrolled automatically. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1042" {
+        $result = Test-AzdoOrganizationAutomaticEnrollmentCodeSecurityNewRepository
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "New Git repositories should automatically be scanned for vulnerable dependencies and code-level vulnerabilities instead of relying on manual onboarding."
+        }
+    }
+
+    It "AZDO.1043: (Organization) Code Security: existing repositories enrolled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1043" {
+        $result = Test-AzdoOrganizationCodeSecurityEnrollment
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "automatic enablement only covers new repositories, so existing repositories stay unscanned until they are explicitly enrolled."
+        }
+    }
+
+    It "AZDO.1044: (Organization) Code Security: dependency and CodeQL alerts enabled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-code-scanning" -Tag "AZDO.1044" {
+        $result = Test-AzdoOrganizationCodeSecurityScanning
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "a repository enrolled in Code Security with no scanning features enabled is billed for the plan while producing no findings."
+        }
+    }
+
+    It "AZDO.1045: (Organization) Copilot code review: allowed for repositories. See https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops" -Tag "AZDO.1045", "Preview" {
+        $result = Test-AzdoOrganizationCopilotCodeReview
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "Copilot code review adds an automated review layer on every pull request, which should be available consistently across the organization."
+        }
+    }
 }
