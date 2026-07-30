@@ -73,8 +73,7 @@ function Test-AzdoOrganizationCopilotCodeReview {
     $Available = $Response.dataProviderSharedData._featureFlags.'SourceControl.GitPullRequests.CopilotReview'
 
     if ($false -eq $Available) {
-        $Message = "GitHub Copilot code review is in limited public preview and this organization has not been onboarded to it, so the setting cannot be turned on yet.
-        Organizations can request access by [signing up for the preview](https://nam.dcv.ms/VeDNq3VRhX). See [Copilot code reviews for Azure Repos](https://learn.microsoft.com/azure/devops/release-notes/2026/sprint-275-update#copilot-code-reviews-for-azure-repos-limited-public-preview)."
+        $Message = "GitHub Copilot code review is in limited public preview and this organization has not been onboarded to it, so the setting cannot be turned on yet. Organizations can request access by [signing up for the preview](https://nam.dcv.ms/VeDNq3VRhX). See [Copilot code reviews for Azure Repos](https://learn.microsoft.com/azure/devops/release-notes/2026/sprint-275-update#copilot-code-reviews-for-azure-repos-limited-public-preview)."
         Write-Verbose $Message
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
         return $null

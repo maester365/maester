@@ -15,7 +15,11 @@ Enable push protection for the affected repositories.
 Push protection can also be set per repository under **Project settings** > **Repos** > **Repositories** > select the repository > **Options**.
 
 **Results:**
-The table lists each repository that has the Secret Protection plan enabled while push protection is turned off. **Secret alerts** is always available for enrolled repositories and cannot be turned off, so it is not assessed by this test.
+The first table states the scope being assessed: how many repositories are enrolled in Secret Protection, how many of those block pushes, and how many have no plan at all. Only the enrolled repositories are assessed, so a pass here does not mean the organization is covered. Enrolment is reported by AZDO.1040.
+
+When enrolled repositories do not block pushes, a second table groups them by project so you can see where to start.
+
+**Secret alerts** is always available for enrolled repositories and cannot be turned off, so it is not assessed by this test. It has no corresponding property in the API.
 
 This test only applies to organizations that use the separate GitHub Secret Protection and GitHub Code Security plans, and is skipped when no repository has the plan enabled.
 

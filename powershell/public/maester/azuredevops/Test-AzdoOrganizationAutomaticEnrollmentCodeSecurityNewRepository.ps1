@@ -66,8 +66,7 @@ function Test-AzdoOrganizationAutomaticEnrollmentCodeSecurityNewRepository {
     $OnCreate = $Enablement.enablementOnCreateSettings
 
     if ($null -eq $OnCreate) {
-        $Message = "The Advanced Security org enablement API did not return any automatic enablement settings. The signed in identity may lack the 'Advanced Security: manage settings' permission.
-        Please see [Configure GitHub Advanced Security features](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding)"
+        $Message = "The Advanced Security org enablement API did not return any automatic enablement settings. The signed in identity may lack the 'Advanced Security: manage settings' permission. Please see [Configure GitHub Advanced Security features](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding)"
         Write-Verbose $Message
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
         return $null

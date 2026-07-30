@@ -13,7 +13,9 @@ Enable the scanning features for the affected repositories.
 Scanning features can also be set per repository under **Project settings** > **Repos** > **Repositories** > select the repository > **Options**.
 
 **Results:**
-The table lists each repository that has the Code Security plan enabled while dependency alerts or CodeQL alerts are turned off. The dependency scanning default setup column is shown for context and is not asserted, because scanning can also be configured by adding the dependency scanning task directly to a pipeline.
+The first table states the scope being assessed: how many repositories are enrolled in Code Security, how many of those are fully scanned, and how many have no plan at all. Only the enrolled repositories are assessed, so a pass here does not mean the organization is covered. Enrolment is reported by AZDO.1043.
+
+When repositories are missing a scanning feature, a second table counts how many are missing dependency alerts and how many are missing CodeQL alerts, and a third groups the affected repositories by project so you can see where to start.
 
 This test only applies to organizations that use the separate GitHub Secret Protection and GitHub Code Security plans, and is skipped when no repository has the plan enabled.
 
