@@ -61,7 +61,7 @@
         $osEncryptionTypeId = 'device_vendor_msft_bitlocker_systemdrivesencryptiontype'
         $osEncryptionTypeDropdownId = 'device_vendor_msft_bitlocker_systemdrivesencryptiontype_osencryptiontypedropdown_name'
         $fixedEncryptionTypeId = 'device_vendor_msft_bitlocker_fixeddrivesencryptiontype'
-        $fixedEncryptionTypeDropdownId = 'device_vendor_msft_bitlocker_fixeddrivesencryptiontype_fdeencryptiontypedropdown_name'
+        $fixedEncryptionTypeDropdownId = 'device_vendor_msft_bitlocker_fixeddrivesencryptiontype_fdvencryptiontypedropdown_name'
         $requireEncryptionId = 'device_vendor_msft_bitlocker_requiredeviceencryption'
         $encryptionMethodId = 'device_vendor_msft_bitlocker_encryptionmethodbydrivetype'
         $osEncryptionMethodDropdownId = 'device_vendor_msft_bitlocker_encryptionmethodbydrivetype_encryptionmethodwithxtsosdropdown_name'
