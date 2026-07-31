@@ -283,7 +283,7 @@ It "AZDO.1039: (Organization) Secret Protection: new repositories enrolled autom
     It "AZDO.1040: (Organization) Secret Protection: existing repositories enrolled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1040" {
         $result = Test-AzdoOrganizationSecretProtectionEnrollment
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "automatic enablement only covers new repositories, so existing repositories stay unscanned for secrets until they are explicitly enrolled."
+            $result | Should -Be $true -Because "every repository should be enrolled in the plan; automatic enablement only covers new repositories, so any repository that already existed stays unscanned for secrets until it is explicitly enrolled."
         }
     }
 
@@ -304,7 +304,7 @@ It "AZDO.1039: (Organization) Secret Protection: new repositories enrolled autom
     It "AZDO.1043: (Organization) Code Security: existing repositories enrolled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1043" {
         $result = Test-AzdoOrganizationCodeSecurityEnrollment
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "automatic enablement only covers new repositories, so existing repositories stay unscanned until they are explicitly enrolled."
+            $result | Should -Be $true -Because "every repository should be enrolled in the plan; automatic enablement only covers new repositories, so any repository that already existed stays unscanned until it is explicitly enrolled."
         }
     }
 

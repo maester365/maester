@@ -26,7 +26,7 @@ Note that **Enable all** is a separate action from the automatic enablement togg
 **Results:**
 The first table reports overall coverage. The second breaks the unenrolled repositories down by project, ordered by the size of the gap, so you can see which projects to onboard first.
 
-This check fails only when no repository is enrolled at all, so that a staged rollout is not permanently red. Review the coverage ratio rather than the pass or fail state alone.
+This check passes only when every Git repository in the organization is enrolled. Any repository without the plan has no secret scanning and no push protection, so partial coverage is reported as a failure rather than being averaged away. An organization part way through a rollout will fail until the remaining repositories are onboarded, and the coverage ratio shows how far along it is.
 
 This test only applies to organizations that use the separate GitHub Secret Protection and GitHub Code Security plans.
 

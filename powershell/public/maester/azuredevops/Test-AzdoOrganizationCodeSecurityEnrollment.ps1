@@ -68,12 +68,12 @@ function Test-AzdoOrganizationCodeSecurityEnrollment {
     $Enrolled = @($Repositories | Where-Object { $_.codeSecurityFeatures.codeSecurityEnabled })
     $Unenrolled = @($Repositories | Where-Object { -not $_.codeSecurityFeatures.codeSecurityEnabled })
 
-    $result = $Enrolled.Count -gt 0
+    $result = $Unenrolled.Count -eq 0
 
-    if (-not $result) {
-        $resultMarkdown = "**Not enrolled: all $($Repositories.Count) repositories.**`n`nNo repository in your organization is enrolled in the GitHub Code Security plan, so none is scanned for vulnerable dependencies or code level vulnerabilities.`n`n"
-    } elseif ($Unenrolled.Count -eq 0) {
+    if ($result) {
         $resultMarkdown = "All $($Repositories.Count) Git repositories in your organization are enrolled in the GitHub Code Security plan.`n`n"
+    } elseif ($Enrolled.Count -eq 0) {
+        $resultMarkdown = "**Not enrolled: all $($Repositories.Count) repositories.**`n`nNo repository in your organization is enrolled in the GitHub Code Security plan, so none is scanned for vulnerable dependencies or code level vulnerabilities.`n`n"
     } else {
         $resultMarkdown = "**Not enrolled: $($Unenrolled.Count) of $($Repositories.Count) repositories.**`n`n$($Enrolled.Count) are enrolled in the GitHub Code Security plan; the remaining $($Unenrolled.Count) are not scanned.`n`n"
     }
