@@ -84,10 +84,10 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
     $resultMarkdown += "| --- | --- |`n"
     $resultMarkdown += "| Repositories enrolled in Secret Protection | $($Enabled.Count) of $($Repositories.Count) |`n"
     $resultMarkdown += "| Enrolled repositories blocking pushes | $($Enabled.Count - $Unprotected.Count) of $($Enabled.Count) |`n"
-    $resultMarkdown += "| Repositories with no plan, so no push protection | $NotEnrolled |`n"
+    $resultMarkdown += "| Repositories not enrolled in Secret Protection, so no push protection | $NotEnrolled |`n"
 
     if ($NotEnrolled -gt 0) {
-        $resultMarkdown += "`nThis check only assesses the $($Enabled.Count) enrolled repositories. The other $NotEnrolled have no Secret Protection plan, so they are neither scanned for secrets nor protected at push time. That gap is reported by AZDO.1040.`n"
+        $resultMarkdown += "`nThis check only assesses the $($Enabled.Count) repositories enrolled in Secret Protection. The other $NotEnrolled are not enrolled in that plan, so they are neither scanned for secrets nor protected at push time, regardless of whether they are enrolled in Code Security. That gap is reported by AZDO.1040.`n"
     }
 
     if (-not $result) {

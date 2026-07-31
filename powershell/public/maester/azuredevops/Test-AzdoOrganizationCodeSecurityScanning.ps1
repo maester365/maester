@@ -85,10 +85,10 @@ function Test-AzdoOrganizationCodeSecurityScanning {
     $resultMarkdown += "| --- | --- |`n"
     $resultMarkdown += "| Repositories enrolled in Code Security | $($Enabled.Count) of $($Repositories.Count) |`n"
     $resultMarkdown += "| Enrolled repositories fully scanned | $($Enabled.Count - $Incomplete.Count) of $($Enabled.Count) |`n"
-    $resultMarkdown += "| Repositories with no plan, so no scanning | $NotEnrolled |`n"
+    $resultMarkdown += "| Repositories not enrolled in Code Security, so no scanning | $NotEnrolled |`n"
 
     if ($NotEnrolled -gt 0) {
-        $resultMarkdown += "`nThis check only assesses the $($Enabled.Count) enrolled repositories. The other $NotEnrolled have no Code Security plan, so they are not scanned at all. That gap is reported by AZDO.1043.`n"
+        $resultMarkdown += "`nThis check only assesses the $($Enabled.Count) repositories enrolled in Code Security. The other $NotEnrolled are not enrolled in that plan, so they produce no dependency or code scanning alerts, regardless of whether they are enrolled in Secret Protection. That gap is reported by AZDO.1043.`n"
     }
 
     if (-not $result) {

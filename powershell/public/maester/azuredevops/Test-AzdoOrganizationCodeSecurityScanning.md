@@ -13,7 +13,9 @@ Enable the scanning features for the affected repositories.
 Scanning features can also be set per repository under **Project settings** > **Repos** > **Repositories** > select the repository > **Options**.
 
 **Results:**
-The first table states the scope being assessed: how many repositories are enrolled in Code Security, how many of those are fully scanned, and how many have no plan at all. Only the enrolled repositories are assessed, so a pass here does not mean the organization is covered. Enrolment is reported by AZDO.1043.
+The first table states the scope being assessed: how many repositories are enrolled in Code Security, how many of those are fully scanned, and how many are not enrolled in Code Security. Only the enrolled repositories are assessed, so a pass here does not mean the organization is covered. Enrolment is reported by AZDO.1043.
+
+A repository counted as not enrolled in Code Security may still be enrolled in Secret Protection, since the two plans are purchased and enabled independently. It produces no dependency or code scanning alerts either way.
 
 When repositories are missing a scanning feature, a second table counts how many are missing dependency alerts and how many are missing CodeQL alerts, and a third groups the affected repositories by project so you can see where to start.
 

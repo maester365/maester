@@ -15,7 +15,9 @@ Enable push protection for the affected repositories.
 Push protection can also be set per repository under **Project settings** > **Repos** > **Repositories** > select the repository > **Options**.
 
 **Results:**
-The first table states the scope being assessed: how many repositories are enrolled in Secret Protection, how many of those block pushes, and how many have no plan at all. Only the enrolled repositories are assessed, so a pass here does not mean the organization is covered. Enrolment is reported by AZDO.1040.
+The first table states the scope being assessed: how many repositories are enrolled in Secret Protection, how many of those block pushes, and how many are not enrolled in Secret Protection. Only the enrolled repositories are assessed, so a pass here does not mean the organization is covered. Enrolment is reported by AZDO.1040.
+
+A repository counted as not enrolled in Secret Protection may still be enrolled in Code Security, since the two plans are purchased and enabled independently. It has no secret scanning and no push protection either way.
 
 When enrolled repositories do not block pushes, a second table groups them by project so you can see where to start.
 
