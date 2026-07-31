@@ -33,10 +33,17 @@
 
     try {
         $azureDevOpsServicePrincipal = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion v1.0 -Filter "appId eq '$azureDevOpsAppId'" -Select id
-        if (-not $azureDevOpsServicePrincipal) {
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Azure DevOps app (App ID: $azureDevOpsAppId) is not available in this tenant."
-            return $null
-        }
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
+
+    if (-not $azureDevOpsServicePrincipal) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Azure DevOps app (App ID: $azureDevOpsAppId) is not available in this tenant."
+        return $null
+    }
+
+    try {
 
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
         $policiesResult = New-Object System.Collections.ArrayList
