@@ -178,12 +178,161 @@ function Get-MtADDomainState {
             # Collect Configuration container object tree
             try {
                 $configurationContext = $domainState.RootDSE.ConfigurationNamingContext
-                $configurationObjects = Get-ADObject -SearchBase $configurationContext -Filter * -Properties * @adServerParameters
-                $domainState['Configuration'] = $configurationObjects
+
+                $configuration = @{}
+
+                # WellKnown Security Principals
+                try {
+                    $wellKnownPath = "CN=WellKnown Security Principals,$configurationContext"
+                    $configuration['WellKnownSecurityPrincipals'] = Get-ADObject -SearchBase $wellKnownPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect WellKnownSecurityPrincipals data: $($_.Exception.Message)"
+                    $configuration['WellKnownSecurityPrincipals'] = $null
+                }
+
+                # Site Links (IP and SMTP transports)
+                try {
+                    $siteLinks = @()
+                    $ipTransportPath = "CN=IP,CN=Inter-Site Transports,CN=Sites,$configurationContext"
+                    $smtpTransportPath = "CN=SMTP,CN=Inter-Site Transports,CN=Sites,$configurationContext"
+                    $siteLinks += Get-ADObject -SearchBase $ipTransportPath -Filter { objectClass -eq "siteLink" } -Properties * @adServerParameters
+                    $siteLinks += Get-ADObject -SearchBase $smtpTransportPath -Filter { objectClass -eq "siteLink" } -Properties * @adServerParameters
+                    $configuration['SiteLinks'] = $siteLinks
+                } catch {
+                    Write-Verbose "Could not collect SiteLinks data: $($_.Exception.Message)"
+                    $configuration['SiteLinks'] = $null
+                }
+
+                # DHCP Servers
+                try {
+                    $dhcpPath = "CN=NetServices,CN=Services,$configurationContext"
+                    $configuration['DhcpServers'] = Get-ADObject -SearchBase $dhcpPath -Filter { objectClass -eq "dhcpClass" -or objectClass -eq "dhcpServer" -or objectClass -eq "serviceConnectionPoint" } -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect DhcpServers data: $($_.Exception.Message)"
+                    $configuration['DhcpServers'] = $null
+                }
+
+                # AuthN Policy Containers
+                try {
+                    $authNPath = "CN=AuthN Policy Configuration,CN=Services,$configurationContext"
+                    $configuration['AuthNPolicyContainers'] = Get-ADObject -SearchBase $authNPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect AuthNPolicyContainers data: $($_.Exception.Message)"
+                    $configuration['AuthNPolicyContainers'] = $null
+                }
+
+                # PKI / Certificate Services paths
+                $pkiPath = "CN=Public Key Services,CN=Services,$configurationContext"
+
+                # Trusted Root CAs
+                try {
+                    $rootCaPath = "CN=Certification Authorities,$pkiPath"
+                    $configuration['TrustedRootCAs'] = Get-ADObject -SearchBase $rootCaPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect TrustedRootCAs data: $($_.Exception.Message)"
+                    $configuration['TrustedRootCAs'] = $null
+                }
+
+                # Intermediate CAs (AIA container)
+                try {
+                    $aiaPath = "CN=AIA,$pkiPath"
+                    $configuration['IntermediateCAs'] = Get-ADObject -SearchBase $aiaPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect IntermediateCAs data: $($_.Exception.Message)"
+                    $configuration['IntermediateCAs'] = $null
+                }
+
+                # Enterprise CAs
+                try {
+                    $enrollmentPath = "CN=Enrollment Services,$pkiPath"
+                    $configuration['EnterpriseCAs'] = Get-ADObject -SearchBase $enrollmentPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect EnterpriseCAs data: $($_.Exception.Message)"
+                    $configuration['EnterpriseCAs'] = $null
+                }
+
+                # Certificate Templates
+                try {
+                    $templatePath = "CN=Certificate Templates,$pkiPath"
+                    $configuration['CertificateTemplates'] = Get-ADObject -SearchBase $templatePath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect CertificateTemplates data: $($_.Exception.Message)"
+                    $configuration['CertificateTemplates'] = $null
+                }
+
+                # Enrollment Templates - mapped to Certificate Templates container
+                try {
+                    $templatePath = "CN=Certificate Templates,$pkiPath"
+                    $configuration['EnrollmentTemplates'] = Get-ADObject -SearchBase $templatePath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect EnrollmentTemplates data: $($_.Exception.Message)"
+                    $configuration['EnrollmentTemplates'] = $null
+                }
+
+                # CRL Distribution Points
+                try {
+                    $cdpPath = "CN=CDP,$pkiPath"
+                    $configuration['CrlDistributionPoints'] = Get-ADObject -SearchBase $cdpPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect CrlDistributionPoints data: $($_.Exception.Message)"
+                    $configuration['CrlDistributionPoints'] = $null
+                }
+
+                # NTAuthCertificates
+                try {
+                    $ntAuthPath = "CN=NTAuthCertificates,$pkiPath"
+                    $configuration['NtAuthCertificates'] = Get-ADObject -Identity $ntAuthPath -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect NtAuthCertificates data: $($_.Exception.Message)"
+                    $configuration['NtAuthCertificates'] = $null
+                }
+
+                # LDAP Query Policies
+                try {
+                    $queryPolicyPath = "CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services,$configurationContext"
+                    $configuration['LdapQueryPolicies'] = Get-ADObject -SearchBase $queryPolicyPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect LdapQueryPolicies data: $($_.Exception.Message)"
+                    $configuration['LdapQueryPolicies'] = $null
+                }
+
+                # Directory Service settings (TombstoneLifetime, DsHeuristics, SpnMappings)
+                try {
+                    $dsPath = "CN=Directory Service,CN=Windows NT,CN=Services,$configurationContext"
+                    $dsObject = Get-ADObject -Identity $dsPath -Properties tombstoneLifetime, dSHeuristics, sPNMappings @adServerParameters
+                    $configuration['TombstoneLifetime'] = $dsObject.tombstoneLifetime
+                    $configuration['DsHeuristics'] = $dsObject.dSHeuristics
+                    $configuration['SpnMappings'] = $dsObject.sPNMappings
+                } catch {
+                    Write-Verbose "Could not collect Directory Service settings: $($_.Exception.Message)"
+                    $configuration['TombstoneLifetime'] = $null
+                    $configuration['DsHeuristics'] = $null
+                    $configuration['SpnMappings'] = $null
+                }
+
+                # KDS Root Keys
+                try {
+                    $kdsPath = "CN=Master Root Keys,CN=Group Key Distribution,CN=Services,$configurationContext"
+                    $configuration['KdsRootKeys'] = Get-ADObject -SearchBase $kdsPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect KdsRootKeys data: $($_.Exception.Message)"
+                    $configuration['KdsRootKeys'] = $null
+                }
+
+                # Activation Objects
+                try {
+                    $activationPath = "CN=Activation Objects,CN=Services,$configurationContext"
+                    $configuration['ActivationObjects'] = Get-ADObject -SearchBase $activationPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect ActivationObjects data: $($_.Exception.Message)"
+                    $configuration['ActivationObjects'] = $null
+                }
+
+                $domainState['Configuration'] = [PSCustomObject]$configuration
             }
             catch {
                 Write-Verbose "Could not collect Configuration container data: $($_.Exception.Message)"
-                $domainState['Configuration'] = @()
+                $domainState['Configuration'] = $null
             }
 
             # Collect Schema information
