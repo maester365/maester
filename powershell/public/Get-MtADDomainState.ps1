@@ -184,19 +184,15 @@ function Get-MtADDomainState {
                 # WellKnown Security Principals
                 try {
                     $wellKnownPath = "CN=WellKnown Security Principals,$configurationContext"
-                    $configuration['WellKnownSecurityPrincipals'] = Get-ADObject -SearchBase $wellKnownPath -Filter * -Properties * @adServerParameters
+                    $configuration['WellKnownSecurityPrincipals'] = Get-ADObject -SearchBase $wellKnownPath -Filter * -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect WellKnownSecurityPrincipals data: $($_.Exception.Message)"
                     $configuration['WellKnownSecurityPrincipals'] = $null
                 }
 
-                # Site Links (IP and SMTP transports)
+                # Site Links
                 try {
-                    $siteLinks = @()
-                    $ipTransportPath = "CN=IP,CN=Inter-Site Transports,CN=Sites,$configurationContext"
-                    $smtpTransportPath = "CN=SMTP,CN=Inter-Site Transports,CN=Sites,$configurationContext"
-                    $siteLinks += Get-ADObject -SearchBase $ipTransportPath -Filter { objectClass -eq "siteLink" } -Properties * @adServerParameters
-                    $siteLinks += Get-ADObject -SearchBase $smtpTransportPath -Filter { objectClass -eq "siteLink" } -Properties * @adServerParameters
+                    $siteLinks = Get-ADReplicationSiteLink -Filter * -Properties * @adServerParameters
                     $configuration['SiteLinks'] = $siteLinks
                 } catch {
                     Write-Verbose "Could not collect SiteLinks data: $($_.Exception.Message)"
@@ -227,7 +223,7 @@ function Get-MtADDomainState {
                 # Trusted Root CAs
                 try {
                     $rootCaPath = "CN=Certification Authorities,$pkiPath"
-                    $configuration['TrustedRootCAs'] = Get-ADObject -SearchBase $rootCaPath -Filter * -Properties * @adServerParameters
+                    $configuration['TrustedRootCAs'] = Get-ADObject -SearchBase $rootCaPath -Filter { objectClass -eq "certificationAuthority" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect TrustedRootCAs data: $($_.Exception.Message)"
                     $configuration['TrustedRootCAs'] = $null
@@ -236,7 +232,7 @@ function Get-MtADDomainState {
                 # Intermediate CAs (AIA container)
                 try {
                     $aiaPath = "CN=AIA,$pkiPath"
-                    $configuration['IntermediateCAs'] = Get-ADObject -SearchBase $aiaPath -Filter * -Properties * @adServerParameters
+                    $configuration['IntermediateCAs'] = Get-ADObject -SearchBase $aiaPath -Filter { objectClass -eq "certificationAuthority" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect IntermediateCAs data: $($_.Exception.Message)"
                     $configuration['IntermediateCAs'] = $null
@@ -245,7 +241,7 @@ function Get-MtADDomainState {
                 # Enterprise CAs
                 try {
                     $enrollmentPath = "CN=Enrollment Services,$pkiPath"
-                    $configuration['EnterpriseCAs'] = Get-ADObject -SearchBase $enrollmentPath -Filter * -Properties * @adServerParameters
+                    $configuration['EnterpriseCAs'] = Get-ADObject -SearchBase $enrollmentPath -Filter { objectClass -eq "pKIEnrollmentService" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect EnterpriseCAs data: $($_.Exception.Message)"
                     $configuration['EnterpriseCAs'] = $null
@@ -254,16 +250,24 @@ function Get-MtADDomainState {
                 # Certificate Templates
                 try {
                     $templatePath = "CN=Certificate Templates,$pkiPath"
-                    $configuration['CertificateTemplates'] = Get-ADObject -SearchBase $templatePath -Filter * -Properties * @adServerParameters
+                    $configuration['CertificateTemplates'] = Get-ADObject -SearchBase $templatePath -Filter { objectClass -eq "pKICertificateTemplate" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect CertificateTemplates data: $($_.Exception.Message)"
                     $configuration['CertificateTemplates'] = $null
                 }
 
-                # Enrollment Templates - mapped to Certificate Templates container
+                # Enrollment Templates - derived from Enterprise CAs' published templates
                 try {
-                    $templatePath = "CN=Certificate Templates,$pkiPath"
-                    $configuration['EnrollmentTemplates'] = Get-ADObject -SearchBase $templatePath -Filter * -Properties * @adServerParameters
+                    $enrollmentTemplates = @()
+                    $enterpriseCAs = $configuration['EnterpriseCAs']
+                    if ($enterpriseCAs) {
+                        foreach ($ca in $enterpriseCAs) {
+                            if ($ca.certificateTemplates) {
+                                $enrollmentTemplates += $ca.certificateTemplates
+                            }
+                        }
+                    }
+                    $configuration['EnrollmentTemplates'] = $enrollmentTemplates | Select-Object -Unique
                 } catch {
                     Write-Verbose "Could not collect EnrollmentTemplates data: $($_.Exception.Message)"
                     $configuration['EnrollmentTemplates'] = $null
@@ -272,7 +276,7 @@ function Get-MtADDomainState {
                 # CRL Distribution Points
                 try {
                     $cdpPath = "CN=CDP,$pkiPath"
-                    $configuration['CrlDistributionPoints'] = Get-ADObject -SearchBase $cdpPath -Filter * -Properties * @adServerParameters
+                    $configuration['CrlDistributionPoints'] = Get-ADObject -SearchBase $cdpPath -Filter { objectClass -eq "cRLDistributionPoint" -or objectClass -eq "certificationAuthority" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect CrlDistributionPoints data: $($_.Exception.Message)"
                     $configuration['CrlDistributionPoints'] = $null
@@ -290,7 +294,7 @@ function Get-MtADDomainState {
                 # LDAP Query Policies
                 try {
                     $queryPolicyPath = "CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services,$configurationContext"
-                    $configuration['LdapQueryPolicies'] = Get-ADObject -SearchBase $queryPolicyPath -Filter * -Properties * @adServerParameters
+                    $configuration['LdapQueryPolicies'] = Get-ADObject -SearchBase $queryPolicyPath -Filter { objectClass -eq "queryPolicy" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect LdapQueryPolicies data: $($_.Exception.Message)"
                     $configuration['LdapQueryPolicies'] = $null
@@ -313,7 +317,7 @@ function Get-MtADDomainState {
                 # KDS Root Keys
                 try {
                     $kdsPath = "CN=Master Root Keys,CN=Group Key Distribution,CN=Services,$configurationContext"
-                    $configuration['KdsRootKeys'] = Get-ADObject -SearchBase $kdsPath -Filter * -Properties * @adServerParameters
+                    $configuration['KdsRootKeys'] = Get-ADObject -SearchBase $kdsPath -Filter { objectClass -eq "msKds-ProvRootKey" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect KdsRootKeys data: $($_.Exception.Message)"
                     $configuration['KdsRootKeys'] = $null
@@ -322,7 +326,7 @@ function Get-MtADDomainState {
                 # Activation Objects
                 try {
                     $activationPath = "CN=Activation Objects,CN=Services,$configurationContext"
-                    $configuration['ActivationObjects'] = Get-ADObject -SearchBase $activationPath -Filter * -Properties * @adServerParameters
+                    $configuration['ActivationObjects'] = Get-ADObject -SearchBase $activationPath -Filter { objectClass -eq "msImaging-PSP" -or objectClass -eq "serviceConnectionPoint" } -SearchScope OneLevel -Properties * @adServerParameters
                 } catch {
                     Write-Verbose "Could not collect ActivationObjects data: $($_.Exception.Message)"
                     $configuration['ActivationObjects'] = $null
@@ -383,7 +387,7 @@ function Get-MtADDomainState {
                 # Use DirectorySearcher to get objects with their security descriptors
                 $searcher = New-Object System.DirectoryServices.DirectorySearcher
                 if ($ComputerName) {
-                    $searcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$ComputerName/$domainDN", $null, $null, [System.DirectoryServices.AuthenticationTypes]::ServerBind)
+                    $searcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$ComputerName/$domainDN", $null, $null, ([System.DirectoryServices.AuthenticationTypes]::Secure -bor [System.DirectoryServices.AuthenticationTypes]::ServerBind))
                 } else {
                     $searcher.SearchRoot = [ADSI]"LDAP://$domainDN"
                 }
