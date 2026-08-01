@@ -1,4 +1,4 @@
-function Test-MtCisaDkim {
+﻿function Test-MtCisaDkim {
     <#
     .SYNOPSIS
     Checks state of DKIM for all EXO domains
@@ -44,8 +44,8 @@ function Test-MtCisaDkim {
             if (-not $dkimSigningConfig) {
                 $dkimRecord = [PSCustomObject]@{
                     domain     = $domain.DomainName
-                    pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.DomainName -like '*.onmicrosoft.com') { 'Passed' } else { 'Failed' }
-                    reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.DomainName -like '*.onmicrosoft.com') { 'Microsoft auto-signs DKIM for onmicrosoft.com domains' } else { 'No DkimSigningConfig found for domain' }
+                    pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
+                    reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
                     dkimRecord = $null
                 }
                 $dkimRecords += $dkimRecord
