@@ -51,7 +51,9 @@ jobs:
         run: npm ci
 
       - name: Update website release version
-        run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ inputs.version }}
+        env:
+          WEBSITE_VERSION: ${{ inputs.version }}
+        run: node ./build/Update-WebsiteReleaseVersion.mjs "$WEBSITE_VERSION"
 
       - name: ✍️ Create Version Files Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1

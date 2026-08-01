@@ -48,6 +48,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Check command reference inputs
         if: github.event_name == 'pull_request'
@@ -72,6 +74,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Generate command reference
         shell: pwsh
@@ -125,6 +129,7 @@ jobs:
         with:
           # Full history so contributor attribution can be derived from git.
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Download generated command reference
         if: needs.detect-command-reference-changes.outputs.generate == 'true'

@@ -362,7 +362,7 @@ unit-test tree in Phase 4.
    - `.gitignore:525` → `maester-tests/Custom/*.ps1`.
    - `website/scripts/generate-test-docs.mjs` — tests root + config path; regenerate.
    - `build/orca/Update-OrcaTests.ps1`, `build/eidsca/Update-EidscaTests.ps1` write
-     paths; `build/Update-TagsDocumentation.ps1` default `$TestsPath`.
+     paths.
    - Sweep for stragglers: `Install-MaesterTests.ps1:9` help link, `powershell/README.md`,
      root `README.md`, `.github/` docs, and `website/docs` contributing pages.
 3. Known, accepted quirk: an **older released module** run inside a **new checkout**
