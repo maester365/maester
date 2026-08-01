@@ -15,7 +15,8 @@ Collects Active Directory domain state information.
 ## SYNTAX
 
 ```powershell
-Get-MtADDomainState [-Refresh] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtADDomainState [-Refresh] [[-ComputerName] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,6 +45,14 @@ Get-MtADDomainState -Refresh
 
 Forces a fresh collection of domain state data from Active Directory.
 
+### EXAMPLE 3
+
+```powershell
+Get-MtADDomainState -ComputerName dc01.contoso.com
+```
+
+Collects domain state data by targeting dc01.contoso.com for supported Active Directory and DNS queries.
+
 ## PARAMETERS
 
 ### -Refresh
@@ -58,6 +67,30 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ComputerName
+
+Specifies an Active Directory domain controller or AD DS server to target for
+data collection.
+When provided, Active Directory queries and the LDAP searcher
+are directed to this server.
+DNS collection also targets this host when it
+supports the required DNS management access.
+If not specified, commands use
+the implicit serverless behavior of the Active Directory module and the DNS
+root from the collected domain object is used for DNS queries.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
