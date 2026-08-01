@@ -327,7 +327,6 @@ jobs:
           include_longrunning_tests: false
           include_preview_tests: false
           include_tags: ${{ needs.context.outputs.include_tags }}
-          exclude_tags: GitHub
           maester_version: ${{ env.SMOKE_MAESTER_VERSION }}
           pester_verbosity: None
           step_summary: false
