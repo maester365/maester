@@ -6,8 +6,8 @@ Microsoft 365 demo tenant. The same workflow supports two run types:
 
 - **Quick** runs only the fast, platform-neutral Graph check `MT.1068` for an
   approved pull request that changes a PowerShell file.
-- **Full** runs all public Graph checks. Exchange, Teams, private, preview, and
-  long-running tests remain disabled.
+- **Full** runs all public Microsoft 365 Graph checks. Exchange, Teams,
+  GitHub, private, preview, and long-running tests remain disabled.
 
 Each operating system's self-contained HTML report is written directly to the
 private `maester365/maester-smoke-reports` repository for core-maintainer
@@ -196,7 +196,10 @@ receives `contents: read` and `id-token: write`.
 The action is pinned to the immutable commit for `maester-action` v1.2.0. The
 action's public result details, public artifacts, and telemetry remain disabled;
 the public run summary contains only links protected by the private report
-repository's access controls. After Maester produces a result, the workflow
+repository's access controls. The action runs before the repository checkout so
+`include_private_tests: false` sees a clean workspace containing only the
+installed public tests. After Maester produces a result, the workflow checks out
+the trusted default-branch report publisher into a separate directory and
 transfers only the HTML report directly to the core-only private release
 repository. The matrix uses `fail-fast: false` so a failure on one operating
 system does not hide the other platform results.
