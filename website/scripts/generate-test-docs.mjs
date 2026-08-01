@@ -510,10 +510,36 @@ function renderTagsIndex(tests) {
       tagMap.get(tag).push(test);
     }
   }
-  const rows = [...tagMap.entries()]
-    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
-    .map(([tag, taggedTests]) => `| ${escapeTable(tag)} | ${taggedTests.length} | ${taggedTests.slice(0, 8).map((test) => `[${test.id}](../${test.id})`).join(", ")}${taggedTests.length > 8 ? ", ..." : ""} |`)
-    .join("\n");
+
+  const tagGroups = [
+    ["CIS", (tag) => /^CIS(?:\.|\s|$)|L1|L2/.test(tag)],
+    ["CISA", (tag) => /^CISA(?:\.|$)|^MS\./.test(tag)],
+    ["EIDSCA", (tag) => /^EIDSCA(?:\.|$)/.test(tag)],
+    ["ORCA", (tag) => /^ORCA(?:\.|$)/.test(tag)],
+    ["Maester", (tag) => /^(?:MT\.|Maester)/.test(tag)],
+  ];
+  const groupedTags = new Map(tagGroups.map(([name]) => [name, []]));
+  groupedTags.set("Ungrouped", []);
+
+  for (const entry of [...tagMap.entries()].sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))) {
+    const group = tagGroups.find(([, matches]) => matches(entry[0]));
+    groupedTags.get(group?.[0] ?? "Ungrouped").push(entry);
+  }
+
+  const sections = [...groupedTags.entries()]
+    .filter(([, entries]) => entries.length > 0)
+    .map(([group, entries]) => {
+      const rows = entries
+        .map(([tag, taggedTests]) => `| ${escapeTable(tag)} | ${taggedTests.length} | ${taggedTests.slice(0, 8).map((test) => `[${test.id}](../${test.id})`).join(", ")}${taggedTests.length > 8 ? ", ..." : ""} |`)
+        .join("\n");
+      return `### ${group}
+
+| Tag | Tests | Examples |
+| --- | ---: | --- |
+${rows}`;
+    })
+    .join("\n\n");
+
   return `---
 id: overview
 title: Tags Overview
@@ -528,11 +554,30 @@ ${generatedMarker}
 
 # Tags Overview
 
-Tags are discovered from Pester test metadata and can be used to find related Maester tests by suite, product area, benchmark, capability, or control ID.
+Tags are used by Maester to identify and group related tests. They can also be used to select specific tests to run or exclude during test execution. To keep tags useful, we focus on a few key areas:
 
-| Tag | Tests | Examples |
-| --- | ---: | --- |
-${rows}
+- **Test suites** use standardized categories that align with well-known benchmarks and baselines or with Maester's own suite of tests:
+  - **CIS Benchmarks**: Tags prefixed with \`CIS\` (for example, \`CIS.M365.1.1\` or \`CIS.Azure.3.2\`).
+  - **CISA and Microsoft Baseline**: Tags prefixed with \`CISA\` or \`MS\` (for example, \`CISA.M365.Baseline\` or \`MS.Azure.Baseline\`).
+  - **EIDSCA**: Tags prefixed with \`EIDSCA\` (for example, \`EIDSCA.EntraID.2.1\`).
+  - **ORCA**: Tags prefixed with \`ORCA\` (for example, \`ORCA.Exchange.1.1\`).
+  - **Maester**: Tags prefixed with \`Maester\` or \`MT\` (for example, \`MT.1001\` or \`MT.1024\`).
+- **Product areas** identify the products and services being tested, such as Azure, Defender XDR, Entra ID, Exchange, Microsoft 365, SharePoint, and Teams.
+- **Practices or capabilities** identify security topics such as authentication, Conditional Access (CA), Data Loss Prevention (DLP), Extended Security Posture Management (XSPM), Hybrid Identity, Privileged Access Management (PAM), and Privileged Identity Management (PIM).
+
+## Recommendations for Tag Usage
+
+Less is more. When creating or assigning tags to tests:
+
+1. Assign one **test suite** tag per test to identify the benchmark or baseline. This tag will usually go in the \`Describe\` block of a Pester test file.
+2. Assign **product area** tags for the products or services most relevant to the test. Limit these to one to three tags per test.
+3. Use **practice** or **capability** tags sparingly and only when they add significant value. Avoid overly specific tags that apply to only one test.
+
+## Tags Used
+
+The tables below list every tag discovered from Pester test metadata and link to example tests that use it.
+
+${sections}
 `;
 }
 
