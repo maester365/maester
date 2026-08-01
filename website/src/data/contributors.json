@@ -3227,6 +3227,11 @@
         "MT.1057",
         "MT.1058",
         "MT.1084",
+        "MT.1106",
+        "MT.1107",
+        "MT.1108",
+        "MT.1109",
+        "MT.1110",
         "MT.1181",
         "MT.1187",
         "MT.1188",
@@ -3306,7 +3311,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 14
+      "recentCommits": 15
     }
   ],
   "attributions": {
@@ -5780,35 +5785,40 @@
       "author": "nicowyss",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "merill"
       ]
     },
     "MT.1107": {
       "author": "nicowyss",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "merill"
       ]
     },
     "MT.1108": {
       "author": "nicowyss",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "merill"
       ]
     },
     "MT.1109": {
       "author": "nicowyss",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "merill"
       ]
     },
     "MT.1110": {
       "author": "nicowyss",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "merill"
       ]
     },
     "MT.1111": {
