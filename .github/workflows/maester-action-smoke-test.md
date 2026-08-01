@@ -6,8 +6,8 @@ Microsoft 365 demo tenant. The same workflow supports two run types:
 
 - **Quick** runs only the fast, platform-neutral Graph check `MT.1068` for an
   approved pull request that changes a PowerShell file.
-- **Full** runs all public Microsoft 365 Graph checks. Exchange, Teams,
-  GitHub, private, preview, and long-running tests remain disabled.
+- **Full** runs all public Graph checks. Exchange, Teams, private, preview, and
+  long-running tests remain disabled.
 
 Each operating system's self-contained HTML report is written directly to the
 private `maester365/maester-smoke-reports` repository for core-maintainer
