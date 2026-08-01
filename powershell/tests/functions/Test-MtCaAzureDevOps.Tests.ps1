@@ -44,6 +44,23 @@
         }
     }
 
+    Context 'Azure DevOps app skip propagation' {
+        It 'Should not convert the custom skip into an error' {
+            Mock -ModuleName Maester Test-MtConnection { return $true }
+            Mock -ModuleName Maester Get-MtLicenseInformation { return 'P1' }
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return @() }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($SkippedBecause)
+                if ($SkippedBecause -eq 'Custom') {
+                    throw 'Pester skip signal'
+                }
+            }
+
+            { Test-MtCaAzureDevOps } | Should -Throw 'Pester skip signal'
+            Should -Invoke -ModuleName Maester Add-MtTestResultDetail -ParameterFilter { $SkippedBecause -eq 'Error' } -Times 0 -Exactly
+        }
+    }
+
     Context 'Azure DevOps app is available in tenant' {
         BeforeEach {
             Mock -ModuleName Maester Test-MtConnection { return $true }

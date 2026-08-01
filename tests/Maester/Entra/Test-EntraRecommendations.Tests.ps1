@@ -13,6 +13,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $En
     # Define the test name and Id for each Entra recommendation.
     $RecommendationId = $_.id
     It "MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName). See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", "$($_.recommendationType)" {
+        $RecommendationId = $_.id
 
         $EntraPremiumRecommendations = @(
             "insiderRiskPolicy",

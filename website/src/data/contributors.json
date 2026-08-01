@@ -170,7 +170,7 @@
         "ORCA.233.1"
       ],
       "initials": "MS",
-      "recentCommits": 1
+      "recentCommits": 2
     },
     {
       "id": "Cloud-Architekt",
@@ -1182,7 +1182,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 13
+      "recentCommits": 9
     },
     {
       "id": "oed-metzb",
@@ -2249,6 +2249,37 @@
       "recentCommits": 2
     },
     {
+      "id": "massimomazzariol",
+      "github": "massimomazzariol",
+      "name": "Massimo Mazzariol",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Italy",
+      "locationFlag": "🇮🇹",
+      "url": "",
+      "socials": {
+        "linkedin": "massimomazzariol"
+      },
+      "avatar": "https://github.com/massimomazzariol.png",
+      "firstContribution": "2026-07-22",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1024",
+        "MT.1042",
+        "MT.1045",
+        "MT.1046",
+        "MT.1047",
+        "MT.1048",
+        "MT.1071",
+        "MT.1123"
+      ],
+      "initials": "MM",
+      "recentCommits": 5
+    },
+    {
       "id": "mattcave",
       "github": "mattcave",
       "name": "Matt Cave",
@@ -2413,34 +2444,6 @@
       ],
       "initials": "MJ",
       "recentCommits": 0
-    },
-    {
-      "id": "massimomazzariol",
-      "github": "massimomazzariol",
-      "name": "Massimo Mazzariol",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Italy",
-      "locationFlag": "🇮🇹",
-      "url": "",
-      "socials": {
-        "linkedin": "massimomazzariol"
-      },
-      "avatar": "https://github.com/massimomazzariol.png",
-      "firstContribution": "2026-07-22",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048"
-      ],
-      "initials": "MM",
-      "recentCommits": 1
     },
     {
       "id": "mrdos010",
@@ -2637,6 +2640,29 @@
       ],
       "initials": "CE",
       "recentCommits": 2
+    },
+    {
+      "id": "amlhive-tech",
+      "github": "amlhive-tech",
+      "name": "Haris Habib",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "AMLHIVE",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/amlhive-tech.png",
+      "firstContribution": "2026-08-01",
+      "testsAuthored": [],
+      "testsContributed": [
+        "CIS.M365.2.1.9",
+        "CISA.MS.EXO.3.1"
+      ],
+      "initials": "HH",
+      "recentCommits": 1
     },
     {
       "id": "ic3lotus",
@@ -3274,7 +3300,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 15
+      "recentCommits": 14
     }
   ],
   "attributions": {
@@ -3473,7 +3499,8 @@
         "thomas-s-schmidt",
         "brianreidc7",
         "Mynster9361",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "amlhive-tech"
       ]
     },
     "CIS.M365.2.1.11": {
@@ -4073,7 +4100,8 @@
         "thomas-s-schmidt",
         "SamErde",
         "brianreidc7",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "amlhive-tech"
       ]
     },
     "CISA.MS.EXO.4.1": {
@@ -5076,7 +5104,8 @@
         "thomas-s-schmidt",
         "weyCC81",
         "SamErde",
-        "svrooij"
+        "svrooij",
+        "massimomazzariol"
       ]
     },
     "MT.1025": {
@@ -5509,7 +5538,8 @@
       "author": "HenrikPiecha",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "massimomazzariol"
       ]
     },
     "MT.1072": {
@@ -5836,7 +5866,8 @@
     "MT.1123": {
       "author": "OfirGavish",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "massimomazzariol"
       ]
     },
     "MT.1147": {
