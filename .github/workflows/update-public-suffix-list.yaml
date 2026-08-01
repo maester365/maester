@@ -15,25 +15,25 @@ jobs:
   update-public-suffix-list:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
 
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Update public suffix list
+        shell: pwsh
+        run: ./build/Update-PublicSuffixList.ps1
+
       - name: Generate maester-bot app token
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
           private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          persist-credentials: false
-
-      - name: Update public suffix list
-        shell: pwsh
-        run: ./build/Update-PublicSuffixList.ps1
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1

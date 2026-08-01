@@ -23,14 +23,16 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Resolve latest release tag
         id: release_tag
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          $tag = '${{ github.event.release.tag_name }}'
+          $tag = $env:RELEASE_TAG
           if ([string]::IsNullOrWhiteSpace($tag)) {
             $tag = (gh release view --repo $env:GITHUB_REPOSITORY --json tagName -q .tagName)
           }
@@ -41,7 +43,9 @@ jobs:
 
       - name: Stamp maester-config.json version fields
         shell: pwsh
-        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion '${{ steps.release_tag.outputs.tag }}'
+        env:
+          RELEASE_TAG: ${{ steps.release_tag.outputs.tag }}
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion $env:RELEASE_TAG
 
       - name: Generate Maester Bot token for maester-tests
         id: maester-tests-token
