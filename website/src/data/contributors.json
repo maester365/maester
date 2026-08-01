@@ -2010,6 +2010,40 @@
       "recentCommits": 0
     },
     {
+      "id": "brianveldman",
+      "github": "brianveldman",
+      "name": "Beerd Veldman",
+      "title": "Cloud Solution Architect",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9",
+      "pinLast": false,
+      "company": "",
+      "location": "Zwolle",
+      "locationFlag": "🇳🇱",
+      "url": "https://cloudtips.nl/",
+      "socials": {
+        "linkedin": "brian-veldman",
+        "x": "brianveldman"
+      },
+      "avatar": "https://github.com/brianveldman.png",
+      "firstContribution": "2025-07-13",
+      "testsAuthored": [
+        "MT.1064",
+        "MT.1065"
+      ],
+      "testsContributed": [
+        "CISA.MS.AAD.7.4",
+        "CISA.MS.AAD.7.5",
+        "CISA.MS.AAD.7.6",
+        "MT.1053",
+        "MT.1056",
+        "MT.1061",
+        "MT.1074"
+      ],
+      "initials": "BV",
+      "recentCommits": 1
+    },
+    {
       "id": "weyCC81",
       "github": "weyCC81",
       "name": "Stefan Wey",
@@ -2152,34 +2186,6 @@
         "CISA.MS.AAD.7.9"
       ],
       "initials": "PF",
-      "recentCommits": 0
-    },
-    {
-      "id": "brianveldman",
-      "github": "brianveldman",
-      "name": "Beerd Veldman",
-      "title": "Cloud Solution Architect",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9",
-      "pinLast": false,
-      "company": "",
-      "location": "Zwolle",
-      "locationFlag": "🇳🇱",
-      "url": "https://cloudtips.nl/",
-      "socials": {
-        "linkedin": "brian-veldman",
-        "x": "brianveldman"
-      },
-      "avatar": "https://github.com/brianveldman.png",
-      "firstContribution": "2025-07-13",
-      "testsAuthored": [
-        "MT.1064",
-        "MT.1065"
-      ],
-      "testsContributed": [
-        "MT.1056"
-      ],
-      "initials": "BV",
       "recentCommits": 0
     },
     {
@@ -3978,7 +3984,8 @@
         "thomas-s-schmidt",
         "SamErde",
         "JeanPhilippeGeorge",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "CISA.MS.AAD.7.5": {
@@ -3990,7 +3997,8 @@
         "fflaten",
         "SamErde",
         "JeanPhilippeGeorge",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "CISA.MS.AAD.7.6": {
@@ -4002,7 +4010,8 @@
         "ThorNicolai",
         "SamErde",
         "JeanPhilippeGeorge",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "CISA.MS.AAD.7.7": {
@@ -5409,7 +5418,8 @@
         "SamErde",
         "l-gosling",
         "nicolonsky",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "MT.1054": {
@@ -5468,7 +5478,8 @@
       "contributors": [
         "thomas-s-schmidt",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "MT.1062": {
@@ -5561,7 +5572,8 @@
       "author": "HenrikPiecha",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "brianveldman"
       ]
     },
     "MT.1075": {
