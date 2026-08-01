@@ -19,6 +19,8 @@ keywords:
 
 # CIS.M365.8.1.1 - (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services
@@ -36,15 +38,17 @@ help to dissuade the use of non-approved storage providers.
 
 The impact associated with this change is highly dependent upon current practices in the tenant. If users do not use other storage providers, then minimal impact is likely. However, if users do regularly utilize providers outside of the tenant this will affect their ability to continue to do so.
 
-#### Remediation action:
+#### Remediation action
 
 To change third-party cloud services using the UI:
+
 1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
 2. Select **Settings & policies > Global (Org-wide default) settings.**
 3. Click **Teams** to open the **Teams settings** section.
 4. Under files set storages providers to **Off** unless they have first been authorized by the organization.
 
 To change third-party cloud services using PowerShell:
+
 1. Connect to Teams using **Connect-MicrosoftTeams**.
 2. Run the following PowerShell command to disable external providers that are not authorized. (the example disables Citrix Files, DropBox, Box, Google Drive and Egnyte)
 
@@ -64,7 +68,7 @@ Set-CsTeamsClientConfiguration @Params
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [Manage Teams with Microsoft Teams PowerShell](https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-managing-teams)
+* [Manage Teams with Microsoft Teams PowerShell](https://learn.microsoft.com/microsoftteams/teams-powershell-managing-teams)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 401](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

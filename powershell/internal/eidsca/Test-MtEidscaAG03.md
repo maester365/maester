@@ -3,6 +3,7 @@ Object Id or scope of users which will be included to report suspicious activiti
 Apply this feature to all users.
 
 #### Test script
+
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 .reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
@@ -10,11 +11,9 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 
 #### Related links
 
-- [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
-- [Get authenticationMethodsPolicy - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/authenticationmethodspolicy-get)
+- [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/authenticationMethodsPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
+- [Get authenticationMethodsPolicy - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/authenticationmethodspolicy-get)
 - [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AuthMethodsSettings)
-
-
 
 <!--- Results --->
 %TestResult%

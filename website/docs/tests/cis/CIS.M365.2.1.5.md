@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.2.1.5 - (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled
@@ -35,8 +37,7 @@ Safe Attachments for SharePoint, OneDrive, and Microsoft Teams protect organizat
 
 Impact associated with Safe Attachments is minimal, and equivalent to impact associated with anti-virus scanners in an environment.
 
-
-#### Remediation action:
+#### Remediation action
 
 To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 
@@ -53,6 +54,7 @@ To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following PowerShell command:
+
 ```powershell
 Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -AllowSafeDocsOpen $false
 ```
@@ -60,7 +62,7 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Safe Attachments for SharePoint, OneDrive, and Microsoft Teams](https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-for-spo-odfb-teams-about)
+* [Safe Attachments for SharePoint, OneDrive, and Microsoft Teams](https://learn.microsoft.com/defender-office-365/safe-attachments-for-spo-odfb-teams-about)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 88](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

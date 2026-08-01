@@ -101,4 +101,4 @@ Test-MtCisaWeakFactor,MS.AAD.3.5,https://github.com/cisagov/ScubaGear/blob/main/
 "@
 
 $a=$a|ConvertFrom-Csv -Header "cmdlet","control","url"
-$a|%{"* $($_.cmdlet) - [$($_.control)]($($_.url))"}|clip
+$a | ForEach-Object { "* $($_.cmdlet) - [$($_.control)]($($_.url))" } | Set-Clipboard

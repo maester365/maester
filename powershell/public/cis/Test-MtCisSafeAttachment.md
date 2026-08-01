@@ -10,9 +10,10 @@ Enabling Safe Attachments policy helps protect against malware threats in email 
 
 Delivery of email with attachments may be delayed while scanning is occurring
 
-#### Remediation action:
+#### Remediation action
 
 To enable the Safe Attachments policy:
+
 1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com).
 2. Click to expand **E-mail & Collaboration** select **Policies & rules**.
 3. On the Policies & rules page select **Threat policies**.
@@ -29,10 +30,13 @@ To enable the Safe Attachments policy:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. To change an existing policy modify the example below and run the following PowerShell command:
+
 ```powershell
 Set-SafeAttachmentPolicy -Identity 'Example policy' -Action 'Block' -QuarantineTag 'AdminOnlyAccessPolicy' -Enable $true
 ```
+
 3. Or, edit and run the below example to create a new safe attachments policy.
+
 ```powershell
 New-SafeAttachmentPolicy -Name "CIS 2.1.4" -Enable $true -Action 'Block' -QuarantineTag 'AdminOnlyAccessPolicy'
 
@@ -44,8 +48,8 @@ New-SafeAttachmentRule -Name "CIS 2.1.4 Rule" -SafeAttachmentPolicy "CIS 2.1.4" 
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Safe Attachments in Microsoft Defender for Office 365](https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-about)
-* [Set up Safe Attachments policies in Microsoft Defender for Office 365](https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-policies-configure)
+* [Safe Attachments in Microsoft Defender for Office 365](https://learn.microsoft.com/defender-office-365/safe-attachments-about)
+* [Set up Safe Attachments policies in Microsoft Defender for Office 365](https://learn.microsoft.com/defender-office-365/safe-attachments-policies-configure)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 84](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status of the usage of tag definitions in Azure DevOps, as Azure DevOps supports up to 150,000 tag definitions per organization or collection.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/settings/work/object-limits?view=azure-devops
+    https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops
 
 .EXAMPLE
     ```

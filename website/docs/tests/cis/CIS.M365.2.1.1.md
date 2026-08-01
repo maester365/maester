@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.2.1.1 - (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/amandaw33" title="amandaw33 · Co-contributor"><img src="https://github.com/amandaw33.png" alt="amandaw33" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled
@@ -37,7 +39,7 @@ Safe Links for Office applications extends phishing protection to documents and 
 
 User impact associated with this change is minor - users may experience a very short delay when clicking on URLs in Office documents before being directed to the requested site. Users should be informed of the change as, in the event a link is unsafe and blocked, they will receive a message that it has been blocked.
 
-#### Remediation action:
+#### Remediation action
 
 To create a Safe Links policy:
 
@@ -50,6 +52,7 @@ To create a Safe Links policy:
 7. Ensure the following **URL & click protection settings** are defined:
 
 **Email**
+
 * Checked **On: Safe Links checks a list of known, malicious links when users click links in email. URLs are rewritten by default**
 * Checked **Apply Safe Links to email messages sent within the organization**
 * Checked **Apply real-time URL scanning for suspicious links and links that point to files**
@@ -57,17 +60,20 @@ To create a Safe Links policy:
 * Unchecked **Do not rewrite URLs, do checks via Safe Links API only**.
 
 **Teams**
+
 * Checked **On: Safe Links checks a list of known, malicious links when users click links in Microsoft Teams. URLs are not rewritten**.
 
 **Office 365 Apps**
+
 * Checked On: **Safe Links checks a list of known, malicious links when users click links in Microsoft Office apps. URLs are not rewritten**
 
 **Click protection settings**
+
 * Checked: **Track user clicks**
 * Unchecked: **Let users click through the original URL**
 * There is no recommendation for organization branding
-8. Click **Next** twice and finally **Submit**.
 
+8. Click **Next** twice and finally **Submit**.
 
 ##### PowerShell
 
@@ -98,9 +104,9 @@ New-SafeLinksRule -Name "CIS SafeLinks" -SafeLinksPolicy "CIS SafeLinks Policy" 
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [Set-SafeLinksPolicy](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/set-safelinkspolicy?view=exchange-ps)
-* [Set up Safe Links policies in Microsoft Defender for Office 365](https://learn.microsoft.com/en-us/defender-office-365/safe-links-policies-configure?view=o365-worldwide)
-* [Preset security policies in cloud organizations](https://learn.microsoft.com/en-us/defender-office-365/preset-security-policies?view=o365-worldwide)
+* [Set-SafeLinksPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/set-safelinkspolicy?view=exchange-ps)
+* [Set up Safe Links policies in Microsoft Defender for Office 365](https://learn.microsoft.com/defender-office-365/safe-links-policies-configure?view=o365-worldwide)
+* [Preset security policies in cloud organizations](https://learn.microsoft.com/defender-office-365/preset-security-policies?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 73](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

@@ -20,15 +20,17 @@ keywords:
 
 # CISA.MS.EXO.17.3 - Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).
 
 Rationale: Audit logs may no longer be available when needed if they are not retained for a sufficient time. Increased log retention time gives an agency the necessary visibility to investigate incidents that occurred some time ago. OMB M-21-13, Appendix C, Table 5 specifically calls out Unified Audit Logs in the Cloud Azure log category.
 
-#### Remediation action:
+#### Remediation action
 
-To create one or more custom audit retention policies, if the default retention policy is not sufficient for agency needs, follow [Create an audit log retention policy](https://learn.microsoft.com/en-us/purview/audit-log-retention-policies?view=o365-worldwide&tabs=microsoft-purview-portal#create-an-audit-log-retention-policy) instructions. Ensure the duration selected in the retention policies is at least one year, in accordance with OMB M-21-31.
+To create one or more custom audit retention policies, if the default retention policy is not sufficient for agency needs, follow [Create an audit log retention policy](https://learn.microsoft.com/purview/audit-log-retention-policies?view=o365-worldwide&tabs=microsoft-purview-portal#create-an-audit-log-retention-policy) instructions. Ensure the duration selected in the retention policies is at least one year, in accordance with OMB M-21-31.
 
 #### Related links
 

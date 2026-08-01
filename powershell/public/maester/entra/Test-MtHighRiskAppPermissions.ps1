@@ -2,10 +2,10 @@
     <#
     .SYNOPSIS
     Check if any applications or service principals have high risk Graph permissions that can lead to direct or indirect paths
-    to Global Admin and full tenant takeover. The permissions are based on the research published at https://github.com/emiliensocchi/azure-tiering/tree/main.
+    to Global Administrator and full tenant takeover. The permissions are based on the research published at https://github.com/emiliensocchi/azure-tiering/tree/main.
 
     .DESCRIPTION
-    Applications that use Graph API permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+    Applications that use Graph API permissions with a risk of having a direct or indirect path to Global Administrator and full tenant takeover.
 
     .EXAMPLE
     Test-MtHighRiskAppPermissions
@@ -19,7 +19,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple permissions.')]
     [OutputType([bool])]
     param(
-        # Check for direct path to Global Admin or indirect path through a combination of permissions. Default is "All".
+        # Check for direct path to Global Administrator or indirect path through a combination of permissions. Default is "All".
         [ValidateSet('All', 'Direct', 'Indirect')]
         [String] $AttackPath = 'All'
     )
@@ -457,9 +457,9 @@
         $return = if (($allAssignedCriticalPermissions | Measure-Object).Count -eq 0) { $true } else { $false }
 
         if ($return) {
-            $testResultMarkdown = "Well done. No application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover."
+            $testResultMarkdown = "Well done. No application has graph permissions with a risk of having a $($attackPathStr) path to Global Administrator and full tenant takeover."
         } else {
-            $testResultMarkdown = "At least one application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover.`n`n%TestResult%"
+            $testResultMarkdown = "At least one application has graph permissions with a risk of having a $($attackPathStr) path to Global Administrator and full tenant takeover.`n`n%TestResult%"
 
             $result = "| ApplicationName | ApplicationId | PermissionName | PermissionType | AttackPath |`n"
             $result += "| --- | --- | --- | --- | --- |`n"

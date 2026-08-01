@@ -162,5 +162,3 @@ class ORCA105 : ORCACheck
     }
 
 }
-
-

@@ -51,6 +51,7 @@ const config = {
   ],
 
   plugins: [
+    "./src/plugins/contributor-pages.js",
     [
       "posthog-docusaurus",
       {
@@ -142,6 +143,7 @@ const config = {
             label: "Commands",
           },
           { to: 'manifesto', label: 'Manifesto', position: 'left' },
+          { to: 'contributors', label: 'Contributors', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
           {
             "aria-label": "GitHub Repository",
@@ -167,6 +169,10 @@ const config = {
                 label: "Tests",
                 to: "/docs/intro",
               },
+              {
+                label: "Manifesto",
+                to: "/manifesto",
+              },
             ],
           },
           {
@@ -183,19 +189,15 @@ const config = {
             ],
           },
           {
-            title: "More",
+            title: "Maester Cloud",
             items: [
               {
-                label: "Manifesto",
-                to: "/manifesto",
+                label: "Hosted Maester Cloud",
+                href: "https://maester.cloud",
               },
               {
-                label: "Bluesky",
-                href: "https://bsky.app/profile/maester.dev",
-              },
-              {
-                label: "GitHub",
-                href: "https://github.com/maester365/maester",
+                label: "Self-hosted Maester Cloud",
+                href: "https://maester.cloud",
               },
             ],
           },

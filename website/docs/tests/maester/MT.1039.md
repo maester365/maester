@@ -1,6 +1,6 @@
 ---
 title: "MT.1039 - Ensure MailTips are enabled for end users"
-description: "MailTips SHOULD be enabled for end users Rationale: MailTips assist end users with identifying strange patterns in emails they send, helping prevent accidental data leakage and improving overall email security awareness. Remediation action: 1. Connect to Exchange Online: ```powershell Connect-Excha…"
+description: "MailTips SHOULD be enabled for end users Rationale: MailTips assist end users with identifying strange patterns in emails they send, helping prevent accidental data leakage and improving overall email security awareness. Remediation action 1. Connect to Exchange Online: ```powershell Connect-Exchan…"
 slug: /tests/MT.1039
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,33 +17,39 @@ keywords:
 
 # MT.1039 - Ensure MailTips are enabled for end users
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 MailTips SHOULD be enabled for end users
 
 Rationale: MailTips assist end users with identifying strange patterns in emails they send, helping prevent accidental data leakage and improving overall email security awareness.
 
-#### Remediation action:
+#### Remediation action
 
 1. Connect to Exchange Online:
+
 ```powershell
 Connect-ExchangeOnline
 ```
 
-2. Enable MailTips for external recipients:
+1. Enable MailTips for external recipients:
+
 ```powershell
 Set-OrganizationConfig -MailTipsExternalRecipientsTipsEnabled $true
 ```
 
-3. Verify the setting:
+1. Verify the setting:
+
 ```powershell
 (Get-OrganizationConfig).MailTipsExternalRecipientsTipsEnabled
 ```
+
 The result should be `True`.
 
 #### Related links
 
-* [MailTips in Exchange Online](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/mailtips/mailtips)
+* [MailTips in Exchange Online](https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/mailtips/mailtips)
 * [Microsoft Secure Score - Enable MailTips](https://security.microsoft.com/securescore)
 
 ## Test Metadata

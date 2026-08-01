@@ -7,7 +7,7 @@
     Conditional Access policies access controls are enforced only if ALL conditions are met. Therefore, sign-in risk and user risk should be configured separately.
 
     Learn more:
-    https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies
+    https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies
 
     .Example
     Test-MtCaMisconfiguredIDProtection
@@ -51,15 +51,15 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
         } else {
-            $testResult = 'Well done! No conditional access policies detected where sign-in risk and user risk are combined.'
+            $testResult = 'Well done! No Conditional Access policies detected where sign-in risk and user risk are combined.'
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
         return $result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $false
     }
 }

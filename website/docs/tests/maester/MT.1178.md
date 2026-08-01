@@ -17,6 +17,8 @@ keywords:
 
 # MT.1178 - Ensure ASR Rules are configured correctly
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure at least one Intune Attack Surface Reduction (ASR) policy has rules configured in **Block** or **Audit** mode.
@@ -48,7 +50,7 @@ See the [Microsoft Defender ASR rules deployment guide](https://learn.microsoft.
 
 Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result. **Warn** is a supported ASR rule state but does not satisfy the baseline. Baseline rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Go to **Endpoint security** > **Attack surface reduction**.
@@ -78,9 +80,9 @@ Additional ASR rules detected in tenant policies are reported for visibility but
 #### Related links
 
 - [Microsoft Intune - Attack Surface Reduction](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/asr)
-- [Microsoft Learn - ASR rules reference](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference)
-- [Microsoft Learn - Enable ASR rules in Intune](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-attack-surface-reduction)
-- [Microsoft Learn - ASR rules deployment guide](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment)
+- [Microsoft Learn - ASR rules reference](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-reference)
+- [Microsoft Learn - Enable ASR rules in Intune](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/enable-attack-surface-reduction)
+- [Microsoft Learn - ASR rules deployment guide](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment)
 
 ## Test Metadata
 

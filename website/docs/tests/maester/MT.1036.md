@@ -17,6 +17,8 @@ keywords:
 
 # MT.1036 - All excluded objects should have a fallback include in another policy.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Original author"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/robbevandendaele">Robbe Van den Daele</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Provides the differences in objects between two arrays of objects.

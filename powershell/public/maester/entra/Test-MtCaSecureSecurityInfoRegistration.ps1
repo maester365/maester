@@ -1,10 +1,10 @@
 ﻿function Test-MtCaSecureSecurityInfoRegistration {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy securing security info registration.
+    Checks if the tenant has at least one Conditional Access policy securing security info registration.
 
     .Description
-    Security info registration conditional access policy can secure the registration of security info for users in the tenant.
+    Security info registration Conditional Access policy can secure the registration of security info for users in the tenant.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-registration
@@ -49,15 +49,15 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies secure security info registration.`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies secure security info registration.`n`n%TestResult%"
         } else {
-            $testResult = "No conditional access policy securing security info registration."
+            $testResult = "No Conditional Access policy securing security info registration."
         }
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
         return $result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $false
     }
 }

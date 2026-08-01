@@ -17,6 +17,8 @@ keywords:
 
 # MT.1052 - At least one Conditional Access policy is targeting the Device Code authentication flow.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/martin-haller" title="Martin Haller · Co-contributor"><img src="https://github.com/martin-haller.png" alt="Martin Haller" /></a><a className="test-byline-avatar" href="/contributors/thornicolai" title="Thor Nicolaï · Co-contributor"><img src="https://github.com/ThorNicolai.png" alt="Thor Nicolaï" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Checks if at least one policy is targeting the Device Code condition.

@@ -1,10 +1,10 @@
 ﻿function Test-MtCaMfaForGuest {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all guest users.
+    Checks if the tenant has at least one Conditional Access policy requiring multifactor authentication for all guest users.
 
     .Description
-    MFA for all users conditional access policy can be used to require MFA for all guest users in the tenant.
+    MFA for all users Conditional Access policy can be used to require MFA for all guest users in the tenant.
 
     Learn more:
     https://aka.ms/CATemplatesGuest
@@ -61,15 +61,15 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for guest accounts:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require multi-factor authentication for guest accounts:`n`n%TestResult%"
         } else {
-            $testResult = "No conditional access policy requires multi-factor authentication for guest accounts."
+            $testResult = "No Conditional Access policy requires multi-factor authentication for guest accounts."
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
         return $result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $false
     }
 }

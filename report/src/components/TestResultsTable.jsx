@@ -5,10 +5,11 @@ import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
+import { compareDefaultTestResults } from "@/lib/testSort";
+import { allSelectableStatus, defaultSelectedStatus } from "@/lib/testStatus";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
-const defaultSelectedStatus = ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'];
 
 function testMatchesSearch(item, searchQuery) {
   if (!searchQuery) return true;
@@ -30,7 +31,7 @@ export default function TestResultsTable(props) {
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortColumn, setSortColumn] = useState("Id");
+  const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedItem, setSelectedItem] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -142,7 +143,7 @@ export default function TestResultsTable(props) {
   };
 
   const getSortedData = useCallback((data) => {
-    if (!sortColumn) return data;
+    if (!sortColumn) return [...data].sort(compareDefaultTestResults);
 
     return [...data].sort((a, b) => {
       let valueA, valueB;
@@ -242,7 +243,7 @@ export default function TestResultsTable(props) {
 
   const uniqueBlocks = [...new Set(testResults.Tests.map(item => item.Block).filter(Boolean))];
 
-  const status = ['Passed', 'Failed', 'Investigate', 'Skipped', 'NotRun', 'Error'];
+  const status = allSelectableStatus;
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
   const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
 

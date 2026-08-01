@@ -1,0 +1,524 @@
+# Maester contributor registry
+#
+# Every Maester test is credited to the community members who wrote and improved
+# it. Attribution is derived automatically from git history at build time — you
+# do NOT need an entry here to be credited.
+#
+# Add (or update) an entry to enrich your profile on https://maester.dev/contributors
+# and on the test pages you contributed to:
+#
+#   your-github-handle:            # key MUST be your GitHub handle
+#     name: Your Name              # display name (defaults to your git author name)
+#     title: Security Consultant   # short tagline shown on your card (optional)
+#     company: Contoso             # (optional)
+#     url: https://yourblog.com    # personal site / blog (optional)
+#     socials:                     # (all optional)
+#       x: yourhandle
+#       linkedin: yourhandle
+#       bluesky: yourhandle.com
+#
+# Commit matching is fully automatic — you never need to list emails here.
+# Commits are matched to your GitHub account via your noreply email, the
+# GitHub API (results cached as privacy-preserving hashes in
+# email-aliases.json — a machine-maintained file, don't edit it), and your
+# git author name.
+#
+# Profile picture: your GitHub avatar is used by default. To use a different
+# image, drop `your-github-handle.png` (or .jpg) into website/static/img/contributors/.
+
+alexandair:
+  name: Aleksandar Nikolić
+  title: Microsoft MVP
+
+amlhive-tech:
+  name: Haris Habib
+  company: AMLHIVE
+  emails:
+    - tech@amlhive.com.au
+
+amandaw33:
+
+andremieth:
+  name: André Mieth
+  location: Hannover
+
+Arcath:
+
+artemop:
+
+BakkerJan:
+  name: Jan Bakker
+  title: Microsoft MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/43008837-7976-eb11-a812-000d3a8dfe0d
+  location: Netherlands
+  url: https://janbakker.tech
+  socials:
+    linkedin: jan-bakker
+    x: janbakker_
+
+bastienperez:
+  name: Bastien Perez
+  title: Consultant Microsoft 365 - Active Directory - Modern Workplace
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/afb2bc47-0ec6-4eec-8eab-777a131a9952
+  company: Clidsys
+  location: Caen, France
+  url: https://perezbastien.com
+  socials:
+    linkedin: perez-bastien
+    x: bastienperez_
+
+bdrogja:
+  name: Boris Drogja
+  title: Founder of EndLogic & Security Consultant Bechtle-AG
+  company: Bechtle
+  location: Germany
+  socials:
+    linkedin: boris-drogja
+
+blindzero:
+  name: Matthias
+  company: nanotemper
+  location: Munich
+
+brianreidc7:
+  name: Brian Reid
+  title: One of the few Microsoft Certified Master (MCM) and MVPs worldwide
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/aa640ff3-3c9a-e411-93f2-9cb65495d3c4
+  company: NBConsult
+  url: https://www.c7solutions.com
+  socials:
+    x: BrianReidC7
+
+brianveldman:
+  name: Beerd Veldman
+  title: Cloud Solution Architect
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9
+  location: Zwolle
+  url: https://cloudtips.nl/
+  socials:
+    linkedin: brian-veldman
+    x: brianveldman
+
+Cloud-Architekt:
+  name: Thomas Naunheim
+  title: Microsoft Security MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/411a1416-38e8-ea11-a814-000d3a8dfe0d
+  location: Koblenz
+  url: https://www.cloud-architekt.net
+  socials:
+    linkedin: thomasnaunheim
+    x: thomas_live
+    bluesky: naunheim.cloud
+
+crmhh:
+  name: Christopher Brumm
+  title: Microsoft Security MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/cad9c18c-40fe-475d-b9d9-dbec9bce58c3
+  company: glueckkanja AG
+  location: Hamburg
+  url: https://chris-brumm.com
+  socials:
+    linkedin: christopherbrumm
+    bluesky: cbrhh.bsky.social
+
+DanielBradley1:
+  name: Daniel Bradley
+  title: Microsoft Security MVP and Blogger @ ourcloudnetwork.com
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/f62d6181-95fb-ed11-8f6d-000d3a560942
+  company: ourcloudnetwork
+  location: United Kingdom
+  url: https://ourcloudnetwork.com/
+  socials:
+    linkedin: danielbradley2
+    x: DanielatOCN
+
+DanielWahlgren:
+  name: Daniel Wahlgren
+  company: Accigo AB
+  location: Sweden
+  socials:
+    bluesky: wahlgren.bsky.social
+    linkedin: danielwahlgren
+
+deleugpn:
+
+DrPye:
+
+f-bader:
+  name: Fabian Bader
+  title: Microsoft Security MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/2881ad4f-04c6-ec11-a7b5-0022482d3c49
+  company: glueckkanja AG
+  location: Hamburg, Germany
+  url: https://cloudbrothers.info
+  socials:
+    linkedin: fabianbader
+    x: fabian_bader
+    bluesky: fabian.bader.cloud
+
+fflaten:
+  name: Frode Flaten
+  title: Pester maintainer
+  location: Norway
+  url: https://frodeflaten.com
+  socials:
+    x: FrodeFlaten
+    linkedin: frodeflaten
+    bluesky: frodeflaten.com
+
+GuidoBaijense:
+
+HenrikPiecha:
+  name: Henrik Piecha
+  title: Microsoft 365 Consultant & PowerShell enthusiast
+  location: Germany
+  socials:
+    linkedin: henrik-piecha
+
+ic3lotus:
+  name: Patrick
+
+jasperbaes:
+  name: Jasper Baes
+  title: Microsoft Security & Compliance ☁️ - Cyber Security Consultant
+  location: Belgium
+  url: https://jbaes.be
+  socials:
+    linkedin: jasper-baes
+    bluesky: jasperbaes.bsky.social
+
+JeanPhilippeGeorge:
+  name: Jean-Philippe George
+  company: SodixCH
+  url: https://www.sodix.ch
+
+jed-exotic:
+  name: Jed
+  title: Fair warning, it's the parrot doing most of the coding
+  company: EasyDynamics
+
+jflieben:
+  name: Jos Lieben
+  title: Microsoft MVP
+  company: Lieben Consultancy
+  url: https://www.lieben.nu
+  socials:
+    linkedin: joslieben
+
+Jhope188:
+  name: Jon Hope
+  title: Doing Azure things
+  url: https://conditionalaccess.tech
+  socials:
+    linkedin: jhope188
+
+joshuafdo:
+
+kayasax:
+
+kevinstone-at-res:
+
+kij:
+  company: software-one
+  location: Copenhagen
+
+knussbaumer:
+  name: Kim Nussbaumer
+  location: Switzerland
+  url: https://nussbaumer.kim
+
+Korthal-Maiyn:
+  name: Christopher Edwards
+  title: Trying to learn Automation, including DevOps and Agile development workflows
+  location: Brisbane, Australia
+  socials:
+    linkedin: korthal
+
+l-gosling:
+  name: Lukas Gosling
+  location: Germany
+  socials:
+    linkedin: lukas-gosling
+
+lbrauns:
+
+lnfernux:
+  name: Truls Thorstad Dahlsveen
+  title: Hey everyone 🦥
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/964806cf-c755-ed11-9561-000d3a197333
+  company: glueckkanja AG
+  location: Norway
+  url: https://www.infernux.no/
+  socials:
+    linkedin: truls-dahlsveen
+    bluesky: truls.infernux.no
+
+m-hanisch:
+  location: Dresden, Germany
+  socials:
+    linkedin: markushanisch
+
+magnusjak:
+
+marcel-ngn:
+  name: Marcel N.
+  title: Cloud Automation & Security
+  company: Flip
+  location: Berlin
+  url: https://mcl-ngn.cloud
+  socials:
+    linkedin: mcl-ngn
+    bluesky: marcel-ngn.bsky.social
+
+MarcoJanse:
+  name: Marco Janse
+  title: My name is Marco. I am a part-time consultant for a Dutch company. I love learning and automating us
+  company: ICTStuff
+  location: The Netherlands
+  url: http://www.ictstuff.info/
+  socials:
+    bluesky: marcojanse.bsky.social
+
+martin-haller:
+  name: Martin Haller
+  company: PATRON-IT s.r.o.
+  location: Brno
+  url: https://martinhaller.cz
+
+massimomazzariol:
+  name: Massimo Mazzariol
+  location: Italy
+  socials:
+    linkedin: massimomazzariol
+
+mattcave:
+  name: Matt Cave
+  company: Augmentt
+  location: Toronto, ON
+
+merill:
+  name: Merill Fernando
+  title: Archmaester
+  company: Jozra
+  location: Melbourne, Australia
+  url: https://merill.net
+  socials:
+    x: merill
+    linkedin: merill
+    bluesky: merill.net
+  # Maester is my day job - always list me last and keep me out of the
+  # highlight panes; this page is for the community.
+  pinLast: true
+
+michaelmsonne:
+  name: Michael Morten Sonne
+  title: Microsoft MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/b6a5bd91-5ebd-4c84-8965-023a95273093
+  company: MINDCORE
+  location: The lovely Earth
+  url: https://blog.sonnes.cloud
+  socials:
+    linkedin: michaelmsonne
+
+milanschwartz:
+  name: Milan Schwartz
+
+moorereason:
+  name: Cameron Moore
+  location: Abilene, Texas, USA
+  socials:
+    x: moorereason
+
+mrdos010:
+  name: Anas
+
+Mynster9361:
+  name: "-Mynster"
+  title: Cybersecurity consultant
+  company: TDC Erhverv
+  location: Denmark
+  url: https://mynster9361.github.io
+  socials:
+    linkedin: mortenmynster
+
+nicolonsky:
+  name: Nicola Suter
+  title: All things related to endpoints and security
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb
+  company: baseVISION
+  location: Switzerland
+  url: https://tech.nicolonsky.ch
+  socials:
+    linkedin: nicolasuter
+    x: nicolonsky
+
+nicowyss:
+  name: nicowyss
+  title: Cloud Architect & Consultant 🎗️ | Blogger at cloudfil.ch 📖 | Cloud Ethusiast ☁️
+  company: SoftwareONE
+  location: Switzerland
+  url: https://cloudfil.ch/blog
+  socials:
+    linkedin: nico-wyss
+
+NZLostboy:
+  name: Ben Miles
+  title: Hacker & Cloud Security
+  location: New Zealand
+  url: https://blog.lostboy.geek.nz/
+  socials:
+    x: LostBoyNZ
+    linkedin: ben-m-nz
+
+oed-metzb:
+  name: Benjamin Metz
+  company: oediv
+  location: Bielefeld, Germany
+  url: https://oediv.de
+  socials:
+    linkedin: benjamin-metz
+
+OfirGavish:
+  name: Ofir Gavish
+  url: https://www.mscloudninja.com
+  socials:
+    linkedin: ofir-gavish-33495b48
+
+Oppedijk:
+  name: Erik Oppedijk
+  company: Xebia
+  location: Netherlands
+
+PetterFauske:
+  name: Petter Fauske
+  location: Norway
+
+pkothare:
+
+PTMohr:
+  name: Pascal-Tobias Mohr
+  company: Comma Soft AG
+  location: Germany
+  socials:
+    linkedin: pascal-mohr
+
+rafalfitt:
+  name: Rafał Fitt
+  socials:
+    x: rafal_fitt
+
+RetroDadson:
+  name: Robin Dadswell
+  # Renamed GitHub account - commits were authored under the old handle's
+  # noreply address (RobinDadswell).
+  emails:
+    - 19610103+RobinDadswell@users.noreply.github.com
+
+remold:
+  name: Remold
+  location: Netherlands
+
+ricmestre:
+  name: Ricardo Mestre
+  company: Fujitsu
+  location: Lisboa, Portugal
+
+RobbeVandenDaele:
+  name: Robbe Van den Daele
+  title: Passionate about Microsoft Security, Purple Teaming, and Security research
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/f6095ac4-5535-4a96-823b-f332add1cb41
+  company: The Collective
+  location: Belgium
+  url: https://hybridbrothers.com/
+  socials:
+    linkedin: robbe-van-den-daele-677986190
+    x: RobbeVdDaele
+
+SamErde:
+  name: Sam Erde
+  title: Microsoft MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/d6fd6168-805b-49c5-801b-fbe6d20db428
+  company: PatriotConsultingTech
+  location: Charlotte, NC area
+  url: https://day3bits.com
+  socials:
+    linkedin: SamErde
+    x: SamErde
+    bluesky: SamErde.day3bits.com
+
+SebastianClaesson:
+
+seick:
+  name: seick
+  location: Germany
+  socials:
+    bluesky: seick.it
+
+SoufiyanAk:
+
+soulemike:
+  name: Michael Soule
+  title: Co-creator of Maester
+
+svrooij:
+  name: Stephan van Rooij
+  title: Microsoft MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/cc128f12-003f-ed11-bba3-000d3a197333
+  company: Smartersoft BV
+  location: The Netherlands
+  url: https://svrooij.io
+  socials:
+    linkedin: stephanvanrooij
+    bluesky: svrooij.io
+
+tbisque:
+
+thetechgy:
+  name: Travis McDade
+  location: Ohio, United States
+  url: https://www.architechlabs.io
+  socials:
+    linkedin: travismcdade
+
+thomas-s-schmidt:
+  name: Thomas Schmidt
+  company: TDC Erhverv
+  location: Denmark
+  url: https://tdc.dk/
+
+thomasvochten:
+  name: Thomas Vochten
+  title: Microsoft MVP
+
+ThorNicolai:
+  name: Thor Nicolaï
+  title: Security Consultant GSEC | SC-400 | SC-300 | SC-200 | CCNA
+  company: The Collective
+  location: Belgium
+  socials:
+    linkedin: thornicolai
+
+wesmacdonald:
+
+weyCC81:
+  name: Stefan Wey
+  title: ➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (
+  location: Switzerland
+  url: https://www.alweys.ch
+  socials:
+    linkedin: stefanwey
+    bluesky: stefanwey.bsky.social

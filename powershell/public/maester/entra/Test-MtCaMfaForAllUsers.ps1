@@ -1,10 +1,10 @@
 ﻿function Test-MtCaMfaForAllUsers {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
+    Checks if the tenant has at least one Conditional Access policy requiring multifactor authentication for all users
 
     .Description
-    MFA for all users conditional access policy can be used to require MFA for all users in the tenant.
+    MFA for all users Conditional Access policy can be used to require MFA for all users in the tenant.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
@@ -15,7 +15,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtCaMfaForAllUsers
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'AllUsers is a well known term for conditional access policies.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'AllUsers is a well known term for Conditional Access policies.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -52,16 +52,16 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for all users:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require multi-factor authentication for all users:`n`n%TestResult%"
         } else {
-            $testResult = 'No conditional access policy requires multi-factor authentication for all users.'
+            $testResult = 'No Conditional Access policy requires multi-factor authentication for all users.'
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
         return $result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $false
     }
 }

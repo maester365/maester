@@ -58,7 +58,7 @@ workflow integration in Maester.
 
 const stats = [
   { value: "500K+", label: "PowerShell Gallery downloads" },
-  { value: "120K+", label: "Tenants protected" },
+  { value: "60K+", label: "Tenants protected" },
   { value: "360+", label: "Built-in security tests" },
   { value: "5", label: "Compliance frameworks" },
 ];
@@ -98,20 +98,6 @@ const features = [
 
 const suites = [
   {
-    emoji: "🔥",
-    title: "Maester",
-    desc: "Best-practice tests curated by the Maester community.",
-    count: "170+ tests",
-    href: "/docs/tests/maester",
-  },
-  {
-    emoji: "🛡️",
-    title: "EIDSCA",
-    desc: "Entra ID Security Config Analyzer baseline.",
-    count: "60+ tests",
-    href: "/docs/tests/eidsca",
-  },
-  {
     emoji: "🦅",
     title: "CISA SCuBA",
     desc: "US CISA Secure Cloud Business Applications baselines.",
@@ -126,6 +112,20 @@ const suites = [
     href: "/docs/tests/cis",
   },
   {
+    emoji: "🔥",
+    title: "Maester",
+    desc: "Best-practice tests curated by the Maester community.",
+    count: "170+ tests",
+    href: "/docs/tests/maester",
+  },
+  {
+    emoji: "🛡️",
+    title: "EIDSCA",
+    desc: "Entra ID Security Config Analyzer baseline.",
+    count: "60+ tests",
+    href: "/docs/tests/eidsca",
+  },
+  {
     emoji: "📨",
     title: "ORCA",
     desc: "Office 365 Recommended Configuration Analyzer.",
@@ -133,6 +133,23 @@ const suites = [
     href: "/docs/tests/orca",
   },
 ];
+
+function ChatIcon() {
+  return (
+    <svg
+      className={styles.buttonIcon}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+    </svg>
+  );
+}
 
 function Hero() {
   const { siteConfig } = useDocusaurusContext();
@@ -163,9 +180,10 @@ function Hero() {
             </Link>
             <Link
               className={styles.btnGhost}
-              to="https://github.com/maester365/maester"
+              to="https://discord.maester.dev/"
             >
-              Star on GitHub
+              <ChatIcon />
+              Join Maester Discord
             </Link>
           </div>
         </div>
@@ -231,6 +249,36 @@ function Features() {
   );
 }
 
+function Manifesto() {
+  const logoUrl = useBaseUrl("/img/maester.png");
+  return (
+    <section className={styles.manifestoSection}>
+      <div className="container">
+        <div className={styles.manifestoCard}>
+          <div className={styles.manifestoMark} aria-hidden="true">
+            <img src={logoUrl} alt="" />
+          </div>
+          <div className={styles.manifestoContent}>
+            <span className={styles.eyebrow}>The Maester Manifesto</span>
+            <Heading as="h2" className={styles.manifestoTitle}>
+              Security guidance should be executable and available to
+              everyone.
+            </Heading>
+            <p className={styles.manifestoText}>
+              Maester exists to make cloud security testing open, reusable and
+              accessible. The core framework and its tests will remain free,
+              open source and community driven.
+            </p>
+            <Link className={styles.manifestoLink} to="/manifesto">
+              Read the Maester Manifesto →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Suites() {
   return (
     <section className={styles.section}>
@@ -257,6 +305,17 @@ function Suites() {
             </Link>
           ))}
         </div>
+        <div className={styles.cloudCallout}>
+          <div>
+            <strong>Looking for a hosted version of Maester?</strong>
+            <span>
+              Get continuous monitoring without managing the infrastructure.
+            </span>
+          </div>
+          <Link className={styles.cloudLink} to="https://maester.cloud">
+            See Maester Cloud →
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -276,7 +335,14 @@ function CtaBand() {
           </p>
           <div className={styles.heroButtons}>
             <Link className={styles.btnPrimary} to="/docs/installation">
-              Get Started →
+              Install Maester →
+            </Link>
+            <Link
+              className={styles.btnGhost}
+              to="https://discord.maester.dev/"
+            >
+              <ChatIcon />
+              Join Maester Discord
             </Link>
             <Link
               className={styles.btnGhost}
@@ -543,7 +609,6 @@ export default function Home() {
         <Stats />
         <Features />
         <Suites />
-        <CtaBand />
       </div>
       <main className={styles.homeDark}>
         <CustomTests />
@@ -556,6 +621,10 @@ export default function Home() {
         <AzureDevOps />
         <EmailAlert />
       </main>
+      <div className={styles.home}>
+        <CtaBand />
+        <Manifesto />
+      </div>
     </Layout>
   );
 }

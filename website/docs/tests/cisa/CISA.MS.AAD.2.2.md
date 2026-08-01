@@ -20,6 +20,8 @@ keywords:
 
 # CISA.MS.AAD.2.2 - A notification SHOULD be sent to the administrator when high-risk users are detected.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/blindzero" title="Matthias · Co-contributor"><img src="https://github.com/blindzero.png" alt="Matthias" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 A notification SHOULD be sent to the administrator when high-risk users are detected.
@@ -30,7 +32,7 @@ Rationale: Notification enables the admin to monitor the event and remediate the
 
 Follow the guide below to configure Entra ID Protection to send a regularly monitored security mailbox email notification when user accounts are determined to be high risk.
 
-- [Configure Entra Identity Protection Notifications - Microsoft Learn](https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-notifications#configure-users-at-risk-detected-alerts)
+- [Configure Microsoft Entra ID Protection Notifications - Microsoft Learn](https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-notifications#configure-users-at-risk-detected-alerts)
 
 #### Related links
 

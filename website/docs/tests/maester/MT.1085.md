@@ -1,6 +1,6 @@
 ---
 title: "MT.1085 - Pending approvals for Critical Asset Management should not be present"
-description: "Microsoft provides an approval step for assets that do not meet the automatic classification threshold. Assets with a lower classification confidence score must be approved by a security administrator. Stale pending approvals can lead to limited visibility in Microsoft Defender XDR and potential se…"
+description: "Microsoft provides an approval step for assets that do not meet the automatic classification threshold. Assets with a lower classification confidence score must be approved by a Security Administrator. Stale pending approvals can lead to limited visibility in Microsoft Defender XDR and potential se…"
 slug: /tests/MT.1085
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,17 +19,20 @@ keywords:
 
 # MT.1085 - Pending approvals for Critical Asset Management should not be present
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-Microsoft provides an approval step for assets that do not meet the automatic classification threshold. Assets with a lower classification confidence score must be approved by a security administrator.
+Microsoft provides an approval step for assets that do not meet the automatic classification threshold. Assets with a lower classification confidence score must be approved by a Security Administrator.
 Stale pending approvals can lead to limited visibility in Microsoft Defender XDR and potential security risks if critical assets are not properly identified.
 
-Therefore, you should regularly [review critical assets](https://learn.microsoft.com/en-us/security-exposure-management/classify-critical-assets#review-critical-assets) to ensure the correct classification has been applied to your assets.
+Therefore, you should regularly [review critical assets](https://learn.microsoft.com/security-exposure-management/classify-critical-assets#review-critical-assets) to ensure the correct classification has been applied to your assets.
 
 ### How to fix
+
 On the [Critical asset management page](https://security.microsoft.com/securitysettings/defender/critical_asset_management), review the asset classification named in the Maester test results. Review the pending approvals and verify the correct classification of the listed assets.
 
-More details are available in the Microsoft Learn article: "[Add assets to predefined classifications](https://learn.microsoft.com/en-us/security-exposure-management/classify-critical-assets#add-assets-to-predefined-classifications)".
+More details are available in the Microsoft Learn article: "[Add assets to predefined classifications](https://learn.microsoft.com/security-exposure-management/classify-critical-assets#add-assets-to-predefined-classifications)".
 
 ## Test Metadata
 

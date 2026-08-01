@@ -1,4 +1,4 @@
-﻿Param (
+Param (
     [switch]
     $SkipTest,
 

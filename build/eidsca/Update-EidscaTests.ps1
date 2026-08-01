@@ -45,6 +45,29 @@ function GetVersion($graphUri) {
     return $apiVersion
 }
 
+function ConvertTo-LanguageNeutralMicrosoftUrl {
+    param (
+        [AllowEmptyString()]
+        [string] $Content
+    )
+
+    if ([string]::IsNullOrEmpty($Content)) {
+        return $Content
+    }
+
+    $languageNeutralDomains = @(
+        'developer.microsoft.com'
+        'docs.microsoft.com'
+        'learn.microsoft.com'
+        'support.microsoft.com'
+        'www.microsoft.com'
+    )
+    $domainPattern = ($languageNeutralDomains | ForEach-Object { [regex]::Escape($_) }) -join '|'
+    $languageSegmentPattern = '(?i)(https?://(?:' + $domainPattern + '))/[a-z]{2}-[a-z]{2}(?=/|[?#\s)\]}>.,;:''"]|$)'
+
+    return $Content -replace $languageSegmentPattern, '$1'
+}
+
 function GetRecommendedValue($RecommendedValue) {
     if ($RecommendedValue -notlike "@('*,*')") {
         $isNumericComparison = $false
@@ -135,6 +158,7 @@ function GetCompareOperator($RecommendedValue) {
 }
 
 function GetPageTitle($uri) {
+    $uri = ConvertTo-LanguageNeutralMicrosoftUrl -Content $uri
     $isValidUri = ($uri -as [System.URI]).AbsoluteURI -ne $null
 
     $title = ''
@@ -160,7 +184,7 @@ function GetPageMarkdownLink($uri) {
 }
 
 function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
-    $graphExplorerUrl = "https://developer.microsoft.com/en-us/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
+    $graphExplorerUrl = "https://developer.microsoft.com/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
     return "[Open in Graph Explorer]($graphExplorerUrl)"
 }
 
@@ -399,7 +423,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%TestCases%', ""
     }
 
-    return $output
+    return ConvertTo-LanguageNeutralMicrosoftUrl -Content $output
 }
 
 # Returns the contents of a file named @template.txt at the given folder path
@@ -414,8 +438,14 @@ function RemoveTrailingWhitespace($content) {
 
 function CreateFile($folderPath, $fileName, $content) {
     $filePath = Join-Path $folderPath $fileName
+    if ($content -match "`r`n") {
+        $newLine = "`r`n"
+    } else {
+        $newLine = "`n"
+    }
     $content = RemoveTrailingWhitespace $content
-    $content | Out-File $filePath -Encoding utf8
+    $content = $content -replace '(\r?\n)+$', ''
+    [System.IO.File]::WriteAllText($filePath, "$content$newLine", [System.Text.UTF8Encoding]::new($false))
 }
 
 function GetEidscaPsFunctionName($checkId) {
@@ -518,5 +548,11 @@ $discoveryLines += [System.Environment]::NewLine
 $output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
 
 $output += $sb.ToString()
+if ($output -match "`r`n") {
+    $newLine = "`r`n"
+} else {
+    $newLine = "`n"
+}
 $output = RemoveTrailingWhitespace $output
-$output | Out-File $TestFilePath -Encoding utf8
+$output = $output -replace '(\r?\n)+$', ''
+[System.IO.File]::WriteAllText($TestFilePath, "$output$newLine", [System.Text.UTF8Encoding]::new($false))

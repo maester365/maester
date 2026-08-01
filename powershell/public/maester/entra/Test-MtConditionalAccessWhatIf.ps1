@@ -10,7 +10,7 @@
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
-    https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta
+    https://learn.microsoft.com/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta
 
     .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `

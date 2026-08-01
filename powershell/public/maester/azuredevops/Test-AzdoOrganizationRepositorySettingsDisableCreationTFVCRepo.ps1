@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status if creation of Team Foundation Version Control (TFVC) repositories is disabled.
 
-    https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects
+    https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects
 
 .EXAMPLE
     ```

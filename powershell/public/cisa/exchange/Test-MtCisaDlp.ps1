@@ -47,6 +47,7 @@
         $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled.`n`n%TestResult%"
     }
 
+    $result = ''
     if ($policies) {
         $passResult = "✅ Pass"
         $failResult = "❌ Fail"

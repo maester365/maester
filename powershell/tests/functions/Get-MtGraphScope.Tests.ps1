@@ -18,4 +18,21 @@ Describe 'Get-MtGraphScope' {
         $directoryRecommendationsIndex | Should -BeLessThan $entitlementManagementIndex
         $entitlementManagementIndex | Should -BeLessThan $identityRiskEventIndex
     }
+
+    It 'Includes the PIM v3 role management alert scope and excludes the deprecated PIM v2 scope' {
+        $scopes = Get-MtGraphScope
+
+        $scopes | Should -Contain 'RoleManagementAlert.Read.Directory'
+        $scopes | Should -Not -Contain 'PrivilegedAccess.Read.AzureAD'
+    }
+
+    It 'Keeps RoleManagementAlert.Read.Directory in sorted position between RoleManagement and SecurityIdentitiesSensors' {
+        $scopes = Get-MtGraphScope
+        $roleManagementIndex = [array]::IndexOf($scopes, 'RoleManagement.Read.All')
+        $roleManagementAlertIndex = [array]::IndexOf($scopes, 'RoleManagementAlert.Read.Directory')
+        $securityIdentitiesSensorsIndex = [array]::IndexOf($scopes, 'SecurityIdentitiesSensors.Read.All')
+
+        $roleManagementIndex | Should -BeLessThan $roleManagementAlertIndex
+        $roleManagementAlertIndex | Should -BeLessThan $securityIdentitiesSensorsIndex
+    }
 }

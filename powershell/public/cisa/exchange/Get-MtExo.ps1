@@ -45,6 +45,8 @@
         "SharingPolicy"                  = "Get-SharingPolicy"
         "DlpComplianceRule"              = "Get-DlpComplianceRule"
         "DlpCompliancePolicy"            = "Get-DlpCompliancePolicy"
+        "RetentionCompliancePolicy"      = "Get-RetentionCompliancePolicy"
+        "AppRetentionCompliancePolicy"   = "Get-AppRetentionCompliancePolicy"
         "MalwareFilterPolicy"            = "Get-MalwareFilterPolicy"
         "HostedContentFilterPolicy"      = "Get-HostedContentFilterPolicy"
         "HostedConnectionFilterPolicy"   = "Get-HostedConnectionFilterPolicy"

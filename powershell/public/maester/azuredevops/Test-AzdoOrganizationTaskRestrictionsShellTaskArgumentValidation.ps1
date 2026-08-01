@@ -6,7 +6,7 @@
     Checks the status if the Enable shell tasks arguments validation setting that validates argument parameters for built-in shell tasks to check for inputs that can inject commands into scripts.
     The check ensures that the shell correctly executes characters like semicolons, quotes, and parentheses.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation
+    https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation
 
 .EXAMPLE
     ```

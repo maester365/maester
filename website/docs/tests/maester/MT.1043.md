@@ -17,39 +17,46 @@ keywords:
 
 # MT.1043 - Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Spam confidence level (SCL) SHOULD NOT be set to -1 in mail transport rules with specific domains
 
 Rationale: Allow-listing domains in transport rules bypasses regular malware and phishing scanning, which can enable an attacker to launch attacks against your users from a safe haven domain.
 
-#### Remediation action:
+#### Remediation action
 
 1. Connect to Exchange Online:
+
 ```powershell
 Connect-ExchangeOnline
 ```
 
-2. View your current transport rules:
+1. View your current transport rules:
+
 ```powershell
 Get-TransportRule | Select-Object Name, SetScl
 ```
 
-3. For each transport rule that uses `SetScl -1`, modify it to set SCL to 0 or higher:
+1. For each transport rule that uses `SetScl -1`, modify it to set SCL to 0 or higher:
+
 ```powershell
 Set-TransportRule -Identity "RuleName" -SetSCL 0
 ```
 
-4. Verify the changes:
+1. Verify the changes:
+
 ```powershell
 Get-TransportRule | Where-Object { $_.SetScl -eq -1 }
 ```
+
 The result should return no rules.
 
 #### Related links
 
-* [Exchange Transport Rules and SCL values](https://learn.microsoft.com/en-us/exchange/security-and-compliance/mail-flow-rules/mail-flow-rules)
-* [Spam Confidence Levels (SCL) in Exchange Online](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/anti-spam-message-headers)
+* [Exchange Transport Rules and SCL values](https://learn.microsoft.com/exchange/security-and-compliance/mail-flow-rules/mail-flow-rules)
+* [Spam Confidence Levels (SCL) in Exchange Online](https://learn.microsoft.com/microsoft-365/security/office-365-security/anti-spam-message-headers)
 * [Microsoft Secure Score - Set SCL to 0 or higher for domains](https://security.microsoft.com/securescore)
 
 ## Test Metadata

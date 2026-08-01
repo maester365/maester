@@ -1,10 +1,10 @@
 ﻿function Test-MtCaEnforceSignInFrequency {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy enforcing sign-in frequency for non-corporate devices
+    Checks if the tenant has at least one Conditional Access policy enforcing sign-in frequency for non-corporate devices
 
     .Description
-    Sign-in frequency conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
+    Sign-in frequency Conditional Access policy can be helpful to minimize the risk of data leakage from a shared device.
 
     Learn more:
     https://aka.ms/CATemplatesBrowserSession
@@ -35,7 +35,7 @@
 Microsoft recommends disabling browser persistence for users accessing the tenant from a unmanaged device.
 
 See [Require reauthentication and disable browser persistence - Microsoft Learn](https://aka.ms/CATemplatesBrowserSession)'
-        $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"
+        $testResult = "These Conditional Access policies enforce sign-in frequency:`n`n"
 
         $result = $false
         foreach ($policy in $policies) {
@@ -74,7 +74,7 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         }
 
         if ($result -eq $false) {
-            $testResult = 'There was no conditional access policy enforcing sign-in frequency for non-corporate devices.'
+            $testResult = 'There was no Conditional Access policy enforcing sign-in frequency for non-corporate devices.'
         }
 
         Add-MtTestResultDetail -Description $testDescription -Result $testResult

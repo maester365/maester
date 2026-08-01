@@ -8,7 +8,7 @@
 
     Learn more:
     https://techcommunity.microsoft.com/blog/microsoftteamsblog/7-tips-for-safe-online-meetings-and-collaboration-with-microsoft-teams/2072303
-    https://learn.microsoft.com/en-us/microsoftteams/meeting-policies-content-sharing
+    https://learn.microsoft.com/microsoftteams/meeting-policies-content-sharing
 
     .Example
     Test-MtTeamsRestrictParticipantGiveRequestControl

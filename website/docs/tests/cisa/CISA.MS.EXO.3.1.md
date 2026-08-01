@@ -20,18 +20,22 @@ keywords:
 
 # CISA.MS.EXO.3.1 - DKIM SHOULD be enabled for all domains.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 DKIM SHOULD be enabled for all domains.
 
 Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Enabling DKIM is another means for recipients to detect spoofed emails and verify the integrity of email content.
 
-### Remediation action:
+### Remediation action
 
 #### Option 1: Enable DKIM
-To enable DKIM, follow the instructions listed on [Steps to Create, enable and disable DKIM from Microsoft 365 Defender portal | Microsoft Learn](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/email-authentication-dkim-configure?view=o365-worldwide#steps-to-create-enable-and-disable-dkim-from-microsoft-365-defender-portal).
+
+To enable DKIM, follow the instructions listed on [Steps to Create, enable and disable DKIM from Microsoft 365 Defender portal | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-dkim-configure?view=o365-worldwide#steps-to-create-enable-and-disable-dkim-from-microsoft-365-defender-portal).
 
 #### Option 2: Disallow mail to be sent from domain
+
 If the domain is not used for sending mail, we recommend disabling the ability to send from this domain. This will skip the domain for this particular test.
 
 1. Sign in to the [**Exchange Admin Center - Accepted Domains**](https://admin.exchange.microsoft.com/#/accepteddomains).

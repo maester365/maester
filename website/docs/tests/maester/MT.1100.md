@@ -17,6 +17,8 @@ keywords:
 
 # MT.1100 - Intune Audit Logs should be retained
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks for the existence of Intune Diagnostic settings collecting Intune Audit Logs.
@@ -48,7 +50,7 @@ New-AzRoleAssignment -ObjectId $UserId -RoleDefinitionName 'Intune Diagnostic Se
 
 #### Remediation action
 
-* Check the following Microsoft learn article to [Send Intune log data to Azure Storage, Event Hubs, or Log Analytics](https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor).
+* Check the following Microsoft learn article to [Send Intune log data to Azure Storage, Event Hubs, or Log Analytics](https://learn.microsoft.com/intune/intune-service/fundamentals/review-logs-using-azure-monitor).
 
 * Existing diagnostic settings can be viewed within the [Intune Diagnostics settings blade](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/TenantAdminMenu/~/diagnostics).
 

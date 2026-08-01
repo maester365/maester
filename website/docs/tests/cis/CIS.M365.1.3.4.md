@@ -24,6 +24,8 @@ keywords:
 
 # CIS.M365.1.3.4 - Ensure
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 1.3.4 (L1) Ensure 'User owned apps and services' is restricted
@@ -44,7 +46,7 @@ Disable future user's ability to install add-ins in Microsoft Word, Excel, or Po
 
 Implementation of this change will impact both end users and administrators. End users will not be able to install add-ins that they may want to install.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 admin center](https://admin.microsoft.com).
 2. Click to expand **Settings** select **Org settings**.
@@ -56,6 +58,7 @@ Implementation of this change will impact both end users and administrators. End
 
 1. Connect to the Microsoft Graph service using `Connect-MgGraph -Scopes "OrgSettings-AppsAndServices.ReadWrite.All"`.
 2. Run the following Microsoft Graph PowerShell commands:
+
 ```powershell
 $uri = "https://graph.microsoft.com/beta/admin/appsAndServices"
 $body = @{
@@ -70,7 +73,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 #### Related links
 
 * [Microsoft 365 admin center](https://admin.microsoft.com)
-* [Manage add-ins in the Microsoft 365 admin center](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-addins-in-the-admin-center?view=o365-worldwide&tabs=word-excel-powerpoint#manage-add-in-downloads-by-turning-onoff-the-office-store-across-all-apps-except-outlook)
+* [Manage add-ins in the Microsoft 365 admin center](https://learn.microsoft.com/microsoft-365/admin/manage/manage-addins-in-the-admin-center?view=o365-worldwide&tabs=word-excel-powerpoint#manage-add-in-downloads-by-turning-onoff-the-office-store-across-all-apps-except-outlook)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 56](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

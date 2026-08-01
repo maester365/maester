@@ -9,26 +9,28 @@ If Microsoft Entra ID finds an object where the attribute values are the same as
 
 Matching existing Entra objects with newly synchronized on-premises active directory objects can lead to unintended consequences, such as mismatching user data or allowing users to access data, of for example colleagues with the same name, they should not have access to.
 
-#### Remediation action:
+#### Remediation action
 
 To block soft- and hard-match from on-premises directory synchronization using Graph PowerShell:
+
 1. Connect to Graph using **Connect-MgGraph -Scopes "OnPremDirectorySynchronization.ReadWrite.All"**.
 2. Run following PowerShell Command:
+
 ```
 $onPremisesSynchronization = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/directory/onPremisesSynchronization" -OutputType PSObject | Select-Object -ExpandProperty value
 $params = @{
-	features = @{
-		BlockCloudObjectTakeoverThroughHardMatchEnabled = $true
+ features = @{
+  BlockCloudObjectTakeoverThroughHardMatchEnabled = $true
         BlockSoftMatchEnabled = $true
-	}
+ }
 }
 Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/directory/onPremisesSynchronization/$($onPremisesSynchronization.id)" -Body $params
 ```
 
 #### Related links
 
-* [Microsoft Entra Connect: When you have an existing tenant | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-install-existing-tenant)
-* [Update-MgDirectoryOnPremiseSynchronization | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/de-de/powershell/module/microsoft.graph.identity.directorymanagement/update-mgdirectoryonpremisesynchronization?view=graph-powershell-1.0)
+* [Microsoft Entra Connect: When you have an existing tenant | Microsoft Learn](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-install-existing-tenant)
+* [Update-MgDirectoryOnPremiseSynchronization | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/powershell/module/microsoft.graph.identity.directorymanagement/update-mgdirectoryonpremisesynchronization?view=graph-powershell-1.0)
 
 <!--- Results --->
 %TestResult%

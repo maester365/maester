@@ -1,10 +1,10 @@
 ﻿function Test-MtCaApplicationEnforcedRestriction {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy is configured to enable application enforced restrictions
+    Checks if the tenant has at least one Conditional Access policy configured to enable application-enforced restrictions.
 
     .Description
-    Application enforced restrictions conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
+    A Conditional Access policy with application-enforced restrictions can help minimize the risk of data leakage from a shared device.
 
     Learn more:
     https://aka.ms/CATemplatesAppRestrictions
@@ -31,7 +31,7 @@
 Microsoft recommends blocking or limiting access to SharePoint, OneDrive, and Exchange content from unmanaged devices.
 
 See [Use application enforced restrictions for unmanaged devices - Microsoft Learn](https://aka.ms/CATemplatesAppRestrictions)'
-        $testResult = "These conditional access policies enforce restrictions for unmanaged devices:`n`n"
+        $testResult = "These Conditional Access policies enforce restrictions for unmanaged devices:`n`n"
 
         $result = $false
         foreach ($policy in $policies) {
@@ -50,7 +50,7 @@ See [Use application enforced restrictions for unmanaged devices - Microsoft Lea
         }
 
         if ($result -eq $false) {
-            $testResult = 'There was no conditional access policy enforcing restrictions for unmanaged devices.'
+            $testResult = 'There was no Conditional Access policy enforcing restrictions for unmanaged devices.'
         }
 
         Add-MtTestResultDetail -Description $testDescription -Result $testResult

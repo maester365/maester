@@ -17,6 +17,8 @@ keywords:
 
 # MT.1103 - Intune RBAC groups should be protected by Restricted Management Administrative Units or Role Assignable groups
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks whether Intune RBAC groups are protected either via Entra Restricted Management Administrative Unit or Role Assignable group.
@@ -27,7 +29,7 @@ This test checks whether Intune RBAC groups are protected either via Entra Restr
 
 Additional information:
 
-* See [Restricted management administrative units in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)
+* See [Restricted management administrative units in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/admin-units-restricted-management)
 
 ## Test Metadata
 

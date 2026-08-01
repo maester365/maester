@@ -45,6 +45,18 @@
     or admin-probe failure still connect but emit warnings indicating limited CIS
     coverage. Non-active membership states do not connect at all.
 
+    A non-rate-limited HTTP 403 from GET /user aborts with FailureReason =
+    'TokenForbidden'. Common causes include SAML SSO enforcement, IP allowlists,
+    token/account blocking, or other authorization policies. A rate-limited 403
+    is still classified as FailureReason = 'RateLimited'.
+
+    A malformed JSON response from GET /orgs/{org} aborts with FailureReason =
+    'OrgAccessFailed' and identifies the response parsing problem instead of
+    blaming the PAT scope, organization name, or API base URI.
+
+    The successful GET /orgs/{org} response is cached only after the full
+    connection succeeds, so failed connection attempts do not seed org data.
+
     Token resolution order:
       1. -Token parameter (SecureString)
       2. MAESTER_GITHUB_TOKEN environment variable
@@ -178,6 +190,11 @@
         $configApiVersion = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiVersion'
         if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $resolvedApiVersion = $configApiVersion }
     }
+    # 2022-11-28 is GitHub's initial REST API version and the documented default for
+    # unversioned requests. Re-test before changing this pin: GitHub documents that
+    # API versions are supported for at least 24 months after a successor is released.
+    # Latest documented REST API version as of May 2026: 2026-03-10.
+    # See: https://docs.github.com/en/rest/about-the-rest-api/api-versions
     if ([string]::IsNullOrWhiteSpace($resolvedApiVersion)) { $resolvedApiVersion = '2022-11-28' }
     $resolvedApiVersion = $resolvedApiVersion.Trim()
 
@@ -283,6 +300,11 @@
             $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenInvalid' }
             return
         }
+        if ($code -eq 403) {
+            Write-Host "`nGitHub token validation failed (HTTP 403). The token is forbidden from accessing /user. Verify SAML SSO authorization, organization IP allowlists, and whether the token or account is blocked." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenForbidden' }
+            return
+        }
         Write-Host "`nGitHub token validation failed (HTTP $code). Verify the GitHub authorization is valid and not expired." -ForegroundColor Red
         $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenInvalid' }
         return
@@ -306,7 +328,16 @@
 
         try {
             $orgResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
-            $orgData = $orgResponse.Content | ConvertFrom-Json
+            try {
+                $orgData = $orgResponse.Content | ConvertFrom-Json -ErrorAction Stop
+            } catch {
+                $orgData = $null
+            }
+            if ($null -eq $orgData) {
+                Write-Host "`nGitHub organization API returned a response that could not be parsed as JSON. Verify no proxy is modifying response bodies and retry." -ForegroundColor Red
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'OrgAccessFailed' }
+                return
+            }
         } catch {
             $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
             if ($rateLimitMessage) {
@@ -488,6 +519,9 @@
         AdministrationPermissionAcceptedPermissions = $adminAcceptedPermissions
         FailureReason                               = $null
     }
+
+    $orgCacheKey = Get-MtGitHubCacheKey -ApiVersion $ApiVersion -AbsoluteUri "$ApiBaseUri/orgs/$encodedOrg"
+    $__MtSession.GitHubCache[$orgCacheKey] = $orgData
 
     if ($roleWarning)  { Write-Warning $roleWarning }
     if ($adminWarning) { Write-Warning $adminWarning }

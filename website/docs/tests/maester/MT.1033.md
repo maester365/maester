@@ -19,6 +19,8 @@ keywords:
 
 # MT.1033 - MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName))
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Checks if the Conditional Access Policies for blocking legacy authentication is active and used.

@@ -19,20 +19,28 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | $($_.recommendationType) | 1 | [MT.1024](../MT.1024) |
 | AccessPackages | 5 | [MT.1106](../MT.1106), [MT.1107](../MT.1107), [MT.1108](../MT.1108), [MT.1109](../MT.1109), [MT.1110](../MT.1110) |
 | AIAgent | 10 | [MT.1113](../MT.1113), [MT.1114](../MT.1114), [MT.1115](../MT.1115), [MT.1116](../MT.1116), [MT.1117](../MT.1117), [MT.1118](../MT.1118), [MT.1119](../MT.1119), [MT.1120](../MT.1120), ... |
-| App | 7 | [MT.1002](../MT.1002), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075) |
+| App | 8 | [MT.1002](../MT.1002), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), [MT.1186](../MT.1186) |
 | Authentication | 1 | [MT.1067](../MT.1067) |
 | Azure | 3 | [MT.1056](../MT.1056), [MT.1064](../MT.1064), [MT.1065](../MT.1065) |
 | Backup | 1 | [MT.1065](../MT.1065) |
-| CA | 33 | [MT.1001](../MT.1001), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), [MT.1009](../MT.1009), ... |
+| CA | 38 | [MT.1001](../MT.1001), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), [MT.1009](../MT.1009), ... |
 | CAWhatIf | 2 | [MT.1033](../MT.1033), [MT.1034](../MT.1034) |
-| CIS | 44 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
-| CIS E3 | 33 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
+| CIS | 50 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8), [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), ... |
+| CIS E3 | 34 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
 | CIS E3 Level 1 | 27 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.2](../CIS.M365.2.1.2), [CIS.M365.2.1.3](../CIS.M365.2.1.3), ... |
-| CIS E3 Level 2 | 10 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.11](../CIS.M365.2.1.11), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), [CIS.M365.6.5.3](../CIS.M365.6.5.3), ... |
-| CIS E5 | 24 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.7](../CIS.M365.2.1.7), ... |
+| CIS E3 Level 2 | 11 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.11](../CIS.M365.2.1.11), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), ... |
+| CIS E5 | 25 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.7](../CIS.M365.2.1.7), ... |
 | CIS E5 Level 1 | 13 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.7](../CIS.M365.2.1.7), [CIS.M365.2.4.4](../CIS.M365.2.4.4), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.5.2](../CIS.M365.5.1.5.2), [CIS.M365.5.1.6.2](../CIS.M365.5.1.6.2), ... |
-| CIS E5 Level 2 | 11 | [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), ... |
-| CIS M365 v6.0.1 | 44 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
+| CIS E5 Level 2 | 12 | [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), ... |
+| CIS GH | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
+| CIS GH Level 1 | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
+| CIS GitHub v1.2.0 | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
+| CIS M365 v6.0.1 | 45 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
+| CIS.GH.1.2.2 | 1 | [CIS.GH.1.2.2](../CIS.GH.1.2.2) |
+| CIS.GH.1.2.3 | 1 | [CIS.GH.1.2.3](../CIS.GH.1.2.3) |
+| CIS.GH.1.2.4 | 1 | [CIS.GH.1.2.4](../CIS.GH.1.2.4) |
+| CIS.GH.1.3.2 | 1 | [CIS.GH.1.3.2](../CIS.GH.1.3.2) |
+| CIS.GH.1.3.8 | 1 | [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
 | CIS.M365.1.1.1 | 1 | [CIS.M365.1.1.1](../CIS.M365.1.1.1) |
 | CIS.M365.1.1.3 | 1 | [CIS.M365.1.1.3](../CIS.M365.1.1.3) |
 | CIS.M365.1.2.1 | 1 | [CIS.M365.1.2.1](../CIS.M365.1.2.1) |
@@ -60,6 +68,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | CIS.M365.5.1.2.2 | 1 | [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2) |
 | CIS.M365.5.1.2.3 | 1 | [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3) |
 | CIS.M365.5.1.3.1 | 1 | [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1) |
+| CIS.M365.5.1.4.6 | 1 | [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6) |
 | CIS.M365.5.1.5.1 | 1 | [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1) |
 | CIS.M365.5.1.5.2 | 1 | [CIS.M365.5.1.5.2](../CIS.M365.5.1.5.2) |
 | CIS.M365.5.1.6.2 | 1 | [CIS.M365.5.1.6.2](../CIS.M365.5.1.6.2) |
@@ -77,7 +86,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | CIS.M365.8.4.1 | 1 | [CIS.M365.8.4.1](../CIS.M365.8.4.1) |
 | CIS.M365.8.5.3 | 1 | [CIS.M365.8.5.3](../CIS.M365.8.5.3) |
 | CIS.M365.8.6.1 | 1 | [CIS.M365.8.6.1](../CIS.M365.8.6.1) |
-| CISA | 73 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
+| CISA | 79 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
 | CISA.MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
 | CISA.MS.AAD.2.1 | 1 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1) |
 | CISA.MS.AAD.2.2 | 1 | [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2) |
@@ -150,7 +159,13 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | CISA.MS.EXO.17.2 | 1 | [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
 | CISA.MS.EXO.17.3 | 1 | [CISA.MS.EXO.17.3](../CISA.MS.EXO.17.3) |
 | CISA.MS.SHAREPOINT.1.1 | 1 | [CISA.MS.SHAREPOINT.1.1](../CISA.MS.SHAREPOINT.1.1) |
+| CISA.MS.SHAREPOINT.1.2 | 1 | [CISA.MS.SHAREPOINT.1.2](../CISA.MS.SHAREPOINT.1.2) |
 | CISA.MS.SHAREPOINT.1.3 | 1 | [CISA.MS.SHAREPOINT.1.3](../CISA.MS.SHAREPOINT.1.3) |
+| CISA.MS.SHAREPOINT.2.1 | 1 | [CISA.MS.SHAREPOINT.2.1](../CISA.MS.SHAREPOINT.2.1) |
+| CISA.MS.SHAREPOINT.2.2 | 1 | [CISA.MS.SHAREPOINT.2.2](../CISA.MS.SHAREPOINT.2.2) |
+| CISA.MS.SHAREPOINT.3.1 | 1 | [CISA.MS.SHAREPOINT.3.1](../CISA.MS.SHAREPOINT.3.1) |
+| CISA.MS.SHAREPOINT.3.2 | 1 | [CISA.MS.SHAREPOINT.3.2](../CISA.MS.SHAREPOINT.3.2) |
+| CISA.MS.SHAREPOINT.3.3 | 1 | [CISA.MS.SHAREPOINT.3.3](../CISA.MS.SHAREPOINT.3.3) |
 | CopilotStudio | 10 | [MT.1113](../MT.1113), [MT.1114](../MT.1114), [MT.1115](../MT.1115), [MT.1116](../MT.1116), [MT.1117](../MT.1117), [MT.1118](../MT.1118), [MT.1119](../MT.1119), [MT.1120](../MT.1120), ... |
 | Defender | 25 | [MT.1059](../MT.1059), [MT.1148](../MT.1148), [MT.1149](../MT.1149), [MT.1150](../MT.1150), [MT.1151](../MT.1151), [MT.1152](../MT.1152), [MT.1153](../MT.1153), [MT.1154](../MT.1154), ... |
 | Deprecated | 3 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
@@ -200,22 +215,23 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | EIDSCA.PR06 | 1 | [EIDSCA.PR06](../EIDSCA.PR06) |
 | EIDSCA.ST08 | 1 | [EIDSCA.ST08](../EIDSCA.ST08) |
 | EIDSCA.ST09 | 1 | [EIDSCA.ST09](../EIDSCA.ST09) |
-| Entra | 29 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
+| Entra | 41 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
 | Entra ID Free | 11 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1), [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2), [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1), [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1), [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2), [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3), ... |
 | Entra ID P1 | 10 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5), [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6), [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7), ... |
 | Entra ID P2 | 9 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4), [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5), [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6), [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7), [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8), ... |
 | EntraOps | 7 | [MT.1077](../MT.1077), [MT.1078](../MT.1078), [MT.1079](../MT.1079), [MT.1080](../MT.1080), [MT.1081](../MT.1081), [MT.1111](../MT.1111), [MT.1112](../MT.1112) |
 | Exchange | 8 | [MT.1039](../MT.1039), [MT.1041](../MT.1041), [MT.1043](../MT.1043), [MT.1044](../MT.1044), [MT.1062](../MT.1062), [MT.1074](../MT.1074), [MT.1076](../MT.1076), [MT.1083](../MT.1083) |
 | EXO | 67 | [ORCA.100](../ORCA.100), [ORCA.101](../ORCA.101), [ORCA.102](../ORCA.102), [ORCA.103](../ORCA.103), [ORCA.104](../ORCA.104), [ORCA.105](../ORCA.105), [ORCA.106](../ORCA.106), [ORCA.107](../ORCA.107), ... |
+| GitHub | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
 | Governance | 5 | [MT.1106](../MT.1106), [MT.1107](../MT.1107), [MT.1108](../MT.1108), [MT.1109](../MT.1109), [MT.1110](../MT.1110) |
-| Graph | 16 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1073](../MT.1073), [MT.1075](../MT.1075), [MT.1077](../MT.1077), [MT.1078](../MT.1078), ... |
+| Graph | 18 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1073](../MT.1073), [MT.1075](../MT.1075), [MT.1077](../MT.1077), [MT.1078](../MT.1078), ... |
 | Group | 2 | [MT.1055](../MT.1055), [MT.1069](../MT.1069) |
-| Hybrid | 3 | [MT.1073](../MT.1073), [MT.1084](../MT.1084), [MT.1147](../MT.1147) |
+| Hybrid | 4 | [MT.1073](../MT.1073), [MT.1084](../MT.1084), [MT.1147](../MT.1147), [MT.1183](../MT.1183) |
 | Intune | 20 | [MT.1053](../MT.1053), [MT.1054](../MT.1054), [MT.1092](../MT.1092), [MT.1093](../MT.1093), [MT.1094](../MT.1094), [MT.1095](../MT.1095), [MT.1096](../MT.1096), [MT.1097](../MT.1097), ... |
-| L1 | 26 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.2](../CIS.M365.2.1.2), [CIS.M365.2.1.3](../CIS.M365.2.1.3), ... |
-| L2 | 14 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.11](../CIS.M365.2.1.11), ... |
+| L1 | 31 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8), [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), ... |
+| L2 | 15 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.11](../CIS.M365.2.1.11), ... |
 | LongRunning | 19 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
-| Maester | 120 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
+| Maester | 156 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
 | MDI | 1 | [MT.1059](../MT.1059) |
 | MS.AAD | 30 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
 | MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
@@ -290,9 +306,15 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | MS.EXO.17.1 | 1 | [CISA.MS.EXO.17.1](../CISA.MS.EXO.17.1) |
 | MS.EXO.17.2 | 1 | [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
 | MS.EXO.17.3 | 1 | [CISA.MS.EXO.17.3](../CISA.MS.EXO.17.3) |
-| MS.SHAREPOINT | 2 | [CISA.MS.SHAREPOINT.1.1](../CISA.MS.SHAREPOINT.1.1), [CISA.MS.SHAREPOINT.1.3](../CISA.MS.SHAREPOINT.1.3) |
+| MS.SHAREPOINT | 8 | [CISA.MS.SHAREPOINT.1.1](../CISA.MS.SHAREPOINT.1.1), [CISA.MS.SHAREPOINT.1.2](../CISA.MS.SHAREPOINT.1.2), [CISA.MS.SHAREPOINT.1.3](../CISA.MS.SHAREPOINT.1.3), [CISA.MS.SHAREPOINT.2.1](../CISA.MS.SHAREPOINT.2.1), [CISA.MS.SHAREPOINT.2.2](../CISA.MS.SHAREPOINT.2.2), [CISA.MS.SHAREPOINT.3.1](../CISA.MS.SHAREPOINT.3.1), [CISA.MS.SHAREPOINT.3.2](../CISA.MS.SHAREPOINT.3.2), [CISA.MS.SHAREPOINT.3.3](../CISA.MS.SHAREPOINT.3.3) |
 | MS.SHAREPOINT.1.1 | 1 | [CISA.MS.SHAREPOINT.1.1](../CISA.MS.SHAREPOINT.1.1) |
+| MS.SHAREPOINT.1.2 | 1 | [CISA.MS.SHAREPOINT.1.2](../CISA.MS.SHAREPOINT.1.2) |
 | MS.SHAREPOINT.1.3 | 1 | [CISA.MS.SHAREPOINT.1.3](../CISA.MS.SHAREPOINT.1.3) |
+| MS.SHAREPOINT.2.1 | 1 | [CISA.MS.SHAREPOINT.2.1](../CISA.MS.SHAREPOINT.2.1) |
+| MS.SHAREPOINT.2.2 | 1 | [CISA.MS.SHAREPOINT.2.2](../CISA.MS.SHAREPOINT.2.2) |
+| MS.SHAREPOINT.3.1 | 1 | [CISA.MS.SHAREPOINT.3.1](../CISA.MS.SHAREPOINT.3.1) |
+| MS.SHAREPOINT.3.2 | 1 | [CISA.MS.SHAREPOINT.3.2](../CISA.MS.SHAREPOINT.3.2) |
+| MS.SHAREPOINT.3.3 | 1 | [CISA.MS.SHAREPOINT.3.3](../CISA.MS.SHAREPOINT.3.3) |
 | MT.1001 | 1 | [MT.1001](../MT.1001) |
 | MT.1002 | 1 | [MT.1002](../MT.1002) |
 | MT.1003 | 1 | [MT.1003](../MT.1003) |
@@ -437,11 +459,30 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | MT.1169 | 1 | [MT.1169](../MT.1169) |
 | MT.1170 | 1 | [MT.1170](../MT.1170) |
 | MT.1171 | 1 | [MT.1171](../MT.1171) |
+| MT.1172 | 1 | [MT.1172](../MT.1172) |
+| MT.1173 | 1 | [MT.1173](../MT.1173) |
+| MT.1174 | 1 | [MT.1174](../MT.1174) |
+| MT.1175 | 1 | [MT.1175](../MT.1175) |
+| MT.1176 | 1 | [MT.1176](../MT.1176) |
 | MT.1177 | 1 | [MT.1177](../MT.1177) |
 | MT.1178 | 1 | [MT.1178](../MT.1178) |
 | MT.1179 | 1 | [MT.1179](../MT.1179) |
 | MT.1180 | 1 | [MT.1180](../MT.1180) |
+| MT.1181 | 1 | [MT.1181](../MT.1181) |
 | MT.1182 | 1 | [MT.1182](../MT.1182) |
+| MT.1183 | 1 | [MT.1183](../MT.1183) |
+| MT.1184 | 1 | [MT.1184](../MT.1184) |
+| MT.1185 | 1 | [MT.1185](../MT.1185) |
+| MT.1186 | 1 | [MT.1186](../MT.1186) |
+| MT.1187 | 1 | [MT.1187](../MT.1187) |
+| MT.1188 | 1 | [MT.1188](../MT.1188) |
+| MT.1189 | 1 | [MT.1189](../MT.1189) |
+| MT.1190 | 1 | [MT.1190](../MT.1190) |
+| MT.1191 | 1 | [MT.1191](../MT.1191) |
+| MT.1192 | 1 | [MT.1192](../MT.1192) |
+| MT.1193 | 1 | [MT.1193](../MT.1193) |
+| MT.1194 | 1 | [MT.1194](../MT.1194) |
+| MT.1195 | 1 | [MT.1195](../MT.1195) |
 | OneDrive | 5 | [CIS.M365.7.2.2](../CIS.M365.7.2.2), [CIS.M365.7.2.5](../CIS.M365.7.2.5), [CIS.M365.7.2.7](../CIS.M365.7.2.7), [CIS.M365.7.2.9](../CIS.M365.7.2.9), [CIS.M365.7.2.11](../CIS.M365.7.2.11) |
 | ORCA | 67 | [ORCA.100](../ORCA.100), [ORCA.101](../ORCA.101), [ORCA.102](../ORCA.102), [ORCA.103](../ORCA.103), [ORCA.104](../ORCA.104), [ORCA.105](../ORCA.105), [ORCA.106](../ORCA.106), [ORCA.107](../ORCA.107), ... |
 | ORCA.100 | 1 | [ORCA.100](../ORCA.100) |
@@ -512,10 +553,11 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | ORCA.243 | 1 | [ORCA.243](../ORCA.243) |
 | ORCA.244 | 1 | [ORCA.244](../ORCA.244) |
 | PIM | 4 | [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032) |
-| Preview | 4 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1111](../MT.1111), [MT.1112](../MT.1112) |
+| Preview | 13 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1111](../MT.1111), [MT.1112](../MT.1112), [MT.1187](../MT.1187), [MT.1188](../MT.1188), [MT.1189](../MT.1189), [MT.1190](../MT.1190), ... |
 | Privileged | 16 | [MT.1025](../MT.1025), [MT.1026](../MT.1026), [MT.1027](../MT.1027), [MT.1028](../MT.1028), [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032), ... |
+| Purview | 5 | [MT.1172](../MT.1172), [MT.1173](../MT.1173), [MT.1174](../MT.1174), [MT.1175](../MT.1175), [MT.1176](../MT.1176) |
 | Recommendation | 1 | [MT.1024](../MT.1024) |
-| Security | 12 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), ... |
+| Security | 13 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), ... |
 | Severity:$($_.Group[0].severity) | 1 | [MT.1059](../MT.1059) |
 | SharePoint Online | 6 | [CIS.M365.7.2.2](../CIS.M365.7.2.2), [CIS.M365.7.2.5](../CIS.M365.7.2.5), [CIS.M365.7.2.7](../CIS.M365.7.2.7), [CIS.M365.7.2.9](../CIS.M365.7.2.9), [CIS.M365.7.2.11](../CIS.M365.7.2.11), [CIS.M365.7.3.1](../CIS.M365.7.3.1) |
 | Teams | 6 | [MT.1037](../MT.1037), [MT.1042](../MT.1042), [MT.1045](../MT.1045), [MT.1046](../MT.1046), [MT.1047](../MT.1047), [MT.1048](../MT.1048) |

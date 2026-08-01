@@ -4,7 +4,7 @@ Rationale: The security risk of allowing legacy authentication protocols is they
 
 #### Remediation action:
 
-Follow the guide below to create a conditional access policy that blocks legacy authentication.
+Follow the guide below to create a Conditional Access policy that blocks legacy authentication.
 
 - [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy#create-a-conditional-access-policy)
 

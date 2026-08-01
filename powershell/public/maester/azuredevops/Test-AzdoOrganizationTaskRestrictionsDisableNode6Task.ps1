@@ -5,8 +5,8 @@
 .DESCRIPTION
     Checks the status if Node 6 is allowed on hosted agents.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution
-    https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents
+    https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution
+    https://learn.microsoft.com/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents
 
 .EXAMPLE
     ```

@@ -1,6 +1,6 @@
 ---
 title: "MT.1006 - At least one Conditional Access policy is configured to require MFA for admins."
-description: "This test checks if the tenant has at least one conditional access policy requiring MFA for admins. The following roles are considered as admin roles: - Global Administrator - Application Administrator - Authentication Administrator - Billing Administrator - Cloud Application Administrator - Condit…"
+description: "This test checks if the tenant has at least one Conditional Access policy requiring MFA for admins. The following roles are considered as admin roles: - Global Administrator - Application Administrator - Authentication Administrator - Billing Administrator - Cloud Application Administrator - Condit…"
 slug: /tests/MT.1006
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,9 +17,11 @@ keywords:
 
 # MT.1006 - At least one Conditional Access policy is configured to require MFA for admins.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/retrodadson" title="Robin Dadswell · Co-contributor"><img src="https://github.com/RetroDadson.png" alt="Robin Dadswell" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/ptmohr" title="Pascal-Tobias Mohr · Co-contributor"><img src="https://github.com/PTMohr.png" alt="Pascal-Tobias Mohr" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-This test checks if the tenant has at least one conditional access policy requiring MFA for admins.
+This test checks if the tenant has at least one Conditional Access policy requiring MFA for admins.
 The following roles are considered as admin roles:
 
 - Global Administrator

@@ -17,7 +17,7 @@
     }
 }
 
-Describe "Maester/Entra" -Tag "Privileged",  "PIM" {
+Describe "Maester/Entra" -Tag "Maester", "Privileged", "PIM" {
     It "MT.1029: Stale accounts are not assigned to privileged roles. See https://maester.dev/docs/tests/MT.1029" -Tag "MT.1029" {
         if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2

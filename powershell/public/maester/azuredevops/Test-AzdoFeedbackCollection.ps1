@@ -6,7 +6,7 @@
     Checks the status if Azure DevOps is collecting customer feedback to the product team.
 
     https://aka.ms/ADOPrivacyPolicy
-    https://learn.microsoft.com/en-us/azure/devops/organizations/security/data-protection?view=azure-devops#managing-privacy-policies-for-admins-to-control-user-feedback-collection
+    https://learn.microsoft.com/azure/devops/organizations/security/data-protection?view=azure-devops#managing-privacy-policies-for-admins-to-control-user-feedback-collection
 
 .EXAMPLE
     ```

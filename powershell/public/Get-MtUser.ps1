@@ -14,7 +14,7 @@
     The type of users to retrieve. Default is Member. Valid values are Member, Guest, Admin.
 
     .PARAMETER MemberOfRole
-    The role the users are member of. Default is None. Valid values are Global administrator, Application administrator, Authentication Administrator, Billing administrator, Cloud application administrator, Conditional Access administrator, Exchange administrator, Helpdesk administrator, Password administrator, Privileged authentication administrator, Privileged Role Administrator, Security administrator, SharePoint administrator, User administrator.
+    The role the users are member of. Default is None. Valid values are Global Administrator, Application Administrator, Authentication Administrator, Billing Administrator, Cloud Application Administrator, Conditional Access Administrator, Exchange Administrator, Helpdesk Administrator, Password Administrator, Privileged Authentication Administrator, Privileged Role Administrator, Security Administrator, SharePoint Administrator, User Administrator.
 
     .EXAMPLE
     Get-MtUser -Count 5 -UserType Member
@@ -34,7 +34,7 @@
         [string]$UserType = "Member",
 
         [Parameter()]
-        [ValidateSet("Global administrator", "Application administrator", "Authentication Administrator", "Billing administrator", "Cloud application administrator", "Conditional Access administrator", "Exchange administrator", "Helpdesk administrator", "Password administrator", "Privileged authentication administrator", "Privileged Role Administrator", "Security administrator", "SharePoint administrator", "User administrator")]
+        [ValidateSet("Global Administrator", "Application Administrator", "Authentication Administrator", "Billing Administrator", "Cloud Application Administrator", "Conditional Access Administrator", "Exchange Administrator", "Helpdesk Administrator", "Password Administrator", "Privileged Authentication Administrator", "Privileged Role Administrator", "Security Administrator", "SharePoint Administrator", "User Administrator")]
         [string]$MemberOfRole
     )
 
@@ -44,20 +44,20 @@
 
         # Default roles that will be queried for UserType "Admin"
         $AdminRoles = @(
-            "Global administrator",
-            "Application administrator",
+            "Global Administrator",
+            "Application Administrator",
             "Authentication Administrator",
-            "Billing administrator",
-            "Cloud application administrator",
-            "Conditional Access administrator",
-            "Exchange administrator",
-            "Helpdesk administrator",
-            "Password administrator",
-            "Privileged authentication administrator",
+            "Billing Administrator",
+            "Cloud Application Administrator",
+            "Conditional Access Administrator",
+            "Exchange Administrator",
+            "Helpdesk Administrator",
+            "Password Administrator",
+            "Privileged Authentication Administrator",
             "Privileged Role Administrator",
-            "Security administrator",
-            "SharePoint administrator",
-            "User administrator"
+            "Security Administrator",
+            "SharePoint Administrator",
+            "User Administrator"
         )
     }
 
@@ -90,7 +90,7 @@
             }
         } elseif ( $UserType -in @("BreakGlass", "EmergencyAccess") ) {
             Write-Verbose "Getting $UserType users from the tenant."
-            Write-Verbose "Get all conditional access policies."
+            Write-Verbose "Get all Conditional Access policies."
             # Get all policies (the state of policy does not have to be enabled)
             $CAPolicies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
 

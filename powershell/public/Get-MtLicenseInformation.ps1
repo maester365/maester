@@ -195,7 +195,7 @@ function Get-MtLicenseInformation {
             'DefenderXDR' {
                 Write-Verbose 'Retrieving license SKU for Defender XDR'
                 $RequiredServicePlans = @(
-                    # https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
+                    # https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference
                     '871d91ec-ec1a-452b-a83f-bd76c7d770ef', # Microsoft Defender for Endpoint Plan 2
                     '8e0c0a52-6a6c-4d40-8370-dd62790dcd70', # Microsoft Defender for Office 365 (Plan 2)
                     '14ab5db5-e6c4-4b20-b4bc-13e36fd2227f', # Microsoft Defender for Identity
@@ -217,7 +217,7 @@ function Get-MtLicenseInformation {
                 # and can be added via Information Protection and Compliance or Advanced Compliance add-ons.
                 # Service Plan: LOCKBOX_ENTERPRISE
                 # Service Plan ID: 9f431833-0334-42de-a7dc-70aa40db46db (Customer Lockbox) or 3ec18638-bd4c-4d3b-8905-479ed636b83e (Customer Lockbox (A))
-                # Reference: https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
+                # Reference: https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference
                 if ('9f431833-0334-42de-a7dc-70aa40db46db' -in $ServicePlans -or '3ec18638-bd4c-4d3b-8905-479ed636b83e' -in $ServicePlans) {
                     $LicenseType = 'CustomerLockbox' # Customer Lockbox / LOCKBOX_ENTERPRISE
                 } else {
@@ -232,7 +232,7 @@ function Get-MtLicenseInformation {
                 $subscribedSkus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
                 $uniqueServicePlans = $subscribedSkus.servicePlans.servicePlanId | Sort-Object -Unique
                 $requiredServicePlans = @(
-                    # https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
+                    # https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference
                     "c1ec4a95-1f05-45b3-a911-aa3fa01094f5", # INTUNE_A (Microsoft Intune Plan 1)
                     "d216f254-796f-4dab-bbfa-710686e646b9", # INTUNE_A_GOV (Microsoft Intune Plan 1 for Government)
                     "3e170737-c728-4eae-bbb9-3f3360f7184c", # INTUNE_A_VL (Microsoft Intune Plan 1 Volume License)

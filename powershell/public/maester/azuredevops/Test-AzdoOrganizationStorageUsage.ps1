@@ -7,9 +7,9 @@
     Once your organization reaches the maximum storage limit, you won't be able to publish new artifacts.
     To continue, you can either delete some of your existing artifacts or increase your storage limit.
 
-    https://learn.microsoft.com/en-us/azure/devops/artifacts/how-to/delete-and-recover-packages?view=azure-devops&tabs=nuget#delete-packages-automatically-with-retention-policies
-    https://learn.microsoft.com/en-us/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing
-    https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops
+    https://learn.microsoft.com/azure/devops/artifacts/how-to/delete-and-recover-packages?view=azure-devops&tabs=nuget#delete-packages-automatically-with-retention-policies
+    https://learn.microsoft.com/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing
+    https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops
 
 .EXAMPLE
     ```

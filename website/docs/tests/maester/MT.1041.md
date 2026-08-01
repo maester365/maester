@@ -17,43 +17,51 @@ keywords:
 
 # MT.1041 - Ensure users installing Outlook add-ins is not allowed
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Users SHOULD NOT be allowed to install Outlook add-ins
 
 Rationale: When users can install their own Outlook add-ins, it creates security risks. Malicious add-ins could access email content, exploit vulnerabilities, or facilitate data exfiltration through legitimate-looking add-ins.
 
-#### Remediation action:
+#### Remediation action
 
 1. Connect to Exchange Online:
+
 ```powershell
 Connect-ExchangeOnline
 ```
 
-2. Get the current role assignment policy:
+1. Get the current role assignment policy:
+
 ```powershell
 Get-RoleAssignmentPolicy | Where-Object { $_.IsDefault }
 ```
 
-3. Check which app-related roles are assigned:
+1. Check which app-related roles are assigned:
+
 ```powershell
 Get-ManagementRoleAssignment -RoleAssignee "Default Role Assignment Policy" | Where-Object { $_.Role -like "My*Apps" }
 ```
 
-4. Remove the app installation permissions from the default policy:
+1. Remove the app installation permissions from the default policy:
+
 ```powershell
 Get-ManagementRoleAssignment -RoleAssignee "Default Role Assignment Policy" | Where-Object { $_.Role -like "My*Apps" } | Remove-ManagementRoleAssignment -Confirm:$false
 ```
 
-5. Verify the changes:
+1. Verify the changes:
+
 ```powershell
 Get-ManagementRoleAssignment -RoleAssignee "Default Role Assignment Policy" | Where-Object { $_.Role -like "My*Apps" }
 ```
+
 The result should return no assignments.
 
 #### Related links
 
-* [Role-based access control in Exchange Online](https://learn.microsoft.com/en-us/exchange/permissions-exo/permissions-exo)
+* [Role-based access control in Exchange Online](https://learn.microsoft.com/exchange/permissions-exo/permissions-exo)
 * [CIS Microsoft 365 Benchmark - 1.3.4 (L1) Ensure 'User owned apps and services' is restricted](https://www.cisecurity.org/benchmark/microsoft_365)
 * [Microsoft Secure Score - Restrict user consent to applications](https://security.microsoft.com/securescore)
 

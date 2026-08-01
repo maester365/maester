@@ -18,6 +18,8 @@ keywords:
 
 # ORCA.118.2 - Domains are not being allow listed in an unsafe manner in Transport Rules.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Emails coming from allow listed domains bypass several layers of protection within Exchange Online Protection. If domains are allow listed, they are open to being spoofed from malicious actors.
@@ -27,8 +29,8 @@ Remove allow listed domains.
 
 #### Related Links
 
-* [Exchange admin center in Exchange Online](https://outlook.office365.com/ecp/) 
-* [Using Exchange Transport Rules (ETRs) to allow specific senders](https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/create-safe-sender-lists-in-office-365#using-exchange-transport-rules-etrs-to-allow-specific-senders-recommended)
+* [Exchange admin center in Exchange Online](https://outlook.office365.com/ecp/)
+* [Using Exchange Transport Rules (ETRs) to allow specific senders](https://docs.microsoft.com/microsoft-365/security/office-365-security/create-safe-sender-lists-in-office-365#using-exchange-transport-rules-etrs-to-allow-specific-senders-recommended)
 
 ## Test Metadata
 

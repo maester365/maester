@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.1.2.1 - (L2) Ensure that only organizationally managed/approved public groups exist
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist
@@ -35,6 +37,7 @@ Ensure that Microsoft 365 Groups are set to **Private** in the Administration pa
 
 If group privacy is not controlled, any user may access sensitive information, depending on the group they try to access.
 When the privacy value of a group is set to "Public," users may access data related to this group (e.g. SharePoint) via three methods:
+
 1. The Azure Portal: Users can add themselves to the public group via the Azure Portal; however, administrators are notified when users access the Portal.
 2. Access Requests: Users can request to join the group via the Groups application in the Access Panel. This provides the user with immediate access to the group, even though they are required to send a message to the group owner when
 requesting to join.
@@ -44,9 +47,10 @@ requesting to join.
 
 If the recommendation is applied, group owners could receive more access requests than usual, especially regarding groups originally meant to be public.
 
-#### Remediation action:
+#### Remediation action
 
 To enable only organizationally managed/approved public groups exist:
+
 1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Teams & groups** select **Active teams & groups**.
 3. On the **Active teams and groups** page, select the group's name that is public.
@@ -56,8 +60,8 @@ To enable only organizationally managed/approved public groups exist:
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [Set up self-service group management in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/groups-self-service-management)
-* [Compare types of groups in Microsoft 365](https://learn.microsoft.com/en-us/microsoft-365/admin/create-groups/compare-groups?view=o365-worldwide)
+* [Set up self-service group management in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/users/groups-self-service-management)
+* [Compare types of groups in Microsoft 365](https://learn.microsoft.com/microsoft-365/admin/create-groups/compare-groups?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 36](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

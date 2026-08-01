@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.2.1.12 - (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/ic3lotus" title="Patrick · Co-contributor"><img src="https://github.com/ic3lotus.png" alt="Patrick" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 2.1.12 (L1) Ensure the connection filter IP allow list is not used
@@ -36,9 +38,10 @@ Without additional verification like mail flow rules, email from sources in the 
 
 This is the default behavior. IP Allow lists may reduce false positives, however, this benefit is outweighed by the importance of a policy which scans all messages regardless of the origin. This supports the principle of zero trust.
 
-#### Remediation action:
+#### Remediation action
 
 To remove IPs from the allow list:
+
 1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com).
 2. Click to expand **Email & collaboration** select **Policies & rules** > **Threat policies**.
 3. Under policies select **Anti-spam**.
@@ -51,6 +54,7 @@ To remove IPs from the allow list:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following PowerShell command:
+
 ```powershell
 Set-HostedConnectionFilterPolicy -Identity Default -IPAllowList @{}
 ```
@@ -58,9 +62,9 @@ Set-HostedConnectionFilterPolicy -Identity Default -IPAllowList @{}
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Configure connection filtering in cloud organizations](https://learn.microsoft.com/en-us/defender-office-365/connection-filter-policies-configure)
-* [Create sender allowlists for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/create-safe-sender-lists-in-office-365#use-the-ip-allow-list)
-* [When user and organization settings conflict](https://learn.microsoft.com/en-us/defender-office-365/how-policies-and-protections-are-combined#user-and-tenant-settings-conflict)
+* [Configure connection filtering in cloud organizations](https://learn.microsoft.com/defender-office-365/connection-filter-policies-configure)
+* [Create sender allowlists for cloud mailboxes](https://learn.microsoft.com/defender-office-365/create-safe-sender-lists-in-office-365#use-the-ip-allow-list)
+* [When user and organization settings conflict](https://learn.microsoft.com/defender-office-365/how-policies-and-protections-are-combined#user-and-tenant-settings-conflict)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 116](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

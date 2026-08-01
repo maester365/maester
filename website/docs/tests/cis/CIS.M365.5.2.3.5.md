@@ -24,6 +24,8 @@ keywords:
 
 # CIS.M365.5.2.3.5 - Ensure weak authentication methods are disabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 5.2.3.5 (L1) Ensure weak authentication methods are disabled
@@ -33,6 +35,7 @@ Authentication methods support a wide variety of scenarios for signing in to Mic
 SMS and Voice Call rely on telephony carrier communication methods to deliver the authenticating factor.
 
 The recommended state is to Disable these methods:
+
 * SMS
 * Voice Call
 
@@ -46,12 +49,13 @@ The SMS and Voice call methods are vulnerable to SIM swapping which could allow 
 
 There may be increased administrative overhead in adopting more secure authentication methods depending on the maturity of the organization.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** > **Authentication methods**
 3. Select **Policies**.
 4. Inspect each method that is out of compliance and remediate:
+
 * Click on the method to open it.
 * Change the **Enable** toggle to the off position.
 * Click **Save**.
@@ -62,6 +66,7 @@ There may be increased administrative overhead in adopting more secure authentic
 
 1. Connect to Graph using `Connect-MgGraph -Scopes "Policy.ReadWrite.AuthenticationMethod"`
 2. Run the following to disable these two authentication methods:
+
 ```powershell
 $params = @(
     @{ Id = "Sms"; State = "disabled" },
@@ -73,9 +78,9 @@ Update-MgPolicyAuthenticationMethodPolicy -AuthenticationMethodConfigurations $p
 #### Related links
 
 * [Microsoft Entra admin center](https://entra.microsoft.com)
-* [Manage authentication methods for Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-methods-manage)
-* [Context and problem](https://learn.microsoft.com/en-us/security/zero-trust/sfi/phishing-resistant-mfa#context-and-problem)
-* [What is SIM swapping & how does the hijacking scam work?](https://www.microsoft.com/en-us/microsoft-365-life-hacks/privacy-and-safety/what-is-sim-swapping)
+* [Manage authentication methods for Microsoft Entra ID](https://learn.microsoft.com/entra/identity/authentication/concept-authentication-methods-manage)
+* [Context and problem](https://learn.microsoft.com/security/zero-trust/sfi/phishing-resistant-mfa#context-and-problem)
+* [What is SIM swapping & how does the hijacking scam work?](https://www.microsoft.com/microsoft-365-life-hacks/privacy-and-safety/what-is-sim-swapping)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 288](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

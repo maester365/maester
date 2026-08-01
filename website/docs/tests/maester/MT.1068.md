@@ -1,6 +1,6 @@
 ---
 title: "MT.1068 - Restrict non-admin users from creating tenants"
-description: "This test checks if tenant creation is restricted to admin users only. \"Yes\" restricts the creation of Microsoft Entra ID tenants to the global administrator or tenant creator roles. \"No\" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the global…"
+description: "This test checks if tenant creation is restricted to admin users only. \"Yes\" restricts the creation of Microsoft Entra ID tenants to the Global Administrator or Tenant Creator roles. \"No\" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the Global…"
 slug: /tests/MT.1068
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,11 +17,13 @@ keywords:
 
 # MT.1068 - Restrict non-admin users from creating tenants
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/marcel-ngn" title="Marcel N. · Original author"><img src="https://github.com/marcel-ngn.png" alt="Marcel N." /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/marcel-ngn">Marcel N.</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks if tenant creation is restricted to admin users only.
 
-"Yes" restricts the creation of Microsoft Entra ID tenants to the global administrator or tenant creator roles. "No" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the global administrator for that tenant.
+"Yes" restricts the creation of Microsoft Entra ID tenants to the Global Administrator or Tenant Creator roles. "No" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the Global Administrator for that tenant.
 
 Tenant creation should be restricted to admin users who have undergone proper training and understand the responsibilities of tenant management, security governance, and compliance requirements.
 
@@ -57,8 +59,8 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 
 #### Related links
 
-- [Manage default user permissions in Entra ID](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/users-default-permissions)
-- [Authorization policy in Entra ID](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy)
+- [Manage default user permissions in Entra ID](https://learn.microsoft.com/azure/active-directory/fundamentals/users-default-permissions)
+- [Authorization policy in Entra ID](https://learn.microsoft.com/graph/api/resources/authorizationpolicy)
 
 ## Test Metadata
 
@@ -69,7 +71,7 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 | Suite | Maester |
 | Category | Entra |
 | PowerShell test | [Test-MtTenantCreationRestricted](/docs/commands/Test-MtTenantCreationRestricted) |
-| Tags | Entra, MT.1068 |
+| Tags | Entra, Maester, MT.1068 |
 
 ## Source
 

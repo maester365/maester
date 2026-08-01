@@ -61,7 +61,7 @@ BeforeDiscovery {
 }
 
 # $driftFolders is coming from BeforeDiscovery.
-Describe "Maester/Drift" -ForEach $driftFolders {
+Describe "Maester/Drift" -Tag "Maester" -ForEach $driftFolders {
     # BeforeAll is run once for each drift folder, allowing us to set up the context for each drift test.
     BeforeAll {
         # Capture the drift folder context for each test

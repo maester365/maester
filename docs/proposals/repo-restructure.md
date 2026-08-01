@@ -58,9 +58,10 @@ Goals (from the maintainer request that prompted this):
 
 ### 1.4 Discrepancies vs. the repository map in AGENTS.md — corrected after review
 
-> AGENTS.md is the root agent context file. It has been renamed from `CLAUDE.md` to
-> `AGENTS.md` (canonical cross-tool context), with a thin `CLAUDE.md` bridge that
-> imports it for Claude Code. This proposal uses the AGENTS.md name throughout.
+> AGENTS.md is the root agent context file. At the time of writing it is still named
+> `CLAUDE.md`; a separate change renames it to `AGENTS.md` (canonical cross-tool
+> context) with a thin `CLAUDE.md` bridge importing it. This proposal uses the
+> AGENTS.md name throughout.
 
 - **Retracted:** an earlier draft of this proposal claimed `TestResults/` was
   committed. That was wrong — `git ls-files TestResults/` and

@@ -61,6 +61,7 @@
         $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of All Full Names.`n`n%TestResult%"
     }
 
+    $result = ''
     if ($rules) {
         $passResult = "✅ Pass"
         $failResult = "❌ Fail"

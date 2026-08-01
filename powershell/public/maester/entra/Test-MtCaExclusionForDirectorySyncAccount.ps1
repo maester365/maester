@@ -1,11 +1,11 @@
 ﻿function Test-MtCaExclusionForDirectorySyncAccount {
     <#
     .Synopsis
-    Checks if all conditional access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
+    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
 
     .Description
     The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-    These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
+    These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
     Entra ID connect does not support multifactor authentication.
     Restrict access with these accounts to trusted networks.
 
@@ -24,21 +24,25 @@
         return $null
     }
 
-    $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all conditional access policies scoped to all cloud apps.'
-    $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
+    $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all Conditional Access policies scoped to all cloud apps.'
+    $testResult = "The following Conditional Access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
     try {
         $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
         $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
 
         $Members = @()
+        $DirectorySynchronizationAccountsRoleId = $null
+        $OnPremisesDirectorySyncAccountRoleId = $null
         # Guard: Get-MtRoleInfo returns $null when $script:MtRoles is uninitialised (module reload issue).
         # Skip the Get-MtRoleMember call in that case to avoid a mandatory-parameter binding error.
         if ($null -ne $DirectorySynchronizationAccountsRole) {
-            $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
+            $DirectorySynchronizationAccountsRoleId = $DirectorySynchronizationAccountsRole.Id
+            $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRoleId
         }
         if ($null -ne $OnPremisesDirectorySyncAccountRole) {
-            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+            $OnPremisesDirectorySyncAccountRoleId = $OnPremisesDirectorySyncAccountRole.Id
+            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRoleId
         }
         $Members = @($Members | Where-Object { $null -ne $_ })
 
@@ -104,7 +108,7 @@
                 }
             }
 
-            if ( $DirectorySynchronizationAccountsRole -in $policy.conditions.users.includeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.includeRoles ) {
+            if ( $DirectorySynchronizationAccountsRoleId -in $policy.conditions.users.includeRoles -or $OnPremisesDirectorySyncAccountRoleId -in $policy.conditions.users.includeRoles ) {
                 $PolicyIncludesRole = $true
             }
 
@@ -120,7 +124,7 @@
                 continue
             } else {
                 # Check if excluded by role
-                $excludedByRole = $DirectorySynchronizationAccountsRole -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.excludeRoles
+                $excludedByRole = $DirectorySynchronizationAccountsRoleId -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRoleId -in $policy.conditions.users.excludeRoles
 
                 # Check if all user members are individually excluded
                 $excludedByMember = $memberIds.Count -gt 0 -and @($memberIds | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
@@ -140,7 +144,7 @@
         }
 
         if ( $result ) {
-            $testResult = 'All conditional access policies scoped to all cloud apps exclude the directory synchronization accounts.'
+            $testResult = 'All Conditional Access policies scoped to all cloud apps exclude the directory synchronization accounts.'
         }
 
         Add-MtTestResultDetail -Description $testDescription -Result $testResult

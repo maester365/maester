@@ -25,6 +25,8 @@ keywords:
 
 # CIS.M365.7.2.9 - Ensure guest access to a site or OneDrive will expire automatically
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 7.2.9 (L1) Ensure guest access to a site or OneDrive will expire automatically
@@ -65,8 +67,8 @@ Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True
 
 ## Related Links
 
-* [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
-* [Managing SharePoint Online Security: A Team Effort](https://learn.microsoft.com/en-us/microsoft-365/community/sharepoint-security-a-team-effort)
+* [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
+* [Managing SharePoint Online Security: A Team Effort](https://learn.microsoft.com/microsoft-365/community/sharepoint-security-a-team-effort)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 385](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

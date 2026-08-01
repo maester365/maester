@@ -1,6 +1,6 @@
 ---
 title: "MT.1007 - At least one Conditional Access policy is configured to require MFA for all users."
-description: "This test checks if the tenant has at least one conditional access policy requiring MFA for all users. See Require MFA for all users - Microsoft Learn"
+description: "This test checks if the tenant has at least one Conditional Access policy requiring MFA for all users. See Require MFA for all users - Microsoft Learn"
 slug: /tests/MT.1007
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,9 +17,11 @@ keywords:
 
 # MT.1007 - At least one Conditional Access policy is configured to require MFA for all users.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-This test checks if the tenant has at least one conditional access policy requiring MFA for all users.
+This test checks if the tenant has at least one Conditional Access policy requiring MFA for all users.
 
 See [Require MFA for all users - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa)
 

@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if release pipelines have restricted access to only those repositories that are in the same project as the pipeline.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope
+    https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope
 
 .EXAMPLE
     ```

@@ -17,13 +17,15 @@ keywords:
 
 # MT.1035 - All security groups assigned to Conditional Access Policies should be protected by RMAU.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/ptmohr" title="Pascal-Tobias Mohr · Co-contributor"><img src="https://github.com/PTMohr.png" alt="Pascal-Tobias Mohr" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mrdos010" title="Anas · Co-contributor"><img src="https://github.com/mrdos010.png" alt="Anas" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Security Groups will be used to exclude and include users from Conditional Access Policies. Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access Policies.
 
 To prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups. Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups. This test checks if all groups used in Conditional Access Policies are protected.
 
-See [Restricted management administrative units in Microsoft Entra ID - Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)
+See [Restricted management administrative units in Microsoft Entra ID - Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/admin-units-restricted-management)
 
 ## Test Metadata
 

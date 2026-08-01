@@ -27,7 +27,7 @@
 
     # Send the POST request
     try {
-        Invoke-RestMethod -Uri $url -Method Post -ContentType "application/json" -Body $jsonBody | Out-Null
+        Invoke-RestMethod -Uri $url -Method Post -ContentType "application/json" -Body $jsonBody -TimeoutSec 5 -ErrorAction Stop | Out-Null
     }
     catch {
         Write-Verbose $_

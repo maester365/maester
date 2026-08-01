@@ -19,13 +19,15 @@ keywords:
 
 # MT.1147 - Do not sync krbtgt_AzureAD to Entra ID
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure krbtgt_AzureAD is not synchronized from on-premises Active Directory.
 
 The krbtgt_AzureAD account is a sensitive identity used by Microsoft's cloud services for Microsoft Entra Kerberos scenarios. Microsoft recommends keeping a clear separation between cloud and on-premises environments and not synchronizing this account to Entra ID. Synchronizing an on-premises krbtgt_AzureAD account creates an unnecessary privilege escalation path between the environments.
 
-#### Remediation action:
+#### Remediation action
 
 1. Review your Microsoft Entra Connect synchronization scope and identify the on-premises krbtgt_AzureAD account.
 2. Exclude that account from synchronization, for example by OU filtering or domain filtering, so it is not synced to Entra ID.
@@ -33,8 +35,8 @@ The krbtgt_AzureAD account is a sensitive identity used by Microsoft's cloud ser
 
 #### Related links
 
-* [Security considerations for Microsoft Entra Kerberos | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/authentication/kerberos#security-considerations)
-* [Microsoft Entra Connect Sync: Configure filtering | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-sync-configure-filtering)
+* [Security considerations for Microsoft Entra Kerberos | Microsoft Learn](https://learn.microsoft.com/entra/identity/authentication/kerberos#security-considerations)
+* [Microsoft Entra Connect Sync: Configure filtering | Microsoft Learn](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-sync-configure-filtering)
 * [Microsoft Entra admin center - Microsoft Entra Connect](https://entra.microsoft.com/#view/Microsoft_AAD_Connect_Provisioning/AADConnectMenuBlade/~/ConnectSync)
 
 ## Test Metadata

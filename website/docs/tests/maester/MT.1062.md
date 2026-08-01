@@ -17,34 +17,40 @@ keywords:
 
 # MT.1062 - Ensure Direct Send is set to be rejected
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Direct Send SHOULD be configured to `Reject` in Exchange Online
 
 Rationale: Attackers can exploit direct send to send spam or phishing emails without authentication. Direct Send covers anonymous messages (unauthenticated messages) sent from your own domain to your organization's mailboxes using the tenant MX.
 
-#### Remediation action:
+#### Remediation action
 
 1. Connect to Exchange Online:
+
 ```powershell
 Connect-ExchangeOnline
 ```
 
-2. Configure the setting to reject direct send:
+1. Configure the setting to reject direct send:
+
 ```powershell
 Set-OrganizationConfig -RejectDirectSend $true
 ```
 
-3. Verify the policy:
+1. Verify the policy:
+
 ```powershell
 (Get-OrganizationConfig).RejectDirectSend
 ```
+
 The result should be `True`.
 
 #### Related links
 
 * [Introducing more control over Direct Send in Exchange Online](https://techcommunity.microsoft.com/blog/exchange/introducing-more-control-over-direct-send-in-exchange-online/4408790)
-* [Direct Send: Send mail directly from your device or application to Microsoft 365](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365#direct-send-send-mail-directly-from-your-device-or-application-to-microsoft-365-or-office-365)
+* [Direct Send: Send mail directly from your device or application to Microsoft 365](https://learn.microsoft.com/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365#direct-send-send-mail-directly-from-your-device-or-application-to-microsoft-365-or-office-365)
 
 ## Test Metadata
 

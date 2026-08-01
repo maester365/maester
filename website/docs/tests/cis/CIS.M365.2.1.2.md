@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.2.1.2 - (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled
@@ -35,9 +37,10 @@ Blocking known malicious file types can help prevent malware-infested files from
 
 Blocking common malicious file types should not cause an impact in modern computing environments.
 
-#### Remediation action:
+#### Remediation action
 
 To enable the Common Attachment Types Filter:
+
 1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com).
 2. Click to expand **Email & collaboration** select **Policies & rules**.
 3. On the Policies & rules page select **Threat policies**.
@@ -49,6 +52,7 @@ To enable the Common Attachment Types Filter:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following Exchange Online PowerShell command:
+
 ```powershell
 Set-MalwareFilterPolicy -Identity Default -EnableFileFilter $true
 ```
@@ -58,8 +62,8 @@ Set-MalwareFilterPolicy -Identity Default -EnableFileFilter $true
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Get-MalwareFilterPolicy](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
-* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
+* [Get-MalwareFilterPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
+* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 78](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

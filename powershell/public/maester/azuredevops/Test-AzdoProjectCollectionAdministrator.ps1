@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status of how many Project Collection Administrators that are assigned to your Azure DevOps organisation.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions
+    https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions
 
 .EXAMPLE
     ```

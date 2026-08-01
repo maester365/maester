@@ -19,6 +19,8 @@ keywords:
 
 # MT.1063 - All app registration owners should have MFA registered
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/marcel-ngn" title="Marcel N. · Original author"><img src="https://github.com/marcel-ngn.png" alt="Marcel N." /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/marcel-ngn">Marcel N.</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks if all owners of app registrations have Multi-Factor Authentication (MFA) registered. App registration owners without MFA pose a significant security risk as credential stuffing attacks can lead to privileged access and potential privilege escalation or data loss.
@@ -39,7 +41,7 @@ App registration owners have powerful permissions that attackers actively target
 3. **Broader Access**: Compromised app is used to access sensitive data across the organization or to escalate privileges
 
 #### Remediation action
-Register MFA for all app registration owners listed. Use conditional access policies to enforce MFA for all application owners.
+Register MFA for all app registration owners listed. Use Conditional Access policies to enforce MFA for all application owners.
 
 ## Test Metadata
 
@@ -50,7 +52,7 @@ Register MFA for all app registration owners listed. Use conditional access poli
 | Suite | Maester |
 | Category | App |
 | PowerShell test | [Test-MtAppRegistrationOwnersWithoutMFA](/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA) |
-| Tags | App, Entra, LongRunning, MT.1063 |
+| Tags | App, Entra, LongRunning, Maester, MT.1063 |
 
 ## Source
 

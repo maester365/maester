@@ -1,7 +1,7 @@
 ﻿function Test-MtCaDeviceCodeFlow {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy that includes Authentication Flows - Device Code Flow as a condition.
+    Checks if the tenant has at least one Conditional Access policy that includes Authentication Flows - Device Code Flow as a condition.
 
     .Description
     Organizations should block or limit device code flow because it can be exploited in phishing attacks, such as those conducted by the Storm-2372 group.
@@ -9,7 +9,7 @@
     Blocking or limiting this flow helps prevent exploitation by minimizing attack vectors, improving overall security posture, and safeguarding against compromised credentials through phishing techniques.
 
     Learn more:
-    https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-block-authentication-flows
+    https://learn.microsoft.com/entra/identity/conditional-access/policy-block-authentication-flows
 
     .Example
     Test-MtCaDeviceCodeFlow
@@ -43,12 +43,12 @@
         }
 
         if ( $result ) {
-            $testResult = "Well done! The following conditional access policies sufficiently cover Device Code authentication flow:`n`n%TestResult%"
+            $testResult = "Well done! The following Conditional Access policies sufficiently cover Device Code authentication flow:`n`n%TestResult%"
         } elseif ( $policies ) {
             $policiesResult = $policies
-            $testResult = "None of the following conditional access policies sufficiently cover Device Code authentication flow:`n`n%TestResult%"
+            $testResult = "None of the following Conditional Access policies sufficiently cover Device Code authentication flow:`n`n%TestResult%"
         } else {
-            $testResult = 'No conditional access policy found that targets the Device Code authentication flow.'
+            $testResult = 'No Conditional Access policy found that targets the Device Code authentication flow.'
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess

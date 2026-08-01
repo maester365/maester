@@ -43,7 +43,7 @@
         $absUri = "${absUri}${sep}per_page=100"
     }
 
-    $cacheKey = "$version|$absUri"
+    $cacheKey = Get-MtGitHubCacheKey -ApiVersion $version -AbsoluteUri $absUri
     if (-not $DisableCache -and $__MtSession.GitHubCache.ContainsKey($cacheKey)) {
         Write-Verbose "GitHub cache hit: $absUri"
         return $__MtSession.GitHubCache[$cacheKey]

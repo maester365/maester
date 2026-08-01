@@ -1,6 +1,7 @@
 8.6.1 (L1) Ensure users can report security concerns in Teams
 
 User reporting settings allow a user to report a message as malicious for further analysis. This recommendation is composed of 3 different settings and all be configured to pass:
+
 * **In the Teams admin center:** On by default and controls whether users are able to report messages from Teams. When this setting is turned off, users can't report messages within Teams, so the corresponding setting in the Microsoft 365 Defender portal is irrelevant.
 * **In the Microsoft 365 Defender portal:** On by default for new tenants. Existing tenants need to enable it. If user reporting of messages is turned on in the Teams admin center, it also needs to be turned on the Defender portal for user reported messages to show up correctly on the User reported tab on the Submissions page.
 * **Defender - Report message destinations:** This applies to more than just Microsoft Teams and allows for an organization to keep their reports contained. Due to how the parameters are configured on the backend it is included in this assessment as a requirement.
@@ -10,6 +11,7 @@ User reporting settings allow a user to report a message as malicious for furthe
 Users will be able to more quickly and systematically alert administrators of suspicious malicious messages within Teams. The content of these messages may be sensitive in nature and therefore should be kept within the organization and not shared with Microsoft without first consulting company policy.
 
 >Note
+>
 >* The reported message remains visible to the user in the Teams client.
 >* Users can report the same message multiple times.
 >* The message sender isn't notified that messages were reported.
@@ -19,7 +21,7 @@ Users will be able to more quickly and systematically alert administrators of su
 Enabling message reporting has an impact beyond just addressing security concerns. When users of the platform report a message, the content could include messages that are threatening or harassing in nature, possibly stemming from colleagues.
 Due to this the security staff responsible for reviewing and acting on these reports should be equipped with the skills to discern and appropriately direct such messages to the relevant departments, such as Human Resources (HR).
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 2. Select **Settings & policies** > **Global (Org-wide default) settings**.
@@ -36,11 +38,12 @@ Due to this the security staff responsible for reviewing and acting on these rep
 1. Connect to Teams PowerShell using `Connect-MicrosoftTeams`.
 2. Connect to Exchange Online PowerShell using `Connect-ExchangeOnline`.
 3. Run the following cmdlet:
+
 ```powershell
 Set-CsTeamsMessagingPolicy -Identity Global -AllowSecurityEndUserReporting $true
 ```
 
-4. To configure the Defender reporting policies, edit and run this script:
+1. To configure the Defender reporting policies, edit and run this script:
 
 ```powershell
 $usersub = "userreportedmessages@fabrikam.com" # Change this.
@@ -65,7 +68,7 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com)
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [User reported settings in Microsoft Teams](https://learn.microsoft.com/en-us/defender-office-365/submissions-teams?view=o365-worldwide)
+* [User reported settings in Microsoft Teams](https://learn.microsoft.com/defender-office-365/submissions-teams?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 451](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

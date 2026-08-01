@@ -35,7 +35,7 @@
         # Filters properties (columns).
         [Parameter(Mandatory = $false)]
         [string[]] $Select,
-        # Filters results (rows). https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter
+        # Filters results (rows). https://docs.microsoft.com/graph/query-parameters#filter-parameter
         [Parameter(Mandatory = $false)]
         [string] $Filter,
         # Parameters such as "$top".

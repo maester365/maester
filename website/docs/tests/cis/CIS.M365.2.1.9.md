@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.2.1.9 - (L1) Ensure that DKIM is enabled for all Exchange Online Domains
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains
@@ -35,11 +37,12 @@ By enabling DKIM with Office 365, messages that are sent from Exchange Online wi
 
 There should be no impact of setting up DKIM however, organizations should ensure appropriate setup to ensure continuous mail-flow.
 
-#### Remediation action:
+#### Remediation action
 
 To remediate using a DNS Provider:
 
 1. For each accepted domain in Exchange Online, two DNS entries are required.
+
 ```txt
 Host name: selector1._domainkey
 Points to address or value: selector1-<domainGUID>._domainkey.<initialDomain>
@@ -52,6 +55,7 @@ TTL: 3600
 For Office 365, the selectors will always be **selector1** or **selector2**.
 
 domainGUID is the same as the domainGUID in the customized MX record for your custom domain that appears before mail.protection.outlook.com. For example, in the following MX record for the domain contoso.com, the domainGUID is contoso-com:
+
 ```txt
 contoso.com. 3600 IN MX 5 contoso-com.mail.protection.outlook.com
 ```
@@ -69,6 +73,7 @@ Final remediation step using the Exchange Online PowerShell Module:
 
 1. Connect to Exchange Online service using `Connect-ExchangeOnline`.
 2. Run the following Exchange Online PowerShell command:
+
 ```powershell
 Set-DkimSigningConfig -Identity < domainName > -Enabled $True
 ```
@@ -76,7 +81,7 @@ Set-DkimSigningConfig -Identity < domainName > -Enabled $True
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Set up DKIM to sign mail from your cloud domain](https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dkim-configure?view=o365-worldwide)
+* [Set up DKIM to sign mail from your cloud domain](https://learn.microsoft.com/defender-office-365/email-authentication-dkim-configure?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 102](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

@@ -1,6 +1,6 @@
 ---
 title: "MT.1031 - Privileged role on Control Plane are managed by PIM only."
-description: "GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts"
+description: "GET `/beta/identityGovernance/roleManagementAlerts/alerts/{unifiedRoleManagementAlertId}`"
 slug: /tests/MT.1031
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -18,9 +18,11 @@ keywords:
 
 # MT.1031 - Privileged role on Control Plane are managed by PIM only.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts
+GET `/beta/identityGovernance/roleManagementAlerts/alerts/{unifiedRoleManagementAlertId}`
 
 ## Test Metadata
 
@@ -31,7 +33,7 @@ GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts
 | Suite | Maester |
 | Category | Privileged |
 | PowerShell test | [Test-MtPimAlertsExists](/docs/commands/Test-MtPimAlertsExists) |
-| Tags | MT.1031, PIM, Privileged |
+| Tags | Maester, MT.1031, PIM, Privileged |
 
 ## Source
 

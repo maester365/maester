@@ -40,10 +40,21 @@ Describe 'Invoke-MtGitHubRequest' {
         }
     }
 
+    Context 'Cache key helper' {
+        It 'Builds cache keys as ApiVersion|absoluteUri' {
+            InModuleScope Maester {
+                Get-MtGitHubCacheKey -ApiVersion '2022-11-28' -AbsoluteUri 'https://api.github.com/orgs/myorg' | Should -Be '2022-11-28|https://api.github.com/orgs/myorg'
+            }
+        }
+    }
+
     Context 'Cache behavior' {
         BeforeEach {
             Mock Invoke-WebRequest -ModuleName Maester {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}'; Headers = @{} }
+            }
+            Mock Get-MtGitHubCacheKey -ModuleName Maester {
+                "$ApiVersion|$AbsoluteUri"
             }
         }
 
@@ -53,6 +64,9 @@ Describe 'Invoke-MtGitHubRequest' {
                 Invoke-MtGitHubRequest '/orgs/myorg' | Out-Null
             }
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
+            Should -Invoke Get-MtGitHubCacheKey -ModuleName Maester -Exactly -Times 2 -ParameterFilter {
+                $ApiVersion -eq '2022-11-28' -and $AbsoluteUri -eq 'https://api.github.com/orgs/myorg'
+            }
         }
 
         It 'Cache key is ApiVersion|absoluteUri' {
