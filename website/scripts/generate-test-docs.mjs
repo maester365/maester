@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { computeContributorData, snapshotPath } from "./contributors.mjs";
+import { tagGroupFor, tagGroupNames } from "./tag-groups.mjs";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..");
@@ -511,19 +512,10 @@ function renderTagsIndex(tests) {
     }
   }
 
-  const tagGroups = [
-    ["CIS", (tag) => /^CIS(?:\.|\s|$)|L1|L2/.test(tag)],
-    ["CISA", (tag) => /^CISA(?:\.|$)|^MS\./.test(tag)],
-    ["EIDSCA", (tag) => /^EIDSCA(?:\.|$)/.test(tag)],
-    ["ORCA", (tag) => /^ORCA(?:\.|$)/.test(tag)],
-    ["Maester", (tag) => /^(?:MT\.|Maester)/.test(tag)],
-  ];
-  const groupedTags = new Map(tagGroups.map(([name]) => [name, []]));
-  groupedTags.set("Ungrouped", []);
+  const groupedTags = new Map(tagGroupNames.map((name) => [name, []]));
 
   for (const entry of [...tagMap.entries()].sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))) {
-    const group = tagGroups.find(([, matches]) => matches(entry[0]));
-    groupedTags.get(group?.[0] ?? "Ungrouped").push(entry);
+    groupedTags.get(tagGroupFor(entry[0])).push(entry);
   }
 
   const sections = [...groupedTags.entries()]
