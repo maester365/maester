@@ -2127,6 +2127,41 @@
       "Id": "AZDO.1038",
       "Severity": "Medium",
       "Title": "(Organization) Disallow extensions from accessing resources on the local network"
+    },
+    {
+      "Id": "AZDO.1039",
+      "Severity": "Medium",
+      "Title": "(Organization) Secret Protection: new repositories enrolled automatically"
+    },
+    {
+      "Id": "AZDO.1040",
+      "Severity": "High",
+      "Title": "(Organization) Secret Protection: existing repositories enrolled"
+    },
+    {
+      "Id": "AZDO.1041",
+      "Severity": "High",
+      "Title": "(Organization) Secret Protection: push protection blocks secret commits"
+    },
+    {
+      "Id": "AZDO.1042",
+      "Severity": "Medium",
+      "Title": "(Organization) Code Security: new repositories enrolled automatically"
+    },
+    {
+      "Id": "AZDO.1043",
+      "Severity": "Medium",
+      "Title": "(Organization) Code Security: existing repositories enrolled"
+    },
+    {
+      "Id": "AZDO.1044",
+      "Severity": "Medium",
+      "Title": "(Organization) Code Security: dependency and CodeQL alerts enabled"
+    },
+    {
+      "Id": "AZDO.1045",
+      "Severity": "Info",
+      "Title": "(Organization) Copilot code review: allowed for repositories"
     }
   ]
 }
