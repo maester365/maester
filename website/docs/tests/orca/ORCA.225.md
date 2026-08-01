@@ -1,6 +1,6 @@
 ---
 title: "ORCA.225 - Safe Documents is enabled for Office clients."
-description: "Safe Documents can assist protecting files opened in Office applications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365. Remediation action Enable Safe Documents for Office clients. Related…"
+description: "Safe Documents can assist protecting files opened in Office appplications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365. Remediation action Enable Safe Documents for Office clients. Related…"
 slug: /tests/ORCA.225
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -22,7 +22,7 @@ keywords:
 
 ## Overview
 
-Safe Documents can assist protecting files opened in Office applications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365.
+Safe Documents can assist protecting files opened in Office appplications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365.
 
 #### Remediation action
 Enable Safe Documents for Office clients.

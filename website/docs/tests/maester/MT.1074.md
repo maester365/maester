@@ -50,7 +50,7 @@ Change primary usage of the .onmicrosoft.com domain for mailboxes.
 2. Click to expand **Recipients** and select **Mailboxes**.
 3. Filter for mailboxes with the .onmicrosoft.com domain as a primary SMTP address.
 4. Select a mailbox to open its properties and click **Manage email address types**.
-5. Select **Add email address type** and add a new mail address with your custom domain.
+5. Select **Add email address type** and add a new mail adress with your custom domain.
 6. Check **Set as primary email address**.
 7. Confirm with **Ok**.
 8. Repeat for every mailbox.

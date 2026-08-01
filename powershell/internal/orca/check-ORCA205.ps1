@@ -12,7 +12,7 @@ param()
 
 <#
 
-205 Checks to determine if Common attachment type filter is enabled in EOP Anti-malware policy.
+205 Checks to determine if Common attachment type filter is enbaled in EOP Anti-malware policy.
 
 #>
 
