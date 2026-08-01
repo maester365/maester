@@ -304,14 +304,6 @@ jobs:
               throw 'MAESTER_SMOKE_CLIENT_ID must be an environment secret containing the app registration Application (client) ID.'
           }
 
-      - name: Check out private report publisher
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          # All credentialed jobs run from the trusted default branch. Never
-          # check out or execute pull-request code in this workflow.
-          ref: ${{ github.sha }}
-          persist-credentials: false
-
       - name: Create private report uploader token
         id: reports-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
@@ -335,6 +327,7 @@ jobs:
           include_longrunning_tests: false
           include_preview_tests: false
           include_tags: ${{ needs.context.outputs.include_tags }}
+          exclude_tags: GitHub
           maester_version: ${{ env.SMOKE_MAESTER_VERSION }}
           pester_verbosity: None
           step_summary: false
@@ -412,6 +405,18 @@ jobs:
 
           Write-Host "Published Maester action completed the $($env:RUN_TYPE) Graph smoke test on $($env:EXPECTED_OS)."
 
+      - name: Check out private report publisher
+        if: always() && steps.maester.outputs.results_json != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Run Maester before checkout so include_private_tests: false sees a
+          # clean workspace containing only the installed public tests. Check
+          # out trusted default-branch code afterward, in its own directory,
+          # without deleting the generated test-results directory.
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          path: smoke-source
+
       - name: Publish private HTML report
         if: always() && steps.maester.outputs.results_json != ''
         shell: pwsh
@@ -432,7 +437,7 @@ jobs:
           Maester version: ``$env:SMOKE_MAESTER_VERSION``
           "@
 
-          ./.github/scripts/Publish-MaesterSmokeReport.ps1 `
+          ./smoke-source/.github/scripts/Publish-MaesterSmokeReport.ps1 `
             -Repository 'maester365/maester-smoke-reports' `
             -Tag $tag `
             -ReleaseName "Maester $env:SMOKE_RUN_TYPE smoke run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)" `
