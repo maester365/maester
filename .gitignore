@@ -512,6 +512,7 @@ test.json
 .claude/hooks/*
 !.claude/hooks/**
 .claude/settings.local.json
+CLAUDE.local.md
 
 # Don't allow Maester test results in the main branch
 test-results

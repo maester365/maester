@@ -41,12 +41,12 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1074: Ensure no more then 100 outbound mails per day are send using the .onmicrosoft.com domain' -Tag 'MT.1074' {
+    It 'MT.1074: Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain' -Tag 'MT.1074' {
 
         $result = Test-MtLimitOnMicrosoftDomainUsage
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because 'no or less then 100 outbound mails are send per day using the .onmicrosoft.com domain.'
+            $result | Should -Be $true -Because 'no more than 100 outbound mails are sent per day using the .onmicrosoft.com domain.'
         }
     }
 

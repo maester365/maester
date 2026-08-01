@@ -32,18 +32,18 @@
     if ($checkType -eq "DefenderForOffice365P2") {
         Write-Verbose "Checking if mailboxes send outbound mails using the .onmicrosoft.com domain..."
         try {
-            $outboundTreshold = 100
+            $outboundThreshold = 100
             $timespan = 14
             $timespanISO6801 = "P$($timespan)D"
 
-            $query = "EmailEvents | where EmailDirection == 'Outbound' | where SenderMailFromDomain endswith '.onmicrosoft.com' | extend Day = startofday(Timestamp) | summarize count() by SenderMailFromDomain, Day | where count_ >= $($outboundTreshold)"
+            $query = "EmailEvents | where EmailDirection == 'Outbound' | where SenderMailFromDomain endswith '.onmicrosoft.com' | extend Day = startofday(Timestamp) | summarize count() by SenderMailFromDomain, Day | where count_ >= $($outboundThreshold)"
             $KqlEmailEvents = Invoke-MtGraphSecurityQuery -Query $query -Timespan $timespanISO6801
 
             if (($KqlEmailEvents | Measure-Object).Count -eq 0) {
-                $result = "Well done. No more then $($outboundTreshold) outbound mails has been send in the last $($timespan) days using the .onmicrosoft.com domain."
+                $result = "Well done. No more than $($outboundThreshold) outbound mails have been sent in the last $($timespan) days using the .onmicrosoft.com domain."
                 Add-MtTestResultDetail -Result $result
             } else {
-                $result = "In the last $($timespan) days your tenant send on atleast one day more then $($outboundTreshold) outbound mails using the .onmicrosoft.com domain:`n`n%TestResult%"
+                $result = "In the last $($timespan) days, your tenant sent more than $($outboundThreshold) outbound mails on at least one day using the .onmicrosoft.com domain:`n`n%TestResult%"
                 $resultTable = "| SenderMailFromDomain | onDay | Count |`n"
                 $resultTable += "| --- | --- | --- |`n"
                 foreach ($item in $KqlEmailEvents) {

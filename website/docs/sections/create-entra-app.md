@@ -26,7 +26,7 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
   <summary>(Optional) Grant permissions to Exchange Online</summary>
 ### (Optional) Grant permissions to Exchange Online
 
-The Exchange Online Role Based Access Control (RBAC) implementation utilizes service specific roles that apply to an application and the below configuration allows the authorization chain to the App Registration you created in the previous steps.
+The Exchange Online role-based access control (RBAC) implementation uses service-specific roles for applications. The configuration below establishes the authorization chain for the app registration you created in the previous steps.
 
 > The Exchange Online permissions are necessary to support tests that validate [Exchange Online configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/exo).
 
@@ -50,7 +50,7 @@ New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName f
   <summary>(Optional) Grant permissions to Teams</summary>
 ### (Optional) Grant permissions to Teams
 
-The Teams Role Based Access Control (RBAC) implementation utilizes service specific roles that apply to an application and the below configuration allows the authorization chain to the App Registration you created in the previous steps.
+The Teams role-based access control (RBAC) implementation uses service-specific roles for applications. The configuration below establishes the authorization chain for the app registration you created in the previous steps.
 
 > The Teams permissions are necessary to support tests that validate [Teams configurations](https://maester.dev/docs/installation#installing-azure-exchange-online-and-teams-modules).
 
@@ -71,7 +71,7 @@ The Teams Role Based Access Control (RBAC) implementation utilizes service speci
   <summary>(Optional) Grant permissions to Azure</summary>
 ### (Optional) Grant permissions to Azure
 
-The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resource Names (URN) with a "/" separator for heirarchical scoping. There exists resources within the root (e.g., "/") scope that Microsoft retains strict control over by limiting supported interactions. As a Global Administrator you can [elevate access](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
+The Azure Role-Based Access Control (RBAC) implementation uses Uniform Resource Names (URNs) with a "/" separator for hierarchical scoping. Some resources exist within the root (e.g., "/") scope, and Microsoft retains strict control over them by limiting supported interactions. As a Global Administrator, you can [elevate access](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
 
 > The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/entra#:~:text=Test%2DMtCisaDiagnosticSettings).
 

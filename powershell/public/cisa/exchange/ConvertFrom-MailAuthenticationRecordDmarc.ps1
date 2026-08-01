@@ -199,7 +199,7 @@
                             "" {}
                             Default {
                                 $this.reportFailureFormats += $format.Value
-                                $this.warnings += "rf: Unkown failure report format ($($format.Value)) specified"
+                                $this.warnings += "rf: Unknown failure report format ($($format.Value)) specified"
                             }
                         }
                     }

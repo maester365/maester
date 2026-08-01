@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaDmarcReport
 
-    Returns true if DMARC record inlcudes report targets within same domain
+    Returns true if DMARC record includes report targets within same domain
 
     .PARAMETER Strict
     Require the CISA explicit 2nd level validation

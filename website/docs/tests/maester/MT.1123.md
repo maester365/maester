@@ -17,7 +17,7 @@ keywords:
 
 # MT.1123 - Ensure BitLocker full disk encryption is configured via Intune
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/massimomazzariol" title="Massimo Mazzariol · Co-contributor"><img src="https://github.com/massimomazzariol.png" alt="Massimo Mazzariol" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 

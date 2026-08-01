@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaRequireActivationApproval {
     <#
     .SYNOPSIS
-    Checks for approval requirement on activation of Gloabl Admin role
+    Checks for approval requirement on activation of Global Admin role
 
     .DESCRIPTION
     Activation of the Global Administrator role SHALL require approval.

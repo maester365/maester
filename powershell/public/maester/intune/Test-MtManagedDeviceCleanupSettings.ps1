@@ -32,7 +32,7 @@
             $return = $false
         } else {
             $testResultMarkdown = "Well done. At least one Intune device clean-up rule is configured.`n"
-            $testResultMarkdown += "| Name | Platfrom | Days to retire |`n"
+            $testResultMarkdown += "| Name | Platform | Days to retire |`n"
             $testResultMarkdown += "| --- | --- | --- |`n"
             foreach ($setting in $deviceCleanupSettings) {
                 $testResultMarkdown += "| $($setting.displayName) | $($setting.deviceCleanupRulePlatformType) | $($setting.deviceInactivityBeforeRetirementInDays) |`n"

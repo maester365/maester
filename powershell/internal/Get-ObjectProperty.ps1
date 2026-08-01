@@ -20,7 +20,7 @@
         # Object containing property values
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [object] $InputObjects,
-        # Name of property. Specify an array of property names to tranverse nested objects.
+        # Name of property. Specify an array of property names to traverse nested objects.
         [Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)]
         [string[]] $Property
     )

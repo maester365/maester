@@ -17,7 +17,7 @@ Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunction
             $functionPath = $_.ScriptBlock.File
         }
 
-        It "<function>.ps1 should exist in public folder" {
+        It "<function.Name>.ps1 should exist in public folder" {
             # Normalize path in test to work cross-platform
             $functionPath -replace '\\','/' | Should -BeLike "*/public/*$($function.Name).ps1"
             $functionPath | Should -Exist
@@ -35,7 +35,7 @@ Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunction
         }
 
         # Not really necessary as we test exported commands meaning they were able to load
-        It "<function>.ps1 is valid PowerShell code" {
+        It "<function.Name>.ps1 is valid PowerShell code" {
             $psFile = Get-Content -Path $functionPath -ErrorAction Stop
             $errors = $null
             $null = [System.Management.Automation.PSParser]::Tokenize($psFile, [ref]$errors)
@@ -43,7 +43,7 @@ Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunction
         }
 
         # Same comment as above, but doesn't hurt to double check
-        It '<function>.ps1 should run without exceptions' {
+        It '<function.Name>.ps1 should run without exceptions' {
             $scriptBlock = [scriptblock]::Create((Get-Content $functionPath -Raw))
             { & $scriptBlock } | Should -Not -Throw
         }

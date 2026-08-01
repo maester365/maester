@@ -196,7 +196,10 @@ receives `contents: read` and `id-token: write`.
 The action is pinned to the immutable commit for `maester-action` v1.2.0. The
 action's public result details, public artifacts, and telemetry remain disabled;
 the public run summary contains only links protected by the private report
-repository's access controls. After Maester produces a result, the workflow
+repository's access controls. The action runs before the repository checkout so
+`include_private_tests: false` sees a clean workspace containing only the
+installed public tests. After Maester produces a result, the workflow checks out
+the trusted default-branch report publisher into a separate directory and
 transfers only the HTML report directly to the core-only private release
 repository. The matrix uses `fail-fast: false` so a failure on one operating
 system does not hide the other platform results.

@@ -170,7 +170,7 @@
         "ORCA.233.1"
       ],
       "initials": "MS",
-      "recentCommits": 1
+      "recentCommits": 2
     },
     {
       "id": "Cloud-Architekt",
@@ -1182,7 +1182,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 13
+      "recentCommits": 9
     },
     {
       "id": "oed-metzb",
@@ -2010,6 +2010,40 @@
       "recentCommits": 0
     },
     {
+      "id": "brianveldman",
+      "github": "brianveldman",
+      "name": "Beerd Veldman",
+      "title": "Cloud Solution Architect",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9",
+      "pinLast": false,
+      "company": "",
+      "location": "Zwolle",
+      "locationFlag": "🇳🇱",
+      "url": "https://cloudtips.nl/",
+      "socials": {
+        "linkedin": "brian-veldman",
+        "x": "brianveldman"
+      },
+      "avatar": "https://github.com/brianveldman.png",
+      "firstContribution": "2025-07-13",
+      "testsAuthored": [
+        "MT.1064",
+        "MT.1065"
+      ],
+      "testsContributed": [
+        "CISA.MS.AAD.7.4",
+        "CISA.MS.AAD.7.5",
+        "CISA.MS.AAD.7.6",
+        "MT.1053",
+        "MT.1056",
+        "MT.1061",
+        "MT.1074"
+      ],
+      "initials": "BV",
+      "recentCommits": 1
+    },
+    {
       "id": "weyCC81",
       "github": "weyCC81",
       "name": "Stefan Wey",
@@ -2155,34 +2189,6 @@
       "recentCommits": 0
     },
     {
-      "id": "brianveldman",
-      "github": "brianveldman",
-      "name": "Beerd Veldman",
-      "title": "Cloud Solution Architect",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9",
-      "pinLast": false,
-      "company": "",
-      "location": "Zwolle",
-      "locationFlag": "🇳🇱",
-      "url": "https://cloudtips.nl/",
-      "socials": {
-        "linkedin": "brian-veldman",
-        "x": "brianveldman"
-      },
-      "avatar": "https://github.com/brianveldman.png",
-      "firstContribution": "2025-07-13",
-      "testsAuthored": [
-        "MT.1064",
-        "MT.1065"
-      ],
-      "testsContributed": [
-        "MT.1056"
-      ],
-      "initials": "BV",
-      "recentCommits": 0
-    },
-    {
       "id": "michaelmsonne",
       "github": "michaelmsonne",
       "name": "Michael Morten Sonne",
@@ -2247,6 +2253,37 @@
       ],
       "initials": "M",
       "recentCommits": 2
+    },
+    {
+      "id": "massimomazzariol",
+      "github": "massimomazzariol",
+      "name": "Massimo Mazzariol",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Italy",
+      "locationFlag": "🇮🇹",
+      "url": "",
+      "socials": {
+        "linkedin": "massimomazzariol"
+      },
+      "avatar": "https://github.com/massimomazzariol.png",
+      "firstContribution": "2026-07-22",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1024",
+        "MT.1042",
+        "MT.1045",
+        "MT.1046",
+        "MT.1047",
+        "MT.1048",
+        "MT.1071",
+        "MT.1123"
+      ],
+      "initials": "MM",
+      "recentCommits": 5
     },
     {
       "id": "mattcave",
@@ -2413,34 +2450,6 @@
       ],
       "initials": "MJ",
       "recentCommits": 0
-    },
-    {
-      "id": "massimomazzariol",
-      "github": "massimomazzariol",
-      "name": "Massimo Mazzariol",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Italy",
-      "locationFlag": "🇮🇹",
-      "url": "",
-      "socials": {
-        "linkedin": "massimomazzariol"
-      },
-      "avatar": "https://github.com/massimomazzariol.png",
-      "firstContribution": "2026-07-22",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048"
-      ],
-      "initials": "MM",
-      "recentCommits": 1
     },
     {
       "id": "mrdos010",
@@ -2637,6 +2646,29 @@
       ],
       "initials": "CE",
       "recentCommits": 2
+    },
+    {
+      "id": "amlhive-tech",
+      "github": "amlhive-tech",
+      "name": "Haris Habib",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "AMLHIVE",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/amlhive-tech.png",
+      "firstContribution": "2026-08-01",
+      "testsAuthored": [],
+      "testsContributed": [
+        "CIS.M365.2.1.9",
+        "CISA.MS.EXO.3.1"
+      ],
+      "initials": "HH",
+      "recentCommits": 1
     },
     {
       "id": "ic3lotus",
@@ -3274,7 +3306,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 15
+      "recentCommits": 14
     }
   ],
   "attributions": {
@@ -3473,7 +3505,8 @@
         "thomas-s-schmidt",
         "brianreidc7",
         "Mynster9361",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "amlhive-tech"
       ]
     },
     "CIS.M365.2.1.11": {
@@ -3951,7 +3984,8 @@
         "thomas-s-schmidt",
         "SamErde",
         "JeanPhilippeGeorge",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "CISA.MS.AAD.7.5": {
@@ -3963,7 +3997,8 @@
         "fflaten",
         "SamErde",
         "JeanPhilippeGeorge",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "CISA.MS.AAD.7.6": {
@@ -3975,7 +4010,8 @@
         "ThorNicolai",
         "SamErde",
         "JeanPhilippeGeorge",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "CISA.MS.AAD.7.7": {
@@ -4073,7 +4109,8 @@
         "thomas-s-schmidt",
         "SamErde",
         "brianreidc7",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "amlhive-tech"
       ]
     },
     "CISA.MS.EXO.4.1": {
@@ -5076,7 +5113,8 @@
         "thomas-s-schmidt",
         "weyCC81",
         "SamErde",
-        "svrooij"
+        "svrooij",
+        "massimomazzariol"
       ]
     },
     "MT.1025": {
@@ -5380,7 +5418,8 @@
         "SamErde",
         "l-gosling",
         "nicolonsky",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "MT.1054": {
@@ -5439,7 +5478,8 @@
       "contributors": [
         "thomas-s-schmidt",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "brianveldman"
       ]
     },
     "MT.1062": {
@@ -5509,7 +5549,8 @@
       "author": "HenrikPiecha",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "massimomazzariol"
       ]
     },
     "MT.1072": {
@@ -5531,7 +5572,8 @@
       "author": "HenrikPiecha",
       "contributors": [
         "SamErde",
-        "JeanPhilippeGeorge"
+        "JeanPhilippeGeorge",
+        "brianveldman"
       ]
     },
     "MT.1075": {
@@ -5836,7 +5878,8 @@
     "MT.1123": {
       "author": "OfirGavish",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "massimomazzariol"
       ]
     },
     "MT.1147": {
