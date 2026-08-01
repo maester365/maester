@@ -14,37 +14,75 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
         }
     }
 
-    It '<CommandName> passes the initial onmicrosoft.com domain' {
+    It '<CommandName> returns <ExpectedOutcome> for <DomainName>' -ForEach @(
+        @{
+            DomainName                = 'contoso.onmicrosoft.com'
+            InitialDomain             = $true
+            IsCoexistenceDomain       = $false
+            SendingFromDomainDisabled = $false
+            ExpectedOutcome           = 'passed'
+            ExpectedResult            = $true
+        }
+        @{
+            DomainName                = 'secondary.onmicrosoft.com'
+            InitialDomain             = $false
+            IsCoexistenceDomain       = $false
+            SendingFromDomainDisabled = $false
+            ExpectedOutcome           = 'failed'
+            ExpectedResult            = $false
+        }
+        @{
+            DomainName                = 'parked.example'
+            InitialDomain             = $false
+            IsCoexistenceDomain       = $false
+            SendingFromDomainDisabled = $true
+            ExpectedOutcome           = 'skipped'
+            ExpectedResult            = $null
+        }
+        @{
+            DomainName                = 'contoso.mail.onmicrosoft.com'
+            InitialDomain             = $false
+            IsCoexistenceDomain       = $true
+            SendingFromDomainDisabled = $false
+            ExpectedOutcome           = 'failed'
+            ExpectedResult            = $false
+        }
+        @{
+            DomainName                = 'contoso.mail.onmicrosoft.com'
+            InitialDomain             = $false
+            IsCoexistenceDomain       = $true
+            SendingFromDomainDisabled = $true
+            ExpectedOutcome           = 'skipped'
+            ExpectedResult            = $null
+        }
+        @{
+            DomainName                = 'contoso.com'
+            InitialDomain             = $false
+            IsCoexistenceDomain       = $false
+            SendingFromDomainDisabled = $false
+            ExpectedOutcome           = 'failed'
+            ExpectedResult            = $false
+        }
+    ) {
         Mock -ModuleName Maester Get-MtExo {
             if ($Request -eq 'AcceptedDomain') {
                 return [PSCustomObject]@{
-                    DomainName               = 'contoso.onmicrosoft.com'
-                    InitialDomain            = $true
-                    SendingFromDomainDisabled = $false
+                    DomainName                = $DomainName
+                    InitialDomain             = $InitialDomain
+                    IsCoexistenceDomain       = $IsCoexistenceDomain
+                    SendingFromDomainDisabled = $SendingFromDomainDisabled
                 }
             }
 
             return @()
         }
 
-        & $CommandName | Should -BeTrue
-        Should -Invoke Get-MailAuthenticationRecord -ModuleName Maester -Exactly 0
-    }
-
-    It '<CommandName> fails a secondary onmicrosoft.com domain' {
-        Mock -ModuleName Maester Get-MtExo {
-            if ($Request -eq 'AcceptedDomain') {
-                return [PSCustomObject]@{
-                    DomainName               = 'secondary.onmicrosoft.com'
-                    InitialDomain            = $false
-                    SendingFromDomainDisabled = $false
-                }
-            }
-
-            return @()
+        $result = & $CommandName
+        if ($null -eq $ExpectedResult) {
+            $result | Should -BeNullOrEmpty
+        } else {
+            $result | Should -Be $ExpectedResult
         }
-
-        & $CommandName | Should -BeFalse
         Should -Invoke Get-MailAuthenticationRecord -ModuleName Maester -Exactly 0
     }
 }
