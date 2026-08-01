@@ -12,6 +12,14 @@ function Get-MtADDomainState {
     .PARAMETER Refresh
     Forces a refresh of the data from Active Directory, bypassing the cache.
 
+    .PARAMETER ComputerName
+    Specifies an Active Directory domain controller or AD DS server to target for
+    data collection. When provided, Active Directory queries and the LDAP searcher
+    are directed to this server. DNS collection also targets this host when it
+    supports the required DNS management access. If not specified, commands use
+    the implicit serverless behavior of the Active Directory module and the DNS
+    root from the collected domain object is used for DNS queries.
+
     .EXAMPLE
     Get-MtADDomainState
 
@@ -22,12 +30,19 @@ function Get-MtADDomainState {
 
     Forces a fresh collection of domain state data from Active Directory.
 
+    .EXAMPLE
+    Get-MtADDomainState -ComputerName dc01.contoso.com
+
+    Collects domain state data by targeting dc01.contoso.com for supported Active Directory and DNS queries.
+
     .LINK
     https://maester.dev/docs/commands/Get-MtADDomainState
     #>
     [CmdletBinding()]
     param(
-        [switch]$Refresh
+        [switch]$Refresh,
+
+        [string]$ComputerName
     )
 
     if (-not (Test-MtConnection -Service ActiveDirectory)) {
@@ -35,30 +50,44 @@ function Get-MtADDomainState {
         return $null
     }
 
-    $cacheKey = 'DomainState'
+    $cacheKey = if ($ComputerName) { "DomainState:$ComputerName" } else { 'DomainState' }
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
         Write-Verbose 'Collecting AD Domain State data from Active Directory'
 
         try {
+            $adServerParameters = @{}
+            if ($ComputerName) {
+                $adServerParameters['Server'] = $ComputerName
+            }
+
             $domainState = @{
-                Domain            = Get-ADDomain | Select-Object *
-                Forest            = Get-ADForest | Select-Object *
-                Computers         = Get-ADComputer -Filter * -Properties createTimeStamp, distinguishedName, enabled, isCriticalSystemObject, lastLogonDate, managedBy, modified, operatingSystem, passwordExpired, passwordLastSet, PasswordNeverExpires, PasswordNotRequired, primaryGroupId, SIDHistory, TrustedForDelegation, TrustedToAuthForDelegation, servicePrincipalName
-                Users             = Get-ADUser -Filter * -Properties adminCount, CannotChangePassword, createTimeStamp, DistinguishedName, DoesNotRequirePreAuth, Enabled, HomeDirectory, isCriticalSystemObject, LastBadPasswordAttempt, LastLogonDate, LockedOut, logonHours, LogonWorkstations, managedBy, Manager, modifyTimeStamp, Name, PasswordExpired, PasswordLastSet, PasswordNeverExpires, PasswordNotRequired, primaryGroupId, ProfilePath, SamAccountName, ScriptPath, SIDHistory, servicePrincipalName, TrustedForDelegation, TrustedToAuthForDelegation, UseDESKeyOnly, userAccountControl
-                Groups            = Get-ADGroup -Filter * -Properties adminCount, createTimeStamp, DistinguishedName, GroupCategory, GroupScope, isCriticalSystemObject, ManagedBy, modifyTimeStamp, SIDHistory
-                ServiceAccounts   = Get-ADServiceAccount -Filter *
-                DomainControllers = Get-ADDomainController -Filter *
-                ReplicationSites  = Get-ADReplicationSite -Filter *
-                Subnets           = Get-ADReplicationSubnet -Filter * -Properties *
-                RootDSE           = Get-ADRootDSE | Select-Object *
-                OptionalFeatures  = Get-ADOptionalFeature -Filter * -Properties *
+                Domain            = Get-ADDomain @adServerParameters | Select-Object *
+                Forest            = Get-ADForest @adServerParameters | Select-Object *
+                Computers         = Get-ADComputer -Filter * -Properties createTimeStamp, distinguishedName, enabled, isCriticalSystemObject, lastLogonDate, managedBy, modified, operatingSystem, passwordExpired, passwordLastSet, PasswordNeverExpires, PasswordNotRequired, primaryGroupId, SIDHistory, TrustedForDelegation, TrustedToAuthForDelegation, servicePrincipalName @adServerParameters
+                Users             = Get-ADUser -Filter * -Properties adminCount, CannotChangePassword, createTimeStamp, DistinguishedName, DoesNotRequirePreAuth, Enabled, HomeDirectory, isCriticalSystemObject, LastBadPasswordAttempt, LastLogonDate, LockedOut, logonHours, LogonWorkstations, managedBy, Manager, modifyTimeStamp, Name, PasswordExpired, PasswordLastSet, PasswordNeverExpires, PasswordNotRequired, primaryGroupId, ProfilePath, SamAccountName, ScriptPath, SIDHistory, servicePrincipalName, TrustedForDelegation, TrustedToAuthForDelegation, UseDESKeyOnly, userAccountControl @adServerParameters
+                Groups            = Get-ADGroup -Filter * -Properties adminCount, createTimeStamp, DistinguishedName, GroupCategory, GroupScope, isCriticalSystemObject, ManagedBy, modifyTimeStamp, SIDHistory @adServerParameters
+                ServiceAccounts   = Get-ADServiceAccount -Filter * @adServerParameters
+                DomainControllers = Get-ADDomainController -Filter * @adServerParameters
+                ReplicationSites  = Get-ADReplicationSite -Filter * @adServerParameters
+                Subnets           = Get-ADReplicationSubnet -Filter * -Properties * @adServerParameters
+                RootDSE           = Get-ADRootDSE @adServerParameters | Select-Object *
+                OptionalFeatures  = Get-ADOptionalFeature -Filter * -Properties * @adServerParameters
                 CollectionTime    = Get-Date
             }
 
+            if (-not $domainState.Domain) {
+                throw "Failed to retrieve domain information from Active Directory. Verify connectivity and that the specified ComputerName is a valid domain controller."
+            }
+            if (-not $domainState.RootDSE) {
+                throw "Failed to retrieve RootDSE information from Active Directory. Verify connectivity and that the specified ComputerName is a valid domain controller."
+            }
+
+            $resolvedComputerName = if ($ComputerName) { $ComputerName } else { $domainState.Domain.DNSRoot }
+
             # Collect Replication Connection information
             try {
-                $replicationConnections = Get-ADReplicationConnection -Filter * -Properties *
+                $replicationConnections = Get-ADReplicationConnection -Filter * -Properties * @adServerParameters
                 $domainState['ReplicationConnections'] = $replicationConnections
             }
             catch {
@@ -68,7 +97,7 @@ function Get-MtADDomainState {
 
             # Collect DFS-R Subscription information (for SYSVOL replication)
             try {
-                $dfsrSubscriptions = Get-ADObject -Filter { objectClass -eq "msDFSR-Subscription" } -Properties *
+                $dfsrSubscriptions = Get-ADObject -Filter { objectClass -eq "msDFSR-Subscription" } -Properties * @adServerParameters
                 $domainState['DfsrSubscriptions'] = $dfsrSubscriptions
             }
             catch {
@@ -78,7 +107,7 @@ function Get-MtADDomainState {
 
             # Collect Trust information
             try {
-                $trusts = Get-ADTrust -Filter * -Properties *
+                $trusts = Get-ADTrust -Filter * -Properties * @adServerParameters
                 $domainState['Trusts'] = $trusts
             }
             catch {
@@ -88,7 +117,7 @@ function Get-MtADDomainState {
 
             # Collect Organizational Units
             try {
-                $organizationalUnits = Get-ADOrganizationalUnit -Filter * -Properties Name, DistinguishedName, whenCreated, whenChanged, modifyTimeStamp, createTimeStamp, ManagedBy, Description
+                $organizationalUnits = Get-ADOrganizationalUnit -Filter * -Properties Name, DistinguishedName, whenCreated, whenChanged, modifyTimeStamp, createTimeStamp, ManagedBy, Description @adServerParameters
                 $domainState['OrganizationalUnits'] = $organizationalUnits
             }
             catch {
@@ -116,14 +145,14 @@ function Get-MtADDomainState {
 
             # Try to collect DNS data if the DnsServer module is available
             try {
-                $dnsZones = Get-DnsServerZone -ErrorAction Stop | Select-Object *
+                $dnsZones = Get-DnsServerZone -ComputerName $resolvedComputerName -ErrorAction Stop | Select-Object *
                 $domainState['DNSZones'] = $dnsZones
 
                 # Collect DNS records for each zone (limit to essential record types for performance)
                 $dnsRecords = @()
                 foreach ($zone in $dnsZones | Where-Object { $_.ZoneType -eq 'Primary' -or $_.ZoneType -eq 'ActiveDirectory-Integrated' } | Select-Object -First 20) {
                     try {
-                        $records = Get-DnsServerResourceRecord -ZoneName $zone.ZoneName -ErrorAction SilentlyContinue | Select-Object *
+                        $records = Get-DnsServerResourceRecord -ComputerName $resolvedComputerName -ZoneName $zone.ZoneName -ErrorAction SilentlyContinue | Select-Object *
                         foreach ($record in $records) {
                             $record | Add-Member -NotePropertyName 'ZoneName' -NotePropertyValue $zone.ZoneName -Force
                         }
@@ -146,14 +175,178 @@ function Get-MtADDomainState {
                 $domainState['DNSRecords'] = @()
             }
 
+            # Collect Configuration container object tree
+            try {
+                $configurationContext = $domainState.RootDSE.ConfigurationNamingContext
+
+                $configuration = @{}
+
+                # WellKnown Security Principals
+                try {
+                    $wellKnownPath = "CN=WellKnown Security Principals,$configurationContext"
+                    $configuration['WellKnownSecurityPrincipals'] = Get-ADObject -SearchBase $wellKnownPath -Filter * -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect WellKnownSecurityPrincipals data: $($_.Exception.Message)"
+                    $configuration['WellKnownSecurityPrincipals'] = $null
+                }
+
+                # Site Links
+                try {
+                    $siteLinks = Get-ADReplicationSiteLink -Filter * -Properties * @adServerParameters
+                    $configuration['SiteLinks'] = $siteLinks
+                } catch {
+                    Write-Verbose "Could not collect SiteLinks data: $($_.Exception.Message)"
+                    $configuration['SiteLinks'] = $null
+                }
+
+                # DHCP Servers
+                try {
+                    $dhcpPath = "CN=NetServices,CN=Services,$configurationContext"
+                    $configuration['DhcpServers'] = Get-ADObject -SearchBase $dhcpPath -Filter { objectClass -eq "dhcpClass" -or objectClass -eq "dhcpServer" -or objectClass -eq "serviceConnectionPoint" } -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect DhcpServers data: $($_.Exception.Message)"
+                    $configuration['DhcpServers'] = $null
+                }
+
+                # AuthN Policy Containers
+                try {
+                    $authNPath = "CN=AuthN Policy Configuration,CN=Services,$configurationContext"
+                    $configuration['AuthNPolicyContainers'] = Get-ADObject -SearchBase $authNPath -Filter * -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect AuthNPolicyContainers data: $($_.Exception.Message)"
+                    $configuration['AuthNPolicyContainers'] = $null
+                }
+
+                # PKI / Certificate Services paths
+                $pkiPath = "CN=Public Key Services,CN=Services,$configurationContext"
+
+                # Trusted Root CAs
+                try {
+                    $rootCaPath = "CN=Certification Authorities,$pkiPath"
+                    $configuration['TrustedRootCAs'] = Get-ADObject -SearchBase $rootCaPath -Filter { objectClass -eq "certificationAuthority" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect TrustedRootCAs data: $($_.Exception.Message)"
+                    $configuration['TrustedRootCAs'] = $null
+                }
+
+                # Intermediate CAs (AIA container)
+                try {
+                    $aiaPath = "CN=AIA,$pkiPath"
+                    $configuration['IntermediateCAs'] = Get-ADObject -SearchBase $aiaPath -Filter { objectClass -eq "certificationAuthority" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect IntermediateCAs data: $($_.Exception.Message)"
+                    $configuration['IntermediateCAs'] = $null
+                }
+
+                # Enterprise CAs
+                try {
+                    $enrollmentPath = "CN=Enrollment Services,$pkiPath"
+                    $configuration['EnterpriseCAs'] = Get-ADObject -SearchBase $enrollmentPath -Filter { objectClass -eq "pKIEnrollmentService" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect EnterpriseCAs data: $($_.Exception.Message)"
+                    $configuration['EnterpriseCAs'] = $null
+                }
+
+                # Certificate Templates
+                try {
+                    $templatePath = "CN=Certificate Templates,$pkiPath"
+                    $configuration['CertificateTemplates'] = Get-ADObject -SearchBase $templatePath -Filter { objectClass -eq "pKICertificateTemplate" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect CertificateTemplates data: $($_.Exception.Message)"
+                    $configuration['CertificateTemplates'] = $null
+                }
+
+                # Enrollment Templates - derived from Enterprise CAs' published templates
+                try {
+                    $enrollmentTemplates = @()
+                    $enterpriseCAs = $configuration['EnterpriseCAs']
+                    if ($enterpriseCAs) {
+                        foreach ($ca in $enterpriseCAs) {
+                            if ($ca.certificateTemplates) {
+                                $enrollmentTemplates += $ca.certificateTemplates
+                            }
+                        }
+                    }
+                    $configuration['EnrollmentTemplates'] = $enrollmentTemplates | Select-Object -Unique
+                } catch {
+                    Write-Verbose "Could not collect EnrollmentTemplates data: $($_.Exception.Message)"
+                    $configuration['EnrollmentTemplates'] = $null
+                }
+
+                # CRL Distribution Points
+                try {
+                    $cdpPath = "CN=CDP,$pkiPath"
+                    $configuration['CrlDistributionPoints'] = Get-ADObject -SearchBase $cdpPath -Filter { objectClass -eq "cRLDistributionPoint" -or objectClass -eq "certificationAuthority" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect CrlDistributionPoints data: $($_.Exception.Message)"
+                    $configuration['CrlDistributionPoints'] = $null
+                }
+
+                # NTAuthCertificates
+                try {
+                    $ntAuthPath = "CN=NTAuthCertificates,$pkiPath"
+                    $configuration['NtAuthCertificates'] = Get-ADObject -Identity $ntAuthPath -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect NtAuthCertificates data: $($_.Exception.Message)"
+                    $configuration['NtAuthCertificates'] = $null
+                }
+
+                # LDAP Query Policies
+                try {
+                    $queryPolicyPath = "CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services,$configurationContext"
+                    $configuration['LdapQueryPolicies'] = Get-ADObject -SearchBase $queryPolicyPath -Filter { objectClass -eq "queryPolicy" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect LdapQueryPolicies data: $($_.Exception.Message)"
+                    $configuration['LdapQueryPolicies'] = $null
+                }
+
+                # Directory Service settings (TombstoneLifetime, DsHeuristics, SpnMappings)
+                try {
+                    $dsPath = "CN=Directory Service,CN=Windows NT,CN=Services,$configurationContext"
+                    $dsObject = Get-ADObject -Identity $dsPath -Properties tombstoneLifetime, dSHeuristics, sPNMappings @adServerParameters
+                    $configuration['TombstoneLifetime'] = $dsObject.tombstoneLifetime
+                    $configuration['DsHeuristics'] = $dsObject.dSHeuristics
+                    $configuration['SpnMappings'] = $dsObject.sPNMappings
+                } catch {
+                    Write-Verbose "Could not collect Directory Service settings: $($_.Exception.Message)"
+                    $configuration['TombstoneLifetime'] = $null
+                    $configuration['DsHeuristics'] = $null
+                    $configuration['SpnMappings'] = $null
+                }
+
+                # KDS Root Keys
+                try {
+                    $kdsPath = "CN=Master Root Keys,CN=Group Key Distribution,CN=Services,$configurationContext"
+                    $configuration['KdsRootKeys'] = Get-ADObject -SearchBase $kdsPath -Filter { objectClass -eq "msKds-ProvRootKey" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect KdsRootKeys data: $($_.Exception.Message)"
+                    $configuration['KdsRootKeys'] = $null
+                }
+
+                # Activation Objects
+                try {
+                    $activationPath = "CN=Activation Objects,CN=Services,$configurationContext"
+                    $configuration['ActivationObjects'] = Get-ADObject -SearchBase $activationPath -Filter { objectClass -eq "msImaging-PSP" -or objectClass -eq "serviceConnectionPoint" } -SearchScope OneLevel -Properties * @adServerParameters
+                } catch {
+                    Write-Verbose "Could not collect ActivationObjects data: $($_.Exception.Message)"
+                    $configuration['ActivationObjects'] = $null
+                }
+
+                $domainState['Configuration'] = [PSCustomObject]$configuration
+            }
+            catch {
+                Write-Verbose "Could not collect Configuration container data: $($_.Exception.Message)"
+                $domainState['Configuration'] = $null
+            }
+
             # Collect Schema information
             try {
-                $schemaContext = (Get-ADRootDSE).schemaNamingContext
-                $schemaObjects = Get-ADObject -SearchBase $schemaContext -Filter * -Properties whenCreated, objectClass
+                $schemaContext = (Get-ADRootDSE @adServerParameters).schemaNamingContext
+                $schemaObjects = Get-ADObject -SearchBase $schemaContext -Filter * -Properties whenCreated, objectClass @adServerParameters
                 $domainState['SchemaObjects'] = $schemaObjects
 
                 # Get schema version information from the schema container
-                $schemaContainer = Get-ADObject -Identity $schemaContext -Properties objectVersion, whenCreated, whenChanged
+                $schemaContainer = Get-ADObject -Identity $schemaContext -Properties objectVersion, whenCreated, whenChanged @adServerParameters
                 $domainState['SchemaContainer'] = $schemaContainer
             }
             catch {
@@ -164,7 +357,7 @@ function Get-MtADDomainState {
 
             # Collect Printer information (published printers in AD)
             try {
-                $printers = Get-ADObject -Filter { objectClass -eq "printQueue" } -Properties *
+                $printers = Get-ADObject -Filter { objectClass -eq "printQueue" } -Properties * @adServerParameters
                 $domainState['Printers'] = $printers
             }
             catch {
@@ -175,7 +368,7 @@ function Get-MtADDomainState {
             # Check LAPS installation status
             try {
                 # Check for LAPS schema extensions (ms-Mcs-AdmPwd attribute)
-                $lapsSchemaCheck = Get-ADObject -SearchBase $schemaContext -Filter { name -eq "ms-Mcs-AdmPwd" } -ErrorAction SilentlyContinue
+                $lapsSchemaCheck = Get-ADObject -SearchBase $schemaContext -Filter { name -eq "ms-Mcs-AdmPwd" } -ErrorAction SilentlyContinue @adServerParameters
                 $domainState['LapsInstalled'] = ($null -ne $lapsSchemaCheck)
             }
             catch {
@@ -193,7 +386,11 @@ function Get-MtADDomainState {
 
                 # Use DirectorySearcher to get objects with their security descriptors
                 $searcher = New-Object System.DirectoryServices.DirectorySearcher
-                $searcher.SearchRoot = [ADSI]"LDAP://$domainDN"
+                if ($ComputerName) {
+                    $searcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$ComputerName/$domainDN", $null, $null, ([System.DirectoryServices.AuthenticationTypes]::Secure -bor [System.DirectoryServices.AuthenticationTypes]::ServerBind))
+                } else {
+                    $searcher.SearchRoot = [ADSI]"LDAP://$domainDN"
+                }
                 $searcher.PageSize = 1000
                 $searcher.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl
 
