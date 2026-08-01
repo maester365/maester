@@ -40,6 +40,17 @@
             $dkimSigningConfig = $dkimSigningConfigs | Where-Object {`
                     $_.domain -eq $domain.domainname
             }
+
+            if (-not $dkimSigningConfig) {
+                $dkimRecord = [PSCustomObject]@{
+                    domain     = $domain.DomainName
+                    pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
+                    reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
+                    dkimRecord = $null
+                }
+                $dkimRecords += $dkimRecord
+                continue
+            }
             if ((Get-Date) -gt $dkimSigningConfig.RotateOnDate) {
                 if ($Selector -ne $dkimSigningConfig.SelectorAfterRotateOnDate) {
                     Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorAfterRotateOnDate) based on EXO config"
