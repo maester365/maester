@@ -381,7 +381,7 @@
             }
 
             $parsedTimeSpan = [TimeSpan]::Zero
-            if ([TimeSpan]::TryParse([string]$Value, [ref]$parsedTimeSpan)) {
+            if ([TimeSpan]::TryParse([string]$Value, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$parsedTimeSpan)) {
                 return $parsedTimeSpan
             }
 
@@ -403,7 +403,7 @@
             }
 
             $parsedDateTime = [DateTime]::MinValue
-            if ([DateTime]::TryParse([string]$Value, [ref]$parsedDateTime)) {
+            if ([DateTime]::TryParse([string]$Value, [System.Globalization.CultureInfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::None, [ref]$parsedDateTime)) {
                 return $parsedDateTime
             }
 
@@ -845,6 +845,11 @@
 
                     if (-not [string]::IsNullOrWhiteSpace($OutputFolder) -or -not [string]::IsNullOrWhiteSpace($OutputFolderFileName)) {
                         $targetParams['OutputFolderFileName'] = "$baseFileName-$targetSuffix"
+                    } elseif ([string]::IsNullOrWhiteSpace($OutputHtmlFile) -and
+                        [string]::IsNullOrWhiteSpace($OutputMarkdownFile) -and
+                        [string]::IsNullOrWhiteSpace($OutputMarkdownSummaryFile) -and
+                        [string]::IsNullOrWhiteSpace($OutputJsonFile)) {
+                        $targetParams['OutputFolderFileName'] = "$baseFileName-$targetSuffix"
                     } else {
                         if (-not [string]::IsNullOrWhiteSpace($OutputHtmlFile)) {
                             $targetParams['OutputHtmlFile'] = Add-SuffixToPath -FilePath $OutputHtmlFile -Suffix $targetSuffix
@@ -893,7 +898,10 @@
             }
 
             $combinedInvokeCommand = Get-MtInvokeMaesterCommand -BoundParameters $PSBoundParameters -Comment 'Merged multi-forest AD report'
-            $mergedResults = New-MtMergedAdForestResult -ForestResults $multiForestResults -InvokeCommand $combinedInvokeCommand
+            $mergedResults = $null
+            if (@($multiForestResults).Count -gt 0) {
+                $mergedResults = New-MtMergedAdForestResult -ForestResults $multiForestResults -InvokeCommand $combinedInvokeCommand
+            }
             if ($mergedResults -and $multiForestFailures.Count -gt 0) {
                 $mergedResults | Add-Member -NotePropertyName 'ADTargetFailures' -NotePropertyValue @($multiForestFailures) -Force
             }
