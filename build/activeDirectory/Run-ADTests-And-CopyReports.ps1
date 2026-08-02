@@ -25,6 +25,10 @@
 .PARAMETER TargetFolder
     Target folder where reports will be copied. Defaults to build/activeDirectory.
 
+.PARAMETER ActiveDirectoryServer
+    One or more domain controllers or AD DS servers to target. Provide multiple
+    values to run the AD suite against multiple forests from the same machine.
+
 .EXAMPLE
     .\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory
 
@@ -55,7 +59,10 @@ param (
     [string]$OutputFolder = (Join-Path $PSScriptRoot "..\..\test-results"),
 
     [Parameter()]
-    [string]$TargetFolder = $PSScriptRoot
+    [string]$TargetFolder = $PSScriptRoot,
+
+    [Parameter()]
+    [string[]]$ActiveDirectoryServer
 )
 
 if (-not $ConnectActiveDirectory.IsPresent) {
@@ -132,18 +139,6 @@ foreach ($moduleName in $requiredModules) {
     }
 }
 
-# Validate the explicit Active Directory connection before any tests run.
-try {
-    Connect-Maester -Service ActiveDirectory
-    if (-not (Test-MtConnection -Service ActiveDirectory)) {
-        throw "Connect-Maester did not establish an Active Directory connection."
-    }
-    Write-Host "  ✓ Active Directory connection validated" -ForegroundColor Green
-} catch {
-    Write-Error "Failed to connect to Active Directory: $_"
-    exit 1
-}
-
 # Verify AD test paths
 $adTestPaths = @(
     (Join-Path $TestPath "Maester\ad"),
@@ -166,6 +161,14 @@ if ($validTestPaths.Count -eq 0) {
 }
 
 Write-Host "  Found $($validTestPaths.Count) AD test location(s)" -ForegroundColor Gray
+
+$targets = if ($ActiveDirectoryServer -and $ActiveDirectoryServer.Count -gt 0) {
+    $ActiveDirectoryServer
+} else {
+    @($null)
+}
+
+Write-Host "  Forest targets to test: $($targets.Count)" -ForegroundColor Gray
 #endregion
 
 #region Run AD Tests
@@ -179,50 +182,74 @@ try {
         New-Item -Path $OutputFolder -ItemType Directory -Force | Out-Null
     }
 
-    # Generate timestamped filename
-    $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
-    $fileName = "AD-TestResults-$timestamp"
+    $allGeneratedFiles = @()
 
-    # Run Invoke-Maester for AD tests
-    $invokeParams = @{
-        Path = $validTestPaths[0]
-        Tag = 'AD'
-        OutputFolder = $OutputFolder
-        OutputFolderFileName = $fileName
-        NonInteractive = $true
-        SkipGraphConnect = $true  # AD tests don't need Graph connection
-        Verbosity = 'Normal'
-    }
+    foreach ($target in $targets) {
+        $targetLabel = if ($target) { $target } else { 'default-domain' }
+        $targetLabelSafe = ($targetLabel -replace '[^A-Za-z0-9._-]', '_')
+        Write-Host "  Target: $targetLabel" -ForegroundColor Cyan
 
-    Write-Host "  Running: Invoke-Maester with parameters:" -ForegroundColor Gray
-    $invokeParams.GetEnumerator() | ForEach-Object {
-        Write-Host "    - $($_.Key): $($_.Value)" -ForegroundColor Gray
-    }
-    Write-Host ""
-
-    $results = Invoke-Maester @invokeParams -PassThru
-
-    if ($results) {
-        Write-Host "`n  ✓ Tests completed" -ForegroundColor Green
-        Write-Host "    - Total Tests: $($results.TotalCount)" -ForegroundColor Gray
-        Write-Host "    - Passed: $($results.PassedCount)" -ForegroundColor Green
-        Write-Host "    - Failed: $($results.FailedCount)" -ForegroundColor $(if($results.FailedCount -gt 0){'Red'}else{'Gray'})
-        Write-Host "    - Skipped: $($results.SkippedCount)" -ForegroundColor Gray
-
-        # Get the generated files
-        $generatedFiles = @(
-            (Join-Path $OutputFolder "$fileName.html"),
-            (Join-Path $OutputFolder "$fileName.md"),
-            (Join-Path $OutputFolder "$fileName.json")
-        ) | Where-Object { Test-Path $_ }
-
-        Write-Host "`n  Generated files:" -ForegroundColor Gray
-        $generatedFiles | ForEach-Object {
-            $size = (Get-Item $_).Length
-            Write-Host "    - $(Split-Path $_ -Leaf) ($([math]::Round($size/1KB, 2)) KB)" -ForegroundColor Gray
+        try {
+            if ($target) {
+                Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer $target
+            } else {
+                Connect-Maester -Service ActiveDirectory
+            }
+            if (-not (Test-MtConnection -Service ActiveDirectory)) {
+                throw "Connect-Maester did not establish an Active Directory connection for target '$targetLabel'."
+            }
+            Write-Host "    ✓ Active Directory connection validated" -ForegroundColor Green
+        } catch {
+            Write-Error "Failed to connect to Active Directory target '$targetLabel': $_"
+            exit 1
         }
-    } else {
-        Write-Warning "No test results returned"
+
+        # Ensure each target uses fresh AD data.
+        Clear-MtADCache
+
+        $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
+        $fileName = "AD-TestResults-$targetLabelSafe-$timestamp"
+
+        $invokeParams = @{
+            Path = $validTestPaths[0]
+            Tag = 'AD'
+            OutputFolder = $OutputFolder
+            OutputFolderFileName = $fileName
+            NonInteractive = $true
+            SkipGraphConnect = $true  # AD tests don't need Graph connection
+            Verbosity = 'Normal'
+        }
+
+        Write-Host "    Running: Invoke-Maester with parameters:" -ForegroundColor Gray
+        $invokeParams.GetEnumerator() | ForEach-Object {
+            Write-Host "      - $($_.Key): $($_.Value)" -ForegroundColor Gray
+        }
+        Write-Host ""
+
+        $results = Invoke-Maester @invokeParams -PassThru
+
+        if ($results) {
+            Write-Host "`n    ✓ Tests completed" -ForegroundColor Green
+            Write-Host "      - Total Tests: $($results.TotalCount)" -ForegroundColor Gray
+            Write-Host "      - Passed: $($results.PassedCount)" -ForegroundColor Green
+            Write-Host "      - Failed: $($results.FailedCount)" -ForegroundColor $(if($results.FailedCount -gt 0){'Red'}else{'Gray'})
+            Write-Host "      - Skipped: $($results.SkippedCount)" -ForegroundColor Gray
+
+            $generatedFiles = @(
+                (Join-Path $OutputFolder "$fileName.html"),
+                (Join-Path $OutputFolder "$fileName.md"),
+                (Join-Path $OutputFolder "$fileName.json")
+            ) | Where-Object { Test-Path $_ }
+            $allGeneratedFiles += $generatedFiles
+
+            Write-Host "`n    Generated files:" -ForegroundColor Gray
+            $generatedFiles | ForEach-Object {
+                $size = (Get-Item $_).Length
+                Write-Host "      - $(Split-Path $_ -Leaf) ($([math]::Round($size/1KB, 2)) KB)" -ForegroundColor Gray
+            }
+        } else {
+            Write-Warning "No test results returned for target '$targetLabel'"
+        }
     }
 } catch {
     Write-Error "Failed to run AD tests: $_"
@@ -235,16 +262,17 @@ Write-Host "`n[Step 4] Copying report files to target folder..." -ForegroundColo
 
 try {
     $copiedFiles = @()
-    $fileTypes = @("*.html", "*.md", "*.json", "*.csv", "*.xlsx")
 
-    foreach ($fileType in $fileTypes) {
-        $files = Get-ChildItem -Path $OutputFolder -Filter "$fileName$fileType" -ErrorAction SilentlyContinue
-        foreach ($file in $files) {
-            $targetPath = Join-Path $TargetFolder $file.Name
-            Copy-Item -Path $file.FullName -Destination $targetPath -Force
-            $copiedFiles += $targetPath
-            Write-Host "  ✓ Copied: $($file.Name)" -ForegroundColor Green
+    foreach ($filePath in $allGeneratedFiles | Select-Object -Unique) {
+        $file = Get-Item -Path $filePath -ErrorAction SilentlyContinue
+        if ($null -eq $file) {
+            continue
         }
+
+        $targetPath = Join-Path $TargetFolder $file.Name
+        Copy-Item -Path $file.FullName -Destination $targetPath -Force
+        $copiedFiles += $targetPath
+        Write-Host "  ✓ Copied: $($file.Name)" -ForegroundColor Green
     }
 
     if ($copiedFiles.Count -eq 0) {

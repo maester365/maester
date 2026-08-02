@@ -66,13 +66,13 @@ Describe 'Active Directory Pester tests remain opt-in' {
         $probeTest = @'
 Describe 'AD opt-in probe' -Tag 'AD' {
     It 'AD-OPT-IN: runs only after an explicit connection' {
-        New-Item -Path '__MARKER_PATH__' -ItemType File | Out-Null
+        New-Item -Path '__MARKER_PATH__' -ItemType File -Force | Out-Null
         $true | Should -BeTrue
     }
 }
 '@
         $probeTest.Replace('__MARKER_PATH__', $script:adMarkerPath) |
-            Set-Content -Path (Join-Path $script:adTestPath 'ActiveDirectory.Tests.ps1')
+        Set-Content -Path (Join-Path $script:adTestPath 'ActiveDirectory.Tests.ps1')
 
         InModuleScope Maester {
             $__MtSession.ADConnection = $null
@@ -102,6 +102,30 @@ Describe 'AD opt-in probe' -Tag 'AD' {
         Invoke-Maester -Path $script:adTestPath -Tag 'AD' -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck
 
         Test-Path $script:adMarkerPath | Should -BeTrue
+    }
+
+    It 'Runs AD tests once per connected forest target when multiple targets are configured' {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected        = $true
+                DomainController = 'dc01.contoso.com'
+                TargetServer     = 'dc01.contoso.com'
+                TargetServers    = @('dc01.contoso.com', 'dc01.fabrikam.net')
+            }
+        }
+
+        $outputFolder = Join-Path $TestDrive ([guid]::NewGuid().ToString())
+        New-Item -Path $outputFolder -ItemType Directory | Out-Null
+
+        $results = Invoke-Maester -Path $script:adTestPath -Tag 'AD' -OutputFolder $outputFolder -OutputFolderFileName 'ADMultiForest' -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
+
+        @($results).Count | Should -Be 2
+        @($results | Where-Object { $_.ADTargetServer -eq 'dc01.contoso.com' }).Count | Should -Be 1
+        @($results | Where-Object { $_.ADTargetServer -eq 'dc01.fabrikam.net' }).Count | Should -Be 1
+
+        Test-Path (Join-Path $outputFolder 'ADMultiForest.html') | Should -BeTrue
+        (Get-ChildItem -Path $outputFolder -Filter 'ADMultiForest-dc01.contoso.com*.json').Count | Should -BeGreaterThan 0
+        (Get-ChildItem -Path $outputFolder -Filter 'ADMultiForest-dc01.fabrikam.net*.json').Count | Should -BeGreaterThan 0
     }
 }
 
@@ -142,8 +166,8 @@ Describe 'Active Directory test source safety' {
                 }
 
                 $block = $describe.CommandElements |
-                    Where-Object { $_ -is [System.Management.Automation.Language.ScriptBlockExpressionAst] } |
-                    Select-Object -Last 1
+                Where-Object { $_ -is [System.Management.Automation.Language.ScriptBlockExpressionAst] } |
+                Select-Object -Last 1
 
                 foreach ($statement in $block.ScriptBlock.EndBlock.Statements) {
                     $command = $statement.Find({
@@ -181,9 +205,9 @@ Describe 'Active Directory test source safety' {
                     $node -is [System.Management.Automation.Language.CommandAst]
                 }, $true)
             $collector = $commands |
-                Where-Object { $_.GetCommandName() -in 'Get-MtADDomainState', 'Get-MtADDacls', 'Get-MtADGpoState' } |
-                Sort-Object { $_.Extent.StartOffset } |
-                Select-Object -First 1
+            Where-Object { $_.GetCommandName() -in 'Get-MtADDomainState', 'Get-MtADDacls', 'Get-MtADGpoState' } |
+            Sort-Object { $_.Extent.StartOffset } |
+            Select-Object -First 1
 
             if ($null -eq $collector) {
                 $issues += "$($file.FullName): does not call a guarded Active Directory collector."
@@ -191,11 +215,11 @@ Describe 'Active Directory test source safety' {
             }
 
             $earlierAdOperation = $commands |
-                Where-Object {
-                    $_.Extent.StartOffset -lt $collector.Extent.StartOffset -and
-                    ($_.GetCommandName() -match '^(Get-AD|Get-GPO|Get-DnsServer)' -or $_.GetCommandName() -eq 'Invoke-Command')
-                } |
-                Select-Object -First 1
+            Where-Object {
+                $_.Extent.StartOffset -lt $collector.Extent.StartOffset -and
+                ($_.GetCommandName() -match '^(Get-AD|Get-GPO|Get-DnsServer)' -or $_.GetCommandName() -eq 'Invoke-Command')
+            } |
+            Select-Object -First 1
 
             if ($null -ne $earlierAdOperation) {
                 $issues += "$($file.FullName): calls $($earlierAdOperation.GetCommandName()) before checking the explicit AD connection."

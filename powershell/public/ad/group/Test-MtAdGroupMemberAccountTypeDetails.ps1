@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberAccountTypeDetails {
+function Test-MtAdGroupMemberAccountTypeDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of member account types across Active Directory groups.
@@ -33,6 +33,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
 
     # Collect all members and their types
@@ -43,7 +45,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
             foreach ($member in $members) {
                 # Avoid duplicates by SID
                 if (-not $processedSids.ContainsKey($member.SID.Value)) {

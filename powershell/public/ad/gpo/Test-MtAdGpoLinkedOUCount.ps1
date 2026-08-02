@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoLinkedOUCount {
+function Test-MtAdGpoLinkedOUCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units with GPO links in Active Directory.
@@ -30,9 +30,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get all OUs in the domain
     try {
-        $allOUs = Get-ADOrganizationalUnit -Filter * -Properties gPLink
+        $allOUs = Get-ADOrganizationalUnit -Filter * -Properties gPLink @adServerParameters
         $totalOUs = ($allOUs | Measure-Object).Count
 
         # Count OUs with GPO links (gPLink is not null or empty)

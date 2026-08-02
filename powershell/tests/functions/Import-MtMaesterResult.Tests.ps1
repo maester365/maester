@@ -17,8 +17,8 @@ Describe 'Import-MtMaesterResult' {
             InvestigateCount = 0
             NotRunCount    = 0
             ExecutedAt     = '2026-04-01T10:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
                 [PSCustomObject]@{ Id = 'MT.1002'; Result = 'Failed'; Block = 'Maester' }
@@ -41,8 +41,8 @@ Describe 'Import-MtMaesterResult' {
             InvestigateCount = 0
             NotRunCount    = 0
             ExecutedAt     = '2026-04-01T11:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Failed'; Block = 'Maester' }
             )
@@ -55,8 +55,8 @@ Describe 'Import-MtMaesterResult' {
         # Multi-tenant merged format
         $mergedData = [PSCustomObject]@{
             Tenants        = @($singleTenantData, $singleTenantData2)
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             EndOfJson      = 'EndOfJson'
         }
 
@@ -120,7 +120,7 @@ Describe 'Import-MtMaesterResult' {
             $results[0].Tests.Count | Should -BeExactly 2
             $results[0].TotalCount | Should -BeExactly 10
             $results[0].ExecutedAt | Should -Not -BeNullOrEmpty
-            $results[0].CurrentVersion | Should -BeExactly '2.0.0'
+            $results[0].CurrentVersion | Should -BeExactly '2.2.0'
         }
     }
 

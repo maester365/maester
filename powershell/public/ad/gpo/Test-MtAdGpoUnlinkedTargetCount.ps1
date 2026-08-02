@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoUnlinkedTargetCount {
+function Test-MtAdGpoUnlinkedTargetCount {
     <#
     .SYNOPSIS
     Counts AD targets (OUs, domains, sites) that do not have any GPO links.
@@ -34,6 +34,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     function Test-MtGpoLinkPresent {
         param(
             [Parameter(Mandatory = $false)]
@@ -61,7 +63,7 @@
 
     # OUs
     try {
-        $ous = Get-ADOrganizationalUnit -Filter * -Properties DistinguishedName, gPLink
+        $ous = Get-ADOrganizationalUnit -Filter * -Properties DistinguishedName, gPLink @adServerParameters
         if ($null -ne $ous) {
             foreach ($ou in @($ous)) {
                 $ouLink = $null
@@ -82,8 +84,8 @@
 
     # Domain root
     try {
-        $domain = Get-ADDomain
-        $domainObj = Get-ADObject -Identity $domain.DistinguishedName -Properties DistinguishedName, gPLink
+        $domain = Get-ADDomain @adServerParameters
+        $domainObj = Get-ADObject -Identity $domain.DistinguishedName -Properties DistinguishedName, gPLink @adServerParameters
         $domainLink = $null
         if ($domainObj -and $domainObj.PSObject.Properties.Match('gPLink')) {
             $domainLink = $domainObj.gPLink

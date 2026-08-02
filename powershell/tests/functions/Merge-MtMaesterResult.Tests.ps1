@@ -8,8 +8,8 @@ Describe 'Merge-MtMaesterResult' {
             PassedCount    = 8
             FailedCount    = 2
             ExecutedAt     = '2026-04-01T10:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
                 [PSCustomObject]@{ Id = 'MT.1002'; Result = 'Failed'; Block = 'Maester' }
@@ -28,8 +28,8 @@ Describe 'Merge-MtMaesterResult' {
             PassedCount    = 3
             FailedCount    = 2
             ExecutedAt     = '2026-04-01T11:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Failed'; Block = 'Maester' }
                 [PSCustomObject]@{ Id = 'MT.1002'; Result = 'Passed'; Block = 'Maester' }
@@ -82,8 +82,8 @@ Describe 'Merge-MtMaesterResult' {
     It 'Should preserve shared metadata from the first result' {
         $result = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2)
 
-        $result.CurrentVersion | Should -BeExactly '2.0.0'
-        $result.LatestVersion | Should -BeExactly '2.0.0'
+        $result.CurrentVersion | Should -BeExactly '2.2.0'
+        $result.LatestVersion | Should -BeExactly '2.2.0'
     }
 
     It 'Should preserve all test data per tenant' {
@@ -115,8 +115,8 @@ Describe 'Merge-MtMaesterResult' {
             TotalCount     = 7
             PassedCount    = 7
             FailedCount    = 0
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
             )
@@ -141,8 +141,8 @@ Describe 'Merge-MtMaesterResult' {
             TotalCount     = 1
             PassedCount    = 1
             FailedCount    = 0
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
             )

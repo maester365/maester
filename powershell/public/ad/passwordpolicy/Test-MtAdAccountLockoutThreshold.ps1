@@ -1,4 +1,4 @@
-﻿function Test-MtAdAccountLockoutThreshold {
+function Test-MtAdAccountLockoutThreshold {
     <#
     .SYNOPSIS
     Checks the account lockout threshold configured in the default domain password policy.
@@ -32,9 +32,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get the default domain password policy
     try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
+        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop @adServerParameters
         $lockoutThreshold = $passwordPolicy.LockoutThreshold
     } catch {
         Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"

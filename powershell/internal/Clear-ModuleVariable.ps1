@@ -20,6 +20,7 @@ function Clear-ModuleVariable {
     Clear-MtDnsCache
     Clear-MtExoCache
     Clear-MtADCache
+    $__MtSession.ADRunContext = $null
     $__MtSession.AIAgentInfo = $null
     $__MtSession.AzureDevOpsConnectionCache = $null
     # Invoke-Maester resets the per-run cache but preserves the existing GitHub session.

@@ -303,6 +303,270 @@
         return $PesterConfiguration
     }
 
+    function Add-SuffixToPath($FilePath, $Suffix) {
+        if ([string]::IsNullOrEmpty($FilePath)) {
+            return $FilePath
+        }
+
+        $directory = [System.IO.Path]::GetDirectoryName($FilePath)
+        $name = [System.IO.Path]::GetFileNameWithoutExtension($FilePath)
+        $extension = [System.IO.Path]::GetExtension($FilePath)
+        $fileNameWithSuffix = "$name-$Suffix$extension"
+
+        if ([string]::IsNullOrEmpty($directory)) {
+            return $fileNameWithSuffix
+        }
+
+        return (Join-Path $directory $fileNameWithSuffix)
+    }
+
+    function Get-MtInvokeMaesterCommand {
+        param(
+            [Parameter(Mandatory = $true)]
+            [hashtable]$BoundParameters,
+
+            [Parameter(Mandatory = $false)]
+            [string]$Comment
+        )
+
+        $invokeCommand = 'Invoke-Maester'
+        foreach ($param in $BoundParameters.GetEnumerator()) {
+            $paramName = $param.Key
+            $paramValue = $param.Value
+            if ($paramValue -is [switch]) {
+                if ($paramValue.IsPresent) {
+                    $invokeCommand += " -$paramName"
+                }
+            } elseif ($paramValue -is [array]) {
+                $invokeCommand += " -$paramName @('$($paramValue -join "', '")')"
+            } elseif ($paramValue -is [string]) {
+                $invokeCommand += " -$paramName '$paramValue'"
+            } elseif ($null -ne $paramValue) {
+                $invokeCommand += " -$paramName $paramValue"
+            }
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($Comment)) {
+            $invokeCommand += " # $Comment"
+        }
+
+        return $invokeCommand
+    }
+
+    function New-MtMergedAdForestResult {
+        param(
+            [Parameter(Mandatory = $true)]
+            [psobject[]]$ForestResults,
+
+            [Parameter(Mandatory = $false)]
+            [string]$InvokeCommand
+        )
+
+        if (-not $ForestResults -or $ForestResults.Count -eq 0) {
+            return $null
+        }
+
+        $mergedResult = Merge-MtMaesterResult -MaesterResults $ForestResults
+        $mergedTenants = $mergedResult.Tenants
+        $firstResult = @($ForestResults)[0]
+
+        $combinedTests = foreach ($forestResult in $ForestResults) {
+            foreach ($test in @($forestResult.Tests)) {
+                $testCopy = $test | Select-Object *
+                if ($forestResult.PSObject.Properties.Name -contains 'ADTargetServer') {
+                    $testCopy | Add-Member -NotePropertyName 'ADTargetServer' -NotePropertyValue $forestResult.ADTargetServer -Force
+                }
+                if ($forestResult.PSObject.Properties.Name -contains 'ADForestName') {
+                    $testCopy | Add-Member -NotePropertyName 'ADForestName' -NotePropertyValue $forestResult.ADForestName -Force
+                }
+                if ($forestResult.PSObject.Properties.Name -contains 'ADForestRootDomain') {
+                    $testCopy | Add-Member -NotePropertyName 'ADForestRootDomain' -NotePropertyValue $forestResult.ADForestRootDomain -Force
+                }
+
+                $testCopy
+            }
+        }
+
+        $totalCount = 0
+        $passedCount = 0
+        $failedCount = 0
+        $errorCount = 0
+        $skippedCount = 0
+        $investigateCount = 0
+        $notRunCount = 0
+
+        foreach ($forestResult in $ForestResults) {
+            $totalCount += [int]$forestResult.TotalCount
+            $passedCount += [int]$forestResult.PassedCount
+            $failedCount += [int]$forestResult.FailedCount
+            $errorCount += [int]$forestResult.ErrorCount
+            $skippedCount += [int]$forestResult.SkippedCount
+            $investigateCount += [int]$forestResult.InvestigateCount
+            $notRunCount += [int]$forestResult.NotRunCount
+        }
+
+        $resultState = if ($failedCount -gt 0 -or $errorCount -gt 0) {
+            'Failed'
+        } elseif ($investigateCount -gt 0) {
+            'Investigate'
+        } elseif ($notRunCount -gt 0 -and $passedCount -eq 0 -and $failedCount -eq 0 -and $errorCount -eq 0) {
+            'NotRun'
+        } elseif ($skippedCount -gt 0 -and $passedCount -eq 0 -and $failedCount -eq 0 -and $errorCount -eq 0) {
+            'Skipped'
+        } else {
+            'Passed'
+        }
+
+        $mergedResult = $firstResult | Select-Object *
+        $mergedResult | Add-Member -NotePropertyName 'TenantId' -NotePropertyValue 'ActiveDirectoryMultiForest' -Force
+        $mergedResult | Add-Member -NotePropertyName 'TenantName' -NotePropertyValue 'Active Directory Forests' -Force
+        $mergedResult | Add-Member -NotePropertyName 'Result' -NotePropertyValue $resultState -Force
+        $mergedResult | Add-Member -NotePropertyName 'TotalCount' -NotePropertyValue $totalCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'PassedCount' -NotePropertyValue $passedCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'FailedCount' -NotePropertyValue $failedCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'ErrorCount' -NotePropertyValue $errorCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'SkippedCount' -NotePropertyValue $skippedCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'InvestigateCount' -NotePropertyValue $investigateCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'NotRunCount' -NotePropertyValue $notRunCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'Tests' -NotePropertyValue @($combinedTests) -Force
+        $mergedResult | Add-Member -NotePropertyName 'Tenants' -NotePropertyValue @($mergedTenants) -Force
+        $mergedResult | Add-Member -NotePropertyName 'InvokeCommand' -NotePropertyValue $InvokeCommand -Force
+        $mergedResult | Add-Member -NotePropertyName 'EndOfJson' -NotePropertyValue $mergedResult.EndOfJson -Force
+
+        return $mergedResult
+    }
+
+    function Write-MtMaesterOutputs {
+        param(
+            [Parameter(Mandatory = $true)]
+            [psobject]$MaesterResults,
+
+            [Parameter(Mandatory = $false)]
+            [int]$TestCount = 0
+        )
+
+        $jsonDepth = if ($MaesterResults.PSObject.Properties.Name -contains 'Tenants') { 7 } else { 5 }
+        $jsonSerializableResult = $MaesterResults | Select-Object *
+
+        if ($jsonSerializableResult.PSObject.Properties.Name -contains 'OutputFiles') {
+            $jsonSerializableResult.PSObject.Properties.Remove('OutputFiles')
+        }
+
+        if ($jsonSerializableResult.PSObject.Properties.Name -contains 'Tenants') {
+            foreach ($tenantResult in @($jsonSerializableResult.Tenants)) {
+                if ($tenantResult -and $tenantResult.PSObject.Properties.Name -contains 'OutputFiles') {
+                    $tenantResult.PSObject.Properties.Remove('OutputFiles')
+                }
+            }
+        }
+
+        Write-MtProgress -Activity 'Processing test results' -Status "$TestCount test(s)" -Force
+
+        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            $jsonSerializableResult | ConvertTo-Json -Depth $jsonDepth -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            Write-MtProgress -Activity 'Creating markdown report'
+            $output = Get-MtMarkdownReport -MaesterResults $MaesterResults
+            $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
+            Write-MtProgress -Activity 'Creating markdown summary report'
+            $output = Get-MtMarkdownSummaryReport -MaesterResults $MaesterResults
+            $output | Out-File -FilePath $out.OutputMarkdownSummaryFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {
+            Write-MtProgress -Activity 'Creating CSV'
+            Convert-MtResultsToFlatObject -InputObject $MaesterResults -CsvFilePath $out.OutputCsvFile
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputExcelFile)) {
+            Write-MtProgress -Activity 'Creating Excel workbook'
+            Convert-MtResultsToFlatObject -InputObject $MaesterResults -ExcelFilePath $out.OutputExcelFile
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            Write-MtProgress -Activity 'Creating html report'
+            $output = Get-MtHtmlReport -MaesterResults $MaesterResults
+            $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
+            if (-not $NonInteractive.IsPresent) {
+                Write-Host "🔥 Maester test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
+            }
+
+            if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
+                # Open test results in the default browser.
+                Invoke-Item $out.OutputHtmlFile | Out-Null
+            }
+        }
+
+        if ($MailRecipient) {
+            Write-MtProgress -Activity 'Sending mail'
+            Send-MtMail -MaesterResults $MaesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
+        }
+
+        if ($TeamId -and $TeamChannelId) {
+            Write-MtProgress -Activity 'Sending Teams message'
+            Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId $TeamId -TeamChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
+        }
+
+        if ($TeamChannelWebhookUri) {
+            Write-MtProgress -Activity 'Sending Teams message'
+            Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
+        }
+    }
+
+    function Test-IsAdOnlyRun($InputPath, $InputTags) {
+        if ($InputTags -and @($InputTags).Count -gt 0) {
+            return @($InputTags | Where-Object { $_ -notmatch '^AD($|[.-])' }).Count -eq 0
+        }
+
+        if ([string]::IsNullOrWhiteSpace($InputPath)) {
+            return $false
+        }
+
+        return ($InputPath -match '(?i)(^|[\\/])tests([\\/])(ad|Maester[\\/]ad)([\\/]|$)')
+    }
+
+    function Get-MtAdRunContext {
+        [CmdletBinding()]
+        param(
+            [string]$TargetServer,
+            [switch]$RefreshAdState
+        )
+
+        $context = [ordered]@{
+            TargetServer     = $TargetServer
+            ForestName       = $null
+            ForestRootDomain = $null
+            DomainName       = $null
+        }
+
+        try {
+            $adStateParams = @{}
+            if ($RefreshAdState.IsPresent) {
+                $adStateParams['Refresh'] = $true
+            }
+
+            $adState = Get-MtADDomainState @adStateParams -ErrorAction SilentlyContinue
+            if ($adState) {
+                if ([string]::IsNullOrWhiteSpace($context.TargetServer)) {
+                    $context.TargetServer = [string]$adState.RootDSE.dnsHostName
+                }
+
+                $context.ForestName = [string]$adState.Forest.Name
+                $context.ForestRootDomain = [string]$adState.Forest.RootDomain
+                $context.DomainName = [string]$adState.Domain.DNSRoot
+            }
+        } catch {
+            Write-Verbose "Failed to resolve Active Directory run context: $($_.Exception.Message)"
+        }
+
+        return [PSCustomObject]$context
+    }
+
     $version = Get-MtModuleVersion
 
     if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
@@ -452,6 +716,118 @@
         return
     }
 
+    $adTargets = @()
+    if (Test-MtConnection -Service ActiveDirectory) {
+        $adTargets = @(
+            @($__MtSession.ADConnection.TargetServers) |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            Select-Object -Unique
+        )
+
+        $isAdExcluded = 'AD' -in @($pesterConfig.Filter.ExcludeTag.Value)
+        $isAdOnlyRun = Test-IsAdOnlyRun -InputPath $Path -InputTags $Tag
+
+        if ($adTargets.Count -eq 1 -and -not $isAdExcluded -and $isAdOnlyRun) {
+            $__MtSession.ADRunContext = Get-MtAdRunContext -TargetServer $__MtSession.ADConnection.TargetServer
+            if ($__MtSession.ADRunContext.ForestName) {
+                Write-Verbose "Running AD tests for forest '$($__MtSession.ADRunContext.ForestName)' via target '$($__MtSession.ADRunContext.TargetServer)'."
+                Write-MtProgress -Activity 'Starting Maester' -Status "Forest: $__MtSession.ADRunContext.ForestName" -Force
+            }
+        }
+
+        if ($adTargets.Count -gt 1 -and -not $isAdExcluded -and $isAdOnlyRun) {
+            Write-Verbose "Running AD tests across $($adTargets.Count) targets from a single host."
+
+            $originalTargetServer = $__MtSession.ADConnection.TargetServer
+            $originalTargetServers = @($__MtSession.ADConnection.TargetServers)
+            $originalAdRunContext = $__MtSession.ADRunContext
+            $multiForestResults = @()
+            $baseFileName = if ([string]::IsNullOrWhiteSpace($OutputFolderFileName)) { "TestResults-$(Get-Date -Format 'yyyy-MM-dd-HHmmss')" } else { $OutputFolderFileName }
+
+            foreach ($adTarget in $adTargets) {
+                $__MtSession.ADConnection.TargetServer = $adTarget
+                $__MtSession.ADConnection.TargetServers = @($adTarget)
+                Clear-MtADCache
+
+                $__MtSession.ADRunContext = Get-MtAdRunContext -TargetServer $adTarget -RefreshAdState
+                $forestName = $__MtSession.ADRunContext.ForestName
+                $targetServer = if ($__MtSession.ADRunContext.TargetServer) { $__MtSession.ADRunContext.TargetServer } else { $adTarget }
+                $contextStatus = if ($forestName) { "Forest: $forestName" } else { "Target: $targetServer" }
+                $contextDescriptor = if ($forestName) { "forest '$forestName' via target '$targetServer'" } else { "target '$targetServer'" }
+                Write-Verbose "Running AD tests for $contextDescriptor"
+                Write-MtProgress -Activity 'Starting Maester' -Status "Preparing Active Directory context - $contextStatus" -Force
+
+                $contextSuffixSource = if ($forestName) {
+                    if ($targetServer -and $targetServer -ne $forestName) {
+                        "$forestName-$targetServer"
+                    } else {
+                        $forestName
+                    }
+                } else {
+                    $targetServer
+                }
+
+                $targetSuffix = ($contextSuffixSource -replace '[^A-Za-z0-9._-]', '_')
+
+                $targetParams = @{}
+                foreach ($entry in $PSBoundParameters.GetEnumerator()) {
+                    $targetParams[$entry.Key] = $entry.Value
+                }
+
+                if (-not [string]::IsNullOrWhiteSpace($OutputFolder) -or -not [string]::IsNullOrWhiteSpace($OutputFolderFileName)) {
+                    $targetParams['OutputFolderFileName'] = "$baseFileName-$targetSuffix"
+                } else {
+                    if (-not [string]::IsNullOrWhiteSpace($OutputHtmlFile)) {
+                        $targetParams['OutputHtmlFile'] = Add-SuffixToPath -FilePath $OutputHtmlFile -Suffix $targetSuffix
+                    }
+                    if (-not [string]::IsNullOrWhiteSpace($OutputMarkdownFile)) {
+                        $targetParams['OutputMarkdownFile'] = Add-SuffixToPath -FilePath $OutputMarkdownFile -Suffix $targetSuffix
+                    }
+                    if (-not [string]::IsNullOrWhiteSpace($OutputMarkdownSummaryFile)) {
+                        $targetParams['OutputMarkdownSummaryFile'] = Add-SuffixToPath -FilePath $OutputMarkdownSummaryFile -Suffix $targetSuffix
+                    }
+                    if (-not [string]::IsNullOrWhiteSpace($OutputJsonFile)) {
+                        $targetParams['OutputJsonFile'] = Add-SuffixToPath -FilePath $OutputJsonFile -Suffix $targetSuffix
+                    }
+                }
+
+                $targetParams['PassThru'] = $true
+
+                $targetResult = Invoke-Maester @targetParams
+                if ($targetResult) {
+                    foreach ($result in @($targetResult)) {
+                        $result | Add-Member -NotePropertyName 'ADTargetServer' -NotePropertyValue $targetServer -Force
+                        $result | Add-Member -NotePropertyName 'ADForestName' -NotePropertyValue $forestName -Force
+                        $result | Add-Member -NotePropertyName 'ADForestRootDomain' -NotePropertyValue $__MtSession.ADRunContext.ForestRootDomain -Force
+                    }
+                    $multiForestResults += @($targetResult)
+                }
+            }
+
+            $__MtSession.ADConnection.TargetServer = $originalTargetServer
+            $__MtSession.ADConnection.TargetServers = $originalTargetServers
+            $__MtSession.ADRunContext = $originalAdRunContext
+
+            $combinedInvokeCommand = Get-MtInvokeMaesterCommand -BoundParameters $PSBoundParameters -Comment 'Merged multi-forest AD report'
+            $mergedResults = New-MtMergedAdForestResult -ForestResults $multiForestResults -InvokeCommand $combinedInvokeCommand
+            if ($mergedResults -and (
+                    -not [string]::IsNullOrEmpty($out.OutputJsonFile) -or
+                    -not [string]::IsNullOrEmpty($out.OutputMarkdownFile) -or
+                    -not [string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile) -or
+                    -not [string]::IsNullOrEmpty($out.OutputCsvFile) -or
+                    -not [string]::IsNullOrEmpty($out.OutputExcelFile) -or
+                    -not [string]::IsNullOrEmpty($out.OutputHtmlFile))) {
+                Write-MtMaesterOutputs -MaesterResults $mergedResults -TestCount @($mergedResults.Tests).Count
+            }
+
+            if ($PassThru) {
+                return $multiForestResults
+            }
+
+            return
+        }
+    }
+
     # If DriftRoot is specified, set the environment variable for drift tests.
     if ($DriftRoot) {
         $DriftRoot = (Resolve-Path -Path $DriftRoot -ErrorAction SilentlyContinue).Path
@@ -487,80 +863,28 @@
 
         Write-MtProgress -Activity 'Processing test results' -Status "$($pesterResults.TotalCount) test(s)" -Force
 
-        # Build the Invoke-Maester command string from bound parameters
-        $invokeMaesterCommand = "Invoke-Maester"
-        foreach ($param in $PSBoundParameters.GetEnumerator()) {
-            $paramName = $param.Key
-            $paramValue = $param.Value
-            if ($paramValue -is [switch]) {
-                if ($paramValue.IsPresent) {
-                    $invokeMaesterCommand += " -$paramName"
-                }
-            } elseif ($paramValue -is [array]) {
-                $invokeMaesterCommand += " -$paramName @('$($paramValue -join "', '")')"
-            } elseif ($paramValue -is [string]) {
-                $invokeMaesterCommand += " -$paramName '$paramValue'"
-            } elseif ($null -ne $paramValue) {
-                $invokeMaesterCommand += " -$paramName $paramValue"
+        $invokeMaesterCommand = Get-MtInvokeMaesterCommand -BoundParameters $PSBoundParameters
+
+        if ($__MtSession.ADRunContext) {
+            $adContextParts = @()
+            if (-not [string]::IsNullOrWhiteSpace($__MtSession.ADRunContext.ForestName)) {
+                $adContextParts += "ADForest='$($__MtSession.ADRunContext.ForestName)'"
+            }
+            if (-not [string]::IsNullOrWhiteSpace($__MtSession.ADRunContext.ForestRootDomain)) {
+                $adContextParts += "ADForestRoot='$($__MtSession.ADRunContext.ForestRootDomain)'"
+            }
+            if (-not [string]::IsNullOrWhiteSpace($__MtSession.ADRunContext.TargetServer)) {
+                $adContextParts += "ADTarget='$($__MtSession.ADRunContext.TargetServer)'"
+            }
+
+            if ($adContextParts.Count -gt 0) {
+                $invokeMaesterCommand += " # " + ($adContextParts -join '; ')
             }
         }
 
         $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck
 
-        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
-        }
-
-        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            Write-MtProgress -Activity 'Creating markdown report'
-            $output = Get-MtMarkdownReport -MaesterResults $maesterResults
-            $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
-        }
-
-        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
-            Write-MtProgress -Activity 'Creating markdown summary report'
-            $output = Get-MtMarkdownSummaryReport -MaesterResults $maesterResults
-            $output | Out-File -FilePath $out.OutputMarkdownSummaryFile -Encoding UTF8
-        }
-
-        if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {
-            Write-MtProgress -Activity 'Creating CSV'
-            Convert-MtResultsToFlatObject -InputObject $maesterResults -CsvFilePath $out.OutputCsvFile
-        }
-
-        if (![string]::IsNullOrEmpty($out.OutputExcelFile)) {
-            Write-MtProgress -Activity 'Creating Excel workbook'
-            Convert-MtResultsToFlatObject -InputObject $maesterResults -ExcelFilePath $out.OutputExcelFile
-        }
-
-        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            Write-MtProgress -Activity 'Creating html report'
-            $output = Get-MtHtmlReport -MaesterResults $maesterResults
-            $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
-            if (-not $NonInteractive.IsPresent) {
-                Write-Host "🔥 Maester test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
-            }
-
-            if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
-                # Open test results in the default browser.
-                Invoke-Item $out.OutputHtmlFile | Out-Null
-            }
-        }
-
-        if ($MailRecipient) {
-            Write-MtProgress -Activity 'Sending mail'
-            Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
-        }
-
-        if ($TeamId -and $TeamChannelId) {
-            Write-MtProgress -Activity 'Sending Teams message'
-            Send-MtTeamsMessage -MaesterResults $maesterResults -TeamId $TeamId -TeamChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
-        }
-
-        if ($TeamChannelWebhookUri) {
-            Write-MtProgress -Activity 'Sending Teams message'
-            Send-MtTeamsMessage -MaesterResults $maesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
-        }
+        Write-MtMaesterOutputs -MaesterResults $maesterResults -TestCount $PesterResults.TotalCount
 
         if ($Verbosity -eq 'None' -and -not $NonInteractive.IsPresent) {
             # Show final summary.

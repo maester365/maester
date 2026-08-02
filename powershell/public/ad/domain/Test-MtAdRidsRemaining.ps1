@@ -1,4 +1,4 @@
-﻿function Test-MtAdRidsRemaining {
+function Test-MtAdRidsRemaining {
     <#
     .SYNOPSIS
     Retrieves the number of remaining RIDs (Relative Identifiers) in the domain.
@@ -30,12 +30,14 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $domain = $adState.Domain
 
     # Try to get RID available pool from the domain object
     $ridsRemaining = $null
     try {
-        $domainObject = Get-ADObject -Identity $domain.DistinguishedName -Properties RIDAvailablePool
+        $domainObject = Get-ADObject -Identity $domain.DistinguishedName -Properties RIDAvailablePool @adServerParameters
         $ridsRemaining = $domainObject.RIDAvailablePool
     }
     catch {
