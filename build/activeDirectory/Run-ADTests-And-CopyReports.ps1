@@ -211,7 +211,7 @@ try {
         $fileName = "AD-TestResults-$targetLabelSafe-$timestamp"
 
         $invokeParams = @{
-            Path = $validTestPaths[0]
+            Path = $validTestPaths
             Tag = 'AD'
             OutputFolder = $OutputFolder
             OutputFolderFileName = $fileName

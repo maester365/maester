@@ -19,6 +19,11 @@ Describe 'Import-MtMaesterResult' {
             ExecutedAt     = '2026-04-01T10:00:00'
             CurrentVersion = '2.2.0'
             LatestVersion  = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-one.contoso.com'
+                ForestRootDomain = 'contoso.com'
+                TargetServer = 'dc01.contoso.com'
+            }
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
                 [PSCustomObject]@{ Id = 'MT.1002'; Result = 'Failed'; Block = 'Maester' }
@@ -43,6 +48,11 @@ Describe 'Import-MtMaesterResult' {
             ExecutedAt     = '2026-04-01T11:00:00'
             CurrentVersion = '2.2.0'
             LatestVersion  = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-two.fabrikam.com'
+                ForestRootDomain = 'fabrikam.com'
+                TargetServer = 'dc02.fabrikam.com'
+            }
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Failed'; Block = 'Maester' }
             )
@@ -121,6 +131,8 @@ Describe 'Import-MtMaesterResult' {
             $results[0].TotalCount | Should -BeExactly 10
             $results[0].ExecutedAt | Should -Not -BeNullOrEmpty
             $results[0].CurrentVersion | Should -BeExactly '2.2.0'
+            $results[0].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-one.contoso.com'
+            $results[0].ActiveDirectoryContext.TargetServer | Should -BeExactly 'dc01.contoso.com'
         }
     }
 
@@ -132,6 +144,8 @@ Describe 'Import-MtMaesterResult' {
             $results.Count | Should -BeExactly 2
             $results[0].TenantId | Should -BeExactly 'tenant-1-id'
             $results[1].TenantId | Should -BeExactly 'tenant-2-id'
+            $results[0].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-one.contoso.com'
+            $results[1].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-two.fabrikam.com'
         }
 
         It 'Should treat expanded tenants as standalone results' {

@@ -366,6 +366,50 @@
             return $null
         }
 
+        function ConvertTo-MtTimeSpan {
+            param(
+                [Parameter(Mandatory = $false)]
+                $Value
+            )
+
+            if ($null -eq $Value) {
+                return [TimeSpan]::Zero
+            }
+
+            if ($Value -is [TimeSpan]) {
+                return $Value
+            }
+
+            $parsedTimeSpan = [TimeSpan]::Zero
+            if ([TimeSpan]::TryParse([string]$Value, [ref]$parsedTimeSpan)) {
+                return $parsedTimeSpan
+            }
+
+            return [TimeSpan]::Zero
+        }
+
+        function ConvertTo-MtDateTime {
+            param(
+                [Parameter(Mandatory = $false)]
+                $Value
+            )
+
+            if ($null -eq $Value) {
+                return $null
+            }
+
+            if ($Value -is [DateTime]) {
+                return $Value
+            }
+
+            $parsedDateTime = [DateTime]::MinValue
+            if ([DateTime]::TryParse([string]$Value, [ref]$parsedDateTime)) {
+                return $parsedDateTime
+            }
+
+            return $null
+        }
+
         $mergedResult = Merge-MtMaesterResult -MaesterResults $ForestResults
         $mergedTenants = $mergedResult.Tenants
         $firstResult = @($ForestResults)[0]
@@ -394,6 +438,11 @@
         $skippedCount = 0
         $investigateCount = 0
         $notRunCount = 0
+        $totalDuration = [TimeSpan]::Zero
+        $userDuration = [TimeSpan]::Zero
+        $discoveryDuration = [TimeSpan]::Zero
+        $frameworkDuration = [TimeSpan]::Zero
+        $earliestExecutedAt = $null
 
         foreach ($forestResult in $ForestResults) {
             $totalCount += [int]$forestResult.TotalCount
@@ -403,6 +452,16 @@
             $skippedCount += [int]$forestResult.SkippedCount
             $investigateCount += [int]$forestResult.InvestigateCount
             $notRunCount += [int]$forestResult.NotRunCount
+
+            $totalDuration += ConvertTo-MtTimeSpan -Value $forestResult.TotalDuration
+            $userDuration += ConvertTo-MtTimeSpan -Value $forestResult.UserDuration
+            $discoveryDuration += ConvertTo-MtTimeSpan -Value $forestResult.DiscoveryDuration
+            $frameworkDuration += ConvertTo-MtTimeSpan -Value $forestResult.FrameworkDuration
+
+            $executedAt = ConvertTo-MtDateTime -Value $forestResult.ExecutedAt
+            if ($executedAt -and (($null -eq $earliestExecutedAt) -or ($executedAt -lt $earliestExecutedAt))) {
+                $earliestExecutedAt = $executedAt
+            }
         }
 
         $resultState = if ($failedCount -gt 0 -or $errorCount -gt 0) {
@@ -428,6 +487,14 @@
         $mergedResult | Add-Member -NotePropertyName 'SkippedCount' -NotePropertyValue $skippedCount -Force
         $mergedResult | Add-Member -NotePropertyName 'InvestigateCount' -NotePropertyValue $investigateCount -Force
         $mergedResult | Add-Member -NotePropertyName 'NotRunCount' -NotePropertyValue $notRunCount -Force
+        $mergedResult | Add-Member -NotePropertyName 'TotalDuration' -NotePropertyValue $totalDuration -Force
+        $mergedResult | Add-Member -NotePropertyName 'UserDuration' -NotePropertyValue $userDuration -Force
+        $mergedResult | Add-Member -NotePropertyName 'DiscoveryDuration' -NotePropertyValue $discoveryDuration -Force
+        $mergedResult | Add-Member -NotePropertyName 'FrameworkDuration' -NotePropertyValue $frameworkDuration -Force
+        if ($earliestExecutedAt) {
+            $mergedResult | Add-Member -NotePropertyName 'ExecutedAt' -NotePropertyValue $earliestExecutedAt -Force
+        }
+        $mergedResult | Add-Member -NotePropertyName 'ActiveDirectoryContext' -NotePropertyValue $null -Force
         $mergedResult | Add-Member -NotePropertyName 'Tests' -NotePropertyValue @($combinedTests) -Force
         $mergedResult | Add-Member -NotePropertyName 'Tenants' -NotePropertyValue @($mergedTenants) -Force
         $mergedResult | Add-Member -NotePropertyName 'InvokeCommand' -NotePropertyValue $InvokeCommand -Force
@@ -731,7 +798,7 @@
             $__MtSession.ADRunContext = Get-MtAdRunContext -TargetServer $__MtSession.ADConnection.TargetServer
             if ($__MtSession.ADRunContext.ForestName) {
                 Write-Verbose "Running AD tests for forest '$($__MtSession.ADRunContext.ForestName)' via target '$($__MtSession.ADRunContext.TargetServer)'."
-                Write-MtProgress -Activity 'Starting Maester' -Status "Forest: $__MtSession.ADRunContext.ForestName" -Force
+                Write-MtProgress -Activity 'Starting Maester' -Status "Forest: $($__MtSession.ADRunContext.ForestName)" -Force
             }
         }
 
@@ -742,74 +809,94 @@
             $originalTargetServers = @($__MtSession.ADConnection.TargetServers)
             $originalAdRunContext = $__MtSession.ADRunContext
             $multiForestResults = @()
+            $multiForestFailures = @()
             $baseFileName = if ([string]::IsNullOrWhiteSpace($OutputFolderFileName)) { "TestResults-$(Get-Date -Format 'yyyy-MM-dd-HHmmss')" } else { $OutputFolderFileName }
 
-            foreach ($adTarget in $adTargets) {
-                $__MtSession.ADConnection.TargetServer = $adTarget
-                $__MtSession.ADConnection.TargetServers = @($adTarget)
-                Clear-MtADCache
+            try {
+                foreach ($adTarget in $adTargets) {
+                    $__MtSession.ADConnection.TargetServer = $adTarget
+                    $__MtSession.ADConnection.TargetServers = @($adTarget)
+                    Clear-MtADCache
 
-                $__MtSession.ADRunContext = Get-MtAdRunContext -TargetServer $adTarget -RefreshAdState
-                $forestName = $__MtSession.ADRunContext.ForestName
-                $targetServer = if ($__MtSession.ADRunContext.TargetServer) { $__MtSession.ADRunContext.TargetServer } else { $adTarget }
-                $contextStatus = if ($forestName) { "Forest: $forestName" } else { "Target: $targetServer" }
-                $contextDescriptor = if ($forestName) { "forest '$forestName' via target '$targetServer'" } else { "target '$targetServer'" }
-                Write-Verbose "Running AD tests for $contextDescriptor"
-                Write-MtProgress -Activity 'Starting Maester' -Status "Preparing Active Directory context - $contextStatus" -Force
+                    $__MtSession.ADRunContext = Get-MtAdRunContext -TargetServer $adTarget -RefreshAdState
+                    $forestName = $__MtSession.ADRunContext.ForestName
+                    $targetServer = if ($__MtSession.ADRunContext.TargetServer) { $__MtSession.ADRunContext.TargetServer } else { $adTarget }
+                    $contextStatus = if ($forestName) { "Forest: $forestName" } else { "Target: $targetServer" }
+                    $contextDescriptor = if ($forestName) { "forest '$forestName' via target '$targetServer'" } else { "target '$targetServer'" }
+                    Write-Verbose "Running AD tests for $contextDescriptor"
+                    Write-MtProgress -Activity 'Starting Maester' -Status "Preparing Active Directory context - $contextStatus" -Force
 
-                $contextSuffixSource = if ($forestName) {
-                    if ($targetServer -and $targetServer -ne $forestName) {
-                        "$forestName-$targetServer"
+                    $contextSuffixSource = if ($forestName) {
+                        if ($targetServer -and $targetServer -ne $forestName) {
+                            "$forestName-$targetServer"
+                        } else {
+                            $forestName
+                        }
                     } else {
-                        $forestName
+                        $targetServer
                     }
-                } else {
-                    $targetServer
+
+                    $targetSuffix = ($contextSuffixSource -replace '[^A-Za-z0-9._-]', '_')
+
+                    $targetParams = @{}
+                    foreach ($entry in $PSBoundParameters.GetEnumerator()) {
+                        $targetParams[$entry.Key] = $entry.Value
+                    }
+
+                    if (-not [string]::IsNullOrWhiteSpace($OutputFolder) -or -not [string]::IsNullOrWhiteSpace($OutputFolderFileName)) {
+                        $targetParams['OutputFolderFileName'] = "$baseFileName-$targetSuffix"
+                    } else {
+                        if (-not [string]::IsNullOrWhiteSpace($OutputHtmlFile)) {
+                            $targetParams['OutputHtmlFile'] = Add-SuffixToPath -FilePath $OutputHtmlFile -Suffix $targetSuffix
+                        }
+                        if (-not [string]::IsNullOrWhiteSpace($OutputMarkdownFile)) {
+                            $targetParams['OutputMarkdownFile'] = Add-SuffixToPath -FilePath $OutputMarkdownFile -Suffix $targetSuffix
+                        }
+                        if (-not [string]::IsNullOrWhiteSpace($OutputMarkdownSummaryFile)) {
+                            $targetParams['OutputMarkdownSummaryFile'] = Add-SuffixToPath -FilePath $OutputMarkdownSummaryFile -Suffix $targetSuffix
+                        }
+                        if (-not [string]::IsNullOrWhiteSpace($OutputJsonFile)) {
+                            $targetParams['OutputJsonFile'] = Add-SuffixToPath -FilePath $OutputJsonFile -Suffix $targetSuffix
+                        }
+                    }
+
+                    $targetParams['PassThru'] = $true
+
+                    try {
+                        $targetResult = Invoke-Maester @targetParams -ErrorAction Stop
+                        if ($targetResult) {
+                            foreach ($result in @($targetResult)) {
+                                $result | Add-Member -NotePropertyName 'ADTargetServer' -NotePropertyValue $targetServer -Force
+                                $result | Add-Member -NotePropertyName 'ADForestName' -NotePropertyValue $forestName -Force
+                                $result | Add-Member -NotePropertyName 'ADForestRootDomain' -NotePropertyValue $__MtSession.ADRunContext.ForestRootDomain -Force
+                            }
+                            $multiForestResults += @($targetResult)
+                        }
+                    } catch {
+                        $failureRecord = [PSCustomObject]@{
+                            TargetServer = $targetServer
+                            ForestName   = $forestName
+                            Error        = $_.Exception.Message
+                        }
+                        $multiForestFailures += $failureRecord
+                        Write-Warning "Skipping AD target '$targetServer' after failure: $($_.Exception.Message)"
+                    }
                 }
-
-                $targetSuffix = ($contextSuffixSource -replace '[^A-Za-z0-9._-]', '_')
-
-                $targetParams = @{}
-                foreach ($entry in $PSBoundParameters.GetEnumerator()) {
-                    $targetParams[$entry.Key] = $entry.Value
-                }
-
-                if (-not [string]::IsNullOrWhiteSpace($OutputFolder) -or -not [string]::IsNullOrWhiteSpace($OutputFolderFileName)) {
-                    $targetParams['OutputFolderFileName'] = "$baseFileName-$targetSuffix"
-                } else {
-                    if (-not [string]::IsNullOrWhiteSpace($OutputHtmlFile)) {
-                        $targetParams['OutputHtmlFile'] = Add-SuffixToPath -FilePath $OutputHtmlFile -Suffix $targetSuffix
-                    }
-                    if (-not [string]::IsNullOrWhiteSpace($OutputMarkdownFile)) {
-                        $targetParams['OutputMarkdownFile'] = Add-SuffixToPath -FilePath $OutputMarkdownFile -Suffix $targetSuffix
-                    }
-                    if (-not [string]::IsNullOrWhiteSpace($OutputMarkdownSummaryFile)) {
-                        $targetParams['OutputMarkdownSummaryFile'] = Add-SuffixToPath -FilePath $OutputMarkdownSummaryFile -Suffix $targetSuffix
-                    }
-                    if (-not [string]::IsNullOrWhiteSpace($OutputJsonFile)) {
-                        $targetParams['OutputJsonFile'] = Add-SuffixToPath -FilePath $OutputJsonFile -Suffix $targetSuffix
-                    }
-                }
-
-                $targetParams['PassThru'] = $true
-
-                $targetResult = Invoke-Maester @targetParams
-                if ($targetResult) {
-                    foreach ($result in @($targetResult)) {
-                        $result | Add-Member -NotePropertyName 'ADTargetServer' -NotePropertyValue $targetServer -Force
-                        $result | Add-Member -NotePropertyName 'ADForestName' -NotePropertyValue $forestName -Force
-                        $result | Add-Member -NotePropertyName 'ADForestRootDomain' -NotePropertyValue $__MtSession.ADRunContext.ForestRootDomain -Force
-                    }
-                    $multiForestResults += @($targetResult)
-                }
+            } finally {
+                $__MtSession.ADConnection.TargetServer = $originalTargetServer
+                $__MtSession.ADConnection.TargetServers = $originalTargetServers
+                $__MtSession.ADRunContext = $originalAdRunContext
             }
 
-            $__MtSession.ADConnection.TargetServer = $originalTargetServer
-            $__MtSession.ADConnection.TargetServers = $originalTargetServers
-            $__MtSession.ADRunContext = $originalAdRunContext
+            if ($multiForestFailures.Count -gt 0) {
+                Write-Warning "Multi-forest AD run skipped $($multiForestFailures.Count) target(s) due to errors."
+            }
 
             $combinedInvokeCommand = Get-MtInvokeMaesterCommand -BoundParameters $PSBoundParameters -Comment 'Merged multi-forest AD report'
             $mergedResults = New-MtMergedAdForestResult -ForestResults $multiForestResults -InvokeCommand $combinedInvokeCommand
+            if ($mergedResults -and $multiForestFailures.Count -gt 0) {
+                $mergedResults | Add-Member -NotePropertyName 'ADTargetFailures' -NotePropertyValue @($multiForestFailures) -Force
+            }
             if ($mergedResults -and (
                     -not [string]::IsNullOrEmpty($out.OutputJsonFile) -or
                     -not [string]::IsNullOrEmpty($out.OutputMarkdownFile) -or

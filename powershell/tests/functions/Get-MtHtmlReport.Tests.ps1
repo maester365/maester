@@ -29,6 +29,11 @@ Describe 'Get-MtHtmlReport' {
             LoadedModules     = @()
             InvokeCommand     = 'Invoke-Maester'
             MgContext         = [PSCustomObject]@{ TenantId = 'single-tenant-id' }
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-single.contoso.com'
+                ForestRootDomain = 'contoso.com'
+                TargetServer = 'dc01.contoso.com'
+            }
             MaesterConfig     = [PSCustomObject]@{
                 GlobalSettings = [PSCustomObject]@{
                     EmergencyAccessAccounts = @(
@@ -69,6 +74,11 @@ Describe 'Get-MtHtmlReport' {
             ExecutedAt       = '2026-03-30T10:00:00'
             CurrentVersion   = '2.2.0'
             LatestVersion    = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-one.contoso.com'
+                ForestRootDomain = 'contoso.com'
+                TargetServer = 'dc01.contoso.com'
+            }
             Tests            = @(
                 [PSCustomObject]@{ Index = 1; Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
             )
@@ -92,6 +102,11 @@ Describe 'Get-MtHtmlReport' {
             ExecutedAt       = '2026-03-30T11:00:00'
             CurrentVersion   = '2.2.0'
             LatestVersion    = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-two.fabrikam.com'
+                ForestRootDomain = 'fabrikam.com'
+                TargetServer = 'dc02.fabrikam.com'
+            }
             Tests            = @(
                 [PSCustomObject]@{ Index = 1; Id = 'MT.1001'; Result = 'Failed'; Block = 'Maester' }
             )
@@ -127,6 +142,14 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
             $html | Should -BeLike '*MT.1001*'
+        }
+
+        It 'Should contain AD context metadata in the output' {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant
+
+            $html | Should -BeLike '*forest-single.contoso.com*'
+            $html | Should -BeLike '*dc01.contoso.com*'
+            $html | Should -BeLike '*contoso.com*'
         }
 
         It 'Should contain emergency access account config data' {
@@ -166,6 +189,15 @@ Describe 'Get-MtHtmlReport' {
 
             $html | Should -BeLike '*Tenant One*'
             $html | Should -BeLike '*Tenant Two*'
+        }
+
+        It 'Should retain distinct AD context metadata for each tenant' {
+            $html = Get-MtHtmlReport -MaesterResults $merged
+
+            $html | Should -BeLike '*forest-one.contoso.com*'
+            $html | Should -BeLike '*dc01.contoso.com*'
+            $html | Should -BeLike '*forest-two.fabrikam.com*'
+            $html | Should -BeLike '*dc02.fabrikam.com*'
         }
 
         It 'Should not contain sample data from the template' {
