@@ -1,4 +1,41 @@
 ﻿Describe 'Maester Configuration File - tests/maester-config.json' {
+    Context 'Version fields' {
+        It 'has a top-level ModuleVersion string' {
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+
+            $configJson.PSObject.Properties.Name | Should -Contain 'ModuleVersion'
+            $configJson.ModuleVersion | Should -BeOfType [string]
+            $configJson.ModuleVersion | Should -Not -BeNullOrEmpty
+        }
+
+        It 'source ModuleVersion matches powershell/Maester.psd1 ModuleVersion' {
+            # The published artifact's ModuleVersion is stamped by CI, but the
+            # source-tree value should track Maester.psd1 so a clone shows a
+            # sensible number. Drift between the two is a maintenance bug.
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $manifestPath = Join-Path $repoRoot 'powershell/Maester.psd1'
+
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+            $manifest = Import-PowerShellDataFile -Path $manifestPath
+
+            $configJson.ModuleVersion | Should -Be $manifest.ModuleVersion -Because "tests/maester-config.json ModuleVersion ($($configJson.ModuleVersion)) should match powershell/Maester.psd1 ModuleVersion ($($manifest.ModuleVersion))"
+        }
+
+        It 'has a top-level ConfigVersion string (CalVer YYYY.MM.DD.N or empty sentinel)' {
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+
+            $configJson.PSObject.Properties.Name | Should -Contain 'ConfigVersion'
+            $configJson.ConfigVersion | Should -BeOfType [string]
+            # Empty (source sentinel) or CalVer format. CI stamps the CalVer at publish time.
+            $configJson.ConfigVersion | Should -Match '^$|^\d{4}\.\d{2}\.\d{2}\.\d+$'
+        }
+    }
+
     Context 'TestSettings array' {
         It 'should be sorted by Id' {
             # Correctly join paths to find the repo root and config file

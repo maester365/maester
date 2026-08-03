@@ -24,11 +24,13 @@ keywords:
 
 # CIS.M365.4.1 - Ensure devices without a compliance policy are marked
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/korthal-maiyn" title="Christopher Edwards · Co-contributor"><img src="https://github.com/Korthal-Maiyn.png" alt="Christopher Edwards" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 4.1 (L2) Ensure devices without a compliance policy are marked 'not compliant'
 
-Compliance policies are sets of rules and conditions that are used to evaluate the configuration of managed devices. These policies can help secure organizational data and resources from devices that don't meet those configuration requirements. Managed devices must satisfy the conditions you set in your policies to be considered compliant by Intune. When combined with conditional access, this allows more control over how non-compliant devices are treated.
+Compliance policies are sets of rules and conditions that are used to evaluate the configuration of managed devices. These policies can help secure organizational data and resources from devices that don't meet those configuration requirements. Managed devices must satisfy the conditions you set in your policies to be considered compliant by Intune. When combined with Conditional Access, this allows more control over how non-compliant devices are treated.
 
 The recommended state is **Mark devices with no compliance policy assigned as** **Not compliant**
 
@@ -44,8 +46,7 @@ Any devices without a compliance policy will be marked not compliant. Care shoul
 
 If a mature environment already has an existing device compliance CA policy and a large number of devices without an assigned compliance policy, this could cause disruption as those devices would then be suddenly considered not compliant.
 
-
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Click on **Devices** and then under **Managed devices** on **Compliance**.
@@ -56,6 +57,7 @@ If a mature environment already has an existing device compliance CA policy and 
 
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "DeviceManagementConfiguration.ReadWrite.All"`
 2. Run the following commands:
+
 ```powershell
 $Uri = 'https://graph.microsoft.com/v1.0/deviceManagement'
 $Body = @{
@@ -69,7 +71,7 @@ Invoke-MgGraphRequest -Uri $Uri -Method PATCH -Body $Body
 #### Related links
 
 * [Microsoft Intune admin center](https://intune.microsoft.com)
-* [Use compliance policies to set rules for devices you manage with Intune](https://learn.microsoft.com/en-us/intune/intune-service/protect/device-compliance-get-started)
+* [Use compliance policies to set rules for devices you manage with Intune](https://learn.microsoft.com/intune/intune-service/protect/device-compliance-get-started)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 162](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

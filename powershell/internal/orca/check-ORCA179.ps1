@@ -24,9 +24,9 @@ check to determine if there is a rule enforcing this.
 class ORCA179 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA179()
@@ -49,9 +49,9 @@ class ORCA179 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -59,9 +59,16 @@ class ORCA179 : ORCACheck
 
         $Enabled = $False
         $PolicyCount = 0
-      
-        ForEach($Policy in $Config["SafeLinksPolicy"]) 
+
+        ForEach($Policy in $Config["SafeLinksPolicy"])
         {
+            # Built-in policy is ignored in this check, as stated in the Importance description.
+            # The PolicyInfo class exposes this via the BuiltIn property.
+            if($Config["PolicyStates"][$Policy.Guid.ToString()].BuiltIn)
+            {
+                Continue
+            }
+
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $EnableForInternalSenders = $($Policy.EnableForInternalSenders)
 
@@ -71,7 +78,6 @@ class ORCA179 : ORCACheck
             {
                 $PolicyCount++
             }
-            
 
             # Check objects
             $ConfigObject = [ORCACheckConfig]::new()
@@ -83,12 +89,12 @@ class ORCA179 : ORCACheck
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
             # Determine if MDO link tracking is on for this safelinks policy
-            If($EnableForInternalSenders -eq $true) 
+            If($EnableForInternalSenders -eq $true)
             {
                 $Enabled = $True
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            Else 
+            }
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
@@ -107,7 +113,7 @@ class ORCA179 : ORCACheck
 
             $this.AddConfig($ConfigObject)
 
-        }    
+        }
 
     }
 

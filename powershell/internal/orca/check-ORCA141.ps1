@@ -15,9 +15,9 @@ param()
 class ORCA141 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA141()
@@ -38,17 +38,17 @@ class ORCA141 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-        #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count  
+        #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $BulkSpamAction = $($Policy.BulkSpamAction)
@@ -65,13 +65,13 @@ class ORCA141 : ORCACheck
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
             # For standard Fail if BulkSpamAction is not set to MoveToJmf
-    
-            If($BulkSpamAction -ne "MoveToJmf") 
+
+            If($BulkSpamAction -ne "MoveToJmf")
             {
                 $ConfigObject.ConfigData=$($BulkSpamAction)
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.ConfigData=$($BulkSpamAction)
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)
@@ -79,12 +79,12 @@ class ORCA141 : ORCACheck
 
             # For strict Fail if BulkSpamAction is not set to Quarantine
 
-            If($BulkSpamAction -ne "Quarantine") 
+            If($BulkSpamAction -ne "Quarantine")
             {
                 $ConfigObject.ConfigData=$($BulkSpamAction)
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Fail)
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.ConfigData=$($BulkSpamAction)
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Pass)
@@ -98,10 +98,10 @@ class ORCA141 : ORCACheck
                 $ConfigObject.SetResult([ORCAConfigLevel]::All,[ORCAResult]::Informational)
                 $ConfigObject.InfoText = "The $($BulkSpamAction) option may impact the users ability to release emails and may impact user experience."
             }
-            
+
             $this.AddConfig($ConfigObject)
 
-        }        
+        }
 
     }
 

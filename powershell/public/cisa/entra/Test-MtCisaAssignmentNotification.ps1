@@ -18,22 +18,22 @@
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection Graph)){
+    if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
 
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
     $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
-    if(-not $pim){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+    if (-not $pim) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
         return $null
     }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
     $rolePolicies = @()
 
-    foreach($role in $roles){
+    foreach ($role in $roles) {
         $rolePolicy = [PSCustomObject]@{
             role           = $role.displayName
             eligibleNotify = $false
@@ -50,24 +50,24 @@
         $policy = Invoke-MtGraphRequest @policySplat
 
         $eligibleNotify = $policy.policy.rules | Where-Object {`
-            $_.id -eq "Notification_Admin_Admin_Eligibility" -and `
-            $_.notificationRecipients
+                $_.id -eq "Notification_Admin_Admin_Eligibility" -and `
+                $_.notificationRecipients
         }
         $activeNotify = $policy.policy.rules | Where-Object {`
-            $_.id -eq "Notification_Admin_Admin_Assignment" -and `
-            $_.notificationRecipients
+                $_.id -eq "Notification_Admin_Admin_Assignment" -and `
+                $_.notificationRecipients
         }
         $rolePolicy.eligibleNotify = -not $null -eq $eligibleNotify
-        $rolePolicy.activeNotify   = -not $null -eq $activeNotify
+        $rolePolicy.activeNotify = -not $null -eq $activeNotify
 
         $rolePolicies += $rolePolicy
     }
 
     $misconfigured = $rolePolicies | Where-Object {`
-        -not $_.eligibleNotify -or -not $_.activeNotify
+            -not $_.eligibleNotify -or -not $_.activeNotify
     }
 
-    $testResult = ($misconfigured|Measure-Object).Count -eq 0
+    $testResult = ($misconfigured | Measure-Object).Count -eq 0
 
     $resultFail = "❌ Fail"
     $resultPass = "✅ Pass"

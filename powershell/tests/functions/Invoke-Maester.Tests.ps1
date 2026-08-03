@@ -52,4 +52,38 @@
         $Result.SkippedCount | Should -BeExactly $expectedSkippedCount -Because 'counting Skipped'
         $Result.NotRunCount | Should -BeExactly $expectedNotRunCount -Because 'counting Notrun'
     }
+
+    It 'Generates a markdown summary file with counters table' {
+        if (Get-MgContext) { Disconnect-Graph } # Ensure we are disconnected
+
+        $outputRoot = Join-Path -Path $PSScriptRoot -ChildPath '../test-results'
+        $summaryPath = Join-Path -Path ([System.IO.Path]::GetFullPath($outputRoot)) -ChildPath 'TestResults-summary.md'
+
+        if (Test-Path $summaryPath) {
+            Remove-Item -Path $summaryPath -Force
+        }
+
+        $maesterParams = @{
+            Path                      = [System.IO.Path]::GetFullPath((Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath 'smoketests'))
+            OutputFolder              = [System.IO.Path]::GetFullPath($outputRoot)
+            PassThru                  = $true
+            SkipGraphConnect          = $true
+            NonInteractive            = $true
+            OutputFolderFileName      = 'TestResults'
+            ExcludeTag                = 'testtag'
+            NoLogo                    = $true
+            OutputMarkdownSummaryFile = $summaryPath
+        }
+
+        $result = Invoke-Maester @maesterParams
+        $result | Should -Not -BeNullOrEmpty -Because 'there should be a result'
+
+        Test-Path $summaryPath | Should -BeTrue -Because 'the markdown summary file should be created'
+
+        $summaryContent = Get-Content -Path $summaryPath -Raw
+        $summaryContent | Should -BeLike '*| Metric | Count |*'
+        $summaryContent | Should -Match '\|\s*Passed\b[^|]*\|'
+        $summaryContent | Should -Match '\|\s*Failed\b[^|]*\|'
+        $summaryContent | Should -Match '\|\s*Total\b[^|]*\|'
+    }
 }

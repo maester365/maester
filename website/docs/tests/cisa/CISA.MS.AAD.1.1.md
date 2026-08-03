@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.1.1 - Legacy authentication SHALL be blocked."
-description: "Legacy authentication SHALL be blocked. Rationale: The security risk of allowing legacy authentication protocols is they do not support MFA. Blocking legacy protocols reduces the impact of user credential theft. Remediation action: Follow the guide below to create a conditional access policy that b…"
+description: "Legacy authentication SHALL be blocked. Rationale: The security risk of allowing legacy authentication protocols is they do not support MFA. Blocking legacy protocols reduces the impact of user credential theft. Remediation action: Follow the guide below to create a Conditional Access policy that b…"
 slug: /tests/CISA.MS.AAD.1.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -20,6 +20,8 @@ keywords:
 
 # CISA.MS.AAD.1.1 - Legacy authentication SHALL be blocked.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/andremieth" title="André Mieth · Co-contributor"><img src="https://github.com/andremieth.png" alt="André Mieth" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Legacy authentication SHALL be blocked.
@@ -28,7 +30,7 @@ Rationale: The security risk of allowing legacy authentication protocols is they
 
 #### Remediation action:
 
-Follow the guide below to create a conditional access policy that blocks legacy authentication.
+Follow the guide below to create a Conditional Access policy that blocks legacy authentication.
 
 - [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy#create-a-conditional-access-policy)
 

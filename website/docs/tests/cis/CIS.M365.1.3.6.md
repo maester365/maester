@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.1.3.6 - (L2) Ensure the customer lockbox feature is enabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 1.3.6 (L2) Ensure the customer lockbox feature is enabled
@@ -35,9 +37,10 @@ Enabling this feature protects organizational data against data spillage and exf
 
 Administrators will need to grant Microsoft access to the tenant environment prior to a Microsoft engineer accessing the environment for support or troubleshooting.
 
-#### Remediation action:
+#### Remediation action
 
 To enable the Customer Lockbox feature:
+
 1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Settings** then select **Org settings**.
 3. Select **Security & privacy** tab.
@@ -49,6 +52,7 @@ To enable the Customer Lockbox feature:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following PowerShell command:
+
 ```powershell
 Set-OrganizationConfig -CustomerLockBoxEnabled $true
 ```
@@ -56,7 +60,7 @@ Set-OrganizationConfig -CustomerLockBoxEnabled $true
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [Turn Customer Lockbox requests on or off](https://learn.microsoft.com/en-us/purview/customer-lockbox-requests#turn-customer-lockbox-requests-on-or-off)
+* [Turn Customer Lockbox requests on or off](https://learn.microsoft.com/purview/customer-lockbox-requests#turn-customer-lockbox-requests-on-or-off)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 61](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

@@ -21,9 +21,9 @@ param()
 class ORCA233_1 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA233_1()
@@ -46,9 +46,9 @@ class ORCA233_1 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -107,7 +107,7 @@ class ORCA233_1 : ORCACheck
         }
 
         # Add config data for each connector
-        ForEach($Connector in $Connectors) 
+        ForEach($Connector in $Connectors)
         {
 
             # Construct config object
@@ -131,7 +131,7 @@ class ORCA233_1 : ORCACheck
                     $ConfigObject.ConfigItem = "Not Configured"
                     $ConfigObject.ConfigData = "None"
                 }
-    
+
                 # Determine that EF is set to a mode, no test mode, and no select users
                 If(($Connector.EFSkipLastIp -eq $True -or $Connector.EFSkipIPs.Count -gt 0) -and $Connector.EFTestMode -eq $False -and $Connector.EFUsers.Count -eq 0)
                 {
@@ -141,18 +141,18 @@ class ORCA233_1 : ORCACheck
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
-    
+
                 If($Connector.EFTestMode)
                 {
                     $ConfigObject.ConfigItem += " (Test Mode)"
                 }
-    
+
                 If($Connector.EFUsers.Count -gt 0)
                 {
                     $ConfigObject.ConfigItem += " (Select Users)"
                 }
             }
-            else 
+            else
             {
                 # Not required
                 $ConfigObject.ConfigItem = "Not required"

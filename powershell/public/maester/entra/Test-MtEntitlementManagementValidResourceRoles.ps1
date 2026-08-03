@@ -43,6 +43,18 @@
     [OutputType([bool])]
     param()
 
+    if (-not (Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+        return $null
+    }
+
     try {
         # Get all access package catalogs
         $catalogs = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackageCatalogs" -ApiVersion beta
@@ -119,11 +131,11 @@
 
                     if ([string]::IsNullOrEmpty($resourceOriginId)) {
                         $staleResourcesFound += [PSCustomObject]@{
-                            CatalogId = $catalogId
-                            CatalogName = $catalogName
+                            CatalogId    = $catalogId
+                            CatalogName  = $catalogName
                             ResourceName = $resourceDisplayName
                             ResourceType = $resourceType
-                            Issue = "Missing origin ID"
+                            Issue        = "Missing origin ID"
                         }
                         continue
                     }
@@ -156,56 +168,56 @@
                                     Write-Verbose "Service principal exists: $($sp.displayName)"
 
                                     # Check for stale app roles using cached packages
-                                        $catalogPackages = $allPackageArray | Where-Object { $_.catalogId -eq $catalogId }
+                                    $catalogPackages = $allPackageArray | Where-Object { $_.catalogId -eq $catalogId }
 
-                                        foreach ($package in $catalogPackages) {
-                                            try {
-                                                $roleScopes = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages/$($package.id)/accessPackageResourceRoleScopes?`$expand=accessPackageResourceRole,accessPackageResourceScope" -ApiVersion beta
+                                    foreach ($package in $catalogPackages) {
+                                        try {
+                                            $roleScopes = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages/$($package.id)/accessPackageResourceRoleScopes?`$expand=accessPackageResourceRole,accessPackageResourceScope" -ApiVersion beta
 
-                                                $roleScopeArray = @()
-                                                if ($roleScopes -is [Array]) {
-                                                    $roleScopeArray = $roleScopes
-                                                } elseif ($null -ne $roleScopes.value) {
-                                                    $roleScopeArray = $roleScopes.value
-                                                } elseif ($null -ne $roleScopes) {
-                                                    $roleScopeArray = @($roleScopes)
-                                                }
+                                            $roleScopeArray = @()
+                                            if ($roleScopes -is [Array]) {
+                                                $roleScopeArray = $roleScopes
+                                            } elseif ($null -ne $roleScopes.value) {
+                                                $roleScopeArray = $roleScopes.value
+                                            } elseif ($null -ne $roleScopes) {
+                                                $roleScopeArray = @($roleScopes)
+                                            }
 
-                                                foreach ($roleScope in $roleScopeArray) {
-                                                    $resScope = $roleScope.accessPackageResourceScope
-                                                    $resRole = $roleScope.accessPackageResourceRole
+                                            foreach ($roleScope in $roleScopeArray) {
+                                                $resScope = $roleScope.accessPackageResourceScope
+                                                $resRole = $roleScope.accessPackageResourceRole
 
-                                                    if ($resScope.originId -eq $resourceOriginId) {
-                                                        $roleOriginId = $resRole.originId
-                                                        $roleDisplayName = $resRole.displayName
+                                                if ($resScope.originId -eq $resourceOriginId) {
+                                                    $roleOriginId = $resRole.originId
+                                                    $roleDisplayName = $resRole.displayName
 
-                                                        if ($roleDisplayName -eq "Default Access") {
-                                                            continue
-                                                        }
+                                                    if ($roleDisplayName -eq "Default Access") {
+                                                        continue
+                                                    }
 
-                                                        $spAppRoleIds = @()
-                                                        if ($sp.appRoles) {
-                                                            $spAppRoleIds = $sp.appRoles | ForEach-Object { $_.id }
-                                                        }
+                                                    $spAppRoleIds = @()
+                                                    if ($sp.appRoles) {
+                                                        $spAppRoleIds = $sp.appRoles | ForEach-Object { $_.id }
+                                                    }
 
-                                                        if ($roleOriginId -and $roleOriginId -ne "00000000-0000-0000-0000-000000000000") {
-                                                            if ($spAppRoleIds -notcontains $roleOriginId) {
-                                                                $validationFailed = $true
-                                                                $issueDescription = "App role '$roleDisplayName' no longer exists"
-                                                                $resourceType = "App Role"
-                                                                break
-                                                            }
+                                                    if ($roleOriginId -and $roleOriginId -ne "00000000-0000-0000-0000-000000000000") {
+                                                        if ($spAppRoleIds -notcontains $roleOriginId) {
+                                                            $validationFailed = $true
+                                                            $issueDescription = "App role '$roleDisplayName' no longer exists"
+                                                            $resourceType = "App Role"
+                                                            break
                                                         }
                                                     }
                                                 }
-                                            } catch {
-                                                Write-Verbose "Could not retrieve role scopes for package"
                                             }
-
-                                            if ($validationFailed) {
-                                                break
-                                            }
+                                        } catch {
+                                            Write-Verbose "Could not retrieve role scopes for package"
                                         }
+
+                                        if ($validationFailed) {
+                                            break
+                                        }
+                                    }
                                 }
                             } catch {
                                 $validationFailed = $true
@@ -263,11 +275,11 @@
                         Write-Verbose "Found stale resource: $resourceDisplayName - $issueDescription"
 
                         $staleResourcesFound += [PSCustomObject]@{
-                            CatalogId = $catalogId
-                            CatalogName = $catalogName
+                            CatalogId    = $catalogId
+                            CatalogName  = $catalogName
                             ResourceName = $resourceDisplayName
                             ResourceType = $resourceType
-                            Issue = $issueDescription
+                            Issue        = $issueDescription
                         }
                     }
                 }

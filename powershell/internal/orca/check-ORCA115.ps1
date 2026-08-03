@@ -12,7 +12,7 @@ param()
 
 <#
 
-115 - Check MDO Phishing Mailbox Intelligence Protection is enabled 
+115 - Check MDO Phishing Mailbox Intelligence Protection is enabled
 
 #>
 
@@ -21,9 +21,9 @@ param()
 class ORCA115 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA115()
@@ -45,18 +45,18 @@ class ORCA115 : ORCACheck
             "Microsoft 365 Defender Portal - Anti-phishing"="https://security.microsoft.com/antiphishing"
             "Set up Microsoft Defender for Office 365 anti-phishing and anti-phishing policies"="https://aka.ms/orca-atpp-docs-9"
             "Recommended settings for EOP and Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-7"
-        }   
+        }
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-        
+
         ForEach($Policy in ($Config["AntiPhishPolicy"]))
         {
 
@@ -79,18 +79,18 @@ class ORCA115 : ORCACheck
 
             If($EnableMailboxIntelligenceProtection -eq $false)
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")      
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")                      
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
 
             $this.AddConfig($ConfigObject)
 
         }
 
-            
+
         If($Config["AnyPolicyState"][[PolicyType]::Antiphish] -eq $False)
         {
             $ConfigObject = [ORCACheckConfig]::new()

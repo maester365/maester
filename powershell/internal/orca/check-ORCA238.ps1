@@ -23,9 +23,9 @@ Checks to determine if SafeLinks action for unknown potentially malicious URLs i
 class ORCA238 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA238()
@@ -50,15 +50,15 @@ class ORCA238 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
-        ForEach($Policy in $Config["SafeLinksPolicy"]) 
+        ForEach($Policy in $Config["SafeLinksPolicy"])
         {
 
 
@@ -80,13 +80,13 @@ class ORCA238 : ORCACheck
             if($Policy.EnableSafeLinksForOffice -eq $true)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-                
+
             }
             Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            
+
             $this.AddConfig($ConfigObject)
 
         }

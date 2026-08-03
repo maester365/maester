@@ -3,7 +3,7 @@ The token has a lifetime of one year and needs to be renewed to allow synchroniz
 
 #### Remediation action
 
-See the [Microsoft learn instructions to Renew enrollment program token](https://learn.microsoft.com/en-us/intune-education/renew-ios-certificate-token#renew-enrollment-program-token).
+See the [Microsoft learn instructions to Renew enrollment program token](https://learn.microsoft.com/intune-education/renew-ios-certificate-token#renew-enrollment-program-token).
 
 Direct Link for [Intune Portal -  Enrollment program tokens](https://intune.microsoft.com/#view/Microsoft_Intune_Enrollment/DepTokensPaging.ReactView).
 

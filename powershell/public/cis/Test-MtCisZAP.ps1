@@ -24,6 +24,11 @@
         return $null
     }
 
+    if (-not (Get-MtLicenseInformation -Product Mdo)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+        return $null
+    }
+
     try {
         Write-Verbose 'Get TeamsProtectionPolicy'
         $teamsProtectionPolicy = Get-TeamsProtectionPolicy | Select-Object ZapEnabled

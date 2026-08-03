@@ -20,6 +20,8 @@ keywords:
 
 # CISA.MS.AAD.7.4 - Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
@@ -27,16 +29,17 @@ Permanent active role assignments SHALL NOT be allowed for highly privileged rol
 Rationale: Instead of giving users permanent assignments to privileged roles, provisioning access just in time lessens exposure if those accounts become compromised. In Azure AD PIM or an alternative PAM system, just in time access can be provisioned by assigning users to roles as eligible instead of perpetually active.
 
 Note: Exceptions to this policy are:
+
 * **Emergency access** accounts that need **perpetual access** to the tenant in the rare event of system degradation or other scenarios.
 * Some types of **service accounts** that require a user account with privileged roles; since these accounts are used by software programs, they **cannot** perform role activation.
 
-#### Remediation action:
+#### Remediation action
 
 1. In **Entra admin center** select **Show more** and **Roles & Admins** and then **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.
 
     Perform the steps below for each highly privileged role. We reference the Global Administrator role as an example.
 
-2. Select the **Global administrator** role.
+2. Select the **Global Administrator** role.
 3. Under **Manage**, select **Assignments** and click the **Active assignments** tab.
 4. Verify there are no users or groups with a value of **Permanent** in the **End time** column. If there are any, recreate those assignments to have an expiration date using Entra ID PIM or an alternative PAM system. If a group is identified and it is enrolled in PIM for Groups, see the exception cases below for details.
 

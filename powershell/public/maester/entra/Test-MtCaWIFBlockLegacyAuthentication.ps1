@@ -31,10 +31,10 @@
     try {
         $policiesResult = Test-MtConditionalAccessWhatIf -UserId $UserId -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync
         if ( $null -ne $policiesResult ) {
-            $testResult = "Well done. The following conditional access policies are currently blocking legacy authentication.`n`n%TestResult%"
+            $testResult = "Well done. The following Conditional Access policies are currently blocking legacy authentication.`n`n%TestResult%"
             $Result = $true
         } else {
-            $testResult = "No conditional access policy found that blocks legacy authentication."
+            $testResult = "No Conditional Access policy found that blocks legacy authentication."
             $Result = $false
         }
 
@@ -42,7 +42,7 @@
         Write-Verbose "Checking if the user $UserId is blocked from using legacy authentication"
         return $Result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         Write-Verbose "An error occurred while checking if the user $UserId is blocked from using legacy authentication"
         return $false
     }

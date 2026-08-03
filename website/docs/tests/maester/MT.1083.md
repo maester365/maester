@@ -1,6 +1,6 @@
 ---
 title: "MT.1083 - Ensure Delicensing Resiliency is enabled"
-description: "> **Important:** This test is only available if your tenant has at least **5000 non-trial Exchange Online licenses**. Delicensing Resiliency SHOULD be enabled to maintain access to mailboxes when licenses are removed. Remediation action: Enable Delicensing Resiliency by running the following PowerS…"
+description: "> **Important:** This test is only available if your tenant has at least **5000 non-trial Exchange Online licenses**. Delicensing Resiliency SHOULD be enabled to maintain access to mailboxes when licenses are removed. Remediation action Enable Delicensing Resiliency by running the following PowerSh…"
 slug: /tests/MT.1083
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,14 +17,15 @@ keywords:
 
 # MT.1083 - Ensure Delicensing Resiliency is enabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/l-gosling" title="Lukas Gosling · Original author"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/l-gosling">Lukas Gosling</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 > **Important:** This test is only available if your tenant has at least **5000 non-trial Exchange Online licenses**.
 
 Delicensing Resiliency SHOULD be enabled to maintain access to mailboxes when licenses are removed.
 
-
-#### Remediation action:
+#### Remediation action
 
 Enable Delicensing Resiliency by running the following PowerShell command in Exchange Online:
 
@@ -48,8 +49,8 @@ Set-OrganizationConfig -EndUserMailNotificationForDelayedDelicensingEnabled:$tru
 
 #### Related links
 
-* [Delayed Delicensing in Exchange Online](https://learn.microsoft.com/en-us/Exchange/recipients-in-exchange-online/manage-user-mailboxes/exchange-online-delicensing-resiliency)
-* [Set-OrganizationConfig](https://docs.microsoft.com/en-us/powershell/module/exchange/set-organizationconfig)
+* [Delayed Delicensing in Exchange Online](https://learn.microsoft.com/Exchange/recipients-in-exchange-online/manage-user-mailboxes/exchange-online-delicensing-resiliency)
+* [Set-OrganizationConfig](https://docs.microsoft.com/powershell/module/exchange/set-organizationconfig)
 
 ## Test Metadata
 

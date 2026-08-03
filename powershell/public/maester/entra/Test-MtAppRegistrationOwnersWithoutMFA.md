@@ -16,7 +16,7 @@ App registration owners have powerful permissions that attackers actively target
 3. **Broader Access**: Compromised app is used to access sensitive data across the organization or to escalate privileges
 
 #### Remediation action
-Register MFA for all app registration owners listed. Use conditional access policies to enforce MFA for all application owners.
+Register MFA for all app registration owners listed. Use Conditional Access policies to enforce MFA for all application owners.
 
 <!--- Results --->
 %TestResult%

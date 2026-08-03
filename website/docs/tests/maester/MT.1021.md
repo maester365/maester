@@ -17,6 +17,8 @@ keywords:
 
 # MT.1021 - Security Defaults are enabled.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/cloud-architekt" title="Thomas Naunheim · Co-contributor"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Co-contributor"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><span className="test-byline-avatar test-byline-more">+5</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 10 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Security Defaults are enabled.
@@ -29,7 +31,7 @@ Security Defaults are enabled.
 | Severity | High |
 | Suite | Maester |
 | Category | CA |
-| Tags | CA, MT.1021 |
+| Tags | CA, Maester, MT.1021 |
 
 ## Source
 

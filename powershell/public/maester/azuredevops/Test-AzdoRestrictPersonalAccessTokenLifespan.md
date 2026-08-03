@@ -12,7 +12,8 @@ Restricting PAT lifespan by enforcing a maximum expiration reduces the risk of l
 #### Remediation action
 
 Enable the tenant policy to enforce a maximum PAT lifespan.
-1. Sign in to your organization (https://dev.azure.com/{yourorganization}).
+
+1. Sign in to your organization (<https://dev.azure.com/{yourorganization}>).
 2. Select Organization settings (gear icon).
 3. Select Microsoft Entra, find the "Enforce maximum personal access token lifespan" policy.
 4. Move the toggle to On.
@@ -31,6 +32,6 @@ Existing PATs remain valid until their configured expiration date and are not re
 
 When enabled, newly created or renewed PATs will have a maximum lifespan (in days) and will automatically expire after that period.
 
-
 #### Related links
-* [Learn - Restrict personal access token lifespan](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan)
+
+* [Learn - Restrict personal access token lifespan](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan)

@@ -12,7 +12,7 @@ param()
 
 <#
 
-123 - Check MDO Phishing Enable Unusual Characters Safety Tips 
+123 - Check MDO Phishing Enable Unusual Characters Safety Tips
 
 #>
 
@@ -21,9 +21,9 @@ param()
 class ORCA123 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA123()
@@ -48,9 +48,9 @@ class ORCA123 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -62,7 +62,7 @@ class ORCA123 : ORCACheck
             $EnableUnusualCharactersSafetyTips = $($Policy.EnableUnusualCharactersSafetyTips)
 
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
-            
+
             #  Determine if tips for user impersonation is on
 
             $ConfigObject = [ORCACheckConfig]::new()
@@ -77,11 +77,11 @@ class ORCA123 : ORCACheck
 
             If($EnableUnusualCharactersSafetyTips -eq $false)
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")       
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")                  
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
 
             $this.AddConfig($ConfigObject)
@@ -96,7 +96,7 @@ class ORCA123 : ORCACheck
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
-        }             
+        }
 
     }
 

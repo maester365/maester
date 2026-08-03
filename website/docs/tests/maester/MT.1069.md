@@ -18,6 +18,8 @@ keywords:
 
 # MT.1069 - Restrict non-admin users from creating security groups.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/marcel-ngn" title="Marcel N. · Original author"><img src="https://github.com/marcel-ngn.png" alt="Marcel N." /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/marcel-ngn">Marcel N.</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 ## Description
@@ -60,8 +62,8 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 
 #### Related links
 
-- [Manage default user permissions in Entra ID](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/users-default-permissions)
-- [Authorization policy in Entra ID](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy)
+- [Manage default user permissions in Entra ID](https://learn.microsoft.com/azure/active-directory/fundamentals/users-default-permissions)
+- [Authorization policy in Entra ID](https://learn.microsoft.com/graph/api/resources/authorizationpolicy)
 
 ## Test Metadata
 
@@ -72,7 +74,7 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 | Suite | Maester |
 | Category | Entra |
 | PowerShell test | [Test-MtSecurityGroupCreationRestricted](/docs/commands/Test-MtSecurityGroupCreationRestricted) |
-| Tags | Entra, Group, MT.1069 |
+| Tags | Entra, Group, Maester, MT.1069 |
 
 ## Source
 

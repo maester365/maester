@@ -117,6 +117,10 @@ function Get-MtMaesterConfig {
     Write-Verbose "Loading Maester config from: $ConfigFilePath"
     $maesterConfig = Get-Content -Path $ConfigFilePath -Raw | ConvertFrom-Json
 
+    $loadedModuleVersion = if ($maesterConfig.PSObject.Properties.Name -contains 'ModuleVersion') { $maesterConfig.ModuleVersion } else { '<none>' }
+    $loadedConfigVersion = if ($maesterConfig.PSObject.Properties.Name -contains 'ConfigVersion') { $maesterConfig.ConfigVersion } else { '<none>' }
+    Write-Verbose "Loaded Maester config: ModuleVersion=$loadedModuleVersion, ConfigVersion=$loadedConfigVersion"
+
     # Store the source file name so the report can show which config was loaded
     $configFileName = Split-Path -Path $ConfigFilePath -Leaf
     Add-Member -InputObject $maesterConfig -MemberType NoteProperty -Name 'ConfigSource' -Value $configFileName

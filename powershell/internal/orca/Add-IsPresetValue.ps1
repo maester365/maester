@@ -15,13 +15,13 @@ Function Add-IsPresetValue
 
     foreach($item in $CollectionEntity)
     {
-        
+
         if($null -ne $item.Name)
         {
             $IsPreset = $PresetNames -contains $item.Name
 
             $item | Add-Member -MemberType NoteProperty -Name IsPreset -Value $IsPreset -Force
         }
-        
+
     }
 }

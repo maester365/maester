@@ -21,9 +21,9 @@ param()
 class ORCA227 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA227()
@@ -49,15 +49,15 @@ class ORCA227 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
-        ForEach($AcceptedDomain in $Config["AcceptedDomains"]) 
+        ForEach($AcceptedDomain in $Config["AcceptedDomains"])
         {
 
             # Set up the config object
@@ -66,7 +66,7 @@ class ORCA227 : ORCACheck
 
             # Go through each Safe Links Policy
 
-            ForEach($Rule in ($Config["SafeAttachmentsRules"] | Sort-Object Priority)) 
+            ForEach($Rule in ($Config["SafeAttachmentsRules"] | Sort-Object Priority))
             {
                 if($Rule.State -eq "Enabled")
                 {
@@ -83,10 +83,10 @@ class ORCA227 : ORCACheck
                 }
 
             }
-            ForEach($Rule in ($Config["ATPProtectionPolicyRule"] | Sort-Object Priority)) 
+            ForEach($Rule in ($Config["ATPProtectionPolicyRule"] | Sort-Object Priority))
             {
                 if(($Rule.SafeAttachmentPolicy -ne "") -and ($null -ne $Rule.SafeAttachmentPolicy ))
-                { 
+                {
                    if($Rule.State -eq "Enabled")
                    {
                     if($Rule.RecipientDomainIs -contains $AcceptedDomain.Name -and ($Rule.ExceptIfRecipientDomainIs -notcontains $AcceptedDomain.Name) -and ($null -eq $Rule.ExceptIfSentToMemberOf ) -and ($null -eq $Rule.ExceptIfSentTo) )
@@ -98,7 +98,7 @@ class ORCA227 : ORCACheck
                             Priority=$($Rule.Priority)
                             }
 
-                        }   
+                        }
                     }
                 }
             }
@@ -157,11 +157,11 @@ class ORCA227 : ORCACheck
                             $ConfigObject.InfoText = "There are multiple policies that apply to this domain, only the policy with the lowest priority will apply. This policy may not apply based on a lower priority."
                             $ConfigObject.SetResult([ORCAConfigLevel]::Informational,"Fail")
                         }
-                    } 
+                    }
 
                     $this.AddConfig($ConfigObject)
                 }
-            } 
+            }
             elseif($Rules.Count -eq 0)
             {
                 # No policy is applying to this domain
@@ -170,9 +170,9 @@ class ORCA227 : ORCACheck
 
                 $ConfigObject.Object=$($AcceptedDomain.Name)
                 $ConfigObject.ConfigItem="No Policy Applying"
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")            
-    
-                $this.AddConfig($ConfigObject)     
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
+
+                $this.AddConfig($ConfigObject)
             }
 
         }

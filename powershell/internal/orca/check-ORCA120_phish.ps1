@@ -15,9 +15,9 @@ param()
 class ORCA120_phish : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA120_phish()
@@ -40,21 +40,21 @@ class ORCA120_phish : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $PhishZapEnabled = $($Policy.PhishZapEnabled)
-            
+
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
 
             # Check objects
@@ -66,10 +66,10 @@ class ORCA120_phish : ORCACheck
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
-            if($PhishZapEnabled -eq $true) 
+            if($PhishZapEnabled -eq $true)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
+            }
             else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
@@ -78,7 +78,7 @@ class ORCA120_phish : ORCACheck
             # Add config to check
             $this.AddConfig($ConfigObject)
 
-        }        
+        }
 
     }
 

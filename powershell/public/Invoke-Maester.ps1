@@ -8,7 +8,7 @@
 
     For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
+    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively, except Active Directory tests and tests tagged as LongRunning or Preview. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
@@ -25,12 +25,12 @@
     .EXAMPLE
     Invoke-Maester
 
-    Runs all the test files under the current folder (except for those tagged as LongRunning and Preview) and generates a report of the results in the ./test-results folder.
+    Runs all the test files under the current folder (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester ./maester-tests
 
-    Runs all the tests in the folder ./tests/Maester (except for those tagged as LongRunning and Preview) and generates a report of the results in the default ./test-results folder.
+    Runs all the tests in the folder ./tests/Maester (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the default ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester -Tag 'CA' -IncludeLongRunning
@@ -95,7 +95,15 @@
     Invoke-Maester -IncludeLongRunning -IncludePreview
     ```
 
-    Connect to all tested services and run all tests, including the long-running and preview tests.
+    Connect to all Microsoft 365 services and run their tests, including the long-running and preview tests. Active Directory tests remain excluded.
+
+    .EXAMPLE
+    ```powershell
+    Connect-Maester -Service ActiveDirectory
+    Invoke-Maester -Tag 'AD' -SkipGraphConnect
+    ```
+
+    Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
     .LINK
     https://maester.dev/docs/commands/Invoke-Maester
@@ -127,11 +135,14 @@
         # The path to the file to save the test results in markdown format. The filename should include a .md extension.
         [string] $OutputMarkdownFile,
 
+        # The path to the file to save a compact markdown summary with only result counters. The filename should include a .md extension.
+        [string] $OutputMarkdownSummaryFile,
+
         # The path to the file to save the test results in json format. The filename should include a .json extension.
         [string] $OutputJsonFile,
 
         # The folder to save the test results in. If no -Output* is set, defaults to ./test-results.
-        # If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json) with a timestamp and saved in the folder.
+        # If set, other -Output* parameters are ignored and all formats will be generated (markdown, markdown summary, html, json) with a timestamp and saved in the folder.
         [string] $OutputFolder,
 
         # The filename prefix to use for all the files in the output folder. e.g. 'TestResults' will generate TestResults.html, TestResults.md, TestResults.json.
@@ -216,24 +227,9 @@
 
     function ValidateAndSetOutputFiles($out) {
         $result = $null
-        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
-                $result = 'The OutputHtmlFile parameter must have an .html extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
-                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
-                $result = 'The OutputJsonFile parameter must have a .json extension.'
-            }
-        }
-
         $someOutputFileHasValue = ![string]::IsNullOrEmpty($out.OutputHtmlFile) -or `
-            ![string]::IsNullOrEmpty($out.OutputMarkdownFile) -or ![string]::IsNullOrEmpty($out.OutputJsonFile)
+            ![string]::IsNullOrEmpty($out.OutputMarkdownFile) -or ![string]::IsNullOrEmpty($out.OutputJsonFile) -or `
+            ![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)
 
         if ([string]::IsNullOrEmpty($out.OutputFolder) -and !$someOutputFileHasValue) {
             # No outputs specified. Set default folder.
@@ -252,6 +248,7 @@
 
             $out.OutputHtmlFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).html"
             $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
+            $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
 
             if ($ExportCsv.IsPresent) {
@@ -261,6 +258,28 @@
                 $out.OutputExcelFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).xlsx"
             }
         }
+
+        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
+                $result = 'The OutputHtmlFile parameter must have an .html extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
+            if ($out.OutputMarkdownSummaryFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownSummaryFile parameter must have an .md extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
+                $result = 'The OutputJsonFile parameter must have a .json extension.'
+            }
+        }
+
         return $result
     }
 
@@ -337,13 +356,14 @@
     }
 
     $out = [PSCustomObject]@{
-        OutputFolder         = $OutputFolder
-        OutputFolderFileName = $OutputFolderFileName
-        OutputHtmlFile       = $OutputHtmlFile
-        OutputMarkdownFile   = $OutputMarkdownFile
-        OutputJsonFile       = $OutputJsonFile
-        OutputCsvFile        = $null
-        OutputExcelFile      = $null
+        OutputFolder              = $OutputFolder
+        OutputFolderFileName      = $OutputFolderFileName
+        OutputHtmlFile            = $OutputHtmlFile
+        OutputMarkdownFile        = $OutputMarkdownFile
+        OutputMarkdownSummaryFile = $OutputMarkdownSummaryFile
+        OutputJsonFile            = $OutputJsonFile
+        OutputCsvFile             = $null
+        OutputExcelFile           = $null
     }
 
     $result = ValidateAndSetOutputFiles $out
@@ -385,6 +405,17 @@
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+
+    # Active Directory tests are always opt-in. Supplying -Tag AD alone is not sufficient;
+    # the connection must have been explicitly validated by Connect-Maester first.
+    if (-not (Test-MtConnection -Service ActiveDirectory)) {
+        $effectiveExcludeTags = @($pesterConfig.Filter.ExcludeTag.Value)
+        if ('AD' -notin $effectiveExcludeTags) {
+            $pesterConfig.Filter.ExcludeTag = @($effectiveExcludeTags + 'AD')
+        }
+        Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
+    }
+
     $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
@@ -474,7 +505,7 @@
             }
         }
 
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
@@ -484,6 +515,12 @@
             Write-MtProgress -Activity 'Creating markdown report'
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
+            Write-MtProgress -Activity 'Creating markdown summary report'
+            $output = Get-MtMarkdownSummaryReport -MaesterResults $maesterResults
+            $output | Out-File -FilePath $out.OutputMarkdownSummaryFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {

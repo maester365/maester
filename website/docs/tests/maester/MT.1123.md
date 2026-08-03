@@ -17,6 +17,8 @@ keywords:
 
 # MT.1123 - Ensure BitLocker full disk encryption is configured via Intune
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/massimomazzariol" title="Massimo Mazzariol · Co-contributor"><img src="https://github.com/massimomazzariol.png" alt="Massimo Mazzariol" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure at least one Intune Disk Encryption policy enforces BitLocker with **full disk encryption type**.
@@ -31,7 +33,7 @@ However, BitLocker supports two encryption types that have very different securi
 
 This test queries the Intune **Endpoint Security > Disk Encryption** policies via the `configurationPolicies` Graph API and inspects the BitLocker CSP settings to verify that **Enforce drive encryption type** is set to **Full encryption** for OS drives.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Go to **Endpoint security** > **Disk encryption**.
@@ -55,8 +57,8 @@ This test queries the Intune **Endpoint Security > Disk Encryption** policies vi
 #### Related links
 
 - [Microsoft Intune - Endpoint Security Disk Encryption](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/diskEncryption)
-- [Microsoft Learn - Encrypt devices with BitLocker in Intune](https://learn.microsoft.com/en-us/mem/intune/protect/encrypt-devices)
-- [Microsoft Learn - BitLocker CSP reference](https://learn.microsoft.com/en-us/windows/client-management/mdm/bitlocker-csp)
+- [Microsoft Learn - Encrypt devices with BitLocker in Intune](https://learn.microsoft.com/mem/intune/protect/encrypt-devices)
+- [Microsoft Learn - BitLocker CSP reference](https://learn.microsoft.com/windows/client-management/mdm/bitlocker-csp)
 - [CIS Benchmark - Ensure BitLocker is enabled on all Windows devices](https://www.cisecurity.org/benchmark/microsoft_intune_for_windows)
 
 ## Test Metadata

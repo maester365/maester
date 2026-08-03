@@ -20,6 +20,8 @@ keywords:
 
 # CISA.MS.EXO.17.2 - Microsoft Purview Audit (Premium) logging SHALL be enabled.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 **This is no longer applicable, and is deprecated by CISA. The content below is retained as a historical archive and will be removed in a future version.**
@@ -28,9 +30,9 @@ Microsoft Purview Audit (Premium) logging SHALL be enabled.
 
 Rationale: Standard logging may not include relevant details necessary for visibility into user actions during an incident. Enabling Microsoft Purview Audit (Premium) captures additional event types not included with Standard. Furthermore, it is required for government agencies by OMB M-21-13 (referred to therein by its former name, Unified Audit Logs w/Advanced Features).
 
-#### Remediation action:
+#### Remediation action
 
-To set up Microsoft Purview Audit (Premium), see [Set up Microsoft Purview Audit (Premium) | Microsoft Learn](https://learn.microsoft.com/en-us/purview/audit-premium-setup?view=o365-worldwide).
+To set up Microsoft Purview Audit (Premium), see [Set up Microsoft Purview Audit (Premium) | Microsoft Learn](https://learn.microsoft.com/purview/audit-premium-setup?view=o365-worldwide).
 
 #### Related links
 

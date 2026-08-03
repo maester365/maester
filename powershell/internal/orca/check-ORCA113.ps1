@@ -15,9 +15,9 @@ param()
 class ORCA113 : ORCACheck
 {
     <#
-    
+
         Check if AllowClickThrough is disabled in the organisation wide SafeLinks policy and if AllowClickThrough is True in SafeLink policies
-    
+
     #>
 
     ORCA113()
@@ -40,24 +40,24 @@ class ORCA113 : ORCACheck
             "Microsoft Defender for Office 365 Safe Links policies"="https://aka.ms/orca-atpp-docs-11"
             "Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-8"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         $PolicyCount = 0
-       
-        ForEach($Policy in $Config["SafeLinksPolicy"]) 
-        {    
+
+        ForEach($Policy in $Config["SafeLinksPolicy"])
+        {
             # Built-in policy is ignored for this check
 
-            if(!$Config["PolicyStates"][$Policy.Guid.ToString()].IsBuiltIn)
+            if(!$Config["PolicyStates"][$Policy.Guid.ToString()].BuiltIn)
             {
                 $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
                 $AllowClickThrough = $($Policy.AllowClickThrough)
@@ -83,9 +83,9 @@ class ORCA113 : ORCACheck
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                 }
-                Else 
+                Else
                 {
-                    $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")                 
+                    $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
 
                 # Add config to check

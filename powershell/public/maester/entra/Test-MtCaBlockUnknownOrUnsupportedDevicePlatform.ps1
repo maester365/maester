@@ -31,7 +31,7 @@
 Microsoft recommends blocking access for unknown or unsupported device platforms.
 
 See [Block access for unknown or unsupported device platform - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device)'
-        $testResult = "These conditional access policies block access for unknown or unsupported device platforms:`n`n"
+        $testResult = "These Conditional Access policies block access for unknown or unsupported device platforms:`n`n"
 
         $result = $false
         foreach ($policy in $policies) {
@@ -48,7 +48,7 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
         }
 
         if ($result -eq $false) {
-            $testResult = 'There was no conditional access policy blocking access for unknown or unsupported device platforms.'
+            $testResult = 'There was no Conditional Access policy blocking access for unknown or unsupported device platforms.'
         }
         Add-MtTestResultDetail -Description $testDescription -Result $testResult
 

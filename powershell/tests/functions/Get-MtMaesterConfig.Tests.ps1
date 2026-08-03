@@ -26,6 +26,11 @@
         #$sample.Title | Should -Not -Be 'Overridden Title from Custom Config'
 
         $result.ConfigSource | Should -Be 'maester-config.json'
+
+        # Version fields survive load
+        $result.PSObject.Properties.Name | Should -Contain 'ModuleVersion'
+        $result.ModuleVersion | Should -Not -BeNullOrEmpty
+        $result.PSObject.Properties.Name | Should -Contain 'ConfigVersion'
     }
 
     Context 'Tenant-specific config' {

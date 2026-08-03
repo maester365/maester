@@ -1,6 +1,6 @@
 ---
 title: "MT.1106 - Catalog resources must have valid roles (no stale app roles or deleted SPNs)"
-description: "Description This test identifies Microsoft Entra ID Governance access package catalog resources that reference stale or invalid roles, deleted service principals, or non-existent SharePoint sites. When applications or sites are reconfigured or deleted, catalogs often retain \"ghost roles\" that cause…"
+description: "This test identifies Microsoft Entra ID Governance access package catalog resources that reference stale or invalid roles, deleted service principals, or non-existent SharePoint sites. When applications or sites are reconfigured or deleted, catalogs often retain \"ghost roles\" that cause provisionin…"
 slug: /tests/MT.1106
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,9 +19,9 @@ keywords:
 
 # MT.1106 - Catalog resources must have valid roles (no stale app roles or deleted SPNs)
 
-## Overview
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicowyss" title="nicowyss · Original author"><img src="https://github.com/nicowyss.png" alt="nicowyss" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicowyss">nicowyss</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
-## Description
+## Overview
 
 This test identifies Microsoft Entra ID Governance access package catalog resources that reference stale or invalid roles, deleted service principals, or non-existent SharePoint sites. When applications or sites are reconfigured or deleted, catalogs often retain "ghost roles" that cause provisioning failures.
 
@@ -101,7 +101,7 @@ Stale resources detected:
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementValidResourceRoles](/docs/commands/Test-MtEntitlementManagementValidResourceRoles) |
-| Tags | AccessPackages, Entra, Governance, MT.1106 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1106 |
 
 ## Source
 

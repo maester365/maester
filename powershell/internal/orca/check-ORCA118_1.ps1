@@ -15,9 +15,9 @@ param()
 class ORCA118_1 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA118_1()
@@ -36,20 +36,20 @@ class ORCA118_1 : ORCACheck
             "Microsoft 365 Defender Portal - Anti-spam settings"="https://security.microsoft.com/antispam"
             "Use Anti-Spam Policy Sender/Domain Allow lists"="https://aka.ms/orca-antispam-docs-4"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"] ).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
+
         ForEach($Policy in $Config["HostedContentFilterPolicy"]) {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
@@ -59,16 +59,16 @@ class ORCA118_1 : ORCACheck
 
 
             <#
-            
+
             Important! Do not apply read-only here for preset/default policies a this can be modified
-            
+
             #>
-    
+
             # Fail if AllowedSenderDomains is not null
-    
-            If(($AllowedSenderDomains).Count -gt 0) 
+
+            If(($AllowedSenderDomains).Count -gt 0)
             {
-                ForEach($Domain in $AllowedSenderDomains) 
+                ForEach($Domain in $AllowedSenderDomains)
                 {
                     # Check objects
                     $ConfigObject = [ORCACheckConfig]::new()
@@ -80,10 +80,10 @@ class ORCA118_1 : ORCACheck
 
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
 
-                    $this.AddConfig($ConfigObject)  
+                    $this.AddConfig($ConfigObject)
                 }
-            } 
-            else 
+            }
+            else
             {
                 # Check objects
                 $ConfigObject = [ORCACheckConfig]::new()
@@ -91,13 +91,13 @@ class ORCA118_1 : ORCACheck
                 $ConfigObject.ConfigDisabled = $Config["PolicyStates"][$Policy.Guid.ToString()].Disabled
                 $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
                 $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
-                
+
                 $ConfigObject.ConfigData="No domain available"
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
 
-                $this.AddConfig($ConfigObject)  
+                $this.AddConfig($ConfigObject)
             }
-        }        
+        }
     }
 
 }

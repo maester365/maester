@@ -10,6 +10,10 @@ For full and up-to-date contribution instructions, please use the official [Maes
 
 For PowerShell coding conventions and rationale, please also review the [PowerShell Practice and Style](https://github.com/PoshCode/PowerShellPracticeAndStyle) guidance.
 
+## Build Process
+
+Maester source code lives in `./powershell` (module functions) and `./tests` (bundled test suites). For local development, run `./build/Build-LocalMaester.ps1` to build, validate, and import the consolidated module. In VS Code, pressing F5 with the **PowerShell: Build and Load Local Maester** configuration runs the same workflow. The build is written to `./module`; this directory is generated output, is ignored by git, and must never be edited or committed. See the [Maester Contributing Guide](https://maester.dev/docs/contributing) for the full build and development workflow.
+
 ## Recommended PowerShell Practices
 
 When contributing scripts, tests, or module changes, follow these baseline practices:

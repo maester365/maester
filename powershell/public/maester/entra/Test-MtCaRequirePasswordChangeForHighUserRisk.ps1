@@ -1,7 +1,7 @@
 ﻿function Test-MtCaRequirePasswordChangeForHighUserRisk {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring password change for high user risk.
+    Checks if the tenant has at least one Conditional Access policy requiring password change for high user risk.
 
     .Description
     Password change for high user risk is a good way to prevent compromised accounts from being used to access your tenant.
@@ -48,15 +48,15 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require password change for risky users`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require password change for risky users`n`n%TestResult%"
         } else {
-            $testResult = 'No conditional access policy requires a password change for risky users.'
+            $testResult = 'No Conditional Access policy requires a password change for risky users.'
         }
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
         return $result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $false
     }
 }

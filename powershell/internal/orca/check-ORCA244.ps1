@@ -15,9 +15,9 @@ param()
 class ORCA244 : ORCACheck
 {
     <#
-    
+
         Honor DMARC Policy
-    
+
     #>
 
     ORCA244()
@@ -41,16 +41,16 @@ class ORCA244 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
 
-        ForEach($Policy in $Config["AntiPhishPolicy"]) 
+        ForEach($Policy in $Config["AntiPhishPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
@@ -65,11 +65,11 @@ class ORCA244 : ORCACheck
             $ConfigObject.ConfigReadonly = $Policy.IsPreset
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
-            If($Policy.HonorDmarcPolicy -eq $true)  
+            If($Policy.HonorDmarcPolicy -eq $true)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            Else 
+            }
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }

@@ -14,20 +14,27 @@ description: "Searchable Maester test documentation generated from Pester tests,
 
 This section is generated from the Maester test source. Each page includes the test ID, severity, tags, PowerShell command, overview, remediation details, and related references when available.
 
+Every test is researched, written, and refined by security experts from the Maester community — [meet the contributors](/contributors).
+
 ## Test Suites
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 144 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 168 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
-| [CISA](./cisa) | 73 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 38 | CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests. |
+| [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
+| [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
 
 | Test ID | Title | Suite | Severity | Category |
 | --- | --- | --- | --- | --- |
+| [CIS.GH.1.2.2](./CIS.GH.1.2.2) | (L1) Ensure repository creation is limited to specific members | CIS | Medium | CIS GH Level 1 |
+| [CIS.GH.1.2.3](./CIS.GH.1.2.3) | (L1) Ensure repository deletion is limited to specific users | CIS | High | CIS GH Level 1 |
+| [CIS.GH.1.2.4](./CIS.GH.1.2.4) | (L1) Ensure issue deletion is limited to specific users | CIS | Medium | CIS GH Level 1 |
+| [CIS.GH.1.3.2](./CIS.GH.1.3.2) | (L1) Ensure team creation is limited to specific members | CIS | Medium | CIS GH Level 1 |
+| [CIS.GH.1.3.8](./CIS.GH.1.3.8) | (L1) Ensure strict base permissions are set for repositories | CIS | High | CIS GH Level 1 |
 | [CIS.M365.1.1.1](./CIS.M365.1.1.1) | (L1) Ensure Administrative accounts are cloud-only | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.1.1.3](./CIS.M365.1.1.3) | (L1) Ensure that between two and four global admins are designated | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.1.2.1](./CIS.M365.1.2.1) | (L2) Ensure that only organizationally managed/approved public groups exist | CIS | Medium | CIS E3 Level 2 |
@@ -55,11 +62,18 @@ This section is generated from the Maester test source. Each page includes the t
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure third party integrated applications are not allowed | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | Ensure | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1) | Ensure a dynamic group for guest users is created | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | Ensure users are restricted from recovering BitLocker keys | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | Ensure the admin consent workflow is enabled | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | Ensure that guest user access is restricted | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5) | Ensure weak authentication methods are disabled | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | Ensure additional storage providers are restricted in Outlook on the web | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.7.2.11](./CIS.M365.7.2.11) | Ensure the SharePoint default sharing link permission is set | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.2](./CIS.M365.7.2.2) | Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.5](./CIS.M365.7.2.5) | Ensure that SharePoint guest users cannot share items they don | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.7](./CIS.M365.7.2.7) | Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.9](./CIS.M365.7.2.9) | Ensure guest access to a site or OneDrive will expire automatically | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.3.1](./CIS.M365.7.3.1) | Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Unknown | SharePoint Online |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS M365 v6.0.1 |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS M365 v6.0.1 |
 | [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS M365 v6.0.1 |
@@ -118,7 +132,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [CISA.MS.EXO.17.1](./CISA.MS.EXO.17.1) | Microsoft Purview Audit (Standard) logging SHALL be enabled. | CISA | High | exchange |
 | [CISA.MS.EXO.17.2](./CISA.MS.EXO.17.2) | Microsoft Purview Audit (Premium) logging SHALL be enabled. | CISA | Medium | Deprecated |
 | [CISA.MS.EXO.17.3](./CISA.MS.EXO.17.3) | Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C). | CISA | Medium | exchange |
-| [CISA.MS.EXO.2.1](./CISA.MS.EXO.2.1) | A list of approved IP addresses for sending mail SHALL be maintained. | CISA | Medium | exchange |
+| [CISA.MS.EXO.2.1](./CISA.MS.EXO.2.1) | A list of approved IP addresses for sending mail SHALL be maintained. | CISA | Medium | Deprecated |
 | [CISA.MS.EXO.2.2](./CISA.MS.EXO.2.2) | An SPF policy SHALL be published for each domain, designating only these addresses as approved senders. | CISA | Medium | exchange |
 | [CISA.MS.EXO.3.1](./CISA.MS.EXO.3.1) | DKIM SHOULD be enabled for all domains. | CISA | Medium | exchange |
 | [CISA.MS.EXO.4.1](./CISA.MS.EXO.4.1) | A DMARC policy SHALL be published for every second-level domain. | CISA | Medium | exchange |
@@ -138,7 +152,13 @@ This section is generated from the Maester test source. Each page includes the t
 | [CISA.MS.EXO.9.4](./CISA.MS.EXO.9.4) | Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter. | CISA | Medium | exchange |
 | [CISA.MS.EXO.9.5](./CISA.MS.EXO.9.5) | At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe). | CISA | High | exchange |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | CISA | Medium | spo |
+| [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | CISA | Unknown | spo |
 | [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | CISA | High | spo |
+| [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1) | File and folder default sharing scope SHALL be set to Specific People. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2) | File and folder default sharing permissions SHALL be set to View only. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1) | Expiration days for Anyone links SHALL be set to 30 days or less. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.2](./CISA.MS.SHAREPOINT.3.2) | Allowable file and folder permissions for Anyone links SHALL be set to View only. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.3](./CISA.MS.SHAREPOINT.3.3) | Reauthentication days for people who use a verification code SHALL be set to 30 days or less. | CISA | Unknown | spo |
 | [EIDSCA.AF01](./EIDSCA.AF01) | Authentication Method - FIDO2 security key - State. | Entra ID SCA | High | General |
 | [EIDSCA.AF02](./EIDSCA.AF02) | Authentication Method - FIDO2 security key - Allow self-service set up. | Entra ID SCA | Medium | General |
 | [EIDSCA.AF03](./EIDSCA.AF03) | Authentication Method - FIDO2 security key - Enforce attestation. | Entra ID SCA | High | General |
@@ -231,8 +251,8 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1047](./MT.1047) | Restrict anonymous users from starting Teams meetings | Maester | Medium | Teams |
 | [MT.1048](./MT.1048) | Limit external participants from having control in a Teams meeting | Maester | Medium | Teams |
 | [MT.1049](./MT.1049) | Conditional Access policies for User Risk and Sign-in Risk should be configured separately. | Maester | High | CA |
-| [MT.1050](./MT.1050) | Apps with high-risk permissions having a direct path to Global Admin | Maester | High | App |
-| [MT.1051](./MT.1051) | Apps with high-risk permissions having an indirect path to Global Admin | Maester | High | App |
+| [MT.1050](./MT.1050) | Apps with high-risk permissions having a direct path to Global Administrator | Maester | High | App |
+| [MT.1051](./MT.1051) | Apps with high-risk permissions having an indirect path to Global Administrator | Maester | High | App |
 | [MT.1052](./MT.1052) | At least one Conditional Access policy is targeting the Device Code authentication flow. | Maester | High | CA |
 | [MT.1053](./MT.1053) | Ensure intune device clean-up rule is configured | Maester | Medium | Intune |
 | [MT.1054](./MT.1054) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Maester | Medium | Intune |
@@ -252,7 +272,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1069](./MT.1069) | Restrict non-admin users from creating security groups. | Maester | Low | Entra |
 | [MT.1070](./MT.1070) | Restrict device join to selected users/groups or none. | Maester | Medium | Entra |
 | [MT.1071](./MT.1071) | At least one Conditional Access policy explicitly includes Azure DevOps. | Maester | Medium | CA |
-| [MT.1072](./MT.1072) | Conditional access policies should not use the deprecated Approved Client App grant. | Maester | High | CA |
+| [MT.1072](./MT.1072) | Conditional Access policies should not use the deprecated Approved Client App grant. | Maester | High | CA |
 | [MT.1073](./MT.1073) | Soft- and hard-matching of synchronized objects should be blocked. | Maester | Medium | Entra |
 | [MT.1074](./MT.1074) | Mailboxes should not send outbound mails using the .onmicrosoft.com domain. | Maester | Medium | Exchange |
 | [MT.1075](./MT.1075) | Third Party Entra Apps should only have explicitly assigned users instead of All Users. | Maester | Medium | App |
@@ -269,7 +289,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1087](./MT.1087) | Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. | Maester | High | XSPM |
 | [MT.1088](./MT.1088) | Devices with critical credentials should be protected by TPM. | Maester | Medium | XSPM |
 | [MT.1089](./MT.1089) | Devices with critical credentials should be protected by Credential Guard. | Maester | Medium | XSPM |
-| [MT.1090](./MT.1090) | Global administrator role should not be added as local administrator on the device during Microsoft Entra join | Maester | Medium | Entra |
+| [MT.1090](./MT.1090) | Global Administrator role should not be added as local administrator on the device during Microsoft Entra join | Maester | Medium | Entra |
 | [MT.1091](./MT.1091) | Registering user should not be added as local administrator on the device during Microsoft Entra join | Maester | Medium | Entra |
 | [MT.1092](./MT.1092) | Intune APNS certificate should be valid for more than 30 days | Maester | High | Intune |
 | [MT.1093](./MT.1093) | Apple Automated Device Enrollment Tokens should be valid for more than 30 days | Maester | High | Intune |
@@ -327,6 +347,30 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1169](./MT.1169) | Catch-up Full Scan should be disabled | Maester | High | Defender |
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled | Maester | High | Defender |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically | Maester | High | Defender |
+| [MT.1172](./MT.1172) | Unified audit log ingestion is enabled | Maester | High | Purview |
+| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot | Maester | Medium | Purview |
+| [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled | Maester | Medium | Purview |
+| [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location | Maester | High | Purview |
+| [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location | Maester | Medium | Purview |
+| [MT.1177](./MT.1177) | Ensure LAPS Configuration Policy is properly set | Maester | Unknown | Intune |
+| [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly | Maester | High | Intune |
+| [MT.1179](./MT.1179) | Ensure App Control for Business is enabled | Maester | High | Intune |
+| [MT.1180](./MT.1180) | Ensure Managed Installer Rules are configured correctly | Maester | Medium | Intune |
+| [MT.1181](./MT.1181) | Conditional Access policy is present that blocks high agent risk signins | Maester | High | CA |
+| [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Maester | Unknown | Entra |
+| [MT.1183](./MT.1183) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Maester | Medium | Entra |
+| [MT.1184](./MT.1184) | Conditional Access policy without any target resources configured | Maester | Medium | CA |
+| [MT.1185](./MT.1185) | Block legacy MSOnline (MSOL) PowerShell module | Maester | High | Entra |
+| [MT.1186](./MT.1186) | High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users. | Maester | High | Entra |
+| [MT.1187](./MT.1187) | The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled | Maester | Unknown | Entra |
+| [MT.1188](./MT.1188) | Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device | Maester | Unknown | Entra |
+| [MT.1189](./MT.1189) | Groups assigned to Global Secure Access traffic forwarding profiles should not be nested | Maester | Unknown | Entra |
+| [MT.1190](./MT.1190) | Entra Private Access applications should not use the Default connector group | Maester | Unknown | Entra |
+| [MT.1191](./MT.1191) | Break-glass accounts should be excluded from the Compliant Network Conditional Access policy | Maester | Unknown | Entra |
+| [MT.1192](./MT.1192) | Groups assigned to Entra Private Access applications should not be nested | Maester | Unknown | Entra |
+| [MT.1193](./MT.1193) | Entra Private Access application segments should avoid broad or risky destinations | Maester | Unknown | Entra |
+| [MT.1194](./MT.1194) | The baseline Global Secure Access security profile should enforce a threat-intelligence floor | Maester | Unknown | Entra |
+| [MT.1195](./MT.1195) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Maester | Unknown | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

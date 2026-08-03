@@ -15,9 +15,9 @@ param()
 class ORCA143 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA143()
@@ -41,18 +41,18 @@ class ORCA143 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         $this.SkipInReport=$True
-        #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count 
+        #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-        
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $InlineSafetyTipsEnabled = $($Policy.InlineSafetyTipsEnabled)
@@ -71,20 +71,20 @@ class ORCA143 : ORCACheck
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
             # Fail if InlineSafetyTipsEnabled is not set to true
-    
-            If($InlineSafetyTipsEnabled -eq $true) 
+
+            If($InlineSafetyTipsEnabled -eq $true)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
-            
-        }        
+
+        }
 
     }
 

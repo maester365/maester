@@ -12,7 +12,7 @@ param()
 
 <#
 
-ORCA-228 - Check MDO Anti-Phishing trusted senders  
+ORCA-228 - Check MDO Anti-Phishing trusted senders
 
 #>
 
@@ -21,9 +21,9 @@ ORCA-228 - Check MDO Anti-Phishing trusted senders
 class ORCA228 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA228()
@@ -47,9 +47,9 @@ class ORCA228 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -73,25 +73,25 @@ class ORCA228 : ORCACheck
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
             <#
-            
+
             Important! This setting can be changed on pre-set policies and is not read only. Do not apply read only tag to preset policies.
-            
+
             #>
 
             If(($ExcludedSenders).count -eq 0)
             {
-                $ConfigObject.ConfigData="No Sender Detected"    
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")       
+                $ConfigObject.ConfigData="No Sender Detected"
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.ConfigData=$ExcludedSenders
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")                       
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             $this.AddConfig($ConfigObject)
 
-        }    
+        }
 
     }
 

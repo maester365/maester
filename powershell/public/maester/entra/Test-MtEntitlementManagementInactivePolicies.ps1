@@ -37,6 +37,18 @@
     [OutputType([bool])]
     param()
 
+    if (-not (Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+        return $null
+    }
+
     try {
         # Get all access packages
         $accessPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
@@ -161,11 +173,11 @@
                     if ($issues.Count -gt 0) {
                         $inactivePoliciesFound += [PSCustomObject]@{
                             PackageName = $packageName
-                            PackageId = $packageId
-                            PolicyName = $policyName
-                            PolicyId = $policyId
-                            ScopeType = $policy.requestorSettings.scopeType
-                            Issues = $issues
+                            PackageId   = $packageId
+                            PolicyName  = $policyName
+                            PolicyId    = $policyId
+                            ScopeType   = $policy.requestorSettings.scopeType
+                            Issues      = $issues
                         }
                     }
                 }

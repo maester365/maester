@@ -19,12 +19,15 @@ keywords:
 
 # MT.1089 - Devices with critical credentials should be protected by Credential Guard.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Original author"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/robbevandendaele">Robbe Van den Daele</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Devices shown in the output are devices where Credential Guard is not enabled or misconfigured, but contains credentials of critical accounts. When critical credentials are stored on devices without Credential Guard enabled, it is easy for adversaries to steal those credentials when the device is compromised. This is because, without Credential Guard enabled, Kerberos, NTLM, and Credential Manager secrets are stored in the Local Security Authority (LSA) process called `lsass.exe`, which can be dumped with various tools like MimiKatz. With Credential Guard enabled, these secrets are protected and isolated using Virtualization-based security (VBS).
 
 ### How to fix
-Investigate the related devices and the steps that need to be taken in order to enable Credential Guard. This varies depending on operating system, hardware, and device. More information on how Credential Guard works and how it can be configured can be found in [this documentation page](https://learn.microsoft.com/en-us/windows/security/identity-protection/credential-guard/).
+
+Investigate the related devices and the steps that need to be taken in order to enable Credential Guard. This varies depending on operating system, hardware, and device. More information on how Credential Guard works and how it can be configured can be found in [this documentation page](https://learn.microsoft.com/windows/security/identity-protection/credential-guard/).
 
 ## Test Metadata
 

@@ -15,9 +15,9 @@ param()
 class ORCA223 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA223()
@@ -42,9 +42,9 @@ class ORCA223 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -77,11 +77,11 @@ class ORCA223 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            else 
+            else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            
+
             $this.AddConfig($ConfigObject)
 
             # Action
@@ -100,9 +100,9 @@ class ORCA223 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            else 
+            else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")     
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             If($TargetedUserProtectionAction -eq "Delete" -or $TargetedUserProtectionAction -eq "Redirect")
@@ -112,7 +112,7 @@ class ORCA223 : ORCACheck
                 $ConfigObject.InfoText = "The $($Policy.TargetedUserProtectionAction) option may impact the users ability to release emails and may impact user experience."
             }
 
-            
+
             $this.AddConfig($ConfigObject)
 
         }
@@ -126,7 +126,7 @@ class ORCA223 : ORCACheck
             $ConfigObject.ConfigItem="EnableTargetedUserProtection"
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 
@@ -136,11 +136,11 @@ class ORCA223 : ORCACheck
             $ConfigObject.ConfigItem="TargetedUserProtectionAction"
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 
-        }       
+        }
 
     }
 

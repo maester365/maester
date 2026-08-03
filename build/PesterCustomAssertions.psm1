@@ -303,7 +303,7 @@ function Should-WriteError ([scriptblock] $ActualValue, [string] $ExpectedMessag
     $match = @()
     foreach ($actualError in $actualErrors) {
         if ($actualError -is [System.Management.Automation.ErrorRecord]) {
-            
+
             $matchOnExceptionType = !$filterOnExceptionType -or $actualError.Exception -is $ExceptionType
             $matchOnMessage = !$filterOnMessage -or (Get-DoValuesMatch $actualError.Exception.Message $ExpectedMessage)
             $matchOnId = !$filterOnId -or (Get-DoValuesMatch $actualError.FullyQualifiedErrorId $ErrorId)
@@ -313,7 +313,7 @@ function Should-WriteError ([scriptblock] $ActualValue, [string] $ExpectedMessag
             }
         }
     }
-    
+
     if ($match) {
         $actualExceptionLine = (Get-ExceptionLineInfo $_.InvocationInfo) -replace [System.Environment]::NewLine, "$([System.Environment]::NewLine)    "
         if ($Negate) { $buts += "matching error was returned. $actualExceptionLine" }
@@ -324,7 +324,7 @@ function Should-WriteError ([scriptblock] $ActualValue, [string] $ExpectedMessag
 
     $expected = ''
     if ($Negate) { $expected = ' no' }
-    
+
 
     if ($buts.Count -ne 0) {
         $filter = Add-SpaceToNonEmptyString ( Join-And $filters -Threshold 3 )

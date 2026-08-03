@@ -17,6 +17,8 @@ keywords:
 
 # MT.1097 - Certificate Connectors should be healthy and running supported versions
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This check verifies that all Intune Certificate Connectors are healthy and running a supported Version.
@@ -24,7 +26,7 @@ This check verifies that all Intune Certificate Connectors are healthy and runni
 #### Remediation action
 
 1. Check the status of your certificate connectors in the [Intune Certifcate Connector blade](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/TenantAdminConnectorsMenu/~/certConnectors)
-2. Review the [Certificate Connector for Microsoft Intune Release Notes](https://learn.microsoft.com/en-us/intune/intune-service/protect/certificate-connector-overview#lifecycle)
+2. Review the [Certificate Connector for Microsoft Intune Release Notes](https://learn.microsoft.com/intune/intune-service/protect/certificate-connector-overview#lifecycle)
 3. Ensure the Certificate Connector servers are operational and running a recent version.
 
 ## Test Metadata

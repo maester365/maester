@@ -19,8 +19,14 @@
 
         # Optional Pester configuration that was used
         [Parameter(Mandatory = $false)]
-        [psobject] $PesterConfiguration
+        [psobject] $PesterConfiguration,
+
+        # Skip checking PowerShell Gallery for the latest Maester version.
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipVersionCheck
     )
+
+    $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
 
     function GetTenantName() {
         if (Test-MtConnection Graph) {
@@ -77,6 +83,10 @@
     }
 
     function GetMaesterLatestVersion() {
+        if ($shouldSkipVersionCheck) {
+            return 'Unknown'
+        }
+
         $latestVersion = Get-MtLatestModuleVersion -Name Maester -TimeoutSec 10
         if ($null -ne $latestVersion) {
             return $latestVersion.ToString()
@@ -287,10 +297,34 @@
         if ($titleStart -gt 0) {
             $testId = $name.Substring(0, $titleStart).Trim()
             $testTitle = $name.Substring($titleStart + 1).Trim()
-        } else {
+        } elseif ($test.Result -ne 'NotRun') {
             Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
         }
         $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
+
+        # Filtered tests never execute Add-MtTestResultDetail. Resolve their
+        # authored metadata from the commands in the discovered Pester test so
+        # reports show the test description instead of raw PowerShell source.
+        if (-not $testResultDetail -and $test.Result -eq 'NotRun') {
+            $commandNames = @($test.ScriptBlock.Ast.FindAll({
+                        param($node)
+                        $node -is [System.Management.Automation.Language.CommandAst]
+                    }, $true) |
+                    ForEach-Object { $_.GetCommandName() } |
+                    Where-Object { $_ } |
+                    Select-Object -Unique)
+            $testMetadata = Get-MtTestResultTemplate -CommandName $commandNames -TestId $testId
+            $testResultDetail = [PSCustomObject]@{
+                TestTitle       = $null
+                TestDescription = if ($testMetadata) { $testMetadata.Description } else { 'This test was not run.' }
+                TestResult      = 'This test was not run.'
+                TestSkipped     = $null
+                SkippedReason   = $null
+                TestInvestigate = $false
+                Severity        = $null
+                Service         = $null
+            }
+        }
 
         # Add the other test metadata to the test result
         $testSetting = Get-MtMaesterConfigTestSetting -TestId $testId
@@ -319,6 +353,9 @@
         }
 
         $timeSpanFormat = 'hh\:mm\:ss'
+        # Individual tests usually complete in well under a second, so keep milliseconds
+        # here. The run-level totals below stay on the coarser format.
+        $testTimeSpanFormat = 'hh\:mm\:ss\.fff'
         $mtTestInfo = [PSCustomObject]@{
             Index           = $testIndex
             Id              = $testId
@@ -332,7 +369,7 @@
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.ExpandedName
-            Duration        = $test.Duration.ToString($timeSpanFormat)
+            Duration        = $test.Duration.ToString($testTimeSpanFormat)
             ResultDetail    = $testResultDetail
         }
         $mtTests += $mtTestInfo

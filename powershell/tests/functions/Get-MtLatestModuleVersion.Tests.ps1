@@ -84,6 +84,11 @@
         }
 
         It 'returns null when Find-PSResource returns no results' {
+            if (-not (Get-Command 'Find-PSResource' -ErrorAction SilentlyContinue)) {
+                Set-ItResult -Skipped -Because 'Find-PSResource is not available in this host session.'
+                return
+            }
+
             Mock Invoke-RestMethod { throw 'Network failure' }
             Mock Get-Command {
                 [PSCustomObject]@{ Name = 'Find-PSResource' }

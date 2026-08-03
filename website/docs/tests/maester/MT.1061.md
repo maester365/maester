@@ -1,6 +1,6 @@
 ---
 title: "MT.1061 - Device registration MFA control conflicts with Conditional Access policies"
-description: "When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings. When both are enabled, the conditional access policy with the \"Register device\" user action will not work as expected. Remediation action: When a Conditional Access p…"
+description: "When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings. When both are enabled, the Conditional Access policy with the \"Register or join devices\" user action will not work as expected. Remediation action When a Conditional…"
 slug: /tests/MT.1061
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,13 +17,15 @@ keywords:
 
 # MT.1061 - Device registration MFA control conflicts with Conditional Access policies
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Original author"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/brianveldman" title="Beerd Veldman · Co-contributor"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/robbevandendaele">Robbe Van den Daele</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings.
 
-When both are enabled, the conditional access policy with the "Register device" user action will not work as expected.
+When both are enabled, the Conditional Access policy with the "Register or join devices" user action will not work as expected.
 
-#### Remediation action:
+#### Remediation action
 
 When a Conditional Access policy is configured with the **Register or join devices user action** you must disable tenant-wide multifactor requirement for device registration. Otherwise, Conditional Access policies with this user action are not properly enforced.
 
@@ -32,8 +34,8 @@ When a Conditional Access policy is configured with the **Register or join devic
 
 #### Related links
 
-- [Require multifactor authentication for device registration](https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy)
-- [Conflicting conditional access policies and Entra Device Settings](https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy:~:text=When%20a%20Conditional%20Access%20policy%20is%20configured%20with%20the%20Register%20or%20join%20devices%20user%20action)
+- [Require multifactor authentication for device registration](https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy)
+- [Conflicting Conditional Access policies and Entra Device Settings](https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy:~:text=When%20a%20Conditional%20Access%20policy%20is%20configured%20with%20the%20Register%20or%20join%20devices%20user%20action)
 
 ## Test Metadata
 

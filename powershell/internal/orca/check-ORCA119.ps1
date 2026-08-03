@@ -12,7 +12,7 @@ param()
 
 <#
 
-119 - Check MDO anti-phishing policy EnableSimilarDomainsSafetyTips 
+119 - Check MDO anti-phishing policy EnableSimilarDomainsSafetyTips
 
 #>
 
@@ -21,9 +21,9 @@ param()
 class ORCA119 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA119()
@@ -48,14 +48,14 @@ class ORCA119 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-       
+
         ForEach($Policy in ($Config["AntiPhishPolicy"] ))
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
@@ -77,17 +77,17 @@ class ORCA119 : ORCACheck
 
             If($EnableSimilarDomainsSafetyTips -eq $false)
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")          
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")                        
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
 
             $this.AddConfig($ConfigObject)
 
         }
-        
+
         If($Config["AnyPolicyState"][[PolicyType]::Antiphish] -eq $False)
         {
             $ConfigObject = [ORCACheckConfig]::new()
@@ -96,7 +96,7 @@ class ORCA119 : ORCACheck
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
-        }  
+        }
 
     }
 

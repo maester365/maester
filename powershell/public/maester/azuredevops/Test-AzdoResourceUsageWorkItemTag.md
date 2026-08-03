@@ -2,7 +2,8 @@ Azure DevOps supports up to 150,000 tag definitions per organization or collecti
 
 Rationale: Tags are useful for categorizing and querying work items, but an excessive number of unique tags can degrade performance and make management difficult. Hitting the limit may prevent users from creating new tags and could cause UI slowdowns.
 
-#### Remediation action:
+#### Remediation action
+
 Regularly review your tag inventory and delete unused or obsolete tags. Consider standardizing on a controlled vocabulary or using area/iteration paths when appropriate.
 
 **Results:**
@@ -10,4 +11,4 @@ Keeping the tag count below the limit ensures responsive work item searches and 
 
 #### Related links
 
-* [Learn - Work tracking, process, and project limits](https://learn.microsoft.com/en-us/azure/devops/organizations/settings/work/object-limits?view=azure-devops)
+* [Learn - Work tracking, process, and project limits](https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops)

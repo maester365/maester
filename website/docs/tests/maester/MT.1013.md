@@ -1,6 +1,6 @@
 ---
 title: "MT.1013 - At least one Conditional Access policy is configured to require new password when user risk is high."
-description: "Checks if the tenant has at least one conditional access policy requiring password change for high user risk. See User risk-based password change - Microsoft Learn"
+description: "Checks if the tenant has at least one Conditional Access policy requiring password change for high user risk. See User risk-based password change - Microsoft Learn"
 slug: /tests/MT.1013
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,9 +17,11 @@ keywords:
 
 # MT.1013 - At least one Conditional Access policy is configured to require new password when user risk is high.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-Checks if the tenant has at least one conditional access policy requiring password change for high user risk.
+Checks if the tenant has at least one Conditional Access policy requiring password change for high user risk.
 
 See [User risk-based password change - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk-user)
 

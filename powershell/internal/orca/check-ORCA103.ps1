@@ -15,9 +15,9 @@ param()
 class ORCA103 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA103()
@@ -41,9 +41,9 @@ class ORCA103 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -53,9 +53,9 @@ class ORCA103 : ORCACheck
         {
 
             <#
-            
+
                 RecipientLimitExternalPerHour
-            
+
             #>
 
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
@@ -80,7 +80,7 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")               
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             # Recipient per hour limit for strict is 400
@@ -90,18 +90,18 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")              
+                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
 
             <#
-            
+
                 RecipientLimitInternalPerHour
-            
+
             #>
-            
+
             $ConfigObject = [ORCACheckConfig]::new()
             $ConfigObject.Object=$policyname
             $ConfigObject.ConfigItem="RecipientLimitInternalPerHour"
@@ -116,7 +116,7 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")               
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             If($RecipientLimitInternalPerHour -eq 800)
@@ -125,18 +125,18 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")              
+                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
 
             <#
-            
+
                 RecipientLimitPerDay
-            
+
             #>
-            
+
             $ConfigObject = [ORCACheckConfig]::new()
             $ConfigObject.Object=$policyname
             $ConfigObject.ConfigItem="RecipientLimitPerDay"
@@ -151,7 +151,7 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")               
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             If($RecipientLimitPerDay -eq 800)
@@ -160,7 +160,7 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")              
+                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")
             }
 
             # Add config to check
@@ -180,9 +180,9 @@ class ORCA103 : ORCACheck
             }
             Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")               
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 

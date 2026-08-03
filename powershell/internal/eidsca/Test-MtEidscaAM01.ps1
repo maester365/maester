@@ -20,7 +20,7 @@ function Test-MtEidscaAM01 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
     $rawValue = $result.state
@@ -39,4 +39,3 @@ function Test-MtEidscaAM01 {
 
     return $tenantValue
 }
-

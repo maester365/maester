@@ -15,9 +15,9 @@ param()
 class ORCA104 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA104()
@@ -39,9 +39,9 @@ class ORCA104 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -50,10 +50,10 @@ class ORCA104 : ORCACheck
 
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
-            
+
             $HighConfidencePhishAction = $($Policy.HighConfidencePhishAction)
 
             $IsBuiltIn = $false
@@ -67,12 +67,12 @@ class ORCA104 : ORCACheck
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigReadonly=$Policy.IsPreset
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
-    
-            If($HighConfidencePhishAction -eq "Quarantine") 
+
+            If($HighConfidencePhishAction -eq "Quarantine")
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
@@ -82,11 +82,11 @@ class ORCA104 : ORCACheck
                 $ConfigObject.SetResult([ORCAConfigLevel]::Informational,"Fail")
                 $ConfigObject.InfoText = "The $($HighConfidencePhishAction) option may impact the users ability to release emails and may impact user experience. Consider using the Quarantine option for High Confidence Phish."
             }
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 
-        }        
+        }
 
     }
 

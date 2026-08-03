@@ -20,7 +20,7 @@ function Test-MtEidscaAF01 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
     $rawValue = $result.state
@@ -39,4 +39,3 @@ function Test-MtEidscaAF01 {
 
     return $tenantValue
 }
-

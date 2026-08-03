@@ -22,14 +22,25 @@ jobs:
       actions: read
 
     steps:
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: ⬇️ Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         # Important: Fetch all history, as the versioning command often needs it.
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24.x
           cache: 'npm'
@@ -40,14 +51,22 @@ jobs:
         run: npm ci
 
       - name: Update website release version
-        run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ inputs.version }}
+        env:
+          WEBSITE_VERSION: ${{ inputs.version }}
+        run: node ./build/Update-WebsiteReleaseVersion.mjs "$WEBSITE_VERSION"
 
-      - name: ✍️ Commit Version Files to Main Branch
-        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
+      - name: ✍️ Create Version Files Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
-          commit_message: 'ci(docs): update website release version ${{ inputs.version }}'
-          file_pattern: |
-            build/Update-WebsiteReleaseVersion.mjs
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'ci(docs): update website release version ${{ inputs.version }}'
+          branch: 'automation/versioned-docs-${{ inputs.version }}'
+          base: main
+          delete-branch: true
+          title: 'ci(docs): update website release version ${{ inputs.version }}'
+          body: |
+            Automated versioned documentation update for Maester ${{ inputs.version }}.
+          add-paths: |
             website/docusaurus.config.js
             website/version-config.js
             website/versions.json

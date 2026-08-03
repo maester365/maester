@@ -22,12 +22,15 @@ keywords:
 
 # MT.1080 - Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Exfiltration of authentication artifacts on vulnerable device poses a significant security risk. Attackers who gain access to these credentials (e.g., by infostealer) can impersonate privileged users, bypass Conditional Access, and access sensitive the assigned sensitive roles. Protecting endpoints, especially used by privileged users, is essential to prevent unauthorized access and reduce attack surface.
 
 ### How to fix
-Review the details of risk and exposure score on the related [device page from the Device Inventory](https://learn.microsoft.com/en-us/defender-endpoint/machines-view-overview#device-inventory-overview) in the Microsoft Defender XDR portal to improve the device's security posture.
+
+Review the details of risk and exposure score on the related [device page from the Device Inventory](https://learn.microsoft.com/defender-endpoint/machines-view-overview#device-inventory-overview) in the Microsoft Defender XDR portal to improve the device's security posture.
 
 ## Test Metadata
 

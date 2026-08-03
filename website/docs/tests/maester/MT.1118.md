@@ -18,6 +18,8 @@ keywords:
 
 # MT.1118 - AI agents should avoid using author (maker) authentication for tools
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/lnfernux" title="Truls Thorstad Dahlsveen · Original author"><img src="https://github.com/lnfernux.png" alt="Truls Thorstad Dahlsveen" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/lnfernux">Truls Thorstad Dahlsveen</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 AI agents should not use author (maker) authentication for their connector tools.
@@ -28,7 +30,7 @@ When a connector tool uses **author authentication**, the agent accesses externa
 
 In Copilot Studio, review the agent's tools and change each connector's authentication setting from **Agent author authentication** to **User authentication**. This ensures the agent accesses external services using the chatting user's own credentials and permission scope.
 
-Learn more: [Configure user authentication in Copilot Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/configure-enduser-authentication)
+Learn more: [Configure user authentication in Copilot Studio](https://learn.microsoft.com/microsoft-copilot-studio/configure-enduser-authentication)
 
 ## Test Metadata
 
@@ -39,7 +41,7 @@ Learn more: [Configure user authentication in Copilot Studio](https://learn.micr
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentAuthorAuthentication](/docs/commands/Test-MtAIAgentAuthorAuthentication) |
-| Tags | AIAgent, CopilotStudio, MT.1118 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1118 |
 
 ## Source
 

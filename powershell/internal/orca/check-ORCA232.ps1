@@ -21,9 +21,9 @@ param()
 class ORCA232 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA232()
@@ -47,15 +47,15 @@ class ORCA232 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
-        ForEach($AcceptedDomain in $Config["AcceptedDomains"]) 
+        ForEach($AcceptedDomain in $Config["AcceptedDomains"])
         {
 
             # Set up the config object
@@ -64,7 +64,7 @@ class ORCA232 : ORCACheck
 
             # Go through each Safe Links Policy
 
-            ForEach($Rule in ($Config["MalwareFilterRule"] | Sort-Object Priority)) 
+            ForEach($Rule in ($Config["MalwareFilterRule"] | Sort-Object Priority))
             {
                 if( $Rule.State -eq "Enabled")
                 {
@@ -81,10 +81,10 @@ class ORCA232 : ORCACheck
                 }
 
             }
-            ForEach($Rule in ($Config["EOPProtectionPolicyRule"] | Sort-Object Priority)) 
+            ForEach($Rule in ($Config["EOPProtectionPolicyRule"] | Sort-Object Priority))
             {
                 if(($Rule.MalwareFilterPolicy -ne "") -and ($null -ne $Rule.MalwareFilterPolicy ))
-                { 
+                {
                    if($Rule.State -eq "Enabled")
                    {
                     if($Rule.RecipientDomainIs -contains $AcceptedDomain.Name -and ($Rule.ExceptIfRecipientDomainIs -notcontains $AcceptedDomain.Name) -and ($null -eq $Rule.ExceptIfSentToMemberOf ) -and ($null -eq $Rule.ExceptIfSentTo) )
@@ -96,7 +96,7 @@ class ORCA232 : ORCACheck
                             Priority=$($Rule.Priority)
                             }
 
-                        }   
+                        }
                     }
                 }
             }
@@ -156,11 +156,11 @@ class ORCA232 : ORCACheck
                             $ConfigObject.InfoText = "There are multiple policies that apply to this domain, only the policy with the lowest priority will apply. This policy may not apply based on a lower priority."
                             $ConfigObject.SetResult([ORCAConfigLevel]::Informational,"Fail")
                         }
-                    }    
+                    }
 
                     $this.AddConfig($ConfigObject)
                 }
-            } 
+            }
             elseif($Rules.Count -eq 0)
             {
                 <#
@@ -168,7 +168,7 @@ class ORCA232 : ORCACheck
 
                     For anti malware policies this is OK because we fall back to the default
                 #>
-                
+
                 $ConfigObject = [ORCACheckConfig]::new()
 
                 $ConfigObject.Object=$($AcceptedDomain.Name)

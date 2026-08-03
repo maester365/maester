@@ -1,5 +1,3 @@
-## Description
-
 This test identifies Microsoft Entra ID Governance access package assignment policies with approval workflows that reference invalid approvers. Invalid approvers cause approval workflow failures, access request timeouts, and create significant operational overhead.
 
 The test validates:

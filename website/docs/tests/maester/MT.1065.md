@@ -1,6 +1,6 @@
 ---
 title: "MT.1065 - Soft Delete should be enabled on all Recovery Services Vaults"
-description: "Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups. Ensure that all Recovery Services Vaults across all subscriptions have soft delete enabled. Remediation action: To enable soft delet…"
+description: "Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups. Ensure that all Recovery Services Vaults across all subscriptions have soft delete enabled. Remediation action To enable soft delete…"
 slug: /tests/MT.1065
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -18,16 +18,19 @@ keywords:
 
 # MT.1065 - Soft Delete should be enabled on all Recovery Services Vaults
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/brianveldman" title="Beerd Veldman · Original author"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/brianveldman">Beerd Veldman</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups.
 
 Ensure that all Recovery Services Vaults across all subscriptions have soft delete enabled.
 
-### Remediation action:
+### Remediation action
 
 To enable soft delete on a Recovery Services Vault:
-1. Go to the Azure portal: https://portal.azure.com
+
+1. Go to the [Azure portal](https://portal.azure.com).
 2. Navigate to **Recovery Services Vaults**
 3. Select the vault and go to **Properties**
 4. Under **Soft Delete**, ensure it is set to **Enabled**
@@ -36,7 +39,7 @@ Note: New vaults typically have soft delete enabled by default.
 
 ### Related links
 
-* [Soft delete for Recovery Services vaults](https://learn.microsoft.com/en-us/azure/backup/backup-azure-security-feature-cloud)
+* [Soft delete for Recovery Services vaults](https://learn.microsoft.com/azure/backup/backup-azure-security-feature-cloud)
 
 ## Test Metadata
 
@@ -47,7 +50,7 @@ Note: New vaults typically have soft delete enabled by default.
 | Suite | Maester |
 | Category | Backup |
 | PowerShell test | [Test-MtVaultSoftDelete](/docs/commands/Test-MtVaultSoftDelete) |
-| Tags | Azure, Backup, MT.1065 |
+| Tags | Azure, Backup, Maester, MT.1065 |
 
 ## Source
 

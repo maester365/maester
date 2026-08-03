@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status of limitation regarding projects in Azure DevOps, As it supports up to 1,000 projects within an organization
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/projects/about-projects?view=azure-devops
+    https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops
 
 .EXAMPLE
     ```

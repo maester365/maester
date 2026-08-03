@@ -19,6 +19,8 @@ keywords:
 
 # CIS.M365.8.4.1 - (L1) Ensure all or a majority of third-party and custom apps are blocked
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/marcojanse" title="Marco Janse · Co-contributor"><img src="https://github.com/MarcoJanse.png" alt="Marco Janse" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 8.4.1 (L1) Ensure app permission policies are configured
@@ -33,7 +35,7 @@ Allowing users to install third-party or unverified apps poses a potential risk 
 
 Users will only be able to install approved classes of apps.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 2. Click to expand **Teams apps** select **Manage apps**.
@@ -46,8 +48,8 @@ Users will only be able to install approved classes of apps.
 #### Related links
 
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [Use app centric management to manage access to apps](https://learn.microsoft.com/en-us/microsoftteams/app-centric-management)
-* [Disabling non-Microsoft and custom apps](https://learn.microsoft.com/en-us/defender-office-365/step-by-step-guides/reducing-attack-surface-in-microsoft-teams?view=o365-worldwide#disabling-third-party--custom-apps)
+* [Use app centric management to manage access to apps](https://learn.microsoft.com/microsoftteams/app-centric-management)
+* [Disabling non-Microsoft and custom apps](https://learn.microsoft.com/defender-office-365/step-by-step-guides/reducing-attack-surface-in-microsoft-teams?view=o365-worldwide#disabling-third-party--custom-apps)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 425](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

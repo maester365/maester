@@ -21,9 +21,9 @@ ORCA-124 Checks to determine if Safe attachments unknown malware response set to
 class ORCA124 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA124()
@@ -48,22 +48,22 @@ class ORCA124 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
         <#
-        
+
         This check does not need a default response where no policies exist,
         because the 'Built-In Protection Policy' has this turned on.
-        
+
         #>
-       
-        ForEach($Policy in $Config["SafeAttachmentsPolicy"]) 
+
+        ForEach($Policy in $Config["SafeAttachmentsPolicy"])
         {
             # Check objects
             $ConfigObject = [ORCACheckConfig]::new()
@@ -74,13 +74,13 @@ class ORCA124 : ORCACheck
             $ConfigObject.ConfigDisabled = $Config["PolicyStates"][$Policy.Guid.ToString()].Disabled
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
-            
+
             # Determine if MDO Safe attachments action is set to block
-            If($($Policy.Action) -ne "Block") 
+            If($($Policy.Action) -ne "Block")
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)
-            } 
-            Else 
+            }
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)
             }

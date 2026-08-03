@@ -4,8 +4,10 @@ Rationale: Owner has full administrative control over the organization, includin
 
 > This query will check if the owner has any of the following words as part of their name to conclude that it is not a regular user: (adm|admin|btg|svc|service)
 
-#### Remediation action:
+#### Remediation action
+
 Ensure that the owner is not a regular user.
+
 1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Overview > Change owner.
@@ -13,4 +15,4 @@ Ensure that the owner is not a regular user.
 
 #### Related links
 
-* [Learn - Change the organization owner](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops)
+* [Learn - Change the organization owner](https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops)

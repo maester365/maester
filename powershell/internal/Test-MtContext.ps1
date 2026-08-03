@@ -27,8 +27,10 @@
             # Do not include Mail.Send for applications. Not compatible with Exchange Online RBAC for Applications
             Get-MtGraphScope -SendTeamsMessage:$SendTeamsMessage
         }
-        $currentScopes = $context.Scopes
-        $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_ -and $currentScopes -notcontains ($_ -replace '.Read.', '.ReadWrite.') }
+        $scopeComparison = Compare-MtGraphScope `
+            -CurrentScopes $context.Scopes `
+            -RequiredScopes $requiredScopes
+        $missingScopes = $scopeComparison.MissingScopes
 
         if ($missingScopes) {
             $message = "⚠️  These Graph permissions are missing in the current connection => ($($missingScopes))."

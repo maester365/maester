@@ -15,9 +15,9 @@ param()
 class ORCA235 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA235()
@@ -40,9 +40,9 @@ class ORCA235 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -64,13 +64,13 @@ class ORCA235 : ORCACheck
 
             $this.CheckFailed = $true
             $this.CheckFailureReason = "Resolve-DnsName is not found on ORCA computer and is required for DNS checks."
-            
+
         }
-        else 
+        else
         {
             # Check SPF
-            ForEach($AcceptedDomain in $Config["AcceptedDomains"]) 
-            {  
+            ForEach($AcceptedDomain in $Config["AcceptedDomains"])
+            {
                 $SplatParameters = @{
                     'ErrorAction' = 'SilentlyContinue'
                 }
@@ -93,9 +93,9 @@ class ORCA235 : ORCACheck
                     }
                 }
                 Catch{}
-                
-                If($HasMailbox) 
-                {   
+
+                If($HasMailbox)
+                {
                     # Check objects
                     $ConfigObject = [ORCACheckConfig]::new()
                     $ConfigObject.Object = $($AcceptedDomain.Name)
@@ -128,8 +128,8 @@ class ORCA235 : ORCACheck
                     }
                     }
 
-                    # Get matching DKIM signing configuration          
-        
+                    # Get matching DKIM signing configuration
+
                     If($true)
                     {
                         $ConfigObject.ConfigItem="$($SPF)"
@@ -151,7 +151,7 @@ class ORCA235 : ORCACheck
                         {
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                         }
-                        Else 
+                        Else
                         {
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                         }
@@ -165,11 +165,9 @@ class ORCA235 : ORCACheck
 
                     # Add config to check
                     $this.AddConfig($ConfigObject)
-                }   
-            }    
+                }
+            }
         }
-       
+
     }
 }
-
-

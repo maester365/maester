@@ -18,6 +18,8 @@ keywords:
 
 # MT.1121 - AI agents with generative orchestration should have custom instructions
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/lnfernux" title="Truls Thorstad Dahlsveen · Original author"><img src="https://github.com/lnfernux.png" alt="Truls Thorstad Dahlsveen" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/lnfernux">Truls Thorstad Dahlsveen</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 AI agents with generative orchestration should have custom instructions.
@@ -28,7 +30,7 @@ Agents that use generative orchestration (generative actions enabled) without cu
 
 Open each flagged agent in Copilot Studio and add custom instructions that define the agent's purpose, boundaries, and behavioral constraints. At minimum, instructions should specify what the agent is allowed to do, what topics are off-limits, and how it should handle attempts to override its instructions.
 
-Learn more: [Create and edit custom instructions](https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-instructions)
+Learn more: [Create and edit custom instructions](https://learn.microsoft.com/microsoft-copilot-studio/authoring-instructions)
 
 ## Test Metadata
 
@@ -39,7 +41,7 @@ Learn more: [Create and edit custom instructions](https://learn.microsoft.com/en
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentMissingInstructions](/docs/commands/Test-MtAIAgentMissingInstructions) |
-| Tags | AIAgent, CopilotStudio, MT.1121 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1121 |
 
 ## Source
 

@@ -1,12 +1,15 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { computeContributorData, snapshotPath } from "./contributors.mjs";
+import { tagGroupFor, tagGroupNames } from "./tag-groups.mjs";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..");
 const repoRoot = join(websiteRoot, "..");
 const testsRoot = join(repoRoot, "tests");
 const docsTestsRoot = join(websiteRoot, "docs", "tests");
+const docsCommandsRoot = join(websiteRoot, "docs", "commands");
 const publicRoot = join(repoRoot, "powershell", "public");
 const internalRoot = join(repoRoot, "powershell", "internal");
 const configPath = join(testsRoot, "maester-config.json");
@@ -40,11 +43,11 @@ const suiteConfig = {
   },
   cis: {
     label: "CIS",
-    title: "CIS Microsoft 365 Foundations Benchmark Tests",
+    title: "CIS Benchmark Tests",
     sidebarLabel: "🌀 CIS",
-    description: "CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests.",
+    description: "CIS Benchmark controls implemented as Maester tests.",
     overview:
-      "These tests verify Microsoft 365 tenant configuration against CIS Microsoft 365 Foundations Benchmark recommendations.",
+      "These tests verify tenant and organization configuration against CIS Benchmark recommendations.",
   },
   orca: {
     label: "ORCA",
@@ -82,6 +85,61 @@ function escapeTable(value) {
     .replaceAll("|", "\\|")
     .replaceAll("<br>", "<br />")
     .replaceAll("\n", "<br />");
+}
+
+function jsxText(value) {
+  return String(value ?? "").replace(/[&<>{}]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "{": "&#123;", "}": "&#125;" }[ch]));
+}
+
+function jsxAttr(value) {
+  return jsxText(value).replaceAll('"', "&quot;");
+}
+
+function contributorLinkTarget(profile) {
+  return profile ? `/contributors/${profile.id.toLowerCase()}` : "/contributors";
+}
+
+function renderBylineAvatar(profile, extraClass, roleLabel) {
+  if (!profile) return "";
+  const title = `${profile.name}${roleLabel ? ` · ${roleLabel}` : ""}`;
+  const inner = profile.avatar
+    ? `<img src="${jsxAttr(profile.avatar)}" alt="${jsxAttr(profile.name)}" />`
+    : `<span className="test-byline-initials">${jsxText(profile.initials ?? "?")}</span>`;
+  return `<a className="test-byline-avatar${extraClass}" href="${jsxAttr(contributorLinkTarget(profile))}" title="${jsxAttr(title)}">${inner}</a>`;
+}
+
+function renderContributorByline(test, contributorData) {
+  const attribution = contributorData?.attributions?.[test.id];
+  if (!attribution) return [];
+  const profilesById = contributorData.profilesById;
+  const author = profilesById.get(attribution.author);
+  if (!author) return [];
+  const coContributors = attribution.contributors.map((id) => profilesById.get(id)).filter(Boolean);
+
+  const maxAvatars = 6;
+  const avatarParts = [renderBylineAvatar(author, " test-byline-avatar--author", "Original author")];
+  for (const profile of coContributors.slice(0, maxAvatars - 1)) {
+    avatarParts.push(renderBylineAvatar(profile, "", "Co-contributor"));
+  }
+  const overflow = coContributors.length - (maxAvatars - 1);
+  if (overflow > 0) avatarParts.push(`<span className="test-byline-avatar test-byline-more">+${overflow}</span>`);
+
+  const authorLink = `<a href="${jsxAttr(contributorLinkTarget(author))}">${jsxText(author.name)}</a>`;
+  let coText = "";
+  if (coContributors.length === 1) {
+    coText = ` with <a href="${jsxAttr(contributorLinkTarget(coContributors[0]))}">${jsxText(coContributors[0].name)}</a>`;
+  } else if (coContributors.length > 1) {
+    coText = ` with ${coContributors.length} co-contributors`;
+  }
+
+  return [
+    `<div className="test-byline">` +
+      `<div className="test-byline-avatars">${avatarParts.join("")}</div>` +
+      `<div className="test-byline-meta"><span className="test-byline-text">Contributed by ${authorLink}${coText}</span>` +
+      `<a className="test-byline-link" href="/contributors">All contributors →</a></div>` +
+      `</div>`,
+    "",
+  ];
 }
 
 function normalizeWhitespace(value) {
@@ -324,7 +382,7 @@ function buildInventory() {
       markdown: doc.markdown ?? "",
       remediation: doc.remediation ?? "",
       relatedLinks: doc.relatedLinks ?? "",
-      commandLink: functionName ? `/docs/commands/${functionName}` : "",
+      commandLink: functionName && existsSync(join(docsCommandsRoot, `${functionName}.mdx`)) ? `/docs/commands/${functionName}` : "",
     });
   }
   return [...testsById.values()].sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
@@ -334,11 +392,12 @@ function pagePathFor(test) {
   return join(docsTestsRoot, test.suite, `${test.id}.md`);
 }
 
-function renderTestPage(test) {
+function renderTestPage(test, contributorData) {
   const keywords = unique(["Maester", "Microsoft 365 security", test.id, test.severity, suiteConfig[test.suite]?.label, test.category, ...test.tags]);
   const body = [];
   body.push(generatedMarker);
   body.push("", `# ${test.id} - ${test.title}`, "");
+  body.push(...renderContributorByline(test, contributorData));
   body.push("## Overview", "", test.markdown || test.helpDescription || test.description, "");
   body.push("## Test Metadata", "");
   body.push("| Field | Value |", "| --- | --- |");
@@ -346,7 +405,10 @@ function renderTestPage(test) {
   body.push(`| Severity | ${escapeTable(test.severity)} |`);
   body.push(`| Suite | ${escapeTable(suiteConfig[test.suite]?.label ?? test.suite)} |`);
   body.push(`| Category | ${escapeTable(test.category)} |`);
-  if (test.functionName) body.push(`| PowerShell test | [${test.functionName}](${test.commandLink}) |`);
+  if (test.functionName) {
+    const commandReference = test.commandLink ? `[${test.functionName}](${test.commandLink})` : `\`${test.functionName}\``;
+    body.push(`| PowerShell test | ${commandReference} |`);
+  }
   body.push(`| Tags | ${escapeTable(test.tags.join(", "))} |`, "");
   if (test.remediation && !test.markdown.includes(test.remediation)) {
     body.push("## Remediation", "", test.remediation, "");
@@ -375,7 +437,7 @@ ${body.join("\n")}`;
 
 function renderSuiteIndex(suite, tests) {
   const config = suiteConfig[suite];
-  const rows = tests.map((test) => `| [${test.id}](../${test.id}) | ${escapeTable(test.title)} | ${escapeTable(test.severity)} | ${escapeTable(test.category)} |`).join("\n");
+  const rows = tests.map((test) => `| [${test.id}](./${test.id}.md) | ${escapeTable(test.title)} | ${escapeTable(test.severity)} | ${escapeTable(test.category)} |`).join("\n");
   return `---
 id: overview
 title: ${yamlQuote(config.title)}
@@ -425,6 +487,8 @@ ${generatedMarker}
 
 This section is generated from the Maester test source. Each page includes the test ID, severity, tags, PowerShell command, overview, remediation details, and related references when available.
 
+Every test is researched, written, and refined by security experts from the Maester community — [meet the contributors](/contributors).
+
 ## Test Suites
 
 | Suite | Tests | Description |
@@ -447,10 +511,27 @@ function renderTagsIndex(tests) {
       tagMap.get(tag).push(test);
     }
   }
-  const rows = [...tagMap.entries()]
-    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
-    .map(([tag, taggedTests]) => `| ${escapeTable(tag)} | ${taggedTests.length} | ${taggedTests.slice(0, 8).map((test) => `[${test.id}](../${test.id})`).join(", ")}${taggedTests.length > 8 ? ", ..." : ""} |`)
-    .join("\n");
+
+  const groupedTags = new Map(tagGroupNames.map((name) => [name, []]));
+
+  for (const entry of [...tagMap.entries()].sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))) {
+    groupedTags.get(tagGroupFor(entry[0])).push(entry);
+  }
+
+  const sections = [...groupedTags.entries()]
+    .filter(([, entries]) => entries.length > 0)
+    .map(([group, entries]) => {
+      const rows = entries
+        .map(([tag, taggedTests]) => `| ${escapeTable(tag)} | ${taggedTests.length} | ${taggedTests.slice(0, 8).map((test) => `[${test.id}](../${test.id})`).join(", ")}${taggedTests.length > 8 ? ", ..." : ""} |`)
+        .join("\n");
+      return `### ${group}
+
+| Tag | Tests | Examples |
+| --- | ---: | --- |
+${rows}`;
+    })
+    .join("\n\n");
+
   return `---
 id: overview
 title: Tags Overview
@@ -465,11 +546,30 @@ ${generatedMarker}
 
 # Tags Overview
 
-Tags are discovered from Pester test metadata and can be used to find related Maester tests by suite, product area, benchmark, capability, or control ID.
+Tags are used by Maester to identify and group related tests. They can also be used to select specific tests to run or exclude during test execution. To keep tags useful, we focus on a few key areas:
 
-| Tag | Tests | Examples |
-| --- | ---: | --- |
-${rows}
+- **Test suites** use standardized categories that align with well-known benchmarks and baselines or with Maester's own suite of tests:
+  - **CIS Benchmarks**: Tags prefixed with \`CIS\` (for example, \`CIS.M365.1.1\` or \`CIS.Azure.3.2\`).
+  - **CISA and Microsoft Baseline**: Tags prefixed with \`CISA\` or \`MS\` (for example, \`CISA.M365.Baseline\` or \`MS.Azure.Baseline\`).
+  - **EIDSCA**: Tags prefixed with \`EIDSCA\` (for example, \`EIDSCA.EntraID.2.1\`).
+  - **ORCA**: Tags prefixed with \`ORCA\` (for example, \`ORCA.Exchange.1.1\`).
+  - **Maester**: Tags prefixed with \`Maester\` or \`MT\` (for example, \`MT.1001\` or \`MT.1024\`).
+- **Product areas** identify the products and services being tested, such as Azure, Defender XDR, Entra ID, Exchange, Microsoft 365, SharePoint, and Teams.
+- **Practices or capabilities** identify security topics such as authentication, Conditional Access (CA), Data Loss Prevention (DLP), Extended Security Posture Management (XSPM), Hybrid Identity, Privileged Access Management (PAM), and Privileged Identity Management (PIM).
+
+## Recommendations for Tag Usage
+
+Less is more. When creating or assigning tags to tests:
+
+1. Assign one **test suite** tag per test to identify the benchmark or baseline. This tag will usually go in the \`Describe\` block of a Pester test file.
+2. Assign **product area** tags for the products or services most relevant to the test. Limit these to one to three tags per test.
+3. Use **practice** or **capability** tags sparingly and only when they add significant value. Avoid overly specific tags that apply to only one test.
+
+## Tags Used
+
+The tables below list every tag discovered from Pester test metadata and link to example tests that use it.
+
+${sections}
 `;
 }
 
@@ -503,6 +603,18 @@ function main() {
   const writes = [];
   clearGeneratedDocs();
 
+  const contributorData = computeContributorData(tests, { updateAliases: !checkMode });
+  contributorData.profilesById = new Map(contributorData.profiles.map((profile) => [profile.id, profile]));
+  // Tests not yet in the released docs version only resolve under /docs/next/.
+  const releasedVersions = JSON.parse(readFileSync(join(websiteRoot, "versions.json"), "utf8"));
+  const versionedTestsRoot = releasedVersions[0] ? join(websiteRoot, "versioned_docs", `version-${releasedVersions[0]}`, "tests") : "";
+  const docPathFor = (test) =>
+    versionedTestsRoot && existsSync(join(versionedTestsRoot, test.suite, `${test.id}.md`))
+      ? `/docs/tests/${test.id}`
+      : `/docs/next/tests/${test.id}`;
+  const testTitles = Object.fromEntries(tests.map((test) => [test.id, { title: test.title, path: docPathFor(test) }]));
+  writeGenerated(snapshotPath, `${JSON.stringify({ profiles: contributorData.profiles, attributions: contributorData.attributions, tests: testTitles }, null, 2)}\n`, writes);
+
   writeGenerated(join(docsTestsRoot, "readme.md"), renderRootIndex(tests), writes);
   writeGenerated(join(docsTestsRoot, "tags", "readme.md"), renderTagsIndex(tests), writes);
 
@@ -511,7 +623,7 @@ function main() {
     if (suiteTests.length === 0) continue;
     writeGenerated(join(docsTestsRoot, suite, "readme.md"), renderSuiteIndex(suite, suiteTests), writes);
     for (const test of suiteTests) {
-      writeGenerated(pagePathFor(test), renderTestPage(test), writes);
+      writeGenerated(pagePathFor(test), renderTestPage(test, contributorData), writes);
     }
   }
 

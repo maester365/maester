@@ -15,9 +15,9 @@ param()
 class ORCA101 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA101()
@@ -39,9 +39,9 @@ class ORCA101 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -66,15 +66,15 @@ class ORCA101 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)               
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
 
-        }    
+        }
 
     }
 

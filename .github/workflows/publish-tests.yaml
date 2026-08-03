@@ -20,17 +20,75 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Publish to maester-tests
-        id: push_directory
-        uses: cpina/github-action-push-to-another-repository@3fc9348237c8c6954ff88e58719af8a88af543f7
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          source-directory: ./tests
-          target-directory: ./tests
-          destination-github-username: "maester365"
-          destination-repository-name: "maester-tests"
-          user-email: merill@users.noreply.github.com
-          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
-          target-branch: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve latest release tag
+        id: release_tag
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          $tag = $env:RELEASE_TAG
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            $tag = (gh release view --repo $env:GITHUB_REPOSITORY --json tagName -q .tagName)
+          }
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            throw "Could not resolve a release tag for the stamp step."
+          }
+          "tag=$tag" | Out-File -Append -FilePath $env:GITHUB_OUTPUT
+
+      - name: Stamp maester-config.json version fields
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ steps.release_tag.outputs.tag }}
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion $env:RELEASE_TAG
+
+      - name: Generate Maester Bot token for maester-tests
+        id: maester-tests-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          owner: maester365
+          repositories: maester-tests
+          permission-contents: write
+
+      - name: Checkout maester-tests
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: maester365/maester-tests
+          ref: main
+          path: .publish/maester-tests
+          token: ${{ steps.maester-tests-token.outputs.token }}
+          # Required for the authenticated push below; checkout removes it after the job.
+          persist-credentials: true
+          fetch-depth: 1
+
+      - name: Publish to maester-tests
+        shell: bash
+        env:
+          SOURCE_REF: ${{ github.ref }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          target="$GITHUB_WORKSPACE/.publish/maester-tests"
+          mkdir -p "$target/tests"
+          rsync -a --delete "$GITHUB_WORKSPACE/tests/" "$target/tests/"
+
+          cd "$target"
+          git config user.name "maester-bot[bot]"
+          git config user.email "283276319+maester-bot[bot]@users.noreply.github.com"
+          git add --all tests
+
+          if git diff --cached --quiet; then
+            echo "No test changes to publish."
+            exit 0
+          fi
+
+          git commit -m "See https://github.com/$GITHUB_REPOSITORY/commit/$SOURCE_SHA from $SOURCE_REF"
+          git push origin HEAD:main

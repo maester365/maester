@@ -15,9 +15,9 @@ param()
 class ORCA242 : ORCACheck
 {
     <#
-    
+
         Check for first contact safety tip
-    
+
     #>
 
     ORCA242()
@@ -36,14 +36,14 @@ class ORCA242 : ORCACheck
         $this.DataType="Current Value"
         $this.ChiValue=[ORCACHI]::Critical
         $this.Links= @{
-            "Automated investigation and response in Microsoft 365 Defender"="https://learn.microsoft.com/en-us/microsoft-365/security/defender/m365d-autoir"
+            "Automated investigation and response in Microsoft 365 Defender"="https://learn.microsoft.com/microsoft-365/security/defender/m365d-autoir"
         }
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -85,8 +85,8 @@ class ORCA242 : ORCACheck
                     if($FoundAlert.Disabled)
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                    } 
-                    else 
+                    }
+                    else
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                     }

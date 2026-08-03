@@ -42,4 +42,3 @@ function Test-MtEidscaAM10 {
 
     return $tenantValue
 }
-

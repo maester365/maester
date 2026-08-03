@@ -1,10 +1,10 @@
 ﻿function Test-MtCaMfaForAdmin {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring MFA for admins
+    Checks if the tenant has at least one Conditional Access policy requiring MFA for admins
 
     .Description
-    MFA for admins conditional access policy can be used to require MFA for all admins in the tenant.
+    MFA for admins Conditional Access policy can be used to require MFA for all admins in the tenant.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
@@ -76,9 +76,9 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for admins:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require multi-factor authentication for admins:`n`n%TestResult%"
         } else {
-            $testResult = 'No conditional access policy requires multi-factor authentication for all admin roles.'
+            $testResult = 'No Conditional Access policy requires multi-factor authentication for all admin roles.'
         }
         Add-MtTestResultDetail -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 

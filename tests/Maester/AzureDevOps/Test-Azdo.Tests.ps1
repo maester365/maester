@@ -14,7 +14,7 @@
         }
     }
 
-    It "AZDO.1002: Log Audit Events. See https://learn.microsoft.com/en-us/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing" -Tag "AZDO.1002" {
+    It "AZDO.1002: Log Audit Events. See https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing" -Tag "AZDO.1002" {
         $result = Test-AzdoLogAuditEvent
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Auditing should be enabled for Azure DevOps"
@@ -35,14 +35,14 @@
         }
     }
 
-    It "AZDO.1005: IP Conditional Access policy validation. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops" -Tag "AZDO.1005" {
+    It "AZDO.1005: IP Conditional Access policy validation. See https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops" -Tag "AZDO.1005" {
         $result = Test-AzdoEnforceAADConditionalAccess
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Microsoft Entra ID should always perform validation for any Conditional Access Policies (CAPs) set by tenant administrators."
         }
     }
 
-    It "AZDO.1006: External Users access. See https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access" -Tag "AZDO.1006" {
+    It "AZDO.1006: External Users access. See https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access" -Tag "AZDO.1006" {
         $result = Test-AzdoExternalGuestAccess
         if ($null -ne $result) {
             $result | Should -Be $true -Because "External users should not be allowed access to your Azure DevOps organization"
@@ -70,70 +70,70 @@
         }
     }
 
-    It "AZDO.1010: Audit streaming. See https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops" -Tag "AZDO.1010" {
+    It "AZDO.1010: Audit streaming. See https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops" -Tag "AZDO.1010" {
         $result = Test-AzdoAuditStream
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Setting up a stream also allows you to store more than 90-days worth of auditing data."
         }
     }
 
-    It "AZDO.1011: Project Resource Limits. See https://learn.microsoft.com/en-us/azure/devops/organizations/projects/about-projects?view=azure-devops" -Tag "AZDO.1011" {
+    It "AZDO.1011: Project Resource Limits. See https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops" -Tag "AZDO.1011" {
         $result = Test-AzdoResourceUsageProject
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Azure DevOps supports up to 1,000 projects within an organization."
         }
     }
 
-    It "AZDO.1012: Work Items Tags Limits. See https://learn.microsoft.com/en-us/azure/devops/organizations/settings/work/object-limits?view=azure-devops" -Tag "AZDO.1012" {
+    It "AZDO.1012: Work Items Tags Limits. See https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops" -Tag "AZDO.1012" {
         $result = Test-AzdoResourceUsageWorkItemTag
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Azure DevOps supports up to 150,000 tag definitions per organization or collection."
         }
     }
 
-    It "AZDO.1013: Organization Owner should not be an individual. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops" -Tag "AZDO.1013" {
+    It "AZDO.1013: Organization Owner should not be an individual. See https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops" -Tag "AZDO.1013" {
         $result = Test-AzdoOrganizationOwner
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Organization owners are automatically members of the 'Project Collection Administrators' group. As roles and responsibilities change, you can change the owner for your organization."
         }
     }
 
-    It "AZDO.1014: Anonymous access to pipeline badges. See https://learn.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository" -Tag "AZDO.1014" {
+    It "AZDO.1014: Anonymous access to pipeline badges. See https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository" -Tag "AZDO.1014" {
         $result = Test-AzdoOrganizationBadgesArePrivate
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Even in a private project, anonymous badge access is enabled by default. With anonymous badge access enabled, users outside your organization might be able to query information such as project names, branch names, job names, and build status through the badge status API."
         }
     }
 
-    It "AZDO.1015: Limit variables that can be set at queue time. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time" -Tag "AZDO.1015" {
+    It "AZDO.1015: Limit variables that can be set at queue time. See https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time" -Tag "AZDO.1015" {
         $result = Test-AzdoOrganizationLimitVariablesAtQueueTime
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Only those variables explicitly marked as 'Settable at queue time' can be set. In other words, you can set any variables at queue time unless this setting is turned on."
         }
     }
 
-    It "AZDO.1016: Limit job authorization scope to current project for non-release pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1016" {
+    It "AZDO.1016: Limit job authorization scope to current project for non-release pipelines. See https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1016" {
         $result = Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline
         if ($null -ne $result) {
             $result | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all non-release pipelines to the current project."
         }
     }
 
-    It "AZDO.1017: Limit job authorization scope to current project for classic release pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1017" {
+    It "AZDO.1017: Limit job authorization scope to current project for classic release pipelines. See https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1017" {
         $result = Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline
         if ($null -ne $result) {
             $result | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all classic pipelines to the current project."
         }
     }
 
-    It "AZDO.1018: Protect access to repositories in YAML pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access" -Tag "AZDO.1018" {
+    It "AZDO.1018: Protect access to repositories in YAML pipelines. See https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access" -Tag "AZDO.1018" {
         $result = Test-AzdoOrganizationProtectAccessToRepository
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Apply checks and approvals when accessing repositories from YAML pipelines. Also, generate a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline."
         }
     }
 
-    It "AZDO.1019: Stage chooser. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops" -Tag "AZDO.1019" {
+    It "AZDO.1019: Stage chooser. See https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops" -Tag "AZDO.1019" {
         $result = Test-AzdoOrganizationStageChooser
         if ($null -ne $result) {
             $result | Should -Be $false -Because "Users should not be able to select stages to skip from the Queue Pipeline panel"
@@ -154,122 +154,171 @@
         }
     }
 
-    It "AZDO.1022: Limit building pull requests from forked GitHub repositories. See https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks" -Tag "AZDO.1022" {
+    It "AZDO.1022: Limit building pull requests from forked GitHub repositories. See https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks" -Tag "AZDO.1022" {
         $result = Test-AzdoOrganizationTriggerPullRequestGitHubRepository
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Azure Pipelines can automatically build and validate every pull request and commit to your GitHub repository. This should be configured according to your organizations requirements."
         }
     }
 
-    It "AZDO.1023: Disable Marketplace tasks. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution" -Tag "AZDO.1023" {
+    It "AZDO.1023: Disable Marketplace tasks. See https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution" -Tag "AZDO.1023" {
         $result = Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline."
         }
     }
 
-    It "AZDO.1024: Disable Node 6 tasks. See https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents" -Tag "AZDO.1024" {
+    It "AZDO.1024: Disable Node 6 tasks. See https://learn.microsoft.com/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents" -Tag "AZDO.1024" {
         $result = Test-AzdoOrganizationTaskRestrictionsDisableNode6Task
         if ($null -ne $result) {
             $result | Should -Be $true -Because "With this enabled, pipelines will fail if they utilize a task with a Node 6 execution handler."
         }
     }
 
-    It "AZDO.1025: Enable shell tasks arguments validation. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation" -Tag "AZDO.1025" {
+    It "AZDO.1025: Enable shell tasks arguments validation. See https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation" -Tag "AZDO.1025" {
         $result = Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation
         if ($null -ne $result) {
             $result | Should -Be $true -Because "When this is enabled, argument parameters for built-in shell tasks are validated to check for inputs that can inject commands into scripts."
         }
     }
 
-    It "AZDO.1026: Enable automatic enrollment to Advanced Security for Azure DevOps. See https://learn.microsoft.com/en-us/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding" -Tag "AZDO.1026" {
+    It "AZDO.1026: Enable automatic enrollment to Advanced Security for Azure DevOps. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding" -Tag "AZDO.1026" {
         $result = Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Enable automatic enrollment for new git repositories to use GitHub Advanced Security for Azure DevOps. It adds GitHub Advanced Security's suite of security features to Azure Repos."
         }
     }
 
-    It "AZDO.1027: Disable showing Gravatar images for users outside of your enterprise. See https://learn.microsoft.com/en-us/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images" -Tag "AZDO.1027" {
+    It "AZDO.1027: Disable showing Gravatar images for users outside of your enterprise. See https://learn.microsoft.com/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images" -Tag "AZDO.1027" {
         $result = Test-AzdoOrganizationRepositorySettingsGravatarImage
         if ($null -ne $result) {
             $result | Should -Be $false -Because "Gravatar images should not be exposed outside of your enterprise."
         }
     }
 
-    It "AZDO.1028: Disable creation of TFVC repositories. See https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects" -Tag "AZDO.1028" {
+    It "AZDO.1028: Disable creation of TFVC repositories. See https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects" -Tag "AZDO.1028" {
         $result = Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Team Foundation Version Control (TFVC) has been deprecated."
         }
     }
 
-    It "AZDO.1029: Storage Usage Limit. See https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops" -Tag "AZDO.1029" {
+    It "AZDO.1029: Storage Usage Limit. See https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops" -Tag "AZDO.1029" {
         $result = Test-AzdoOrganizationStorageUsage
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Storage Usage Limit should not be reached."
         }
     }
 
-    It "AZDO.1030: Project Collection Administrators. See https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions" -Tag "AZDO.1030" {
+    It "AZDO.1030: Project Collection Administrators. See https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions" -Tag "AZDO.1030" {
         $result = Test-AzdoProjectCollectionAdministrator
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Users should not be directly assigned to 'Project Collection Administrator' as it is the most privileged role within Azure DevOps."
         }
     }
 
-    It "AZDO.1031: Validate SSH Key Expiration. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies" -Tag "AZDO.1031" {
+    It "AZDO.1031: Validate SSH Key Expiration. See https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies" -Tag "AZDO.1031" {
         $result = Test-AzdoValidateSshKeyExpiration
         if ($null -ne $result) {
             $result | Should -Be $true -Because "SSH keys should be validated for expiration."
         }
     }
 
-    It "AZDO.1032: (Tenant) Restrict creation of global Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy" -Tag "AZDO.1032" {
+    It "AZDO.1032: (Tenant) Restrict creation of global Personal Access Tokens. See https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy" -Tag "AZDO.1032" {
         $result = Test-AzdoDisableGlobalPATCreation
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Global Personal Access Tokens (PATs) should be restricted at the tenant level."
         }
     }
 
-    It "AZDO.1033: (Tenant) Enable automatic revocation of leaked Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens" -Tag "AZDO.1033" {
+    It "AZDO.1033: (Tenant) Enable automatic revocation of leaked Personal Access Tokens. See https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens" -Tag "AZDO.1033" {
         $result = Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Leaked Personal Access Tokens (PATs) should be automatically revoked at the tenant level."
         }
     }
 
-    It "AZDO.1034: (Tenant) Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy" -Tag "AZDO.1034" {
+    It "AZDO.1034: (Tenant) Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy" -Tag "AZDO.1034" {
         $result = Test-AzdoOrganizationCreationRestriction
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Organization creation should be restricted at the tenant level to maintain governance and control."
         }
     }
 
-    It "AZDO.1035: (Tenant) Restrict Personal Access Token lifespan. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan" -Tag "AZDO.1035" {
+    It "AZDO.1035: (Tenant) Restrict Personal Access Token lifespan. See https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan" -Tag "AZDO.1035" {
         $result = Test-AzdoRestrictPersonalAccessTokenLifespan
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted lifespan at the tenant level."
         }
     }
 
-    It "AZDO.1036: (Tenant) Restrict Personal Access Token full scope. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy" -Tag "AZDO.1036" {
+    It "AZDO.1036: (Tenant) Restrict Personal Access Token full scope. See https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy" -Tag "AZDO.1036" {
         $result = Test-AzdoRestrictFullScopePersonalAccessToken
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted scope at the tenant level."
         }
     }
 
-    It "AZDO.1037: (Organization) Restrict Personal Access Token creation. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops" -Tag "AZDO.1037" {
+    It "AZDO.1037: (Organization) Restrict Personal Access Token creation. See https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops" -Tag "AZDO.1037" {
         $result = Test-AzdoDisablePATCreation
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Personal Access Token creation should be restricted at the organization level."
         }
     }
 
-    It "AZDO.1038: (Organization) Disallow extensions from accessing resources on the local network. See https://learn.microsoft.com/en-us/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops" -Tag "AZDO.1038" {
+    It "AZDO.1038: (Organization) Disallow extensions from accessing resources on the local network. See https://learn.microsoft.com/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops" -Tag "AZDO.1038" {
         $result = Test-AzdoAllowExtensionsLocalNetworkAccess
         if ($null -ne $result) {
             $result | Should -Be $false -Because "Extensions should not be allowed to access resources on the local network to prevent SSRF attacks."
+        }
+    }
+
+It "AZDO.1039: (Organization) Secret Protection: new repositories enrolled automatically. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1039" {
+        $result = Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "New Git repositories should automatically be protected by push protection and secret scanning instead of relying on manual onboarding."
+        }
+    }
+
+    It "AZDO.1040: (Organization) Secret Protection: existing repositories enrolled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1040" {
+        $result = Test-AzdoOrganizationSecretProtectionEnrollment
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "every repository should be enrolled in the plan; automatic enablement only covers new repositories, so any repository that already existed stays unscanned for secrets until it is explicitly enrolled."
+        }
+    }
+
+    It "AZDO.1041: (Organization) Secret Protection: push protection blocks secret commits. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-secret-scanning" -Tag "AZDO.1041" {
+        $result = Test-AzdoOrganizationSecretProtectionPushProtection
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "push protection prevents secrets from being committed, whereas secret alerts only report exposures that have already happened."
+        }
+    }
+
+    It "AZDO.1042: (Organization) Code Security: new repositories enrolled automatically. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1042" {
+        $result = Test-AzdoOrganizationAutomaticEnrollmentCodeSecurityNewRepository
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "New Git repositories should automatically be scanned for vulnerable dependencies and code-level vulnerabilities instead of relying on manual onboarding."
+        }
+    }
+
+    It "AZDO.1043: (Organization) Code Security: existing repositories enrolled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding" -Tag "AZDO.1043" {
+        $result = Test-AzdoOrganizationCodeSecurityEnrollment
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "every repository should be enrolled in the plan; automatic enablement only covers new repositories, so any repository that already existed stays unscanned until it is explicitly enrolled."
+        }
+    }
+
+    It "AZDO.1044: (Organization) Code Security: dependency and CodeQL alerts enabled. See https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-code-scanning" -Tag "AZDO.1044" {
+        $result = Test-AzdoOrganizationCodeSecurityScanning
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "a repository enrolled in Code Security with no scanning features enabled is billed for the plan while producing no findings."
+        }
+    }
+
+    It "AZDO.1045: (Organization) Copilot code review: allowed for repositories. See https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops" -Tag "AZDO.1045", "Preview" {
+        $result = Test-AzdoOrganizationCopilotCodeReview
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "Copilot code review adds an automated review layer on every pull request, which should be available consistently across the organization."
         }
     }
 }

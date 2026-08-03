@@ -13,7 +13,7 @@ param()
 <#
 
     189-2
-    
+
     Checks to determine if SafeLinks is being bypassed by injecting X-MS-Exchange-Organization-SkipSafeLinksProcessing
     header in to emails using a mail flow rule.
 
@@ -24,9 +24,9 @@ param()
 class ORCA189_2 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA189_2()
@@ -50,20 +50,20 @@ class ORCA189_2 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
         $BypassRules = @($Config["TransportRules"] | Where-Object {$_.SetHeaderName -eq "X-MS-Exchange-Organization-SkipSafeLinksProcessing"})
-        
-        If($BypassRules.Count -gt 0) 
+
+        If($BypassRules.Count -gt 0)
         {
             # Rules exist to bypass
-            ForEach($Rule in $BypassRules) 
+            ForEach($Rule in $BypassRules)
             {
                 # Check objects
                 $ConfigObject = [ORCACheckConfig]::new()
@@ -72,10 +72,10 @@ class ORCA189_2 : ORCACheck
                 $ConfigObject.ConfigData=$($Rule.SetHeaderValue)
                 $ConfigObject.ConfigDisabled=$($Rule.State -eq "Disabled")
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                $this.AddConfig($ConfigObject)  
+                $this.AddConfig($ConfigObject)
 
             }
-        }   
+        }
 
     }
 

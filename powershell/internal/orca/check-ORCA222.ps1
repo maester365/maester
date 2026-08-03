@@ -15,9 +15,9 @@ param()
 class ORCA222 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA222()
@@ -42,18 +42,18 @@ class ORCA222 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
         <#
-        
+
         This check does not need a default fail if no policies exist
-        
+
         #>
 
         ForEach($Policy in ($Config["AntiPhishPolicy"] | Where-Object {$_.Enabled -eq $True}))
@@ -67,9 +67,9 @@ class ORCA222 : ORCACheck
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
 
             <#
-            
+
             EnableTargetedDomainsProtection / EnableOrgainizationDomainsProtection
-            
+
             #>
 
             If($EnableTargetedDomainsProtection -eq $False -and $EnableOrganizationDomainsProtection -eq $False)
@@ -88,7 +88,7 @@ class ORCA222 : ORCACheck
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
 
                 $this.AddConfig($ConfigObject)
-                
+
                 # Check objects
                 $ConfigObject = [ORCACheckConfig]::new()
 
@@ -102,9 +102,9 @@ class ORCA222 : ORCACheck
 
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
 
-                $this.AddConfig($ConfigObject)       
+                $this.AddConfig($ConfigObject)
             }
-            
+
             If($EnableTargetedDomainsProtection -eq $True)
             {
 
@@ -122,7 +122,7 @@ class ORCA222 : ORCACheck
                 $this.AddConfig($ConfigObject)
 
             }
-    
+
             If($EnableOrganizationDomainsProtection -eq $True)
             {
 
@@ -138,10 +138,10 @@ class ORCA222 : ORCACheck
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
 
                 $this.AddConfig($ConfigObject)
-         
+
             }
 
-            
+
             # Check objects
             $ConfigObject = [ORCACheckConfig]::new()
             $ConfigObject.Object=$policyname
@@ -154,11 +154,11 @@ class ORCA222 : ORCACheck
 
             If($TargetedDomainProtectionAction -eq "Quarantine")
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")          
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail") 
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             If($TargetedDomainProtectionAction -eq "Delete" -or $TargetedDomainProtectionAction -eq "Redirect")
@@ -169,8 +169,8 @@ class ORCA222 : ORCACheck
             }
 
             $this.AddConfig($ConfigObject)
-    
-        } 
+
+        }
 
     }
 

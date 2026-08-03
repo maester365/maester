@@ -1,6 +1,6 @@
 ---
 title: "MT.1108 - Access packages should not have inactive or orphaned assignment policies"
-description: "Description This test identifies Microsoft Entra ID Governance access packages that contain assignment policies which are disabled, misconfigured, or orphaned. Inactive or misconfigured policies prevent users from successfully requesting access and can break automated provisioning workflows. The te…"
+description: "This test identifies Microsoft Entra ID Governance access packages that contain assignment policies which are disabled, misconfigured, or orphaned. Inactive or misconfigured policies prevent users from successfully requesting access and can break automated provisioning workflows. The test validates…"
 slug: /tests/MT.1108
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,9 +19,9 @@ keywords:
 
 # MT.1108 - Access packages should not have inactive or orphaned assignment policies
 
-## Overview
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicowyss" title="nicowyss · Original author"><img src="https://github.com/nicowyss.png" alt="nicowyss" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicowyss">nicowyss</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
-## Description
+## Overview
 
 This test identifies Microsoft Entra ID Governance access packages that contain assignment policies which are disabled, misconfigured, or orphaned. Inactive or misconfigured policies prevent users from successfully requesting access and can break automated provisioning workflows.
 
@@ -80,7 +80,7 @@ The test validates:
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementInactivePolicies](/docs/commands/Test-MtEntitlementManagementInactivePolicies) |
-| Tags | AccessPackages, Entra, Governance, MT.1108 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1108 |
 
 ## Source
 

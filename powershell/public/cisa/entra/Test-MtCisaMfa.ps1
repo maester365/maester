@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaMfa {
     <#
     .SYNOPSIS
-    Checks if Conditional Access Policy requiring MFA is enabled
+    Checks if a Conditional Access policy requiring MFA is enabled
 
     .DESCRIPTION
     If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users
@@ -37,14 +37,15 @@
     $policies = $result | Where-Object {`
         $_.conditions.applications.includeApplications -contains "All" -and `
         $_.conditions.users.includeUsers -contains "All" -and `
-        $_.grantControls.builtInControls -contains "mfa" }
+            ($_.grantControls.builtInControls -contains "mfa" -or `
+            $_.grantControls.authenticationStrength.requirementsSatisfied -contains "mfa" ) }
 
     $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require MFA:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that require MFA."
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that require MFA."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
 

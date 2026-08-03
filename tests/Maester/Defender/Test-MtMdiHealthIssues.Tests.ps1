@@ -1,6 +1,7 @@
 BeforeDiscovery {
     try {
-        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError -ErrorAction Stop
+        $MdiAllHealthIssuesResponse = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError -ErrorAction Stop
+        $MdiAllHealthIssues = @($MdiAllHealthIssuesResponse.value)
     } catch {
         Write-Verbose "A problem occurred. Either the Microsoft Graph API is not reachable with the required permissions or MDI is not enabled in the tenant. Error details: $($_.Exception.Message)"
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
@@ -40,7 +41,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender",  "MDI
         }
         $recommendationSteps = $recommendationSteps -join "`n`n"
 
-        $relatedLinksMd = "* [Microsoft Defender for Identity health issues](https://learn.microsoft.com/en-us/defender-for-identity/health-alerts)", "* [Health issues - Microsoft Defender](https://security.microsoft.com/identities/health-issues)"
+        $relatedLinksMd = "* [Microsoft Defender for Identity health issues](https://learn.microsoft.com/defender-for-identity/health-alerts)", "* [Health issues - Microsoft Defender](https://security.microsoft.com/identities/health-issues)"
         $relatedLinksMd = $relatedLinksMd -join "`n"
 
         if ($_.Group.additionalInformation) {

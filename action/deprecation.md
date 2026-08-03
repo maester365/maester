@@ -17,7 +17,7 @@ In your workflow file, replace the following bit:
     # your parameters here
 
 - name: Run Maester 🔥
-  uses: maester365/maester-action@v1.0.1 # to this line
+  uses: maester365/maester-action@v1.1.0 # to this line
   with:
     # your parameters here
     include_private_tests: true # this will checkout the current repository and was the default behavior of the old action

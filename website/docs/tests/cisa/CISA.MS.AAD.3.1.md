@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.3.1 - Phishing-resistant MFA SHALL be enforced for all users."
-description: "Phishing-resistant MFA SHALL be enforced for all users. Rationale: Weaker forms of MFA do not protect against sophisticated phishing attacks. By enforcing methods resistant to phishing, those risks are minimized. Remediation action: Create a conditional access policy enforcing phishing-resistant MF…"
+description: "Phishing-resistant MFA SHALL be enforced for all users. Rationale: Weaker forms of MFA do not protect against sophisticated phishing attacks. By enforcing methods resistant to phishing, those risks are minimized. Remediation action: Create a Conditional Access policy enforcing phishing-resistant MF…"
 slug: /tests/CISA.MS.AAD.3.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -20,6 +20,8 @@ keywords:
 
 # CISA.MS.AAD.3.1 - Phishing-resistant MFA SHALL be enforced for all users.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Phishing-resistant MFA SHALL be enforced for all users.
@@ -28,7 +30,7 @@ Rationale: Weaker forms of MFA do not protect against sophisticated phishing att
 
 #### Remediation action:
 
-Create a conditional access policy enforcing phishing-resistant MFA for all users. Configure the following policy settings in the new conditional access policy, per the values below:
+Create a Conditional Access policy enforcing phishing-resistant MFA for all users. Configure the following policy settings in the new Conditional Access policy, per the values below:
 
 * Users > Include > **All users**
 * Target resources > Cloud apps > **All cloud apps**

@@ -1,5 +1,5 @@
 ﻿function Test-MtCaGroupsRestricted {
-    <#
+  <#
     .Synopsis
     Checks if groups used in Conditional Access are protected by either Restricted Management Administrative Units or Role Assignable Groups.
 
@@ -11,7 +11,7 @@
     This test checks if all groups used in Conditional Access Policies are protected.
 
     Learn more:
-    https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
+    https://learn.microsoft.com/entra/identity/role-based-access-control/admin-units-restricted-management
 
     .Example
     Test-MtCaGroupsRestricted
@@ -30,7 +30,7 @@
   }
 
   try {
-    $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -in @('enabled','enabledForReportingButNotEnforced') }
+    $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -in @('enabled', 'enabledForReportingButNotEnforced') }
 
     $Groups = $Policies.conditions.users | Where-Object {
       @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0

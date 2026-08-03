@@ -15,9 +15,9 @@ param()
 class ORCA112 : ORCACheck
 {
     <#
-    
+
         Check if the Anti-spoofing policy action is configured to Move message to the recipients' Junk Email folder as per Standard security settings for Office 365 EOP/MDO
-    
+
     #>
 
     ORCA112()
@@ -40,18 +40,18 @@ class ORCA112 : ORCACheck
             "Configuring the anti-spoofing policy"="https://aka.ms/orca-atpp-docs-5"
             "Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-6"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-       
+
         ForEach ($Policy in $Config["AntiPhishPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
@@ -60,7 +60,7 @@ class ORCA112 : ORCACheck
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
             $identity = $($Policy.Identity)
             $enabled = $($Policy.Enabled)
-            
+
             # Check objects
             $ConfigObject = [ORCACheckConfig]::new()
             $ConfigObject.Object=$policyname
@@ -75,7 +75,7 @@ class ORCA112 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
@@ -84,17 +84,17 @@ class ORCA112 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")
             }
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 
         }
-        
-    
+
+
         If($Config["AnyPolicyState"][[PolicyType]::Antiphish] -eq $False)
         {
             $ConfigObject = [ORCACheckConfig]::new()
@@ -104,7 +104,7 @@ class ORCA112 : ORCACheck
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
         }
-        
+
 
     }
 

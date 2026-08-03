@@ -16,7 +16,7 @@ Disable future user's ability to install add-ins in Microsoft Word, Excel, or Po
 
 Implementation of this change will impact both end users and administrators. End users will not be able to install add-ins that they may want to install.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 admin center](https://admin.microsoft.com).
 2. Click to expand **Settings** select **Org settings**.
@@ -28,6 +28,7 @@ Implementation of this change will impact both end users and administrators. End
 
 1. Connect to the Microsoft Graph service using `Connect-MgGraph -Scopes "OrgSettings-AppsAndServices.ReadWrite.All"`.
 2. Run the following Microsoft Graph PowerShell commands:
+
 ```powershell
 $uri = "https://graph.microsoft.com/beta/admin/appsAndServices"
 $body = @{
@@ -42,7 +43,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 #### Related links
 
 * [Microsoft 365 admin center](https://admin.microsoft.com)
-* [Manage add-ins in the Microsoft 365 admin center](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-addins-in-the-admin-center?view=o365-worldwide&tabs=word-excel-powerpoint#manage-add-in-downloads-by-turning-onoff-the-office-store-across-all-apps-except-outlook)
+* [Manage add-ins in the Microsoft 365 admin center](https://learn.microsoft.com/microsoft-365/admin/manage/manage-addins-in-the-admin-center?view=o365-worldwide&tabs=word-excel-powerpoint#manage-add-in-downloads-by-turning-onoff-the-office-store-across-all-apps-except-outlook)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 56](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

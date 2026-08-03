@@ -15,9 +15,9 @@ param()
 class ORCA243 : ORCACheck
 {
     <#
-    
+
         ARC Trusted Sealers
-    
+
     #>
 
     ORCA243()
@@ -37,14 +37,14 @@ class ORCA243 : ORCACheck
         $this.ChiValue=[ORCACHI]::High
         $this.Links= @{
             "Improving 'Defense in Depth' with Trusted ARC Sealers for Microsoft Defender for Office 365"="https://techcommunity.microsoft.com/t5/microsoft-defender-for-office/improving-defense-in-depth-with-trusted-arc-sealers-for/ba-p/3440707"
-            "Configuring trusted ARC sealers"="https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/email-authentication-arc-configure?view=o365-worldwide"
+            "Configuring trusted ARC sealers"="https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-arc-configure?view=o365-worldwide"
         }
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -63,7 +63,7 @@ class ORCA243 : ORCACheck
                 $ConfigObject = [ORCACheckConfig]::new()
                 $ConfigObject.Object=$($Domain)
                 $ConfigObject.ConfigItem="Default ARC Config"
-    
+
                 if($HasArcSealer -eq $True)
                 {
                     $ConfigObject.ConfigData=$($ArcTrustedSealers)
@@ -72,11 +72,11 @@ class ORCA243 : ORCACheck
                     $ConfigObject.ConfigData="No Trusted Sealers"
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
-    
+
                 $this.AddConfig($ConfigObject)
-    
+
             }
-        } 
+        }
 
     }
 

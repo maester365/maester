@@ -1,0 +1,19 @@
+# Per-test attribution overrides.
+#
+# Attribution is normally derived from git history. Use this file only when git
+# history doesn't tell the true story (e.g. a test was ported on someone's
+# behalf, or written by a person who isn't the committer).
+#
+# Format:
+#
+#   MT.1234:
+#     author: github-handle             # replaces the derived original author
+#     contributors: [handle1, handle2]  # appended to the derived co-contributors
+#
+# Suite-wide rules (applied to every test in the suite unless a per-test
+# override exists). The derived original author is kept as a co-contributor.
+suites:
+  # EIDSCA tests originate from Thomas Naunheim's Entra ID Security Config
+  # Analyzer project; the porters/committers are credited as co-contributors.
+  eidsca:
+    author: Cloud-Architekt

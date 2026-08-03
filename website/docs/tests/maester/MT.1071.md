@@ -1,6 +1,6 @@
 ---
 title: "MT.1071 - At least one Conditional Access policy explicitly includes Azure DevOps."
-description: "Checks if any conditional access policy explicitly includes Azure DevOps Description If your organization has Conditional Access policies targeting the Windows Azure Service Management API (App ID: 797f4846-ba00-4fd7-ba43-dac1f8f63013), those policies will no longer apply to Azure DevOps sign-ins.…"
+description: "Checks if any Conditional Access policy explicitly includes Azure DevOps Description If your organization has Conditional Access policies targeting the Windows Azure Service Management API (App ID: 797f4846-ba00-4fd7-ba43-dac1f8f63013), those policies will no longer apply to Azure DevOps sign-ins.…"
 slug: /tests/MT.1071
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,11 +17,14 @@ keywords:
 
 # MT.1071 - At least one Conditional Access policy explicitly includes Azure DevOps.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/massimomazzariol" title="Massimo Mazzariol · Co-contributor"><img src="https://github.com/massimomazzariol.png" alt="Massimo Mazzariol" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-Checks if any conditional access policy explicitly includes Azure DevOps
+Checks if any Conditional Access policy explicitly includes Azure DevOps
 
 ## Description
+
 If your organization has Conditional Access policies targeting the Windows Azure Service Management API (App ID: 797f4846-ba00-4fd7-ba43-dac1f8f63013), those policies will no longer apply to Azure DevOps sign-ins. This may result in unprotected access unless these policies are updated to include Azure DevOps (App ID: 499b84ac-1321-427f-aa17-267ca6975798).
 
 Access controls such as MFA or compliant device requirements may not be enforced unless policies are updated.
@@ -32,29 +35,35 @@ Licensing requirement: Microsoft Entra ID P1 or P2 is required. There are no fun
 Unlicensed users may also be impacted.
 Existing Conditional Access policies will be affected, specifically those targeting the Windows Azure Service Management API.
 A small subset of tenants may see the app name as "Microsoft Visual Studio Team Services" instead of "Azure DevOps"—the App ID remains the same.
+If the Azure DevOps app (App ID: 499b84ac-1321-427f-aa17-267ca6975798) is not available in your tenant, this test is skipped.
 
 ## Remediate
+
 To ensure continued protection of Azure DevOps sign-ins, administrators should:
 
 Update policies to include Azure DevOps:
+
 1. Review existing Conditional Access policies - Identify any policies that target the Windows Azure Service Management API.
 2. Go to the Entra admin center.
 3. Navigate to Entra ID > Conditional Access > Policies.
 4. Select the relevant policy.
 5. Under Target resources, choose Select resources and add Azure DevOps (App ID: 499b84ac-1321-427f-aa17-267ca6975798).
     - If Azure DevOps is missing from available resources:
+
 ```
 Connect-MgGraph -Scopes "Directory.ReadWrite.All", "Application.ReadWrite.All"
 $params = @{
-	appId = "499b84ac-1321-427f-aa17-267ca6975798"
+ appId = "499b84ac-1321-427f-aa17-267ca6975798"
 }
 Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" -Method POST -Body $params
 ```
+
 6. Save the policy.
 
 ## Learn more
+
 - [Removing Azure Resource Manager reliance on Azure DevOps sign-ins | Azure DevOps Blog](https://devblogs.microsoft.com/devops/removing-azure-resource-manager-reliance-on-azure-devops-sign-ins/)
-- [What is Conditional Access? | Conditional Access | Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview)
+- [What is Conditional Access? | Conditional Access | Microsoft Entra ID | Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/overview)
 
 ## Test Metadata
 

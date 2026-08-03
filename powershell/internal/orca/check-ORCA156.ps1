@@ -21,9 +21,9 @@ param()
 class ORCA156 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA156()
@@ -48,15 +48,15 @@ class ORCA156 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
-    {   
-       
-        ForEach($Policy in $Config["SafeLinksPolicy"]) 
+    {
+
+        ForEach($Policy in $Config["SafeLinksPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $TrackUserClicks = $($Policy.TrackClicks)
@@ -76,16 +76,16 @@ class ORCA156 : ORCACheck
             If($TrackUserClicks -eq $True)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
-            
-        }        
+
+        }
 
     }
 

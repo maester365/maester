@@ -15,9 +15,9 @@ param()
 class ORCA118_3 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA118_3()
@@ -36,30 +36,30 @@ class ORCA118_3 : ORCACheck
             "Microsoft 365 Defender Portal - Anti-spam settings"="https://security.microsoft.com/antispam"
             "Use Anti-Spam Policy Sender/Domain Allow lists"="https://aka.ms/orca-antispam-docs-4"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"] ).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
+
         ForEach($Policy in $Config["HostedContentFilterPolicy"]) {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $AllowedSenderDomains = @($Policy.AllowedSenderDomains)
             $PolicyName = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
-    
+
             # Fail if AllowedSenderDomains is not null
-    
-            If(($AllowedSenderDomains).Count -gt 0) 
+
+            If(($AllowedSenderDomains).Count -gt 0)
             {
-                ForEach($Domain in $AllowedSenderDomains) 
+                ForEach($Domain in $AllowedSenderDomains)
                 {
 
                     # Is this domain an organisation domain?
@@ -74,14 +74,14 @@ class ORCA118_3 : ORCACheck
                         $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
                         <#
-                        
+
                         Important! This property can be written on pre-set & default policies, do not apply read only here.
 
                         #>
 
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                        $this.AddConfig($ConfigObject) 
-                    } 
+                        $this.AddConfig($ConfigObject)
+                    }
                 }
             } else {
                 $ConfigObject = [ORCACheckConfig]::new()
@@ -92,9 +92,9 @@ class ORCA118_3 : ORCACheck
                 $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-                $this.AddConfig($ConfigObject) 
+                $this.AddConfig($ConfigObject)
             }
-        }        
+        }
     }
 
 }

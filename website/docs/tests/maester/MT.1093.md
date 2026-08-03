@@ -17,6 +17,8 @@ keywords:
 
 # MT.1093 - Apple Automated Device Enrollment Tokens should be valid for more than 30 days
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks if the Apple ADE token is valid and not expired. The Apple Automated Device Enrollment (ADE) token is required to synchronize Apple devices with Microsoft Intune.
@@ -24,7 +26,7 @@ The token has a lifetime of one year and needs to be renewed to allow synchroniz
 
 #### Remediation action
 
-See the [Microsoft learn instructions to Renew enrollment program token](https://learn.microsoft.com/en-us/intune-education/renew-ios-certificate-token#renew-enrollment-program-token).
+See the [Microsoft learn instructions to Renew enrollment program token](https://learn.microsoft.com/intune-education/renew-ios-certificate-token#renew-enrollment-program-token).
 
 Direct Link for [Intune Portal -  Enrollment program tokens](https://intune.microsoft.com/#view/Microsoft_Intune_Enrollment/DepTokensPaging.ReactView).
 

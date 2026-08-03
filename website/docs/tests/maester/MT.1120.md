@@ -18,6 +18,8 @@ keywords:
 
 # MT.1120 - AI agents should not use MCP server tools without review
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/lnfernux" title="Truls Thorstad Dahlsveen · Original author"><img src="https://github.com/lnfernux.png" alt="Truls Thorstad Dahlsveen" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/lnfernux">Truls Thorstad Dahlsveen</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 AI agents should not use MCP server tools without review.
@@ -28,7 +30,7 @@ Model Context Protocol (MCP) tools extend agent capabilities by connecting to ex
 
 Review all MCP server integrations in the flagged agents. Ensure each MCP server endpoint is owned by your organization or a trusted partner, is hosted on infrastructure you control, and uses HTTPS with proper authentication. Consider replacing MCP tools with Power Platform custom connectors that provide DLP policy enforcement and governance controls.
 
-Learn more: [Use MCP servers in Copilot Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)
+Learn more: [Use MCP servers in Copilot Studio](https://learn.microsoft.com/microsoft-copilot-studio/agent-extend-action-mcp)
 
 ## Test Metadata
 
@@ -39,7 +41,7 @@ Learn more: [Use MCP servers in Copilot Studio](https://learn.microsoft.com/en-u
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentMcpTools](/docs/commands/Test-MtAIAgentMcpTools) |
-| Tags | AIAgent, CopilotStudio, MT.1120 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1120 |
 
 ## Source
 

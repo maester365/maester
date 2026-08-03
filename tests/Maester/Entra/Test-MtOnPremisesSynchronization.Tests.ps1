@@ -6,4 +6,8 @@ Describe 'Maester/Entra' -Tag 'Entra', 'Graph', 'Hybrid', 'Maester' {
     It 'MT.1147: Do not sync krbtgt_AzureAD to Entra ID. See https://maester.dev/docs/tests/MT.1147' -Tag 'MT.1147' {
         Test-MtKrbtgtAzureADNotSynced | Should -Be $true -Because 'krbtgt_AzureAD should exist only in Entra ID and should not be synchronized from on-premises Active Directory'
     }
+
+    It 'MT.1183: Temporary bypass for onPremisesObjectIdentifier updates should be disabled. See https://maester.dev/docs/tests/MT.1183' -Tag 'MT.1183' {
+        Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked | Should -Be $true -Because 'the temporary bypass for onPremisesObjectIdentifier updates should be disabled'
+    }
 }

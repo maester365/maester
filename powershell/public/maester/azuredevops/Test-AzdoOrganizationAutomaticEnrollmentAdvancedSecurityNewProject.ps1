@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if GitHub advanced Security for Azure DevOps is automatically enabled for new projects.
 
-    https://learn.microsoft.com/en-us/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding
+    https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding
 
 .EXAMPLE
     ```

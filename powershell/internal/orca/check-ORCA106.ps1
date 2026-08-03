@@ -21,9 +21,9 @@ ORCA-106 Checks if the Anti-Spam Filter Policy quarantine retention period is co
 class ORCA106 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA106()
@@ -42,13 +42,13 @@ class ORCA106 : ORCACheck
             "Manage quarantined messages and files as an administrator in Office 365"="https://aka.ms/orca-antispam-docs-6"
             "Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-6"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -71,7 +71,7 @@ class ORCA106 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
@@ -80,7 +80,7 @@ class ORCA106 : ORCACheck
             $this.AddConfig($ConfigObject)
 
         }
-    
+
     }
 
 }

@@ -21,6 +21,8 @@ keywords:
 
 # CIS.M365.1.3.1 - (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/henrikpiecha" title="Henrik Piecha · Co-contributor"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 1.3.1 (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'
@@ -34,14 +36,15 @@ Organizations such as NIST and Microsoft have updated their password policy reco
 #### Impact
 
 When setting passwords not to expire it is important to have other controls in place to supplement this setting. See below for related recommendations and user guidance.
+
 * Ban common passwords.
 * Educate users to not reuse organization passwords anywhere else.
 * Enforce Multi-Factor Authentication registration for all users.
 
-
-#### Remediation action:
+#### Remediation action
 
 To set Office 365 passwords are set to never expire:
+
 1. Navigate to [Microsoft 365 admin center](https://admin.microsoft.com).
 2. Click to expand **Settings** select **Org Settings**.
 3. Click on **Security & privacy**.
@@ -52,6 +55,7 @@ To set Office 365 passwords are set to never expire:
 
 1. Connect to the Microsoft Graph service using `Connect-MgGraph -Scopes "Domain.ReadWrite.All"`.
 2. Run the following Microsoft Graph PowerShell command:
+
 ```powershell
 Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 ```
@@ -61,7 +65,7 @@ Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [NIST Special Publication 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html)
 * [CIS Password Policy Guide](https://www.cisecurity.org/insights/white-papers/cis-password-policy-guide)
-* [Password policy recommendations for Microsoft 365 passwords](https://learn.microsoft.com/en-us/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide)
+* [Password policy recommendations for Microsoft 365 passwords](https://learn.microsoft.com/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 43](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

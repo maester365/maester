@@ -6,10 +6,11 @@ import MtDonutChart from "@/components/MtDonutChart"
 import MtSeverityChart from "@/components/MtSeverityChart"
 import MtBlocksArea from "@/components/MtBlocksArea"
 import TestResultsTable from "@/components/TestResultsTable"
+import { defaultSelectedStatus } from "@/lib/testStatus"
 
 export default function HomePage() {
   const { selectedTenant: testResults } = useTenant()
-  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'])
+  const [selectedStatus, setSelectedStatus] = useState(defaultSelectedStatus)
   const tenantName = testResults.TenantName || testResults.TenantId || "Tenant"
   const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(
     undefined,

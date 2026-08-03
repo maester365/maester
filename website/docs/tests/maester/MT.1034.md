@@ -1,6 +1,6 @@
 ---
 title: "MT.1034 - MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName))"
-description: "This function tests a Conditional Access evaluation with What If for a given scenario. The function uses the Microsoft Graph API to evaluate the Conditional Access policies. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool https://learn.microsoft.com/en-us/powe…"
+description: "This function tests a Conditional Access evaluation with What If for a given scenario. The function uses the Microsoft Graph API to evaluate the Conditional Access policies. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool https://learn.microsoft.com/powershell…"
 slug: /tests/MT.1034
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,6 +19,8 @@ keywords:
 
 # MT.1034 - MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName))
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/milanschwartz" title="Milan Schwartz · Co-contributor"><img src="https://github.com/milanschwartz.png" alt="Milan Schwartz" /></a><a className="test-byline-avatar" href="/contributors/jasperbaes" title="Jasper Baes · Co-contributor"><img src="https://github.com/jasperbaes.png" alt="Jasper Baes" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This function tests a Conditional Access evaluation with What If for a given scenario.
@@ -27,7 +29,7 @@ The function uses the Microsoft Graph API to evaluate the Conditional Access pol
 
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
-https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta
+https://learn.microsoft.com/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta
 
 ## Test Metadata
 

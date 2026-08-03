@@ -13,7 +13,7 @@ param()
 <#
 
     189
-    
+
     Checks to determine if SafeAttachments is being bypassed by injecting X-MS-Exchange-Organization-SkipSafeAttachmentProcessing
     header in to emails using a mail flow rule.
 
@@ -24,9 +24,9 @@ param()
 class ORCA189 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA189()
@@ -50,20 +50,20 @@ class ORCA189 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
         $BypassRules = @($Config["TransportRules"] | Where-Object {$_.SetHeaderName -eq "X-MS-Exchange-Organization-SkipSafeAttachmentProcessing"})
-        
-        If($BypassRules.Count -gt 0) 
+
+        If($BypassRules.Count -gt 0)
         {
             # Rules exist to bypass
-            ForEach($Rule in $BypassRules) 
+            ForEach($Rule in $BypassRules)
             {
 
                 # Check objects
@@ -73,7 +73,7 @@ class ORCA189 : ORCACheck
                 $ConfigObject.ConfigData=$($Rule.SetHeaderValue)
                 $ConfigObject.ConfigDisabled=$($Rule.State -eq "Disabled")
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                $this.AddConfig($ConfigObject)  
+                $this.AddConfig($ConfigObject)
 
             }
         }

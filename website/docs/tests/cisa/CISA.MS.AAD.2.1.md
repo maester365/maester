@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.2.1 - Users detected as high risk SHALL be blocked."
-description: "Users detected as high risk SHALL be blocked. Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. This prevents compromised accounts from accessing the tenant. Remediation action: Create a conditional access policy blocking users categorized as high risk…"
+description: "Users detected as high risk SHALL be blocked. Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. Remediation action: Create a Conditional Access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following poli…"
 slug: /tests/CISA.MS.AAD.2.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -20,15 +20,17 @@ keywords:
 
 # CISA.MS.AAD.2.1 - Users detected as high risk SHALL be blocked.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Users detected as high risk SHALL be blocked.
 
-Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. This prevents compromised accounts from accessing the tenant.
+Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant.
 
 #### Remediation action:
 
-Create a conditional access policy blocking users categorized as high risk by the Identity Protection service. Configure the following policy settings in the new conditional access policy as per the values below:
+Create a Conditional Access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following policy settings in the new Conditional Access policy as per the values below:
 
 * Users > Include > **All users**
 * Target resources > Cloud apps > **All cloud apps**

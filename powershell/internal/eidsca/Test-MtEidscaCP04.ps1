@@ -20,7 +20,7 @@ function Test-MtEidscaCP04 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     $rawValue = $result.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value
@@ -39,4 +39,3 @@ function Test-MtEidscaCP04 {
 
     return $tenantValue
 }
-

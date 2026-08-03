@@ -2,8 +2,10 @@ GitHub advanced Security for Azure DevOps **should be** automatically enabled fo
 
 Rationale: Newly created projects should have Advanced Security enabled upon creation.
 
-#### Remediation action:
+#### Remediation action
+
 Organization-level onboarding
+
 1. Sign in to your organization.
 2. Go to your Organization settings for your Azure DevOps organization.
 3. Select Repositories.
@@ -16,4 +18,4 @@ Newly created projects have Advanced Security enabled upon creation.
 
 #### Related links
 
-* [Learn - GitHub Advanced Security for Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding)
+* [Learn - GitHub Advanced Security for Azure DevOps](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding)

@@ -15,9 +15,9 @@ param()
 class ORCA102 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA102()
@@ -41,9 +41,9 @@ class ORCA102 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -55,22 +55,22 @@ class ORCA102 : ORCACheck
             $IsPolicyDisabled = $Config["PolicyStates"][$Policy.Guid.ToString()].Disabled
             $ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
-            $IncreaseScoreWithImageLinks = $($Policy.IncreaseScoreWithImageLinks) 
-            $IncreaseScoreWithNumericIps = $($Policy.IncreaseScoreWithNumericIps) 
-            $IncreaseScoreWithRedirectToOtherPort = $($Policy.IncreaseScoreWithRedirectToOtherPort) 
-            $IncreaseScoreWithBizOrInfoUrls = $($Policy.IncreaseScoreWithBizOrInfoUrls) 
-            $MarkAsSpamEmptyMessages = $($Policy.MarkAsSpamEmptyMessages) 
-            $MarkAsSpamJavaScriptInHtml = $($Policy.MarkAsSpamJavaScriptInHtml) 
-            $MarkAsSpamFramesInHtml = $($Policy.MarkAsSpamFramesInHtml) 
-            $MarkAsSpamObjectTagsInHtml = $($Policy.MarkAsSpamObjectTagsInHtml) 
-            $MarkAsSpamEmbedTagsInHtml = $($Policy.MarkAsSpamEmbedTagsInHtml) 
-            $MarkAsSpamFormTagsInHtml = $($Policy.MarkAsSpamFormTagsInHtml) 
-            $MarkAsSpamWebBugsInHtml = $($Policy.MarkAsSpamWebBugsInHtml) 
-            $MarkAsSpamSensitiveWordList = $($Policy.MarkAsSpamSensitiveWordList) 
-            $MarkAsSpamFromAddressAuthFail = $($Policy.MarkAsSpamFromAddressAuthFail) 
-            $MarkAsSpamNdrBackscatter = $($Policy.MarkAsSpamNdrBackscatter) 
-            $MarkAsSpamSpfRecordHardFail = $($Policy.MarkAsSpamSpfRecordHardFail) 
-           
+            $IncreaseScoreWithImageLinks = $($Policy.IncreaseScoreWithImageLinks)
+            $IncreaseScoreWithNumericIps = $($Policy.IncreaseScoreWithNumericIps)
+            $IncreaseScoreWithRedirectToOtherPort = $($Policy.IncreaseScoreWithRedirectToOtherPort)
+            $IncreaseScoreWithBizOrInfoUrls = $($Policy.IncreaseScoreWithBizOrInfoUrls)
+            $MarkAsSpamEmptyMessages = $($Policy.MarkAsSpamEmptyMessages)
+            $MarkAsSpamJavaScriptInHtml = $($Policy.MarkAsSpamJavaScriptInHtml)
+            $MarkAsSpamFramesInHtml = $($Policy.MarkAsSpamFramesInHtml)
+            $MarkAsSpamObjectTagsInHtml = $($Policy.MarkAsSpamObjectTagsInHtml)
+            $MarkAsSpamEmbedTagsInHtml = $($Policy.MarkAsSpamEmbedTagsInHtml)
+            $MarkAsSpamFormTagsInHtml = $($Policy.MarkAsSpamFormTagsInHtml)
+            $MarkAsSpamWebBugsInHtml = $($Policy.MarkAsSpamWebBugsInHtml)
+            $MarkAsSpamSensitiveWordList = $($Policy.MarkAsSpamSensitiveWordList)
+            $MarkAsSpamFromAddressAuthFail = $($Policy.MarkAsSpamFromAddressAuthFail)
+            $MarkAsSpamNdrBackscatter = $($Policy.MarkAsSpamNdrBackscatter)
+            $MarkAsSpamSpfRecordHardFail = $($Policy.MarkAsSpamSpfRecordHardFail)
+
             $IsBuiltIn = $false
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
 
@@ -93,7 +93,7 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($IncreaseScoreWithNumericIps -eq "On") 
+                If ($IncreaseScoreWithNumericIps -eq "On")
                 {
 
                     $ConfigObject = [ORCACheckConfig]::new()
@@ -111,7 +111,7 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($IncreaseScoreWithRedirectToOtherPort -eq "On") 
+                If ($IncreaseScoreWithRedirectToOtherPort -eq "On")
                 {
 
                     $ConfigObject = [ORCACheckConfig]::new()
@@ -129,11 +129,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($IncreaseScoreWithBizOrInfoUrls -eq "On") 
+                If ($IncreaseScoreWithBizOrInfoUrls -eq "On")
                 {
 
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="IncreaseScoreWithBizOrInfoUrls"
                     $ConfigObject.ConfigData=$IncreaseScoreWithBizOrInfoUrls
@@ -145,11 +145,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamEmptyMessages -eq "On") 
+                If ($MarkAsSpamEmptyMessages -eq "On")
                 {
 
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamEmptyMessages"
                     $ConfigObject.ConfigData=$MarkAsSpamEmptyMessages
@@ -163,11 +163,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamJavaScriptInHtml -eq "On") 
+                If ($MarkAsSpamJavaScriptInHtml -eq "On")
                 {
-                    
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamJavaScriptInHtml"
                     $ConfigObject.ConfigData=$MarkAsSpamJavaScriptInHtml
@@ -182,9 +182,9 @@ class ORCA102 : ORCACheck
 
                 }
                 If ($MarkAsSpamFramesInHtml -eq "On") {
-                                        
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamFramesInHtml"
                     $ConfigObject.ConfigData=$MarkAsSpamFramesInHtml
@@ -198,11 +198,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamObjectTagsInHtml -eq "On") 
+                If ($MarkAsSpamObjectTagsInHtml -eq "On")
                 {
-                                                            
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamObjectTagsInHtml"
                     $ConfigObject.ConfigData=$MarkAsSpamObjectTagsInHtml
@@ -216,11 +216,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamEmbedTagsInHtml -eq "On") 
+                If ($MarkAsSpamEmbedTagsInHtml -eq "On")
                 {
-                                                                                
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamEmbedTagsInHtml"
                     $ConfigObject.ConfigData=$MarkAsSpamEmbedTagsInHtml
@@ -234,11 +234,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamFormTagsInHtml -eq "On") 
+                If ($MarkAsSpamFormTagsInHtml -eq "On")
                 {
-                                                                                                    
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamFormTagsInHtml"
                     $ConfigObject.ConfigData=$MarkAsSpamFormTagsInHtml
@@ -252,11 +252,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamWebBugsInHtml -eq "On") 
+                If ($MarkAsSpamWebBugsInHtml -eq "On")
                 {
-                                                                                                                        
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamWebBugsInHtml"
                     $ConfigObject.ConfigData=$MarkAsSpamWebBugsInHtml
@@ -270,11 +270,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamSensitiveWordList -eq "On") 
+                If ($MarkAsSpamSensitiveWordList -eq "On")
                 {
-                                                                                                                                      
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamSensitiveWordList"
                     $ConfigObject.ConfigData=$MarkAsSpamSensitiveWordList
@@ -288,11 +288,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamFromAddressAuthFail -eq "On") 
+                If ($MarkAsSpamFromAddressAuthFail -eq "On")
                 {
-                                                                                                                                                          
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamFromAddressAuthFail"
                     $ConfigObject.ConfigData=$MarkAsSpamFromAddressAuthFail
@@ -306,11 +306,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamNdrBackscatter -eq "On") 
+                If ($MarkAsSpamNdrBackscatter -eq "On")
                 {
-                                                                                                                                                                              
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamNdrBackscatter"
                     $ConfigObject.ConfigData=$MarkAsSpamNdrBackscatter
@@ -324,11 +324,11 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-                If ($MarkAsSpamSpfRecordHardFail -eq "On") 
+                If ($MarkAsSpamSpfRecordHardFail -eq "On")
                 {
-                                                                                                                                                                             
+
                     $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                     $ConfigObject.Object=$policyname
                     $ConfigObject.ConfigItem="MarkAsSpamSpfRecordHardFail"
                     $ConfigObject.ConfigData=$MarkAsSpamSpfRecordHardFail
@@ -342,13 +342,13 @@ class ORCA102 : ORCACheck
                     $this.AddConfig($ConfigObject)
 
                 }
-    
+
             }
-            else 
+            else
             {
-                                                                                                                                                                        
+
                 $ConfigObject = [ORCACheckConfig]::new()
-                    
+
                 $ConfigObject.Object=$policyname
                 $ConfigObject.ConfigItem="ASF Options"
                 $ConfigObject.ConfigData="Disabled"
@@ -362,9 +362,8 @@ class ORCA102 : ORCACheck
                 $this.AddConfig($ConfigObject)
 
             }
-        }        
+        }
 
     }
 
 }
-

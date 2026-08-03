@@ -78,11 +78,23 @@
         Test-MtCaReferencedObjectsExist | Should -Be $true -Because "all referenced users, groups, or roles should exist."
     }
     It "MT.1071: At least one Conditional Access policy explicitly includes Azure DevOps. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
-        Test-MtCaAzureDevOps | Should -Be $true -Because "one or more policies target Azure DevOps app."
+        $result = Test-MtCaAzureDevOps
+
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "one or more policies target Azure DevOps app."
+        }
     }
 
-    It "MT.1072: Conditional access policies should not use the deprecated Approved Client App grant. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072" {
+    It "MT.1072: Conditional Access policies should not use the deprecated Approved Client App grant. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072" {
         Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
+    }
+
+    It "MT.1181: Conditional Access policy is present that blocks high agent risk sign-ins. See https://maester.dev/docs/tests/MT.1181" -Tag "MT.1181" {
+        Test-MtCaAgentRiskBlockPolicy | Should -Be $true -Because "there is no policy that blocks high-risk agent identities."
+    }
+
+    It "MT.1184: Conditional Access policy without any target resources configured. See https://maester.dev/docs/tests/MT.1184" -Tag "MT.1184" {
+        Test-MtCaUntargetedPolicy | Should -Be $true -Because "there are one or more policies not targeted to any resource."
     }
 
     Context "Maester/Entra" -Tag "Entra", "License" {
@@ -97,7 +109,7 @@
     }
 }
 
-Describe "Maester/Entra" -Tag "CA" {
+Describe "Maester/Entra" -Tag "Maester", "CA" {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
         $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
         if ($EntraIDPlan -ne "Free") {

@@ -6,7 +6,7 @@ Agents that use generative orchestration (generative actions enabled) without cu
 
 Open each flagged agent in Copilot Studio and add custom instructions that define the agent's purpose, boundaries, and behavioral constraints. At minimum, instructions should specify what the agent is allowed to do, what topics are off-limits, and how it should handle attempts to override its instructions.
 
-Learn more: [Create and edit custom instructions](https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-instructions)
+Learn more: [Create and edit custom instructions](https://learn.microsoft.com/microsoft-copilot-studio/authoring-instructions)
 
 <!--- Results --->
 %TestResult%

@@ -1,6 +1,6 @@
 ---
 title: "MT.1074 - Mailboxes should not send outbound mails using the .onmicrosoft.com domain."
-description: "Ensure none or less than 100 outbound mails per day are being sent using the .onmicrosoft.com domain. Limitations of free 'onmicrosoft' shared domains:\\ The \"default\" onmicrosoft domains are useful for testing mail flow but are not suitable for regular messaging. They do not reflect a customer's br…"
+description: "Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain. Limitations of free 'onmicrosoft' shared domains:\\ The \"default\" onmicrosoft domains are useful for testing mail flow but are not suitable for regular messaging. They do not reflect a customer's brand identit…"
 slug: /tests/MT.1074
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,9 +17,11 @@ keywords:
 
 # MT.1074 - Mailboxes should not send outbound mails using the .onmicrosoft.com domain.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/brianveldman" title="Beerd Veldman · Co-contributor"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-Ensure none or less than 100 outbound mails per day are being sent using the .onmicrosoft.com domain.
+Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain.
 
 Limitations of free 'onmicrosoft' shared domains:\
 The "default" onmicrosoft domains are useful for testing mail flow but are not suitable for regular messaging. They do not reflect a customer's brand identity and offer limited administrative control. Moreover, because these domains all share the 'onmicrosoft' domain (for example, 'contoso.onmicrosoft.com'), their reputation is collectively impacted. Despite Microsoft's efforts to minimize abuse, spammers often exploit newly created tenants to send bursts of spam from '.onmicrosoft.com' addresses before they can intervene. This degrades this shared domain's reputation, affecting all legitimate users. To ensure brand trust and email deliverability, organizations should establish and use their own custom domains for sending email. Until now, Microsoft did not have any limits on use of MOERA domains for email delivery.
@@ -48,7 +50,7 @@ Change primary usage of the .onmicrosoft.com domain for mailboxes.
 2. Click to expand **Recipients** and select **Mailboxes**.
 3. Filter for mailboxes with the .onmicrosoft.com domain as a primary SMTP address.
 4. Select a mailbox to open its properties and click **Manage email address types**.
-5. Select **Add email address type** and add a new mail adress with your custom domain.
+5. Select **Add email address type** and add a new mail address with your custom domain.
 6. Check **Set as primary email address**.
 7. Confirm with **Ok**.
 8. Repeat for every mailbox.

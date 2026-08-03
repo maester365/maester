@@ -64,12 +64,16 @@
             }
         }
 
-        # Default mock: Get-MtRoleInfo returns the correct GUIDs by role name
+        # Default mock: Get-MtRoleInfo returns role-definition objects, matching the real command.
         Mock -ModuleName Maester Get-MtRoleInfo {
             param($RoleName)
             switch ($RoleName) {
-                'DirectorySynchronizationAccounts' { return $script:DirSyncRoleId }
-                'OnPremisesDirectorySyncAccount' { return $script:OnPremRoleId }
+                'DirectorySynchronizationAccounts' {
+                    return [PSCustomObject]@{ Id = $script:DirSyncRoleId; IsPrivileged = $false }
+                }
+                'OnPremisesDirectorySyncAccount' {
+                    return [PSCustomObject]@{ Id = $script:OnPremRoleId; IsPrivileged = $false }
+                }
             }
         }
     }
@@ -85,19 +89,33 @@
 
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
         }
+
+        It 'Should pass role GUIDs rather than role-definition objects to Get-MtRoleMember' {
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
+
+            Test-MtCaExclusionForDirectorySyncAccount
+
+            Should -Invoke Get-MtRoleMember -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                "$RoleId" -eq 'd29b2b05-8046-44ba-8758-1e26182fcf32'
+            }
+            Should -Invoke Get-MtRoleMember -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                "$RoleId" -eq 'a92aed5d-d78a-4d16-b381-09adb37eb3b0'
+            }
+        }
     }
 
-    Context 'Service principal-only members (no user members)' {
+    Context 'Service principal-only members (ABA — Application-Based Authentication, Entra Connect v2.5.76.0+)' {
 
         BeforeEach {
-            # Only a service principal is in the role — no users to exclude
+            # Only a service principal is in the role — this is the ABA pattern (Entra Connect v2.5.76.0+).
+            # The new code returns true early (before iterating policies) with an informative ABA message.
             Mock -ModuleName Maester Get-MtRoleMember { return $script:syncServicePrincipal }
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
                 return @(New-CaPolicy -ExcludeUsers @() -ExcludeRoles @())
             }
         }
 
-        It 'Should return true because service principals cannot be excluded from CA policies' {
+        It 'Should return true because ABA service principals are not subject to CA policies' {
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
         }
     }
@@ -302,4 +320,26 @@
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeNull
         }
     }
+
+    Context 'Get-MtRoleInfo returns null for both sync roles (module reload / $script:MtRoles uninitialised)' {
+
+        BeforeEach {
+            # Simulate the condition where the module was reloaded in an existing PS session and the
+            # class MtRoleDefinition redefinition failed, leaving $script:MtRoles uninitialised.
+            # Get-MtRoleInfo returns $null; Get-MtRoleMember must NOT be called with a null role ID.
+            Mock -ModuleName Maester Get-MtRoleInfo { return $null }
+            Mock -ModuleName Maester Get-MtRoleMember {}
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
+        }
+
+        It 'Should return true and report not applicable (no role members resolvable)' {
+            Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
+        }
+
+        It 'Should not call Get-MtRoleMember when role info is null' {
+            Test-MtCaExclusionForDirectorySyncAccount
+            Should -Invoke Get-MtRoleMember -ModuleName Maester -Times 0 -Exactly
+        }
+    }
+
 }

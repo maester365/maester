@@ -289,6 +289,11 @@ export default function ConfigPage() {
   }
 
   const configSource = originalConfig?.ConfigSource
+  const moduleVersion = originalConfig?.ModuleVersion
+  const configVersion = originalConfig?.ConfigVersion
+  const showSource = isMultiTenant && !!configSource
+  const showInfoBar = showSource || !!moduleVersion || !!configVersion
+  const codeChip = "px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 font-mono text-xs"
 
   return (
     <div className="p-6 pb-24">
@@ -296,10 +301,16 @@ export default function ConfigPage() {
         <FileJson className="h-8 w-8 text-orange-500" />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Maester Configuration</h1>
       </div>
-      {isMultiTenant && configSource && (
+      {showInfoBar && (
         <div className="mb-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <Info className="h-4 w-4" />
-          <span>Loaded from: <code className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 font-mono text-xs">{configSource}</code></span>
+          <span>
+            {showSource && <>Loaded from: <code className={codeChip}>{configSource}</code></>}
+            {showSource && (moduleVersion || configVersion) && <> · </>}
+            {moduleVersion && <>module <code className={codeChip}>{moduleVersion}</code></>}
+            {moduleVersion && configVersion && <> · </>}
+            {configVersion && <>config <code className={codeChip}>{configVersion}</code></>}
+          </span>
         </div>
       )}
 

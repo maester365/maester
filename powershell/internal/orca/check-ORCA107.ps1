@@ -21,9 +21,9 @@ ORCA-107 Check if End-user Spam notification is enabled and the notification fre
 class ORCA107 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA107()
@@ -47,9 +47,9 @@ class ORCA107 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -97,7 +97,7 @@ class ORCA107 : ORCACheck
                     }
                 }
             }
-            
+
             $ConfigObject = [ORCACheckConfig]::new()
             $ConfigObject.Object=$QuarantinePolicy.Name
             $ConfigObject.ConfigReadonly=($QuarantinePolicy.Name -eq "DefaultFullAccessWithNotificationPolicy" -or $QuarantinePolicy.Name -eq "DefaultFullAccessPolicy" -or $QuarantinePolicy.Name -eq "AdminOnlyAccessPolicy")
@@ -109,15 +109,15 @@ class ORCA107 : ORCACheck
                 if($QuarantinePolicy.ESNEnabled -eq $True)
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)
-                } 
-                else 
+                }
+                else
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)
                 }
-                
+
                 $this.AddConfig($ConfigObject)
-            } 
-            else 
+            }
+            else
             {
                 # Quarantine policy does not apply to any spam policy
                 if($QuarantinePolicy.ESNEnabled -eq $False)
@@ -125,12 +125,12 @@ class ORCA107 : ORCACheck
                     $ConfigObject.ConfigDisabled = $True
                     $ConfigObject.SetResult([ORCAConfigLevel]::All,[ORCAResult]::Informational)
                     $ConfigObject.InfoText = "This quarantine policy has notifications turned off, however, it is not used in any spam related action. It is being flagged for awareness purposes only."
-                
+
                     $this.AddConfig($ConfigObject)
                 }
             }
 
-        }        
+        }
     }
 
 }

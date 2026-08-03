@@ -24,6 +24,8 @@ keywords:
 
 # CIS.M365.5.1.2.3 - Ensure
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 5.1.2.3 (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'
@@ -38,7 +40,7 @@ Restricting tenant creation prevents unauthorized or uncontrolled deployment of 
 
 Non-admin users will need to contact I.T. if they have a valid reason to create a tenant.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** > **Users** > **User settings**.
@@ -48,6 +50,7 @@ Non-admin users will need to contact I.T. if they have a valid reason to create 
 
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"`
 2. Run the following commands:
+
 ```powershell
 # Create hashtable and update the auth policy
 $params = @{ AllowedToCreateTenants = $false }
@@ -57,7 +60,7 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $params
 #### Related links
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
-* [Restrict member users' default permissions](https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions#restrict-member-users-default-permissions)
+* [Restrict member users' default permissions](https://learn.microsoft.com/entra/fundamentals/users-default-permissions#restrict-member-users-default-permissions)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 175](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

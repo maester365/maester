@@ -24,6 +24,8 @@ keywords:
 
 # CIS.M365.5.1.5.2 - Ensure the admin consent workflow is enabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 5.1.5.2 (L1) Ensure the admin consent workflow is enabled
@@ -36,9 +38,9 @@ The admin consent workflow (Preview) gives admins a secure way to grant access t
 
 #### Impact
 
-To approve requests, a reviewer must be a global administrator, cloud application administrator, or application administrator. The reviewer must already have one of these admin roles assigned; simply designating them as a reviewer doesn't elevate their privileges.
+To approve requests, a reviewer must be a Global Administrator, Cloud Application Administrator, or Application Administrator. The reviewer must already have one of these admin roles assigned; simply designating them as a reviewer doesn't elevate their privileges.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Entra ID admin center](https://entra.microsoft.com).
 2. Under **Entra ID** select **Enterprise apps**
@@ -50,7 +52,7 @@ To approve requests, a reviewer must be a global administrator, cloud applicatio
 #### Related links
 
 * [Microsoft Entra ID admin center](https://entra.microsoft.com)
-* [Configure the admin consent workflow](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow)
+* [Configure the admin consent workflow](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-admin-consent-workflow)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 214](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

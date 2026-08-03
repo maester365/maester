@@ -30,7 +30,7 @@
             throw [System.Management.Automation.ItemNotFoundException]::new('No Intune Certificate Connectors found.')
         }
 
-        # https://learn.microsoft.com/en-us/intune/intune-service/protect/certificate-connector-overview#lifecycle
+        # https://learn.microsoft.com/intune/intune-service/protect/certificate-connector-overview#lifecycle
         $minimumVersion = [System.Version]'6.2406.0.1001'
 
         $healthStatus = foreach ($connector in $certificateConnectors) {

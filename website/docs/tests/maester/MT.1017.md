@@ -1,6 +1,6 @@
 ---
 title: "MT.1017 - At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices."
-description: "Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device. Learn more: https://aka.ms/CATemplatesBrowserSession"
+description: "Non persistent browser session Conditional Access policy can be helpful to minimize the risk of data leakage from an unmanaged device. Learn more: https://aka.ms/CATemplatesBrowserSession"
 slug: /tests/MT.1017
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -17,9 +17,11 @@ keywords:
 
 # MT.1017 - At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/henrikpiecha" title="Henrik Piecha · Co-contributor"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
-Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device.
+Non persistent browser session Conditional Access policy can be helpful to minimize the risk of data leakage from an unmanaged device.
 
 Learn more:
 https://aka.ms/CATemplatesBrowserSession
