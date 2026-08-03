@@ -330,9 +330,18 @@
         )
 
         $invokeCommand = 'Invoke-Maester'
+        $redactedParameters = @('TeamChannelWebhookUri')
         foreach ($param in $BoundParameters.GetEnumerator()) {
             $paramName = $param.Key
             $paramValue = $param.Value
+
+            if ($paramName -in $redactedParameters) {
+                if (-not [string]::IsNullOrWhiteSpace([string]$paramValue)) {
+                    $invokeCommand += " -$paramName '<redacted>'"
+                }
+                continue
+            }
+
             if ($paramValue -is [switch]) {
                 if ($paramValue.IsPresent) {
                     $invokeCommand += " -$paramName"
@@ -841,6 +850,10 @@
                     $targetParams = @{}
                     foreach ($entry in $PSBoundParameters.GetEnumerator()) {
                         $targetParams[$entry.Key] = $entry.Value
+                    }
+
+                    foreach ($notificationParam in @('MailRecipient', 'MailTestResultsUri', 'MailUserId', 'TeamId', 'TeamChannelId', 'TeamChannelWebhookUri')) {
+                        $null = $targetParams.Remove($notificationParam)
                     }
 
                     if (-not [string]::IsNullOrWhiteSpace($OutputFolder) -or -not [string]::IsNullOrWhiteSpace($OutputFolderFileName)) {
