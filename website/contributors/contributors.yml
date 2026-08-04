@@ -517,8 +517,12 @@ wesmacdonald:
 weyCC81:
   name: Stefan Wey
   title: ➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (
+  mvp: false
+  company: UMB AG
   location: Switzerland
-  url: https://www.alweys.ch
+  url: https://www.alweys.ch/maester
   socials:
     linkedin: stefanwey
     bluesky: stefanwey.bsky.social
+  #emails:
+  #  -weyCC81@users.noreply.github.com
