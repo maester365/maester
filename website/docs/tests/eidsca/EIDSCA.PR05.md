@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.PR05 - Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds."
-description: "The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases. Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn Test script ``` https://graph.microsoft.com/beta/settings .values -ge 60 ``` Related links - Open in Graph Explorer - di…"
+description: "The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases. Prevent Attacks Using Smart Lockout - Microsoft Entra ID - Microsoft Learn Test script ``` https://graph.microsoft.com/beta/settings .values -ge 60 ``` Related links - Open in Graph Explorer - di…"
 slug: /tests/EIDSCA.PR05
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,20 +19,21 @@ keywords:
 
 # EIDSCA.PR05 - Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/m-hanisch" title="m-hanisch · Co-contributor"><img src="https://github.com/m-hanisch.png" alt="m-hanisch" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mattcave" title="Matt Cave · Co-contributor"><img src="https://github.com/mattcave.png" alt="Matt Cave" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/m-hanisch" title="m-hanisch · Co-contributor"><img src="https://github.com/m-hanisch.png" alt="m-hanisch" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mattcave" title="Matt Cave · Co-contributor"><img src="https://github.com/mattcave.png" alt="Matt Cave" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases.
 
-[Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
+[Prevent Attacks Using Smart Lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/settings
 .values -ge 60
 ```
+
+
 
 #### Related links
 
@@ -53,7 +54,6 @@ mindmap
     (Technique)
       T1110 - Brute Force
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|

@@ -1,16 +1,22 @@
 Object Id or scope of users which will be showing app information in the Authenticator App.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.displayAppInformationRequiredState.includeTarget.id -eq 'all_users'
 ```
 
+
+
 #### Related links
 
 - [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
 - [microsoftAuthenticatorAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/microsoftauthenticatorauthenticationmethodconfiguration)
+
+
+
 
 <!--- Results --->
 %TestResult%
