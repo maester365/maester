@@ -19,7 +19,7 @@ keywords:
 
 # EIDSCA.CP03 - Default Settings - Consent Policy Settings - Block user consent for risky apps.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -28,16 +28,18 @@ Defines whether user consent will be blocked when a risky request is detected
 [Configure risk-based step-up consent - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/manage-apps/configure-risk-based-step-up-consent)
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/settings
 .values -eq 'true'
 ```
 
+
+
 #### Related links
 
 - [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=settings&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
 - [directorySetting resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/directorysetting)
+
 
 ## MITRE ATT&CK
 
@@ -54,7 +56,6 @@ mindmap
       T1566.002 - Phishing: Spearphishing Link
       T1078 - Valid Accounts
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|

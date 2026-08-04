@@ -89,11 +89,6 @@
         "CISA.MS.EXO.17.3",
         "CISA.MS.SHAREPOINT.1.1",
         "CISA.MS.SHAREPOINT.1.3",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048",
         "MT.1076",
         "ORCA.100",
         "ORCA.101",
@@ -158,6 +153,11 @@
         "CISA.MS.AAD.2.3",
         "MT.1021",
         "MT.1036",
+        "MT.1042",
+        "MT.1045",
+        "MT.1046",
+        "MT.1047",
+        "MT.1048",
         "ORCA.108.1",
         "ORCA.118.1",
         "ORCA.118.2",
@@ -367,11 +367,6 @@
         "MT.1031",
         "MT.1032",
         "MT.1034",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048",
         "MT.1084",
         "MT.1085"
       ],
@@ -480,90 +475,6 @@
       ],
       "initials": "BM",
       "recentCommits": 0
-    },
-    {
-      "id": "Mynster9361",
-      "github": "Mynster9361",
-      "name": "-Mynster",
-      "title": "Cybersecurity consultant",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "TDC Erhverv",
-      "location": "Denmark",
-      "locationFlag": "🇩🇰",
-      "url": "https://mynster9361.github.io",
-      "socials": {
-        "linkedin": "mortenmynster"
-      },
-      "avatar": "https://github.com/Mynster9361.png",
-      "firstContribution": "2026-04-04",
-      "testsAuthored": [
-        "CIS.M365.7.2.2",
-        "CIS.M365.7.2.5",
-        "CIS.M365.7.2.7",
-        "CIS.M365.7.2.9",
-        "CIS.M365.7.2.11",
-        "CIS.M365.7.3.1",
-        "CIS.M365.8.2.3",
-        "CISA.MS.SHAREPOINT.1.2",
-        "CISA.MS.SHAREPOINT.2.1",
-        "CISA.MS.SHAREPOINT.2.2",
-        "CISA.MS.SHAREPOINT.3.1",
-        "CISA.MS.SHAREPOINT.3.2",
-        "CISA.MS.SHAREPOINT.3.3"
-      ],
-      "testsContributed": [
-        "CIS.M365.1.1.1",
-        "CIS.M365.1.1.3",
-        "CIS.M365.1.2.1",
-        "CIS.M365.1.2.2",
-        "CIS.M365.1.3.1",
-        "CIS.M365.1.3.3",
-        "CIS.M365.1.3.4",
-        "CIS.M365.1.3.5",
-        "CIS.M365.1.3.6",
-        "CIS.M365.1.3.7",
-        "CIS.M365.2.1.1",
-        "CIS.M365.2.1.2",
-        "CIS.M365.2.1.3",
-        "CIS.M365.2.1.4",
-        "CIS.M365.2.1.5",
-        "CIS.M365.2.1.6",
-        "CIS.M365.2.1.7",
-        "CIS.M365.2.1.9",
-        "CIS.M365.2.1.11",
-        "CIS.M365.2.1.12",
-        "CIS.M365.2.1.13",
-        "CIS.M365.2.4.4",
-        "CIS.M365.3.1.1",
-        "CIS.M365.4.1",
-        "CIS.M365.5.1.2.2",
-        "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
-        "CIS.M365.5.1.5.1",
-        "CIS.M365.5.1.5.2",
-        "CIS.M365.5.1.6.2",
-        "CIS.M365.5.2.3.5",
-        "CIS.M365.6.5.3",
-        "CIS.M365.8.1.1",
-        "CIS.M365.8.2.2",
-        "CIS.M365.8.4.1",
-        "CIS.M365.8.5.3",
-        "CIS.M365.8.6.1",
-        "CISA.MS.SHAREPOINT.1.1",
-        "CISA.MS.SHAREPOINT.1.3",
-        "MT.1020",
-        "MT.1021",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048",
-        "MT.1098"
-      ],
-      "initials": "M",
-      "recentCommits": 5
     },
     {
       "id": "thomas-s-schmidt",
@@ -734,6 +645,194 @@
         "ORCA.244"
       ],
       "initials": "TS",
+      "recentCommits": 1
+    },
+    {
+      "id": "Mynster9361",
+      "github": "Mynster9361",
+      "name": "-Mynster",
+      "title": "Cybersecurity consultant",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "TDC Erhverv",
+      "location": "Denmark",
+      "locationFlag": "🇩🇰",
+      "url": "https://mynster9361.github.io",
+      "socials": {
+        "linkedin": "mortenmynster"
+      },
+      "avatar": "https://github.com/Mynster9361.png",
+      "firstContribution": "2026-04-04",
+      "testsAuthored": [
+        "CIS.M365.7.2.2",
+        "CIS.M365.7.2.5",
+        "CIS.M365.7.2.7",
+        "CIS.M365.7.2.9",
+        "CIS.M365.7.2.11",
+        "CIS.M365.7.3.1",
+        "CIS.M365.8.2.3",
+        "CISA.MS.SHAREPOINT.1.2",
+        "CISA.MS.SHAREPOINT.2.1",
+        "CISA.MS.SHAREPOINT.2.2",
+        "CISA.MS.SHAREPOINT.3.1",
+        "CISA.MS.SHAREPOINT.3.2",
+        "CISA.MS.SHAREPOINT.3.3"
+      ],
+      "testsContributed": [
+        "CIS.M365.1.1.1",
+        "CIS.M365.1.1.3",
+        "CIS.M365.1.2.1",
+        "CIS.M365.1.2.2",
+        "CIS.M365.1.3.1",
+        "CIS.M365.1.3.3",
+        "CIS.M365.1.3.4",
+        "CIS.M365.1.3.5",
+        "CIS.M365.1.3.6",
+        "CIS.M365.1.3.7",
+        "CIS.M365.2.1.1",
+        "CIS.M365.2.1.2",
+        "CIS.M365.2.1.3",
+        "CIS.M365.2.1.4",
+        "CIS.M365.2.1.5",
+        "CIS.M365.2.1.6",
+        "CIS.M365.2.1.7",
+        "CIS.M365.2.1.9",
+        "CIS.M365.2.1.11",
+        "CIS.M365.2.1.12",
+        "CIS.M365.2.1.13",
+        "CIS.M365.2.4.4",
+        "CIS.M365.3.1.1",
+        "CIS.M365.4.1",
+        "CIS.M365.5.1.2.2",
+        "CIS.M365.5.1.2.3",
+        "CIS.M365.5.1.3.1",
+        "CIS.M365.5.1.5.1",
+        "CIS.M365.5.1.5.2",
+        "CIS.M365.5.1.6.2",
+        "CIS.M365.5.2.3.5",
+        "CIS.M365.6.5.3",
+        "CIS.M365.8.1.1",
+        "CIS.M365.8.2.2",
+        "CIS.M365.8.4.1",
+        "CIS.M365.8.5.3",
+        "CIS.M365.8.6.1",
+        "CISA.MS.SHAREPOINT.1.1",
+        "CISA.MS.SHAREPOINT.1.3",
+        "MT.1020",
+        "MT.1021",
+        "MT.1098"
+      ],
+      "initials": "M",
+      "recentCommits": 4
+    },
+    {
+      "id": "weyCC81",
+      "github": "weyCC81",
+      "name": "Stefan Wey",
+      "title": "➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "UMB AG",
+      "location": "Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://www.alweys.ch/maester",
+      "socials": {
+        "linkedin": "stefanwey",
+        "bluesky": "stefanwey.bsky.social"
+      },
+      "avatar": "https://github.com/weyCC81.png",
+      "firstContribution": "2024-11-04",
+      "testsAuthored": [
+        "CIS.M365.6.5.3",
+        "MT.1037",
+        "MT.1039",
+        "MT.1041",
+        "MT.1042",
+        "MT.1043",
+        "MT.1044",
+        "MT.1045",
+        "MT.1046",
+        "MT.1047",
+        "MT.1048"
+      ],
+      "testsContributed": [
+        "CIS.M365.2.1.1",
+        "CIS.M365.2.1.4",
+        "CIS.M365.2.1.5",
+        "CISA.MS.AAD.1.1",
+        "CISA.MS.AAD.2.1",
+        "CISA.MS.AAD.2.3",
+        "CISA.MS.AAD.3.1",
+        "CISA.MS.AAD.3.2",
+        "CISA.MS.AAD.3.6",
+        "CISA.MS.AAD.3.7",
+        "CISA.MS.AAD.3.8",
+        "CISA.MS.AAD.5.4",
+        "CISA.MS.EXO.2.1",
+        "CISA.MS.EXO.2.2",
+        "CISA.MS.EXO.6.2",
+        "CISA.MS.EXO.7.1",
+        "EIDSCA.AF01",
+        "EIDSCA.AF02",
+        "EIDSCA.AF03",
+        "EIDSCA.AF04",
+        "EIDSCA.AF05",
+        "EIDSCA.AF06",
+        "EIDSCA.AG01",
+        "EIDSCA.AG02",
+        "EIDSCA.AG03",
+        "EIDSCA.AM01",
+        "EIDSCA.AM02",
+        "EIDSCA.AM03",
+        "EIDSCA.AM04",
+        "EIDSCA.AM06",
+        "EIDSCA.AM07",
+        "EIDSCA.AM09",
+        "EIDSCA.AM10",
+        "EIDSCA.AP01",
+        "EIDSCA.AP04",
+        "EIDSCA.AP05",
+        "EIDSCA.AP06",
+        "EIDSCA.AP07",
+        "EIDSCA.AP08",
+        "EIDSCA.AP09",
+        "EIDSCA.AP10",
+        "EIDSCA.AP14",
+        "EIDSCA.AS04",
+        "EIDSCA.AT01",
+        "EIDSCA.AT02",
+        "EIDSCA.AV01",
+        "EIDSCA.CP01",
+        "EIDSCA.CP03",
+        "EIDSCA.CP04",
+        "EIDSCA.CR01",
+        "EIDSCA.CR02",
+        "EIDSCA.CR03",
+        "EIDSCA.CR04",
+        "EIDSCA.PR01",
+        "EIDSCA.PR02",
+        "EIDSCA.PR03",
+        "EIDSCA.PR05",
+        "EIDSCA.PR06",
+        "EIDSCA.ST08",
+        "EIDSCA.ST09",
+        "MT.1001",
+        "MT.1003",
+        "MT.1004",
+        "MT.1005",
+        "MT.1008",
+        "MT.1010",
+        "MT.1016",
+        "MT.1020",
+        "MT.1021",
+        "MT.1024",
+        "MT.1035",
+        "MT.1036",
+        "MT.1038"
+      ],
+      "initials": "SW",
       "recentCommits": 1
     },
     {
@@ -1182,7 +1281,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 9
+      "recentCommits": 6
     },
     {
       "id": "oed-metzb",
@@ -1652,70 +1751,6 @@
       "recentCommits": 0
     },
     {
-      "id": "thetechgy",
-      "github": "thetechgy",
-      "name": "Travis McDade",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Ohio, United States",
-      "locationFlag": "🇺🇸",
-      "url": "https://www.architechlabs.io",
-      "socials": {
-        "linkedin": "travismcdade"
-      },
-      "avatar": "https://github.com/thetechgy.png",
-      "firstContribution": "2026-06-24",
-      "testsAuthored": [
-        "CIS.GH.1.2.2",
-        "CIS.GH.1.2.3",
-        "CIS.GH.1.2.4",
-        "CIS.GH.1.3.2",
-        "CIS.GH.1.3.8"
-      ],
-      "testsContributed": [
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048"
-      ],
-      "initials": "TM",
-      "recentCommits": 2
-    },
-    {
-      "id": "bastienperez",
-      "github": "bastienperez",
-      "name": "Bastien Perez",
-      "title": "Consultant Microsoft 365 - Active Directory - Modern Workplace",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/afb2bc47-0ec6-4eec-8eab-777a131a9952",
-      "pinLast": false,
-      "company": "Clidsys",
-      "location": "Caen, France",
-      "locationFlag": "🇫🇷",
-      "url": "https://perezbastien.com",
-      "socials": {
-        "linkedin": "perez-bastien",
-        "x": "bastienperez_"
-      },
-      "avatar": "https://github.com/bastienperez.png",
-      "firstContribution": "2025-07-08",
-      "testsAuthored": [
-        "CIS.M365.6.5.3",
-        "MT.1039",
-        "MT.1041",
-        "MT.1043",
-        "MT.1044",
-        "MT.1062"
-      ],
-      "testsContributed": [],
-      "initials": "BP",
-      "recentCommits": 0
-    },
-    {
       "id": "fflaten",
       "github": "fflaten",
       "name": "Frode Flaten",
@@ -1812,15 +1847,112 @@
         "MT.1031",
         "MT.1032",
         "MT.1033",
-        "MT.1034",
+        "MT.1034"
+      ],
+      "initials": "FF",
+      "recentCommits": 0
+    },
+    {
+      "id": "weyCC81",
+      "github": "weyCC81",
+      "name": "Stefan Wey",
+      "title": "➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://www.alweys.ch",
+      "socials": {
+        "linkedin": "stefanwey",
+        "bluesky": "stefanwey.bsky.social"
+      },
+      "avatar": "https://github.com/weyCC81.png",
+      "firstContribution": "2024-11-04",
+      "testsAuthored": [],
+      "testsContributed": [
+        "CIS.M365.2.1.1",
+        "CIS.M365.2.1.4",
+        "CIS.M365.2.1.5",
+        "CISA.MS.AAD.1.1",
+        "CISA.MS.AAD.2.1",
+        "CISA.MS.AAD.2.3",
+        "CISA.MS.AAD.3.1",
+        "CISA.MS.AAD.3.2",
+        "CISA.MS.AAD.3.6",
+        "CISA.MS.AAD.3.7",
+        "CISA.MS.AAD.3.8",
+        "CISA.MS.AAD.5.4",
+        "CISA.MS.EXO.2.1",
+        "CISA.MS.EXO.2.2",
+        "CISA.MS.EXO.6.2",
+        "CISA.MS.EXO.7.1",
+        "EIDSCA.AF01",
+        "EIDSCA.AF02",
+        "EIDSCA.AF03",
+        "EIDSCA.AF04",
+        "EIDSCA.AF05",
+        "EIDSCA.AF06",
+        "EIDSCA.AG01",
+        "EIDSCA.AG02",
+        "EIDSCA.AG03",
+        "EIDSCA.AM01",
+        "EIDSCA.AM02",
+        "EIDSCA.AM03",
+        "EIDSCA.AM04",
+        "EIDSCA.AM06",
+        "EIDSCA.AM07",
+        "EIDSCA.AM09",
+        "EIDSCA.AM10",
+        "EIDSCA.AP01",
+        "EIDSCA.AP04",
+        "EIDSCA.AP05",
+        "EIDSCA.AP06",
+        "EIDSCA.AP07",
+        "EIDSCA.AP08",
+        "EIDSCA.AP09",
+        "EIDSCA.AP10",
+        "EIDSCA.AP14",
+        "EIDSCA.AS04",
+        "EIDSCA.AT01",
+        "EIDSCA.AT02",
+        "EIDSCA.AV01",
+        "EIDSCA.CP01",
+        "EIDSCA.CP03",
+        "EIDSCA.CP04",
+        "EIDSCA.CR01",
+        "EIDSCA.CR02",
+        "EIDSCA.CR03",
+        "EIDSCA.CR04",
+        "EIDSCA.PR01",
+        "EIDSCA.PR02",
+        "EIDSCA.PR03",
+        "EIDSCA.PR05",
+        "EIDSCA.PR06",
+        "EIDSCA.ST08",
+        "EIDSCA.ST09",
+        "MT.1001",
+        "MT.1003",
+        "MT.1004",
+        "MT.1005",
+        "MT.1008",
+        "MT.1010",
+        "MT.1016",
+        "MT.1020",
+        "MT.1021",
+        "MT.1024",
+        "MT.1035",
+        "MT.1036",
+        "MT.1038",
         "MT.1042",
         "MT.1045",
         "MT.1046",
         "MT.1047",
         "MT.1048"
       ],
-      "initials": "FF",
-      "recentCommits": 0
+      "initials": "SW",
+      "recentCommits": 1
     },
     {
       "id": "nicowyss",
@@ -1849,6 +1981,34 @@
       "testsContributed": [],
       "initials": "N",
       "recentCommits": 0
+    },
+    {
+      "id": "thetechgy",
+      "github": "thetechgy",
+      "name": "Travis McDade",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Ohio, United States",
+      "locationFlag": "🇺🇸",
+      "url": "https://www.architechlabs.io",
+      "socials": {
+        "linkedin": "travismcdade"
+      },
+      "avatar": "https://github.com/thetechgy.png",
+      "firstContribution": "2026-07-13",
+      "testsAuthored": [
+        "CIS.GH.1.2.2",
+        "CIS.GH.1.2.3",
+        "CIS.GH.1.2.4",
+        "CIS.GH.1.3.2",
+        "CIS.GH.1.3.8"
+      ],
+      "testsContributed": [],
+      "initials": "TM",
+      "recentCommits": 2
     },
     {
       "id": "moorereason",
@@ -2044,64 +2204,6 @@
       "recentCommits": 1
     },
     {
-      "id": "weyCC81",
-      "github": "weyCC81",
-      "name": "Stefan Wey",
-      "title": "➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Switzerland",
-      "locationFlag": "🇨🇭",
-      "url": "https://www.alweys.ch",
-      "socials": {
-        "linkedin": "stefanwey",
-        "bluesky": "stefanwey.bsky.social"
-      },
-      "avatar": "https://github.com/weyCC81.png",
-      "firstContribution": "2024-11-04",
-      "testsAuthored": [],
-      "testsContributed": [
-        "CIS.M365.2.1.1",
-        "CIS.M365.2.1.4",
-        "CIS.M365.2.1.5",
-        "CISA.MS.AAD.1.1",
-        "CISA.MS.AAD.2.1",
-        "CISA.MS.AAD.2.3",
-        "CISA.MS.AAD.3.1",
-        "CISA.MS.AAD.3.2",
-        "CISA.MS.AAD.3.6",
-        "CISA.MS.AAD.3.7",
-        "CISA.MS.AAD.3.8",
-        "CISA.MS.AAD.5.4",
-        "CISA.MS.EXO.2.1",
-        "CISA.MS.EXO.2.2",
-        "CISA.MS.EXO.6.2",
-        "CISA.MS.EXO.7.1",
-        "MT.1001",
-        "MT.1003",
-        "MT.1004",
-        "MT.1005",
-        "MT.1008",
-        "MT.1010",
-        "MT.1016",
-        "MT.1020",
-        "MT.1021",
-        "MT.1024",
-        "MT.1035",
-        "MT.1036",
-        "MT.1038",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048"
-      ],
-      "initials": "SW",
-      "recentCommits": 0
-    },
-    {
       "id": "JeanPhilippeGeorge",
       "github": "JeanPhilippeGeorge",
       "name": "Jean-Philippe George",
@@ -2230,6 +2332,69 @@
       "recentCommits": 0
     },
     {
+      "id": "svrooij",
+      "github": "svrooij",
+      "name": "Stephan van Rooij",
+      "title": "Microsoft MVP",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/cc128f12-003f-ed11-bba3-000d3a197333",
+      "pinLast": false,
+      "company": "Smartersoft BV",
+      "location": "The Netherlands",
+      "locationFlag": "🇳🇱",
+      "url": "https://svrooij.io",
+      "socials": {
+        "linkedin": "stephanvanrooij",
+        "bluesky": "svrooij.io"
+      },
+      "avatar": "https://github.com/svrooij.png",
+      "firstContribution": "2025-05-08",
+      "testsAuthored": [
+        "MT.1057"
+      ],
+      "testsContributed": [
+        "MT.1024",
+        "MT.1042",
+        "MT.1045",
+        "MT.1046",
+        "MT.1047",
+        "MT.1048"
+      ],
+      "initials": "SR",
+      "recentCommits": 1
+    },
+    {
+      "id": "bastienperez",
+      "github": "bastienperez",
+      "name": "Bastien Perez",
+      "title": "Consultant Microsoft 365 - Active Directory - Modern Workplace",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/afb2bc47-0ec6-4eec-8eab-777a131a9952",
+      "pinLast": false,
+      "company": "Clidsys",
+      "location": "Caen, France",
+      "locationFlag": "🇫🇷",
+      "url": "https://perezbastien.com",
+      "socials": {
+        "linkedin": "perez-bastien",
+        "x": "bastienperez_"
+      },
+      "avatar": "https://github.com/bastienperez.png",
+      "firstContribution": "2025-07-08",
+      "testsAuthored": [
+        "MT.1062"
+      ],
+      "testsContributed": [
+        "CIS.M365.6.5.3",
+        "MT.1039",
+        "MT.1041",
+        "MT.1043",
+        "MT.1044"
+      ],
+      "initials": "BP",
+      "recentCommits": 0
+    },
+    {
       "id": "blindzero",
       "github": "blindzero",
       "name": "Matthias",
@@ -2253,93 +2418,6 @@
       ],
       "initials": "M",
       "recentCommits": 2
-    },
-    {
-      "id": "massimomazzariol",
-      "github": "massimomazzariol",
-      "name": "Massimo Mazzariol",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Italy",
-      "locationFlag": "🇮🇹",
-      "url": "",
-      "socials": {
-        "linkedin": "massimomazzariol"
-      },
-      "avatar": "https://github.com/massimomazzariol.png",
-      "firstContribution": "2026-07-22",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1024",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048",
-        "MT.1071",
-        "MT.1123"
-      ],
-      "initials": "MM",
-      "recentCommits": 5
-    },
-    {
-      "id": "mattcave",
-      "github": "mattcave",
-      "name": "Matt Cave",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "Augmentt",
-      "location": "Toronto, ON",
-      "locationFlag": "🇨🇦",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/mattcave.png",
-      "firstContribution": "2024-09-08",
-      "testsAuthored": [],
-      "testsContributed": [
-        "CISA.MS.AAD.8.2",
-        "CISA.MS.EXO.6.2",
-        "EIDSCA.PR05",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048"
-      ],
-      "initials": "MC",
-      "recentCommits": 0
-    },
-    {
-      "id": "svrooij",
-      "github": "svrooij",
-      "name": "Stephan van Rooij",
-      "title": "Microsoft MVP",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/cc128f12-003f-ed11-bba3-000d3a197333",
-      "pinLast": false,
-      "company": "Smartersoft BV",
-      "location": "The Netherlands",
-      "locationFlag": "🇳🇱",
-      "url": "https://svrooij.io",
-      "socials": {
-        "linkedin": "stephanvanrooij",
-        "bluesky": "svrooij.io"
-      },
-      "avatar": "https://github.com/svrooij.png",
-      "firstContribution": "2025-05-08",
-      "testsAuthored": [
-        "MT.1057"
-      ],
-      "testsContributed": [
-        "MT.1024"
-      ],
-      "initials": "SR",
-      "recentCommits": 1
     },
     {
       "id": "kij",
@@ -2526,6 +2604,56 @@
         "EIDSCA.AP14"
       ],
       "initials": "R",
+      "recentCommits": 0
+    },
+    {
+      "id": "massimomazzariol",
+      "github": "massimomazzariol",
+      "name": "Massimo Mazzariol",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Italy",
+      "locationFlag": "🇮🇹",
+      "url": "",
+      "socials": {
+        "linkedin": "massimomazzariol"
+      },
+      "avatar": "https://github.com/massimomazzariol.png",
+      "firstContribution": "2026-08-01",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1024",
+        "MT.1071",
+        "MT.1123"
+      ],
+      "initials": "MM",
+      "recentCommits": 5
+    },
+    {
+      "id": "mattcave",
+      "github": "mattcave",
+      "name": "Matt Cave",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "Augmentt",
+      "location": "Toronto, ON",
+      "locationFlag": "🇨🇦",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/mattcave.png",
+      "firstContribution": "2024-09-08",
+      "testsAuthored": [],
+      "testsContributed": [
+        "CISA.MS.AAD.8.2",
+        "CISA.MS.EXO.6.2",
+        "EIDSCA.PR05"
+      ],
+      "initials": "MC",
       "recentCommits": 0
     },
     {
@@ -3093,7 +3221,6 @@
         "MT.1004",
         "MT.1021",
         "MT.1034",
-        "MT.1037",
         "MT.1038",
         "MT.1055"
       ],
@@ -3212,6 +3339,7 @@
         "MT.1031",
         "MT.1032",
         "MT.1033",
+        "MT.1037",
         "MT.1042",
         "MT.1045",
         "MT.1046",
@@ -3311,7 +3439,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 15
+      "recentCommits": 16
     }
   ],
   "attributions": {
@@ -3643,8 +3771,9 @@
       ]
     },
     "CIS.M365.6.5.3": {
-      "author": "bastienperez",
+      "author": "weyCC81",
       "contributors": [
+        "bastienperez",
         "SamErde",
         "Mynster9361",
         "BuckeyeGuyJFlo"
@@ -4466,7 +4595,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF02": {
@@ -4475,7 +4605,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF03": {
@@ -4484,7 +4615,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF04": {
@@ -4493,7 +4625,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF05": {
@@ -4502,7 +4635,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF06": {
@@ -4511,7 +4645,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AG01": {
@@ -4521,7 +4656,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AG02": {
@@ -4530,7 +4666,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AG03": {
@@ -4539,7 +4676,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM01": {
@@ -4548,7 +4686,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM02": {
@@ -4557,7 +4696,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM03": {
@@ -4566,7 +4706,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM04": {
@@ -4575,7 +4716,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM06": {
@@ -4584,7 +4726,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM07": {
@@ -4593,7 +4736,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM09": {
@@ -4602,7 +4746,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM10": {
@@ -4611,7 +4756,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP01": {
@@ -4621,7 +4767,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP04": {
@@ -4630,7 +4777,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP05": {
@@ -4639,7 +4787,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP06": {
@@ -4648,7 +4797,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP07": {
@@ -4657,7 +4807,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP08": {
@@ -4666,7 +4817,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP09": {
@@ -4675,7 +4827,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP10": {
@@ -4684,7 +4837,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP14": {
@@ -4694,7 +4848,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AS04": {
@@ -4702,7 +4857,8 @@
       "contributors": [
         "merill",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AT01": {
@@ -4711,7 +4867,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AT02": {
@@ -4720,7 +4877,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AV01": {
@@ -4729,7 +4887,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CP01": {
@@ -4738,7 +4897,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CP03": {
@@ -4747,7 +4907,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CP04": {
@@ -4756,7 +4917,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR01": {
@@ -4765,7 +4927,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR02": {
@@ -4774,7 +4937,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR03": {
@@ -4783,7 +4947,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR04": {
@@ -4792,7 +4957,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR01": {
@@ -4801,7 +4967,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR02": {
@@ -4810,7 +4977,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR03": {
@@ -4819,7 +4987,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR05": {
@@ -4830,7 +4999,8 @@
         "m-hanisch",
         "SamErde",
         "mattcave",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR06": {
@@ -4839,7 +5009,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.ST08": {
@@ -4848,7 +5019,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.ST09": {
@@ -4857,7 +5029,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "MT.1001": {
@@ -5262,8 +5435,9 @@
       ]
     },
     "MT.1037": {
-      "author": "merill",
+      "author": "weyCC81",
       "contributors": [
+        "merill",
         "SamErde",
         "BuckeyeGuyJFlo"
       ]
@@ -5280,103 +5454,82 @@
       ]
     },
     "MT.1039": {
-      "author": "bastienperez",
+      "author": "weyCC81",
       "contributors": [
+        "bastienperez",
         "SamErde",
         "BuckeyeGuyJFlo"
       ]
     },
     "MT.1041": {
-      "author": "bastienperez",
+      "author": "weyCC81",
       "contributors": [
+        "bastienperez",
         "l-gosling",
         "SamErde",
         "BuckeyeGuyJFlo"
       ]
     },
     "MT.1042": {
-      "author": "soulemike",
+      "author": "weyCC81",
       "contributors": [
+        "soulemike",
         "merill",
-        "f-bader",
-        "fflaten",
-        "weyCC81",
         "SamErde",
-        "mattcave",
-        "Mynster9361",
-        "thetechgy",
-        "massimomazzariol"
+        "svrooij"
       ]
     },
     "MT.1043": {
-      "author": "bastienperez",
+      "author": "weyCC81",
       "contributors": [
+        "bastienperez",
         "thomas-s-schmidt",
         "SamErde",
         "BuckeyeGuyJFlo"
       ]
     },
     "MT.1044": {
-      "author": "bastienperez",
+      "author": "weyCC81",
       "contributors": [
+        "bastienperez",
         "SamErde",
         "BuckeyeGuyJFlo"
       ]
     },
     "MT.1045": {
-      "author": "soulemike",
+      "author": "weyCC81",
       "contributors": [
+        "soulemike",
         "merill",
-        "f-bader",
-        "fflaten",
-        "weyCC81",
         "SamErde",
-        "mattcave",
-        "Mynster9361",
-        "thetechgy",
-        "massimomazzariol"
+        "svrooij"
       ]
     },
     "MT.1046": {
-      "author": "soulemike",
+      "author": "weyCC81",
       "contributors": [
+        "soulemike",
         "merill",
-        "f-bader",
-        "fflaten",
-        "weyCC81",
         "SamErde",
-        "mattcave",
-        "Mynster9361",
-        "thetechgy",
-        "massimomazzariol"
+        "svrooij"
       ]
     },
     "MT.1047": {
-      "author": "soulemike",
+      "author": "weyCC81",
       "contributors": [
+        "soulemike",
         "merill",
-        "f-bader",
-        "fflaten",
-        "weyCC81",
         "SamErde",
-        "mattcave",
-        "Mynster9361",
-        "thetechgy",
-        "massimomazzariol"
+        "svrooij"
       ]
     },
     "MT.1048": {
-      "author": "soulemike",
+      "author": "weyCC81",
       "contributors": [
+        "soulemike",
         "merill",
-        "f-bader",
-        "fflaten",
-        "weyCC81",
         "SamErde",
-        "mattcave",
-        "Mynster9361",
-        "thetechgy",
-        "massimomazzariol"
+        "svrooij"
       ]
     },
     "MT.1049": {

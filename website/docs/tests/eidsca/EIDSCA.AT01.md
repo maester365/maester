@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AT01 - Authentication Method - Temporary Access Pass - State."
-description: "Whether the Temporary Access Pass is enabled in the tenant. Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access policy. Test script ``` https://graph.microsoft.com/beta/policies/authenticatio…"
+description: "Whether the Temporary Access Pass is enabled in the tenant. Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy. Test script ``` https://graph.microsoft.com/beta/policies/authenticatio…"
 slug: /tests/EIDSCA.AT01
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,20 +19,23 @@ keywords:
 
 # EIDSCA.AT01 - Authentication Method - Temporary Access Pass - State.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Whether the Temporary Access Pass is enabled in the tenant.
 
-Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access policy.
+Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy.
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
 .state -eq 'enabled'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Enable Temporary Access Pass](https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass#enable-the-temporary-access-pass-policy)
 
 #### Related links
 

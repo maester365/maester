@@ -17,3 +17,57 @@ suites:
   # Analyzer project; the porters/committers are credited as co-contributors.
   eidsca:
     author: Cloud-Architekt
+
+# AI Hint: Originally written by weyCC81 in Nov 2024 (Test-TeamsMeeting.Tests.ps1 /
+# Test-ExchangeSetting.Tests.ps1) but later extracted into dedicated
+# PowerShell function files by other contributors without git detecting the
+# rename, which orphaned the original authorship.
+MT.1037:
+  author: weyCC81
+  #contributors: [merill, SamErde, buckeyeguyjflo]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1037T.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1037.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1039:
+  author: weyCC81
+  #contributors: [bastienperez, SamErde, buckeyeguyjflo]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1039E.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1039.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1041:
+  author: weyCC81
+  #contributors: [bastienperez, l-gosling, samerde, buckeyeguyjflo]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1041E.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1041.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1043:
+  author: weyCC81
+  #contributors: [bastienperez, thomas-s-schmidt, SamErde, buckeyeguyjflo]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1037E.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1043.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1044:
+  author: weyCC81
+  #contributors: [bastienperez, SamErde, buckeyeguyjflo]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1038E.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1044.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+CIS.M365.6.5.3:
+  author: weyCC81
+  #contributors: [bastienperez, samerde, mynster9361,buckeyeguyjflo]
+  # https://github.com/maester365/maester/commit/0d545fb74b06871b0de313b162b27968b194923d#diff-62ad9672f34fa3634413f41d960dc9be2957fc24524e54e1407267128fae8002
+  # MT.1040 | Test-MtExoAdditionalStorageProvider | CIS Mapped
+
+# AI Hint: Same root cause as above. These are inline checks, so their derived
+# contributors come from Test-TeamsMeeting.Tests.ps1. Test-MtConnection is a
+# guard call and is intentionally excluded from source-function discovery.
+MT.1042:
+  author: weyCC81
+  #contributors: [soulemike, merill, f-bader, fflaten, samerde]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1042T.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1042.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1045:
+  author: weyCC81
+  #contributors: [soulemike, merill, f-bader, fflaten, samerde]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1038T.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1045.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1046:
+  author: weyCC81
+  #contributors: [soulemike, merill, f-bader, fflaten, samerde]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1039T.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1046.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1047:
+  #contributors: [soulemike, merill, f-bader, fflaten, samerde]
+  author: weyCC81
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1040T.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1047.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886
+MT.1048:
+  author: weyCC81
+  #contributors: [soulemike, merill, f-bader, fflaten, samerde]
+  # https://github.com/maester365/maester/commits/4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a/website/docs/tests/maester/MT.1041T.md?browsing_rename_history=true&new_path=website/docs/tests/maester/MT.1048.md&original_branch=5e15463fe1aa8e3fc9c97b8a34e4fa5348693886

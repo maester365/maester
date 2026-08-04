@@ -3,11 +3,12 @@ Group and team owners can authorize applications, such as applications published
 CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications.
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/settings
 .values -eq 'False'
 ```
+
+
 
 #### Related links
 
@@ -30,10 +31,10 @@ mindmap
       T1566.002 - Phishing: Spearphishing Link
       T1078 - Valid Accounts
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|
+
 
 <!--- Results --->
 %TestResult%
