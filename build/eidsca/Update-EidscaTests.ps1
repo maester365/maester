@@ -15,9 +15,6 @@ param (
     # Folder where generated test file should be written to.
     [string] $TestFilePath = "$PSScriptRoot/../../tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
 
-    # Folder where docs should be generated
-    [string] $DocsPath = "$PSScriptRoot/../../website/docs/tests/eidsca",
-
     # Folder where control functions should be generated
     [string] $PowerShellFunctionsPath = "$PSScriptRoot/../../powershell/internal/eidsca",
 
@@ -475,11 +472,10 @@ $aadsc = ($aadsc | Where-Object { $_.CollectedBy -eq "Maester" }).ControlArea
 $Discovery = ($aadsc | Where-Object { $_.discovery -ne "" }).Discovery
 
 # Remove previously generated files
-Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item -Force
 Get-ChildItem -Path $PowerShellFunctionsPath -Filter "*" -Exclude "@template*" | Remove-Item -Force
 
-$docsTemplate = GetTemplate $DocsPath
 $psTemplate = GetTemplate $PowerShellFunctionsPath "@templateps1.txt" # Use the .txt extension to avoid running the script
+# The website docs generator consumes the internal Markdown generated from this template.
 $psMarkdownTemplate = GetTemplate $PowerShellFunctionsPath "@template.md"
 
 $sb = [System.Text.StringBuilder]::new()
@@ -517,7 +513,6 @@ Describe "EIDSCA" -Tag "EIDSCA",  "%CheckId%" {
 '@
 
         $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
-        $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
         $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
 
         $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
@@ -525,7 +520,6 @@ Describe "EIDSCA" -Tag "EIDSCA",  "%CheckId%" {
         if ($testOutput -ne '') {
             [void]$testOutputList.AppendLine($testOutput)
 
-            CreateFile $DocsPath "$docName.md" $docsOutput
             $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
             CreateFile $PowerShellFunctionsPath "$psFunctionName.ps1" $psOutput
             CreateFile $PowerShellFunctionsPath "$psFunctionName.md" $psMarkdownOutput

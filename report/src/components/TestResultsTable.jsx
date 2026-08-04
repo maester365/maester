@@ -3,7 +3,7 @@ import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, Tab
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
 import { compareDefaultTestResults } from "@/lib/testSort";
 import { allSelectableStatus, defaultSelectedStatus } from "@/lib/testStatus";
