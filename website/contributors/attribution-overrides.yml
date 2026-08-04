@@ -48,11 +48,9 @@ CIS.M365.6.5.3:
   # https://github.com/maester365/maester/commit/0d545fb74b06871b0de313b162b27968b194923d#diff-62ad9672f34fa3634413f41d960dc9be2957fc24524e54e1407267128fae8002
   # MT.1040 | Test-MtExoAdditionalStorageProvider | CIS Mapped
 
-# AI Hint: Same root cause as above, plus generate-test-docs.mjs's findFunctionName()
-# picks the first Test-Mt* call in the It block - for these tests that's the
-# Test-MtConnection guard clause, not the actual (inline) check logic. That
-# misattributes authorship to Test-MtConnection.ps1's history and pulls in
-# unrelated people who only ever touched that shared connection helper.
+# AI Hint: Same root cause as above. These are inline checks, so their derived
+# contributors come from Test-TeamsMeeting.Tests.ps1. Test-MtConnection is a
+# guard call and is intentionally excluded from source-function discovery.
 MT.1042:
   author: weyCC81
   #contributors: [soulemike, merill, f-bader, fflaten, samerde]
