@@ -89,6 +89,7 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `GraphRequestTimeoutSeconds` | Define timeout in seconds for Graph requests | In particular helpful if including long running tests. Can be overridden per `Invoke-Maester -GraphRequestTimeoutSeconds` parameter. |
 
 ## How Settings Are Merged
 
