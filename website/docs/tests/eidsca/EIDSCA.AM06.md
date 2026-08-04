@@ -25,12 +25,15 @@ keywords:
 
 Determines whether the user's Authenticator app will show them the client app they are signing into.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.displayAppInformationRequiredState.state -eq 'enabled'
 ```
+
+
 
 #### Related links
 

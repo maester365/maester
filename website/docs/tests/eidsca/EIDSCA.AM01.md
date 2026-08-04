@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AM01 - Authentication Method - Microsoft Authenticator - State."
-description: "Whether the Authenticator App is enabled in the tenant. enabled Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator') .state -eq 'enabled' ``` Related links - Open in Graph Explorer&method=GET&version=beta&…"
+description: "Whether the Authenticator App is enabled in the tenant. enabled Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator') .state -eq 'enabled' ``` Remediation action Microsoft Learn - Enable Authenticator App R…"
 slug: /tests/EIDSCA.AM01
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -28,11 +28,14 @@ Whether the Authenticator App is enabled in the tenant.
 enabled
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .state -eq 'enabled'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Enable Authenticator App](https://learn.microsoft.com/entra/identity/authentication/concept-authentication-methods-manage#authentication-methods-policy)
 
 #### Related links
 

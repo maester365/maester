@@ -25,12 +25,15 @@ keywords:
 
 Object Id or scope of users which will be showing number matching in the Authenticator App.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.numberMatchingRequiredState.includeTarget.id -eq 'all_users'
 ```
+
+
 
 #### Related links
 

@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AF04 - Authentication Method - FIDO2 security key - Enforce key restrictions."
-description: "Manages if registration of FIDO2 keys should be restricted. Restrict usage of FIDO2 from unauthorized vendors or platforms Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .keyRestrictions.isEnforced -eq 'true' ``` Rel…"
+description: "Manages if registration of FIDO2 keys should be restricted. Restrict usage of FIDO2 from unauthorized vendors or platforms Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .keyRestrictions.isEnforced -eq 'true' ``` Rem…"
 slug: /tests/EIDSCA.AF04
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -28,11 +28,14 @@ Manages if registration of FIDO2 keys should be restricted.
 Restrict usage of FIDO2 from unauthorized vendors or platforms
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .keyRestrictions.isEnforced -eq 'true'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Enforce key restrictions](https://learn.microsoft.com/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
 
 #### Related links
 

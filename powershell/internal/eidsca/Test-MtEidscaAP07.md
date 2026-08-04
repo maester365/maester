@@ -3,11 +3,12 @@ Represents role templateId for the role that should be granted to guest user.
 CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) directory objects.
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
 .guestUserRoleId -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
 ```
+
+
 
 #### Related links
 
@@ -27,10 +28,10 @@ mindmap
     (Technique)
 
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0043 - Reconnaissance - Reconnaissance](https://attack.mitre.org/tactics/TA0043)|||
+
 
 <!--- Results --->
 %TestResult%

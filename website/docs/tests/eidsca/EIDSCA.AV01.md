@@ -28,11 +28,12 @@ Whether the Voice call is enabled in the tenant.
 Choose authentication methods with number matching (Authenticator)
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')
 .state -eq 'disabled'
 ```
+
+
 
 #### Related links
 

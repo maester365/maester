@@ -28,11 +28,14 @@ Indicates whether administrators of the tenant can use the Self-Service Password
 Administrators with sensitive roles should use phishing-resistant authentication methods only and therefore not able to reset their password using SSPR.
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
 .allowedToUseSSPR -eq 'false'
 ```
+
+#### Remediation action
+
+Microsoft Graph PowerShell: ```Update-MgPolicyAuthorizationPolicy -BodyParameter @{ allowedToUseSSPR = $false }```
 
 #### Related links
 
@@ -52,7 +55,6 @@ mindmap
     (Technique)
 
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|||

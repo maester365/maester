@@ -25,12 +25,15 @@ keywords:
 
 Defines if number matching is required for MFA notifications.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.numberMatchingRequiredState.state -eq 'enabled'
 ```
+
+
 
 #### Related links
 
