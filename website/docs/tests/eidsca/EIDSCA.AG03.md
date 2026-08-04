@@ -28,11 +28,14 @@ Object Id or scope of users which will be included to report suspicious activiti
 Apply this feature to all users.
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 .reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Report suspicious activites](https://learn.microsoft.com/entra/identity/authentication/howto-mfa-mfasettings#report-suspicious-activity)
 
 #### Related links
 

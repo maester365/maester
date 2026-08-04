@@ -300,6 +300,13 @@ mindmap
     return $mermaid
 }
 
+function GetRemediationMarkdown($controlItem) {
+    if ([string]::IsNullOrWhiteSpace($controlItem.HowToFix)) {
+        return ''
+    }
+    return "#### Remediation action`n`n$($controlItem.HowToFix)"
+}
+
 function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
     if ([string]::IsNullOrEmpty($uri)) { return '' }
     if ($lookupTitle) {
@@ -341,6 +348,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
     $portalDeepLinkMarkdown = GetPortalDeepLinkMarkdown -portalDeepLink $controlItem.PortalDeepLink
     $graphDocsUrlMarkdown = GetMarkdownLink -uri $control.GraphDocsUrl -title "Graph Docs" -lookupTitle
+    $remediationAction = GetRemediationMarkdown -controlItem $controlItem
 
     $output = ''
     if ($currentValue -eq '' -or $control.ControlName -eq '') {
@@ -395,7 +403,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%CurrentValue%', $CurrentValue
         $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
         $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
-        $output = $output -replace '%HowToFix%', $controlItem.howToFix
+        $output = $output.Replace('%RemediationAction%', $remediationAction)
         $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
         $output = $output -replace '%MitreDiagram%', $mitreDiagram
         $output = $output -replace '%PSFunctionName%', $psFunctionName
