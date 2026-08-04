@@ -61,7 +61,16 @@ $generatedParameterDescriptions = @{
 }
 
 $cmdMarkdownFiles = Get-ChildItem ./website/docs/commands -Filter *.mdx
-foreach ($file in $cmdMarkdownFiles) {
+$versionedCmdMarkdownFiles = if (Test-Path ./website/versioned_docs) {
+    Get-ChildItem ./website/versioned_docs -Directory | ForEach-Object {
+        $commandsDirectory = Join-Path $_.FullName "commands"
+        if (Test-Path $commandsDirectory) {
+            Get-ChildItem $commandsDirectory -Filter *.mdx
+        }
+    }
+}
+$allCmdMarkdownFiles = @($cmdMarkdownFiles) + @($versionedCmdMarkdownFiles)
+foreach ($file in $allCmdMarkdownFiles) {
     if ($editUrlByCommand.ContainsKey($file.BaseName)) {
         $correctEditUrl = "https://github.com/maester365/maester/blob/main/$($editUrlByCommand[$file.BaseName])"
         $content = Get-Content $file.FullName -Raw
