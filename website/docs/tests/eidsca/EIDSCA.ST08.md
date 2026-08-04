@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.ST08 - Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner."
-description: "Indicating whether or not a guest user can be an owner of groups, manage CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) directory objects Test script ``` https://graph.microsoft.com/beta/settings .values -eq 'false' ``` Related links - Open in Graph Explorer - direct…"
+description: "Indicating whether or not a guest user can be an owner of groups, manage CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) directory objects Test script ``` https://graph.microsoft.com/beta/settings .values -eq 'false' ``` Remediation action Microsoft Learn - Microsoft…"
 slug: /tests/EIDSCA.ST08
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -28,11 +28,14 @@ Indicating whether or not a guest user can be an owner of groups, manage
 CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) directory objects
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/settings
 .values -eq 'false'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Microsoft Entra cmdlets for configuring group settings](https://learn.microsoft.com/entra/identity/users/groups-settings-cmdlets#update-settings-at-the-directory-level)
 
 #### Related links
 

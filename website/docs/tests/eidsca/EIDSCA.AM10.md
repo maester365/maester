@@ -25,12 +25,15 @@ keywords:
 
 Object Id or scope of users which will be showing geographic location in the Authenticator App.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.displayLocationInformationRequiredState.includeTarget.id -eq 'all_users'
 ```
+
+
 
 #### Related links
 

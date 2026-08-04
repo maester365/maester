@@ -25,12 +25,15 @@ keywords:
 
 Determines whether the user's Authenticator app will show them the geographic location of where the authentication request originated from.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.displayLocationInformationRequiredState.state -eq 'enabled'
 ```
+
+
 
 #### Related links
 

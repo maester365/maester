@@ -25,14 +25,17 @@ keywords:
 
 Allows users to report suspicious activities if they receive an authentication request that they did not initiate. This control is available when using the Microsoft Authenticator app and voice calls. Reporting suspicious activity will set the user's risk to high. If the user is subject to risk-based Conditional Access policies, they may be blocked.
 
-Allows users to report suspected fraud to Microsoft Entra ID Protection. Users who report an MFA prompt as suspicious are set to high user risk. Administrators can use risk-based policies to limit access for these users, or enable self-service password reset (SSPR) for users to remediate problems on their own.
+Allows to integrate report of fraud attempt by users to identity protection: Users who report an MFA prompt as suspicious are set to High User Risk. Administrators can use risk-based policies to limit access for these users, or enable self-service password reset (SSPR) for users to remediate problems on their own.
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 .reportSuspiciousActivitySettings.state -eq 'enabled'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Report suspicious activites](https://learn.microsoft.com/entra/identity/authentication/howto-mfa-mfasettings#report-suspicious-activity)
 
 #### Related links
 

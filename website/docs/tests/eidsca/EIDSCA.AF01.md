@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AF01 - Authentication Method - FIDO2 security key - State."
-description: "Whether the FIDO2 security keys is enabled in the tenant. enabled Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .state -eq 'enabled' ``` Related links - Open in Graph Explorer&method=GET&version=beta&GraphUrl=https:…"
+description: "Whether the FIDO2 security keys is enabled in the tenant. enabled Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .state -eq 'enabled' ``` Remediation action Microsoft Learn - Enable passkeys (FIDO2) for your organiza…"
 slug: /tests/EIDSCA.AF01
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -28,11 +28,14 @@ Whether the FIDO2 security keys is enabled in the tenant.
 enabled
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .state -eq 'enabled'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Enable FIDO2 security key](https://learn.microsoft.com/entra/identity/authentication/how-to-enable-passkey-fido2#enable-passkey-authentication-method)
 
 #### Related links
 

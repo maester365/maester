@@ -403,7 +403,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%CurrentValue%', $CurrentValue
         $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
         $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
-        $output = $output -replace '%RemediationAction%', $remediationAction
+        $output = $output.Replace('%RemediationAction%', $remediationAction)
         $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
         $output = $output -replace '%MitreDiagram%', $mitreDiagram
         $output = $output -replace '%PSFunctionName%', $psFunctionName

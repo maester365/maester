@@ -25,12 +25,17 @@ keywords:
 
 You can work with your Security key provider to determine the AAGuids of their devices for allowing or blocking usage.
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .keyRestrictions.aaGuids -notcontains $null -eq 'true'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Restricted AAGUIDS](https://learn.microsoft.com/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
 
 #### Related links
 

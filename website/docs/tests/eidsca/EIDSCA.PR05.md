@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.PR05 - Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds."
-description: "The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases. Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn Test script ``` https://graph.microsoft.com/beta/settings .values -ge 60 ``` Related links - Open in Graph Explorer - di…"
+description: "The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases. Prevent Attacks Using Smart Lockout - Microsoft Entra ID - Microsoft Learn Test script ``` https://graph.microsoft.com/beta/settings .values -ge 60 ``` Related links - Open in Graph Explorer - di…"
 slug: /tests/EIDSCA.PR05
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,14 +25,15 @@ keywords:
 
 The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases.
 
-[Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
+[Prevent Attacks Using Smart Lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/settings
 .values -ge 60
 ```
+
+
 
 #### Related links
 
@@ -53,7 +54,6 @@ mindmap
     (Technique)
       T1110 - Brute Force
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|

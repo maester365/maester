@@ -46,7 +46,43 @@ Describe 'EIDSCA generator' {
             "CurrentValue": "isEnabled",
             "Recommendation": "",
             "PortalDeepLink": "",
-            "HowToFix": "Enable the fixture setting.",
+            "HowToFix": "Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```",
+            "MitreTactic": [],
+            "MitreTechnique": [],
+            "MitreMitigation": [],
+            "SkipCondition": "",
+            "SkipReason": ""
+          },
+          {
+            "CheckId": "EIDSCA.ZZ98",
+            "Name": "WhitespaceRemediation",
+            "DisplayName": "Whitespace remediation",
+            "Description": "Whitespace remediation description",
+            "Severity": "Medium",
+            "RecommendedValue": "true",
+            "DefaultValue": "false",
+            "CurrentValue": "isEnabled",
+            "Recommendation": "",
+            "PortalDeepLink": "",
+            "HowToFix": "   ",
+            "MitreTactic": [],
+            "MitreTechnique": [],
+            "MitreMitigation": [],
+            "SkipCondition": "",
+            "SkipReason": ""
+          },
+          {
+            "CheckId": "EIDSCA.ZZ97",
+            "Name": "BlankRemediation",
+            "DisplayName": "Blank remediation",
+            "Description": "Blank remediation description",
+            "Severity": "Medium",
+            "RecommendedValue": "true",
+            "DefaultValue": "false",
+            "CurrentValue": "isEnabled",
+            "Recommendation": "",
+            "PortalDeepLink": "",
+            "HowToFix": "",
             "MitreTactic": [],
             "MitreTechnique": [],
             "MitreMitigation": [],
@@ -68,10 +104,21 @@ Describe 'EIDSCA generator' {
             -AadSecConfigUrl 'https://fixture.invalid/EidscaConfig.json'
 
         Join-Path $internalPath 'Test-MtEidscaZZ99.ps1' | Should -Exist
-        Join-Path $internalPath 'Test-MtEidscaZZ99.md' | Should -Exist
+        $remediationMarkdownPath = Join-Path $internalPath 'Test-MtEidscaZZ99.md'
+        $remediationMarkdownPath | Should -Exist
         Join-Path $publicPath 'Test-MtEidscaControl.ps1' | Should -Exist
         $testFilePath | Should -Exist
         Get-Content -Path $testFilePath -Raw | Should -Match 'EIDSCA\.ZZ99'
+
+        $expectedRemediation = @'
+#### Remediation action
+
+Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
+'@
+        $remediationMarkdown = Get-Content -Path $remediationMarkdownPath -Raw
+        $remediationMarkdown.Contains($expectedRemediation.Trim()) | Should -BeTrue
+        Get-Content -Path (Join-Path $internalPath 'Test-MtEidscaZZ98.md') -Raw | Should -Not -Match 'Remediation action'
+        Get-Content -Path (Join-Path $internalPath 'Test-MtEidscaZZ97.md') -Raw | Should -Not -Match 'Remediation action'
         Should -Invoke Invoke-WebRequest -Times 1 -Exactly
     }
 }
