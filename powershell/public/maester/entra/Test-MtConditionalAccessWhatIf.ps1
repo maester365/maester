@@ -211,11 +211,21 @@
 
         Write-Verbose ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress )
 
-        # Target the Graph endpoint of the connected environment rather than a hardcoded host,
-        # so this works in sovereign clouds and not only in the Global cloud.
-        $graphBaseUri = ([string](Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint).TrimEnd('/')
-
         try {
+            # Target the Graph endpoint of the connected environment rather than a hardcoded host,
+            # so this works in sovereign clouds and not only in the Global cloud.
+            $graphEnvironment = (Get-MgContext).Environment
+            if ([string]::IsNullOrEmpty($graphEnvironment)) {
+                # Default to Global, consistent with Initialize-MtSession, so an unconnected
+                # session reports the Graph authentication error rather than a binding failure.
+                $graphEnvironment = 'Global'
+            }
+
+            $graphBaseUri = ([string](Get-MgEnvironment -Name $graphEnvironment).GraphEndpoint).TrimEnd('/')
+            if ([string]::IsNullOrEmpty($graphBaseUri)) {
+                throw "Unable to resolve the Microsoft Graph endpoint for environment '$graphEnvironment'."
+            }
+
             $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri "$graphBaseUri/beta/identity/conditionalAccess/evaluate" -OutputType PSObject -Body ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
             # Filter out policies that do not apply
             if (!$AllResults) {
