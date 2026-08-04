@@ -1,11 +1,14 @@
 Specifies whether reviewers will receive notifications
 
-#### Test script
 
+
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
 .notifyReviewers -eq 'true'
 ```
+
+
 
 #### Related links
 
@@ -33,10 +36,10 @@ mindmap
       T1550.001 - Use Alternate Authentication Material: Application Access Token
       T1566.002 - Phishing: Spearphishing Link
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)<br/>[TA0005 - Defense Evasion - Stealth](https://attack.mitre.org/tactics/TA0005)<br/>[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)<br/>[TA0008 - Lateral Movement - Lateral Movement](https://attack.mitre.org/tactics/TA0008)|[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)<br/>[T1528 - Steal Application Access Token](https://attack.mitre.org/techniques/T1528)<br/>[T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550)<br/>[T1550.001 - Use Alternate Authentication Material: Application Access Token](https://attack.mitre.org/techniques/T1550/001)<br/>[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)|
+
 
 <!--- Results --->
 %TestResult%

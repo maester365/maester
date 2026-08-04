@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.PR06 - Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold."
-description: "How many failed sign-ins are allowed on an account before its first lockout. If the first sign-in after a lockout also fails, the account locks out again. Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn Test script ``` https://graph.microsoft.com/beta/settings .values -le…"
+description: "How many failed sign-ins are allowed on an account before its first lockout. If the first sign-in after a lockout also fails, the account locks out again. Prevent Attacks Using Smart Lockout - Microsoft Entra ID - Microsoft Learn Test script ``` https://graph.microsoft.com/beta/settings .values -le…"
 slug: /tests/EIDSCA.PR06
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,20 +19,21 @@ keywords:
 
 # EIDSCA.PR06 - Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 How many failed sign-ins are allowed on an account before its first lockout. If the first sign-in after a lockout also fails, the account locks out again.
 
-[Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
+[Prevent Attacks Using Smart Lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/authentication/howto-password-smart-lockout)
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/settings
 .values -le 10
 ```
+
+
 
 #### Related links
 
@@ -53,7 +54,6 @@ mindmap
     (Technique)
       T1110 - Brute Force
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|

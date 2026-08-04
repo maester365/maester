@@ -281,8 +281,10 @@ function categoryFrom(tags, filePath) {
 
 function findFunctionName(block) {
   const matches = [...block.matchAll(/(^|[^\w-])(Test-[A-Za-z0-9_]+)\b/gm)].map((match) => match[2]);
-  const ignored = new Set(["Test-Path"]);
-  return matches.find((name) => !ignored.has(name)) ?? "";
+  // Framework/guard calls do not own the check. Ignoring them lets inline
+  // checks fall back to the Pester test file for documentation and attribution.
+  const ignored = new Set(["test-mtconnection", "test-path"]);
+  return matches.find((name) => !ignored.has(name.toLowerCase())) ?? "";
 }
 
 function findTestId(testName, tags) {

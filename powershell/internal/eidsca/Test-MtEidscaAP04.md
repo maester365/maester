@@ -3,11 +3,12 @@ Manages controls who can invite guests to your directory to collaborate on resou
 CISA SCuBA 2.18: Only users with the Guest Inviter role SHOULD be able to invite guest users
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
 .allowInvitesFrom -in @('adminsAndGuestInviters','none')
 ```
+
+
 
 #### Related links
 
@@ -27,10 +28,10 @@ mindmap
     (Technique)
 
 ```
-
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0003 - Persistence - Persistence](https://attack.mitre.org/tactics/TA0003)|||
+
 
 <!--- Results --->
 %TestResult%
