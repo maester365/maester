@@ -1823,6 +1823,108 @@
       "recentCommits": 0
     },
     {
+      "id": "weyCC81",
+      "github": "weyCC81",
+      "name": "Stefan Wey",
+      "title": "➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://www.alweys.ch",
+      "socials": {
+        "linkedin": "stefanwey",
+        "bluesky": "stefanwey.bsky.social"
+      },
+      "avatar": "https://github.com/weyCC81.png",
+      "firstContribution": "2024-11-04",
+      "testsAuthored": [],
+      "testsContributed": [
+        "CIS.M365.2.1.1",
+        "CIS.M365.2.1.4",
+        "CIS.M365.2.1.5",
+        "CISA.MS.AAD.1.1",
+        "CISA.MS.AAD.2.1",
+        "CISA.MS.AAD.2.3",
+        "CISA.MS.AAD.3.1",
+        "CISA.MS.AAD.3.2",
+        "CISA.MS.AAD.3.6",
+        "CISA.MS.AAD.3.7",
+        "CISA.MS.AAD.3.8",
+        "CISA.MS.AAD.5.4",
+        "CISA.MS.EXO.2.1",
+        "CISA.MS.EXO.2.2",
+        "CISA.MS.EXO.6.2",
+        "CISA.MS.EXO.7.1",
+        "EIDSCA.AF01",
+        "EIDSCA.AF02",
+        "EIDSCA.AF03",
+        "EIDSCA.AF04",
+        "EIDSCA.AF05",
+        "EIDSCA.AF06",
+        "EIDSCA.AG01",
+        "EIDSCA.AG02",
+        "EIDSCA.AG03",
+        "EIDSCA.AM01",
+        "EIDSCA.AM02",
+        "EIDSCA.AM03",
+        "EIDSCA.AM04",
+        "EIDSCA.AM06",
+        "EIDSCA.AM07",
+        "EIDSCA.AM09",
+        "EIDSCA.AM10",
+        "EIDSCA.AP01",
+        "EIDSCA.AP04",
+        "EIDSCA.AP05",
+        "EIDSCA.AP06",
+        "EIDSCA.AP07",
+        "EIDSCA.AP08",
+        "EIDSCA.AP09",
+        "EIDSCA.AP10",
+        "EIDSCA.AP14",
+        "EIDSCA.AS04",
+        "EIDSCA.AT01",
+        "EIDSCA.AT02",
+        "EIDSCA.AV01",
+        "EIDSCA.CP01",
+        "EIDSCA.CP03",
+        "EIDSCA.CP04",
+        "EIDSCA.CR01",
+        "EIDSCA.CR02",
+        "EIDSCA.CR03",
+        "EIDSCA.CR04",
+        "EIDSCA.PR01",
+        "EIDSCA.PR02",
+        "EIDSCA.PR03",
+        "EIDSCA.PR05",
+        "EIDSCA.PR06",
+        "EIDSCA.ST08",
+        "EIDSCA.ST09",
+        "MT.1001",
+        "MT.1003",
+        "MT.1004",
+        "MT.1005",
+        "MT.1008",
+        "MT.1010",
+        "MT.1016",
+        "MT.1020",
+        "MT.1021",
+        "MT.1024",
+        "MT.1035",
+        "MT.1036",
+        "MT.1038",
+        "MT.1042",
+        "MT.1045",
+        "MT.1046",
+        "MT.1047",
+        "MT.1048"
+      ],
+      "initials": "SW",
+      "recentCommits": 1
+    },
+    {
       "id": "nicowyss",
       "github": "nicowyss",
       "name": "nicowyss",
@@ -2041,64 +2143,6 @@
         "MT.1074"
       ],
       "initials": "BV",
-      "recentCommits": 1
-    },
-    {
-      "id": "weyCC81",
-      "github": "weyCC81",
-      "name": "Stefan Wey",
-      "title": "➔ _ Microsoft 365 _ | _ MCT (Trainer) _ , _ 🪪 Identity (Entra),✉ Mail (Exchange), 👥Collaboration (",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Switzerland",
-      "locationFlag": "🇨🇭",
-      "url": "https://www.alweys.ch",
-      "socials": {
-        "linkedin": "stefanwey",
-        "bluesky": "stefanwey.bsky.social"
-      },
-      "avatar": "https://github.com/weyCC81.png",
-      "firstContribution": "2024-11-04",
-      "testsAuthored": [],
-      "testsContributed": [
-        "CIS.M365.2.1.1",
-        "CIS.M365.2.1.4",
-        "CIS.M365.2.1.5",
-        "CISA.MS.AAD.1.1",
-        "CISA.MS.AAD.2.1",
-        "CISA.MS.AAD.2.3",
-        "CISA.MS.AAD.3.1",
-        "CISA.MS.AAD.3.2",
-        "CISA.MS.AAD.3.6",
-        "CISA.MS.AAD.3.7",
-        "CISA.MS.AAD.3.8",
-        "CISA.MS.AAD.5.4",
-        "CISA.MS.EXO.2.1",
-        "CISA.MS.EXO.2.2",
-        "CISA.MS.EXO.6.2",
-        "CISA.MS.EXO.7.1",
-        "MT.1001",
-        "MT.1003",
-        "MT.1004",
-        "MT.1005",
-        "MT.1008",
-        "MT.1010",
-        "MT.1016",
-        "MT.1020",
-        "MT.1021",
-        "MT.1024",
-        "MT.1035",
-        "MT.1036",
-        "MT.1038",
-        "MT.1042",
-        "MT.1045",
-        "MT.1046",
-        "MT.1047",
-        "MT.1048"
-      ],
-      "initials": "SW",
       "recentCommits": 1
     },
     {
@@ -4466,7 +4510,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF02": {
@@ -4475,7 +4520,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF03": {
@@ -4484,7 +4530,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF04": {
@@ -4493,7 +4540,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF05": {
@@ -4502,7 +4550,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AF06": {
@@ -4511,7 +4560,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AG01": {
@@ -4521,7 +4571,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AG02": {
@@ -4530,7 +4581,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AG03": {
@@ -4539,7 +4591,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM01": {
@@ -4548,7 +4601,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM02": {
@@ -4557,7 +4611,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM03": {
@@ -4566,7 +4621,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM04": {
@@ -4575,7 +4631,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM06": {
@@ -4584,7 +4641,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM07": {
@@ -4593,7 +4651,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM09": {
@@ -4602,7 +4661,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AM10": {
@@ -4611,7 +4671,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP01": {
@@ -4621,7 +4682,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP04": {
@@ -4630,7 +4692,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP05": {
@@ -4639,7 +4702,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP06": {
@@ -4648,7 +4712,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP07": {
@@ -4657,7 +4722,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP08": {
@@ -4666,7 +4732,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP09": {
@@ -4675,7 +4742,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP10": {
@@ -4684,7 +4752,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AP14": {
@@ -4694,7 +4763,8 @@
         "f-bader",
         "SamErde",
         "remold",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AS04": {
@@ -4702,7 +4772,8 @@
       "contributors": [
         "merill",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AT01": {
@@ -4711,7 +4782,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AT02": {
@@ -4720,7 +4792,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.AV01": {
@@ -4729,7 +4802,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CP01": {
@@ -4738,7 +4812,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CP03": {
@@ -4747,7 +4822,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CP04": {
@@ -4756,7 +4832,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR01": {
@@ -4765,7 +4842,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR02": {
@@ -4774,7 +4852,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR03": {
@@ -4783,7 +4862,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.CR04": {
@@ -4792,7 +4872,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR01": {
@@ -4801,7 +4882,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR02": {
@@ -4810,7 +4892,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR03": {
@@ -4819,7 +4902,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR05": {
@@ -4830,7 +4914,8 @@
         "m-hanisch",
         "SamErde",
         "mattcave",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.PR06": {
@@ -4839,7 +4924,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.ST08": {
@@ -4848,7 +4934,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "EIDSCA.ST09": {
@@ -4857,7 +4944,8 @@
         "merill",
         "f-bader",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "weyCC81"
       ]
     },
     "MT.1001": {
