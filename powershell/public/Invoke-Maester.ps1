@@ -13,6 +13,9 @@
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
 
+    .PARAMETER GraphRequestTimeoutSeconds
+    Timeout in seconds for Microsoft Graph requests (1-3600). Overrides the GraphRequest default of 300 seconds. Can also be set via `GlobalSettings.GraphRequestTimeoutSeconds` in `Custom/maester-config.json`. Useful when using `-IncludeLongRunning` in large tenants.
+
     .PARAMETER IncludePreview
     Include tests that are still being tested or are dependent on preview APIs.
 
