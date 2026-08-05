@@ -13,6 +13,9 @@
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
 
+    .PARAMETER GraphRequestTimeoutSeconds
+    Timeout in seconds for Microsoft Graph requests (1-3600). Overrides the GraphRequest default of 300 seconds. Can also be set via `GlobalSettings.GraphRequestTimeoutSeconds` in `Custom/maester-config.json`. Useful when using `-IncludeLongRunning` in large tenants.
+
     .PARAMETER IncludePreview
     Include tests that are still being tested or are dependent on preview APIs.
 
@@ -217,7 +220,12 @@
 
         # The root directory for configuration drift tracking.
         [Parameter(HelpMessage = 'Specify drift root directory, see https://maester.dev/docs/tests/MT.1060')]
-        [string] $DriftRoot
+        [string] $DriftRoot,
+
+        # Override the Microsoft Graph SDK request timeout in seconds (1-3600). Can also be set via GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json.
+        [Parameter(Helpmessage = 'Timeout in seconds for Microsoft Graph requests (1-3600). Overrides GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json. Useful in particular for -IncludeLongRunning tests, which may take a long time to complete.')]
+        [ValidateRange(1, 3600)]
+        [int] $GraphRequestTimeoutSeconds
     )
 
     function GetDefaultFileName() {
@@ -478,6 +486,25 @@
         $configTenantId = (Get-MgContext).TenantId
     }
     $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path -TenantId $configTenantId
+
+    # Resolve Graph request timeout: explicit parameter wins over GlobalSettings.
+    $resolvedTimeout = $null
+    if ($PSBoundParameters.ContainsKey('GraphRequestTimeoutSeconds')) {
+        $resolvedTimeout = $GraphRequestTimeoutSeconds
+    } else {
+        $configTimeout = Get-MtMaesterConfigGlobalSetting -SettingName 'GraphRequestTimeoutSeconds'
+        if ($null -ne $configTimeout) {
+            $parsedTimeout = 0
+            if (-not [int]::TryParse($configTimeout.ToString(), [ref]$parsedTimeout) -or $parsedTimeout -lt 1 -or $parsedTimeout -gt 3600) {
+                throw "GlobalSettings.GraphRequestTimeoutSeconds must be an integer between 1 and 3600, got '$configTimeout'."
+            }
+            $resolvedTimeout = $parsedTimeout
+        }
+    }
+    if ($null -ne $resolvedTimeout) {
+        Write-Verbose "Setting Graph request timeout to $resolvedTimeout seconds."
+        Set-MgRequestContext -ClientTimeout $resolvedTimeout
+    }
 
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 

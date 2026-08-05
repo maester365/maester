@@ -524,6 +524,7 @@ module/
 # Don't add any test files to the Custom folder.
 # This location is reserved for Maester users to add their own tests.
 tests/Custom/*.ps1
+tests/Custom/maester-config.json
 
 # Build outputs and staging artifacts should not be checked in.
 website/build/

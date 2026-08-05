@@ -6,7 +6,8 @@
     "DataverseEnvironmentUrl": "",
     "GitHubOrganization": "",
     "GitHubApiBaseUri": "https://api.github.com",
-    "GitHubApiVersion": "2022-11-28"
+    "GitHubApiVersion": "2022-11-28",
+    "GraphRequestTimeoutSeconds": 300
   },
   "TestSettings": [
     {
