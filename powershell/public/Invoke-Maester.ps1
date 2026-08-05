@@ -223,7 +223,7 @@
         [string] $DriftRoot,
 
         # Override the Microsoft Graph SDK request timeout in seconds (1-3600). Can also be set via GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json.
-        [Parameter(Helpmessage = 'Timeout in seconds for Microsoft Graph requests, 1-3600. Overrides GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json. In particular for -IncludeLongRunning tests, which may take a long time to complete.')]
+        [Parameter(Helpmessage = 'Timeout in seconds for Microsoft Graph requests (1-3600). Overrides GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json. Useful in particular for -IncludeLongRunning tests, which may take a long time to complete.')]
         [ValidateRange(1, 3600)]
         [int] $GraphRequestTimeoutSeconds
     )
