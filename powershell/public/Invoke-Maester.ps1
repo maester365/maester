@@ -494,10 +494,11 @@
     } else {
         $configTimeout = Get-MtMaesterConfigGlobalSetting -SettingName 'GraphRequestTimeoutSeconds'
         if ($null -ne $configTimeout) {
-            $resolvedTimeout = [int]$configTimeout
-            if ($resolvedTimeout -lt 1 -or $resolvedTimeout -gt 3600) {
-                throw "GlobalSettings.GraphRequestTimeoutSeconds must be between 1 and 3600, got $resolvedTimeout."
+            $parsedTimeout = 0
+            if (-not [int]::TryParse($configTimeout.ToString(), [ref]$parsedTimeout) -or $parsedTimeout -lt 1 -or $parsedTimeout -gt 3600) {
+                throw "GlobalSettings.GraphRequestTimeoutSeconds must be an integer between 1 and 3600, got '$configTimeout'."
             }
+            $resolvedTimeout = $parsedTimeout
         }
     }
     if ($null -ne $resolvedTimeout) {
