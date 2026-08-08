@@ -111,6 +111,3 @@ See https://mynster-it.dk/docs/modules/leastprivilegedmsgraph for docs.
 
 We can't wait to see what the community builds and shares. If you publish a custom tests repository, let us know on [Discord](https://discord.maester.dev/) or [GitHub Discussions](https://github.com/maester365/maester/discussions) - we'd love to link to it.
 
-## Contributor
-
-- [Morten Mynster](/blog/authors/mynster9361)
