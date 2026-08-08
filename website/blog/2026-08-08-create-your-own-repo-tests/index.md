@@ -108,6 +108,7 @@ See https://mynster-it.dk/docs/modules/leastprivilegedmsgraph for docs.
 - Documentation: [Sharing custom tests via GitHub](/docs/next/writing-tests/creating-custom-tests-repos)
 - Command reference: [Install-MtCustomTests](/docs/next/commands/Install-MtCustomTests)
 - Example repository: [Mynster9361/Least_Privileged_MSGraph](https://github.com/Mynster9361/Least_Privileged_MSGraph) - a full worked example with multiple tests, a companion module dependency, and a `maester-metadata.json` in the wild.
+- [Community Tests](/community-tests) - browse repositories the community has already shared, or list your own.
 
 We can't wait to see what the community builds and shares. If you publish a custom tests repository, let us know on [Discord](https://discord.maester.dev/) or [GitHub Discussions](https://github.com/maester365/maester/discussions) - we'd love to link to it.
 
