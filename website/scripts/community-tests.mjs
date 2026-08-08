@@ -32,8 +32,17 @@ function validateEntry(key, entry) {
   if (!repositoryPattern.test(entry.repository)) {
     throw new Error(`community-tests.yml: entry '${key}' has an invalid 'repository' value '${entry.repository}' - expected 'owner/repo'.`);
   }
-  if (entry.tags !== undefined && !Array.isArray(entry.tags)) {
-    throw new Error(`community-tests.yml: entry '${key}' has a 'tags' value that isn't a list.`);
+  if (
+    entry.tags !== undefined &&
+    (!Array.isArray(entry.tags) || entry.tags.some((tag) => typeof tag !== "string" || tag.trim() === ""))
+  ) {
+    throw new Error(`community-tests.yml: entry '${key}' has a 'tags' value that isn't a list of non-empty strings.`);
+  }
+  if (entry.author !== undefined && (typeof entry.author !== "string" || entry.author.trim() === "")) {
+    throw new Error(`community-tests.yml: entry '${key}' has an 'author' value that isn't a non-empty string.`);
+  }
+  if (entry.authorUrl !== undefined && (typeof entry.authorUrl !== "string" || !entry.authorUrl.startsWith("https://"))) {
+    throw new Error(`community-tests.yml: entry '${key}' has an 'authorUrl' value that isn't an https:// URL.`);
   }
 }
 

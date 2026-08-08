@@ -8,6 +8,7 @@
     "check-test-docs": "node scripts/generate-test-docs.mjs --check",
     "generate-community-tests": "node scripts/community-tests.mjs",
     "prebuild": "npm run generate-test-docs && npm run generate-community-tests",
+    "prestart": "npm run generate-community-tests",
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
