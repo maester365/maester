@@ -30,6 +30,7 @@ $__MtSession = @{
 	GitHubCache            = @{}                 # Per-session REST response cache; cleared each Invoke-Maester run
 	ADCache                = @{}                 # Active Directory data cache
 	ADConnection           = $null               # Active Directory connection state
+	ADRunContext           = $null               # Active Directory run context for current Invoke-Maester execution
 	ADCollectionTime       = $null               # Timestamp of last AD data collection
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force

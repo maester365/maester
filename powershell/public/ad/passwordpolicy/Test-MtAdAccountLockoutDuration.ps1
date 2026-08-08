@@ -1,4 +1,4 @@
-﻿function Test-MtAdAccountLockoutDuration {
+function Test-MtAdAccountLockoutDuration {
     <#
     .SYNOPSIS
     Checks the account lockout duration configured in the default domain password policy.
@@ -33,9 +33,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get the default domain password policy
     try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
+        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop @adServerParameters
         $lockoutDuration = $passwordPolicy.LockoutDuration
     } catch {
         Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"

@@ -1,4 +1,4 @@
-﻿function Test-MtAdFineGrainedPolicyAppliesTo {
+function Test-MtAdFineGrainedPolicyAppliesTo {
     <#
     .SYNOPSIS
     Shows which users and groups each fine-grained password policy applies to.
@@ -32,9 +32,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get fine-grained password policies
     try {
-        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -Properties AppliesTo -ErrorAction Stop
+        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -Properties AppliesTo -ErrorAction Stop @adServerParameters
         $policyCount = ($fgppPolicies | Measure-Object).Count
     } catch {
         Write-Error "Failed to retrieve fine-grained password policies: $($_.Exception.Message)"
@@ -62,7 +64,7 @@
                     foreach ($target in $appliesTo) {
                         try {
                             # Try to resolve the DN to a friendly name
-                            $object = Get-ADObject -Identity $target -Properties ObjectClass -ErrorAction SilentlyContinue
+                            $object = Get-ADObject -Identity $target -Properties ObjectClass -ErrorAction SilentlyContinue @adServerParameters
                             if ($object) {
                                 $objectClass = $object.ObjectClass
                                 $objectName = $object.Name

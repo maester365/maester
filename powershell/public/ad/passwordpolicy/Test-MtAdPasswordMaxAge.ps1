@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordMaxAge {
+function Test-MtAdPasswordMaxAge {
     <#
     .SYNOPSIS
     Checks the maximum password age configured in the default domain password policy.
@@ -33,9 +33,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get the default domain password policy
     try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
+        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop @adServerParameters
         $maxPasswordAge = $passwordPolicy.MaxPasswordAge
     } catch {
         Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"

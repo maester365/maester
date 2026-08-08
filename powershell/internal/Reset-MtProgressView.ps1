@@ -8,7 +8,7 @@
     param ()
 
     try {
-        if ($IsWindows -and $IsCoreCLR) {
+        if ($IsWindows -and $IsCoreCLR -and $null -ne $Script:ProgressView) {
             $PSStyle.Progress.View = $Script:ProgressView
         }
     } catch {

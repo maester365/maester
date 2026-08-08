@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordComplexityRequired {
+function Test-MtAdPasswordComplexityRequired {
     <#
     .SYNOPSIS
     Checks whether password complexity is required in the default domain password policy.
@@ -33,9 +33,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get the default domain password policy
     try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
+        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop @adServerParameters
         $complexityEnabled = $passwordPolicy.ComplexityEnabled
     } catch {
         Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"

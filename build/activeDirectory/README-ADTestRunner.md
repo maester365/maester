@@ -4,6 +4,16 @@ This folder contains scripts for running Maester Active Directory tests on a dom
 
 ## Quick Start
 
+### Recommended First Step (Pin the Local Module)
+
+Run this once in each new terminal session before connecting to AD:
+
+```powershell
+.\build\activeDirectory\Use-LocalMaesterModule.ps1
+```
+
+This ensures `Connect-Maester` is loaded from this workspace and includes `-ActiveDirectoryServer`.
+
 ### Option 1: Run All AD Tests (Recommended)
 
 From the repository root on a domain controller:
@@ -14,6 +24,9 @@ From the repository root on a domain controller:
 
 # With verbose output
 .\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -Verbose
+
+# Run against multiple forests from one machine
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -ActiveDirectoryServer dc01.corp.contoso.com,dc01.fabrikam.net
 ```
 
 ### Option 2: Run Specific AD Test Categories
@@ -53,38 +66,39 @@ $latestReports | Copy-Item -Destination ".\build\activeDirectory\" -Force
 
 The AD tests are organized into the following categories:
 
-| Category | Path | Description |
-|----------|------|-------------|
-| GPO State | `tests/ad/gpostate` | GPO configuration and state tests |
-| Domain | `tests/ad/domain` | Domain configuration tests |
-| Security | `tests/ad/security` | Security-related AD tests |
-| User | `tests/ad/user` | User account tests |
-| Group | `tests/ad/group` | Group configuration tests |
-| Computer | `tests/ad/computer` | Computer account tests |
-| GPO | `tests/ad/gpo` | Group Policy Object tests |
-| Password Policy | `tests/ad/passwordpolicy` | Password policy tests |
-| Replication | `tests/ad/replication` | AD replication tests |
-| DACL | `tests/ad/dacl` | Discretionary Access Control List tests |
-| Domain Controller | `tests/ad/domaincontroller` | DC-specific tests |
-| DNS | `tests/ad/dns` | DNS-related tests |
-| OU | `tests/ad/ou` | Organizational Unit tests |
-| Site | `tests/ad/site` | AD site topology tests |
-| Schema | `tests/ad/schema` | AD schema tests |
-| SPN | `tests/ad/spn` | Service Principal Name tests |
-| Trust | `tests/ad/trust` | Domain trust tests |
-| Config | `tests/ad/config` | General configuration tests |
+| Category          | Path                        | Description                             |
+| ----------------- | --------------------------- | --------------------------------------- |
+| GPO State         | `tests/ad/gpostate`         | GPO configuration and state tests       |
+| Domain            | `tests/ad/domain`           | Domain configuration tests              |
+| Security          | `tests/ad/security`         | Security-related AD tests               |
+| User              | `tests/ad/user`             | User account tests                      |
+| Group             | `tests/ad/group`            | Group configuration tests               |
+| Computer          | `tests/ad/computer`         | Computer account tests                  |
+| GPO               | `tests/ad/gpo`              | Group Policy Object tests               |
+| Password Policy   | `tests/ad/passwordpolicy`   | Password policy tests                   |
+| Replication       | `tests/ad/replication`      | AD replication tests                    |
+| DACL              | `tests/ad/dacl`             | Discretionary Access Control List tests |
+| Domain Controller | `tests/ad/domaincontroller` | DC-specific tests                       |
+| DNS               | `tests/ad/dns`              | DNS-related tests                       |
+| OU                | `tests/ad/ou`               | Organizational Unit tests               |
+| Site              | `tests/ad/site`             | AD site topology tests                  |
+| Schema            | `tests/ad/schema`           | AD schema tests                         |
+| SPN               | `tests/ad/spn`              | Service Principal Name tests            |
+| Trust             | `tests/ad/trust`            | Domain trust tests                      |
+| Config            | `tests/ad/config`           | General configuration tests             |
 
 ## Script Parameters
 
 ### Run-ADTests-And-CopyReports.ps1
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `ConnectActiveDirectory` | Required | Explicitly authorize AD connection validation and test execution |
-| `MaesterModulePath` | `..\..\powershell` | Path to Maester PowerShell module |
-| `TestPath` | `..\..\tests` | Path to test files |
-| `OutputFolder` | `..\..\test-results` | Temporary output folder |
-| `TargetFolder` | Current folder | Where to copy final reports |
+| Parameter                | Default              | Description                                                                                   |
+| ------------------------ | -------------------- | --------------------------------------------------------------------------------------------- |
+| `ConnectActiveDirectory` | Required             | Explicitly authorize AD connection validation and test execution                              |
+| `MaesterModulePath`      | `..\..\powershell`   | Path to Maester PowerShell module                                                             |
+| `TestPath`               | `..\..\tests`        | Path to test files                                                                            |
+| `OutputFolder`           | `..\..\test-results` | Temporary output folder                                                                       |
+| `TargetFolder`           | Current folder       | Where to copy final reports                                                                   |
+| `ActiveDirectoryServer`  | *(not set)*          | One or more AD servers/DCs to target. Provide multiple values to run across multiple forests. |
 
 ## Report Files
 
@@ -130,6 +144,11 @@ After running tests, the following files are generated:
 ### Example 1: Full AD Test Suite
 ```powershell
 .\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -Verbose
+```
+
+### Example 1b: Multi-forest run from a single host
+```powershell
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -ActiveDirectoryServer dc01.corp.contoso.com,dc01.fabrikam.net
 ```
 
 ### Example 2: Quick GPO Validation Only

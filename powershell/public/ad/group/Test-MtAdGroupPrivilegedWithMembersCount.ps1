@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupPrivilegedWithMembersCount {
+function Test-MtAdGroupPrivilegedWithMembersCount {
     <#
     .SYNOPSIS
     Counts privileged groups that have members in Active Directory.
@@ -35,6 +35,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
 
     # Well-known privileged group RIDs
@@ -66,7 +68,7 @@
             $totalPrivileged++
 
             try {
-                $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+                $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
                 $memberCount = ($members | Measure-Object).Count
 
                 if ($memberCount -gt 0) {

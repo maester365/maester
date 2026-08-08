@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordHistoryCount {
+function Test-MtAdPasswordHistoryCount {
     <#
     .SYNOPSIS
     Checks the password history count configured in the default domain password policy.
@@ -33,9 +33,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get the default domain password policy
     try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
+        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop @adServerParameters
         $passwordHistoryCount = $passwordPolicy.PasswordHistoryCount
     } catch {
         Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"

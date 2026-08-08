@@ -1,4 +1,4 @@
-﻿function Test-MtAdMachineAccountQuota {
+function Test-MtAdMachineAccountQuota {
     <#
     .SYNOPSIS
     Retrieves the ms-DS-MachineAccountQuota value for the domain.
@@ -30,12 +30,14 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $domain = $adState.Domain
 
     # Try to get machine account quota from the domain object
     $machineAccountQuota = $null
     try {
-        $domainObject = Get-ADObject -Identity $domain.DistinguishedName -Properties ms-DS-MachineAccountQuota
+        $domainObject = Get-ADObject -Identity $domain.DistinguishedName -Properties ms-DS-MachineAccountQuota @adServerParameters
         $machineAccountQuota = $domainObject.'ms-DS-MachineAccountQuota'
     }
     catch {

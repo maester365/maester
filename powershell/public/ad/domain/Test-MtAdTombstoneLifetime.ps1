@@ -1,4 +1,4 @@
-﻿function Test-MtAdTombstoneLifetime {
+function Test-MtAdTombstoneLifetime {
     <#
     .SYNOPSIS
     Retrieves the tombstone lifetime in days.
@@ -31,6 +31,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $domain = $adState.Domain
 
     # Try to get tombstone lifetime from the domain object
@@ -38,7 +40,7 @@
     try {
         # Get the tombstone lifetime from the directory configuration
         $configurationNC = $domain.ConfigurationNamingContext
-        $tombstoneObject = Get-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configurationNC" -Properties tombstoneLifetime -ErrorAction SilentlyContinue
+        $tombstoneObject = Get-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configurationNC" -Properties tombstoneLifetime -ErrorAction SilentlyContinue @adServerParameters
         $tombstoneLifetime = $tombstoneObject.tombstoneLifetime
     }
     catch {

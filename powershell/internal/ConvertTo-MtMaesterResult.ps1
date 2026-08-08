@@ -35,6 +35,15 @@
         } elseif (Test-MtConnection Teams) {
             $tenant = Get-CsTenant
             return $tenant.DisplayName
+        } elseif (Test-MtConnection ActiveDirectory) {
+            $adContext = GetActiveDirectoryContext
+            if ($adContext -and $adContext.ForestName) {
+                return "Active Directory Forest: $($adContext.ForestName)"
+            }
+            if ($adContext -and $adContext.DomainName) {
+                return "Active Directory Domain: $($adContext.DomainName)"
+            }
+            return 'Active Directory (connected)'
         } else {
             return 'TenantName (not connected to Graph)'
         }
@@ -47,9 +56,47 @@
         } elseif (Test-MtConnection Teams) {
             $tenant = Get-CsTenant
             return $tenant.TenantId
+        } elseif (Test-MtConnection ActiveDirectory) {
+            $adContext = GetActiveDirectoryContext
+            if ($adContext -and $adContext.ForestRootDomain) {
+                return $adContext.ForestRootDomain
+            }
+            if ($adContext -and $adContext.DomainName) {
+                return $adContext.DomainName
+            }
+            if ($adContext -and $adContext.TargetServer) {
+                return $adContext.TargetServer
+            }
+            return 'ActiveDirectory'
         } else {
             return 'TenantId (not connected to Graph)'
         }
+    }
+
+    function GetActiveDirectoryContext() {
+        if (-not (Test-MtConnection ActiveDirectory)) {
+            return $null
+        }
+
+        $context = [ordered]@{
+            ForestName       = $null
+            ForestRootDomain = $null
+            DomainName       = $null
+            TargetServer     = $null
+        }
+
+        if ($__MtSession -and $null -ne $__MtSession.ADRunContext) {
+            $context.ForestName = [string]$__MtSession.ADRunContext.ForestName
+            $context.ForestRootDomain = [string]$__MtSession.ADRunContext.ForestRootDomain
+            $context.DomainName = [string]$__MtSession.ADRunContext.DomainName
+            $context.TargetServer = [string]$__MtSession.ADRunContext.TargetServer
+        }
+
+        if (-not $context.TargetServer -and $__MtSession -and $null -ne $__MtSession.ADConnection) {
+            $context.TargetServer = [string]$__MtSession.ADConnection.TargetServer
+        }
+
+        return [PSCustomObject]$context
     }
 
     function GetAccount() {
@@ -444,6 +491,7 @@
         LoadedModules     = GetLoadedModules
         InvokeCommand     = $InvokeMaesterCommand
         MgContext         = GetMgContextInfo
+        ActiveDirectoryContext = GetActiveDirectoryContext
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
         MaesterConfig     = $__MtSession.MaesterConfig
         Tests             = $mtTests

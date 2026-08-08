@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberDistinctGroupCount {
+function Test-MtAdGroupMemberDistinctGroupCount {
     <#
     .SYNOPSIS
     Counts the distinct groups that have members in Active Directory.
@@ -30,6 +30,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
     $totalGroupCount = ($groups | Measure-Object).Count
 
@@ -40,7 +42,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
             if ($members -and ($members | Measure-Object).Count -gt 0) {
                 $groupsWithMembers += $group
             }

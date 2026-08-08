@@ -40,6 +40,14 @@ Describe 'Connect-Maester' {
         (Get-Command Connect-Maester).Parameters.Keys | Should -Contain 'GitHubOrganization'
     }
 
+    It 'Offers ActiveDirectoryServer as a parameter' {
+        (Get-Command Connect-Maester).Parameters.Keys | Should -Contain 'ActiveDirectoryServer'
+    }
+
+    It 'Accepts multiple ActiveDirectoryServer values' {
+        (Get-Command Connect-Maester).Parameters['ActiveDirectoryServer'].ParameterType.FullName | Should -Be 'System.String[]'
+    }
+
     It 'Calls Connect-MtGitHub when -Service GitHub is specified' {
         Mock Connect-MtGitHub -ModuleName Maester {}
 
@@ -69,6 +77,53 @@ Describe 'Connect-Maester' {
         Connect-Maester -Service ActiveDirectory
 
         Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Passes ActiveDirectoryServer to the AD connectivity probe and records the target' {
+        Mock Get-ADRootDSE -ModuleName Maester -ParameterFilter { $Server -eq 'dc02.contoso.com' } {
+            [PSCustomObject]@{
+                defaultNamingContext       = 'DC=contoso,DC=com'
+                configurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                schemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                dnsHostName                = 'dc02.contoso.com'
+            }
+        }
+
+        Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc02.contoso.com'
+
+        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Server -eq 'dc02.contoso.com' }
+        InModuleScope Maester {
+            $__MtSession.ADConnection.TargetServer | Should -Be 'dc02.contoso.com'
+        }
+    }
+
+    It 'Validates and stores multiple ActiveDirectoryServer targets' {
+        Mock Get-ADRootDSE -ModuleName Maester -ParameterFilter { $Server -eq 'dc01.contoso.com' } {
+            [PSCustomObject]@{
+                defaultNamingContext       = 'DC=contoso,DC=com'
+                configurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                schemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                dnsHostName                = 'dc01.contoso.com'
+            }
+        }
+
+        Mock Get-ADRootDSE -ModuleName Maester -ParameterFilter { $Server -eq 'dc01.fabrikam.net' } {
+            [PSCustomObject]@{
+                defaultNamingContext       = 'DC=fabrikam,DC=net'
+                configurationNamingContext = 'CN=Configuration,DC=fabrikam,DC=net'
+                schemaNamingContext        = 'CN=Schema,CN=Configuration,DC=fabrikam,DC=net'
+                dnsHostName                = 'dc01.fabrikam.net'
+            }
+        }
+
+        Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc01.contoso.com', 'dc01.fabrikam.net'
+
+        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Server -eq 'dc01.contoso.com' }
+        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Server -eq 'dc01.fabrikam.net' }
+        InModuleScope Maester {
+            $__MtSession.ADConnection.TargetServer | Should -Be 'dc01.contoso.com'
+            $__MtSession.ADConnection.TargetServers | Should -Be @('dc01.contoso.com', 'dc01.fabrikam.net')
+        }
     }
 
     It 'Does not call opt-in services when -Service All is specified' {
