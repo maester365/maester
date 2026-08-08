@@ -24,7 +24,7 @@ That's it. Maester downloads the repository, finds its `.maester` folder, and in
 Invoke-Maester
 ```
 
-### Quick Stats
+## Quick Stats
 
 - 📦 Install custom tests from any public or private GitHub repository with one command
 - 🔀 `owner/repo` shorthand or a full GitHub URL, pinned to a branch or tag if you need it
@@ -40,7 +40,7 @@ Custom tests are PowerShell/Pester code that runs on your machine or in your pip
 
 Any GitHub repository can be a source - there's nothing to register. Add a `.maester` folder at the repository root with your test files, and anyone can install it:
 
-```
+```txt
 your-repo/
 ├── .maester/
 │   ├── ContosoUsers.Tests.ps1
@@ -55,7 +55,7 @@ If your tests have prerequisites, ship a `maester-metadata.json` alongside them:
 
 ```json
 {
-    "Message": "Setup required before running these tests:\n1. Enable the 'MicrosoftGraphActivityLogs' diagnostic setting in Entra ID -> Log Analytics.\n2. Add your workspace ID to tests/Custom/maester-config.json under GlobalSettings.LPMSLogAnalyticsWorkspaceId.\n3. Run 'Connect-AzAccount -AuthScope https://api.loganalytics.io' before Invoke-Maester.\n\nSee https://mynster-it.dk/2026/02/26/LeastPrivilegedMSGraphSetup for step by step guide.\nSee https://mynster-it.dk/docs/modules/leastprivilegedmsgraph for docs.",
+    "Message": "Setup required before running these tests:\n1. Enable the 'MicrosoftGraphActivityLogs' diagnostic setting in Entra ID -> Log Analytics.\n2. Add your workspace ID to Custom/maester-config.json under GlobalSettings.LPMSLogAnalyticsWorkspaceId.\n3. Run 'Connect-AzAccount -AuthScope https://api.loganalytics.io' before Invoke-Maester.\n\nSee https://mynster-it.dk/2026/02/26/LeastPrivilegedMSGraphSetup for step by step guide.\nSee https://mynster-it.dk/docs/modules/leastprivilegedmsgraph for docs.",
     "RequiredModules": [
         {
             "Name": "LeastPrivilegedMSGraph",
@@ -83,7 +83,7 @@ If your tests have prerequisites, ship a `maester-metadata.json` alongside them:
 
 `Install-MtCustomTests` checks `RequiredModules` against what's actually installed and warns about anything missing, then shows your `Message` - so the person installing your tests knows exactly what to do next, without having to go read your README first:
 
-```
+```txt
 Custom Maester tests from 'Mynster9361/Least_Privileged_MSGraph' installed successfully to .\Custom\Least_Privileged_MSGraph!
 WARNING: 'Mynster9361/Least_Privileged_MSGraph' requires PowerShell modules that are not installed (or are below the required version):
   - LeastPrivilegedMSGraph (>= 3.3.0)
@@ -96,7 +96,7 @@ Install them with: Install-Module <name> -Scope CurrentUser
 Notes from 'Mynster9361/Least_Privileged_MSGraph':
 Setup required before running these tests:
 1. Enable the 'MicrosoftGraphActivityLogs' diagnostic setting in Entra ID -> Log Analytics.
-2. Add your workspace ID to tests/Custom/maester-config.json under GlobalSettings.LPMSLogAnalyticsWorkspaceId.
+2. Add your workspace ID to Custom/maester-config.json under GlobalSettings.LPMSLogAnalyticsWorkspaceId.
 3. Run 'Connect-AzAccount -AuthScope https://api.loganalytics.io' before Invoke-Maester.
 
 See https://mynster-it.dk/2026/02/26/LeastPrivilegedMSGraphSetup for step by step guide.

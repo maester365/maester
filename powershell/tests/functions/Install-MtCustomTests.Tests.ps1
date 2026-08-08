@@ -3,6 +3,7 @@
     Add-Type -AssemblyName System.IO.Compression.FileSystem
 
     function New-MtTestFixtureZip {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Private Pester test fixture helper, not a shipped cmdlet - ShouldProcess semantics do not apply.')]
         param(
             [Parameter(Mandatory)] [string] $DestinationZip,
             [Parameter(Mandatory)] [string] $StageRoot,
@@ -179,6 +180,25 @@ Describe 'Install-MtCustomTests' {
             Test-Path (Join-Path $destination 'Sample.Tests.ps1') | Should -BeTrue
             Should -Invoke Get-MtConfirmation -ModuleName Maester -ParameterFilter { $message -match 'already exists' } -Times 0
             Should -Invoke Get-MtConfirmation -ModuleName Maester -ParameterFilter { $message -match 'due diligence' } -Times 1 -Exactly
+        }
+
+        It 'Preserves the existing installation if staging the new copy fails' {
+            $installPath = Join-Path $TestDrive 'install6'
+            $destination = Join-Path $installPath 'Custom/Least_Privileged_MSGraph'
+            New-Item -Path $destination -ItemType Directory -Force | Out-Null
+            Set-Content -Path (Join-Path $destination 'Marker.txt') -Value 'keep me'
+
+            Mock Get-MtConfirmation -ModuleName Maester -ParameterFilter { $message -match 'already exists' } { $true }
+            # -Recurse is unique to the staging copy - the archive-download mock's own
+            # Copy-Item call (faking the zip download) doesn't pass it, so this filter
+            # leaves that unrelated call alone.
+            Mock Copy-Item -ModuleName Maester -ParameterFilter { $Recurse -eq $true } { throw 'Simulated disk failure' }
+
+            Install-MtCustomTests -Repository 'Mynster9361/Least_Privileged_MSGraph' -Path $installPath -ErrorAction SilentlyContinue -ErrorVariable errRecord
+
+            Test-Path (Join-Path $destination 'Marker.txt') | Should -BeTrue
+            Test-Path (Join-Path $destination 'Sample.Tests.ps1') | Should -BeFalse
+            $errRecord | Where-Object { $_ -match 'Unable to stage' } | Should -Not -BeNullOrEmpty
         }
     }
 

@@ -110,12 +110,16 @@
     }
     if ($token) { $headers['Authorization'] = "Bearer $token" }
 
+    # Invoke-WebRequest defaults -TimeoutSec to 0 (indefinite) when omitted, so a stalled
+    # connection would otherwise hang the install forever.
+    $requestTimeoutSec = 100
+
     $ownerEncoded = [System.Uri]::EscapeDataString($repoRef.Organization)
     $repoEncoded = [System.Uri]::EscapeDataString($repoRef.Repository)
 
     Write-Verbose "Looking up repository $($repoRef.Organization)/$($repoRef.Repository) on GitHub."
     try {
-        $repoResponse = Invoke-WebRequest -Uri "https://api.github.com/repos/$ownerEncoded/$repoEncoded" -Headers $headers -Method GET -UseBasicParsing -ErrorAction Stop
+        $repoResponse = Invoke-WebRequest -Uri "https://api.github.com/repos/$ownerEncoded/$repoEncoded" -Headers $headers -Method GET -UseBasicParsing -TimeoutSec $requestTimeoutSec -ErrorAction Stop
         $repoData = $repoResponse.Content | ConvertFrom-Json -ErrorAction Stop
     } catch {
         $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
@@ -148,7 +152,7 @@
         $downloadUri = "https://github.com/$repoOwner/$repoName/archive/$refEncoded.zip"
         Write-Verbose "Downloading $downloadUri"
         try {
-            Invoke-WebRequest -Uri $downloadUri -Headers $headers -OutFile $zipPath -UseBasicParsing -ErrorAction Stop
+            Invoke-WebRequest -Uri $downloadUri -Headers $headers -OutFile $zipPath -UseBasicParsing -TimeoutSec $requestTimeoutSec -ErrorAction Stop
         } catch {
             $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
             if ($rateLimitMessage) {
@@ -179,22 +183,36 @@
             return
         }
 
-        $destination = Join-Path -Path (Join-Path -Path $Path -ChildPath 'Custom') -ChildPath $repoName
+        $customFolder = Join-Path -Path $Path -ChildPath 'Custom'
+        $destination = Join-Path -Path $customFolder -ChildPath $repoName
+        $destinationExists = Test-Path -Path $destination -PathType Container
 
-        if (Test-Path -Path $destination -PathType Container) {
-            if (!$Force) {
-                $message = "`nThe folder $destination already exists.`nInstalling will replace its contents with the latest tests from '$repoOwner/$repoName'.`nDo you want to continue? (y/n): "
-                $continue = Get-MtConfirmation $message
-                if (!$continue) {
-                    Write-Host 'Custom Maester tests not installed.' -ForegroundColor Red
-                    return
-                }
+        if ($destinationExists -and !$Force) {
+            $message = "`nThe folder $destination already exists.`nInstalling will replace its contents with the latest tests from '$repoOwner/$repoName'.`nDo you want to continue? (y/n): "
+            $continue = Get-MtConfirmation $message
+            if (!$continue) {
+                Write-Host 'Custom Maester tests not installed.' -ForegroundColor Red
+                return
             }
-            Remove-Item -Path $destination -Recurse -Force
         }
 
-        New-Item -Path $destination -ItemType Directory -Force | Out-Null
-        Copy-Item -Path "$($maesterFolder.FullName)/*" -Destination $destination -Recurse -Force
+        # Stage the new content in a temp folder first and only remove the existing
+        # installation once staging succeeds, so a failed copy (disk full, permissions,
+        # etc.) never leaves an existing installation half-deleted or missing.
+        $stagingPath = Join-Path -Path $tempRoot -ChildPath 'staged'
+        New-Item -Path $stagingPath -ItemType Directory -Force | Out-Null
+        try {
+            Copy-Item -Path "$($maesterFolder.FullName)/*" -Destination $stagingPath -Recurse -Force -ErrorAction Stop
+        } catch {
+            Write-Error "Unable to stage the custom tests for '$repoOwner/$repoName': $($_.Exception.Message)"
+            return
+        }
+
+        New-Item -Path $customFolder -ItemType Directory -Force | Out-Null
+        if ($destinationExists) {
+            Remove-Item -Path $destination -Recurse -Force
+        }
+        Move-Item -Path $stagingPath -Destination $destination -Force
 
         Write-Host "Custom Maester tests from '$repoOwner/$repoName' installed successfully to $destination!" -ForegroundColor Green
 
