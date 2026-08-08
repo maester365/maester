@@ -65,7 +65,7 @@
         'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRegistrableDomain', 'Get-MtRole',
         'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession', 'Get-MtSpo', 'Get-MtTestInventory', 'Get-MtUser',
         'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType', 'Import-MtMaesterResult',
-        'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
+        'Install-MaesterTests', 'Install-MtCustomTests', 'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
         'Invoke-MtGraphRequest', 'Invoke-MtGraphSecurityQuery', 'Merge-MtMaesterResult', 'New-MtMaesterApp', 'Resolve-SPFRecord',
         'Send-MtMail', 'Send-MtTeamsMessage', 'Test-AzdoAllowExtensionsLocalNetworkAccess', 'Test-AzdoAllowRequestAccessToken',
         'Test-AzdoAllowTeamAdminsInvitationsAccessToken', 'Test-AzdoArtifactsExternalPackageProtectionToken',
