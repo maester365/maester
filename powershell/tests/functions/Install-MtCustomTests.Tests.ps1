@@ -7,7 +7,8 @@
             [Parameter(Mandatory)] [string] $DestinationZip,
             [Parameter(Mandatory)] [string] $StageRoot,
             [Parameter(Mandatory)] [string] $RepoFolderName,
-            [switch] $WithoutMaesterFolder
+            [switch] $WithoutMaesterFolder,
+            [string] $InfoJson
         )
 
         if (Test-Path -Path $StageRoot) { Remove-Item -Path $StageRoot -Recurse -Force }
@@ -21,6 +22,9 @@
             New-Item -Path $maesterDir -ItemType Directory -Force | Out-Null
             Set-Content -Path (Join-Path $maesterDir 'Sample.Tests.ps1') -Value 'Describe "Sample" { It "works" { $true | Should -BeTrue } }'
             Set-Content -Path (Join-Path $StageRoot "$RepoFolderName/README.md") -Value '# readme'
+            if ($InfoJson) {
+                Set-Content -Path (Join-Path $maesterDir 'maester-metadata.json') -Value $InfoJson
+            }
         }
 
         if (Test-Path -Path $DestinationZip) { Remove-Item -Path $DestinationZip -Force }
@@ -175,6 +179,75 @@ Describe 'Install-MtCustomTests' {
             Test-Path (Join-Path $destination 'Sample.Tests.ps1') | Should -BeTrue
             Should -Invoke Get-MtConfirmation -ModuleName Maester -ParameterFilter { $message -match 'already exists' } -Times 0
             Should -Invoke Get-MtConfirmation -ModuleName Maester -ParameterFilter { $message -match 'due diligence' } -Times 1 -Exactly
+        }
+    }
+
+    Context 'maester-metadata.json manifest' {
+        It 'Displays the Message and warns about missing/outdated RequiredModules' {
+            $stageRoot = Join-Path $TestDrive 'stage-info'
+            $fixtureZip = Join-Path $TestDrive 'fixture-info.zip'
+            $infoJson = @'
+{
+  "Message": "Remember to configure the Log Analytics workspace ID before running these tests.",
+  "RequiredModules": ["NotInstalledModule", { "Name": "Pester", "MinimumVersion": "99.0.0" }]
+}
+'@
+            New-MtTestFixtureZip -DestinationZip $fixtureZip -StageRoot $stageRoot -RepoFolderName 'Least_Privileged_MSGraph-main' -InfoJson $infoJson
+
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like 'https://api.github.com/repos/*' } {
+                [PSCustomObject]@{ Content = '{"name":"Least_Privileged_MSGraph","owner":{"login":"Mynster9361"},"default_branch":"main"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like 'https://github.com/*/archive/*' } {
+                Copy-Item -Path $fixtureZip -Destination $OutFile -Force
+            }
+            Mock Get-Module -ModuleName Maester -ParameterFilter { $Name -eq 'NotInstalledModule' } { $null }
+            Mock Get-Module -ModuleName Maester -ParameterFilter { $Name -eq 'Pester' } { [PSCustomObject]@{ Name = 'Pester'; Version = [version]'5.5.0' } }
+            Mock Write-Host -ModuleName Maester { }
+
+            $installPath = Join-Path $TestDrive 'install-info'
+            Install-MtCustomTests -Repository 'Mynster9361/Least_Privileged_MSGraph' -Path $installPath -WarningAction SilentlyContinue -WarningVariable warnRecord
+
+            $warnRecord | Where-Object { $_ -match 'NotInstalledModule' -and $_ -match 'Pester \(>= 99\.0\.0\)' } | Should -Not -BeNullOrEmpty
+            Should -Invoke Write-Host -ModuleName Maester -ParameterFilter { $Object -match 'Log Analytics workspace ID' }
+        }
+
+        It 'Does not warn when all RequiredModules are satisfied' {
+            $stageRoot = Join-Path $TestDrive 'stage-info-ok'
+            $fixtureZip = Join-Path $TestDrive 'fixture-info-ok.zip'
+            $infoJson = '{ "RequiredModules": ["Pester"] }'
+            New-MtTestFixtureZip -DestinationZip $fixtureZip -StageRoot $stageRoot -RepoFolderName 'Least_Privileged_MSGraph-main' -InfoJson $infoJson
+
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like 'https://api.github.com/repos/*' } {
+                [PSCustomObject]@{ Content = '{"name":"Least_Privileged_MSGraph","owner":{"login":"Mynster9361"},"default_branch":"main"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like 'https://github.com/*/archive/*' } {
+                Copy-Item -Path $fixtureZip -Destination $OutFile -Force
+            }
+            Mock Get-Module -ModuleName Maester -ParameterFilter { $Name -eq 'Pester' } { [PSCustomObject]@{ Name = 'Pester'; Version = [version]'5.5.0' } }
+
+            $installPath = Join-Path $TestDrive 'install-info-ok'
+            Install-MtCustomTests -Repository 'Mynster9361/Least_Privileged_MSGraph' -Path $installPath -WarningAction SilentlyContinue -WarningVariable warnRecord
+
+            $warnRecord | Should -BeNullOrEmpty
+        }
+
+        It 'Warns but still installs when the manifest JSON is malformed' {
+            $stageRoot = Join-Path $TestDrive 'stage-info-bad'
+            $fixtureZip = Join-Path $TestDrive 'fixture-info-bad.zip'
+            New-MtTestFixtureZip -DestinationZip $fixtureZip -StageRoot $stageRoot -RepoFolderName 'Least_Privileged_MSGraph-main' -InfoJson '{ this is not valid json'
+
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like 'https://api.github.com/repos/*' } {
+                [PSCustomObject]@{ Content = '{"name":"Least_Privileged_MSGraph","owner":{"login":"Mynster9361"},"default_branch":"main"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like 'https://github.com/*/archive/*' } {
+                Copy-Item -Path $fixtureZip -Destination $OutFile -Force
+            }
+
+            $installPath = Join-Path $TestDrive 'install-info-bad'
+            Install-MtCustomTests -Repository 'Mynster9361/Least_Privileged_MSGraph' -Path $installPath -WarningAction SilentlyContinue -WarningVariable warnRecord
+
+            $warnRecord | Where-Object { $_ -match 'Unable to parse' } | Should -Not -BeNullOrEmpty
+            Test-Path (Join-Path $installPath 'Custom/Least_Privileged_MSGraph/Sample.Tests.ps1') | Should -BeTrue
         }
     }
 

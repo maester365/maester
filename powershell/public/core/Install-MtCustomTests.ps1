@@ -18,6 +18,16 @@
     shows a confirmation prompt asking you to do your own due diligence before installing -
     this prompt is always shown, even when -Force is specified.
 
+    If the .maester folder contains a maester-metadata.json file, it is used to show
+    install-time information to you:
+      - RequiredModules: an array of module names (or objects with Name and an optional
+        MinimumVersion) the tests depend on. Any that are not installed, or are installed
+        below MinimumVersion, are listed in a warning after install.
+      - Message: free-form text (setup steps, links, configuration notes) displayed after
+        install.
+    Both fields are optional. A missing or unparsable maester-metadata.json does not
+    fail the install.
+
     An example repository with custom Maester tests can be found at
     https://github.com/Mynster9361/Least_Privileged_MSGraph
 
@@ -163,7 +173,7 @@
         }
 
         $maesterFolder = Get-ChildItem -Path $extractedRepoFolder.FullName -Directory -Force |
-            Where-Object { $_.Name -ieq '.maester' } | Select-Object -First 1
+        Where-Object { $_.Name -ieq '.maester' } | Select-Object -First 1
         if ($null -eq $maesterFolder) {
             Write-Error "No '.maester' folder was found at the root of '$repoOwner/$repoName'. The repository must contain a top-level .maester folder with the custom Maester tests."
             return
@@ -187,6 +197,31 @@
         Copy-Item -Path "$($maesterFolder.FullName)/*" -Destination $destination -Recurse -Force
 
         Write-Host "Custom Maester tests from '$repoOwner/$repoName' installed successfully to $destination!" -ForegroundColor Green
+
+        $infoFile = Get-ChildItem -Path $destination -File -Force | Where-Object { $_.Name -ieq 'maester-metadata.json' } | Select-Object -First 1
+        if ($infoFile) {
+            $info = $null
+            try {
+                $info = Get-Content -Path $infoFile.FullName -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+            } catch {
+                Write-Warning "Unable to parse '$($infoFile.Name)' from '$repoOwner/$repoName': $($_.Exception.Message)"
+            }
+
+            if ($info) {
+                if ($info.PSObject.Properties.Name -contains 'RequiredModules' -and $info.RequiredModules) {
+                    $missingModules = Get-MtMissingRequiredModule -RequiredModules @($info.RequiredModules)
+                    if ($missingModules.Count -gt 0) {
+                        $missingList = ($missingModules | ForEach-Object { "  - $_" }) -join "`n"
+                        Write-Warning "'$repoOwner/$repoName' requires PowerShell modules that are not installed (or are below the required version):`n$missingList`nInstall them with: Install-Module <name> -Scope CurrentUser"
+                    }
+                }
+
+                if ($info.PSObject.Properties.Name -contains 'Message' -and -not [string]::IsNullOrWhiteSpace([string]$info.Message)) {
+                    Write-Host "`nNotes from '$repoOwner/$repoName':" -ForegroundColor Cyan
+                    Write-Host $info.Message
+                }
+            }
+        }
     } finally {
         Remove-Item -Path $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
     }
