@@ -448,6 +448,10 @@ function CreateFile($folderPath, $fileName, $content) {
     } else {
         $newLine = "`n"
     }
+    # Some content (e.g. remediation text pulled straight from the JSON source) may use
+    # `n-only line breaks even when the surrounding template uses `r`n. Normalize everything
+    # to the same style so generated files don't end up with mixed line endings.
+    $content = ($content -replace "`r`n", "`n") -replace "`n", $newLine
     $content = RemoveTrailingWhitespace $content
     $content = $content -replace '(\r?\n)+$', ''
     [System.IO.File]::WriteAllText($filePath, "$content$newLine", [System.Text.UTF8Encoding]::new($false))
@@ -555,6 +559,7 @@ if ($output -match "`r`n") {
 } else {
     $newLine = "`n"
 }
+$output = ($output -replace "`r`n", "`n") -replace "`n", $newLine
 $output = RemoveTrailingWhitespace $output
 $output = $output -replace '(\r?\n)+$', ''
 [System.IO.File]::WriteAllText($TestFilePath, "$output$newLine", [System.Text.UTF8Encoding]::new($false))
