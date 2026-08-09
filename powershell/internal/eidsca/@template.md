@@ -8,6 +8,8 @@ https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
 .%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
 ```
 
+%RemediationAction%
+
 #### Related links
 
 - %GraphExplorerUrl%

@@ -1,7 +1,7 @@
 import { cx } from "@/lib/utils"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { PanelLeft } from "lucide-react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router"
 import { useSidebar } from "./Sidebar"
 import { ThemeToggle } from "./ThemeToggle"
 import { useTenant } from "@/context/TenantContext"

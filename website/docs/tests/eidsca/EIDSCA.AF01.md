@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AF01 - Authentication Method - FIDO2 security key - State."
-description: "Whether the FIDO2 security keys is enabled in the tenant. enabled Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .state -eq 'enabled' ``` Related links - Open in Graph Explorer&method=GET&version=beta&GraphUrl=https:…"
+description: "Whether the FIDO2 security keys is enabled in the tenant. enabled Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .state -eq 'enabled' ``` Remediation action Microsoft Learn - Enable passkeys (FIDO2) for your organiza…"
 slug: /tests/EIDSCA.AF01
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -19,7 +19,7 @@ keywords:
 
 # EIDSCA.AF01 - Authentication Method - FIDO2 security key - State.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/remold" title="Remold · Co-contributor"><img src="https://github.com/remold.png" alt="Remold" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/remold" title="Remold · Co-contributor"><img src="https://github.com/remold.png" alt="Remold" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -28,11 +28,14 @@ Whether the FIDO2 security keys is enabled in the tenant.
 enabled
 
 #### Test script
-
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .state -eq 'enabled'
 ```
+
+#### Remediation action
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Enable FIDO2 security key](https://learn.microsoft.com/entra/identity/authentication/how-to-enable-passkey-fido2#enable-passkey-authentication-method)
 
 #### Related links
 

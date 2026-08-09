@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom"
+import { Routes, Route, useLocation } from "react-router"
 import { useEffect, useRef } from "react"
 import { Sidebar, SidebarProvider } from "@/components/Sidebar"
 import { Breadcrumb } from "@/components/Breadcrumb"
