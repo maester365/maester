@@ -1,13 +1,15 @@
 ﻿function Test-MtCaExclusionForDirectorySyncAccount {
     <#
     .Synopsis
-    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
+    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts for Entra Id Connect.
 
     .Description
     The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
     These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
-    Entra ID connect does not support multifactor authentication.
     Restrict access with these accounts to trusted networks.
+
+    With latest update, Entra ID connect does support modern authentication.
+    As environments are just moving to modern authentication, we keep this test. If you are using modern authentication for Entra ID connect, you can mute this test.
 
     .Example
     Test-MtCaExclusionForDirectorySyncAccount
@@ -57,7 +59,7 @@
         # account. Service principals are not subject to Conditional Access policies and do not need to be
         # excluded from them.
         $userSyncMembers = @($Members | Where-Object { $_.'@odata.type' -ne '#microsoft.graph.servicePrincipal' })
-        $spSyncMembers   = @($Members | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.servicePrincipal' })
+        $spSyncMembers = @($Members | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.servicePrincipal' })
 
         if ( $userSyncMembers.Count -eq 0 -and $spSyncMembers.Count -gt 0 ) {
             $spNames = ( $spSyncMembers | Where-Object { $_.displayName } | ForEach-Object { $_.displayName } ) -join ', '
