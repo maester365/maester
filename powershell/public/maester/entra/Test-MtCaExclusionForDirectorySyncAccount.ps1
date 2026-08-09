@@ -1,15 +1,16 @@
 ﻿function Test-MtCaExclusionForDirectorySyncAccount {
     <#
     .Synopsis
-    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts for Entra Id Connect.
+    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts for Microsoft Entra Connect..
 
     .Description
-    The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
+    The directory synchronization accounts are used to synchronize the on-premises directory with Microsoft Entra Connect.
     These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
     Restrict access with these accounts to trusted networks.
 
-    With latest update, Entra ID connect does support modern authentication.
-    As environments are just moving to modern authentication, we keep this test. If you are using modern authentication for Entra ID connect, you can mute this test.
+    With latest update, Microsoft Entra Connect does support modern authentication.
+    As environments are just moving to modern authentication, we keep this test.
+    Mute this test, when the tenant has migrated every directory synchronization account to Application-Based Authentication with the ABA service principal taking over sync, so no directory sync user users remain. If this paragraph refers to that capability, include the supported minimum version: Microsoft Entra Connect 2.5.76.0 or later.
 
     .Example
     Test-MtCaExclusionForDirectorySyncAccount
