@@ -435,6 +435,45 @@ function Format-SourceContent {
     }
 }
 
+# Helper: extract the module preamble from source Maester.psm1 so the session
+# initialization block is maintained in one place only.
+function Get-ModulePreambleFromSource {
+    param (
+        [Parameter(Mandatory)]
+        [string] $Path
+    )
+
+    try {
+        if (-not (Test-Path -LiteralPath $Path)) {
+            throw "Source file was not found at '$Path'."
+        }
+
+        $Item = Get-Item -LiteralPath $Path -ErrorAction Stop
+        if ($Item.PSIsContainer) {
+            throw "Expected a file path but received a directory: '$Path'. Pass the full path to Maester.psm1."
+        }
+
+        $Content = Get-Content -LiteralPath $Path -Raw -ErrorAction Stop
+        if ([string]::IsNullOrWhiteSpace($Content)) {
+            throw "Source file '$Path' is empty."
+        }
+
+        $PreambleMatch = [regex]::Match(
+            $Content,
+            '(?s)\A.*?New-Variable\s+-Name\s+__MtSession\s+-Value\s+\$__MtSession\s+-Scope\s+Script\s+-Force\s*'
+        )
+
+        if (-not $PreambleMatch.Success) {
+            throw "Could not locate the __MtSession initialization block in '$Path'."
+        }
+
+        return $PreambleMatch.Value.TrimEnd("`r", "`n")
+    } catch {
+        $Detail = $_.Exception.Message
+        throw "Failed to extract module preamble from '$Path'. $Detail"
+    }
+}
+
 # Validate PSScriptAnalyzer availability when -Format is requested.
 if ($Format) {
     if (-not (Get-Command -Name Invoke-Formatter -ErrorAction SilentlyContinue)) {
@@ -451,38 +490,8 @@ $Builder = [System.Text.StringBuilder]::new()
 # Preamble: module header, #Requires, and session variable initialization.
 # Extracted from the source Maester.psm1 — the dot-sourcing loops are replaced by
 # the inline consolidated content below.
-$null = $Builder.AppendLine(@'
-<#
-.DISCLAIMER
-    THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
-    ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-    THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
-    PARTICULAR PURPOSE.
-
-    Copyright (c) Microsoft Corporation. All rights reserved.
-#>
-
-## Initialize Module Configuration
-#Requires -Modules Pester, Microsoft.Graph.Authentication
-
-## Initialize Module Variables
-## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
-$__MtSession = @{
-    GraphCache = @{}
-    GraphBaseUri = $null
-    TestResultDetail = @{}
-    Connections = @()
-    DnsCache = @()
-    ExoCache = @{}
-    OrcaCache = @{}
-    AIAgentInfo = $null
-    AzureDevOpsConnectionCache = $null
-    DataverseApiBase = $null       # Resolved Dataverse OData API base URL (e.g. https://org123.api.crm.dynamics.com/api/data/v9.2)
-    DataverseResourceUrl = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
-    DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
-}
-New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
-'@)
+$ModulePreamble = Get-ModulePreambleFromSource -Path (Join-Path $SourceRoot 'Maester.psm1')
+$null = $Builder.AppendLine($ModulePreamble)
 
 $null = $Builder.AppendLine()
 $null = $Builder.AppendLine('#region Internal Functions')
