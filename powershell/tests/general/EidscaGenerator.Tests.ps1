@@ -115,8 +115,10 @@ Describe 'EIDSCA generator' {
 
 Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
 '@
+        $expectedRemediation = $expectedRemediation.Trim() -replace '\r\n?', "`n"
         $remediationMarkdown = Get-Content -Path $remediationMarkdownPath -Raw
-        $remediationMarkdown.Contains($expectedRemediation.Trim()) | Should -BeTrue
+        $remediationMarkdown = $remediationMarkdown -replace '\r\n?', "`n"
+        $remediationMarkdown.Contains($expectedRemediation) | Should -BeTrue
         Get-Content -Path (Join-Path $internalPath 'Test-MtEidscaZZ98.md') -Raw | Should -Not -Match 'Remediation action'
         Get-Content -Path (Join-Path $internalPath 'Test-MtEidscaZZ97.md') -Raw | Should -Not -Match 'Remediation action'
         Should -Invoke Invoke-WebRequest -Times 1 -Exactly
