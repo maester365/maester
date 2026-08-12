@@ -40,7 +40,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.1",
     "@docusaurus/types": "^3.10.1",
-    "js-yaml": "^5.2.2"
+    "js-yaml": "^5.2.3"
   },
   "browserslist": {
     "production": [
