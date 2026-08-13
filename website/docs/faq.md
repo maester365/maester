@@ -49,3 +49,4 @@ Or set it persistently in `./tests/Custom/maester-config.json`:
 
 See [Configuration Overview](./configuration/overview) for more details on the configuration file.
 
+When neither override is provided, Maester leaves the existing Microsoft Graph SDK request context unchanged.

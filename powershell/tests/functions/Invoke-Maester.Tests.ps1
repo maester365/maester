@@ -103,7 +103,13 @@ Describe 'Invoke-Maester — GraphRequestTimeoutSeconds' {
     }
 
     BeforeEach {
-        Mock Set-MgRequestContext -ModuleName Maester {}
+        Mock Get-MgRequestContext -ModuleName Maester {
+            [PSCustomObject]@{ ClientTimeout = [TimeSpan]::FromSeconds(300) }
+        }
+        # Return an object to verify Invoke-Maester suppresses Set-MgRequestContext output.
+        Mock Set-MgRequestContext -ModuleName Maester {
+            [PSCustomObject]@{ ClientTimeout = [TimeSpan]::FromSeconds(300) }
+        }
     }
 
     AfterEach {
@@ -111,8 +117,12 @@ Describe 'Invoke-Maester — GraphRequestTimeoutSeconds' {
     }
 
     It 'Calls Set-MgRequestContext with explicit -GraphRequestTimeoutSeconds' {
-        Invoke-Maester @script:baseParams -GraphRequestTimeoutSeconds 900
+        $result = @(Invoke-Maester @script:baseParams -GraphRequestTimeoutSeconds 900)
+
+        $result | Should -HaveCount 1
+        Should -Invoke Get-MgRequestContext -ModuleName Maester -Times 1
         Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 900 }
+        Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 300 }
     }
 
     It 'Uses GlobalSettings.GraphRequestTimeoutSeconds when no parameter given' {
@@ -120,7 +130,9 @@ Describe 'Invoke-Maester — GraphRequestTimeoutSeconds' {
             [PSCustomObject]@{ GlobalSettings = [PSCustomObject]@{ GraphRequestTimeoutSeconds = 600 }; TestSettingsHash = @{} }
         }
         Invoke-Maester @script:baseParams
+        Should -Invoke Get-MgRequestContext -ModuleName Maester -Times 1
         Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 600 }
+        Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 300 }
     }
 
     It 'Parameter wins over GlobalSettings.GraphRequestTimeoutSeconds' {
@@ -128,15 +140,27 @@ Describe 'Invoke-Maester — GraphRequestTimeoutSeconds' {
             [PSCustomObject]@{ GlobalSettings = [PSCustomObject]@{ GraphRequestTimeoutSeconds = 600 }; TestSettingsHash = @{} }
         }
         Invoke-Maester @script:baseParams -GraphRequestTimeoutSeconds 120
+        Should -Invoke Get-MgRequestContext -ModuleName Maester -Times 1
         Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 120 }
+        Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 300 }
     }
 
-    It 'Does not call Set-MgRequestContext when no timeout is configured' {
+    It 'Leaves the Graph request context unchanged when no timeout is configured' {
         Mock Get-MtMaesterConfig -ModuleName Maester {
             [PSCustomObject]@{ GlobalSettings = [PSCustomObject]@{}; TestSettingsHash = @{} }
         }
         Invoke-Maester @script:baseParams
+        Should -Invoke Get-MgRequestContext -ModuleName Maester -Times 0
         Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 0
+    }
+
+    It 'Restores the Graph request timeout when test execution throws' {
+        Mock Invoke-Pester -ModuleName Maester { throw 'Pester failed' }
+
+        { Invoke-Maester @script:baseParams -GraphRequestTimeoutSeconds 900 } | Should -Throw 'Pester failed'
+
+        Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 900 }
+        Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 1 -ParameterFilter { $ClientTimeout -eq 300 }
     }
 
     It 'Throws when GlobalSettings.GraphRequestTimeoutSeconds is out of range' {
@@ -144,5 +168,7 @@ Describe 'Invoke-Maester — GraphRequestTimeoutSeconds' {
             [PSCustomObject]@{ GlobalSettings = [PSCustomObject]@{ GraphRequestTimeoutSeconds = 9999 }; TestSettingsHash = @{} }
         }
         { Invoke-Maester @script:baseParams } | Should -Throw '*GlobalSettings.GraphRequestTimeoutSeconds*'
+        Should -Invoke Get-MgRequestContext -ModuleName Maester -Times 0
+        Should -Invoke Set-MgRequestContext -ModuleName Maester -Times 0
     }
 }
