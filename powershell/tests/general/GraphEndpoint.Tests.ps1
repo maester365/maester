@@ -7,7 +7,7 @@ BeforeAll {
 }
 
 Describe 'Microsoft Graph endpoints' {
-    It 'does not hardcode the Global Graph endpoint in executable module code' {
+    It 'does not hardcode the Global Graph endpoint outside approved fallbacks' {
         $violations = foreach ($sourceFile in $sourceFiles) {
             $tokens = $null
             $parseErrors = $null
@@ -23,14 +23,24 @@ Describe 'Microsoft Graph endpoints' {
 
             foreach ($token in $tokens) {
                 if ($token.Kind -ne 'Comment' -and $token.Text -match $globalGraphHostPattern) {
-                    $relativePath = $sourceFile.FullName.Substring($moduleRoot.Length + 1)
-                    "${relativePath}:$($token.Extent.StartLineNumber): $($token.Text)"
+                    $relativePath = $sourceFile.FullName.Substring($moduleRoot.Length + 1) -replace '\\', '/'
+
+                    # Invoke-MtAzureRequest uses Invoke-AzRest, which requires an absolute URI.
+                    # Keep its public-cloud fallback when the Azure context has no MicrosoftGraphUrl.
+                    $isApprovedFallback = (
+                        $relativePath -eq 'public/core/Invoke-MtAzureRequest.ps1' -and
+                        $token.Text -eq "'https://graph.microsoft.com'"
+                    )
+
+                    if (-not $isApprovedFallback) {
+                        "${relativePath}:$($token.Extent.StartLineNumber): $($token.Text)"
+                    }
                 }
             }
         }
 
         $violations | Should -BeNullOrEmpty -Because (
-            'Invoke-MgGraphRequest should use relative URIs so the connected cloud selects the endpoint: ' +
+                'Invoke-MgGraphRequest should use relative URIs; only documented non-SDK fallbacks may hardcode the Global endpoint: ' +
             ($violations -join ', ')
         )
     }
