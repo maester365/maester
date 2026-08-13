@@ -184,7 +184,7 @@
             )
         }
 
-        $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
+        $SendTeamsMessageUri = "/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
         Write-Verbose -Message "Uri: $SendTeamsMessageUri"
 
         Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null

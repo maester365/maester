@@ -399,7 +399,7 @@
             }
             $spUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($sp.id)/appId/$($sp.appId)"
 
-            $spAppRoleAssignments = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($sp.Id)/appRoleAssignments" -Method GET
+            $spAppRoleAssignments = Invoke-MgGraphRequest -Uri "/v1.0/servicePrincipals/$($sp.Id)/appRoleAssignments" -Method GET
             $spAppRoleAssignments.value | ForEach-Object {
                 $allApiAssignments.Add([PSCustomObject]@{
                         appDisplayName = $sp.appDisplayName
@@ -412,7 +412,7 @@
                     })
             }
 
-            $spOauth2PermissionGrants = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($sp.Id)/oauth2PermissionGrants" -Method GET
+            $spOauth2PermissionGrants = Invoke-MgGraphRequest -Uri "/v1.0/servicePrincipals/$($sp.Id)/oauth2PermissionGrants" -Method GET
             $spOauth2PermissionGrants.value | ForEach-Object {
                 $_.scope.Split(' ') | ForEach-Object {
                     $allApiAssignments.Add([PSCustomObject]@{

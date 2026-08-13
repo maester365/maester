@@ -176,7 +176,7 @@
             $orgId = $mgContext.TenantId
 
             # Try to get the banner logo
-            $logos.Banner = GetLogoAsBase64DataUri "https://graph.microsoft.com/v1.0/organization/$orgId/branding/localizations/default/bannerLogo"
+            $logos.Banner = GetLogoAsBase64DataUri "/v1.0/organization/$orgId/branding/localizations/default/bannerLogo"
         }
 
         # Return null if no logo is available, otherwise return the logos object
