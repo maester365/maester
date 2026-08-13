@@ -164,10 +164,10 @@
         }
     }
 
-    $sendMailUri = "https://graph.microsoft.com/v1.0/me/sendMail"
+    $sendMailUri = '/v1.0/me/sendMail'
 
     if ($UserId) {
-        $sendMailUri = "https://graph.microsoft.com/v1.0/users/$UserId/sendMail"
+        $sendMailUri = "/v1.0/users/$UserId/sendMail"
     }
 
     Write-Verbose -Message "Uri: $sendMailUri"

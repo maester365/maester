@@ -60,7 +60,7 @@
 
     if ($Graph) {
         $baseUri = $((Get-AzContext).Environment.ExtendedProperties.MicrosoftGraphUrl)
-        if ( -not $baseUri) { $baseUri = 'https://graph.microsoft.com' }
+        if ( -not $baseUri) { $baseUri = (Get-MgEnvironment -Name 'Global').GraphEndpoint }
         if ($ApiVersion -ne 'v1.0' -and $ApiVersion -ne 'beta') { $ApiVersion = 'v1.0' }
 
         $uriQueryEndpoint = New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($baseUri, $ApiVersion, $RelativeUri))
