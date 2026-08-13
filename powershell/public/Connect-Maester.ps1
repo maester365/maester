@@ -85,6 +85,11 @@
    Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
 .EXAMPLE
+   Connect-Maester -ClientTimeout 900
+
+   Connects to Microsoft Graph with an HTTP client timeout of 900 seconds. This can be useful for long-running tests in large tenants.
+
+.EXAMPLE
    Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>'
 
    Connects to Microsoft Graph and SharePoint Online using the specified PnP app registration. The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API. Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g. for custom domain or government cloud tenants).
@@ -139,6 +144,9 @@
 
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
       [string]$GraphClientId,
+
+      # The Microsoft Graph HTTP client timeout in seconds. When omitted, the Microsoft Graph PowerShell SDK default is used.
+      [double]$ClientTimeout,
 
       # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline.
       # Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
@@ -357,6 +365,9 @@
                }
                if ($TenantId) {
                   $connectParams['TenantId'] = $TenantId
+               }
+               if ($PSBoundParameters.ContainsKey('ClientTimeout')) {
+                  $connectParams['ClientTimeout'] = $ClientTimeout
                }
 
                Write-Verbose "🦒 Connecting to Microsoft Graph with parameters:"

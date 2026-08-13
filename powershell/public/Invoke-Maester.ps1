@@ -13,9 +13,6 @@
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
 
-    .PARAMETER GraphRequestTimeoutSeconds
-    Temporarily overrides the Microsoft Graph SDK request timeout in seconds (1-3600) for this test run. Can also be set via `GlobalSettings.GraphRequestTimeoutSeconds` in `Custom/maester-config.json`. When omitted, Maester leaves the existing Graph SDK request context unchanged. Useful when using `-IncludeLongRunning` in large tenants.
-
     .PARAMETER IncludePreview
     Include tests that are still being tested or are dependent on preview APIs.
 
@@ -220,12 +217,7 @@
 
         # The root directory for configuration drift tracking.
         [Parameter(HelpMessage = 'Specify drift root directory, see https://maester.dev/docs/tests/MT.1060')]
-        [string] $DriftRoot,
-
-        # Temporarily override the Microsoft Graph SDK request timeout in seconds (1-3600). Can also be set via GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json.
-        [Parameter(HelpMessage = 'Temporarily override the Microsoft Graph SDK request timeout in seconds (1-3600) for this test run. Overrides GlobalSettings.GraphRequestTimeoutSeconds in maester-config.json. When omitted, the existing Graph SDK request context is unchanged.')]
-        [ValidateRange(1, 3600)]
-        [int] $GraphRequestTimeoutSeconds
+        [string] $DriftRoot
     )
 
     function GetDefaultFileName() {
@@ -487,42 +479,9 @@
     }
     $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path -TenantId $configTenantId
 
-    # Resolve Graph request timeout: explicit parameter wins over GlobalSettings.
-    $resolvedTimeout = $null
-    if ($PSBoundParameters.ContainsKey('GraphRequestTimeoutSeconds')) {
-        $resolvedTimeout = $GraphRequestTimeoutSeconds
-    } else {
-        $configTimeout = Get-MtMaesterConfigGlobalSetting -SettingName 'GraphRequestTimeoutSeconds'
-        if ($null -ne $configTimeout) {
-            $parsedTimeout = 0
-            if (-not [int]::TryParse($configTimeout.ToString(), [ref]$parsedTimeout) -or $parsedTimeout -lt 1 -or $parsedTimeout -gt 3600) {
-                throw "GlobalSettings.GraphRequestTimeoutSeconds must be an integer between 1 and 3600, got '$configTimeout'."
-            }
-            $resolvedTimeout = $parsedTimeout
-        }
-    }
-    $originalGraphRequestTimeoutSeconds = $null
-    try {
-        if ($null -ne $resolvedTimeout) {
-            $graphRequestContext = Get-MgRequestContext
-            if ($null -eq $graphRequestContext -or $null -eq $graphRequestContext.ClientTimeout) {
-                throw 'Unable to read the current Microsoft Graph SDK request timeout.'
-            }
+    Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
-            $originalGraphRequestTimeoutSeconds = [int] $graphRequestContext.ClientTimeout.TotalSeconds
-            Write-Verbose "Temporarily setting Graph request timeout to $resolvedTimeout seconds."
-            $null = Set-MgRequestContext -ClientTimeout $resolvedTimeout
-        }
-
-        Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
-
-        $pesterResults = Invoke-Pester -Configuration $pesterConfig
-    } finally {
-        if ($null -ne $originalGraphRequestTimeoutSeconds) {
-            Write-Verbose "Restoring Graph request timeout to $originalGraphRequestTimeoutSeconds seconds."
-            $null = Set-MgRequestContext -ClientTimeout $originalGraphRequestTimeoutSeconds
-        }
-    }
+    $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
 

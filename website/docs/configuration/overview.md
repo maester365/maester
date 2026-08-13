@@ -89,7 +89,6 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
-| `GraphRequestTimeoutSeconds` | Temporarily set the Microsoft Graph request timeout to a value from 1 to 3600 seconds. | This optional setting is useful for long-running tests. `Invoke-Maester -GraphRequestTimeoutSeconds` takes precedence. |
 
 ## How Settings Are Merged
 

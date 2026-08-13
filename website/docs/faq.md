@@ -31,22 +31,18 @@ If a test run fails with an error like `The request was canceled due to the conf
 
 This is most common when using `-IncludeLongRunning` in tenants with a large number of objects.
 
-Increase the timeout via the `-GraphRequestTimeoutSeconds` parameter:
+When using `Connect-Maester`, pass the timeout to the Microsoft Graph connection:
 
 ```powershell
-Invoke-Maester -IncludeLongRunning -GraphRequestTimeoutSeconds 900
+Connect-Maester -ClientTimeout 900
+Invoke-Maester -IncludeLongRunning
 ```
 
-Or set it persistently in `./tests/Custom/maester-config.json`:
+If you connect to Microsoft Graph directly, set the timeout on `Connect-MgGraph` before running Maester:
 
-```json
-{
-  "GlobalSettings": {
-    "GraphRequestTimeoutSeconds": 900
-  }
-}
+```powershell
+Connect-MgGraph -Scopes (Get-MtGraphScope) -ClientTimeout 900
+Invoke-Maester -SkipGraphConnect -IncludeLongRunning
 ```
 
-See [Configuration Overview](./configuration/overview) for more details on the configuration file.
-
-When neither override is provided, Maester leaves the existing Microsoft Graph SDK request context unchanged.
+When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is used. The timeout applies to the Graph connection rather than to an individual test or request.
