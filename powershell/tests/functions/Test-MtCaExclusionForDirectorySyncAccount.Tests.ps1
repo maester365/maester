@@ -128,7 +128,7 @@
                 $Result -like '*this test is not applicable*' -and
                 $Result -like '*Role membership alone does not confirm*' -and
                 $Result -like '*Get-ADSyncEntraConnectorCredential*' -and
-                $Result -notlike 'This tenant uses Application-Based Authentication*'
+                $Result -notlike '*This tenant uses Application-Based Authentication*'
             }
         }
     }
