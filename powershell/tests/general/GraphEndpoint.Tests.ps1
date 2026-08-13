@@ -1,13 +1,11 @@
-BeforeAll {
-    $moduleRoot = (Resolve-Path "$PSScriptRoot/../..").Path
-    $sourceFiles = @(
-        Get-ChildItem -Path "$moduleRoot/public", "$moduleRoot/internal" -Recurse -File -Filter '*.ps1'
-    )
-    $globalGraphHostPattern = 'graph\.microsoft\.com'
-}
-
 Describe 'Microsoft Graph endpoints' {
     It 'does not hardcode the Global Graph endpoint outside approved fallbacks' {
+        $moduleRoot = (Resolve-Path "$PSScriptRoot/../..").Path
+        $sourceFiles = @(
+            Get-ChildItem -Path "$moduleRoot/public", "$moduleRoot/internal" -Recurse -File -Filter '*.ps1'
+        )
+        $globalGraphHostPattern = 'graph\.microsoft\.com'
+
         $violations = foreach ($sourceFile in $sourceFiles) {
             $tokens = $null
             $parseErrors = $null
@@ -40,7 +38,7 @@ Describe 'Microsoft Graph endpoints' {
         }
 
         $violations | Should -BeNullOrEmpty -Because (
-                'Invoke-MgGraphRequest should use relative URIs; only documented non-SDK fallbacks may hardcode the Global endpoint: ' +
+            'Invoke-MgGraphRequest should use relative URIs; only documented non-SDK fallbacks may hardcode the Global endpoint: ' +
             ($violations -join ', ')
         )
     }
