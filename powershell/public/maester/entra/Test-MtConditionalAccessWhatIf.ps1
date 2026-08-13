@@ -212,7 +212,7 @@
         Write-Verbose ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress )
 
         try {
-            $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri 'https://graph.microsoft.com/beta/identity/conditionalAccess/evaluate' -OutputType PSObject -Body ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
+            $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri '/beta/identity/conditionalAccess/evaluate' -OutputType PSObject -Body ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
             # Filter out policies that do not apply
             if (!$AllResults) {
                 $ConditionalAccessWhatIfResult = $ConditionalAccessWhatIfResult | Where-Object { $_.policyApplies -eq $true }
