@@ -645,7 +645,7 @@
         "ORCA.244"
       ],
       "initials": "TS",
-      "recentCommits": 1
+      "recentCommits": 2
     },
     {
       "id": "Mynster9361",
@@ -2579,6 +2579,30 @@
       ],
       "initials": "PM",
       "recentCommits": 0
+    },
+    {
+      "id": "SebastianClaesson",
+      "github": "SebastianClaesson",
+      "name": "Sebastian Claesson",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/SebastianClaesson.png",
+      "firstContribution": "2026-08-13",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1034",
+        "MT.1050",
+        "MT.1051"
+      ],
+      "initials": "SC",
+      "recentCommits": 2
     },
     {
       "id": "Oppedijk",
@@ -5308,7 +5332,8 @@
         "milanschwartz",
         "jasperbaes",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "SebastianClaesson"
       ]
     },
     "MT.1035": {
@@ -5443,7 +5468,8 @@
       "contributors": [
         "merill",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "SebastianClaesson"
       ]
     },
     "MT.1051": {
@@ -5451,7 +5477,8 @@
       "contributors": [
         "merill",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "SebastianClaesson"
       ]
     },
     "MT.1052": {
