@@ -26,6 +26,12 @@
 # Profile picture: your GitHub avatar is used by default. To use a different
 # image, drop `your-github-handle.png` (or .jpg) into website/static/img/contributors/.
 
+agnivesh:
+  name: Agnivesh S.
+  location: United Kingdom
+  socials:
+    linkedin: agniveshs
+
 alexandair:
   name: Aleksandar Nikolić
   title: Microsoft MVP
