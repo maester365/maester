@@ -12,4 +12,11 @@ Describe 'Maester/Entra' -Tag 'App', 'Entra', 'Graph', 'LongRunning', 'Maester' 
     It 'MT.1075: Require explicit assignment of Third Party Entra Apps. See https://maester.dev/docs/tests/MT.1075' -Tag 'MT.1075' {
         Test-MtServicePrincipalsForAllUsers | Should -Be $true -Because 'Third Party Service Principals should require explicit assignment to users'
     }
+    It 'MT.1198: App registration certificates should not have excessive validity periods. See https://maester.dev/docs/tests/MT.1198' -Tag 'MT.1198' {
+        $result = Test-MtAppRegistrationCertificateLifetime
+
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because 'a certificate with a long validity period stays usable for years if the private key is stolen'
+        }
+    }
 }
