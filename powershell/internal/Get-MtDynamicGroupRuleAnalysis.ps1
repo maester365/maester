@@ -5,7 +5,8 @@
 
     .DESCRIPTION
     Parses property references without attempting to evaluate the complete Boolean expression.
-    Classifies potentially influenceable user properties, custom attributes, and memberOf rules.
+    Classifies risky user-influenceable properties, lower-risk privileged-writer properties,
+    and memberOf rules.
 
     .EXAMPLE
     Get-MtDynamicGroupRuleAnalysis -MembershipRule '(user.displayName -startsWith "Admin")'
@@ -23,10 +24,13 @@
         return
     }
 
-    $InfluenceableProperties = @(
+    $RiskyProperties = @(
         'city', 'companyname', 'country', 'department', 'displayname', 'givenname',
-        'jobtitle', 'mail', 'mailnickname', 'mobile', 'othermails', 'preferredlanguage',
-        'proxyaddresses', 'state', 'surname', 'telephonenumber', 'userprincipalname'
+        'jobtitle', 'mobile', 'othermails', 'preferredlanguage', 'state', 'surname',
+        'telephonenumber'
+    )
+    $LowRiskProperties = @(
+        'mail', 'mailnickname', 'proxyaddresses', 'userprincipalname'
     )
     $OperatorNames = @(
         'all', 'any', 'contains', 'endswith', 'eq', 'ge', 'in', 'le', 'match', 'ne',
@@ -64,12 +68,13 @@
         $Category = 'Other'
         if ($NormalizedProperty -eq 'memberof') {
             $Category = 'MemberOf'
-        } elseif ($ObjectType -eq 'user' -and $NormalizedProperty -in $InfluenceableProperties) {
-            $Category = 'PotentiallyInfluenceable'
+        } elseif ($ObjectType -eq 'user' -and $NormalizedProperty -in $RiskyProperties) {
+            $Category = 'RiskyUserInfluenceable'
         } elseif ($ObjectType -eq 'user' -and (
+                $NormalizedProperty -in $LowRiskProperties -or
                 $NormalizedProperty -match '^extensionattribute(?:[1-9]|1[0-5])$' -or
                 $NormalizedProperty -match '^extension_[a-z0-9_]+$')) {
-            $Category = 'CustomAttribute'
+            $Category = 'LowRiskPrivilegedControlled'
         }
 
         $ReferencedGroupIds = if ($Category -eq 'MemberOf') {

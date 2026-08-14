@@ -63,15 +63,17 @@
     }
 
     Context 'membership rule analysis' {
-        It 'classifies influenceable, custom, and safe properties' {
+        It 'classifies risky, low-risk, and safe properties' {
             InModuleScope Maester {
                 $Rule = '(user.department -eq "Finance") -and ' +
+                    '(user.userPrincipalName -eq "admin@contoso.com") -and ' +
                     '(user.extensionAttribute4 -eq "Privileged") -and ' +
                     '(user.accountEnabled -eq true)'
                 $Analysis = @(Get-MtDynamicGroupRuleAnalysis -MembershipRule $Rule)
 
                 $Analysis.Category | Should -Be @(
-                    'PotentiallyInfluenceable', 'CustomAttribute', 'Other'
+                    'RiskyUserInfluenceable', 'LowRiskPrivilegedControlled',
+                    'LowRiskPrivilegedControlled', 'Other'
                 )
             }
         }
@@ -134,7 +136,7 @@
         }
     }
 
-    Context 'potentially influenceable attributes' {
+    Context 'user-influenceable and privileged-controlled attributes' {
         It 'passes when no candidate properties are used' {
             $Groups = @(Get-TestDynamicGroup -Id 'safe' `
                     -Rule '(user.accountEnabled -eq true)')
@@ -168,10 +170,28 @@
 
             Test-MtDynamicGroupUserControlledAttributes | Should -BeTrue
             $script:Investigate | Should -BeTrue
+            $script:TestResult | Should -Match 'Risky - user-influenceable attributes'
             $script:TestResult | Should -Match 'user\.displayName'
             $script:TestResult | Should -Match 'pattern or partial matching'
             $script:TestResult | Should -Match 'Include: \[Policy ca\] \(enabled\)'
             $script:TestResult | Should -Match 'Paused \| 1'
+        }
+
+        It 'separates risky and low-risk candidates into two tables' {
+            $Rule = '(user.department -eq "Finance") -and ' +
+                '(user.extensionAttribute4 -eq "Privileged")'
+            $Groups = @(Get-TestDynamicGroup -Id 'candidate' `
+                    -Rule $Rule)
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return $Groups }
+
+            Test-MtDynamicGroupUserControlledAttributes | Should -BeTrue
+            $script:Investigate | Should -BeTrue
+            $script:TestResult | Should -Match 'Risky - user-influenceable attributes'
+            $script:TestResult | Should -Match 'Low risk - application or administrator-controlled attributes'
+            $script:TestResult | Should -Match 'user\.department'
+            $script:TestResult | Should -Match 'user\.extensionAttribute4'
+            ([regex]::Matches($script:TestResult, '\| Group \| Property \|').Count) |
+                Should -Be 2
         }
 
         It 'skips when Graph is disconnected' {
