@@ -50,6 +50,15 @@ function Get-TestThing {
 '@
         }
 
+        Write-TestFileContent -Path (Join-Path $SourceRoot 'Maester.psm1') -Content @'
+# Fixture module preamble
+$__MtSession = @{
+    FixtureValue = 'fixture'
+}
+New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
+
+# Fixture runtime body
+'@
         Write-TestFileContent -Path (Join-Path $SourceRoot 'public/example/Get-TestThing.ps1') -Content $PublicFunctionContent
         Write-TestFileContent -Path (Join-Path $SourceRoot 'public/example/Get-TestThing.md') -Content @'
 Fixture test description.
@@ -156,6 +165,8 @@ Describe 'Build-MaesterModule' {
                 $OrcaContent = Get-Content -Path $OutputOrcaClasses -Raw
                 $Manifest = Import-PowerShellDataFile -Path $OutputManifest
 
+                $Psm1Content | Should -Match '# Fixture module preamble'
+                $Psm1Content | Should -Not -Match '# Fixture runtime body'
                 $Psm1Content | Should -Match 'function Get-TestThing'
                 $Psm1Content | Should -Not -Match '\$Unused'
                 $TestMetadata.'Get-TestThing'.Description | Should -BeLike 'Fixture test description.*'
