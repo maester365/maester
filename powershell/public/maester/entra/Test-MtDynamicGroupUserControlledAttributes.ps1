@@ -1,12 +1,13 @@
 ﻿function Test-MtDynamicGroupUserControlledAttributes {
     <#
     .SYNOPSIS
-    Identifies dynamic group rules that require an attribute write-permission review.
+    Identifies dynamic group rules that use attributes whose writers should be reviewed.
 
     .DESCRIPTION
-    Finds dynamic user group rules that reference potentially influenceable profile properties
-    or custom attributes. Candidate rules are marked Investigate because rule text alone does not
-    prove who can write the property or what access the group grants.
+    Finds dynamic user group rules that reference profile properties or custom attributes that
+    users, applications, synchronization services, or administrators may be able to change.
+    Candidate rules are marked Investigate because rule text alone does not prove who can change
+    the property or what access the group grants.
 
     .EXAMPLE
     Test-MtDynamicGroupUserControlledAttributes
@@ -51,8 +52,8 @@
         )
 
         if ($Candidates.Count -eq 0) {
-            $Result = 'Well done. No dynamic group rules require an attribute ' +
-                'write-permission review.'
+            $Result = 'Well done. No dynamic group rules use attributes that require a review ' +
+                'of who can change them.'
             Add-MtTestResultDetail -Result $Result
             return $true
         }
@@ -60,10 +61,10 @@
         $GroupIds = @($Candidates.Group.id | Select-Object -Unique)
         $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId $GroupIds)
         $Result = "Found $($GroupIds.Count) dynamic group(s) whose rules require review. " +
-            'A match is not proof of exploitability; validate the attribute write path ' +
-            'and group access.'
+            'A match is not proof of exploitability; validate who can change each attribute ' +
+            'and what access the group grants.'
         $Result += "`n`n| Group | Property | Operator | Review reason | Processing | " +
-            'Licenses | CA references | Rule |'
+            'Licenses | Conditional Access policies | Rule |'
         $Result += "`n| --- | --- | --- | --- | --- | ---: | --- | --- |"
 
         foreach ($Candidate in $Candidates) {
@@ -72,9 +73,10 @@
             $GroupLink = Get-GraphObjectMarkdown -GraphObjects $Group `
                 -GraphObjectType Groups -AsPlainTextLink
             $Reason = if ($Analysis.Category -eq 'CustomAttribute') {
-                'Custom attribute; verify every cloud and source-directory writer'
+                'Custom attribute; verify every user, app, sync service, and administrator ' +
+                    'that can change it'
             } else {
-                'Potentially influenceable profile or identity property'
+                'Profile or identity property; verify who and what can change it'
             }
             if ($Analysis.UsesPatternMatch) {
                 $Reason += '; pattern or partial matching broadens the rule'

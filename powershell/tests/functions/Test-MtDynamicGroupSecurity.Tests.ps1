@@ -123,14 +123,14 @@
             $References.Condition | Should -Be @('Include', 'Exclude')
         }
 
-        It 'returns no references when policy retrieval fails' {
+        It 'throws when policy retrieval fails' {
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { throw 'Unavailable' }
 
-            $References = InModuleScope Maester {
-                @(Get-MtDynamicGroupCaReference -GroupId 'group-1')
-            }
-
-            $References.Count | Should -Be 0
+            {
+                InModuleScope Maester {
+                    Get-MtDynamicGroupCaReference -GroupId 'group-1'
+                }
+            } | Should -Throw -ExpectedMessage '*Unavailable*'
         }
     }
 
@@ -143,6 +143,19 @@
             Test-MtDynamicGroupUserControlledAttributes | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
             $script:Investigate | Should -BeFalse
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly -Times 1 `
+                -ParameterFilter {
+                $RelativeUri -eq 'groups' -and
+                $Filter -eq "groupTypes/any(groupType:groupType eq 'DynamicMembership')" -and
+                $QueryParameters['$count'] -eq 'true' -and
+                @($Select).Count -eq 6 -and
+                $Select -contains 'id' -and
+                $Select -contains 'displayName' -and
+                $Select -contains 'groupTypes' -and
+                $Select -contains 'membershipRule' -and
+                $Select -contains 'membershipRuleProcessingState' -and
+                $Select -contains 'assignedLicenses'
+            }
         }
 
         It 'marks candidate rules for investigation with useful context' {
@@ -183,6 +196,19 @@
 
             Test-MtDynamicGroupMemberOfRule | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly -Times 1 `
+                -ParameterFilter {
+                $RelativeUri -eq 'groups' -and
+                $Filter -eq "groupTypes/any(groupType:groupType eq 'DynamicMembership')" -and
+                $QueryParameters['$count'] -eq 'true' -and
+                @($Select).Count -eq 6 -and
+                $Select -contains 'id' -and
+                $Select -contains 'displayName' -and
+                $Select -contains 'groupTypes' -and
+                $Select -contains 'membershipRule' -and
+                $Select -contains 'membershipRuleProcessingState' -and
+                $Select -contains 'assignedLicenses'
+            }
         }
 
         It 'fails before retirement and resolves source group context' {

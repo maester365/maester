@@ -5,8 +5,7 @@
 
     .DESCRIPTION
     Retrieves Conditional Access policies and correlates group identifiers with user includeGroups
-    and excludeGroups assignments. Returns no references when policies cannot be retrieved so this
-    optional context does not suppress a dynamic group finding.
+    and excludeGroups assignments.
 
     .EXAMPLE
     Get-MtDynamicGroupCaReference -GroupId $GroupIds
@@ -18,12 +17,7 @@
         [string[]] $GroupId
     )
 
-    try {
-        $Policies = @(Get-MtConditionalAccessPolicy)
-    } catch {
-        Write-Verbose "Unable to retrieve Conditional Access references: $($_.Exception.Message)"
-        return
-    }
+    $Policies = @(Get-MtConditionalAccessPolicy)
 
     $References = foreach ($CurrentPolicy in $Policies) {
         foreach ($IncludedGroupId in @($CurrentPolicy.conditions.users.includeGroups)) {

@@ -1,9 +1,9 @@
 ﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra' {
-    It 'MT.1196: Review dynamic rules. See https://maester.dev/docs/tests/MT.1196' -Tag 'MT.1196' {
+    It 'MT.1196: Review who can change attributes used by dynamic group rules. See https://maester.dev/docs/tests/MT.1196' -Tag 'MT.1196' {
         $Result = Test-MtDynamicGroupUserControlledAttributes
 
         if ($null -ne $Result) {
-            $Result | Should -BeTrue -Because 'candidate rules should be reported for investigation'
+            $Result | Should -BeTrue -Because 'rules should use attributes with trusted writers'
         }
     }
 

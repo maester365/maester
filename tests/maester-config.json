@@ -1551,7 +1551,7 @@
     {
       "Id": "MT.1196",
       "Severity": "Medium",
-      "Title": "Dynamic group rules using potentially influenceable attributes should be reviewed"
+      "Title": "Review who can change attributes used by dynamic group rules"
     },
     {
       "Id": "MT.1197",
