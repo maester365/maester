@@ -40,6 +40,38 @@ Describe 'Connect-Maester' {
         (Get-Command Connect-Maester).Parameters.Keys | Should -Contain 'GitHubOrganization'
     }
 
+    It 'Offers ClientTimeout as a double parameter' {
+        $clientTimeoutParameter = (Get-Command Connect-Maester).Parameters['ClientTimeout']
+
+        $clientTimeoutParameter | Should -Not -BeNullOrEmpty
+        $clientTimeoutParameter.ParameterType | Should -Be ([double])
+    }
+
+    It 'Passes an explicit ClientTimeout to Connect-MgGraph' {
+        Mock Connect-MgGraph -ModuleName Maester {}
+
+        Connect-Maester -ClientTimeout 900
+
+        Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $ClientTimeout -eq 900 }
+    }
+
+    It 'Does not pass ClientTimeout to Connect-MgGraph when omitted' {
+        Mock Connect-MgGraph -ModuleName Maester {}
+
+        Connect-Maester
+
+        Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly -ParameterFilter { -not $PSBoundParameters.ContainsKey('ClientTimeout') }
+    }
+
+    It 'Does not connect to Graph when ClientTimeout is used with a non-Graph service' {
+        Mock Connect-MgGraph -ModuleName Maester {}
+        Mock Connect-MtGitHub -ModuleName Maester {}
+
+        Connect-Maester -Service GitHub -ClientTimeout 900
+
+        Should -Invoke Connect-MgGraph -ModuleName Maester -Times 0 -Exactly
+    }
+
     It 'Calls Connect-MtGitHub when -Service GitHub is specified' {
         Mock Connect-MtGitHub -ModuleName Maester {}
 

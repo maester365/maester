@@ -25,3 +25,24 @@ Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Scope Current
 
 To learn more or if you run into Pester installation issues see [Pester Installation and Update](https://pester.dev/docs/introduction/installation)
 
+## Graph requests fail with a timeout error
+
+If a test run fails with an error like `The request was canceled due to the configured HttpClient.Timeout of 300 seconds elapsing`, the Microsoft Graph SDK default timeout has been exceeded.
+
+This is most common when using `-IncludeLongRunning` in tenants with a large number of objects.
+
+When using `Connect-Maester`, pass the timeout to the Microsoft Graph connection:
+
+```powershell
+Connect-Maester -ClientTimeout 900
+Invoke-Maester -IncludeLongRunning
+```
+
+If you connect to Microsoft Graph directly, set the timeout on `Connect-MgGraph` before running Maester:
+
+```powershell
+Connect-MgGraph -Scopes (Get-MtGraphScope) -ClientTimeout 900
+Invoke-Maester -SkipGraphConnect -IncludeLongRunning
+```
+
+When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is used. The timeout applies to the Graph connection rather than to an individual test or request.
