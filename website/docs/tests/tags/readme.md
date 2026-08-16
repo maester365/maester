@@ -397,7 +397,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 
 | Tag | Tests | Examples |
 | --- | ---: | --- |
-| Maester | 156 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
+| Maester | 158 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
 | MT.1001 | 1 | [MT.1001](../MT.1001) |
 | MT.1002 | 1 | [MT.1002](../MT.1002) |
 | MT.1003 | 1 | [MT.1003](../MT.1003) |
@@ -566,6 +566,8 @@ The tables below list every tag discovered from Pester test metadata and link to
 | MT.1193 | 1 | [MT.1193](../MT.1193) |
 | MT.1194 | 1 | [MT.1194](../MT.1194) |
 | MT.1195 | 1 | [MT.1195](../MT.1195) |
+| MT.1196 | 1 | [MT.1196](../MT.1196) |
+| MT.1197 | 1 | [MT.1197](../MT.1197) |
 
 ### Ungrouped
 
@@ -584,7 +586,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | Defender | 25 | [MT.1059](../MT.1059), [MT.1148](../MT.1148), [MT.1149](../MT.1149), [MT.1150](../MT.1150), [MT.1151](../MT.1151), [MT.1152](../MT.1152), [MT.1153](../MT.1153), [MT.1154](../MT.1154), ... |
 | Deprecated | 3 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
 | Device | 7 | [MT.1070](../MT.1070), [MT.1086](../MT.1086), [MT.1087](../MT.1087), [MT.1088](../MT.1088), [MT.1089](../MT.1089), [MT.1090](../MT.1090), [MT.1091](../MT.1091) |
-| Entra | 41 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
+| Entra | 43 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
 | Entra ID Free | 11 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1), [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2), [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1), [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1), [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2), [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3), ... |
 | Entra ID P1 | 10 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5), [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6), [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7), ... |
 | Entra ID P2 | 9 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4), [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5), [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6), [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7), [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8), ... |
