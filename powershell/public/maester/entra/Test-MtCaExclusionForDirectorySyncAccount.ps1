@@ -1,19 +1,32 @@
 ﻿function Test-MtCaExclusionForDirectorySyncAccount {
     <#
     .Synopsis
-    Checks if all Conditional Access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
+    Checks whether Conditional Access policies exclude user-based Microsoft Entra Connect synchronization identities.
 
     .Description
-    The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-    These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
-    Entra ID connect does not support multifactor authentication.
-    Restrict access with these accounts to trusted networks.
+    Microsoft Entra Connect uses a connector identity to synchronize an on-premises directory with Microsoft Entra ID.
+    Legacy installations can use a user-based directory synchronization account. These accounts should be excluded from
+    Conditional Access policies scoped to all cloud apps and all users, and their access should be restricted to trusted
+    networks.
+
+    New installations of Microsoft Entra Connect 2.5.76.0 or later use application-based authentication by default, with a
+    service principal and certificate instead of a user account and password. Existing installations do not switch to
+    application-based authentication automatically.
+
+    This test evaluates user principals assigned to the directory synchronization roles. It passes automatically when no
+    user principals remain, because Conditional Access user exclusions do not apply to service principals; the test does not
+    need to be muted. To verify the authentication method currently used, run Get-ADSyncEntraConnectorCredential on every
+    Microsoft Entra Connect server and confirm that ConnectorIdentityType is Application. After verifying the migration,
+    remove the legacy directory synchronization account or remove its directory synchronization role assignment.
 
     .Example
     Test-MtCaExclusionForDirectorySyncAccount
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
+
+    .LINK
+    https://learn.microsoft.com/entra/identity/hybrid/connect/authenticate-application-id
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -51,18 +64,15 @@
             return $true
         }
 
-        # Classify members: user accounts (subject to CA policies) vs. service principals (not subject to CA).
-        # As of Microsoft Entra Connect v2.5.76.0, directory sync supports Application-Based Authentication
-        # (ABA), where sync is performed by a registered service principal rather than a dedicated user
-        # account. Service principals are not subject to Conditional Access policies and do not need to be
-        # excluded from them.
+        # Classify role members by whether Conditional Access user targeting applies. Role membership establishes
+        # whether user principals need CA handling, but it does not prove which credential an active Connect server uses.
         $userSyncMembers = @($Members | Where-Object { $_.'@odata.type' -ne '#microsoft.graph.servicePrincipal' })
         $spSyncMembers   = @($Members | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.servicePrincipal' })
 
         if ( $userSyncMembers.Count -eq 0 -and $spSyncMembers.Count -gt 0 ) {
             $spNames = ( $spSyncMembers | Where-Object { $_.displayName } | ForEach-Object { $_.displayName } ) -join ', '
             if ( -not $spNames ) { $spNames = 'unknown' }
-            Add-MtTestResultDetail -Description $testDescription -Result "This tenant uses Application-Based Authentication (ABA) for directory synchronization. As of Microsoft Entra Connect v2.5.76.0, sync can be performed by a registered service principal ($spNames) rather than a dedicated user account. Service principals are not subject to Conditional Access policies; no CA exclusions are required."
+            Add-MtTestResultDetail -Description $testDescription -Result "Only service principals are assigned to the directory synchronization roles ($spNames). Conditional Access user exclusions do not apply to service principals, so this test is not applicable. Role membership alone does not confirm that an active Microsoft Entra Connect server uses application-based authentication; verify each server with Get-ADSyncEntraConnectorCredential."
             return $true
         }
 

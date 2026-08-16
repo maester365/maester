@@ -104,19 +104,32 @@
         }
     }
 
-    Context 'Service principal-only members (ABA — Application-Based Authentication, Entra Connect v2.5.76.0+)' {
+    Context 'Service principal-only synchronization role members' {
 
         BeforeEach {
-            # Only a service principal is in the role — this is the ABA pattern (Entra Connect v2.5.76.0+).
-            # The new code returns true early (before iterating policies) with an informative ABA message.
+            # Role membership is sufficient to determine CA applicability, but does not prove which connector identity is active.
             Mock -ModuleName Maester Get-MtRoleMember { return $script:syncServicePrincipal }
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
                 return @(New-CaPolicy -ExcludeUsers @() -ExcludeRoles @())
             }
         }
 
-        It 'Should return true because ABA service principals are not subject to CA policies' {
+        It 'Should return true without querying CA policies because user exclusions do not apply' {
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
+
+            Should -Invoke Get-MtConditionalAccessPolicy -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Should not claim that role membership proves application-based authentication is active' {
+            Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Result -like 'Only service principals are assigned*' -and
+                $Result -like '*this test is not applicable*' -and
+                $Result -like '*Role membership alone does not confirm*' -and
+                $Result -like '*Get-ADSyncEntraConnectorCredential*' -and
+                $Result -notlike '*This tenant uses Application-Based Authentication*'
+            }
         }
     }
 
