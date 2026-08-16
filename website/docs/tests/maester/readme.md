@@ -186,3 +186,5 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1193](./MT.1193.md) | Entra Private Access application segments should avoid broad or risky destinations | Unknown | Entra |
 | [MT.1194](./MT.1194.md) | The baseline Global Secure Access security profile should enforce a threat-intelligence floor | Unknown | Entra |
 | [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Unknown | Entra |
+| [MT.1196](./MT.1196.md) | Review who can change attributes used by dynamic group rules | Medium | Entra |
+| [MT.1197](./MT.1197.md) | Dynamic groups should not use the retiring memberOf rule operator | High | Entra |

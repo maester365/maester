@@ -2312,9 +2312,35 @@
       ],
       "testsContributed": [
         "CIS.M365.1.3.1",
-        "CISA.MS.AAD.2.2"
+        "CISA.MS.AAD.2.2",
+        "MT.1020"
       ],
       "initials": "M",
+      "recentCommits": 4
+    },
+    {
+      "id": "agnivesh",
+      "github": "agnivesh",
+      "name": "Agnivesh S.",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "United Kingdom",
+      "locationFlag": "🇬🇧",
+      "url": "",
+      "socials": {
+        "linkedin": "agniveshs"
+      },
+      "avatar": "https://github.com/agnivesh.png",
+      "firstContribution": "2026-08-16",
+      "testsAuthored": [
+        "MT.1196",
+        "MT.1197"
+      ],
+      "testsContributed": [],
+      "initials": "AS",
       "recentCommits": 2
     },
     {
@@ -3114,7 +3140,7 @@
         "MT.1066"
       ],
       "initials": "S",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "merill",
@@ -5170,7 +5196,8 @@
         "SamErde",
         "Mynster9361",
         "Jhope188",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "blindzero"
       ]
     },
     "MT.1021": {
@@ -6220,6 +6247,14 @@
         "merill",
         "BuckeyeGuyJFlo"
       ]
+    },
+    "MT.1196": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1197": {
+      "author": "agnivesh",
+      "contributors": []
     },
     "ORCA.100": {
       "author": "soulemike",
@@ -8195,6 +8230,14 @@
     "MT.1195": {
       "title": "The Quick Access app should not be subject to a sign-in frequency Conditional Access control",
       "path": "/docs/tests/MT.1195"
+    },
+    "MT.1196": {
+      "title": "Review who can change attributes used by dynamic group rules",
+      "path": "/docs/next/tests/MT.1196"
+    },
+    "MT.1197": {
+      "title": "Dynamic groups should not use the retiring memberOf rule operator",
+      "path": "/docs/next/tests/MT.1197"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
