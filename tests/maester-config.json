@@ -1549,6 +1549,16 @@
       "Title": "High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users."
     },
     {
+      "Id": "MT.1196",
+      "Severity": "Medium",
+      "Title": "Review who can change attributes used by dynamic group rules"
+    },
+    {
+      "Id": "MT.1197",
+      "Severity": "High",
+      "Title": "Dynamic groups should not use the retiring memberOf rule operator"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
