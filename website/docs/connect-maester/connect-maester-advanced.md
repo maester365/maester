@@ -145,11 +145,11 @@ If you already have an authenticated Azure context (e.g., managed identity, work
 #$moera = "contoso.onmicrosoft.com"
 
 # Exchange Online
-$outlookToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText -Force
+$outlookToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText
 Connect-ExchangeOnline -AccessToken $outlookToken -AppId $clientId -Organization $tenantId -ShowBanner:$false
 
 # Security & Compliance (IPPS)
-$isspToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText -Force
+$isspToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText
 Connect-IPPSSession -AccessToken $isspToken -Organization $moera
 ```
 
@@ -187,8 +187,8 @@ $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSe
 $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239' -AsSecureString
 
 $tokens = @(
-    (ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText -Force),
-    (ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText -Force)
+    (ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText),
+    (ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText)
 )
 
 Connect-MicrosoftTeams -AccessTokens $tokens
