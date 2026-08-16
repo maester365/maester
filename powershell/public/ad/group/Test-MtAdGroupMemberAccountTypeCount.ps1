@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberAccountTypeCount {
+function Test-MtAdGroupMemberAccountTypeCount {
     <#
     .SYNOPSIS
     Counts the distinct account types of members across Active Directory groups.
@@ -31,6 +31,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
 
     # Collect all unique member object classes
@@ -41,7 +43,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
             foreach ($member in $members) {
                 # Avoid duplicates by SID
                 if (-not $processedSids.ContainsKey($member.SID.Value)) {

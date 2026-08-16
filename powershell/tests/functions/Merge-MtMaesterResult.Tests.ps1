@@ -8,8 +8,13 @@ Describe 'Merge-MtMaesterResult' {
             PassedCount    = 8
             FailedCount    = 2
             ExecutedAt     = '2026-04-01T10:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-one.contoso.com'
+                ForestRootDomain = 'contoso.com'
+                TargetServer = 'dc01.contoso.com'
+            }
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
                 [PSCustomObject]@{ Id = 'MT.1002'; Result = 'Failed'; Block = 'Maester' }
@@ -28,8 +33,13 @@ Describe 'Merge-MtMaesterResult' {
             PassedCount    = 3
             FailedCount    = 2
             ExecutedAt     = '2026-04-01T11:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-two.fabrikam.com'
+                ForestRootDomain = 'fabrikam.com'
+                TargetServer = 'dc02.fabrikam.com'
+            }
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Failed'; Block = 'Maester' }
                 [PSCustomObject]@{ Id = 'MT.1002'; Result = 'Passed'; Block = 'Maester' }
@@ -82,8 +92,8 @@ Describe 'Merge-MtMaesterResult' {
     It 'Should preserve shared metadata from the first result' {
         $result = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2)
 
-        $result.CurrentVersion | Should -BeExactly '2.0.0'
-        $result.LatestVersion | Should -BeExactly '2.0.0'
+        $result.CurrentVersion | Should -BeExactly '2.2.0'
+        $result.LatestVersion | Should -BeExactly '2.2.0'
     }
 
     It 'Should preserve all test data per tenant' {
@@ -93,6 +103,15 @@ Describe 'Merge-MtMaesterResult' {
         $result.Tenants[1].Tests.Count | Should -BeExactly 2
         $result.Tenants[0].TotalCount | Should -BeExactly 10
         $result.Tenants[1].TotalCount | Should -BeExactly 5
+    }
+
+    It 'Should preserve AD context metadata per tenant' {
+        $result = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2)
+
+        $result.Tenants[0].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-one.contoso.com'
+        $result.Tenants[1].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-two.fabrikam.com'
+        $result.Tenants[0].ActiveDirectoryContext.TargetServer | Should -BeExactly 'dc01.contoso.com'
+        $result.Tenants[1].ActiveDirectoryContext.TargetServer | Should -BeExactly 'dc02.fabrikam.com'
     }
 
     It 'Should throw when a result is missing the Tests property' {
@@ -115,8 +134,8 @@ Describe 'Merge-MtMaesterResult' {
             TotalCount     = 7
             PassedCount    = 7
             FailedCount    = 0
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
             )
@@ -131,6 +150,8 @@ Describe 'Merge-MtMaesterResult' {
         $result.Tenants.Count | Should -BeExactly 3
         $result.Tenants[2].TenantName | Should -BeExactly 'Tenant Three'
         $result.Tenants[2].TotalCount | Should -BeExactly 7
+        $result.Tenants[0].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-one.contoso.com'
+        $result.Tenants[1].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-two.fabrikam.com'
     }
 
     It 'Should handle a result with empty TenantName' {
@@ -141,8 +162,13 @@ Describe 'Merge-MtMaesterResult' {
             TotalCount     = 1
             PassedCount    = 1
             FailedCount    = 0
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
+            CurrentVersion = '2.2.0'
+            LatestVersion  = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-empty.contoso.com'
+                ForestRootDomain = ''
+                TargetServer = 'dc99.contoso.com'
+            }
             Tests          = @(
                 [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
             )
@@ -154,6 +180,7 @@ Describe 'Merge-MtMaesterResult' {
 
         $result.Tenants.Count | Should -BeExactly 1
         $result.Tenants[0].TenantName | Should -BeExactly ''
+        $result.Tenants[0].ActiveDirectoryContext.ForestName | Should -BeExactly 'forest-empty.contoso.com'
     }
 
     Context 'FromPath parameter set' {

@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordReversibleEncryption {
+function Test-MtAdPasswordReversibleEncryption {
     <#
     .SYNOPSIS
     Checks whether reversible encryption is enabled for passwords in the default domain password policy.
@@ -33,9 +33,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get the default domain password policy
     try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
+        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop @adServerParameters
         $reversibleEncryption = $passwordPolicy.ReversibleEncryptionEnabled
     } catch {
         Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"

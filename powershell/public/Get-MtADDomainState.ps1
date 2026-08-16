@@ -17,8 +17,10 @@ function Get-MtADDomainState {
     data collection. When provided, Active Directory queries and the LDAP searcher
     are directed to this server. DNS collection also targets this host when it
     supports the required DNS management access. If not specified, commands use
-    the implicit serverless behavior of the Active Directory module and the DNS
-    root from the collected domain object is used for DNS queries.
+        the server selected by Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer
+        when present; otherwise commands use the implicit serverless behavior of the
+        Active Directory module and the DNS root from the collected domain object is
+        used for DNS queries.
 
     .EXAMPLE
     Get-MtADDomainState
@@ -50,15 +52,17 @@ function Get-MtADDomainState {
         return $null
     }
 
-    $cacheKey = if ($ComputerName) { "DomainState:$ComputerName" } else { 'DomainState' }
+    $effectiveComputerName = if ($ComputerName) { $ComputerName } elseif ($__MtSession.ADConnection.TargetServer) { $__MtSession.ADConnection.TargetServer } else { $null }
+
+    $cacheKey = if ($effectiveComputerName) { "DomainState:$effectiveComputerName" } else { 'DomainState' }
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
         Write-Verbose 'Collecting AD Domain State data from Active Directory'
 
         try {
             $adServerParameters = @{}
-            if ($ComputerName) {
-                $adServerParameters['Server'] = $ComputerName
+            if ($effectiveComputerName) {
+                $adServerParameters['Server'] = $effectiveComputerName
             }
 
             $domainState = @{
@@ -83,7 +87,7 @@ function Get-MtADDomainState {
                 throw "Failed to retrieve RootDSE information from Active Directory. Verify connectivity and that the specified ComputerName is a valid domain controller."
             }
 
-            $resolvedComputerName = if ($ComputerName) { $ComputerName } else { $domainState.Domain.DNSRoot }
+            $resolvedComputerName = if ($effectiveComputerName) { $effectiveComputerName } else { $domainState.Domain.DNSRoot }
 
             # Collect Replication Connection information
             try {
@@ -386,8 +390,8 @@ function Get-MtADDomainState {
 
                 # Use DirectorySearcher to get objects with their security descriptors
                 $searcher = New-Object System.DirectoryServices.DirectorySearcher
-                if ($ComputerName) {
-                    $searcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$ComputerName/$domainDN", $null, $null, ([System.DirectoryServices.AuthenticationTypes]::Secure -bor [System.DirectoryServices.AuthenticationTypes]::ServerBind))
+                if ($effectiveComputerName) {
+                    $searcher.SearchRoot = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$effectiveComputerName/$domainDN", $null, $null, ([System.DirectoryServices.AuthenticationTypes]::Secure -bor [System.DirectoryServices.AuthenticationTypes]::ServerBind))
                 } else {
                     $searcher.SearchRoot = [ADSI]"LDAP://$domainDN"
                 }

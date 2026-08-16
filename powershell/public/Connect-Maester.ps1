@@ -35,6 +35,16 @@
    Validates connectivity to the current Active Directory domain. Active Directory must be explicitly selected and is not included in -Service All.
 
 .EXAMPLE
+   Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer dc01.corp.contoso.com
+
+   Validates connectivity to Active Directory by targeting the specified domain controller or AD DS server.
+
+.EXAMPLE
+   Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer dc01.corp.contoso.com,dc01.fabrikam.net
+
+   Validates connectivity to Active Directory for each provided domain controller or AD DS server.
+
+.EXAMPLE
    Connect-Maester -Service Azure,Graph
 
    Connects to Microsoft Graph and Azure.
@@ -155,7 +165,11 @@
       [string]$SharePointCertificateThumbprint,
 
       # The GitHub organization login name to connect to when Service includes GitHub.
-      [string]$GitHubOrganization
+      [string]$GitHubOrganization,
+
+      # One or more Active Directory domain controllers or AD DS servers to target when Service includes ActiveDirectory.
+      # When omitted, Active Directory cmdlets use default serverless/domain-joined resolution.
+      [string[]]$ActiveDirectoryServer
    )
 
    $__MtSession.Connections = $Service
@@ -469,15 +483,60 @@
    if ($Service -contains 'ActiveDirectory') {
       Write-Verbose 'Validating Active Directory connectivity'
       try {
-         $adRootDSE = Get-ADRootDSE -ErrorAction Stop
+         $requestedTargets = @(
+            @($ActiveDirectoryServer) |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            ForEach-Object { $_.Trim() } |
+            Select-Object -Unique
+         )
+
+         $successfulTargets = @()
+         $failedTargets = @()
+         $firstSuccessfulRootDse = $null
+
+         if ($requestedTargets.Count -eq 0) {
+            Write-Verbose 'Probing AD target using default domain resolution'
+            $adRootDSE = Get-ADRootDSE -ErrorAction Stop
+            $firstSuccessfulRootDse = $adRootDSE
+            $successfulTargets += $adRootDSE.dnsHostName
+            Write-Verbose "Connected to AD target: $($adRootDSE.dnsHostName)"
+         } else {
+            foreach ($target in $requestedTargets) {
+               $adRootDSEParams = @{ Server = $target }
+               Write-Verbose "Probing AD target '$target'"
+
+               try {
+                  $adRootDSE = Get-ADRootDSE @adRootDSEParams -ErrorAction Stop
+                  if ($null -eq $firstSuccessfulRootDse) {
+                     $firstSuccessfulRootDse = $adRootDSE
+                  }
+                  $successfulTargets += $target
+                  Write-Verbose "Connected to AD target: $($adRootDSE.dnsHostName)"
+               } catch {
+                  $failedTargets += [PSCustomObject]@{
+                     Target = $target
+                     Error  = $_.Exception.Message
+                  }
+                  Write-Warning "Failed to validate AD target '$target': $($_.Exception.Message)"
+               }
+            }
+         }
+
+         if ($successfulTargets.Count -eq 0 -or $null -eq $firstSuccessfulRootDse) {
+            $failureMessages = @($failedTargets | ForEach-Object { "[$($_.Target)] $($_.Error)" })
+            throw "Failed to connect to requested Active Directory targets. $($failureMessages -join '; ')"
+         }
+
          $__MtSession.ADConnection = @{
             Connected                  = $true
-            DefaultNamingContext       = $adRootDSE.defaultNamingContext
-            ConfigurationNamingContext = $adRootDSE.configurationNamingContext
-            SchemaNamingContext        = $adRootDSE.schemaNamingContext
-            DomainController           = $adRootDSE.dnsHostName
+            DefaultNamingContext       = $firstSuccessfulRootDse.defaultNamingContext
+            ConfigurationNamingContext = $firstSuccessfulRootDse.configurationNamingContext
+            SchemaNamingContext        = $firstSuccessfulRootDse.schemaNamingContext
+            DomainController           = $firstSuccessfulRootDse.dnsHostName
+            TargetServer               = $successfulTargets[0]
+            TargetServers              = $successfulTargets
+            FailedTargets              = $failedTargets
          }
-         Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
       } catch [Management.Automation.CommandNotFoundException] {
          $__MtSession.ADConnection = @{
             Connected = $false

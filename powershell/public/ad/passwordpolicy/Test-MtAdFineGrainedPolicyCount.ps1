@@ -1,4 +1,4 @@
-﻿function Test-MtAdFineGrainedPolicyCount {
+function Test-MtAdFineGrainedPolicyCount {
     <#
     .SYNOPSIS
     Counts the number of fine-grained password policies configured in the domain.
@@ -33,9 +33,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     # Get fine-grained password policies
     try {
-        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -ErrorAction Stop
+        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -ErrorAction Stop @adServerParameters
         $policyCount = ($fgppPolicies | Measure-Object).Count
     } catch {
         Write-Error "Failed to retrieve fine-grained password policies: $($_.Exception.Message)"

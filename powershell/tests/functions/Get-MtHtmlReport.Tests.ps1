@@ -6,30 +6,35 @@ Describe 'Get-MtHtmlReport' {
         $templateAvailable = Test-Path $templatePath
 
         $singleTenant = [PSCustomObject]@{
-            TenantId       = 'single-tenant-id'
-            TenantName     = 'Single Tenant'
-            Result         = 'Passed'
-            TotalCount     = 5
-            PassedCount    = 4
-            FailedCount    = 1
-            ErrorCount     = 0
-            SkippedCount   = 0
-            InvestigateCount = 0
-            NotRunCount    = 0
-            ExecutedAt     = '2026-03-30T10:00:00'
-            TotalDuration  = '00:01:00'
-            UserDuration   = '00:00:50'
+            TenantId          = 'single-tenant-id'
+            TenantName        = 'Single Tenant'
+            Result            = 'Passed'
+            TotalCount        = 5
+            PassedCount       = 4
+            FailedCount       = 1
+            ErrorCount        = 0
+            SkippedCount      = 0
+            InvestigateCount  = 0
+            NotRunCount       = 0
+            ExecutedAt        = '2026-03-30T10:00:00'
+            TotalDuration     = '00:01:00'
+            UserDuration      = '00:00:50'
             DiscoveryDuration = '00:00:08'
             FrameworkDuration = '00:00:01'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
-            Account        = 'test@contoso.com'
-            SystemInfo     = [PSCustomObject]@{ MachineName = 'TEST-01' }
-            PowerShellInfo = [PSCustomObject]@{ Version = '7.4.1' }
-            LoadedModules  = @()
-            InvokeCommand  = 'Invoke-Maester'
-            MgContext      = [PSCustomObject]@{ TenantId = 'single-tenant-id' }
-            MaesterConfig  = [PSCustomObject]@{
+            CurrentVersion    = '2.2.0'
+            LatestVersion     = '2.2.0'
+            Account           = 'test@contoso.com'
+            SystemInfo        = [PSCustomObject]@{ MachineName = 'TEST-01' }
+            PowerShellInfo    = [PSCustomObject]@{ Version = '7.4.1' }
+            LoadedModules     = @()
+            InvokeCommand     = 'Invoke-Maester'
+            MgContext         = [PSCustomObject]@{ TenantId = 'single-tenant-id' }
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-single.contoso.com'
+                ForestRootDomain = 'contoso.com'
+                TargetServer = 'dc01.contoso.com'
+            }
+            MaesterConfig     = [PSCustomObject]@{
                 GlobalSettings = [PSCustomObject]@{
                     EmergencyAccessAccounts = @(
                         [PSCustomObject]@{
@@ -40,7 +45,7 @@ Describe 'Get-MtHtmlReport' {
                 }
                 TestSettings   = @()
             }
-            Tests          = @(
+            Tests             = @(
                 [PSCustomObject]@{
                     Index = 1; Id = 'MT.1001'; Title = 'Test One'
                     Name = 'MT.1001: Test One'; Result = 'Passed'
@@ -49,56 +54,66 @@ Describe 'Get-MtHtmlReport' {
                     ResultDetail = [PSCustomObject]@{ TestDescription = 'Desc'; TestResult = 'OK' }
                 }
             )
-            Blocks         = @(
+            Blocks            = @(
                 [PSCustomObject]@{ Name = 'Maester'; PassedCount = 4; FailedCount = 1; TotalCount = 5 }
             )
-            EndOfJson      = 'EndOfJson'
+            EndOfJson         = 'EndOfJson'
         }
 
         $tenant1 = [PSCustomObject]@{
-            TenantId       = 'tenant-1-id'
-            TenantName     = 'Tenant One'
-            Result         = 'Passed'
-            TotalCount     = 3
-            PassedCount    = 3
-            FailedCount    = 0
-            ErrorCount     = 0
-            SkippedCount   = 0
+            TenantId         = 'tenant-1-id'
+            TenantName       = 'Tenant One'
+            Result           = 'Passed'
+            TotalCount       = 3
+            PassedCount      = 3
+            FailedCount      = 0
+            ErrorCount       = 0
+            SkippedCount     = 0
             InvestigateCount = 0
-            NotRunCount    = 0
-            ExecutedAt     = '2026-03-30T10:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
-            Tests          = @(
+            NotRunCount      = 0
+            ExecutedAt       = '2026-03-30T10:00:00'
+            CurrentVersion   = '2.2.0'
+            LatestVersion    = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-one.contoso.com'
+                ForestRootDomain = 'contoso.com'
+                TargetServer = 'dc01.contoso.com'
+            }
+            Tests            = @(
                 [PSCustomObject]@{ Index = 1; Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
             )
-            Blocks         = @(
+            Blocks           = @(
                 [PSCustomObject]@{ Name = 'Maester'; PassedCount = 3; TotalCount = 3 }
             )
-            EndOfJson      = 'EndOfJson'
+            EndOfJson        = 'EndOfJson'
         }
 
         $tenant2 = [PSCustomObject]@{
-            TenantId       = 'tenant-2-id'
-            TenantName     = 'Tenant Two'
-            Result         = 'Failed'
-            TotalCount     = 5
-            PassedCount    = 3
-            FailedCount    = 2
-            ErrorCount     = 0
-            SkippedCount   = 0
+            TenantId         = 'tenant-2-id'
+            TenantName       = 'Tenant Two'
+            Result           = 'Failed'
+            TotalCount       = 5
+            PassedCount      = 3
+            FailedCount      = 2
+            ErrorCount       = 0
+            SkippedCount     = 0
             InvestigateCount = 0
-            NotRunCount    = 0
-            ExecutedAt     = '2026-03-30T11:00:00'
-            CurrentVersion = '2.0.0'
-            LatestVersion  = '2.0.0'
-            Tests          = @(
+            NotRunCount      = 0
+            ExecutedAt       = '2026-03-30T11:00:00'
+            CurrentVersion   = '2.2.0'
+            LatestVersion    = '2.2.0'
+            ActiveDirectoryContext = [PSCustomObject]@{
+                ForestName = 'forest-two.fabrikam.com'
+                ForestRootDomain = 'fabrikam.com'
+                TargetServer = 'dc02.fabrikam.com'
+            }
+            Tests            = @(
                 [PSCustomObject]@{ Index = 1; Id = 'MT.1001'; Result = 'Failed'; Block = 'Maester' }
             )
-            Blocks         = @(
+            Blocks           = @(
                 [PSCustomObject]@{ Name = 'Maester'; PassedCount = 3; FailedCount = 2; TotalCount = 5 }
             )
-            EndOfJson      = 'EndOfJson'
+            EndOfJson        = 'EndOfJson'
         }
     }
 
@@ -127,6 +142,14 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
             $html | Should -BeLike '*MT.1001*'
+        }
+
+        It 'Should contain AD context metadata in the output' {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant
+
+            $html | Should -BeLike '*forest-single.contoso.com*'
+            $html | Should -BeLike '*dc01.contoso.com*'
+            $html | Should -BeLike '*contoso.com*'
         }
 
         It 'Should contain emergency access account config data' {
@@ -166,6 +189,15 @@ Describe 'Get-MtHtmlReport' {
 
             $html | Should -BeLike '*Tenant One*'
             $html | Should -BeLike '*Tenant Two*'
+        }
+
+        It 'Should retain distinct AD context metadata for each tenant' {
+            $html = Get-MtHtmlReport -MaesterResults $merged
+
+            $html | Should -BeLike '*forest-one.contoso.com*'
+            $html | Should -BeLike '*dc01.contoso.com*'
+            $html | Should -BeLike '*forest-two.fabrikam.com*'
+            $html | Should -BeLike '*dc02.fabrikam.com*'
         }
 
         It 'Should not contain sample data from the template' {

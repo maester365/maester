@@ -8,12 +8,13 @@
     param ()
 
     try {
-        if($IsWindows -and $IsCoreCLR) {
+        if ($IsWindows -and $IsCoreCLR -and [string]::IsNullOrWhiteSpace($env:VSCODE_PID)) {
             $Script:ProgressView = $PSStyle.Progress.View
             $PSStyle.Progress.View = 'Classic'
+        } else {
+            $Script:ProgressView = $null
         }
-    }
-    catch {
+    } catch {
         Write-Verbose $_
     }
 }

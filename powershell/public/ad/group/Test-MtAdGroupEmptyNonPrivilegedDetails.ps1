@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupEmptyNonPrivilegedDetails {
+function Test-MtAdGroupEmptyNonPrivilegedDetails {
     <#
     .SYNOPSIS
     Details of empty non-privileged groups in Active Directory.
@@ -27,6 +27,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
 
     # Collect empty non-privileged groups
@@ -34,7 +36,7 @@
 
     foreach ($group in $groups) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
             $memberCount = ($members | Measure-Object).Count
 
             if ($memberCount -eq 0 -and $group.adminCount -ne 1) {

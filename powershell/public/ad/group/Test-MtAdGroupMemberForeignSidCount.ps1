@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberForeignSidCount {
+function Test-MtAdGroupMemberForeignSidCount {
     <#
     .SYNOPSIS
     Counts the foreign SID principals in Active Directory groups.
@@ -32,6 +32,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
@@ -44,7 +46,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
             foreach ($member in $members) {
                 # Check if SID is foreign (doesn't start with domain SID)
                 if ($member.SID.Value -and -not $member.SID.Value.StartsWith($domainSid)) {

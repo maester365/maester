@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberTrustDetails {
+function Test-MtAdGroupMemberTrustDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of trust members by group in Active Directory.
@@ -33,6 +33,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
@@ -45,7 +47,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
             $groupTrustMembers = @()
 
             foreach ($member in $members) {

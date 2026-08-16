@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoBlockedInheritanceCount {
+function Test-MtAdGpoBlockedInheritanceCount {
     <#
     .SYNOPSIS
     Counts targets blocking GPO inheritance.
@@ -43,9 +43,11 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $ous = $null
     try {
-        $ous = Get-ADOrganizationalUnit -Filter * -Properties gpOptions -ErrorAction Stop
+        $ous = Get-ADOrganizationalUnit -Filter * -Properties gpOptions -ErrorAction Stop @adServerParameters
     }
     catch {
         Write-Verbose "Unable to retrieve Organizational Units for blocked inheritance check: $($_.Exception.Message)"

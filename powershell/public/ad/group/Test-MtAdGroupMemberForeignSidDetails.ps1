@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberForeignSidDetails {
+function Test-MtAdGroupMemberForeignSidDetails {
     <#
     .SYNOPSIS
     Details of foreign security principals by their domain of origin.
@@ -27,6 +27,8 @@
         return $null
     }
 
+    $adServerParameters = Get-MtADServerParameters
+
     $groups = $adState.Groups
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
@@ -38,7 +40,7 @@
     foreach ($group in $groups) {
         try {
             # Get group members
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue @adServerParameters
 
             foreach ($member in $members) {
                 if ($member.SID -and $member.SID.Value) {
