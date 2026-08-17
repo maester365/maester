@@ -580,6 +580,8 @@ module.exports = [
     'commands/Test-MtDeviceRegistrationLocalAdminsRegisteringUser',
     'commands/Test-MtDeviceRegistrationMfaConflict',
     'commands/Test-MtDomainsDmarcRecordMaturity',
+    'commands/Test-MtDynamicGroupMemberOfRule',
+    'commands/Test-MtDynamicGroupUserControlledAttributes',
     'commands/Test-MtEidscaAF01',
     'commands/Test-MtEidscaAF02',
     'commands/Test-MtEidscaAF03',
