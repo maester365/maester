@@ -70,29 +70,31 @@
                 $ActivitiesByAppId[$AppId]
             } else { $null }
 
+            # Graph-typed date/time properties already arrive as native [datetime] objects.
+            # Casting through [string] first forces a culture-formatted render (e.g. day-first
+            # locales), which then fails or silently misparses when re-parsed -- cast directly
+            # instead, matching the pattern used by Test-MtAIAgentDormant.ps1.
             $LastSignInDate = $null
             if ($null -ne $Activity) {
-                $Candidates = [System.Collections.Generic.List[string]]::new()
-                if (![string]::IsNullOrWhiteSpace($Activity.lastSignInDateTime)) {
-                    $Candidates.Add([string]$Activity.lastSignInDateTime)
+                $Candidates = [System.Collections.Generic.List[object]]::new()
+                if ($Activity.lastSignInDateTime) { $Candidates.Add($Activity.lastSignInDateTime) }
+                if ($Activity.delegatedClientSignInActivity -and $Activity.delegatedClientSignInActivity.lastSignInDateTime) {
+                    $Candidates.Add($Activity.delegatedClientSignInActivity.lastSignInDateTime)
                 }
-                if ($null -ne $Activity.delegatedClientSignInActivity -and ![string]::IsNullOrWhiteSpace($Activity.delegatedClientSignInActivity.lastSignInDateTime)) {
-                    $Candidates.Add([string]$Activity.delegatedClientSignInActivity.lastSignInDateTime)
+                if ($Activity.delegatedResourceSignInActivity -and $Activity.delegatedResourceSignInActivity.lastSignInDateTime) {
+                    $Candidates.Add($Activity.delegatedResourceSignInActivity.lastSignInDateTime)
                 }
-                if ($null -ne $Activity.delegatedResourceSignInActivity -and ![string]::IsNullOrWhiteSpace($Activity.delegatedResourceSignInActivity.lastSignInDateTime)) {
-                    $Candidates.Add([string]$Activity.delegatedResourceSignInActivity.lastSignInDateTime)
+                if ($Activity.applicationAuthenticationClientSignInActivity -and $Activity.applicationAuthenticationClientSignInActivity.lastSignInDateTime) {
+                    $Candidates.Add($Activity.applicationAuthenticationClientSignInActivity.lastSignInDateTime)
                 }
-                if ($null -ne $Activity.applicationAuthenticationClientSignInActivity -and ![string]::IsNullOrWhiteSpace($Activity.applicationAuthenticationClientSignInActivity.lastSignInDateTime)) {
-                    $Candidates.Add([string]$Activity.applicationAuthenticationClientSignInActivity.lastSignInDateTime)
-                }
-                if ($null -ne $Activity.applicationAuthenticationResourceSignInActivity -and ![string]::IsNullOrWhiteSpace($Activity.applicationAuthenticationResourceSignInActivity.lastSignInDateTime)) {
-                    $Candidates.Add([string]$Activity.applicationAuthenticationResourceSignInActivity.lastSignInDateTime)
+                if ($Activity.applicationAuthenticationResourceSignInActivity -and $Activity.applicationAuthenticationResourceSignInActivity.lastSignInDateTime) {
+                    $Candidates.Add($Activity.applicationAuthenticationResourceSignInActivity.lastSignInDateTime)
                 }
 
                 foreach ($Candidate in $Candidates) {
-                    $parsed = [datetime]::MinValue
-                    if ([datetime]::TryParse([string]$Candidate, [ref]$parsed)) {
-                        $ParsedDate = $parsed.ToUniversalTime()
+                    $ParsedDate = $Candidate -as [datetime]
+                    if ($null -ne $ParsedDate) {
+                        $ParsedDate = $ParsedDate.ToUniversalTime()
                         if ($null -eq $LastSignInDate -or $ParsedDate -gt $LastSignInDate) {
                             $LastSignInDate = $ParsedDate
                         }
@@ -114,10 +116,9 @@
                 }
             } else {
                 # Check creation date if never signed in
-                $CreatedDate = $null
-                $parsedCreated = [datetime]::MinValue
-                if (![string]::IsNullOrWhiteSpace($Agent.createdDateTime) -and [datetime]::TryParse([string]$Agent.createdDateTime, [ref]$parsedCreated)) {
-                    $CreatedDate = $parsedCreated.ToUniversalTime()
+                $CreatedDate = $Agent.createdDateTime -as [datetime]
+                if ($null -ne $CreatedDate) {
+                    $CreatedDate = $CreatedDate.ToUniversalTime()
                 }
 
                 $DaysSinceCreation = if ($null -ne $CreatedDate) { [int]($UtcNow.Subtract($CreatedDate).TotalDays) } else { $MaxInactiveDays + 1 }
@@ -178,10 +179,8 @@
                 # before it's mistaken for a credential with no expiry (i.e. "live").
                 $AllCredentials = @(@($Blueprint.passwordCredentials) + @($Blueprint.keyCredentials) | Where-Object { $null -ne $_ })
                 $LiveCredentials = @($AllCredentials | Where-Object {
-                    $parsedEnd = [datetime]::MinValue
-                    [string]::IsNullOrWhiteSpace($_.endDateTime) -or
-                        (![datetime]::TryParse([string]$_.endDateTime, [ref]$parsedEnd)) -or
-                        $parsedEnd.ToUniversalTime() -ge $UtcNow
+                    $ParsedEnd = $_.endDateTime -as [datetime]
+                    $null -eq $ParsedEnd -or $ParsedEnd.ToUniversalTime() -ge $UtcNow
                 })
                 if ($LiveCredentials.Count -eq 0) { continue }
 

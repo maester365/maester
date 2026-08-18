@@ -63,17 +63,14 @@
 
             foreach ($Password in $Passwords) {
                 $KeyId = [string]$Password.keyId
-                $EndDateTime = $null
-                $StartDateTime = $null
 
-                $parsedEnd = [datetime]::MinValue
-                $parsedStart = [datetime]::MinValue
-                if (![string]::IsNullOrWhiteSpace($Password.endDateTime) -and [datetime]::TryParse([string]$Password.endDateTime, [ref]$parsedEnd)) {
-                    $EndDateTime = $parsedEnd.ToUniversalTime()
-                }
-                if (![string]::IsNullOrWhiteSpace($Password.startDateTime) -and [datetime]::TryParse([string]$Password.startDateTime, [ref]$parsedStart)) {
-                    $StartDateTime = $parsedStart.ToUniversalTime()
-                }
+                # Graph-typed date/time properties already arrive as native [datetime] objects.
+                # Casting through [string] first forces a culture-formatted render, which then
+                # fails or silently misparses when re-parsed -- cast directly instead.
+                $EndDateTime = $Password.endDateTime -as [datetime]
+                if ($null -ne $EndDateTime) { $EndDateTime = $EndDateTime.ToUniversalTime() }
+                $StartDateTime = $Password.startDateTime -as [datetime]
+                if ($null -ne $StartDateTime) { $StartDateTime = $StartDateTime.ToUniversalTime() }
 
                 # Check if expired
                 if ($null -ne $EndDateTime -and $EndDateTime -lt $UtcNow) {
