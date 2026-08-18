@@ -15,6 +15,7 @@ Describe 'Get-MtGraphScope' {
         $scopes | Should -Contain 'AgentIdentity.Read.All'
         $scopes | Should -Contain 'AgentIdentityBlueprint.Read.All'
         $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
+        $scopes | Should -Contain 'Application.Read.All'
         $scopes | Should -Contain 'Directory.Read.All'
         $scopes | Should -Not -Contain 'User.ReadBasic.All'
     }
@@ -27,11 +28,13 @@ Describe 'Get-MtGraphScope' {
             $scopes,
             'AgentIdentityBlueprintPrincipal.Read.All'
         )
+        $applicationIndex = [array]::IndexOf($scopes, 'Application.Read.All')
         $auditLogIndex = [array]::IndexOf($scopes, 'AuditLog.Read.All')
 
         $agentIdentityIndex | Should -BeLessThan $BlueprintIndex
         $BlueprintIndex | Should -BeLessThan $blueprintPrincipalIndex
-        $blueprintPrincipalIndex | Should -BeLessThan $auditLogIndex
+        $blueprintPrincipalIndex | Should -BeLessThan $applicationIndex
+        $applicationIndex | Should -BeLessThan $auditLogIndex
     }
 
     It 'Keeps EntitlementManagement.Read.All in sorted position between DirectoryRecommendations and IdentityRiskEvent' {

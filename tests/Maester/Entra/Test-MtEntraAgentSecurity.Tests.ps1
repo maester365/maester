@@ -68,4 +68,34 @@ Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph', 'Agent ID' {
             )
         }
     }
+
+    It 'MT.1211: Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles. See https://maester.dev/docs/tests/MT.1211' -Tag 'MT.1211', 'Severity:High', 'Preview' {
+        $Result = Test-MtEntraAgentBlueprintAllAllowedInheritance
+
+        if ($null -ne $Result) {
+            $Result | Should -BeTrue -Because (
+                'Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles'
+            )
+        }
+    }
+
+    It 'MT.1212: Agent Identity Blueprint Principals should require assignment for the application roles they expose. See https://maester.dev/docs/tests/MT.1212' -Tag 'MT.1212', 'Severity:Medium', 'Preview' {
+        $Result = Test-MtEntraAgentBlueprintOpenAccess
+
+        if ($null -ne $Result) {
+            $Result | Should -BeTrue -Because (
+                'Agent Identity Blueprint Principals should require assignment for the application roles they expose'
+            )
+        }
+    }
+
+    It 'MT.1213: Agent Identity Blueprints should not use wildcard or plain-http redirect URIs. See https://maester.dev/docs/tests/MT.1213' -Tag 'MT.1213', 'Severity:High', 'Preview' {
+        $Result = Test-MtEntraAgentBlueprintRedirectUriHygiene
+
+        if ($null -ne $Result) {
+            $Result | Should -BeTrue -Because (
+                'Agent Identity Blueprints should not use wildcard or plain-http redirect URIs'
+            )
+        }
+    }
 }

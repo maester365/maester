@@ -1316,7 +1316,7 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 5
+      "recentCommits": 6
     },
     {
       "id": "oed-metzb",
@@ -8328,6 +8328,18 @@
     "MT.1210": {
       "title": "Agent Users should not have privileged directory roles or membership in role-assignable groups",
       "path": "/docs/next/tests/MT.1210"
+    },
+    "MT.1211": {
+      "title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles",
+      "path": "/docs/next/tests/MT.1211"
+    },
+    "MT.1212": {
+      "title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose",
+      "path": "/docs/next/tests/MT.1212"
+    },
+    "MT.1213": {
+      "title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs",
+      "path": "/docs/next/tests/MT.1213"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

@@ -155,6 +155,54 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
             $script:TestResult | Should -Match 'id-1'
             $script:TestResult | Should -Match 'Inactive for'
         }
+
+        It 'reports a fully dormant fleet whose blueprint still holds a live credential' {
+            $StaleDate = (Get-Date).AddDays(-200).ToString('o')
+            $ValidEnd = (Get-Date).AddDays(180).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'reports/*') {
+                    return @([pscustomobject]@{ appId = 'app-1'; lastSignInDateTime = $StaleDate })
+                }
+                if ($RelativeUri -like '*agentIdentityBlueprint*' -and $RelativeUri -notlike '*servicePrincipals*') {
+                    return @([pscustomobject]@{
+                        id = 'bp-1'; displayName = 'BP 1'; appId = 'bp-app-1'
+                        passwordCredentials = @([pscustomobject]@{ keyId = 'key-1'; endDateTime = $ValidEnd })
+                    })
+                }
+                return @([pscustomobject]@{
+                    id = 'id-1'; appId = 'app-1'; displayName = 'Agent 1'; accountEnabled = $true
+                    agentIdentityBlueprintId = 'bp-app-1'
+                })
+            }
+
+            Test-MtEntraAgentInactive | Should -BeFalse
+            $script:TestResult | Should -Match 'bp-1'
+            $script:TestResult | Should -Match 'fully dormant fleet'
+        }
+
+        It 'does not report a dormant fleet when the blueprint has no live credential' {
+            $StaleDate = (Get-Date).AddDays(-200).ToString('o')
+            $ExpiredEnd = (Get-Date).AddDays(-10).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'reports/*') {
+                    return @([pscustomobject]@{ appId = 'app-1'; lastSignInDateTime = $StaleDate })
+                }
+                if ($RelativeUri -like '*agentIdentityBlueprint*' -and $RelativeUri -notlike '*servicePrincipals*') {
+                    return @([pscustomobject]@{
+                        id = 'bp-1'; displayName = 'BP 1'; appId = 'bp-app-1'
+                        passwordCredentials = @([pscustomobject]@{ keyId = 'key-1'; endDateTime = $ExpiredEnd })
+                    })
+                }
+                return @([pscustomobject]@{
+                    id = 'id-1'; appId = 'app-1'; displayName = 'Agent 1'; accountEnabled = $true
+                    agentIdentityBlueprintId = 'bp-app-1'
+                })
+            }
+
+            Test-MtEntraAgentInactive | Should -BeFalse
+            $script:TestResult | Should -Match 'id-1'
+            $script:TestResult | Should -Not -Match 'fully dormant fleet'
+        }
     }
 
     Context 'MT.1207: Test-MtEntraAgentForeignPrivileged' {
@@ -245,10 +293,11 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
     }
 
     Context 'MT.1208: Test-MtEntraAgentBlueprintCredentialHygiene' {
-        It 'passes when blueprints have healthy credentials' {
+        It 'passes when blueprints have healthy credentials and no FIC' {
             $ValidEnd = (Get-Date).AddDays(180).ToString('o')
             $ValidStart = (Get-Date).AddDays(-10).ToString('o')
             Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*federatedIdentityCredentials') { return @() }
                 return @([pscustomobject]@{
                     id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
                     passwordCredentials = @([pscustomobject]@{ keyId = 'key-1'; startDateTime = $ValidStart; endDateTime = $ValidEnd })
@@ -263,6 +312,7 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
             $ExpiredEnd = (Get-Date).AddDays(-10).ToString('o')
             $ValidStart = (Get-Date).AddDays(-365).ToString('o')
             Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*federatedIdentityCredentials') { return @() }
                 return @([pscustomobject]@{
                     id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
                     passwordCredentials = @([pscustomobject]@{ keyId = 'expired-key'; startDateTime = $ValidStart; endDateTime = $ExpiredEnd })
@@ -277,6 +327,7 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
             $ValidEnd = (Get-Date).AddDays(180).ToString('o')
             $ValidStart = (Get-Date).AddDays(-10).ToString('o')
             Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*federatedIdentityCredentials') { return @() }
                 return @([pscustomobject]@{
                     id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
                     passwordCredentials = @(
@@ -289,6 +340,23 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
 
             Test-MtEntraAgentBlueprintCredentialHygiene | Should -BeFalse
             $script:TestResult | Should -Match 'Excessive active secrets'
+        }
+
+        It 'reports a blueprint with an active secret retained alongside a FIC' {
+            $ValidEnd = (Get-Date).AddDays(180).ToString('o')
+            $ValidStart = (Get-Date).AddDays(-10).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*federatedIdentityCredentials') {
+                    return @([pscustomobject]@{ id = 'fic-1' })
+                }
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    passwordCredentials = @([pscustomobject]@{ keyId = 'key-1'; startDateTime = $ValidStart; endDateTime = $ValidEnd })
+                })
+            }
+
+            Test-MtEntraAgentBlueprintCredentialHygiene | Should -BeFalse
+            $script:TestResult | Should -Match 'Secret \+ FIC'
         }
     }
 
@@ -419,6 +487,145 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
             }
 
             Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+    }
+
+    Context 'MT.1211: Test-MtEntraAgentBlueprintAllAllowedInheritance' {
+        It 'passes when no blueprint uses allAllowed inheritance' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*inheritablePermissions') {
+                    return @([pscustomobject]@{
+                        resourceAppId     = '00000003-0000-0000-c000-000000000000'
+                        inheritableScopes = [pscustomobject]@{ kind = 'enumerated' }
+                        inheritableRoles  = [pscustomobject]@{ kind = 'none' }
+                    })
+                }
+                return @([pscustomobject]@{ id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1' })
+            }
+
+            Test-MtEntraAgentBlueprintAllAllowedInheritance | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'reports a blueprint with allAllowed inheritable scopes' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*inheritablePermissions') {
+                    return @([pscustomobject]@{
+                        resourceAppId     = '00000003-0000-0000-c000-000000000000'
+                        inheritableScopes = [pscustomobject]@{ kind = 'allAllowed' }
+                        inheritableRoles  = [pscustomobject]@{ kind = 'none' }
+                    })
+                }
+                return @([pscustomobject]@{ id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1' })
+            }
+
+            Test-MtEntraAgentBlueprintAllAllowedInheritance | Should -BeFalse
+            $script:TestResult | Should -Match 'bp-1'
+            $script:TestResult | Should -Match 'Delegated scopes'
+        }
+    }
+
+    Context 'MT.1212: Test-MtEntraAgentBlueprintOpenAccess' {
+        It 'passes when app roles require assignment' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
+                    appRoleAssignmentRequired = $true
+                    appRoles = @([pscustomobject]@{ id = 'role-1' })
+                })
+            }
+
+            Test-MtEntraAgentBlueprintOpenAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'reports a blueprint principal exposing app roles without requiring assignment' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
+                    appRoleAssignmentRequired = $false
+                    appRoles = @([pscustomobject]@{ id = 'role-1' })
+                })
+            }
+
+            Test-MtEntraAgentBlueprintOpenAccess | Should -BeFalse
+            $script:TestResult | Should -Match 'principal-1'
+        }
+
+        It 'passes when assignment is not required but no app roles are declared' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
+                    appRoleAssignmentRequired = $false
+                    appRoles = @()
+                })
+            }
+
+            Test-MtEntraAgentBlueprintOpenAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'passes when assignment is not required and appRoles is null' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
+                    appRoleAssignmentRequired = $false
+                    appRoles = $null
+                })
+            }
+
+            Test-MtEntraAgentBlueprintOpenAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+    }
+
+    Context 'MT.1213: Test-MtEntraAgentBlueprintRedirectUriHygiene' {
+        It 'passes when redirect URIs are https and specific' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    web = [pscustomobject]@{ redirectUris = @('https://contoso.com/callback') }
+                })
+            }
+
+            Test-MtEntraAgentBlueprintRedirectUriHygiene | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'reports a blueprint with a wildcard redirect URI at High severity' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    web = [pscustomobject]@{ redirectUris = @('https://*.contoso.com/callback') }
+                })
+            }
+
+            Test-MtEntraAgentBlueprintRedirectUriHygiene | Should -BeFalse
+            $script:TestResult | Should -Match 'Wildcard redirect URI'
+        }
+
+        It 'reports a blueprint with a plain-http, non-loopback redirect URI' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    web = [pscustomobject]@{ redirectUris = @('http://contoso.com/callback') }
+                })
+            }
+
+            Test-MtEntraAgentBlueprintRedirectUriHygiene | Should -BeFalse
+            $script:TestResult | Should -Match 'Plain-http'
+        }
+
+        It 'passes for a plain-http loopback redirect URI' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    web = [pscustomobject]@{ redirectUris = @('http://localhost:8080/callback') }
+                })
+            }
+
+            Test-MtEntraAgentBlueprintRedirectUriHygiene | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
         }
     }

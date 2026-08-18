@@ -198,3 +198,6 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1208](./MT.1208.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | High | Entra |
 | [MT.1209](./MT.1209.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | High | Entra |
 | [MT.1210](./MT.1210.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups | High | Entra |
+| [MT.1211](./MT.1211.md) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles | High | Entra |
+| [MT.1212](./MT.1212.md) | Agent Identity Blueprint Principals should require assignment for the application roles they expose | Medium | Entra |
+| [MT.1213](./MT.1213.md) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs | High | Entra |

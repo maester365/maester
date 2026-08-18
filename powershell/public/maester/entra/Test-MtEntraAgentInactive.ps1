@@ -3,9 +3,12 @@ function Test-MtEntraAgentInactive {
     .SYNOPSIS
     Finds enabled Agent Identities that have not signed in or been active within 180 days.
     .DESCRIPTION
-    Checks whether enabled Agent Identities have recent sign-in activity. Stale enabled agents
-    retain permissions and token-exchange capabilities without operational oversight, increasing
-    the risk of unmonitored persistence or unused privileges.
+    Checks whether enabled Agent Identities have recent sign-in activity, and separately flags a
+    Blueprint whose entire fleet of child Agent Identities is inactive while the Blueprint still
+    holds a live (non-expired) credential. Stale enabled agents retain permissions and
+    token-exchange capabilities without operational oversight, increasing the risk of unmonitored
+    persistence or unused privileges; a fully dormant fleet with a live parent credential is a
+    stronger signal that the Blueprint itself is a cleanup candidate.
     .EXAMPLE
     Test-MtEntraAgentInactive
     .LINK
@@ -31,7 +34,7 @@ function Test-MtEntraAgentInactive {
         $AgentIdentities = @(
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'servicePrincipals/microsoft.graph.agentIdentity' `
-                -Select @('id', 'appId', 'displayName', 'accountEnabled', 'createdDateTime')
+                -Select @('id', 'appId', 'displayName', 'accountEnabled', 'createdDateTime', 'agentIdentityBlueprintId')
         )
 
         $EnabledAgents = @($AgentIdentities | Where-Object { $null -eq $_.accountEnabled -or $_.accountEnabled -eq $true })
@@ -138,6 +141,61 @@ function Test-MtEntraAgentInactive {
             return $true
         }
 
+        # Compound signal: every agent under a Blueprint is individually inactive AND the
+        # Blueprint still holds a live (non-expired) credential -- a fully dormant fleet with a
+        # live parent credential is a stronger cleanup candidate than any single stale agent.
+        $DormantFleetFindings = [System.Collections.Generic.List[pscustomobject]]::new()
+        $InactiveAgentIds = [System.Collections.Generic.HashSet[string]]::new([string[]]@($InactiveAgents.ObjectId))
+        $AgentsByBlueprintAppId = @{}
+        foreach ($Agent in $EnabledAgents) {
+            $ParentAppId = [string]$Agent.agentIdentityBlueprintId
+            if ([string]::IsNullOrWhiteSpace($ParentAppId)) { continue }
+            if (!$AgentsByBlueprintAppId.ContainsKey($ParentAppId)) {
+                $AgentsByBlueprintAppId[$ParentAppId] = [System.Collections.Generic.List[object]]::new()
+            }
+            $AgentsByBlueprintAppId[$ParentAppId].Add($Agent)
+        }
+
+        $DormantBlueprintAppIds = @($AgentsByBlueprintAppId.Keys | Where-Object {
+            $Group = $AgentsByBlueprintAppId[$_]
+            $Group.Count -gt 0 -and (@($Group | Where-Object { !$InactiveAgentIds.Contains([string]$_.id) }).Count -eq 0)
+        })
+
+        if ($DormantBlueprintAppIds.Count -gt 0) {
+            Write-Verbose 'Reading Agent Identity Blueprints to check for a live credential on fully dormant fleets.'
+            $Blueprints = @(
+                Invoke-MtGraphRequest -ApiVersion 'v1.0' `
+                    -RelativeUri 'applications/microsoft.graph.agentIdentityBlueprint' `
+                    -Select @('id', 'displayName', 'appId', 'passwordCredentials', 'keyCredentials')
+            )
+
+            foreach ($Blueprint in $Blueprints) {
+                $BlueprintAppId = [string]$Blueprint.appId
+                if ($DormantBlueprintAppIds -notcontains $BlueprintAppId) { continue }
+
+                # @($null) yields a one-element array, not an empty one, so a null
+                # passwordCredentials/keyCredentials property must be filtered out explicitly
+                # before it's mistaken for a credential with no expiry (i.e. "live").
+                $AllCredentials = @(@($Blueprint.passwordCredentials) + @($Blueprint.keyCredentials) | Where-Object { $null -ne $_ })
+                $LiveCredentials = @($AllCredentials | Where-Object {
+                    $parsedEnd = [datetime]::MinValue
+                    [string]::IsNullOrWhiteSpace($_.endDateTime) -or
+                        (![datetime]::TryParse([string]$_.endDateTime, [ref]$parsedEnd)) -or
+                        $parsedEnd.ToUniversalTime() -ge $UtcNow
+                })
+                if ($LiveCredentials.Count -eq 0) { continue }
+
+                $Group = $AgentsByBlueprintAppId[$BlueprintAppId]
+                $DormantFleetFindings.Add([pscustomobject]@{
+                    BlueprintId = [string]$Blueprint.id
+                    DisplayName = [string]$Blueprint.displayName
+                    AppId       = $BlueprintAppId
+                    AgentCount  = $Group.Count
+                    Reason      = "All $($Group.Count) child Agent Identit$(if ($Group.Count -eq 1) { 'y is' } else { 'ies are' }) inactive beyond $MaxInactiveDays days, and the Blueprint still holds a live credential."
+                })
+            }
+        }
+
         $Result = "Found $($InactiveAgents.Count) enabled Agent Identity object(s) with no recent sign-in activity in the last $MaxInactiveDays days."
         $Result += "`n`n| Agent Identity object ID | Display name | App ID | Last sign-in | Inactive days | Reason |"
         $Result += "`n| --- | --- | --- | --- | --- | --- |"
@@ -148,6 +206,20 @@ function Test-MtEntraAgentInactive {
             $DisplayName = $DisplayName -replace "`r?`n", ' '
             $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
             $Result += "`n| ``$($Item.ObjectId)`` | $DisplayName | ``$($Item.AppId)`` | $($Item.LastSignIn) | $($Item.InactiveDays) | $Reason |"
+        }
+
+        if ($DormantFleetFindings.Count -gt 0) {
+            $Result += "`n`n$($DormantFleetFindings.Count) Blueprint(s) have a fully dormant fleet while still holding a live credential."
+            $Result += "`n`n| Blueprint object ID | Display name | App ID | Agent count | Reason |"
+            $Result += "`n| --- | --- | --- | --- | --- |"
+            foreach ($Item in $DormantFleetFindings) {
+                $Name = [string]$Item.DisplayName
+                if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
+                $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
+                $Name = $Name -replace "`r?`n", ' '
+                $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+                $Result += "`n| ``$($Item.BlueprintId)`` | $Name | ``$($Item.AppId)`` | $($Item.AgentCount) | $Reason |"
+            }
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'Medium'

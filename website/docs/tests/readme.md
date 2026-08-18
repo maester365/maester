@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 180 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 183 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
@@ -383,6 +383,9 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1208](./MT.1208) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | Maester | High | Entra |
 | [MT.1209](./MT.1209) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | Maester | High | Entra |
 | [MT.1210](./MT.1210) | Agent Users should not have privileged directory roles or membership in role-assignable groups | Maester | High | Entra |
+| [MT.1211](./MT.1211) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles | Maester | High | Entra |
+| [MT.1212](./MT.1212) | Agent Identity Blueprint Principals should require assignment for the application roles they expose | Maester | Medium | Entra |
+| [MT.1213](./MT.1213) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs | Maester | High | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

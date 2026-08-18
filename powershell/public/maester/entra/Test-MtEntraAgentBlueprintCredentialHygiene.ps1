@@ -4,14 +4,18 @@ function Test-MtEntraAgentBlueprintCredentialHygiene {
     Audits Agent Identity Blueprints for expired, stale, or excessive client credentials.
     .DESCRIPTION
     Checks whether Agent Identity Blueprints have expired client secrets, credentials with
-    excessively long validity periods (>730 days), or more than two active client secrets.
-    Unmanaged blueprint credentials increase the blast radius and risk of credential reuse.
+    excessively long validity periods (>730 days), more than two active client secrets, or an
+    active client secret retained alongside a federated identity credential (FIC). Unmanaged
+    blueprint credentials increase the blast radius and risk of credential reuse; a secret kept
+    alongside a FIC is a live fallback that defeats the point of migrating to FIC.
     .EXAMPLE
     Test-MtEntraAgentBlueprintCredentialHygiene
     .LINK
     https://maester.dev/docs/commands/Test-MtEntraAgentBlueprintCredentialHygiene
     .LINK
     https://learn.microsoft.com/graph/api/agentidentityblueprint-list?view=graph-rest-1.0
+    .LINK
+    https://learn.microsoft.com/graph/api/application-list-federatedidentitycredentials?view=graph-rest-1.0
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -112,6 +116,27 @@ function Test-MtEntraAgentBlueprintCredentialHygiene {
                     Type        = 'Secret'
                     Issue       = "Excessive active secrets ($($ActivePasswords.Count) active secrets exceeds limit of $MaxActiveSecrets)."
                 })
+            }
+
+            # Check for a client secret retained alongside a federated identity credential (FIC) --
+            # a live fallback that defeats the point of migrating to FIC.
+            if ($ActivePasswords.Count -gt 0) {
+                Write-Verbose "Reading federated identity credentials for Blueprint $BlueprintId."
+                $FederatedCredentials = @(
+                    Invoke-MtGraphRequest -ApiVersion 'v1.0' `
+                        -RelativeUri "applications/$BlueprintId/federatedIdentityCredentials" `
+                        -Select @('id')
+                )
+                if ($FederatedCredentials.Count -gt 0) {
+                    $CredentialFindings.Add([pscustomobject]@{
+                        BlueprintId = $BlueprintId
+                        DisplayName = $DisplayName
+                        AppId       = $AppId
+                        KeyId       = '(multiple)'
+                        Type        = 'Secret + FIC'
+                        Issue       = "Active client secret retained alongside $($FederatedCredentials.Count) federated identity credential(s) -- a live fallback that defeats the point of migrating to FIC. Remove the secret."
+                    })
+                }
             }
         }
 

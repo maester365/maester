@@ -29,7 +29,7 @@ Agent Identity Blueprints should not have expired, excessive, or overly long-liv
 
 Credentials on Agent Identity Blueprints are used for token exchange to authenticate all child Agent Identities. If a blueprint accumulates expired secrets, secrets valid for years without rotation, or an excessive number of active secrets, the risk of credential compromise and unmanaged persistence increases significantly.
 
-This check inspects the credential metadata of all Agent Identity Blueprints in the tenant to identify expired secrets, credentials valid for more than 730 days (2 years), or blueprints with more than 2 active secrets.
+This check inspects the credential metadata of all Agent Identity Blueprints in the tenant to identify expired secrets, credentials valid for more than 730 days (2 years), blueprints with more than 2 active secrets, or a blueprint that retains an active client secret alongside a federated identity credential (FIC).
 
 #### Remediation action:
 
@@ -38,7 +38,7 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 3. Select **Certificates & secrets** from the left-hand navigation.
 4. Delete any **Expired** client secrets or certificates that are no longer in use.
 5. If secrets have validity periods longer than your organization's maximum rotation window (recommended &le; 365–730 days), create a new secret and decommission the old one.
-6. Prefer using **Federated credentials** or **Certificates** instead of shared client secrets wherever supported.
+6. Prefer using **Federated credentials** or **Certificates** instead of shared client secrets wherever supported. If a federated credential is already configured, remove the remaining client secret entirely rather than keeping it as a fallback.
 
 #### Related links
 

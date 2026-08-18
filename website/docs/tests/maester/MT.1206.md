@@ -29,7 +29,7 @@ Enabled Agent Identities should have active sign-in activity within the last 180
 
 Agent Identities that remain enabled without active usage present a security risk. Inactive agents may retain assigned directory roles, OAuth permissions, or group memberships that are no longer monitored, making them prime targets for identity misuse or persistence.
 
-This check queries sign-in activity reports across interactive, delegated, and application flows to identify enabled Agent Identities with no activity in the last 180 days.
+This check queries sign-in activity reports across interactive, delegated, and application flows to identify enabled Agent Identities with no activity in the last 180 days. It also separately flags a Blueprint whose entire fleet of child Agent Identities is inactive while the Blueprint still holds a live (non-expired) credential -- a stronger signal that the Blueprint itself, not just an individual agent, is a cleanup candidate.
 
 #### Remediation action:
 

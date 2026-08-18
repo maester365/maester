@@ -1609,6 +1609,21 @@
       "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups"
     },
     {
+      "Id": "MT.1211",
+      "Severity": "High",
+      "Title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles"
+    },
+    {
+      "Id": "MT.1212",
+      "Severity": "Medium",
+      "Title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose"
+    },
+    {
+      "Id": "MT.1213",
+      "Severity": "High",
+      "Title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
