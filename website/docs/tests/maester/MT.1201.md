@@ -11,6 +11,7 @@ keywords:
   - "MT.1201"
   - "Medium"
   - "Entra"
+  - "Agent ID"
   - "Graph"
   - "Preview"
   - "Severity:Medium"
@@ -74,8 +75,8 @@ this test as `Preview` for that reason.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentUserOrphaned` |
-| Tags | Entra, Graph, Maester, MT.1201, Preview, Severity:Medium |
+| PowerShell test | [Test-MtEntraAgentUserOrphaned](/docs/commands/Test-MtEntraAgentUserOrphaned) |
+| Tags | Agent ID, Entra, Graph, Maester, MT.1201, Preview, Severity:Medium |
 
 ## Source
 

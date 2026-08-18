@@ -1569,6 +1569,11 @@
       "Title": "Agent Users should have an existing parent Agent Identity"
     },
     {
+      "Id": "MT.3000",
+      "Severity": "Medium",
+      "Title": "Agent Identity Blueprint Principals should have an existing Blueprint"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"

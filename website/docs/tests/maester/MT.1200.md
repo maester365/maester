@@ -11,7 +11,9 @@ keywords:
   - "MT.1200"
   - "Medium"
   - "Entra"
+  - "Agent ID"
   - "Graph"
+  - "Preview"
   - "Severity:Medium"
 ---
 
@@ -77,8 +79,8 @@ deleting it.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentIdentityOrphaned` |
-| Tags | Entra, Graph, Maester, MT.1200, Severity:Medium |
+| PowerShell test | [Test-MtEntraAgentIdentityOrphaned](/docs/commands/Test-MtEntraAgentIdentityOrphaned) |
+| Tags | Agent ID, Entra, Graph, Maester, MT.1200, Preview, Severity:Medium |
 
 ## Source
 

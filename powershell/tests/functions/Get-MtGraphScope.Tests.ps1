@@ -13,6 +13,7 @@ Describe 'Get-MtGraphScope' {
         $scopes = Get-MtGraphScope
 
         $scopes | Should -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Contain 'AgentIdentityBlueprint.Read.All'
         $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
         $scopes | Should -Contain 'Directory.Read.All'
         $scopes | Should -Not -Contain 'User.ReadBasic.All'
@@ -21,13 +22,15 @@ Describe 'Get-MtGraphScope' {
     It 'Keeps Agent ID read permissions in sorted position before AuditLog' {
         $scopes = Get-MtGraphScope
         $agentIdentityIndex = [array]::IndexOf($scopes, 'AgentIdentity.Read.All')
+        $BlueprintIndex = [array]::IndexOf($scopes, 'AgentIdentityBlueprint.Read.All')
         $blueprintPrincipalIndex = [array]::IndexOf(
             $scopes,
             'AgentIdentityBlueprintPrincipal.Read.All'
         )
         $auditLogIndex = [array]::IndexOf($scopes, 'AuditLog.Read.All')
 
-        $agentIdentityIndex | Should -BeLessThan $blueprintPrincipalIndex
+        $agentIdentityIndex | Should -BeLessThan $BlueprintIndex
+        $BlueprintIndex | Should -BeLessThan $blueprintPrincipalIndex
         $blueprintPrincipalIndex | Should -BeLessThan $auditLogIndex
     }
 

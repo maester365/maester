@@ -52,6 +52,7 @@
     # Default read-only scopes required for Maester.
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
         'AgentIdentity.Read.All'
+        'AgentIdentityBlueprint.Read.All'
         'AgentIdentityBlueprintPrincipal.Read.All'
         'AuditLog.Read.All'
         'DeviceManagementConfiguration.Read.All'
