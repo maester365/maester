@@ -1,4 +1,4 @@
-function Test-MtEntraAgentForeignPrivileged {
+﻿function Test-MtEntraAgentForeignPrivileged {
     <#
     .SYNOPSIS
     Finds foreign or multi-tenant Agent Blueprint Principals and Agent Identities with privileged access.

@@ -1,4 +1,4 @@
-function Test-MtEntraAgentSponsor {
+﻿function Test-MtEntraAgentSponsor {
     <#
     .SYNOPSIS
     Finds Agent Identity Blueprints and Blueprint Principals without assigned sponsors.

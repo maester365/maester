@@ -1,4 +1,4 @@
-function Test-MtEntraAgentDirectoryRoles {
+﻿function Test-MtEntraAgentDirectoryRoles {
     <#
     .SYNOPSIS
     Finds Agent Identities and Blueprint Principals assigned privileged Entra directory roles.

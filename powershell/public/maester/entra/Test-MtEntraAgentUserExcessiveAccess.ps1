@@ -1,4 +1,4 @@
-function Test-MtEntraAgentUserExcessiveAccess {
+﻿function Test-MtEntraAgentUserExcessiveAccess {
     <#
     .SYNOPSIS
     Finds Agent Users with privileged directory roles or membership in role-assignable groups.

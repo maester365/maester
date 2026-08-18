@@ -1,4 +1,4 @@
-function Test-MtEntraAgentBlueprintAllAllowedInheritance {
+﻿function Test-MtEntraAgentBlueprintAllAllowedInheritance {
     <#
     .SYNOPSIS
     Finds Agent Identity Blueprints with inheritable permissions set to allow all scopes or roles.

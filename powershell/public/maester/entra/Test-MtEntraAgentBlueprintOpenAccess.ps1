@@ -1,4 +1,4 @@
-function Test-MtEntraAgentBlueprintOpenAccess {
+﻿function Test-MtEntraAgentBlueprintOpenAccess {
     <#
     .SYNOPSIS
     Finds Agent Identity Blueprint Principals that expose app roles without requiring assignment.

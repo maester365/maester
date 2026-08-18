@@ -1,4 +1,4 @@
-function Test-MtEntraAgentBlueprintRedirectUriHygiene {
+﻿function Test-MtEntraAgentBlueprintRedirectUriHygiene {
     <#
     .SYNOPSIS
     Finds Agent Identity Blueprints with wildcard or plain-http redirect URIs.

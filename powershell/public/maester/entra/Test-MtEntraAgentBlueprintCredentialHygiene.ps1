@@ -1,4 +1,4 @@
-function Test-MtEntraAgentBlueprintCredentialHygiene {
+﻿function Test-MtEntraAgentBlueprintCredentialHygiene {
     <#
     .SYNOPSIS
     Audits Agent Identity Blueprints for expired, stale, or excessive client credentials.

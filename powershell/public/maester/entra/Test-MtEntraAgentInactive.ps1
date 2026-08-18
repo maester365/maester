@@ -1,4 +1,4 @@
-function Test-MtEntraAgentInactive {
+﻿function Test-MtEntraAgentInactive {
     <#
     .SYNOPSIS
     Finds enabled Agent Identities that have not signed in or been active within 180 days.

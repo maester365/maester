@@ -1,4 +1,4 @@
-function Test-MtEntraAgentOwner {
+﻿function Test-MtEntraAgentOwner {
     <#
     .SYNOPSIS
     Finds Agent Identities, Blueprint Principals, and Blueprints without valid, enabled owners.
