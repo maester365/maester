@@ -61,7 +61,7 @@
         $RoleDefinitions = @(
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'roleManagement/directory/roleDefinitions' `
-                -Select @('id', 'displayName', 'isPrivileged', 'templateId')
+                -Select @('id', 'displayName', 'templateId')
         )
         $RoleAssignments = @(
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
@@ -82,11 +82,15 @@
                 $AgentInfo = $AgentLookup[$PrincipalId]
                 $DefId = [string]$Assignment.roleDefinitionId
                 $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
+                if ($null -eq $RoleDef) { continue }
 
-                # A role definition that Graph did not resolve, or that has not been
-                # classified by Microsoft, is an observation, not a confirmed privileged
-                # role. Only a role Graph explicitly marks isPrivileged=true is a finding.
-                if ($null -eq $RoleDef -or $RoleDef.isPrivileged -ne $true) { continue }
+                # isPrivileged is not a Graph-queryable property on unifiedRoleDefinition --
+                # confirmed live, Graph returns 400 Bad Request for it in $select. Resolve
+                # privilege from Maester's own built-in-roles catalog instead. A role Get-MtRoleInfo
+                # cannot resolve (unrecognized name, or a custom role) is an observation, not a
+                # confirmed privileged role.
+                $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
+                if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
 
                 $RoleName = [string]$RoleDef.displayName
 

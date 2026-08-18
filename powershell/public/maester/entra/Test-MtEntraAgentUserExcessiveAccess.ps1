@@ -43,7 +43,7 @@
         $RoleDefinitions = @(
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'roleManagement/directory/roleDefinitions' `
-                -Select @('id', 'displayName', 'isPrivileged')
+                -Select @('id', 'displayName')
         )
         $RoleAssignments = @(
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
@@ -73,13 +73,18 @@
             $UserId = [string]$User.id
             if ([string]::IsNullOrWhiteSpace($UserId)) { continue }
 
-            # 1. Direct privileged directory roles. A role Graph does not resolve, or has
-            # not classified as privileged, is an observation, not a confirmed finding.
+            # 1. Direct privileged directory roles. A role Get-MtRoleInfo does not resolve, or
+            # has not classified as privileged, is an observation, not a confirmed finding.
+            # isPrivileged is not a Graph-queryable property on unifiedRoleDefinition --
+            # confirmed live, Graph returns 400 Bad Request for it in $select. Resolve privilege
+            # from Maester's own built-in-roles catalog instead.
             if ($AssignmentsByUser.ContainsKey($UserId)) {
                 foreach ($Assigned in $AssignmentsByUser[$UserId]) {
                     $DefId = [string]$Assigned.roleDefinitionId
                     $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
-                    if ($null -eq $RoleDef -or $RoleDef.isPrivileged -ne $true) { continue }
+                    if ($null -eq $RoleDef) { continue }
+                    $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
+                    if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
 
                     $ExcessiveAccessFindings.Add([pscustomobject]@{
                         UserId            = $UserId

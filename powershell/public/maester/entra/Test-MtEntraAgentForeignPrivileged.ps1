@@ -68,7 +68,7 @@
         $RoleDefinitions = @(
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'roleManagement/directory/roleDefinitions' `
-                -Select @('id', 'displayName', 'isPrivileged')
+                -Select @('id', 'displayName')
         )
 
         $RoleDefLookup = @{}
@@ -103,11 +103,13 @@
             }
         }
 
-        # $ForeignFindings drives pass/fail: a foreign object holding a role Graph
-        # explicitly marks isPrivileged=true. $PermissionObservations is informational
-        # only -- application permissions are reported for review, not classified as
-        # dangerous, until a shared known-dangerous-permission catalog exists (see
-        # Test-MtHighRiskAppPermissions for the equivalent precedent).
+        # $ForeignFindings drives pass/fail: a foreign object holding a role Maester's own
+        # built-in-roles catalog (Get-MtRoleInfo) classifies as privileged. isPrivileged is not
+        # a Graph-queryable property on unifiedRoleDefinition -- confirmed live, Graph returns
+        # 400 Bad Request for it in $select. $PermissionObservations is informational only --
+        # application permissions are reported for review, not classified as dangerous, until a
+        # shared known-dangerous-permission catalog exists (see Test-MtHighRiskAppPermissions for
+        # the equivalent precedent).
         $ForeignFindings = [System.Collections.Generic.List[pscustomobject]]::new()
         $PermissionObservations = [System.Collections.Generic.List[pscustomobject]]::new()
 
@@ -118,7 +120,9 @@
                 foreach ($Assigned in $AssignmentsByPrincipal[$PrincipalId]) {
                     $DefId = [string]$Assigned.roleDefinitionId
                     $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
-                    if ($null -eq $RoleDef -or $RoleDef.isPrivileged -ne $true) { continue }
+                    if ($null -eq $RoleDef) { continue }
+                    $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
+                    if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
 
                     $ForeignFindings.Add([pscustomobject]@{
                         ObjectId       = $PrincipalId
@@ -162,7 +166,9 @@
                     foreach ($Assigned in $AssignmentsByPrincipal[$IdentityId]) {
                         $DefId = [string]$Assigned.roleDefinitionId
                         $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
-                        if ($null -eq $RoleDef -or $RoleDef.isPrivileged -ne $true) { continue }
+                        if ($null -eq $RoleDef) { continue }
+                    $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
+                    if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
 
                         $ForeignFindings.Add([pscustomobject]@{
                             ObjectId      = $IdentityId
