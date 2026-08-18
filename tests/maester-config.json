@@ -1574,6 +1574,41 @@
       "Title": "Agent Identity Blueprint Principals should have an existing Blueprint"
     },
     {
+      "Id": "MT.3001",
+      "Severity": "Medium",
+      "Title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners"
+    },
+    {
+      "Id": "MT.3002",
+      "Severity": "Medium",
+      "Title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors"
+    },
+    {
+      "Id": "MT.3003",
+      "Severity": "Medium",
+      "Title": "Enabled Agent Identities should have active sign-in activity within the last 180 days"
+    },
+    {
+      "Id": "MT.3004",
+      "Severity": "High",
+      "Title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles"
+    },
+    {
+      "Id": "MT.3005",
+      "Severity": "High",
+      "Title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials"
+    },
+    {
+      "Id": "MT.3006",
+      "Severity": "High",
+      "Title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles"
+    },
+    {
+      "Id": "MT.3007",
+      "Severity": "High",
+      "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"

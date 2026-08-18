@@ -1284,6 +1284,41 @@
       "recentCommits": 4
     },
     {
+      "id": "agnivesh",
+      "github": "agnivesh",
+      "name": "Agnivesh S.",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "United Kingdom",
+      "locationFlag": "🇬🇧",
+      "url": "",
+      "socials": {
+        "linkedin": "agniveshs"
+      },
+      "avatar": "https://github.com/agnivesh.png",
+      "firstContribution": "2026-08-15",
+      "testsAuthored": [
+        "MT.1196",
+        "MT.1197",
+        "MT.1200",
+        "MT.1201",
+        "MT.3000",
+        "MT.3001",
+        "MT.3002",
+        "MT.3003",
+        "MT.3004",
+        "MT.3005",
+        "MT.3006",
+        "MT.3007"
+      ],
+      "testsContributed": [],
+      "initials": "AS",
+      "recentCommits": 7
+    },
+    {
       "id": "oed-metzb",
       "github": "oed-metzb",
       "name": "Benjamin Metz",
@@ -2317,31 +2352,6 @@
       ],
       "initials": "M",
       "recentCommits": 4
-    },
-    {
-      "id": "agnivesh",
-      "github": "agnivesh",
-      "name": "Agnivesh S.",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "United Kingdom",
-      "locationFlag": "🇬🇧",
-      "url": "",
-      "socials": {
-        "linkedin": "agniveshs"
-      },
-      "avatar": "https://github.com/agnivesh.png",
-      "firstContribution": "2026-08-16",
-      "testsAuthored": [
-        "MT.1196",
-        "MT.1197"
-      ],
-      "testsContributed": [],
-      "initials": "AS",
-      "recentCommits": 2
     },
     {
       "id": "kij",
@@ -6256,6 +6266,46 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1200": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1201": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3000": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3001": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3002": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3003": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3004": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3005": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3006": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.3007": {
+      "author": "agnivesh",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": [
@@ -8238,6 +8288,46 @@
     "MT.1197": {
       "title": "Dynamic groups should not use the retiring memberOf rule operator",
       "path": "/docs/next/tests/MT.1197"
+    },
+    "MT.1200": {
+      "title": "Agent Identities should have an existing Blueprint Principal",
+      "path": "/docs/next/tests/MT.1200"
+    },
+    "MT.1201": {
+      "title": "Agent Users should have an existing parent Agent Identity",
+      "path": "/docs/next/tests/MT.1201"
+    },
+    "MT.3000": {
+      "title": "Agent Identity Blueprint Principals should have an existing Blueprint",
+      "path": "/docs/next/tests/MT.3000"
+    },
+    "MT.3001": {
+      "title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners",
+      "path": "/docs/next/tests/MT.3001"
+    },
+    "MT.3002": {
+      "title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors",
+      "path": "/docs/next/tests/MT.3002"
+    },
+    "MT.3003": {
+      "title": "Enabled Agent Identities should have active sign-in activity within the last 180 days",
+      "path": "/docs/next/tests/MT.3003"
+    },
+    "MT.3004": {
+      "title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles",
+      "path": "/docs/next/tests/MT.3004"
+    },
+    "MT.3005": {
+      "title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials",
+      "path": "/docs/next/tests/MT.3005"
+    },
+    "MT.3006": {
+      "title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles",
+      "path": "/docs/next/tests/MT.3006"
+    },
+    "MT.3007": {
+      "title": "Agent Users should not have privileged directory roles or membership in role-assignable groups",
+      "path": "/docs/next/tests/MT.3007"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

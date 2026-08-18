@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 170 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 180 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
@@ -373,6 +373,16 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1195](./MT.1195) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Maester | Unknown | Entra |
 | [MT.1196](./MT.1196) | Review who can change attributes used by dynamic group rules | Maester | Medium | Entra |
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
+| [MT.1200](./MT.1200) | Agent Identities should have an existing Blueprint Principal | Maester | Medium | Entra |
+| [MT.1201](./MT.1201) | Agent Users should have an existing parent Agent Identity | Maester | Medium | Entra |
+| [MT.3000](./MT.3000) | Agent Identity Blueprint Principals should have an existing Blueprint | Maester | Medium | Entra |
+| [MT.3001](./MT.3001) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Maester | Medium | Entra |
+| [MT.3002](./MT.3002) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Maester | Medium | Entra |
+| [MT.3003](./MT.3003) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Maester | Medium | Entra |
+| [MT.3004](./MT.3004) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | Maester | High | Entra |
+| [MT.3005](./MT.3005) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | Maester | High | Entra |
+| [MT.3006](./MT.3006) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | Maester | High | Entra |
+| [MT.3007](./MT.3007) | Agent Users should not have privileged directory roles or membership in role-assignable groups | Maester | High | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |
