@@ -375,14 +375,14 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
 | [MT.1200](./MT.1200) | Agent Identities should have an existing Blueprint Principal | Maester | Medium | Entra |
 | [MT.1201](./MT.1201) | Agent Users should have an existing parent Agent Identity | Maester | Medium | Entra |
-| [MT.3000](./MT.3000) | Agent Identity Blueprint Principals should have an existing Blueprint | Maester | Medium | Entra |
-| [MT.3001](./MT.3001) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Maester | Medium | Entra |
-| [MT.3002](./MT.3002) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Maester | Medium | Entra |
-| [MT.3003](./MT.3003) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Maester | Medium | Entra |
-| [MT.3004](./MT.3004) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | Maester | High | Entra |
-| [MT.3005](./MT.3005) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | Maester | High | Entra |
-| [MT.3006](./MT.3006) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | Maester | High | Entra |
-| [MT.3007](./MT.3007) | Agent Users should not have privileged directory roles or membership in role-assignable groups | Maester | High | Entra |
+| [MT.1203](./MT.1203) | Agent Identity Blueprint Principals should have an existing Blueprint | Maester | Medium | Entra |
+| [MT.1204](./MT.1204) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Maester | Medium | Entra |
+| [MT.1205](./MT.1205) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Maester | Medium | Entra |
+| [MT.1206](./MT.1206) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Maester | Medium | Entra |
+| [MT.1207](./MT.1207) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | Maester | High | Entra |
+| [MT.1208](./MT.1208) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | Maester | High | Entra |
+| [MT.1209](./MT.1209) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | Maester | High | Entra |
+| [MT.1210](./MT.1210) | Agent Users should not have privileged directory roles or membership in role-assignable groups | Maester | High | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

@@ -1569,42 +1569,42 @@
       "Title": "Agent Users should have an existing parent Agent Identity"
     },
     {
-      "Id": "MT.3000",
+      "Id": "MT.1203",
       "Severity": "Medium",
       "Title": "Agent Identity Blueprint Principals should have an existing Blueprint"
     },
     {
-      "Id": "MT.3001",
+      "Id": "MT.1204",
       "Severity": "Medium",
       "Title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners"
     },
     {
-      "Id": "MT.3002",
+      "Id": "MT.1205",
       "Severity": "Medium",
       "Title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors"
     },
     {
-      "Id": "MT.3003",
+      "Id": "MT.1206",
       "Severity": "Medium",
       "Title": "Enabled Agent Identities should have active sign-in activity within the last 180 days"
     },
     {
-      "Id": "MT.3004",
+      "Id": "MT.1207",
       "Severity": "High",
       "Title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles"
     },
     {
-      "Id": "MT.3005",
+      "Id": "MT.1208",
       "Severity": "High",
       "Title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials"
     },
     {
-      "Id": "MT.3006",
+      "Id": "MT.1209",
       "Severity": "High",
       "Title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles"
     },
     {
-      "Id": "MT.3007",
+      "Id": "MT.1210",
       "Severity": "High",
       "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups"
     },

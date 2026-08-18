@@ -1299,24 +1299,24 @@
         "linkedin": "agniveshs"
       },
       "avatar": "https://github.com/agnivesh.png",
-      "firstContribution": "2026-08-15",
+      "firstContribution": "2026-08-16",
       "testsAuthored": [
         "MT.1196",
         "MT.1197",
         "MT.1200",
         "MT.1201",
-        "MT.3000",
-        "MT.3001",
-        "MT.3002",
-        "MT.3003",
-        "MT.3004",
-        "MT.3005",
-        "MT.3006",
-        "MT.3007"
+        "MT.1203",
+        "MT.1204",
+        "MT.1205",
+        "MT.1206",
+        "MT.1207",
+        "MT.1208",
+        "MT.1209",
+        "MT.1210"
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 7
+      "recentCommits": 5
     },
     {
       "id": "oed-metzb",
@@ -6274,35 +6274,35 @@
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3000": {
+    "MT.1203": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3001": {
+    "MT.1204": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3002": {
+    "MT.1205": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3003": {
+    "MT.1206": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3004": {
+    "MT.1207": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3005": {
+    "MT.1208": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3006": {
+    "MT.1209": {
       "author": "agnivesh",
       "contributors": []
     },
-    "MT.3007": {
+    "MT.1210": {
       "author": "agnivesh",
       "contributors": []
     },
@@ -8297,37 +8297,37 @@
       "title": "Agent Users should have an existing parent Agent Identity",
       "path": "/docs/next/tests/MT.1201"
     },
-    "MT.3000": {
+    "MT.1203": {
       "title": "Agent Identity Blueprint Principals should have an existing Blueprint",
-      "path": "/docs/next/tests/MT.3000"
+      "path": "/docs/next/tests/MT.1203"
     },
-    "MT.3001": {
+    "MT.1204": {
       "title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners",
-      "path": "/docs/next/tests/MT.3001"
+      "path": "/docs/next/tests/MT.1204"
     },
-    "MT.3002": {
+    "MT.1205": {
       "title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors",
-      "path": "/docs/next/tests/MT.3002"
+      "path": "/docs/next/tests/MT.1205"
     },
-    "MT.3003": {
+    "MT.1206": {
       "title": "Enabled Agent Identities should have active sign-in activity within the last 180 days",
-      "path": "/docs/next/tests/MT.3003"
+      "path": "/docs/next/tests/MT.1206"
     },
-    "MT.3004": {
+    "MT.1207": {
       "title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles",
-      "path": "/docs/next/tests/MT.3004"
+      "path": "/docs/next/tests/MT.1207"
     },
-    "MT.3005": {
+    "MT.1208": {
       "title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials",
-      "path": "/docs/next/tests/MT.3005"
+      "path": "/docs/next/tests/MT.1208"
     },
-    "MT.3006": {
+    "MT.1209": {
       "title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles",
-      "path": "/docs/next/tests/MT.3006"
+      "path": "/docs/next/tests/MT.1209"
     },
-    "MT.3007": {
+    "MT.1210": {
       "title": "Agent Users should not have privileged directory roles or membership in role-assignable groups",
-      "path": "/docs/next/tests/MT.3007"
+      "path": "/docs/next/tests/MT.1210"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

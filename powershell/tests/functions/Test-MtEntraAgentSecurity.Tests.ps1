@@ -1,4 +1,4 @@
-Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
+Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     }
@@ -18,7 +18,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3001: Test-MtEntraAgentOwner' {
+    Context 'MT.1204: Test-MtEntraAgentOwner' {
         It 'passes when every object has an active owner' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 switch -Wildcard ($RelativeUri) {
@@ -89,7 +89,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3002: Test-MtEntraAgentSponsor' {
+    Context 'MT.1205: Test-MtEntraAgentSponsor' {
         It 'passes when every blueprint has assigned sponsors' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 switch -Wildcard ($RelativeUri) {
@@ -128,7 +128,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3003: Test-MtEntraAgentInactive' {
+    Context 'MT.1206: Test-MtEntraAgentInactive' {
         It 'passes when enabled agents have recent sign-in activity' {
             $RecentDate = (Get-Date).AddDays(-10).ToString('o')
             Mock -ModuleName Maester Invoke-MtGraphRequest {
@@ -157,7 +157,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3004: Test-MtEntraAgentForeignPrivileged' {
+    Context 'MT.1207: Test-MtEntraAgentForeignPrivileged' {
         It 'passes when no foreign blueprints exist' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -eq 'organization') {
@@ -244,7 +244,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3005: Test-MtEntraAgentBlueprintCredentialHygiene' {
+    Context 'MT.1208: Test-MtEntraAgentBlueprintCredentialHygiene' {
         It 'passes when blueprints have healthy credentials' {
             $ValidEnd = (Get-Date).AddDays(180).ToString('o')
             $ValidStart = (Get-Date).AddDays(-10).ToString('o')
@@ -292,7 +292,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3006: Test-MtEntraAgentDirectoryRoles' {
+    Context 'MT.1209: Test-MtEntraAgentDirectoryRoles' {
         It 'passes when no Agent ID has directory roles' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like '*roleAssignments') { return @() }
@@ -369,7 +369,7 @@ Describe 'Entra Agent ID security checks (MT.3001 - MT.3007)' {
         }
     }
 
-    Context 'MT.3007: Test-MtEntraAgentUserExcessiveAccess' {
+    Context 'MT.1210: Test-MtEntraAgentUserExcessiveAccess' {
         It 'passes when agent users have no directory roles or role-assignable groups' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'users/microsoft.graph.agentUser') {

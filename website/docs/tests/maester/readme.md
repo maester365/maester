@@ -190,11 +190,11 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1197](./MT.1197.md) | Dynamic groups should not use the retiring memberOf rule operator | High | Entra |
 | [MT.1200](./MT.1200.md) | Agent Identities should have an existing Blueprint Principal | Medium | Entra |
 | [MT.1201](./MT.1201.md) | Agent Users should have an existing parent Agent Identity | Medium | Entra |
-| [MT.3000](./MT.3000.md) | Agent Identity Blueprint Principals should have an existing Blueprint | Medium | Entra |
-| [MT.3001](./MT.3001.md) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Medium | Entra |
-| [MT.3002](./MT.3002.md) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Medium | Entra |
-| [MT.3003](./MT.3003.md) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Medium | Entra |
-| [MT.3004](./MT.3004.md) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | High | Entra |
-| [MT.3005](./MT.3005.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | High | Entra |
-| [MT.3006](./MT.3006.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | High | Entra |
-| [MT.3007](./MT.3007.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups | High | Entra |
+| [MT.1203](./MT.1203.md) | Agent Identity Blueprint Principals should have an existing Blueprint | Medium | Entra |
+| [MT.1204](./MT.1204.md) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Medium | Entra |
+| [MT.1205](./MT.1205.md) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Medium | Entra |
+| [MT.1206](./MT.1206.md) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Medium | Entra |
+| [MT.1207](./MT.1207.md) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | High | Entra |
+| [MT.1208](./MT.1208.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | High | Entra |
+| [MT.1209](./MT.1209.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | High | Entra |
+| [MT.1210](./MT.1210.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups | High | Entra |
