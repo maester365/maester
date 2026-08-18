@@ -1,0 +1,48 @@
+﻿Agent Identities should have an existing Agent Identity Blueprint Principal.
+
+An Agent Identity is the account an AI agent uses to access resources in your tenant. It is
+created from an Agent Identity Blueprint. The Blueprint Principal is the tenant's copy of that
+blueprint and provides the parent relationship used to manage the agent's ownership, permissions,
+and lifecycle.
+
+This check looks for Agent Identities whose parent Blueprint Principal is missing. Without that
+parent, the identity may no longer be able to authenticate or be managed through its blueprint.
+It can also leave stale directory data and access assignments in the tenant. Treat a finding as
+something to investigate. Confirm why the identity exists and whether it is still needed before
+deleting it.
+
+#### Remediation action:
+
+1. Open the [Microsoft Entra admin center][entra-admin-center] and go to **Entra ID** >
+   **Agents** > **Agent identities**. Search for the reported identity by its **Object ID** or
+   name.
+2. Review its status, owners and sponsors, permissions, audit logs, and sign-in logs. If the
+   report includes a **Blueprint App ID**, use it to find the parent blueprint.
+3. Go to **Entra ID** > **Agents** > **Agent blueprints** and search by **Blueprint App ID**.
+   If the blueprint is present, review its status and linked agent identities. If it is missing,
+   find out whether it was deleted or removed from the tenant.
+4. If the agent is still needed, follow Microsoft's [restore guidance][agent-id-restore].
+   The admin center cannot restore a blueprint or Blueprint Principal.
+5. If the agent is no longer needed, disable it first, review its access, and then follow
+   Microsoft's [delete guidance][agent-id-delete]. Deleting a blueprint or Blueprint Principal
+   can also clean up its child identities and Agent Users.
+
+#### Related links
+
+* [View and filter agent identities][agent-identity-list]
+* [View and manage agent identity blueprints][blueprint-principal-list]
+* [Disable agent identities][agent-id-disable]
+* [How to delete and restore agent identity objects][agent-id-delete]
+
+[entra-admin-center]: https://entra.microsoft.com
+[agent-identity-list]:
+  https://learn.microsoft.com/entra/agent-id/agent-lists
+[blueprint-principal-list]:
+  https://learn.microsoft.com/entra/agent-id/manage-agent-blueprint
+[agent-id-disable]: https://learn.microsoft.com/entra/agent-id/disable-agent-identities
+[agent-id-restore]:
+  https://learn.microsoft.com/entra/agent-id/howto-delete-agent-identity#restore-a-blueprint-principal
+[agent-id-delete]: https://learn.microsoft.com/entra/agent-id/howto-delete-agent-identity
+
+<!--- Results --->
+%TestResult%

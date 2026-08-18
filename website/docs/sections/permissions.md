@@ -1,3 +1,5 @@
+- **AgentIdentity.Read.All**
+- **AgentIdentityBlueprintPrincipal.Read.All**
 - **AuditLog.Read.All**
 - **DeviceManagementConfiguration.Read.All**
 - **DeviceManagementManagedDevices.Read.All**

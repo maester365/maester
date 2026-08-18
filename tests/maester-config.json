@@ -1559,6 +1559,16 @@
       "Title": "Dynamic groups should not use the retiring memberOf rule operator"
     },
     {
+      "Id": "MT.1200",
+      "Severity": "Medium",
+      "Title": "Agent Identities should have an existing Blueprint Principal"
+    },
+    {
+      "Id": "MT.1201",
+      "Severity": "Medium",
+      "Title": "Agent Users should have an existing parent Agent Identity"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"

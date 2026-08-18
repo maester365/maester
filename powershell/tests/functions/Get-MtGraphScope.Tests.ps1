@@ -9,6 +9,28 @@ Describe 'Get-MtGraphScope' {
         $scopes | Should -Contain 'EntitlementManagement.Read.All'
     }
 
+    It 'Includes Agent ID read permissions in default scopes' {
+        $scopes = Get-MtGraphScope
+
+        $scopes | Should -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
+        $scopes | Should -Contain 'Directory.Read.All'
+        $scopes | Should -Not -Contain 'User.ReadBasic.All'
+    }
+
+    It 'Keeps Agent ID read permissions in sorted position before AuditLog' {
+        $scopes = Get-MtGraphScope
+        $agentIdentityIndex = [array]::IndexOf($scopes, 'AgentIdentity.Read.All')
+        $blueprintPrincipalIndex = [array]::IndexOf(
+            $scopes,
+            'AgentIdentityBlueprintPrincipal.Read.All'
+        )
+        $auditLogIndex = [array]::IndexOf($scopes, 'AuditLog.Read.All')
+
+        $agentIdentityIndex | Should -BeLessThan $blueprintPrincipalIndex
+        $blueprintPrincipalIndex | Should -BeLessThan $auditLogIndex
+    }
+
     It 'Keeps EntitlementManagement.Read.All in sorted position between DirectoryRecommendations and IdentityRiskEvent' {
         $scopes = Get-MtGraphScope
         $directoryRecommendationsIndex = [array]::IndexOf($scopes, 'DirectoryRecommendations.Read.All')
