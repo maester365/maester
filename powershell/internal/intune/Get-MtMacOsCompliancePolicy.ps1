@@ -11,6 +11,12 @@
     Assignment state is included because a compliance policy that is not assigned to any
     group is never evaluated against a device, so it cannot satisfy a security control.
 
+    Returns $null when the compliance policies could not be read at all, so that callers can
+    report a skip rather than a failure. This matters because Invoke-MtGraphRequest surfaces a
+    failed call as a non-terminating error with a null result, which collects as a single empty
+    element. Treating that as "no policies exist" would produce a false negative: a security
+    finding reported purely because the signed-in account lacked permission.
+
     Used by Test-MtMacOsSystemIntegrityProtection, Test-MtMacOsGatekeeper and
     Test-MtMacOsDefenderRiskScore.
 
@@ -24,9 +30,16 @@
     param()
 
     $policies = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/deviceCompliancePolicies' `
-            -ApiVersion beta -QueryParameters @{ expand = 'assignments' })
+            -ApiVersion beta -QueryParameters @{ expand = 'assignments' } -ErrorAction Stop)
 
-    $macOsPolicies = @($policies | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.macOSCompliancePolicy' })
+    # A failed request yields elements with no id. Distinguish that from an empty tenant.
+    $usable = @($policies | Where-Object { $_ -and $_.id })
+    if ($policies.Count -gt 0 -and $usable.Count -eq 0) {
+        Write-Verbose "Compliance policies could not be read; returning null so the caller reports a skip."
+        return $null
+    }
+
+    $macOsPolicies = @($usable | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.macOSCompliancePolicy' })
 
     $result = [System.Collections.Generic.List[pscustomobject]]::new()
     foreach ($policy in $macOsPolicies) {

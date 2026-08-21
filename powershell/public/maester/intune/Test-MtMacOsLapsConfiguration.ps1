@@ -49,6 +49,13 @@
     try {
         Write-Verbose "Querying macOS Automated Device Enrollment profiles..."
         $profiles = Get-MtMacOsEnrollmentProfile
+        if ($null -eq $profiles) {
+            # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
+            # Report a skip rather than a false security finding.
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+            return $null
+        }
+
         $portalLink = 'https://intune.microsoft.com/#view/Microsoft_Intune_Enrollment/EnrollmentMenu/~/appleEnrollment'
 
         if ($profiles.Count -eq 0) {
@@ -102,7 +109,11 @@
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
     } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
         return $null
     }
 }
