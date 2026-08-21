@@ -119,7 +119,7 @@
     }
 
     It "MT.1217: Ensure macOS LAPS is configured on Automated Device Enrollment profiles. See https://maester.dev/docs/tests/MT.1217" -Tag "MT.1217" {
-        $result = Test-MtMacOsLapsConfiguration
+        $result = Test-MtMacOsLAPSConfiguration
         if ($null -ne $result) {
             $result | Should -Be $true -Because "at least one macOS enrollment profile provisions a managed local administrator account with password rotation."
         }

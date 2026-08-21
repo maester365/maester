@@ -1,4 +1,4 @@
-﻿function Test-MtMacOsLapsConfiguration {
+﻿function Test-MtMacOsLAPSConfiguration {
     <#
     .SYNOPSIS
     Ensure macOS Automated Device Enrollment profiles configure a managed local administrator account with password rotation.
@@ -30,12 +30,12 @@
     enrolled devices rather than the whole estate.
 
     .EXAMPLE
-    Test-MtMacOsLapsConfiguration
+    Test-MtMacOsLAPSConfiguration
 
     Returns true if at least one macOS ADE profile provisions a managed local admin account with password rotation.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtMacOsLapsConfiguration
+    https://maester.dev/docs/commands/Test-MtMacOsLAPSConfiguration
     #>
     [CmdletBinding()]
     [OutputType([bool])]
