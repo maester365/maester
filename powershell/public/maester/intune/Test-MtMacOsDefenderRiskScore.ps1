@@ -60,11 +60,16 @@
 
         # unavailable and notSet both mean the risk score is not evaluated.
         $configuredLevels = @('secured', 'low', 'medium', 'high')
+        # unavailable and notSet are mapped explicitly so that a genuinely unset
+        # threshold reads as "Not evaluated", while an unrecognised future value
+        # falls through to its raw form rather than being mislabelled as unset.
         $levelLabels = @{
-            'secured' = 'Secured (strictest)'
-            'low'     = 'Low'
-            'medium'  = 'Medium'
-            'high'    = 'High (most permissive)'
+            'secured'     = 'Secured (strictest)'
+            'low'         = 'Low'
+            'medium'      = 'Medium'
+            'high'        = 'High (most permissive)'
+            'unavailable' = 'Not evaluated'
+            'notSet'      = 'Not evaluated'
         }
 
         $compliant = @($policies | Where-Object { $_.IsAssigned -and $configuredLevels -contains $_.DefenderRiskScoreLevel })
@@ -75,7 +80,13 @@
         $testResultMarkdown += "| --- | --- | --- | --- |`n"
         foreach ($policy in $policies) {
             $level = $policy.DefenderRiskScoreLevel
-            $levelLabel = if ($level -and $levelLabels.ContainsKey($level)) { $levelLabels[$level] } else { 'Not evaluated' }
+            $levelLabel = if ([string]::IsNullOrWhiteSpace($level)) {
+                'Not evaluated'
+            } elseif ($levelLabels.ContainsKey($level)) {
+                $levelLabels[$level]
+            } else {
+                $level
+            }
             $threatState = if ($policy.RequiresThreatProtection) { 'Yes' } else { 'No' }
             $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
             $testResultMarkdown += "| $($policy.Name) | $levelLabel | $threatState | $assignmentState |`n"

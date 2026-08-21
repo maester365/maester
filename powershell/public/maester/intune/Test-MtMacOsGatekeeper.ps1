@@ -79,7 +79,16 @@
         $testResultMarkdown += "| --- | --- | --- |`n"
         foreach ($policy in $policies) {
             $source = $policy.GatekeeperAllowedSource
-            $sourceLabel = if ($source -and $sourceLabels.ContainsKey($source)) { $sourceLabels[$source] } else { 'Not configured' }
+            # Fall back to the raw value for anything unrecognised. Graph enums gain
+            # values over time, and calling a real-but-unknown setting "Not configured"
+            # would hide it from the reader.
+            $sourceLabel = if ([string]::IsNullOrWhiteSpace($source)) {
+                'Not configured'
+            } elseif ($sourceLabels.ContainsKey($source)) {
+                $sourceLabels[$source]
+            } else {
+                $source
+            }
             $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
             $testResultMarkdown += "| $($policy.Name) | $sourceLabel | $assignmentState |`n"
         }

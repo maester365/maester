@@ -298,6 +298,82 @@
         }
     }
 
+    Context 'Edge cases and unexpected data' {
+        It 'does not mislabel an unrecognised Gatekeeper value as Not configured' {
+            # Graph enums gain values over time (unknownFutureValue and friends).
+            # Reporting a real-but-unknown setting as "Not configured" would be wrong.
+            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'someFutureAppleSource')
+            }
+
+            Test-MtMacOsGatekeeper | Should -BeFalse
+            $script:TestResult | Should -Not -Match 'Not configured'
+            $script:TestResult | Should -Match 'someFutureAppleSource'
+        }
+
+        It 'does not mislabel an unrecognised Defender risk level as Not evaluated' {
+            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'someFutureLevel')
+            }
+
+            Test-MtMacOsDefenderRiskScore | Should -BeFalse
+            $script:TestResult | Should -Not -Match 'Not evaluated'
+            $script:TestResult | Should -Match 'someFutureLevel'
+        }
+
+        It 'still labels a genuinely absent Gatekeeper setting as Not configured' {
+            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+                return @(New-TestCompliancePolicy -GatekeeperAllowedSource '')
+            }
+
+            Test-MtMacOsGatekeeper | Should -BeFalse
+            $script:TestResult | Should -Match 'Not configured'
+        }
+
+        It 'handles a policy with an empty display name without throwing' {
+            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+                return @(New-TestCompliancePolicy -Name '')
+            }
+
+            { Test-MtMacOsSystemIntegrityProtection } | Should -Not -Throw
+        }
+
+        It 'handles many policies with mixed states' {
+            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+                return @(
+                    (New-TestCompliancePolicy -Name 'A' -RequiresSip $true  -AssignmentCount 1),
+                    (New-TestCompliancePolicy -Name 'B' -RequiresSip $false -AssignmentCount 3),
+                    (New-TestCompliancePolicy -Name 'C' -RequiresSip $true  -AssignmentCount 0),
+                    (New-TestCompliancePolicy -Name 'D' -RequiresSip $false -AssignmentCount 0)
+                )
+            }
+
+            Test-MtMacOsSystemIntegrityProtection | Should -BeTrue
+            $script:TestResult | Should -Match 'Found 4 macOS compliance'
+        }
+
+        It 'reports rotation as Enabled when the period is zero rather than omitting it' {
+            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+                return @(New-TestEnrollmentProfile -AutoRotationPeriodInDays 0)
+            }
+
+            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            $script:TestResult | Should -Match 'Enabled'
+        }
+
+        It 'handles multiple enrollment profiles where only one is compliant' {
+            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+                return @(
+                    (New-TestEnrollmentProfile -Name 'Good' -HasAdminAccount $true  -HasPasswordRotation $true),
+                    (New-TestEnrollmentProfile -Name 'Bad'  -HasAdminAccount $false -HasPasswordRotation $false)
+                )
+            }
+
+            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            $script:TestResult | Should -Match 'Found 2 macOS Automated Device Enrollment'
+        }
+    }
+
     Context 'Get-MtMacOsCompliancePolicy' {
         It 'returns only macOS policies and carries assignment state' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
