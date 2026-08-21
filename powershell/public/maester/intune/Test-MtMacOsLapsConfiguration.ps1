@@ -81,8 +81,10 @@
                 $rotationState = 'Not configured'
             }
             $retrievalState = if ($enrollmentProfile.RotateOnRetrieval) { 'Yes' } else { 'No' }
-            $testResultMarkdown += "| [$($enrollmentProfile.Name)]($portalLink) | $($enrollmentProfile.TokenName) | $adminState | $rotationState | $retrievalState |`n"
+            $testResultMarkdown += "| $($enrollmentProfile.Name) | $($enrollmentProfile.TokenName) | $adminState | $rotationState | $retrievalState |`n"
         }
+
+        $testResultMarkdown += "`n[View Apple enrollment profiles in the Intune admin center]($portalLink)`n"
 
         if ($testResult) {
             $testResultMarkdown += "`nWell done. At least one macOS enrollment profile provisions a managed local administrator account with password rotation."

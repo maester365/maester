@@ -81,8 +81,10 @@
             $source = $policy.GatekeeperAllowedSource
             $sourceLabel = if ($source -and $sourceLabels.ContainsKey($source)) { $sourceLabels[$source] } else { 'Not configured' }
             $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| [$($policy.Name)]($portalLink) | $sourceLabel | $assignmentState |`n"
+            $testResultMarkdown += "| $($policy.Name) | $sourceLabel | $assignmentState |`n"
         }
+
+        $testResultMarkdown += "`n[View compliance policies in the Intune admin center]($portalLink)`n"
 
         if ($testResult) {
             $testResultMarkdown += "`nWell done. At least one assigned macOS compliance policy restricts where apps may be downloaded from."

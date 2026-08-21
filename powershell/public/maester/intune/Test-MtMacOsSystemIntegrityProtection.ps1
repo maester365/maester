@@ -67,8 +67,10 @@
         foreach ($policy in $policies) {
             $sipState = if ($policy.RequiresSip) { 'Required' } else { 'Not configured' }
             $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| [$($policy.Name)]($portalLink) | $sipState | $assignmentState |`n"
+            $testResultMarkdown += "| $($policy.Name) | $sipState | $assignmentState |`n"
         }
+
+        $testResultMarkdown += "`n[View compliance policies in the Intune admin center]($portalLink)`n"
 
         if ($testResult) {
             $testResultMarkdown += "`nWell done. At least one assigned macOS compliance policy requires System Integrity Protection."

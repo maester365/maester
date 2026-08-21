@@ -78,8 +78,10 @@
             $levelLabel = if ($level -and $levelLabels.ContainsKey($level)) { $levelLabels[$level] } else { 'Not evaluated' }
             $threatState = if ($policy.RequiresThreatProtection) { 'Yes' } else { 'No' }
             $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| [$($policy.Name)]($portalLink) | $levelLabel | $threatState | $assignmentState |`n"
+            $testResultMarkdown += "| $($policy.Name) | $levelLabel | $threatState | $assignmentState |`n"
         }
+
+        $testResultMarkdown += "`n[View compliance policies in the Intune admin center]($portalLink)`n"
 
         if ($testResult) {
             $testResultMarkdown += "`nWell done. At least one assigned macOS compliance policy requires a Microsoft Defender machine risk score level."
