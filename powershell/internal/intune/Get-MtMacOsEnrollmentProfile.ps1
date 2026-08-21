@@ -17,7 +17,9 @@
     Maester report.
 
     Returns $null when the enrollment tokens could not be read at all, so that callers can report a
-    skip rather than a failure. deviceManagement/depOnboardingSettings is gated by Intune RBAC on top
+    skip rather than a failure. The populated result is emitted with -NoEnumerate because
+    PowerShell unrolls collections on output: an empty list would otherwise arrive at the caller
+    as $null and be indistinguishable from a read failure. deviceManagement/depOnboardingSettings is gated by Intune RBAC on top
     of the Graph scope, and returns 403 for accounts without the enrollment programs permission.
     Invoke-MtGraphRequest surfaces that as a non-terminating error with a null result, which collects
     as a single empty element. Treating it as "no profiles exist" would report a false security
@@ -45,7 +47,8 @@
 
     if ($usableTokens.Count -eq 0) {
         Write-Verbose "No Apple enrollment (depOnboardingSettings) tokens found."
-        return $result
+        Write-Output $result -NoEnumerate
+        return
     }
 
     foreach ($token in $usableTokens) {
@@ -72,5 +75,6 @@
         }
     }
 
-    return $result
+    # -NoEnumerate keeps an empty list from collapsing to $null.
+    Write-Output $result -NoEnumerate
 }

@@ -12,7 +12,9 @@
     group is never evaluated against a device, so it cannot satisfy a security control.
 
     Returns $null when the compliance policies could not be read at all, so that callers can
-    report a skip rather than a failure. This matters because Invoke-MtGraphRequest surfaces a
+    report a skip rather than a failure. The populated result is emitted with -NoEnumerate
+    because PowerShell unrolls collections on output: an empty list would otherwise arrive at
+    the caller as $null and be indistinguishable from a read failure. This matters because Invoke-MtGraphRequest surfaces a
     failed call as a non-terminating error with a null result, which collects as a single empty
     element. Treating that as "no policies exist" would produce a false negative: a security
     finding reported purely because the signed-in account lacked permission.
@@ -56,5 +58,6 @@
             })
     }
 
-    return $result
+    # -NoEnumerate keeps an empty list from collapsing to $null.
+    Write-Output $result -NoEnumerate
 }
