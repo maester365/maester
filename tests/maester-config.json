@@ -1584,6 +1584,26 @@
       "Title": "Temporary bypass for onPremisesObjectIdentifier updates should be disabled"
     },
     {
+      "Id": "MT.1214",
+      "Severity": "Medium",
+      "Title": "Ensure macOS compliance policy requires System Integrity Protection"
+    },
+    {
+      "Id": "MT.1215",
+      "Severity": "Medium",
+      "Title": "Ensure macOS compliance policy restricts app download locations"
+    },
+    {
+      "Id": "MT.1216",
+      "Severity": "Medium",
+      "Title": "Ensure macOS compliance policy requires a Defender machine risk score level"
+    },
+    {
+      "Id": "MT.1217",
+      "Severity": "High",
+      "Title": "Ensure macOS LAPS is configured on Automated Device Enrollment profiles"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
