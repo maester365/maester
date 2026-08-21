@@ -1,4 +1,4 @@
-﻿function Test-MtMacOsGatekeeper {
+﻿function Test-MtMacOSGatekeeper {
     <#
     .SYNOPSIS
     Ensure at least one assigned macOS compliance policy restricts where apps may be downloaded from.
@@ -25,12 +25,12 @@
     does not count.
 
     .EXAMPLE
-    Test-MtMacOsGatekeeper
+    Test-MtMacOSGatekeeper
 
     Returns true if at least one assigned macOS compliance policy restricts app download locations.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtMacOsGatekeeper
+    https://maester.dev/docs/commands/Test-MtMacOSGatekeeper
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -43,7 +43,7 @@
 
     try {
         Write-Verbose "Querying macOS compliance policies..."
-        $policies = Get-MtMacOsCompliancePolicy
+        $policies = Get-MtMacOSCompliancePolicy
         if ($null -eq $policies) {
             # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
             # Report a skip rather than a false security finding.

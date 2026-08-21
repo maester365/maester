@@ -1,4 +1,4 @@
-﻿function Get-MtMacOsEnrollmentProfile {
+﻿function Get-MtMacOSEnrollmentProfile {
     <#
     .SYNOPSIS
     Retrieves macOS Automated Device Enrollment (ADE) profiles across all Apple enrollment tokens.
@@ -26,7 +26,7 @@
     finding for any under-permissioned caller.
 
     .EXAMPLE
-    Get-MtMacOsEnrollmentProfile
+    Get-MtMacOSEnrollmentProfile
 
     Returns the macOS ADE enrollment profiles configured in the tenant.
     #>

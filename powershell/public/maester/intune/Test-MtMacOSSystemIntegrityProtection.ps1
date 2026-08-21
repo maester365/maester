@@ -1,4 +1,4 @@
-﻿function Test-MtMacOsSystemIntegrityProtection {
+﻿function Test-MtMacOSSystemIntegrityProtection {
     <#
     .SYNOPSIS
     Ensure at least one assigned macOS compliance policy requires System Integrity Protection.
@@ -22,12 +22,12 @@
     do not count towards a pass, because an unassigned compliance policy is never evaluated.
 
     .EXAMPLE
-    Test-MtMacOsSystemIntegrityProtection
+    Test-MtMacOSSystemIntegrityProtection
 
     Returns true if at least one assigned macOS compliance policy requires System Integrity Protection.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtMacOsSystemIntegrityProtection
+    https://maester.dev/docs/commands/Test-MtMacOSSystemIntegrityProtection
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -40,7 +40,7 @@
 
     try {
         Write-Verbose "Querying macOS compliance policies..."
-        $policies = Get-MtMacOsCompliancePolicy
+        $policies = Get-MtMacOSCompliancePolicy
         if ($null -eq $policies) {
             # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
             # Report a skip rather than a false security finding.

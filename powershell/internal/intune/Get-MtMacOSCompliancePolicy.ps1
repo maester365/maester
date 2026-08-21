@@ -1,4 +1,4 @@
-﻿function Get-MtMacOsCompliancePolicy {
+﻿function Get-MtMacOSCompliancePolicy {
     <#
     .SYNOPSIS
     Retrieves macOS device compliance policies with their assignment state.
@@ -19,11 +19,11 @@
     element. Treating that as "no policies exist" would produce a false negative: a security
     finding reported purely because the signed-in account lacked permission.
 
-    Used by Test-MtMacOsSystemIntegrityProtection, Test-MtMacOsGatekeeper and
-    Test-MtMacOsDefenderRiskScore.
+    Used by Test-MtMacOSSystemIntegrityProtection, Test-MtMacOSGatekeeper and
+    Test-MtMacOSDefenderRiskScore.
 
     .EXAMPLE
-    Get-MtMacOsCompliancePolicy
+    Get-MtMacOSCompliancePolicy
 
     Returns the macOS compliance policies configured in the tenant.
     #>

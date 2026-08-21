@@ -1,4 +1,4 @@
-﻿function Test-MtMacOsDefenderRiskScore {
+﻿function Test-MtMacOSDefenderRiskScore {
     <#
     .SYNOPSIS
     Ensure at least one assigned macOS compliance policy requires a Microsoft Defender machine risk score level.
@@ -22,12 +22,12 @@
     the macOS devices are onboarded to Defender.
 
     .EXAMPLE
-    Test-MtMacOsDefenderRiskScore
+    Test-MtMacOSDefenderRiskScore
 
     Returns true if at least one assigned macOS compliance policy requires a Defender machine risk score level.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtMacOsDefenderRiskScore
+    https://maester.dev/docs/commands/Test-MtMacOSDefenderRiskScore
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -40,7 +40,7 @@
 
     try {
         Write-Verbose "Querying macOS compliance policies..."
-        $policies = Get-MtMacOsCompliancePolicy
+        $policies = Get-MtMacOSCompliancePolicy
         if ($null -eq $policies) {
             # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
             # Report a skip rather than a false security finding.

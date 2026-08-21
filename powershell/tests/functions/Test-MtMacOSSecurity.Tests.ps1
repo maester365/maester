@@ -62,238 +62,238 @@
         }
     }
 
-    Context 'Test-MtMacOsSystemIntegrityProtection (MT.1214)' {
+    Context 'Test-MtMacOSSystemIntegrityProtection (MT.1214)' {
         It 'passes when an assigned policy requires SIP' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -RequiresSip $true -AssignmentCount 1)
             }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeTrue
+            Test-MtMacOSSystemIntegrityProtection | Should -BeTrue
             $script:TestResult | Should -Match 'Required'
         }
 
         It 'fails when no policy requires SIP' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -RequiresSip $false -AssignmentCount 1)
             }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeFalse
+            Test-MtMacOSSystemIntegrityProtection | Should -BeFalse
             $script:TestResult | Should -Match 'Not configured'
         }
 
         It 'fails when the only policy requiring SIP is unassigned, and says so' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -RequiresSip $true -AssignmentCount 0)
             }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeFalse
+            Test-MtMacOSSystemIntegrityProtection | Should -BeFalse
             $script:TestResult | Should -Match 'not assigned'
         }
 
         It 'fails when the tenant has no macOS compliance policies' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 # Mirror the real helper: emit an empty list without unrolling it to $null.
                 Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
             }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeFalse
+            Test-MtMacOSSystemIntegrityProtection | Should -BeFalse
             $script:TestResult | Should -Match 'No macOS compliance policies'
         }
 
         It 'skips as NotAuthorized when the policies cannot be read' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy { return $null }
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy { return $null }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeNullOrEmpty
+            Test-MtMacOSSystemIntegrityProtection | Should -BeNullOrEmpty
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
 
         It 'notes assigned policies that do not require SIP even when passing' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(
                     (New-TestCompliancePolicy -Name 'Strict' -RequiresSip $true -AssignmentCount 1),
                     (New-TestCompliancePolicy -Name 'Lenient' -RequiresSip $false -AssignmentCount 2)
                 )
             }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeTrue
+            Test-MtMacOSSystemIntegrityProtection | Should -BeTrue
             $script:TestResult | Should -Match 'do not require System Integrity Protection'
         }
     }
 
-    Context 'Test-MtMacOsGatekeeper (MT.1215)' {
+    Context 'Test-MtMacOSGatekeeper (MT.1215)' {
         It 'passes for macAppStoreAndIdentifiedDevelopers' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStoreAndIdentifiedDevelopers')
             }
 
-            Test-MtMacOsGatekeeper | Should -BeTrue
+            Test-MtMacOSGatekeeper | Should -BeTrue
         }
 
         It 'passes for the stricter macAppStore' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStore')
             }
 
-            Test-MtMacOsGatekeeper | Should -BeTrue
+            Test-MtMacOSGatekeeper | Should -BeTrue
         }
 
         It 'fails for anywhere' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'anywhere')
             }
 
-            Test-MtMacOsGatekeeper | Should -BeFalse
+            Test-MtMacOSGatekeeper | Should -BeFalse
             $script:TestResult | Should -Match 'Anywhere'
         }
 
         It 'fails for notConfigured' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'notConfigured')
             }
 
-            Test-MtMacOsGatekeeper | Should -BeFalse
+            Test-MtMacOSGatekeeper | Should -BeFalse
         }
 
         It 'does not count a restricted but unassigned policy' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStore' -AssignmentCount 0)
             }
 
-            Test-MtMacOsGatekeeper | Should -BeFalse
+            Test-MtMacOSGatekeeper | Should -BeFalse
         }
 
         It 'warns about an assigned anywhere policy even when another one passes' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(
                     (New-TestCompliancePolicy -Name 'Good' -GatekeeperAllowedSource 'macAppStore'),
                     (New-TestCompliancePolicy -Name 'Bad' -GatekeeperAllowedSource 'anywhere')
                 )
             }
 
-            Test-MtMacOsGatekeeper | Should -BeTrue
+            Test-MtMacOSGatekeeper | Should -BeTrue
             $script:TestResult | Should -Match 'Warning'
         }
 
         It 'skips as NotAuthorized when the policies cannot be read' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy { return $null }
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy { return $null }
 
-            Test-MtMacOsGatekeeper | Should -BeNullOrEmpty
+            Test-MtMacOSGatekeeper | Should -BeNullOrEmpty
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
 
-    Context 'Test-MtMacOsDefenderRiskScore (MT.1216)' {
+    Context 'Test-MtMacOSDefenderRiskScore (MT.1216)' {
         It 'passes for a configured threshold' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'medium')
             }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeTrue
+            Test-MtMacOSDefenderRiskScore | Should -BeTrue
         }
 
         It 'passes for the strictest secured level' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'secured')
             }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeTrue
+            Test-MtMacOSDefenderRiskScore | Should -BeTrue
         }
 
         It 'fails for unavailable, which means the score is not evaluated' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'unavailable')
             }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeFalse
+            Test-MtMacOSDefenderRiskScore | Should -BeFalse
             $script:TestResult | Should -Match 'Not evaluated'
         }
 
         It 'fails for notSet' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'notSet')
             }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeFalse
+            Test-MtMacOSDefenderRiskScore | Should -BeFalse
         }
 
         It 'notes when a threshold is set without device threat protection' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'medium' -RequiresThreatProtection $false)
             }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeTrue
+            Test-MtMacOSDefenderRiskScore | Should -BeTrue
             $script:TestResult | Should -Match 'onboarded to Microsoft Defender for Endpoint'
         }
 
         It 'skips as NotAuthorized when the policies cannot be read' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy { return $null }
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy { return $null }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeNullOrEmpty
+            Test-MtMacOSDefenderRiskScore | Should -BeNullOrEmpty
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
 
-    Context 'Test-MtMacOsLAPSConfiguration (MT.1217)' {
+    Context 'Test-MtMacOSLAPSConfiguration (MT.1217)' {
         It 'passes when a profile has an admin account with rotation' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(New-TestEnrollmentProfile -HasAdminAccount $true -HasPasswordRotation $true)
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
             $script:TestResult | Should -Match 'Every 90 days'
         }
 
         It 'fails when an admin account has no rotation configured' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(New-TestEnrollmentProfile -HasAdminAccount $true -HasPasswordRotation $false)
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeFalse
+            Test-MtMacOSLAPSConfiguration | Should -BeFalse
             $script:TestResult | Should -Match 'no password rotation'
         }
 
         It 'fails when no profile configures an admin account' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(New-TestEnrollmentProfile -HasAdminAccount $false -HasPasswordRotation $false)
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeFalse
+            Test-MtMacOSLAPSConfiguration | Should -BeFalse
             $script:TestResult | Should -Match 'not managed or rotated by Intune'
         }
 
         It 'fails when the tenant has no macOS enrollment profiles' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeFalse
+            Test-MtMacOSLAPSConfiguration | Should -BeFalse
             $script:TestResult | Should -Match 'No macOS Automated Device Enrollment profiles'
         }
 
         It 'notes when the password is not rotated after retrieval' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(New-TestEnrollmentProfile -RotateOnRetrieval $false)
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
             $script:TestResult | Should -Match 'do not rotate the password after it is retrieved'
         }
 
         It 'always states the re-enrollment scope limitation when passing' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(New-TestEnrollmentProfile)
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
             $script:TestResult | Should -Match 'after a factory reset'
         }
 
         It 'skips as NotAuthorized when the profiles cannot be read' {
             # deviceManagement/depOnboardingSettings is gated by Intune RBAC on top of
             # the Graph scope and returns 403 for accounts without enrollment programs access.
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile { return $null }
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile { return $null }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeNullOrEmpty
+            Test-MtMacOSLAPSConfiguration | Should -BeNullOrEmpty
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
@@ -302,44 +302,44 @@
         It 'does not mislabel an unrecognised Gatekeeper value as Not configured' {
             # Graph enums gain values over time (unknownFutureValue and friends).
             # Reporting a real-but-unknown setting as "Not configured" would be wrong.
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'someFutureAppleSource')
             }
 
-            Test-MtMacOsGatekeeper | Should -BeFalse
+            Test-MtMacOSGatekeeper | Should -BeFalse
             $script:TestResult | Should -Not -Match 'Not configured'
             $script:TestResult | Should -Match 'someFutureAppleSource'
         }
 
         It 'does not mislabel an unrecognised Defender risk level as Not evaluated' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'someFutureLevel')
             }
 
-            Test-MtMacOsDefenderRiskScore | Should -BeFalse
+            Test-MtMacOSDefenderRiskScore | Should -BeFalse
             $script:TestResult | Should -Not -Match 'Not evaluated'
             $script:TestResult | Should -Match 'someFutureLevel'
         }
 
         It 'still labels a genuinely absent Gatekeeper setting as Not configured' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -GatekeeperAllowedSource '')
             }
 
-            Test-MtMacOsGatekeeper | Should -BeFalse
+            Test-MtMacOSGatekeeper | Should -BeFalse
             $script:TestResult | Should -Match 'Not configured'
         }
 
         It 'handles a policy with an empty display name without throwing' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(New-TestCompliancePolicy -Name '')
             }
 
-            { Test-MtMacOsSystemIntegrityProtection } | Should -Not -Throw
+            { Test-MtMacOSSystemIntegrityProtection } | Should -Not -Throw
         }
 
         It 'handles many policies with mixed states' {
-            Mock -ModuleName Maester Get-MtMacOsCompliancePolicy {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(
                     (New-TestCompliancePolicy -Name 'A' -RequiresSip $true  -AssignmentCount 1),
                     (New-TestCompliancePolicy -Name 'B' -RequiresSip $false -AssignmentCount 3),
@@ -348,33 +348,33 @@
                 )
             }
 
-            Test-MtMacOsSystemIntegrityProtection | Should -BeTrue
+            Test-MtMacOSSystemIntegrityProtection | Should -BeTrue
             $script:TestResult | Should -Match 'Found 4 macOS compliance'
         }
 
         It 'reports rotation as Enabled when the period is zero rather than omitting it' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(New-TestEnrollmentProfile -AutoRotationPeriodInDays 0)
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
             $script:TestResult | Should -Match 'Enabled'
         }
 
         It 'handles multiple enrollment profiles where only one is compliant' {
-            Mock -ModuleName Maester Get-MtMacOsEnrollmentProfile {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(
                     (New-TestEnrollmentProfile -Name 'Good' -HasAdminAccount $true  -HasPasswordRotation $true),
                     (New-TestEnrollmentProfile -Name 'Bad'  -HasAdminAccount $false -HasPasswordRotation $false)
                 )
             }
 
-            Test-MtMacOsLAPSConfiguration | Should -BeTrue
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
             $script:TestResult | Should -Match 'Found 2 macOS Automated Device Enrollment'
         }
     }
 
-    Context 'Get-MtMacOsCompliancePolicy' {
+    Context 'Get-MtMacOSCompliancePolicy' {
         It 'returns only macOS policies and carries assignment state' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 return @(
@@ -396,7 +396,7 @@
             }
 
             InModuleScope Maester {
-                $result = Get-MtMacOsCompliancePolicy
+                $result = Get-MtMacOSCompliancePolicy
                 $null -ne $result | Should -BeTrue
                 $result.Count | Should -Be 1
                 $result[0].Name | Should -Be 'Mac Compliance'
@@ -412,7 +412,7 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @($null) }
 
             InModuleScope Maester {
-                Get-MtMacOsCompliancePolicy | Should -BeNullOrEmpty
+                Get-MtMacOSCompliancePolicy | Should -BeNullOrEmpty
             }
         }
 
@@ -420,7 +420,7 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @() }
 
             InModuleScope Maester {
-                $result = Get-MtMacOsCompliancePolicy
+                $result = Get-MtMacOSCompliancePolicy
                 # Must be an empty collection, NOT $null - $null means "could not read".
                 $null -ne $result | Should -BeTrue
                 $result.Count | Should -Be 0
@@ -428,12 +428,12 @@
         }
     }
 
-    Context 'Get-MtMacOsEnrollmentProfile' {
+    Context 'Get-MtMacOSEnrollmentProfile' {
         It 'returns null when the enrollment tokens cannot be read' {
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @($null) }
 
             InModuleScope Maester {
-                Get-MtMacOsEnrollmentProfile | Should -BeNullOrEmpty
+                Get-MtMacOSEnrollmentProfile | Should -BeNullOrEmpty
             }
         }
 
@@ -441,7 +441,7 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @() }
 
             InModuleScope Maester {
-                $result = Get-MtMacOsEnrollmentProfile
+                $result = Get-MtMacOSEnrollmentProfile
                 $null -ne $result | Should -BeTrue
                 $result.Count | Should -Be 0
             }
@@ -467,7 +467,7 @@
             }
 
             InModuleScope Maester {
-                $result = Get-MtMacOsEnrollmentProfile
+                $result = Get-MtMacOSEnrollmentProfile
                 $result.Count | Should -Be 1
                 $result[0].HasAdminAccount | Should -BeTrue
                 # The password must not be carried on the returned object under any name.

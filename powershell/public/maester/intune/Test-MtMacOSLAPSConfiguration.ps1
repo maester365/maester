@@ -1,4 +1,4 @@
-﻿function Test-MtMacOsLAPSConfiguration {
+﻿function Test-MtMacOSLAPSConfiguration {
     <#
     .SYNOPSIS
     Ensure macOS Automated Device Enrollment profiles configure a managed local administrator account with password rotation.
@@ -30,12 +30,12 @@
     enrolled devices rather than the whole estate.
 
     .EXAMPLE
-    Test-MtMacOsLAPSConfiguration
+    Test-MtMacOSLAPSConfiguration
 
     Returns true if at least one macOS ADE profile provisions a managed local admin account with password rotation.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtMacOsLAPSConfiguration
+    https://maester.dev/docs/commands/Test-MtMacOSLAPSConfiguration
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -48,7 +48,7 @@
 
     try {
         Write-Verbose "Querying macOS Automated Device Enrollment profiles..."
-        $profiles = Get-MtMacOsEnrollmentProfile
+        $profiles = Get-MtMacOSEnrollmentProfile
         if ($null -eq $profiles) {
             # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
             # Report a skip rather than a false security finding.
