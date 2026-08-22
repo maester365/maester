@@ -54,12 +54,6 @@
     }
 
     try {
-        # ASR rules use identical setting definition IDs whether the policy was authored as an
-        # Endpoint Security ASR profile (templateFamily 'endpointSecurityAttackSurfaceReduction')
-        # or as a plain Settings catalog policy (templateFamily 'none') - the setting definition is
-        # published with visibility 'settingsCatalog,template'. Filtering on template family
-        # therefore misses every settings catalog policy, so narrow on platform here and identify
-        # ASR policies by the settings they actually contain.
         Write-Verbose "Querying Intune Windows configuration policies..."
         $candidatePolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=platforms has 'windows10'&`$select=id,name,description,templateReference" -ApiVersion beta)
 
