@@ -146,9 +146,6 @@
                 }
             }
 
-            # No ASR rules in this policy, so it is not an ASR policy. This also drops the
-            # Device Control and Exploit Protection profiles, which share the
-            # 'endpointSecurityAttackSurfaceReduction' template family but configure no ASR rules.
             if ($ruleDetails.Count -eq 0) { continue }
 
             $templateFamily = $policy.templateReference.templateFamily
