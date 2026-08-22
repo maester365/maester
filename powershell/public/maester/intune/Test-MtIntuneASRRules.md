@@ -27,6 +27,13 @@ See the [Microsoft Defender ASR rules deployment guide](https://learn.microsoft.
 
 Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result. **Warn** is a supported ASR rule state but does not satisfy the baseline. Baseline rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
 
+ASR rules can be configured from two places in Intune, and both count towards this check:
+
+- **Endpoint security** > **Attack surface reduction** (the Attack Surface Reduction Rules profile)
+- **Devices** > **Configuration** > **Settings catalog** (the **Defender** > **Attack Surface Reduction Rules** category)
+
+Both surfaces write the same underlying Defender settings, so the check evaluates every Windows configuration policy and reports which surface each policy was authored from.
+
 #### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
