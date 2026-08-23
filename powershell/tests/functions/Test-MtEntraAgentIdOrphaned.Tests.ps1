@@ -18,6 +18,12 @@
         }
     }
 
+    AfterEach {
+        if ($null -ne $script:AgentTestResult) {
+            $script:AgentTestResult | Should -Not -Match '`[^`]+`'
+        }
+    }
+
     Context 'Agent Identity parent checks' {
         It 'passes when every Agent Identity has a Blueprint Principal' {
             $AgentIdentity = [pscustomobject]@{

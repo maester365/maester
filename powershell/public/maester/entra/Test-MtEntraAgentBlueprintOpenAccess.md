@@ -1,8 +1,15 @@
-Agent Identity Blueprint Principals should require assignment for the application roles they expose.
+Agent Identity Blueprint Principals that expose application roles should require
+an explicit assignment before another identity can use them.
 
-An Agent Identity Blueprint Principal can declare application roles that other applications or agents request access to. When `appRoleAssignmentRequired` is `false` on the Blueprint Principal, Entra doesn't require an explicit assignment before issuing a token for those roles — any principal in the tenant can be issued a token for them.
+Application roles control which applications or agents can access capabilities
+provided by an Agent Identity Blueprint Principal. If assignment isn't required,
+an identity in the tenant may receive a token for an enabled role without an
+administrator explicitly granting it access. Requiring assignment ensures that
+only approved identities can use those roles.
 
-This check inspects each Blueprint Principal that declares one or more application roles and fails when `appRoleAssignmentRequired` is `false`.
+This test reports Agent Identity Blueprint Principals that expose at least one
+enabled application role but don't require assignment. Disabled application
+roles aren't included in the assessment.
 
 #### Remediation action:
 

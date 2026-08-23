@@ -8,9 +8,6 @@ This check looks for Agent Users whose parent Agent Identity is missing. The acc
 behind after the agent is deleted and may still have group memberships, licenses, or other access.
 That makes it harder to tell why the account exists and whether it should still have access.
 
-Agent Users are still a preview feature and may change before general availability. Maester marks
-this test as `Preview` for that reason.
-
 #### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and go to **Entra ID** >

@@ -121,15 +121,32 @@
                     $CreatedDate = $CreatedDate.ToUniversalTime()
                 }
 
-                $DaysSinceCreation = if ($null -ne $CreatedDate) { [int]($UtcNow.Subtract($CreatedDate).TotalDays) } else { $MaxInactiveDays + 1 }
-                if ($DaysSinceCreation -gt $MaxInactiveDays) {
+                $DaysSinceCreation = if ($null -ne $CreatedDate) {
+                    [int]($UtcNow.Subtract($CreatedDate).TotalDays)
+                } else {
+                    $null
+                }
+                if ($null -eq $DaysSinceCreation -or $DaysSinceCreation -gt $MaxInactiveDays) {
+                    if ($null -eq $DaysSinceCreation) {
+                        $InactiveDays = 'Unknown'
+                        $InactivityReason = (
+                            'No recorded sign-in activity, and the creation date could not be ' +
+                            'determined.'
+                        )
+                    } else {
+                        $InactiveDays = $DaysSinceCreation
+                        $InactivityReason = (
+                            "No recorded sign-in activity since creation " +
+                            "($DaysSinceCreation days ago)."
+                        )
+                    }
                     $InactiveAgents.Add([pscustomobject]@{
                         ObjectId       = [string]$Agent.id
                         DisplayName    = [string]$Agent.displayName
                         AppId          = $AppId
                         LastSignIn     = 'Never'
-                        InactiveDays   = $DaysSinceCreation
-                        Reason         = "No recorded sign-in activity since creation ($DaysSinceCreation days ago)."
+                        InactiveDays   = $InactiveDays
+                        Reason         = $InactivityReason
                     })
                 }
             }
@@ -204,7 +221,8 @@
             $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
             $DisplayName = $DisplayName -replace "`r?`n", ' '
             $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
-            $Result += "`n| ``$($Item.ObjectId)`` | $DisplayName | ``$($Item.AppId)`` | $($Item.LastSignIn) | $($Item.InactiveDays) | $Reason |"
+            $Result += "`n| $($Item.ObjectId) | $DisplayName | $($Item.AppId) | " +
+                "$($Item.LastSignIn) | $($Item.InactiveDays) | $Reason |"
         }
 
         if ($DormantFleetFindings.Count -gt 0) {
@@ -217,7 +235,8 @@
                 $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
                 $Name = $Name -replace "`r?`n", ' '
                 $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
-                $Result += "`n| ``$($Item.BlueprintId)`` | $Name | ``$($Item.AppId)`` | $($Item.AgentCount) | $Reason |"
+                $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | " +
+                    "$($Item.AgentCount) | $Reason |"
             }
         }
 

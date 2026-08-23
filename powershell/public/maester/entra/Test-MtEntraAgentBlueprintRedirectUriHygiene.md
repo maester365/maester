@@ -1,8 +1,8 @@
-Agent Identity Blueprints should not use wildcard or plain-http redirect URIs.
+Agent Identity Blueprints should use specific, secure redirect URIs.
 
-A Blueprint's web redirect URIs are the destinations Entra will send authentication responses and tokens to. A wildcard redirect URI (containing `*`) lets a token be redirected to any host that matches the pattern, including one an attacker controls. A plain-http redirect URI that isn't a loopback address returns tokens over an unencrypted channel, where they can be intercepted in transit.
+After authentication, Microsoft Entra sends the sign-in response to a redirect URI registered on the Blueprint. A wildcard can allow an attacker-controlled address that matches the pattern to receive the response. A plain HTTP address sends the response without transport encryption, allowing someone who can observe the network traffic to intercept sensitive authentication information and potentially use it to access resources as the agent. HTTP loopback addresses are permitted for local development because the response stays on the same device instead of travelling across the network; they should not be used for deployed endpoints.
 
-This check inspects each Blueprint's `web.redirectUris` and fails when any URI contains a wildcard or uses the `http` scheme without being a loopback address.
+This test reports Agent Identity Blueprints with a wildcard redirect URI or a non-loopback HTTP redirect URI. Redirect URIs should identify a specific destination and use HTTPS unless they are loopback addresses used for local development.
 
 #### Remediation action:
 

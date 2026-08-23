@@ -1,8 +1,8 @@
-Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles.
+Agent Identity Blueprints should pass only explicitly selected delegated scopes and application roles to their child Agent Identities.
 
-An Agent Identity Blueprint's `inheritablePermissions` configuration controls which of the Blueprint's granted permissions on a resource are automatically inherited by every child Agent Identity, without additional consent. Setting a resource's inheritable scopes or roles to `allAllowed` inherits every permission currently granted to the Blueprint on that resource, and every permission granted to it later, to every existing and future child agent — a single future grant on the Blueprint becomes effective everywhere immediately.
+The `allAllowed` inheritance pattern gives every child Agent Identity all permissions granted to the Blueprint for a resource, without requiring separate consent. It also applies permissions granted to the Blueprint in the future. This can give existing and future Agent Identities broader access than intended and increases the impact of an unnecessary or high-risk permission assignment.
 
-This check inspects each Blueprint's `inheritablePermissions` collection and fails when any entry's `inheritableScopes.kind` or `inheritableRoles.kind` is `allAllowed`.
+This test reports Agent Identity Blueprints that allow all delegated scopes or all application roles to be inherited. Each Blueprint should instead define only the permissions its child Agent Identities require.
 
 #### Remediation action:
 

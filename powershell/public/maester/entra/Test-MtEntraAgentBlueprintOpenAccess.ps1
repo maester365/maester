@@ -3,10 +3,10 @@
     .SYNOPSIS
     Finds Agent Identity Blueprint Principals that expose app roles without requiring assignment.
     .DESCRIPTION
-    Checks whether any Agent Identity Blueprint Principal declares application roles while
+    Checks whether any Agent Identity Blueprint Principal declares enabled application roles while
     appRoleAssignmentRequired is false. When assignment isn't required, any principal in the tenant
-    can be issued a token for those roles without being explicitly assigned first, widening who can
-    call into resources the Blueprint exposes.
+    can be issued a token for those enabled roles without being explicitly assigned first, widening
+    who can call into resources the Blueprint exposes.
     .EXAMPLE
     Test-MtEntraAgentBlueprintOpenAccess
     .LINK
@@ -43,9 +43,11 @@
         $OpenAccessFindings = [System.Collections.Generic.List[pscustomobject]]::new()
 
         foreach ($Principal in $BlueprintPrincipals) {
-            # @($null) is a one-element array, not an empty one, so a null appRoles
-            # property must be filtered out explicitly rather than just wrapped in @().
-            $AppRoleCount = @($Principal.appRoles | Where-Object { $null -ne $_ }).Count
+            # @($null) is a one-element array, not an empty one, so null entries must
+            # be filtered out before counting the enabled roles exposed by the principal.
+            $AppRoleCount = @(
+                $Principal.appRoles | Where-Object { $null -ne $_ -and $_.isEnabled -eq $true }
+            ).Count
             if ($Principal.appRoleAssignmentRequired -eq $false -and $AppRoleCount -gt 0) {
                 $OpenAccessFindings.Add([pscustomobject]@{
                     ObjectId    = [string]$Principal.id
@@ -71,7 +73,7 @@
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
             $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
             $Name = $Name -replace "`r?`n", ' '
-            $Result += "`n| ``$($Item.ObjectId)`` | $Name | ``$($Item.AppId)`` | $($Item.RoleCount) |"
+            $Result += "`n| $($Item.ObjectId) | $Name | $($Item.AppId) | $($Item.RoleCount) |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'Medium'

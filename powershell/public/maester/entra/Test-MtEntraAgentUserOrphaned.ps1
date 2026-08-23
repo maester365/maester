@@ -99,8 +99,8 @@
             ) -replace '\|', '&#124;'
             $UserPrincipalName = $UserPrincipalName -replace "`r?`n", ' '
             $Reason = [string]$OrphanedUser.Reason -replace '\|', '\|'
-            $Result += "`n| ``$($OrphanedUser.AgentUserId)`` | $DisplayName | " +
-                "$UserPrincipalName | ``$($OrphanedUser.ParentIdentityId)`` | $Reason |"
+            $Result += "`n| $($OrphanedUser.AgentUserId) | $DisplayName | " +
+                "$UserPrincipalName | $($OrphanedUser.ParentIdentityId) | $Reason |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'Medium'

@@ -98,7 +98,7 @@
             $Name = $Name -replace "`r?`n", ' '
             $Uri = [System.Net.WebUtility]::HtmlEncode([string]$Item.Uri) -replace '\|', '&#124;'
             $Issue = [System.Net.WebUtility]::HtmlEncode([string]$Item.Issue) -replace '\|', '&#124;'
-            $Result += "`n| ``$($Item.BlueprintId)`` | $Name | ``$($Item.AppId)`` | $Uri | $Issue |"
+            $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | $Uri | $Issue |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity $Severity

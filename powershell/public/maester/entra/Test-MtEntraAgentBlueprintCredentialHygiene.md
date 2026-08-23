@@ -8,8 +8,9 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent blueprints**.
 2. Locate the reported Blueprint using its **Object ID** or display name.
-3. Select **Certificates & secrets** from the left-hand navigation.
-4. Delete any **Expired** client secrets or certificates that are no longer in use.
+3. Under **Developer settings**, select **Credentials**.
+4. On the **Certificates** and **Client secrets** tabs, delete any expired
+   credentials that are no longer in use.
 5. If secrets have validity periods longer than your organization's maximum rotation window (recommended &le; 365–730 days), create a new secret and decommission the old one.
 6. Prefer using **Federated credentials** or **Certificates** instead of shared client secrets wherever supported. If a federated credential is already configured, remove the remaining client secret entirely rather than keeping it as a fallback.
 
@@ -19,8 +20,8 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 * [Manage application credentials in Entra ID][manage-credentials]
 
 [entra-admin-center]: https://entra.microsoft.com
-[manage-blueprints]: https://learn.microsoft.com/entra/agent-id/manage-agent-blueprint
-[manage-credentials]: https://learn.microsoft.com/entra/identity/enterprise-apps/manage-certificates-for-federated-single-sign-on
+[manage-blueprints]: https://learn.microsoft.com/entra/agent-id/identity-platform/manage-agent-blueprint
+[manage-credentials]: https://learn.microsoft.com/entra/identity-platform/how-to-add-credentials
 
 <!--- Results --->
 %TestResult%

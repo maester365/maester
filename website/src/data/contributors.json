@@ -878,6 +878,45 @@
       "recentCommits": 0
     },
     {
+      "id": "agnivesh",
+      "github": "agnivesh",
+      "name": "Agnivesh S.",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "United Kingdom",
+      "locationFlag": "🇬🇧",
+      "url": "",
+      "socials": {
+        "linkedin": "agniveshs"
+      },
+      "avatar": "https://github.com/agnivesh.png",
+      "firstContribution": "2026-08-16",
+      "testsAuthored": [
+        "MT.1196",
+        "MT.1197",
+        "MT.1200",
+        "MT.1201",
+        "MT.1203",
+        "MT.1204",
+        "MT.1205",
+        "MT.1206",
+        "MT.1207",
+        "MT.1208",
+        "MT.1209",
+        "MT.1210",
+        "MT.1211",
+        "MT.1212",
+        "MT.1213",
+        "MT.1223"
+      ],
+      "testsContributed": [],
+      "initials": "AS",
+      "recentCommits": 10
+    },
+    {
       "id": "HenrikPiecha",
       "github": "HenrikPiecha",
       "name": "Henrik Piecha",
@@ -1282,41 +1321,6 @@
       ],
       "initials": "SE",
       "recentCommits": 4
-    },
-    {
-      "id": "agnivesh",
-      "github": "agnivesh",
-      "name": "Agnivesh S.",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "United Kingdom",
-      "locationFlag": "🇬🇧",
-      "url": "",
-      "socials": {
-        "linkedin": "agniveshs"
-      },
-      "avatar": "https://github.com/agnivesh.png",
-      "firstContribution": "2026-08-16",
-      "testsAuthored": [
-        "MT.1196",
-        "MT.1197",
-        "MT.1200",
-        "MT.1201",
-        "MT.1203",
-        "MT.1204",
-        "MT.1205",
-        "MT.1206",
-        "MT.1207",
-        "MT.1208",
-        "MT.1209",
-        "MT.1210"
-      ],
-      "testsContributed": [],
-      "initials": "AS",
-      "recentCommits": 6
     },
     {
       "id": "oed-metzb",
@@ -2351,7 +2355,7 @@
         "MT.1020"
       ],
       "initials": "M",
-      "recentCommits": 4
+      "recentCommits": 3
     },
     {
       "id": "kij",
@@ -6306,6 +6310,22 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1211": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1212": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1213": {
+      "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1223": {
+      "author": "agnivesh",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": [
@@ -8290,56 +8310,60 @@
       "path": "/docs/next/tests/MT.1197"
     },
     "MT.1200": {
-      "title": "Agent Identities should have an existing Blueprint Principal",
+      "title": "Agent Identities should have an active Agent Identity Blueprint Principal (Preview)",
       "path": "/docs/next/tests/MT.1200"
     },
     "MT.1201": {
-      "title": "Agent Users should have an existing parent Agent Identity",
+      "title": "Agent Users should have an existing parent Agent Identity (Preview)",
       "path": "/docs/next/tests/MT.1201"
     },
     "MT.1203": {
-      "title": "Agent Identity Blueprint Principals should have an existing Blueprint",
+      "title": "Agent Identity Blueprint Principals should have an existing Blueprint (Preview)",
       "path": "/docs/next/tests/MT.1203"
     },
     "MT.1204": {
-      "title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners",
+      "title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview)",
       "path": "/docs/next/tests/MT.1204"
     },
     "MT.1205": {
-      "title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors",
+      "title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview)",
       "path": "/docs/next/tests/MT.1205"
     },
     "MT.1206": {
-      "title": "Enabled Agent Identities should have active sign-in activity within the last 180 days",
+      "title": "Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview)",
       "path": "/docs/next/tests/MT.1206"
     },
     "MT.1207": {
-      "title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles",
+      "title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview)",
       "path": "/docs/next/tests/MT.1207"
     },
     "MT.1208": {
-      "title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials",
+      "title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview)",
       "path": "/docs/next/tests/MT.1208"
     },
     "MT.1209": {
-      "title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles",
+      "title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview)",
       "path": "/docs/next/tests/MT.1209"
     },
     "MT.1210": {
-      "title": "Agent Users should not have privileged directory roles or membership in role-assignable groups",
+      "title": "Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview)",
       "path": "/docs/next/tests/MT.1210"
     },
     "MT.1211": {
-      "title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles",
+      "title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview)",
       "path": "/docs/next/tests/MT.1211"
     },
     "MT.1212": {
-      "title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose",
+      "title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview)",
       "path": "/docs/next/tests/MT.1212"
     },
     "MT.1213": {
-      "title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs",
+      "title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview)",
       "path": "/docs/next/tests/MT.1213"
+    },
+    "MT.1223": {
+      "title": "Agent Identities should not have high-risk Microsoft Graph permissions (Preview)",
+      "path": "/docs/next/tests/MT.1223"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

@@ -4,9 +4,10 @@
     Finds foreign or multi-tenant Agent Blueprint Principals and Agent Identities with privileged access.
     .DESCRIPTION
     Checks whether Blueprint Principals owned by an external tenant (multi-tenant applications)
-    or their child Agent Identities have been granted an Entra directory role that Microsoft Graph
-    classifies as privileged in the local tenant. Application permissions held by a foreign
-    Blueprint Principal are reported as an observation for review, not as a failure.
+    or their child Agent Identities have been granted an Entra directory role that Maester's
+    built-in role catalogue classifies as privileged through Get-MtRoleInfo. Application
+    permissions held by a foreign Blueprint Principal are reported as an observation for review,
+    not as a failure.
     .EXAMPLE
     Test-MtEntraAgentForeignPrivileged
     .LINK
@@ -194,7 +195,8 @@
                 if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
                 $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
                 $Resources = [System.Net.WebUtility]::HtmlEncode([string]$Item.Resources) -replace '\|', '&#124;'
-                $ObservationNote += "`n| ``$($Item.ObjectId)`` | $DisplayName | ``$($Item.ForeignTenant)`` | $($Item.Count) | $Resources |"
+                $ObservationNote += "`n| $($Item.ObjectId) | $DisplayName | " +
+                    "$($Item.ForeignTenant) | $($Item.Count) | $Resources |"
             }
         }
 
@@ -214,7 +216,8 @@
             $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
             $DisplayName = $DisplayName -replace "`r?`n", ' '
             $PrivName = [System.Net.WebUtility]::HtmlEncode([string]$Item.PrivilegeName) -replace '\|', '&#124;'
-            $Result += "`n| ``$($Item.ObjectId)`` | $DisplayName | $($Item.ObjectType) | ``$($Item.ForeignTenant)`` | $($Item.PrivilegeType) | $PrivName |"
+            $Result += "`n| $($Item.ObjectId) | $DisplayName | $($Item.ObjectType) | " +
+                "$($Item.ForeignTenant) | $($Item.PrivilegeType) | $PrivName |"
         }
         $Result += $ObservationNote
 

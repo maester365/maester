@@ -136,7 +136,8 @@
             $UPN = [System.Net.WebUtility]::HtmlEncode([string]$Item.UserPrincipalName) -replace '\|', '&#124;'
             $PrivItem = [System.Net.WebUtility]::HtmlEncode([string]$Item.PrivilegedItem) -replace '\|', '&#124;'
             $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
-            $Result += "`n| ``$($Item.UserId)`` | $Name | $UPN | $($Item.AccessType) | $PrivItem | $Reason |"
+            $Result += "`n| $($Item.UserId) | $Name | $UPN | $($Item.AccessType) | " +
+                "$PrivItem | $Reason |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'

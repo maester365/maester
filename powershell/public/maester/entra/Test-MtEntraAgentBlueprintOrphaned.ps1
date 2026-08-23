@@ -80,10 +80,10 @@
             $Name = $Name -replace "`r?`n", ' '
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
             $IdentityIds = if ($Principal.AgentIdentityIds.Count -gt 0) {
-                ($Principal.AgentIdentityIds | ForEach-Object { "``$_``" }) -join ', '
+                $Principal.AgentIdentityIds -join ', '
             } else { '(none found)' }
-            $Result += "`n| ``$($Principal.PrincipalId)`` | $Name | " +
-                "``$($Principal.BlueprintAppId)`` | $IdentityIds |"
+            $Result += "`n| $($Principal.PrincipalId) | $Name | " +
+                "$($Principal.BlueprintAppId) | $IdentityIds |"
         }
         Add-MtTestResultDetail -Result $Result -Severity 'Medium'
         return $false

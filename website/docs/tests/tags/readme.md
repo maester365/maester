@@ -397,7 +397,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 
 | Tag | Tests | Examples |
 | --- | ---: | --- |
-| Maester | 171 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
+| Maester | 172 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
 | MT.1001 | 1 | [MT.1001](../MT.1001) |
 | MT.1002 | 1 | [MT.1002](../MT.1002) |
 | MT.1003 | 1 | [MT.1003](../MT.1003) |
@@ -581,6 +581,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | MT.1211 | 1 | [MT.1211](../MT.1211) |
 | MT.1212 | 1 | [MT.1212](../MT.1212) |
 | MT.1213 | 1 | [MT.1213](../MT.1213) |
+| MT.1223 | 1 | [MT.1223](../MT.1223) |
 
 ### Ungrouped
 
@@ -600,7 +601,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | Defender | 25 | [MT.1059](../MT.1059), [MT.1148](../MT.1148), [MT.1149](../MT.1149), [MT.1150](../MT.1150), [MT.1151](../MT.1151), [MT.1152](../MT.1152), [MT.1153](../MT.1153), [MT.1154](../MT.1154), ... |
 | Deprecated | 3 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
 | Device | 7 | [MT.1070](../MT.1070), [MT.1086](../MT.1086), [MT.1087](../MT.1087), [MT.1088](../MT.1088), [MT.1089](../MT.1089), [MT.1090](../MT.1090), [MT.1091](../MT.1091) |
-| Entra | 56 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
+| Entra | 57 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
 | Entra ID Free | 11 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1), [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2), [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1), [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1), [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2), [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3), ... |
 | Entra ID P1 | 10 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5), [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6), [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7), ... |
 | Entra ID P2 | 9 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4), [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5), [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6), [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7), [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8), ... |
@@ -613,17 +614,17 @@ The tables below list every tag discovered from Pester test metadata and link to
 | Group | 2 | [MT.1055](../MT.1055), [MT.1069](../MT.1069) |
 | Hybrid | 4 | [MT.1073](../MT.1073), [MT.1084](../MT.1084), [MT.1147](../MT.1147), [MT.1183](../MT.1183) |
 | Intune | 20 | [MT.1053](../MT.1053), [MT.1054](../MT.1054), [MT.1092](../MT.1092), [MT.1093](../MT.1093), [MT.1094](../MT.1094), [MT.1095](../MT.1095), [MT.1096](../MT.1096), [MT.1097](../MT.1097), ... |
-| LongRunning | 19 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
+| LongRunning | 20 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
 | MDI | 1 | [MT.1059](../MT.1059) |
 | OneDrive | 5 | [CIS.M365.7.2.2](../CIS.M365.7.2.2), [CIS.M365.7.2.5](../CIS.M365.7.2.5), [CIS.M365.7.2.7](../CIS.M365.7.2.7), [CIS.M365.7.2.9](../CIS.M365.7.2.9), [CIS.M365.7.2.11](../CIS.M365.7.2.11) |
 | PIM | 4 | [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032) |
-| Preview | 26 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1111](../MT.1111), [MT.1112](../MT.1112), [MT.1187](../MT.1187), [MT.1188](../MT.1188), [MT.1189](../MT.1189), [MT.1190](../MT.1190), ... |
+| Preview | 27 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1111](../MT.1111), [MT.1112](../MT.1112), [MT.1187](../MT.1187), [MT.1188](../MT.1188), [MT.1189](../MT.1189), [MT.1190](../MT.1190), ... |
 | Privileged | 16 | [MT.1025](../MT.1025), [MT.1026](../MT.1026), [MT.1027](../MT.1027), [MT.1028](../MT.1028), [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032), ... |
 | Purview | 5 | [MT.1172](../MT.1172), [MT.1173](../MT.1173), [MT.1174](../MT.1174), [MT.1175](../MT.1175), [MT.1176](../MT.1176) |
 | Recommendation | 1 | [MT.1024](../MT.1024) |
 | Security | 13 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), ... |
 | Severity:$($_.Group[0].severity) | 1 | [MT.1059](../MT.1059) |
-| Severity:High | 6 | [MT.1207](../MT.1207), [MT.1208](../MT.1208), [MT.1209](../MT.1209), [MT.1210](../MT.1210), [MT.1211](../MT.1211), [MT.1213](../MT.1213) |
+| Severity:High | 7 | [MT.1207](../MT.1207), [MT.1208](../MT.1208), [MT.1209](../MT.1209), [MT.1210](../MT.1210), [MT.1211](../MT.1211), [MT.1213](../MT.1213), [MT.1223](../MT.1223) |
 | Severity:Medium | 7 | [MT.1200](../MT.1200), [MT.1201](../MT.1201), [MT.1203](../MT.1203), [MT.1204](../MT.1204), [MT.1205](../MT.1205), [MT.1206](../MT.1206), [MT.1212](../MT.1212) |
 | SharePoint Online | 6 | [CIS.M365.7.2.2](../CIS.M365.7.2.2), [CIS.M365.7.2.5](../CIS.M365.7.2.5), [CIS.M365.7.2.7](../CIS.M365.7.2.7), [CIS.M365.7.2.9](../CIS.M365.7.2.9), [CIS.M365.7.2.11](../CIS.M365.7.2.11), [CIS.M365.7.3.1](../CIS.M365.7.3.1) |
 | Teams | 6 | [MT.1037](../MT.1037), [MT.1042](../MT.1042), [MT.1045](../MT.1045), [MT.1046](../MT.1046), [MT.1047](../MT.1047), [MT.1048](../MT.1048) |

@@ -1561,67 +1561,72 @@
     {
       "Id": "MT.1200",
       "Severity": "Medium",
-      "Title": "Agent Identities should have an existing Blueprint Principal"
+      "Title": "Agent Identities should have an active Agent Identity Blueprint Principal (Preview)"
     },
     {
       "Id": "MT.1201",
       "Severity": "Medium",
-      "Title": "Agent Users should have an existing parent Agent Identity"
+      "Title": "Agent Users should have an existing parent Agent Identity (Preview)"
     },
     {
       "Id": "MT.1203",
       "Severity": "Medium",
-      "Title": "Agent Identity Blueprint Principals should have an existing Blueprint"
+      "Title": "Agent Identity Blueprint Principals should have an existing Blueprint (Preview)"
     },
     {
       "Id": "MT.1204",
       "Severity": "Medium",
-      "Title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners"
+      "Title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview)"
     },
     {
       "Id": "MT.1205",
       "Severity": "Medium",
-      "Title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors"
+      "Title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview)"
     },
     {
       "Id": "MT.1206",
       "Severity": "Medium",
-      "Title": "Enabled Agent Identities should have active sign-in activity within the last 180 days"
+      "Title": "Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview)"
     },
     {
       "Id": "MT.1207",
       "Severity": "High",
-      "Title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles"
+      "Title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview)"
     },
     {
       "Id": "MT.1208",
       "Severity": "High",
-      "Title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials"
+      "Title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview)"
     },
     {
       "Id": "MT.1209",
       "Severity": "High",
-      "Title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles"
+      "Title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview)"
     },
     {
       "Id": "MT.1210",
       "Severity": "High",
-      "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups"
+      "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview)"
     },
     {
       "Id": "MT.1211",
       "Severity": "High",
-      "Title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles"
+      "Title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview)"
     },
     {
       "Id": "MT.1212",
       "Severity": "Medium",
-      "Title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose"
+      "Title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview)"
     },
     {
       "Id": "MT.1213",
       "Severity": "High",
-      "Title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs"
+      "Title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview)"
+    },
+    {
+      "Id": "MT.1223",
+      "Severity": "High",
+      "Title": "Agent Identities should not have high-risk Microsoft Graph permissions (Preview)"
     },
     {
       "Id": "MT.1178",

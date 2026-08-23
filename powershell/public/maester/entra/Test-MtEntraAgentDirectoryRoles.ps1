@@ -121,7 +121,7 @@
             $Name = $Name -replace "`r?`n", ' '
             $RoleName = [System.Net.WebUtility]::HtmlEncode([string]$Item.RoleName) -replace '\|', '&#124;'
             $Scope = if ([string]::IsNullOrWhiteSpace($Item.Scope) -or $Item.Scope -eq '/') { 'Tenant-wide (/)' } else { $Item.Scope }
-            $Result += "`n| ``$($Item.ObjectId)`` | $Name | $($Item.ObjectType) | $RoleName | $Scope |"
+            $Result += "`n| $($Item.ObjectId) | $Name | $($Item.ObjectType) | $RoleName | $Scope |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'

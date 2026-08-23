@@ -18,6 +18,12 @@
         }
     }
 
+    AfterEach {
+        if ($null -ne $script:BlueprintResult) {
+            $script:BlueprintResult | Should -Not -Match '`[^`]+`'
+        }
+    }
+
     It 'passes when every Blueprint Principal has an actual Blueprint' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             switch -Wildcard ($RelativeUri) {

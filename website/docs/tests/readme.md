@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 183 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 184 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
@@ -373,19 +373,20 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1195](./MT.1195) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Maester | Unknown | Entra |
 | [MT.1196](./MT.1196) | Review who can change attributes used by dynamic group rules | Maester | Medium | Entra |
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
-| [MT.1200](./MT.1200) | Agent Identities should have an existing Blueprint Principal | Maester | Medium | Entra |
-| [MT.1201](./MT.1201) | Agent Users should have an existing parent Agent Identity | Maester | Medium | Entra |
-| [MT.1203](./MT.1203) | Agent Identity Blueprint Principals should have an existing Blueprint | Maester | Medium | Entra |
-| [MT.1204](./MT.1204) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Maester | Medium | Entra |
-| [MT.1205](./MT.1205) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Maester | Medium | Entra |
-| [MT.1206](./MT.1206) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Maester | Medium | Entra |
-| [MT.1207](./MT.1207) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | Maester | High | Entra |
-| [MT.1208](./MT.1208) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | Maester | High | Entra |
-| [MT.1209](./MT.1209) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | Maester | High | Entra |
-| [MT.1210](./MT.1210) | Agent Users should not have privileged directory roles or membership in role-assignable groups | Maester | High | Entra |
-| [MT.1211](./MT.1211) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles | Maester | High | Entra |
-| [MT.1212](./MT.1212) | Agent Identity Blueprint Principals should require assignment for the application roles they expose | Maester | Medium | Entra |
-| [MT.1213](./MT.1213) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs | Maester | High | Entra |
+| [MT.1200](./MT.1200) | Agent Identities should have an active Agent Identity Blueprint Principal (Preview) | Maester | Medium | Entra |
+| [MT.1201](./MT.1201) | Agent Users should have an existing parent Agent Identity (Preview) | Maester | Medium | Entra |
+| [MT.1203](./MT.1203) | Agent Identity Blueprint Principals should have an existing Blueprint (Preview) | Maester | Medium | Entra |
+| [MT.1204](./MT.1204) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview) | Maester | Medium | Entra |
+| [MT.1205](./MT.1205) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview) | Maester | Medium | Entra |
+| [MT.1206](./MT.1206) | Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview) | Maester | Medium | Entra |
+| [MT.1207](./MT.1207) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview) | Maester | High | Entra |
+| [MT.1208](./MT.1208) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview) | Maester | High | Entra |
+| [MT.1209](./MT.1209) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview) | Maester | High | Entra |
+| [MT.1210](./MT.1210) | Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview) | Maester | High | Entra |
+| [MT.1211](./MT.1211) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview) | Maester | High | Entra |
+| [MT.1212](./MT.1212) | Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview) | Maester | Medium | Entra |
+| [MT.1213](./MT.1213) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview) | Maester | High | Entra |
+| [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview) | Maester | High | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

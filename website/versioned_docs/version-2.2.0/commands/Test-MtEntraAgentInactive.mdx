@@ -21,10 +21,13 @@ Test-MtEntraAgentInactive [[-MaxInactiveDays] <Int32>] [-ProgressAction <ActionP
 
 ## DESCRIPTION
 
-Checks whether enabled Agent Identities have recent sign-in activity.
-Stale enabled agents
-retain permissions and token-exchange capabilities without operational oversight, increasing
-the risk of unmonitored persistence or unused privileges.
+Checks whether enabled Agent Identities have recent sign-in activity, and separately flags a
+Blueprint whose entire fleet of child Agent Identities is inactive while the Blueprint still
+holds a live (non-expired) credential.
+Stale enabled agents retain permissions and
+token-exchange capabilities without operational oversight, increasing the risk of unmonitored
+persistence or unused privileges; a fully dormant fleet with a live parent credential is a
+stronger signal that the Blueprint itself is a cleanup candidate.
 
 ## EXAMPLES
 

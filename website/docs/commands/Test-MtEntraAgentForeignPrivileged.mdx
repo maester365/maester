@@ -21,10 +21,11 @@ Test-MtEntraAgentForeignPrivileged [-ProgressAction <ActionPreference>] [<Common
 ## DESCRIPTION
 
 Checks whether Blueprint Principals owned by an external tenant (multi-tenant applications)
-or their child Agent Identities have been granted an Entra directory role that Microsoft Graph
-classifies as privileged in the local tenant.
-Application permissions held by a foreign
-Blueprint Principal are reported as an observation for review, not as a failure.
+or their child Agent Identities have been granted an Entra directory role that Maester's
+built-in role catalogue classifies as privileged through Get-MtRoleInfo.
+Application
+permissions held by a foreign Blueprint Principal are reported as an observation for review,
+not as a failure.
 
 ## EXAMPLES
 

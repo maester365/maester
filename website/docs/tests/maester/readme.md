@@ -188,16 +188,17 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Unknown | Entra |
 | [MT.1196](./MT.1196.md) | Review who can change attributes used by dynamic group rules | Medium | Entra |
 | [MT.1197](./MT.1197.md) | Dynamic groups should not use the retiring memberOf rule operator | High | Entra |
-| [MT.1200](./MT.1200.md) | Agent Identities should have an existing Blueprint Principal | Medium | Entra |
-| [MT.1201](./MT.1201.md) | Agent Users should have an existing parent Agent Identity | Medium | Entra |
-| [MT.1203](./MT.1203.md) | Agent Identity Blueprint Principals should have an existing Blueprint | Medium | Entra |
-| [MT.1204](./MT.1204.md) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners | Medium | Entra |
-| [MT.1205](./MT.1205.md) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors | Medium | Entra |
-| [MT.1206](./MT.1206.md) | Enabled Agent Identities should have active sign-in activity within the last 180 days | Medium | Entra |
-| [MT.1207](./MT.1207.md) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles | High | Entra |
-| [MT.1208](./MT.1208.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials | High | Entra |
-| [MT.1209](./MT.1209.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles | High | Entra |
-| [MT.1210](./MT.1210.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups | High | Entra |
-| [MT.1211](./MT.1211.md) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles | High | Entra |
-| [MT.1212](./MT.1212.md) | Agent Identity Blueprint Principals should require assignment for the application roles they expose | Medium | Entra |
-| [MT.1213](./MT.1213.md) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs | High | Entra |
+| [MT.1200](./MT.1200.md) | Agent Identities should have an active Agent Identity Blueprint Principal (Preview) | Medium | Entra |
+| [MT.1201](./MT.1201.md) | Agent Users should have an existing parent Agent Identity (Preview) | Medium | Entra |
+| [MT.1203](./MT.1203.md) | Agent Identity Blueprint Principals should have an existing Blueprint (Preview) | Medium | Entra |
+| [MT.1204](./MT.1204.md) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview) | Medium | Entra |
+| [MT.1205](./MT.1205.md) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview) | Medium | Entra |
+| [MT.1206](./MT.1206.md) | Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview) | Medium | Entra |
+| [MT.1207](./MT.1207.md) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview) | High | Entra |
+| [MT.1208](./MT.1208.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview) | High | Entra |
+| [MT.1209](./MT.1209.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview) | High | Entra |
+| [MT.1210](./MT.1210.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview) | High | Entra |
+| [MT.1211](./MT.1211.md) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview) | High | Entra |
+| [MT.1212](./MT.1212.md) | Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview) | Medium | Entra |
+| [MT.1213](./MT.1213.md) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview) | High | Entra |
+| [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview) | High | Entra |

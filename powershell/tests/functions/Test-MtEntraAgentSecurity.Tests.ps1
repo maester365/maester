@@ -1,4 +1,4 @@
-Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
+Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     }
@@ -15,6 +15,12 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
             $script:SkippedError = $SkippedError
+        }
+    }
+
+    AfterEach {
+        if ($null -ne $script:TestResult) {
+            $script:TestResult | Should -Not -Match '`[^`]+`'
         }
     }
 
@@ -154,6 +160,23 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
             Test-MtEntraAgentInactive | Should -BeFalse
             $script:TestResult | Should -Match 'id-1'
             $script:TestResult | Should -Match 'Inactive for'
+        }
+
+        It 'reports unknown inactivity when creation date and sign-in activity are unavailable' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'reports/*') {
+                    return @()
+                }
+                return @([pscustomobject]@{
+                    id = 'id-unknown'; appId = 'app-unknown'; displayName = 'Unknown Agent'
+                    accountEnabled = $true; createdDateTime = $null
+                })
+            }
+
+            Test-MtEntraAgentInactive | Should -BeFalse
+            $script:TestResult | Should -Match 'id-unknown'
+            $script:TestResult | Should -Match '\| Unknown \|'
+            $script:TestResult | Should -Match 'creation date could not be determined'
         }
 
         It 'reports a fully dormant fleet whose blueprint still holds a live credential' {
@@ -532,7 +555,7 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
                 return @([pscustomobject]@{
                     id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
                     appRoleAssignmentRequired = $true
-                    appRoles = @([pscustomobject]@{ id = 'role-1' })
+                    appRoles = @([pscustomobject]@{ id = 'role-1'; isEnabled = $true })
                 })
             }
 
@@ -545,7 +568,7 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
                 return @([pscustomobject]@{
                     id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
                     appRoleAssignmentRequired = $false
-                    appRoles = @([pscustomobject]@{ id = 'role-1' })
+                    appRoles = @([pscustomobject]@{ id = 'role-1'; isEnabled = $true })
                 })
             }
 
@@ -572,6 +595,19 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1210)' {
                     id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
                     appRoleAssignmentRequired = $false
                     appRoles = $null
+                })
+            }
+
+            Test-MtEntraAgentBlueprintOpenAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'passes when assignment is not required and every app role is disabled' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @([pscustomobject]@{
+                    id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
+                    appRoleAssignmentRequired = $false
+                    appRoles = @([pscustomobject]@{ id = 'role-1'; isEnabled = $false })
                 })
             }
 

@@ -1,5 +1,5 @@
 ﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph', 'Agent ID' {
-    It 'MT.1200: Agent Identities should have an existing Blueprint Principal. See https://maester.dev/docs/tests/MT.1200' -Tag 'MT.1200', 'Severity:Medium', 'Preview' {
+    It 'MT.1200: Agent Identities should have an active Agent Identity Blueprint Principal (Preview). See https://maester.dev/docs/tests/MT.1200' -Tag 'MT.1200', 'Severity:Medium', 'Preview' {
         $Result = Test-MtEntraAgentIdentityOrphaned
 
         if ($null -ne $Result) {
@@ -7,7 +7,7 @@
         }
     }
 
-    It 'MT.1201: Agent Users should have an existing parent Agent Identity. See https://maester.dev/docs/tests/MT.1201' -Tag 'MT.1201', 'Severity:Medium', 'Preview' {
+    It 'MT.1201: Agent Users should have an existing parent Agent Identity (Preview). See https://maester.dev/docs/tests/MT.1201' -Tag 'MT.1201', 'Severity:Medium', 'Preview' {
         $Result = Test-MtEntraAgentUserOrphaned
 
         if ($null -ne $Result) {

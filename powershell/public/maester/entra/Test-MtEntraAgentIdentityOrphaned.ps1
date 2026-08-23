@@ -94,8 +94,8 @@
             $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
             $DisplayName = $DisplayName -replace "`r?`n", ' '
             $Reason = [string]$OrphanedIdentity.Reason -replace '\|', '\|'
-            $Result += "`n| ``$($OrphanedIdentity.AgentIdentityId)`` | $DisplayName | " +
-                "``$($OrphanedIdentity.BlueprintAppId)`` | $Reason |"
+            $Result += "`n| $($OrphanedIdentity.AgentIdentityId) | $DisplayName | " +
+                "$($OrphanedIdentity.BlueprintAppId) | $Reason |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'Medium'

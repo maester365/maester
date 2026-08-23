@@ -153,7 +153,8 @@
             $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
             $Name = $Name -replace "`r?`n", ' '
             $Issue = [System.Net.WebUtility]::HtmlEncode([string]$Item.Issue) -replace '\|', '&#124;'
-            $Result += "`n| ``$($Item.BlueprintId)`` | $Name | ``$($Item.AppId)`` | ``$($Item.KeyId)`` | $($Item.Type) | $Issue |"
+            $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | " +
+                "$($Item.KeyId) | $($Item.Type) | $Issue |"
         }
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'
