@@ -2,7 +2,7 @@
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
 
-        function New-TestCompliancePolicy {
+        function Get-TestCompliancePolicy {
             param(
                 [string] $Name = 'Mac Compliance',
                 [int] $AssignmentCount = 1,
@@ -24,7 +24,7 @@
             }
         }
 
-        function New-TestEnrollmentProfile {
+        function Get-TestEnrollmentProfile {
             param(
                 [string] $Name = 'macOS ADE',
                 [bool] $HasAdminAccount = $true,
@@ -65,7 +65,7 @@
     Context 'Test-MtMacOSSystemIntegrityProtection (MT.1214)' {
         It 'passes when an assigned policy requires SIP' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -RequiresSip $true -AssignmentCount 1)
+                return @(Get-TestCompliancePolicy -RequiresSip $true -AssignmentCount 1)
             }
 
             Test-MtMacOSSystemIntegrityProtection | Should -BeTrue
@@ -74,7 +74,7 @@
 
         It 'fails when no policy requires SIP' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -RequiresSip $false -AssignmentCount 1)
+                return @(Get-TestCompliancePolicy -RequiresSip $false -AssignmentCount 1)
             }
 
             Test-MtMacOSSystemIntegrityProtection | Should -BeFalse
@@ -83,7 +83,7 @@
 
         It 'fails when the only policy requiring SIP is unassigned, and says so' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -RequiresSip $true -AssignmentCount 0)
+                return @(Get-TestCompliancePolicy -RequiresSip $true -AssignmentCount 0)
             }
 
             Test-MtMacOSSystemIntegrityProtection | Should -BeFalse
@@ -110,8 +110,8 @@
         It 'notes assigned policies that do not require SIP even when passing' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(
-                    (New-TestCompliancePolicy -Name 'Strict' -RequiresSip $true -AssignmentCount 1),
-                    (New-TestCompliancePolicy -Name 'Lenient' -RequiresSip $false -AssignmentCount 2)
+                    (Get-TestCompliancePolicy -Name 'Strict' -RequiresSip $true -AssignmentCount 1),
+                    (Get-TestCompliancePolicy -Name 'Lenient' -RequiresSip $false -AssignmentCount 2)
                 )
             }
 
@@ -123,7 +123,7 @@
     Context 'Test-MtMacOSGatekeeper (MT.1215)' {
         It 'passes for macAppStoreAndIdentifiedDevelopers' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStoreAndIdentifiedDevelopers')
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStoreAndIdentifiedDevelopers')
             }
 
             Test-MtMacOSGatekeeper | Should -BeTrue
@@ -131,7 +131,7 @@
 
         It 'passes for the stricter macAppStore' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStore')
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStore')
             }
 
             Test-MtMacOSGatekeeper | Should -BeTrue
@@ -139,7 +139,7 @@
 
         It 'fails for anywhere' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'anywhere')
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'anywhere')
             }
 
             Test-MtMacOSGatekeeper | Should -BeFalse
@@ -148,7 +148,7 @@
 
         It 'fails for notConfigured' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'notConfigured')
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'notConfigured')
             }
 
             Test-MtMacOSGatekeeper | Should -BeFalse
@@ -156,7 +156,7 @@
 
         It 'does not count a restricted but unassigned policy' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStore' -AssignmentCount 0)
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStore' -AssignmentCount 0)
             }
 
             Test-MtMacOSGatekeeper | Should -BeFalse
@@ -165,8 +165,8 @@
         It 'warns about an assigned anywhere policy even when another one passes' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(
-                    (New-TestCompliancePolicy -Name 'Good' -GatekeeperAllowedSource 'macAppStore'),
-                    (New-TestCompliancePolicy -Name 'Bad' -GatekeeperAllowedSource 'anywhere')
+                    (Get-TestCompliancePolicy -Name 'Good' -GatekeeperAllowedSource 'macAppStore'),
+                    (Get-TestCompliancePolicy -Name 'Bad' -GatekeeperAllowedSource 'anywhere')
                 )
             }
 
@@ -185,7 +185,7 @@
     Context 'Test-MtMacOSDefenderRiskScore (MT.1216)' {
         It 'passes for a configured threshold' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'medium')
+                return @(Get-TestCompliancePolicy -DefenderRiskScoreLevel 'medium')
             }
 
             Test-MtMacOSDefenderRiskScore | Should -BeTrue
@@ -193,7 +193,7 @@
 
         It 'passes for the strictest secured level' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'secured')
+                return @(Get-TestCompliancePolicy -DefenderRiskScoreLevel 'secured')
             }
 
             Test-MtMacOSDefenderRiskScore | Should -BeTrue
@@ -201,7 +201,7 @@
 
         It 'fails for unavailable, which means the score is not evaluated' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'unavailable')
+                return @(Get-TestCompliancePolicy -DefenderRiskScoreLevel 'unavailable')
             }
 
             Test-MtMacOSDefenderRiskScore | Should -BeFalse
@@ -210,7 +210,7 @@
 
         It 'fails for notSet' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'notSet')
+                return @(Get-TestCompliancePolicy -DefenderRiskScoreLevel 'notSet')
             }
 
             Test-MtMacOSDefenderRiskScore | Should -BeFalse
@@ -218,7 +218,7 @@
 
         It 'notes when a threshold is set without device threat protection' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'medium' -RequiresThreatProtection $false)
+                return @(Get-TestCompliancePolicy -DefenderRiskScoreLevel 'medium' -RequiresThreatProtection $false)
             }
 
             Test-MtMacOSDefenderRiskScore | Should -BeTrue
@@ -236,7 +236,7 @@
     Context 'Test-MtMacOSLAPSConfiguration (MT.1217)' {
         It 'passes when a profile has an admin account with rotation' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(New-TestEnrollmentProfile -HasAdminAccount $true -HasPasswordRotation $true)
+                return @(Get-TestEnrollmentProfile -HasAdminAccount $true -HasPasswordRotation $true)
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeTrue
@@ -245,7 +245,7 @@
 
         It 'fails when an admin account has no rotation configured' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(New-TestEnrollmentProfile -HasAdminAccount $true -HasPasswordRotation $false)
+                return @(Get-TestEnrollmentProfile -HasAdminAccount $true -HasPasswordRotation $false)
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeFalse
@@ -254,7 +254,7 @@
 
         It 'fails when no profile configures an admin account' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(New-TestEnrollmentProfile -HasAdminAccount $false -HasPasswordRotation $false)
+                return @(Get-TestEnrollmentProfile -HasAdminAccount $false -HasPasswordRotation $false)
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeFalse
@@ -272,7 +272,7 @@
 
         It 'notes when the password is not rotated after retrieval' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(New-TestEnrollmentProfile -RotateOnRetrieval $false)
+                return @(Get-TestEnrollmentProfile -RotateOnRetrieval $false)
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeTrue
@@ -281,7 +281,7 @@
 
         It 'always states the re-enrollment scope limitation when passing' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(New-TestEnrollmentProfile)
+                return @(Get-TestEnrollmentProfile)
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeTrue
@@ -303,7 +303,7 @@
             # Graph enums gain values over time (unknownFutureValue and friends).
             # Reporting a real-but-unknown setting as "Not configured" would be wrong.
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource 'someFutureAppleSource')
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'someFutureAppleSource')
             }
 
             Test-MtMacOSGatekeeper | Should -BeFalse
@@ -313,7 +313,7 @@
 
         It 'does not mislabel an unrecognised Defender risk level as Not evaluated' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -DefenderRiskScoreLevel 'someFutureLevel')
+                return @(Get-TestCompliancePolicy -DefenderRiskScoreLevel 'someFutureLevel')
             }
 
             Test-MtMacOSDefenderRiskScore | Should -BeFalse
@@ -323,7 +323,7 @@
 
         It 'still labels a genuinely absent Gatekeeper setting as Not configured' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -GatekeeperAllowedSource '')
+                return @(Get-TestCompliancePolicy -GatekeeperAllowedSource '')
             }
 
             Test-MtMacOSGatekeeper | Should -BeFalse
@@ -332,7 +332,7 @@
 
         It 'handles a policy with an empty display name without throwing' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
-                return @(New-TestCompliancePolicy -Name '')
+                return @(Get-TestCompliancePolicy -Name '')
             }
 
             { Test-MtMacOSSystemIntegrityProtection } | Should -Not -Throw
@@ -341,10 +341,10 @@
         It 'handles many policies with mixed states' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(
-                    (New-TestCompliancePolicy -Name 'A' -RequiresSip $true  -AssignmentCount 1),
-                    (New-TestCompliancePolicy -Name 'B' -RequiresSip $false -AssignmentCount 3),
-                    (New-TestCompliancePolicy -Name 'C' -RequiresSip $true  -AssignmentCount 0),
-                    (New-TestCompliancePolicy -Name 'D' -RequiresSip $false -AssignmentCount 0)
+                    (Get-TestCompliancePolicy -Name 'A' -RequiresSip $true  -AssignmentCount 1),
+                    (Get-TestCompliancePolicy -Name 'B' -RequiresSip $false -AssignmentCount 3),
+                    (Get-TestCompliancePolicy -Name 'C' -RequiresSip $true  -AssignmentCount 0),
+                    (Get-TestCompliancePolicy -Name 'D' -RequiresSip $false -AssignmentCount 0)
                 )
             }
 
@@ -354,7 +354,7 @@
 
         It 'reports rotation as Enabled when the period is zero rather than omitting it' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(New-TestEnrollmentProfile -AutoRotationPeriodInDays 0)
+                return @(Get-TestEnrollmentProfile -AutoRotationPeriodInDays 0)
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeTrue
@@ -364,8 +364,8 @@
         It 'handles multiple enrollment profiles where only one is compliant' {
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
                 return @(
-                    (New-TestEnrollmentProfile -Name 'Good' -HasAdminAccount $true  -HasPasswordRotation $true),
-                    (New-TestEnrollmentProfile -Name 'Bad'  -HasAdminAccount $false -HasPasswordRotation $false)
+                    (Get-TestEnrollmentProfile -Name 'Good' -HasAdminAccount $true  -HasPasswordRotation $true),
+                    (Get-TestEnrollmentProfile -Name 'Bad'  -HasAdminAccount $false -HasPasswordRotation $false)
                 )
             }
 
