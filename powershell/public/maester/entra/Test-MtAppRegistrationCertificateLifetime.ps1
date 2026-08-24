@@ -66,8 +66,13 @@
                 # An expired certificate can no longer be used to authenticate and is out of scope.
                 if ($endDateTime -lt $now) { continue }
 
-                $validityDays = [math]::Round(($endDateTime - $startDateTime).TotalDays)
-                if ($validityDays -le $MaximumValidityDays) { continue }
+                # Compare the exact lifetime. Rounding first would let a certificate that is
+                # valid for slightly longer than the maximum round down and pass.
+                $validityPeriod = ($endDateTime - $startDateTime).TotalDays
+                if ($validityPeriod -le $MaximumValidityDays) { continue }
+
+                # Round up for display so a reported certificate never reads as being within the maximum.
+                $validityDays = [math]::Ceiling($validityPeriod)
 
                 $certificateName = if ([string]::IsNullOrWhiteSpace($certificate.displayName)) {
                     $certificate.keyId

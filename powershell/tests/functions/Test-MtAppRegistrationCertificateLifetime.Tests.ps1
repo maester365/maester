@@ -16,13 +16,17 @@
         function New-TestCertificate {
             param($DisplayName, $StartsDaysFromNow, $EndsDaysFromNow, $Usage = 'Verify', $Thumbprint = 'AAAA')
 
+            $base = Get-Date
+
             return [PSCustomObject]@{
                 keyId               = [guid]::NewGuid().ToString()
                 customKeyIdentifier = $Thumbprint
                 displayName         = $DisplayName
                 usage               = $Usage
-                startDateTime       = (Get-Date).AddDays($StartsDaysFromNow)
-                endDateTime         = (Get-Date).AddDays($EndsDaysFromNow)
+                # Derive both dates from a single timestamp so the validity period is exact.
+                # Two separate Get-Date calls drift by microseconds and skew the day count.
+                startDateTime       = $base.AddDays($StartsDaysFromNow)
+                endDateTime         = $base.AddDays($EndsDaysFromNow)
             }
         }
     }
@@ -95,6 +99,26 @@
 
         Test-MtAppRegistrationCertificateLifetime | Should -BeTrue
         Test-MtAppRegistrationCertificateLifetime -MaximumValidityDays 90 | Should -BeFalse
+    }
+
+    It 'reports a certificate that exceeds the maximum by less than a day' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            # 365 days and one second. Rounding the lifetime to whole days would hide this.
+            $start = (Get-Date).AddDays(-1)
+            New-TestApp -DisplayName 'Just over the limit' -AppId '66666666-6666-6666-6666-666666666666' -Certificates @(
+                [PSCustomObject]@{
+                    keyId               = [guid]::NewGuid().ToString()
+                    customKeyIdentifier = 'CCCC'
+                    displayName         = 'CN=just-over'
+                    usage               = 'Verify'
+                    startDateTime       = $start
+                    endDateTime         = $start.AddDays(365).AddSeconds(1)
+                }
+            )
+        }
+
+        Test-MtAppRegistrationCertificateLifetime | Should -BeFalse
+        $script:Result | Should -BeLike '*CN=just-over*'
     }
 
     It 'passes when no app registration has certificates' {
