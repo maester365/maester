@@ -89,6 +89,17 @@
         if ($testResult) {
             $testResultMarkdown += "`nWell done. At least one macOS enrollment profile provisions a managed local administrator account with password rotation."
 
+            # A profile that provisions an admin account but configures no rotation creates a
+            # static local administrator password on every device enrolled through it. That is
+            # the exact risk this check exists to catch, so surface it even when another
+            # profile passes.
+            $staticPassword = @($profiles | Where-Object { $_.HasAdminAccount -and -not $_.HasPasswordRotation })
+            if ($staticPassword.Count -gt 0) {
+                $testResultMarkdown += "`n`n> **Warning:** $($staticPassword.Count) profile/profiles provision a local administrator "
+                $testResultMarkdown += "account with **no password rotation** configured. Devices enrolled through those profiles "
+                $testResultMarkdown += "receive a static local administrator password that Intune never rotates."
+            }
+
             $noRetrievalRotation = @($compliant | Where-Object { -not $_.RotateOnRetrieval })
             if ($noRetrievalRotation.Count -gt 0) {
                 $testResultMarkdown += "`n`n> **Note:** $($noRetrievalRotation.Count) profile/profiles do not rotate the password after it is retrieved. "

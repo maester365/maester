@@ -288,6 +288,24 @@
             $script:TestResult | Should -Match 'after a factory reset'
         }
 
+        It 'warns about a static admin password even when another profile passes' {
+            # Mirrors a real tenant: a compliant default profile alongside a test profile
+            # that provisions an admin account with no rotation, which is a static password.
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
+                return @(
+                    (Get-TestEnrollmentProfile -Name 'Mac Prod Standard' -HasAdminAccount $true -HasPasswordRotation $true  -AutoRotationPeriodInDays 90 -RotateOnRetrieval $false),
+                    (Get-TestEnrollmentProfile -Name 'MacOS Test'        -HasAdminAccount $true -HasPasswordRotation $false),
+                    (Get-TestEnrollmentProfile -Name 'IT'                -HasAdminAccount $false -HasPasswordRotation $false)
+                )
+            }
+
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
+            $script:TestResult | Should -Match 'no password rotation'
+            $script:TestResult | Should -Match 'static local administrator password'
+            # and still reports the retrieval-rotation gap on the compliant profile
+            $script:TestResult | Should -Match 'do not rotate the password after it is retrieved'
+        }
+
         It 'skips as NotAuthorized when the profiles cannot be read' {
             # deviceManagement/depOnboardingSettings is gated by Intune RBAC on top of
             # the Graph scope and returns 403 for accounts without enrollment programs access.
