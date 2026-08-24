@@ -22,6 +22,12 @@
     Used by Test-MtMacOSSystemIntegrityProtection, Test-MtMacOSGatekeeper and
     Test-MtMacOSDefenderRiskScore.
 
+
+    Errors are deliberately not caught here. The calling check wraps its logic in try/catch
+    and maps 401/403 to NotAuthorized and anything else to a skip, so swallowing the
+    exception at this level would lose the status code and turn a permission problem into a
+    false security finding.
+
     .EXAMPLE
     Get-MtMacOSCompliancePolicy
 
