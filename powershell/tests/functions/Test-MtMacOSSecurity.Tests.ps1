@@ -278,16 +278,14 @@
             }
 
             Test-MtMacOSLAPSConfiguration | Should -BeTrue
-            $script:TestResult | Should -Match 'do not rotate the password after it is retrieved'
+            $script:TestResult | Should -Match 'do not rotate the password after retrieval'
         }
 
-        It 'always states the re-enrollment scope limitation when passing' {
-            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
-                return @(Get-TestEnrollmentProfile)
-            }
-
-            Test-MtMacOSLAPSConfiguration | Should -BeTrue
-            $script:TestResult | Should -Match 'after a factory reset'
+        It 'documents the re-enrollment scope limitation in the companion markdown' {
+            # Static explanation belongs in the description, not repeated in every result.
+            $md = Get-Content "$PSScriptRoot/../../public/maester/intune/Test-MtMacOSLAPSConfiguration.md" -Raw
+            $md | Should -Match 'after a factory reset'
+            $md | Should -Match '(?i)Scope limitation'
         }
 
         It 'warns about a static admin password even when another profile passes' {
@@ -303,9 +301,9 @@
 
             Test-MtMacOSLAPSConfiguration | Should -BeTrue
             $script:TestResult | Should -Match 'no password rotation'
-            $script:TestResult | Should -Match 'static local administrator password'
+            $script:TestResult | Should -Match 'static password Intune never rotates'
             # and still reports the retrieval-rotation gap on the compliant profile
-            $script:TestResult | Should -Match 'do not rotate the password after it is retrieved'
+            $script:TestResult | Should -Match 'do not rotate the password after retrieval'
             # partial compliance must be flagged for review, not reported as a clean pass
             $script:Investigate | Should -BeTrue
             $script:TestResult | Should -Not -Match 'Well done'

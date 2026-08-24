@@ -56,7 +56,6 @@
             return $null
         }
 
-        $portalLink = 'https://intune.microsoft.com/#view/Microsoft_Intune_Enrollment/EnrollmentMenu/~/appleEnrollment'
 
         if ($profiles.Count -eq 0) {
             $testResultMarkdown = "No macOS Automated Device Enrollment profiles were found in Intune.`n`n"
@@ -84,7 +83,6 @@
             $testResultMarkdown += "| $($enrollmentProfile.Name) | $($enrollmentProfile.TokenName) | $adminState | $rotationState | $retrievalState |`n"
         }
 
-        $testResultMarkdown += "`n[View Apple enrollment profiles in the Intune admin center]($portalLink)`n"
 
         # A profile that provisions an admin account but configures no rotation creates a
         # static local administrator password on every device enrolled through it. That is the
@@ -93,22 +91,19 @@
         $staticPassword = @($profiles | Where-Object { $_.HasAdminAccount -and -not $_.HasPasswordRotation })
 
         if ($testResult) {
-            $testResultMarkdown += "`nAt least one macOS enrollment profile provisions a managed local administrator account with password rotation."
+            $verdict = if ($staticPassword.Count -gt 0) { '' } else { 'Well done. ' }
+            $testResultMarkdown += "`n$($verdict)At least one macOS enrollment profile provisions a managed local administrator account with password rotation."
 
             if ($staticPassword.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Warning:** $($staticPassword.Count) profile/profiles provision a local administrator "
-                $testResultMarkdown += "account with **no password rotation** configured. Devices enrolled through those profiles "
-                $testResultMarkdown += "receive a static local administrator password that Intune never rotates."
+                $testResultMarkdown += "`n`n> **Warning:** $($staticPassword.Count) profile/profiles provision a local administrator account with "
+                $testResultMarkdown += "**no password rotation**, so devices enrolled through them receive a static password Intune never rotates."
             }
 
             $noRetrievalRotation = @($compliant | Where-Object { -not $_.RotateOnRetrieval })
             if ($noRetrievalRotation.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($noRetrievalRotation.Count) profile/profiles do not rotate the password after it is retrieved. "
-                $testResultMarkdown += "Every previous retrieval therefore remains a valid credential until the next scheduled rotation."
+                $testResultMarkdown += "`n`n> **Note:** $($noRetrievalRotation.Count) profile/profiles do not rotate the password after retrieval, "
+                $testResultMarkdown += "so every previous retrieval stays valid until the next scheduled rotation."
             }
-
-            $testResultMarkdown += "`n`n> macOS LAPS applies only to devices that enroll through Automated Device Enrollment after a factory reset. "
-            $testResultMarkdown += "Devices enrolled before the profile was configured are not covered until they are re-enrolled."
         } else {
             if ($staticPassword.Count -gt 0) {
                 $testResultMarkdown += "`n$($staticPassword.Count) profile/profiles configure a local administrator account but **no password rotation**, "
@@ -125,9 +120,6 @@
         if ($testResult -and $staticPassword.Count -gt 0) {
             Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
         } else {
-            if ($testResult) {
-                $testResultMarkdown = "Well done. $testResultMarkdown"
-            }
             Add-MtTestResultDetail -Result $testResultMarkdown
         }
         return $testResult

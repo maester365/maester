@@ -51,7 +51,6 @@
             return $null
         }
 
-        $portalLink = 'https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance'
 
         if ($policies.Count -eq 0) {
             $testResultMarkdown = "No macOS compliance policies were found in Intune.`n`n"
@@ -93,7 +92,6 @@
             $testResultMarkdown += "| $($policy.Name) | $sourceLabel | $assignmentState |`n"
         }
 
-        $testResultMarkdown += "`n[View compliance policies in the Intune admin center]($portalLink)`n"
 
         if ($testResult) {
             $testResultMarkdown += "`nWell done. At least one assigned macOS compliance policy restricts where apps may be downloaded from."
