@@ -103,8 +103,9 @@
             }
 
             if ($null -ne $LastSignInDate) {
-                $DaysSinceSignIn = [int]($UtcNow.Subtract($LastSignInDate).TotalDays)
-                if ($DaysSinceSignIn -gt $MaxInactiveDays) {
+                $DaysSinceSignInTotal = $UtcNow.Subtract($LastSignInDate).TotalDays
+                if ($DaysSinceSignInTotal -gt $MaxInactiveDays) {
+                    $DaysSinceSignIn = [math]::Floor($DaysSinceSignInTotal)
                     $InactiveAgents.Add([pscustomobject]@{
                         ObjectId       = [string]$Agent.id
                         DisplayName    = [string]$Agent.displayName
@@ -121,19 +122,21 @@
                     $CreatedDate = $CreatedDate.ToUniversalTime()
                 }
 
-                $DaysSinceCreation = if ($null -ne $CreatedDate) {
-                    [int]($UtcNow.Subtract($CreatedDate).TotalDays)
+                $DaysSinceCreationTotal = if ($null -ne $CreatedDate) {
+                    $UtcNow.Subtract($CreatedDate).TotalDays
                 } else {
                     $null
                 }
-                if ($null -eq $DaysSinceCreation -or $DaysSinceCreation -gt $MaxInactiveDays) {
-                    if ($null -eq $DaysSinceCreation) {
+                if ($null -eq $DaysSinceCreationTotal -or
+                    $DaysSinceCreationTotal -gt $MaxInactiveDays) {
+                    if ($null -eq $DaysSinceCreationTotal) {
                         $InactiveDays = 'Unknown'
                         $InactivityReason = (
                             'No recorded sign-in activity, and the creation date could not be ' +
                             'determined.'
                         )
                     } else {
+                        $DaysSinceCreation = [math]::Floor($DaysSinceCreationTotal)
                         $InactiveDays = $DaysSinceCreation
                         $InactivityReason = (
                             "No recorded sign-in activity since creation " +

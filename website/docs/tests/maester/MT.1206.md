@@ -31,7 +31,7 @@ An enabled Agent Identity that is no longer used can retain directory roles, OAu
 
 This check reviews interactive, delegated, and application sign-in activity. It reports enabled Agent Identities with no recorded activity during the last 180 days. It also reports an Agent Identity Blueprint when all of its child Agent Identities are inactive and the Blueprint still has a valid credential. This combination indicates that the Blueprint and its credentials may no longer be needed and should be reviewed.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent identities**.
 2. Search for the reported Agent Identity by its **Object ID** or display name.
@@ -41,7 +41,7 @@ This check reviews interactive, delegated, and application sign-in activity. It 
    - If decommissioning is approved, follow the [delete guidance][delete-agent-id] to remove the agent.
 5. If the agent is needed on a seasonal or scheduled basis, document the business justification.
 
-#### Related links
+### Related links
 
 * [View and filter agent identities][agent-identity-list]
 * [Disable agent identities][disable-agent-id]

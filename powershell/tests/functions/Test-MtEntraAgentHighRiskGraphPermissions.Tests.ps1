@@ -51,6 +51,8 @@
                         })
                 }
                 'servicePrincipals/agent-1/oauth2PermissionGrants' { return @() }
+                '*agent-1/inheritedAppRoleAssignments' { return @() }
+                '*agent-1/inheritedOauth2PermissionGrants' { return @() }
                 default { throw "Unexpected Graph request: $RelativeUri" }
             }
         }
@@ -82,6 +84,8 @@
                             scope      = 'User.Read RoleEligibilitySchedule.ReadWrite.Directory'
                         })
                 }
+                '*agent-2/inheritedAppRoleAssignments' { return @() }
+                '*agent-2/inheritedOauth2PermissionGrants' { return @() }
                 default { throw "Unexpected Graph request: $RelativeUri" }
             }
         }
@@ -89,6 +93,11 @@
         Test-MtEntraAgentHighRiskGraphPermissions | Should -BeFalse
         $script:TestResult | Should -Match 'RoleEligibilitySchedule.ReadWrite.Directory'
         $script:TestResult | Should -Match 'Delegated'
+        Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 2 -Exactly `
+            -ParameterFilter {
+                $RelativeUri -like '*inherited*' -and
+                !$PSBoundParameters.ContainsKey('Select')
+            }
     }
 
     It 'passes when Agent Identities have only non-risky Graph permissions' {
@@ -118,6 +127,8 @@
                 'servicePrincipals/agent-3/oauth2PermissionGrants' {
                     return @([pscustomobject]@{ resourceId = 'graph-sp'; scope = 'User.Read' })
                 }
+                '*agent-3/inheritedAppRoleAssignments' { return @() }
+                '*agent-3/inheritedOauth2PermissionGrants' { return @() }
                 default { throw "Unexpected Graph request: $RelativeUri" }
             }
         }
@@ -157,12 +168,79 @@
                             scope      = 'RoleEligibilitySchedule.ReadWrite.Directory'
                         })
                 }
+                '*agent-4/inheritedAppRoleAssignments' { return @() }
+                '*agent-4/inheritedOauth2PermissionGrants' { return @() }
                 default { throw "Unexpected Graph request: $RelativeUri" }
             }
         }
 
         Test-MtEntraAgentHighRiskGraphPermissions | Should -BeTrue
         $script:TestResult | Should -Match 'Well done'
+    }
+
+    It 'fails when an Agent Identity inherits a risky application permission' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            switch -Wildcard ($RelativeUri) {
+                'servicePrincipals/microsoft.graph.agentIdentity' {
+                    return @([pscustomobject]@{
+                            id = 'agent-5'; displayName = 'Inherited app agent'; appId = 'app-5'
+                        })
+                }
+                'servicePrincipals' {
+                    return @([pscustomobject]@{
+                            id = 'graph-sp'
+                            appRoles = @([pscustomobject]@{
+                                    id = 'risky-role-id'
+                                    value = 'RoleAssignmentSchedule.ReadWrite.Directory'
+                                })
+                        })
+                }
+                'servicePrincipals/agent-5/appRoleAssignments' { return @() }
+                'servicePrincipals/agent-5/oauth2PermissionGrants' { return @() }
+                '*agent-5/inheritedAppRoleAssignments' {
+                    return @([pscustomobject]@{
+                            appRoleId = 'risky-role-id'; resourceId = 'graph-sp'
+                        })
+                }
+                '*agent-5/inheritedOauth2PermissionGrants' { return @() }
+                default { throw "Unexpected Graph request: $RelativeUri" }
+            }
+        }
+
+        Test-MtEntraAgentHighRiskGraphPermissions | Should -BeFalse
+        $script:TestResult | Should -Match 'RoleAssignmentSchedule.ReadWrite.Directory'
+        $script:TestResult | Should -Match 'Application'
+    }
+
+    It 'fails when an Agent Identity inherits a risky delegated permission' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            switch -Wildcard ($RelativeUri) {
+                'servicePrincipals/microsoft.graph.agentIdentity' {
+                    return @([pscustomobject]@{
+                            id = 'agent-6'
+                            displayName = 'Inherited delegated agent'
+                            appId = 'app-6'
+                        })
+                }
+                'servicePrincipals' {
+                    return @([pscustomobject]@{ id = 'graph-sp'; appRoles = @() })
+                }
+                'servicePrincipals/agent-6/appRoleAssignments' { return @() }
+                'servicePrincipals/agent-6/oauth2PermissionGrants' { return @() }
+                '*agent-6/inheritedAppRoleAssignments' { return @() }
+                '*agent-6/inheritedOauth2PermissionGrants' {
+                    return @([pscustomobject]@{
+                            resourceId = 'graph-sp'
+                            scope = 'RoleEligibilitySchedule.ReadWrite.Directory'
+                        })
+                }
+                default { throw "Unexpected Graph request: $RelativeUri" }
+            }
+        }
+
+        Test-MtEntraAgentHighRiskGraphPermissions | Should -BeFalse
+        $script:TestResult | Should -Match 'RoleEligibilitySchedule.ReadWrite.Directory'
+        $script:TestResult | Should -Match 'Delegated'
     }
 
     It 'skips when Graph is disconnected' {

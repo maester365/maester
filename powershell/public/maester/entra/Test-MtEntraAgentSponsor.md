@@ -4,7 +4,7 @@ Sponsors provide business ownership and ongoing accountability for AI agents. Wh
 
 This check audits all Agent Identity Blueprints and Blueprint Principals to verify that designated sponsors are assigned.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent blueprints**.
 2. Search for the reported Blueprint or Blueprint Principal by its **Object ID** or display name.
@@ -14,7 +14,7 @@ This check audits all Agent Identity Blueprints and Blueprint Principals to veri
    department lead, and select **Add**.
 6. Verify that the active sponsors are listed.
 
-#### Related links
+### Related links
 
 * [View and manage agent blueprints][manage-blueprints]
 * [Manage sponsors for Entra Agent ID][manage-sponsors]

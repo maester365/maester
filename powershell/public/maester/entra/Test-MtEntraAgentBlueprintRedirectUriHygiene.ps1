@@ -4,9 +4,10 @@
     Finds Agent Identity Blueprints with wildcard or plain-http redirect URIs.
     .DESCRIPTION
     Checks whether any Agent Identity Blueprint's web redirect URIs contain a wildcard or use
-    plain HTTP instead of HTTPS (excluding loopback addresses). A wildcard redirect URI lets a
-    token be redirected to any attacker-controlled host that matches the pattern. A plain-http,
-    non-loopback redirect URI returns tokens over an unencrypted channel.
+    plain HTTP instead of HTTPS (excluding loopback addresses). Agent Blueprint interactive
+    consent uses response_type=none, so no token or authorization code is returned. A wildcard
+    can send the consent result and optional state to an unintended matching endpoint. A
+    plain-http, non-loopback URI exposes that response to interception or tampering.
     .EXAMPLE
     Test-MtEntraAgentBlueprintRedirectUriHygiene
     .LINK
@@ -58,7 +59,10 @@
                         DisplayName = $DisplayName
                         AppId       = $AppId
                         Uri         = $UriString
-                        Issue       = 'Wildcard redirect URI: tokens can be redirected to any host matching the pattern.'
+                        Issue       = (
+                            'Wildcard redirect URI: the consent result or state can be sent to ' +
+                            'an unintended matching endpoint.'
+                        )
                     })
                     continue
                 }
@@ -71,7 +75,10 @@
                             DisplayName = $DisplayName
                             AppId       = $AppId
                             Uri         = $UriString
-                            Issue       = 'Plain-http, non-loopback redirect URI: tokens are returned over an unencrypted channel.'
+                            Issue       = (
+                                'Plain-http, non-loopback redirect URI: the consent result or ' +
+                                'state is exposed to interception or tampering.'
+                            )
                         })
                     }
                 }

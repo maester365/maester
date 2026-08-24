@@ -31,7 +31,7 @@ Multi-tenant Agent Blueprints originate in an external Microsoft Entra tenant. I
 
 Foreign Blueprint Principals and their child Agent Identities must not be assigned privileged Microsoft Entra directory roles. Application permissions assigned to foreign Blueprint Principals should also be reviewed to confirm that they are necessary and follow least privilege. These application permissions are shown for review but do not cause the test to fail on their own.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent blueprints**.
 2. Locate the reported foreign Blueprint Principal using its **Object ID** or display name.
@@ -41,7 +41,7 @@ Foreign Blueprint Principals and their child Agent Identities must not be assign
    - Restrict application role assignments to only the specific resources required by the agent.
 5. If the multi-tenant agent is untrusted or no longer required, remove the Blueprint Principal.
 
-#### Related links
+### Related links
 
 * [View and manage agent blueprints][manage-blueprints]
 * [Manage multi-tenant applications in Microsoft Entra ID][multitenant-apps]

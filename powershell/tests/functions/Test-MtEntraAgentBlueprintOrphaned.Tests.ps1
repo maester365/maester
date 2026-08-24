@@ -71,6 +71,20 @@
         $script:BlueprintResult | Should -Match 'app-1'
     }
 
+    It 'reports none found when an orphaned principal has no linked Agent Identities' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            if ($RelativeUri -like '*agentIdentityBlueprintPrincipal') {
+                return @([pscustomobject]@{
+                        id = 'principal-1'; displayName = 'Principal one'; appId = 'app-1'
+                    })
+            }
+            return @()
+        }
+
+        Test-MtEntraAgentBlueprintOrphaned | Should -BeFalse
+        $script:BlueprintResult | Should -Match '\(none found\)'
+    }
+
     It 'leaves a missing Blueprint Principal relationship to MT.1200' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             if ($RelativeUri -like '*agentIdentityBlueprintPrincipal') { return @() }

@@ -68,6 +68,7 @@
         }
 
         $ExcessiveAccessFindings = [System.Collections.Generic.List[pscustomobject]]::new()
+        $RoleObservations = [System.Collections.Generic.List[pscustomobject]]::new()
 
         foreach ($User in $AgentUsers) {
             $UserId = [string]$User.id
@@ -82,9 +83,26 @@
                 foreach ($Assigned in $AssignmentsByUser[$UserId]) {
                     $DefId = [string]$Assigned.roleDefinitionId
                     $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
-                    if ($null -eq $RoleDef) { continue }
+                    if ($null -eq $RoleDef) {
+                        $RoleObservations.Add([pscustomobject]@{
+                                UserId = $UserId
+                                DisplayName = [string]$User.displayName
+                                UserPrincipalName = [string]$User.userPrincipalName
+                                RoleName = "Unresolved role definition ($DefId)"
+                            })
+                        continue
+                    }
                     $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
-                    if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
+                    if ($null -eq $RoleInfo) {
+                        $RoleObservations.Add([pscustomobject]@{
+                                UserId = $UserId
+                                DisplayName = [string]$User.displayName
+                                UserPrincipalName = [string]$User.userPrincipalName
+                                RoleName = [string]$RoleDef.displayName
+                            })
+                        continue
+                    }
+                    if (!$RoleInfo.IsPrivileged) { continue }
 
                     $ExcessiveAccessFindings.Add([pscustomobject]@{
                         UserId            = $UserId
@@ -118,9 +136,32 @@
             }
         }
 
+        $ObservationNote = ''
+        if ($RoleObservations.Count -gt 0) {
+            $ObservationNote = "`n`nObservation: $($RoleObservations.Count) directory role " +
+                'assignment(s) could not be classified by Maester and require review.'
+            $ObservationNote += "`n`n| Agent User object ID | Display name | " +
+                'User principal name | Directory role |'
+            $ObservationNote += "`n| --- | --- | --- | --- |"
+            foreach ($Item in $RoleObservations) {
+                $Name = [System.Net.WebUtility]::HtmlEncode(
+                    [string]$Item.DisplayName
+                ) -replace '\|', '&#124;'
+                if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
+                $UPN = [System.Net.WebUtility]::HtmlEncode(
+                    [string]$Item.UserPrincipalName
+                ) -replace '\|', '&#124;'
+                $RoleName = [System.Net.WebUtility]::HtmlEncode(
+                    [string]$Item.RoleName
+                ) -replace '\|', '&#124;'
+                $ObservationNote += "`n| $($Item.UserId) | $Name | $UPN | $RoleName |"
+            }
+        }
+
         if ($ExcessiveAccessFindings.Count -eq 0) {
             Add-MtTestResultDetail -Result (
-                'Well done. No Agent Users have privileged directory roles or membership in role-assignable groups.'
+                'Well done. No Agent Users have confirmed privileged directory roles or ' +
+                "membership in role-assignable groups.$ObservationNote"
             )
             return $true
         }
@@ -139,6 +180,7 @@
             $Result += "`n| $($Item.UserId) | $Name | $UPN | $($Item.AccessType) | " +
                 "$PrivItem | $Reason |"
         }
+        $Result += $ObservationNote
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'
         return $false

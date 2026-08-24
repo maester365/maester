@@ -340,7 +340,8 @@
             Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
         }
     } else {
-        Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage | Out-Null
+        Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage `
+            -IncludePreview:$IncludePreview | Out-Null
     }
 
     # Initialize MtSession after Graph connected.

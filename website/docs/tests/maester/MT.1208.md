@@ -31,7 +31,7 @@ Credentials on Agent Identity Blueprints are used for token exchange to authenti
 
 This check inspects the credential metadata of all Agent Identity Blueprints in the tenant to identify expired secrets, credentials valid for more than 730 days (2 years), blueprints with more than 2 active secrets, or a blueprint that retains an active client secret alongside a federated identity credential (FIC).
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent blueprints**.
 2. Locate the reported Blueprint using its **Object ID** or display name.
@@ -41,7 +41,7 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 5. If secrets have validity periods longer than your organization's maximum rotation window (recommended &le; 365–730 days), create a new secret and decommission the old one.
 6. Prefer using **Federated credentials** or **Certificates** instead of shared client secrets wherever supported. If a federated credential is already configured, remove the remaining client secret entirely rather than keeping it as a fallback.
 
-#### Related links
+### Related links
 
 * [View and manage agent blueprints][manage-blueprints]
 * [Manage application credentials in Entra ID][manage-credentials]

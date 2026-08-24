@@ -75,6 +75,7 @@
         }
 
         $RoleFindings = [System.Collections.Generic.List[pscustomobject]]::new()
+        $RoleObservations = [System.Collections.Generic.List[pscustomobject]]::new()
 
         foreach ($Assignment in $RoleAssignments) {
             $PrincipalId = [string]$Assignment.principalId
@@ -82,7 +83,15 @@
                 $AgentInfo = $AgentLookup[$PrincipalId]
                 $DefId = [string]$Assignment.roleDefinitionId
                 $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
-                if ($null -eq $RoleDef) { continue }
+                if ($null -eq $RoleDef) {
+                    $RoleObservations.Add([pscustomobject]@{
+                            ObjectId = $PrincipalId
+                            DisplayName = [string]$AgentInfo.Object.displayName
+                            ObjectType = [string]$AgentInfo.Type
+                            RoleName = "Unresolved role definition ($DefId)"
+                        })
+                    continue
+                }
 
                 # isPrivileged is not a Graph-queryable property on unifiedRoleDefinition --
                 # confirmed live, Graph returns 400 Bad Request for it in $select. Resolve
@@ -90,7 +99,16 @@
                 # cannot resolve (unrecognized name, or a custom role) is an observation, not a
                 # confirmed privileged role.
                 $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
-                if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
+                if ($null -eq $RoleInfo) {
+                    $RoleObservations.Add([pscustomobject]@{
+                            ObjectId = $PrincipalId
+                            DisplayName = [string]$AgentInfo.Object.displayName
+                            ObjectType = [string]$AgentInfo.Type
+                            RoleName = [string]$RoleDef.displayName
+                        })
+                    continue
+                }
+                if (!$RoleInfo.IsPrivileged) { continue }
 
                 $RoleName = [string]$RoleDef.displayName
 
@@ -104,9 +122,29 @@
             }
         }
 
+        $ObservationNote = ''
+        if ($RoleObservations.Count -gt 0) {
+            $ObservationNote = "`n`nObservation: $($RoleObservations.Count) role assignment(s) " +
+                'could not be classified by Maester and require review.'
+            $ObservationNote += "`n`n| Object ID | Display name | Object type | Directory role |"
+            $ObservationNote += "`n| --- | --- | --- | --- |"
+            foreach ($Item in $RoleObservations) {
+                $Name = [System.Net.WebUtility]::HtmlEncode(
+                    [string]$Item.DisplayName
+                ) -replace '\|', '&#124;'
+                if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
+                $RoleName = [System.Net.WebUtility]::HtmlEncode(
+                    [string]$Item.RoleName
+                ) -replace '\|', '&#124;'
+                $ObservationNote += "`n| $($Item.ObjectId) | $Name | " +
+                    "$($Item.ObjectType) | $RoleName |"
+            }
+        }
+
         if ($RoleFindings.Count -eq 0) {
             Add-MtTestResultDetail -Result (
-                'Well done. No Agent Identities or Blueprint Principals have been assigned privileged Entra directory roles.'
+                'Well done. No Agent Identities or Blueprint Principals have been assigned ' +
+                "confirmed privileged Entra directory roles.$ObservationNote"
             )
             return $true
         }
@@ -123,6 +161,7 @@
             $Scope = if ([string]::IsNullOrWhiteSpace($Item.Scope) -or $Item.Scope -eq '/') { 'Tenant-wide (/)' } else { $Item.Scope }
             $Result += "`n| $($Item.ObjectId) | $Name | $($Item.ObjectType) | $RoleName | $Scope |"
         }
+        $Result += $ObservationNote
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'
         return $false

@@ -162,6 +162,22 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'Inactive for'
         }
 
+        It 'reports sign-in activity just beyond the inactivity threshold' {
+            $StaleDate = (Get-Date).AddDays(-180.4).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'reports/*') {
+                    return @([pscustomobject]@{ appId = 'app-1'; lastSignInDateTime = $StaleDate })
+                }
+                return @([pscustomobject]@{
+                        id = 'id-boundary'; appId = 'app-1'; displayName = 'Boundary Agent'
+                        accountEnabled = $true
+                    })
+            }
+
+            Test-MtEntraAgentInactive | Should -BeFalse
+            $script:TestResult | Should -Match 'id-boundary'
+        }
+
         It 'reports unknown inactivity when creation date and sign-in activity are unavailable' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'reports/*') {
@@ -246,6 +262,25 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'Well done'
         }
 
+        It 'uses the Graph context tenant when organization does not return an ID' {
+            Mock -ModuleName Maester Get-MgContext {
+                return [pscustomobject]@{ TenantId = 'local-tenant-123' }
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -eq 'organization') { return @() }
+                if ($RelativeUri -like '*agentIdentityBlueprintPrincipal') {
+                    return @([pscustomobject]@{
+                        id = 'principal-1'; displayName = 'Principal 1'; appId = 'app-1'
+                        appOwnerOrganizationId = 'local-tenant-123'
+                    })
+                }
+                return @()
+            }
+
+            Test-MtEntraAgentForeignPrivileged | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
         It 'reports a foreign blueprint principal with assigned directory role' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -eq 'organization') {
@@ -312,6 +347,35 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             Test-MtEntraAgentForeignPrivileged | Should -BeTrue
             $script:TestResult | Should -Match 'foreign-principal-1'
             $script:TestResult | Should -Match 'observation'
+        }
+
+        It 'passes but reports an unclassified directory role as an observation' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -eq 'organization') {
+                    return @([pscustomobject]@{ id = 'local-tenant-123' })
+                }
+                if ($RelativeUri -like '*agentIdentityBlueprintPrincipal') {
+                    return @([pscustomobject]@{
+                        id = 'foreign-principal-1'; displayName = 'Foreign Principal'
+                        appId = 'foreign-app-1'; appOwnerOrganizationId = 'foreign-tenant-999'
+                    })
+                }
+                if ($RelativeUri -like '*roleDefinitions') {
+                    return @([pscustomobject]@{
+                            id = 'custom-role'; displayName = 'Custom Agent Role'
+                        })
+                }
+                if ($RelativeUri -like '*roleAssignments') {
+                    return @([pscustomobject]@{
+                            principalId = 'foreign-principal-1'; roleDefinitionId = 'custom-role'
+                        })
+                }
+                return @()
+            }
+
+            Test-MtEntraAgentForeignPrivileged | Should -BeTrue
+            $script:TestResult | Should -Match 'Custom Agent Role'
+            $script:TestResult | Should -Match 'could not be classified'
         }
     }
 
@@ -380,6 +444,44 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
 
             Test-MtEntraAgentBlueprintCredentialHygiene | Should -BeFalse
             $script:TestResult | Should -Match 'Secret \+ FIC'
+        }
+
+        It 'does not count a future client secret as active' {
+            $FutureStart = (Get-Date).AddDays(10).ToString('o')
+            $FutureEnd = (Get-Date).AddDays(190).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*federatedIdentityCredentials') {
+                    return @([pscustomobject]@{ id = 'fic-1' })
+                }
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    passwordCredentials = @([pscustomobject]@{
+                            keyId = 'future-key'; startDateTime = $FutureStart
+                            endDateTime = $FutureEnd
+                        })
+                })
+            }
+
+            Test-MtEntraAgentBlueprintCredentialHygiene | Should -BeTrue
+            $script:TestResult | Should -Not -Match 'Secret \+ FIC'
+        }
+
+        It 'reports a secret whose validity exceeds the limit by part of a day' {
+            $ValidStart = (Get-Date).AddDays(-1).ToString('o')
+            $ExcessiveEnd = (Get-Date).AddDays(729.4).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like '*federatedIdentityCredentials') { return @() }
+                return @([pscustomobject]@{
+                    id = 'bp-1'; displayName = 'BP 1'; appId = 'app-1'
+                    passwordCredentials = @([pscustomobject]@{
+                            keyId = 'long-key'; startDateTime = $ValidStart
+                            endDateTime = $ExcessiveEnd
+                        })
+                })
+            }
+
+            Test-MtEntraAgentBlueprintCredentialHygiene | Should -BeFalse
+            $script:TestResult | Should -Match 'Excessive validity lifespan'
         }
     }
 
@@ -458,6 +560,27 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'Application Administrator'
             $script:TestResult | Should -Not -Match 'Reports Reader'
         }
+
+        It 'passes but reports an unresolved directory role as an observation' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'servicePrincipals/microsoft.graph.agentIdentity') {
+                    return @([pscustomobject]@{
+                            id = 'agent-1'; displayName = 'Agent 1'; appId = 'app-1'
+                        })
+                }
+                if ($RelativeUri -like '*roleAssignments') {
+                    return @([pscustomobject]@{
+                            principalId = 'agent-1'; roleDefinitionId = 'missing-role'
+                            directoryScopeId = '/'
+                        })
+                }
+                return @()
+            }
+
+            Test-MtEntraAgentDirectoryRoles | Should -BeTrue
+            $script:TestResult | Should -Match 'Unresolved role definition'
+            $script:TestResult | Should -Match 'could not be classified'
+        }
     }
 
     Context 'MT.1210: Test-MtEntraAgentUserExcessiveAccess' {
@@ -511,6 +634,33 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
 
             Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'passes but reports an unclassified directory role as an observation' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
+                    return @([pscustomobject]@{
+                        id = 'agent-user-1'; displayName = 'Agent User 1'
+                        userPrincipalName = 'au1@contoso.com'
+                    })
+                }
+                if ($RelativeUri -like '*roleDefinitions') {
+                    return @([pscustomobject]@{
+                            id = 'custom-role'; displayName = 'Custom Agent Role'
+                        })
+                }
+                if ($RelativeUri -like '*roleAssignments') {
+                    return @([pscustomobject]@{
+                            principalId = 'agent-user-1'; roleDefinitionId = 'custom-role'
+                        })
+                }
+                if ($RelativeUri -like '*/transitiveMemberOf/*') { return @() }
+                return @()
+            }
+
+            Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Custom Agent Role'
+            $script:TestResult | Should -Match 'could not be classified'
         }
     }
 

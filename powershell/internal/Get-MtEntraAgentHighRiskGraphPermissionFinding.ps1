@@ -53,6 +53,11 @@
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri "servicePrincipals/$AgentId/appRoleAssignments" `
                 -Select @('appRoleId', 'resourceId')
+            Invoke-MtGraphRequest -ApiVersion 'beta' `
+                -RelativeUri (
+                    "servicePrincipals/microsoft.graph.agentIdentity/$AgentId/" +
+                    'inheritedAppRoleAssignments'
+                )
         )
         foreach ($Assignment in $Assignments) {
             $AppRoleId = [string]$Assignment.appRoleId
@@ -74,6 +79,11 @@
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri "servicePrincipals/$AgentId/oauth2PermissionGrants" `
                 -Select @('resourceId', 'scope')
+            Invoke-MtGraphRequest -ApiVersion 'beta' `
+                -RelativeUri (
+                    "servicePrincipals/microsoft.graph.agentIdentity/$AgentId/" +
+                    'inheritedOauth2PermissionGrants'
+                )
         )
         foreach ($Grant in $Grants) {
             if ([string]$Grant.resourceId -ne $GraphServicePrincipalId) { continue }

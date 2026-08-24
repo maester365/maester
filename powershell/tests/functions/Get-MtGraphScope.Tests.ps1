@@ -9,19 +9,19 @@ Describe 'Get-MtGraphScope' {
         $scopes | Should -Contain 'EntitlementManagement.Read.All'
     }
 
-    It 'Includes Agent ID read permissions in default scopes' {
+    It 'Excludes Agent ID read permissions from default scopes' {
         $scopes = Get-MtGraphScope
 
-        $scopes | Should -Contain 'AgentIdentity.Read.All'
-        $scopes | Should -Contain 'AgentIdentityBlueprint.Read.All'
-        $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
-        $scopes | Should -Contain 'Application.Read.All'
+        $scopes | Should -Not -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Not -Contain 'AgentIdentityBlueprint.Read.All'
+        $scopes | Should -Not -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
+        $scopes | Should -Not -Contain 'Application.Read.All'
         $scopes | Should -Contain 'Directory.Read.All'
         $scopes | Should -Not -Contain 'User.ReadBasic.All'
     }
 
-    It 'Keeps Agent ID read permissions in sorted position before AuditLog' {
-        $scopes = Get-MtGraphScope
+    It 'Includes Agent ID read permissions with IncludePreview' {
+        $scopes = Get-MtGraphScope -IncludePreview
         $agentIdentityIndex = [array]::IndexOf($scopes, 'AgentIdentity.Read.All')
         $BlueprintIndex = [array]::IndexOf($scopes, 'AgentIdentityBlueprint.Read.All')
         $blueprintPrincipalIndex = [array]::IndexOf(

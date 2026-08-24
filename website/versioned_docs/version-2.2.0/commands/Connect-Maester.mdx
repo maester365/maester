@@ -15,11 +15,12 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ## SYNTAX
 
 ```powershell
-Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
- [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
- [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>] [[-SharePointClientId] <String>]
- [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>]
- [[-GitHubOrganization] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-IncludePreview] [-UseDeviceCode]
+ [[-Environment] <String>] [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>]
+ [[-TeamsEnvironmentName] <String>] [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>]
+ [[-ClientTimeout] <Double>] [[-SharePointClientId] <String>] [[-SharePointAdminUrl] <String>]
+ [[-SharePointCertificateThumbprint] <String>] [[-GitHubOrganization] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -122,9 +123,17 @@ Connects to Microsoft Graph with the ChannelMessage.Send scope.
 Connect-Maester -Privileged
 ```
 
-Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
+Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying Global Administrator roles in Privileged Identity Management.
 
 ### EXAMPLE 11
+
+```powershell
+Connect-Maester -IncludePreview
+```
+
+Connects to Microsoft Graph with the additional scopes required by preview tests.
+
+### EXAMPLE 12
 
 ```powershell
 Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
@@ -132,7 +141,7 @@ Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -Exchange
 
 Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 12
+### EXAMPLE 13
 
 ```powershell
 Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
@@ -140,7 +149,7 @@ Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -Excha
 
 Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 13
+### EXAMPLE 14
 
 ```powershell
 Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
@@ -148,7 +157,7 @@ Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEn
 
 Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 14
+### EXAMPLE 15
 
 ```powershell
 Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
@@ -156,7 +165,16 @@ Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
 
 Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
-### EXAMPLE 15
+### EXAMPLE 16
+
+```powershell
+Connect-Maester -ClientTimeout 900
+```
+
+Connects to Microsoft Graph with an HTTP client timeout of 900 seconds.
+This can be useful for long-running tests in large tenants.
+
+### EXAMPLE 17
 
 ```powershell
 '
@@ -167,7 +185,7 @@ The SharePoint admin URL is auto-discovered from the tenant's initial domain via
 Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g.
 for custom domain or government cloud tenants).
 
-### EXAMPLE 16
+### EXAMPLE 18
 
 ```powershell
 Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
@@ -212,7 +230,23 @@ Accept wildcard characters: False
 ### -Privileged
 
 If specified, the cmdlet will include the scopes for read write API endpoints.
-This is currently required for querying global admin roles in PIM.
+This is currently required for querying Global Administrator roles in PIM.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludePreview
+
+If specified, the cmdlet will include scopes required by preview tests.
 
 ```yaml
 Type: SwitchParameter
@@ -352,7 +386,7 @@ Accept wildcard characters: False
 
 The Client ID of the app to connect to for Graph.
 If not specified, the default Graph PowerShell CLI enterprise app will be used.
-Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
+Reference on how to create an enterprise app: https://learn.microsoft.com/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
 
 ```yaml
 Type: String
@@ -362,6 +396,23 @@ Aliases:
 Required: False
 Position: 7
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ClientTimeout
+
+The Microsoft Graph HTTP client timeout in seconds.
+When omitted, the Microsoft Graph PowerShell SDK default is used.
+
+```yaml
+Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -379,7 +430,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -397,7 +448,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -415,7 +466,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -431,7 +482,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

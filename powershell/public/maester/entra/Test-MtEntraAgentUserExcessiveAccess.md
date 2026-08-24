@@ -4,7 +4,7 @@ An Agent User is an Entra user account created specifically for an AI agent to a
 
 This check inspects all Agent Users in the tenant and verifies that they do not possess direct directory role assignments or memberships in role-assignable groups.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Users**.
 2. Locate the reported Agent User using its **Object ID** or user principal name.
@@ -12,7 +12,7 @@ This check inspects all Agent Users in the tenant and verifies that they do not 
 4. Check **Groups** and remove the user from any role-assignable security groups.
 5. If the agent only requires access to specific mailboxes or SharePoint sites, configure direct resource-level permissions (e.g. Mailbox delegation or SharePoint site sharing) rather than tenant-wide administrator roles.
 
-#### Related links
+### Related links
 
 * [Agent User resource overview][agent-user-resource]
 * [Role-assignable groups in Microsoft Entra ID][role-assignable-groups]

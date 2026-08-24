@@ -31,7 +31,7 @@ Owners are the technical custodians responsible for an AI agent's configuration,
 
 This check audits all Agent Identities, Blueprint Principals, and Blueprints in the tenant to confirm they have at least one active and enabled owner.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent identities** (or **Agent blueprints**).
 2. Search for the reported object by its **Object ID** or display name.
@@ -42,7 +42,7 @@ This check audits all Agent Identities, Blueprint Principals, and Blueprints in 
    administrator or service manager, and select **Add**.
 6. Review any existing owners and remove any disabled or former employee accounts.
 
-#### Related links
+### Related links
 
 * [View and filter agent identities][agent-identity-list]
 * [View and manage agent blueprints][manage-blueprints]

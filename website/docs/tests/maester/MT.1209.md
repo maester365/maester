@@ -33,7 +33,7 @@ AI agents should adhere strictly to the principle of least privilege. They shoul
 
 This check queries all active directory role assignments to identify Agent Identities and Blueprint Principals holding directory roles.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Roles & administrators**.
 2. Search for the reported role name (e.g., *Global Administrator*, *Application Administrator*).
@@ -41,7 +41,7 @@ This check queries all active directory role assignments to identify Agent Ident
 4. Select the principal and click **Remove assignment**.
 5. Replace administrative role assignments with specific, least-privileged API permissions or scoped resource permissions where necessary.
 
-#### Related links
+### Related links
 
 * [View and manage agent identities][manage-identities]
 * [Least privileged roles by task in Microsoft Entra ID][least-privilege-roles]

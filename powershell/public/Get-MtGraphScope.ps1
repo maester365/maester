@@ -26,6 +26,11 @@
 
     Connects to Microsoft Graph with the required scopes to run Maester for all tests, including those requiring read write APIs.
 
+    .Example
+    Connect-MgGraph -Scopes (Get-MtGraphScope -IncludePreview)
+
+    Connects to Microsoft Graph with the additional scopes required by preview tests.
+
     .LINK
     https://maester.dev/docs/commands/Get-MtGraphScope
     #>
@@ -40,7 +45,10 @@
         [switch] $SendTeamsMessage,
         # If specified, the cmdlet will include the scope for read write endpoints.
         [Parameter(Mandatory = $false)]
-        [switch] $Privileged
+        [switch] $Privileged,
+        # If specified, the cmdlet will include scopes required by preview tests.
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludePreview
     )
 
     # Any changes made to these permission scopes should be reflected in the documentation.
@@ -51,10 +59,6 @@
 
     # Default read-only scopes required for Maester.
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
-        'AgentIdentity.Read.All'
-        'AgentIdentityBlueprint.Read.All'
-        'AgentIdentityBlueprintPrincipal.Read.All'
-        'Application.Read.All'
         'AuditLog.Read.All'
         'DeviceManagementConfiguration.Read.All'
         'DeviceManagementManagedDevices.Read.All'
@@ -87,6 +91,18 @@
     $privilegedScopes = @(
         'ReportSettings.ReadWrite.All'
     )
+
+    $previewScopes = @(
+        'AgentIdentity.Read.All'
+        'AgentIdentityBlueprint.Read.All'
+        'AgentIdentityBlueprintPrincipal.Read.All'
+        'Application.Read.All'
+    )
+
+    if ($IncludePreview) {
+        Write-Verbose -Message 'Adding preview scopes.'
+        $scopes = @($previewScopes + $scopes)
+    }
 
     if ($Privileged) {
         Write-Verbose -Message "Adding Privileged scopes."

@@ -55,11 +55,16 @@
                     throw 'Graph returned an Agent Identity Blueprint Principal without an app ID.'
                 }
                 if (!$BlueprintsByAppId.ContainsKey($AppId)) {
+                    $LinkedIdentityIds = if ($IdentityIdsByAppId.ContainsKey($AppId)) {
+                        @($IdentityIdsByAppId[$AppId])
+                    } else {
+                        @()
+                    }
                     [pscustomobject]@{
                         PrincipalId      = [string]$BlueprintPrincipal.id
                         DisplayName      = [string]$BlueprintPrincipal.displayName
                         BlueprintAppId   = $AppId
-                        AgentIdentityIds = @($IdentityIdsByAppId[$AppId])
+                        AgentIdentityIds = $LinkedIdentityIds
                     }
                 }
             }

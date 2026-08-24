@@ -38,14 +38,14 @@ This test reports Agent Identity Blueprint Principals that expose at least one
 enabled application role but don't require assignment. Disabled application
 roles aren't included in the assessment.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Enterprise applications**.
 2. Locate the reported Blueprint Principal using its **Object ID** or display name.
 3. Under **Properties**, set **Assignment required?** to **Yes**.
 4. Under **Users and groups** (or the equivalent app role assignment surface), explicitly assign the principals that should be able to obtain tokens for the exposed roles.
 
-#### Related links
+### Related links
 
 * [View and manage agent blueprints][manage-blueprints]
 * [Restrict your Microsoft Entra app to a set of users][restrict-app-users]

@@ -35,7 +35,7 @@ This check looks for Agent Users whose parent Agent Identity is missing. The acc
 behind after the agent is deleted and may still have group memberships, licenses, or other access.
 That makes it harder to tell why the account exists and whether it should still have access.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and go to **Entra ID** >
    **Users**. Search for the Agent User by its **Object ID** or user principal name. The
@@ -50,7 +50,7 @@ That makes it harder to tell why the account exists and whether it should still 
    guidance][agent-id-delete]. Deletion is soft by default, so the user can normally be restored
    for 30 days.
 
-#### Related links
+### Related links
 
 * [Agent User resource][agent-user-list]
 * [View and filter agent identities][agent-identity-list]

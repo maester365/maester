@@ -26,7 +26,7 @@ escalation path. The check evaluates the following permissions:
 | `RoleManagementPolicy.ReadWrite.AzureADGroup` | Indirect |
 | `RoleManagementPolicy.ReadWrite.Directory` | Indirect |
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][agent-identities] and navigate to **Entra ID** >
    **Agents** > **Agent identities**.
@@ -41,7 +41,7 @@ escalation path. The check evaluates the following permissions:
 6. If the grant was unexpected, review the Agent Identity's audit and sign-in logs and rotate any
    credentials that might have been exposed.
 
-#### Related links
+### Related links
 
 * [Manage agent identities in your organization][manage-agent-identities]
 * [Microsoft Graph permissions blocked for agents][blocked-agent-permissions]

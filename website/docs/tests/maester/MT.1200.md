@@ -38,7 +38,7 @@ It can also leave stale directory data and access assignments in the tenant. Tre
 something to investigate. Confirm why the identity exists and whether it is still needed before
 deleting it.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and go to **Entra ID** >
    **Agents** > **Agent identities**. Search for the reported identity by its **Object ID** or
@@ -54,7 +54,7 @@ deleting it.
    Microsoft's [delete guidance][agent-id-delete]. Deleting a blueprint or Blueprint Principal
    can also clean up its child identities and Agent Users.
 
-#### Related links
+### Related links
 
 * [View and filter agent identities][agent-identity-list]
 * [View and manage agent identity blueprints][blueprint-principal-list]

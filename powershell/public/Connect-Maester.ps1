@@ -65,6 +65,11 @@
    Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying Global Administrator roles in Privileged Identity Management.
 
 .EXAMPLE
+   Connect-Maester -IncludePreview
+
+   Connects to Microsoft Graph with the additional scopes required by preview tests.
+
+.EXAMPLE
    Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
 
    Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
@@ -114,6 +119,9 @@
 
       # If specified, the cmdlet will include the scopes for read write API endpoints. This is currently required for querying Global Administrator roles in PIM.
       [switch] $Privileged,
+
+      # If specified, the cmdlet will include scopes required by preview tests.
+      [switch] $IncludePreview,
 
       # If specified, the cmdlet will use the device code flow to authenticate to Graph and Azure.
       # This will open a browser window to prompt for authentication and is useful for non-interactive sessions and on Windows when SSO is not desired.
@@ -351,7 +359,8 @@
             Write-Verbose 'Connecting to Microsoft Graph'
             try {
 
-               $scopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged
+               $scopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage `
+                  -Privileged:$Privileged -IncludePreview:$IncludePreview
 
                $connectParams = @{
                   Scopes        = $scopes

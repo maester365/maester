@@ -4,15 +4,15 @@ The `allAllowed` inheritance pattern gives every child Agent Identity all permis
 
 This test reports Agent Identity Blueprints that allow all delegated scopes or all application roles to be inherited. Each Blueprint should instead define only the permissions its child Agent Identities require.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and navigate to **Entra ID** > **Agents** > **Agent blueprints**.
 2. Locate the reported Blueprint using its **Object ID** or display name.
 3. Review its inheritable permissions configuration for the reported resource.
-4. Replace the `allAllowed` pattern with **enumerated scopes**, listing only the specific permissions agents actually require.
+4. Replace the `allAllowed` pattern with an enumerated list: use **enumerated scopes** for delegated scope findings and **enumerated application roles** for application role findings. Include only the permissions agents require.
 5. Re-consent affected Agent Identities if narrowing the inheritance pattern removes permissions they were using.
 
-#### Related links
+### Related links
 
 * [View and manage agent blueprints][manage-blueprints]
 * [Configure inheritable permissions for agent identity blueprints][configure-inheritable-permissions]

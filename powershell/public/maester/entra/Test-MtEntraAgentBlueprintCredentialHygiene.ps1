@@ -83,14 +83,16 @@
                         Type        = 'Secret'
                         Issue       = "Expired secret ($DaysExpired days ago on $($EndDateTime.ToString('yyyy-MM-dd')))."
                     })
-                } else {
+                } elseif (($null -eq $StartDateTime -or $StartDateTime -le $UtcNow) -and
+                    ($null -eq $EndDateTime -or $EndDateTime -ge $UtcNow)) {
                     $ActivePasswords.Add($Password)
                 }
 
                 # Check if lifespan exceeds max validity
                 if ($null -ne $StartDateTime -and $null -ne $EndDateTime) {
-                    $LifespanDays = [int]($EndDateTime.Subtract($StartDateTime).TotalDays)
-                    if ($LifespanDays -gt $MaxValidityDays) {
+                    $LifespanTotalDays = $EndDateTime.Subtract($StartDateTime).TotalDays
+                    if ($LifespanTotalDays -gt $MaxValidityDays) {
+                        $LifespanDays = [math]::Round($LifespanTotalDays, 1)
                         $CredentialFindings.Add([pscustomobject]@{
                             BlueprintId = $BlueprintId
                             DisplayName = $DisplayName

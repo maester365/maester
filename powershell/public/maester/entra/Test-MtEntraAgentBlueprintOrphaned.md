@@ -9,7 +9,7 @@ This check lists Blueprint Principals whose Blueprint no longer exists. Review e
 deleting or restoring anything. The remaining Principal or Agent Identities may still have
 permissions and access assignments.
 
-#### Remediation action:
+### Remediation action:
 
 1. Open the [Microsoft Entra admin center][entra-admin-center] and go to **Entra ID** >
    **Agents** > **Agent blueprints**.
@@ -21,7 +21,7 @@ permissions and access assignments.
    required, disable the linked identities, review their access, and then remove the stale Agent
    ID objects in the order described by Microsoft.
 
-#### Related links
+### Related links
 
 * [View and manage Agent Identity Blueprints][manage-blueprints]
 * [How to delete and restore Agent Identity objects][delete-agent-id]

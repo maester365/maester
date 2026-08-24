@@ -22,10 +22,12 @@ Test-MtEntraAgentBlueprintRedirectUriHygiene [-ProgressAction <ActionPreference>
 
 Checks whether any Agent Identity Blueprint's web redirect URIs contain a wildcard or use
 plain HTTP instead of HTTPS (excluding loopback addresses).
-A wildcard redirect URI lets a
-token be redirected to any attacker-controlled host that matches the pattern.
-A plain-http,
-non-loopback redirect URI returns tokens over an unencrypted channel.
+Agent Blueprint interactive
+consent uses response_type=none, so no token or authorization code is returned.
+A wildcard
+can send the consent result and optional state to an unintended matching endpoint.
+A
+plain-http, non-loopback URI exposes that response to interception or tampering.
 
 ## EXAMPLES
 
