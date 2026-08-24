@@ -26,7 +26,7 @@ This test passes if at least one assigned macOS compliance policy sets the allow
 - [Microsoft Intune admin center - Device compliance](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)
 - [Microsoft Learn - Device compliance settings for macOS in Intune](https://learn.microsoft.com/intune/device-security/compliance/ref-macos-settings)
 - [Microsoft Learn - Levels of protection and configuration in Intune](https://learn.microsoft.com/intune/fundamentals/protection-configuration-levels)
-- [Apple Support - Safely open apps on your Mac](https://support.apple.com/HT202491)
+- [Apple Support - Safely open apps on your Mac](https://support.apple.com/en-us/102445)
 
 <!--- Results --->
 %TestResult%

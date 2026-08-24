@@ -59,7 +59,17 @@
 
     foreach ($token in $usableTokens) {
         $profiles = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/depOnboardingSettings/$($token.id)/enrollmentProfiles" -ApiVersion beta -ErrorAction Stop)
-        $macOsProfiles = @($profiles | Where-Object { $_ -and $_.id -and $_.'@odata.type' -eq '#microsoft.graph.depMacOSEnrollmentProfile' })
+
+        # Apply the same guard as the token request. Filtering the null placeholder out
+        # silently would turn a failed request into a partial or empty list, and the caller
+        # would report a failed control instead of a skip.
+        $usableProfiles = @($profiles | Where-Object { $_ -and $_.id })
+        if ($profiles.Count -gt 0 -and $usableProfiles.Count -eq 0) {
+            Write-Verbose "Enrollment profiles could not be read; returning null so the caller reports a skip."
+            return $null
+        }
+
+        $macOsProfiles = @($usableProfiles | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.depMacOSEnrollmentProfile' })
 
         foreach ($enrollmentProfile in $macOsProfiles) {
             $rotation = $enrollmentProfile.depProfileAdminAccountPasswordRotationSetting

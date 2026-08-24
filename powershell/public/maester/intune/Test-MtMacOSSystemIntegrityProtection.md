@@ -24,7 +24,7 @@ Consider also configuring **Actions for noncompliance** so that users are notifi
 - [Microsoft Intune admin center - Device compliance](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)
 - [Microsoft Learn - Device compliance settings for macOS in Intune](https://learn.microsoft.com/intune/device-security/compliance/ref-macos-settings)
 - [Microsoft Learn - Levels of protection and configuration in Intune](https://learn.microsoft.com/intune/fundamentals/protection-configuration-levels)
-- [Apple Support - About System Integrity Protection](https://support.apple.com/HT204899)
+- [Apple Support - About System Integrity Protection](https://support.apple.com/en-us/102149)
 
 <!--- Results --->
 %TestResult%

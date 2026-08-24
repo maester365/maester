@@ -105,7 +105,7 @@
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy { return $null }
 
-            Test-MtMacOSSystemIntegrityProtection | Should -BeNullOrEmpty
+            $null -eq (Test-MtMacOSSystemIntegrityProtection) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
 
@@ -179,7 +179,7 @@
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy { return $null }
 
-            Test-MtMacOSGatekeeper | Should -BeNullOrEmpty
+            $null -eq (Test-MtMacOSGatekeeper) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
@@ -230,7 +230,7 @@
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy { return $null }
 
-            Test-MtMacOSDefenderRiskScore | Should -BeNullOrEmpty
+            $null -eq (Test-MtMacOSDefenderRiskScore) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
@@ -327,7 +327,7 @@
             # the Graph scope and returns 403 for accounts without enrollment programs access.
             Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile { return $null }
 
-            Test-MtMacOSLAPSConfiguration | Should -BeNullOrEmpty
+            $null -eq (Test-MtMacOSLAPSConfiguration) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
@@ -446,7 +446,7 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @($null) }
 
             InModuleScope Maester {
-                Get-MtMacOSCompliancePolicy | Should -BeNullOrEmpty
+                $null -eq (Get-MtMacOSCompliancePolicy) | Should -BeTrue
             }
         }
 
@@ -467,12 +467,51 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @($null) }
 
             InModuleScope Maester {
-                Get-MtMacOSEnrollmentProfile | Should -BeNullOrEmpty
+                $null -eq (Get-MtMacOSEnrollmentProfile) | Should -BeTrue
             }
         }
 
         It 'returns an empty list when no Apple enrollment tokens exist' {
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @() }
+
+            InModuleScope Maester {
+                $result = Get-MtMacOSEnrollmentProfile
+                $null -ne $result | Should -BeTrue
+                $result.Count | Should -Be 0
+            }
+        }
+
+        It 'returns null when the enrollmentProfiles request fails on a valid token' {
+            # The token request succeeds, the per-token profile request fails. Filtering the
+            # null placeholder out silently would look like a tenant with no macOS profiles.
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -eq 'deviceManagement/depOnboardingSettings'
+            } -MockWith {
+                return @([pscustomobject]@{ id = 'token-1'; tokenName = 'VID ABM' })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*enrollmentProfiles*'
+            } -MockWith {
+                return @($null)
+            }
+
+            InModuleScope Maester {
+                $null -eq (Get-MtMacOSEnrollmentProfile) | Should -BeTrue
+            }
+        }
+
+        It 'returns an empty list when a token has no macOS profiles at all' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -eq 'deviceManagement/depOnboardingSettings'
+            } -MockWith {
+                return @([pscustomobject]@{ id = 'token-1'; tokenName = 'VID ABM' })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*enrollmentProfiles*'
+            } -MockWith {
+                # iOS only - a real response with usable IDs, just no macOS profiles
+                return @([pscustomobject]@{ id = 'ios-1'; '@odata.type' = '#microsoft.graph.depIOSEnrollmentProfile' })
+            }
 
             InModuleScope Maester {
                 $result = Get-MtMacOSEnrollmentProfile
