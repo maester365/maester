@@ -132,10 +132,12 @@
                 $Name = [System.Net.WebUtility]::HtmlEncode(
                     [string]$Item.DisplayName
                 ) -replace '\|', '&#124;'
+                $Name = $Name -replace '[\r\n]+', ' '
                 if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
                 $RoleName = [System.Net.WebUtility]::HtmlEncode(
                     [string]$Item.RoleName
                 ) -replace '\|', '&#124;'
+                $RoleName = $RoleName -replace '[\r\n]+', ' '
                 $ObservationNote += "`n| $($Item.ObjectId) | $Name | " +
                     "$($Item.ObjectType) | $RoleName |"
             }

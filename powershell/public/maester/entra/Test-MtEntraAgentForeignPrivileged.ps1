@@ -234,10 +234,12 @@
                 $DisplayName = [System.Net.WebUtility]::HtmlEncode(
                     [string]$Item.DisplayName
                 ) -replace '\|', '&#124;'
+                $DisplayName = $DisplayName -replace '[\r\n]+', ' '
                 if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
                 $RoleName = [System.Net.WebUtility]::HtmlEncode(
                     [string]$Item.RoleName
                 ) -replace '\|', '&#124;'
+                $RoleName = $RoleName -replace '[\r\n]+', ' '
                 $ObservationNote += "`n| $($Item.ObjectId) | $DisplayName | " +
                     "$($Item.ObjectType) | $RoleName |"
             }
@@ -252,7 +254,9 @@
                 $DisplayName = [string]$Item.DisplayName
                 if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
                 $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
+                $DisplayName = $DisplayName -replace '[\r\n]+', ' '
                 $Resources = [System.Net.WebUtility]::HtmlEncode([string]$Item.Resources) -replace '\|', '&#124;'
+                $Resources = $Resources -replace '[\r\n]+', ' '
                 $ObservationNote += "`n| $($Item.ObjectId) | $DisplayName | " +
                     "$($Item.ForeignTenant) | $($Item.Count) | $Resources |"
             }

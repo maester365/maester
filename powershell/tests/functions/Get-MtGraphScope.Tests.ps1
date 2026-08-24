@@ -22,6 +22,13 @@ Describe 'Get-MtGraphScope' {
 
     It 'Includes Agent ID read permissions with IncludePreview' {
         $scopes = Get-MtGraphScope -IncludePreview
+
+        $scopes | Should -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Contain 'AgentIdentityBlueprint.Read.All'
+        $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
+        $scopes | Should -Contain 'Application.Read.All'
+        $scopes | Should -Contain 'AuditLog.Read.All'
+
         $agentIdentityIndex = [array]::IndexOf($scopes, 'AgentIdentity.Read.All')
         $BlueprintIndex = [array]::IndexOf($scopes, 'AgentIdentityBlueprint.Read.All')
         $blueprintPrincipalIndex = [array]::IndexOf(

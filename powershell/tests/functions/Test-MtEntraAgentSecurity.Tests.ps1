@@ -356,13 +356,13 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
                 }
                 if ($RelativeUri -like '*agentIdentityBlueprintPrincipal') {
                     return @([pscustomobject]@{
-                        id = 'foreign-principal-1'; displayName = 'Foreign Principal'
+                        id = 'foreign-principal-1'; displayName = "Foreign`nPrincipal"
                         appId = 'foreign-app-1'; appOwnerOrganizationId = 'foreign-tenant-999'
                     })
                 }
                 if ($RelativeUri -like '*roleDefinitions') {
                     return @([pscustomobject]@{
-                            id = 'custom-role'; displayName = 'Custom Agent Role'
+                            id = 'custom-role'; displayName = "Custom`r`nAgent Role"
                         })
                 }
                 if ($RelativeUri -like '*roleAssignments') {
@@ -375,6 +375,9 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
 
             Test-MtEntraAgentForeignPrivileged | Should -BeTrue
             $script:TestResult | Should -Match 'Custom Agent Role'
+            $script:TestResult | Should -Match 'Foreign Principal'
+            $script:TestResult | Should -Not -Match "Foreign`nPrincipal"
+            $script:TestResult | Should -Not -Match "Custom`r`nAgent Role"
             $script:TestResult | Should -Match 'could not be classified'
         }
     }
@@ -565,12 +568,17 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'servicePrincipals/microsoft.graph.agentIdentity') {
                     return @([pscustomobject]@{
-                            id = 'agent-1'; displayName = 'Agent 1'; appId = 'app-1'
+                            id = 'agent-1'; displayName = "Agent`n1"; appId = 'app-1'
+                        })
+                }
+                if ($RelativeUri -like '*roleDefinitions') {
+                    return @([pscustomobject]@{
+                            id = 'custom-role'; displayName = "Custom`r`nAgent Role"
                         })
                 }
                 if ($RelativeUri -like '*roleAssignments') {
                     return @([pscustomobject]@{
-                            principalId = 'agent-1'; roleDefinitionId = 'missing-role'
+                            principalId = 'agent-1'; roleDefinitionId = 'custom-role'
                             directoryScopeId = '/'
                         })
                 }
@@ -578,7 +586,10 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             }
 
             Test-MtEntraAgentDirectoryRoles | Should -BeTrue
-            $script:TestResult | Should -Match 'Unresolved role definition'
+            $script:TestResult | Should -Match 'Agent 1'
+            $script:TestResult | Should -Match 'Custom Agent Role'
+            $script:TestResult | Should -Not -Match "Agent`n1"
+            $script:TestResult | Should -Not -Match "Custom`r`nAgent Role"
             $script:TestResult | Should -Match 'could not be classified'
         }
     }
@@ -640,13 +651,13 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
                     return @([pscustomobject]@{
-                        id = 'agent-user-1'; displayName = 'Agent User 1'
-                        userPrincipalName = 'au1@contoso.com'
+                        id = 'agent-user-1'; displayName = "Agent`nUser 1"
+                        userPrincipalName = "au1@`r`ncontoso.com"
                     })
                 }
                 if ($RelativeUri -like '*roleDefinitions') {
                     return @([pscustomobject]@{
-                            id = 'custom-role'; displayName = 'Custom Agent Role'
+                            id = 'custom-role'; displayName = "Custom`r`nAgent Role"
                         })
                 }
                 if ($RelativeUri -like '*roleAssignments') {
@@ -660,6 +671,11 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
 
             Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
             $script:TestResult | Should -Match 'Custom Agent Role'
+            $script:TestResult | Should -Match 'Agent User 1'
+            $script:TestResult | Should -Match 'au1@ contoso.com'
+            $script:TestResult | Should -Not -Match "Agent`nUser 1"
+            $script:TestResult | Should -Not -Match "au1@`r`ncontoso.com"
+            $script:TestResult | Should -Not -Match "Custom`r`nAgent Role"
             $script:TestResult | Should -Match 'could not be classified'
         }
     }
