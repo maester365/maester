@@ -52,13 +52,15 @@
     BeforeEach {
         $script:TestResult = $null
         $script:SkippedBecause = $null
+        $script:Investigate = $false
 
         Mock -ModuleName Maester Get-MtLicenseInformation { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause)
+            param($Result, $SkippedBecause, $Investigate)
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
+            $script:Investigate = [bool] $Investigate
         }
     }
 
@@ -304,6 +306,22 @@
             $script:TestResult | Should -Match 'static local administrator password'
             # and still reports the retrieval-rotation gap on the compliant profile
             $script:TestResult | Should -Match 'do not rotate the password after it is retrieved'
+            # partial compliance must be flagged for review, not reported as a clean pass
+            $script:Investigate | Should -BeTrue
+            $script:TestResult | Should -Not -Match 'Well done'
+        }
+
+        It 'reports a clean pass without Investigate when every profile is sound' {
+            Mock -ModuleName Maester Get-MtMacOSEnrollmentProfile {
+                return @(
+                    (Get-TestEnrollmentProfile -Name 'Mac Prod Standard'),
+                    (Get-TestEnrollmentProfile -Name 'Mac Prod Frontline')
+                )
+            }
+
+            Test-MtMacOSLAPSConfiguration | Should -BeTrue
+            $script:Investigate | Should -BeFalse
+            $script:TestResult | Should -Match 'Well done'
         }
 
         It 'skips as NotAuthorized when the profiles cannot be read' {

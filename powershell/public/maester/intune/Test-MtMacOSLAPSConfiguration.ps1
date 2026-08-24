@@ -86,14 +86,15 @@
 
         $testResultMarkdown += "`n[View Apple enrollment profiles in the Intune admin center]($portalLink)`n"
 
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one macOS enrollment profile provisions a managed local administrator account with password rotation."
+        # A profile that provisions an admin account but configures no rotation creates a
+        # static local administrator password on every device enrolled through it. That is the
+        # exact risk this check exists to catch, so it is evaluated regardless of whether some
+        # other profile satisfies the check.
+        $staticPassword = @($profiles | Where-Object { $_.HasAdminAccount -and -not $_.HasPasswordRotation })
 
-            # A profile that provisions an admin account but configures no rotation creates a
-            # static local administrator password on every device enrolled through it. That is
-            # the exact risk this check exists to catch, so surface it even when another
-            # profile passes.
-            $staticPassword = @($profiles | Where-Object { $_.HasAdminAccount -and -not $_.HasPasswordRotation })
+        if ($testResult) {
+            $testResultMarkdown += "`nAt least one macOS enrollment profile provisions a managed local administrator account with password rotation."
+
             if ($staticPassword.Count -gt 0) {
                 $testResultMarkdown += "`n`n> **Warning:** $($staticPassword.Count) profile/profiles provision a local administrator "
                 $testResultMarkdown += "account with **no password rotation** configured. Devices enrolled through those profiles "
@@ -109,9 +110,8 @@
             $testResultMarkdown += "`n`n> macOS LAPS applies only to devices that enroll through Automated Device Enrollment after a factory reset. "
             $testResultMarkdown += "Devices enrolled before the profile was configured are not covered until they are re-enrolled."
         } else {
-            $adminNoRotation = @($profiles | Where-Object { $_.HasAdminAccount -and -not $_.HasPasswordRotation })
-            if ($adminNoRotation.Count -gt 0) {
-                $testResultMarkdown += "`n$($adminNoRotation.Count) profile/profiles configure a local administrator account but **no password rotation**, "
+            if ($staticPassword.Count -gt 0) {
+                $testResultMarkdown += "`n$($staticPassword.Count) profile/profiles configure a local administrator account but **no password rotation**, "
                 $testResultMarkdown += "so the account password is static. Configure an admin account password rotation period."
             } else {
                 $testResultMarkdown += "`nNo macOS enrollment profile provisions a managed local administrator account. "
@@ -119,7 +119,17 @@
             }
         }
 
-        Add-MtTestResultDetail -Result $testResultMarkdown
+        # Partial compliance: the check is satisfied by one profile while another actively
+        # provisions a static password. Flag for manual review rather than reporting a clean
+        # pass, which would give false assurance across the whole enrollment estate.
+        if ($testResult -and $staticPassword.Count -gt 0) {
+            Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+        } else {
+            if ($testResult) {
+                $testResultMarkdown = "Well done. $testResultMarkdown"
+            }
+            Add-MtTestResultDetail -Result $testResultMarkdown
+        }
         return $testResult
     } catch {
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
