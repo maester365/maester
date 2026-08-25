@@ -19,4 +19,11 @@ Describe 'Maester/Entra' -Tag 'App', 'Entra', 'Graph', 'LongRunning', 'Maester' 
             $result | Should -Be $true -Because 'a certificate with a long validity period stays usable for years if the private key is stolen'
         }
     }
+    It 'MT.1199: App registration credentials should not be expired or expiring soon. See https://maester.dev/docs/tests/MT.1199' -Tag 'MT.1199' {
+        $result = Test-MtAppRegistrationCredentialExpiry
+
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because 'an expired credential is unused clutter and one about to expire is an outage with no warning'
+        }
+    }
 }

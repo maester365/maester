@@ -1564,6 +1564,11 @@
       "Title": "App registration certificates should not have excessive validity periods."
     },
     {
+      "Id": "MT.1199",
+      "Severity": "Medium",
+      "Title": "App registration credentials should not be expired or expiring soon."
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
