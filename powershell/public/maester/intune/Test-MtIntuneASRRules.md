@@ -1,31 +1,23 @@
-Ensure at least one Intune Attack Surface Reduction (ASR) policy has rules configured in **Block** or **Audit** mode.
+Ensure every rule in the Microsoft Defender ASR Standard Protection baseline is configured in **Block** or **Audit** mode.
 
-ASR rules reduce the attack surface of applications by preventing behaviors commonly abused by malware and threat actors. These rules target specific techniques such as:
+Attack surface reduction rules block the behaviors malware depends on but legitimate software rarely needs: Office macros spawning child processes, credential theft from LSASS, obfuscated scripts, executable content arriving by email, untrusted processes running from USB media, and persistence through WMI event subscriptions.
 
-- **Office macros** spawning child processes or injecting code into other processes
-- **Credential theft** from LSASS (Local Security Authority Subsystem Service)
-- **Script-based attacks** using obfuscated JavaScript, VBScript, or PowerShell
-- **Email-borne threats** executing content from Outlook or webmail
-- **Ransomware** advanced protection heuristics
-- **USB-based attacks** running untrusted unsigned processes
-- **Persistence** through WMI event subscriptions
+Each rule runs in one of four modes:
 
-Each ASR rule can operate in one of four modes:
+- **Block** prevents the behavior. This is the goal for production.
+- **Audit** logs it without blocking. Start here to measure impact.
+- **Warn** prompts the user, who can choose to continue anyway.
+- **Disabled** turns the rule off.
 
-- **Block**: Actively prevents the behavior (recommended for production after testing)
-- **Audit**: Logs the event without blocking (recommended for initial rollout)
-- **Warn**: Warns the user before allowing the behavior to proceed
-- **Disabled**: Rule is not active
-
-The test passes if **every rule in the Microsoft Defender ASR Standard Protection baseline** is configured in **Block** or **Audit** mode across the union of all ASR policies in the tenant. The Standard Protection baseline is the minimum recommended set Microsoft publishes for initial ASR deployment:
+This check passes when all three Standard Protection baseline rules are in **Block** or **Audit** somewhere in the tenant. Modes are pooled across policies, so rules split over several policies still count:
 
 1. Block abuse of exploited vulnerable signed drivers
 2. Block credential stealing from LSASS
 3. Block persistence through WMI event subscription
 
-See the [Microsoft Defender ASR rules deployment guide](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment-implement) for the canonical baseline definition.
+Microsoft publishes these as the [minimum set for an initial ASR deployment](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment-implement). Any other ASR rules found are listed for visibility but do not affect the result. **Warn** does not satisfy the baseline, and baseline rules left in **Audit** produce a note recommending a move to **Block**.
 
-Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result. **Warn** is a supported ASR rule state but does not satisfy the baseline. Baseline rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
+ASR rules can be configured from either **Endpoint security** > **Attack surface reduction** or **Devices** > **Configuration** > **Settings catalog** (under **Defender**). Both write the same settings, and both satisfy this check.
 
 #### Remediation action
 

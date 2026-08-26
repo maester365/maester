@@ -4,8 +4,9 @@
     Ensure the Microsoft Defender ASR Standard Protection baseline rules are configured in Block or Audit mode.
 
     .DESCRIPTION
-    Checks Intune Endpoint Security Attack Surface Reduction policies (configurationPolicies API) for
-    ASR rule configurations.
+    Checks Intune Windows configuration policies (configurationPolicies API) for ASR rule
+    configurations. Covers both Endpoint Security Attack Surface Reduction profiles and Settings
+    catalog policies, since ASR rules share the same setting definition IDs in both.
 
     ASR rules reduce the attack surface of applications by preventing behaviors commonly abused by malware,
     such as Office macros spawning child processes, credential theft from LSASS, or execution of obfuscated scripts.
@@ -53,18 +54,10 @@
     }
 
     try {
-        Write-Verbose "Querying Intune ASR policies..."
-        $asrPolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityAttackSurfaceReduction'&`$select=id,name,description,templateReference" -ApiVersion beta)
+        Write-Verbose "Querying Intune Windows configuration policies..."
+        $candidatePolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=platforms has 'windows10'&`$select=id,name,description,templateReference" -ApiVersion beta)
 
-        Write-Verbose "Found $($asrPolicies.Count) ASR policies."
-
-        if ($asrPolicies.Count -eq 0) {
-            $testResultMarkdown = "No Endpoint Security Attack Surface Reduction policies found in Intune.`n`n"
-            $testResultMarkdown += "Create an ASR policy under **Endpoint Security > Attack Surface Reduction** with "
-            $testResultMarkdown += "ASR rules enabled in **Audit** or **Block** mode to protect against common attack techniques."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        Write-Verbose "Found $($candidatePolicies.Count) Windows configuration policies to inspect."
 
         # Friendly names for ASR rules (extracted from setting definition IDs)
         $asrRuleNames = @{
@@ -105,8 +98,8 @@
 
         $modeRank = @{ 'Block' = 4; 'Audit' = 3; 'Warn' = 2; 'Disabled' = 1; 'Not configured' = 0 }
 
-        foreach ($policy in $asrPolicies) {
-            Write-Verbose "Checking ASR policy: $($policy.name) ($($policy.id))"
+        foreach ($policy in $candidatePolicies) {
+            Write-Verbose "Checking policy: $($policy.name) ($($policy.id))"
             $settingsUri = "deviceManagement/configurationPolicies('$($policy.id)')/settings?`$expand=settingDefinitions&`$top=1000"
             $settingsResponse = @(Invoke-MtGraphRequest -RelativeUri $settingsUri -ApiVersion beta)
 
@@ -153,8 +146,12 @@
                 }
             }
 
+            if ($ruleDetails.Count -eq 0) { continue }
+
+            $templateFamily = $policy.templateReference.templateFamily
             $policyResults.Add(@{
                 Name              = $policy.name
+                Source            = if ($templateFamily -eq 'endpointSecurityAttackSurfaceReduction') { 'Endpoint Security' } else { 'Settings catalog' }
                 BlockCount        = $blockCount
                 AuditCount        = $auditCount
                 WarnCount         = $warnCount
@@ -163,6 +160,14 @@
                 TotalRules        = $ruleDetails.Count
                 Rules             = $ruleDetails
             })
+        }
+
+        if ($policyResults.Count -eq 0) {
+            $testResultMarkdown = "No Attack Surface Reduction rules found in any Intune Windows configuration policy.`n`n"
+            $testResultMarkdown += "Create an ASR policy under **Endpoint Security > Attack Surface Reduction** with "
+            $testResultMarkdown += "ASR rules enabled in **Audit** or **Block** mode to protect against common attack techniques."
+            Add-MtTestResultDetail -Result $testResultMarkdown
+            return $false
         }
 
         # Evaluate baseline coverage across the union of all policies
@@ -176,7 +181,7 @@
         $baselinePassed = ($baselineMissing.Count -eq 0)
 
         # Build result markdown
-        $testResultMarkdown = "Found $($asrPolicies.Count) Attack Surface Reduction policy/policies in Intune.`n`n"
+        $testResultMarkdown = "Found $($policyResults.Count) policy/policies configuring Attack Surface Reduction rules in Intune.`n`n"
         $testResultMarkdown += "**Pass criteria:** Every rule in the Microsoft Defender ASR Standard Protection baseline must be configured in **Block** or **Audit** mode in at least one ASR policy.`n`n"
 
         $testResultMarkdown += "### Standard Protection baseline coverage (across all policies)`n"
@@ -188,6 +193,7 @@
 
         foreach ($p in $policyResults) {
             $testResultMarkdown += "### $($p.Name)`n"
+            $testResultMarkdown += "**Configured via:** $($p.Source)`n`n"
             $testResultMarkdown += "**$($p.TotalRules) rules:** $($p.BlockCount) Block, $($p.AuditCount) Audit, $($p.WarnCount) Warn, $($p.DisabledCount) Disabled, $($p.NotConfiguredCount) Not configured`n`n"
             $testResultMarkdown += "| Rule | Mode | Baseline |`n| --- | --- | --- |`n"
             foreach ($r in $p.Rules) {
