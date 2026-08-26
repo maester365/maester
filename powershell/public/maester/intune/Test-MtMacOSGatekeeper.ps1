@@ -100,10 +100,16 @@
         }
 
         foreach ($policy in $enforcementPolicies) {
-            if ($policy.AssessmentEnabled) {
-                $label = if ($policy.AllowIdentifiedDevelopers) { 'Enforced: App Store and identified developers' } else { 'Enforced: Mac App Store only' }
-            } else {
+            if (-not $policy.AssessmentEnabled) {
                 $label = 'Enforced: Gatekeeper assessment disabled'
+            } elseif ($null -eq $policy.AllowIdentifiedDevelopers) {
+                # The payload enables assessment but says nothing about Developer ID apps, so the
+                # device keeps whatever it had. Do not imply an App Store only posture.
+                $label = 'Enforced: assessment on, identified developers not specified'
+            } elseif ($policy.AllowIdentifiedDevelopers) {
+                $label = 'Enforced: App Store and identified developers'
+            } else {
+                $label = 'Enforced: Mac App Store only'
             }
             $rows.Add([pscustomobject]@{
                     Name       = $policy.Name

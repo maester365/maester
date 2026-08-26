@@ -29,7 +29,7 @@
                 [string] $Name = 'Gatekeeper',
                 [int] $AssignmentCount = 3,
                 [bool] $AssessmentEnabled = $true,
-                [bool] $AllowIdentifiedDevelopers = $true
+                $AllowIdentifiedDevelopers = $true
             )
 
             return [pscustomobject]@{
@@ -73,9 +73,6 @@
         $script:Investigate = $false
 
         Mock -ModuleName Maester Get-MtLicenseInformation { return $true }
-        Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
-            Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
-        }
         Mock -ModuleName Maester Add-MtTestResultDetail {
             param($Result, $SkippedBecause, $Investigate)
 
@@ -144,6 +141,13 @@
     }
 
     Context 'Test-MtMacOSGatekeeper (MT.1215)' {
+        BeforeEach {
+            # Default to no settings-catalog enforcement so each test controls one variable.
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+        }
+
         It 'passes for macAppStoreAndIdentifiedDevelopers' {
             Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
                 return @(Get-TestCompliancePolicy -GatekeeperAllowedSource 'macAppStoreAndIdentifiedDevelopers')
@@ -214,6 +218,19 @@
 
             Test-MtMacOSGatekeeper | Should -BeFalse
             $script:TestResult | Should -Match 'assessment disabled'
+        }
+
+        It 'does not claim App Store only when the developer key is absent' {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                return @(Get-TestGatekeeperEnforcement -AllowIdentifiedDevelopers $null)
+            }
+
+            Test-MtMacOSGatekeeper | Should -BeTrue
+            $script:TestResult | Should -Match 'identified developers not specified'
+            $script:TestResult | Should -Not -Match 'Mac App Store only'
         }
 
         It 'does not count unassigned settings catalog enforcement' {
@@ -429,6 +446,13 @@
     }
 
     Context 'Edge cases and unexpected data' {
+        BeforeEach {
+            # Default to no settings-catalog enforcement so each test controls one variable.
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+        }
+
         It 'does not mislabel an unrecognised Gatekeeper value as Not configured' {
             # Graph enums gain values over time (unknownFutureValue and friends).
             # Reporting a real-but-unknown setting as "Not configured" would be wrong.
@@ -554,6 +578,54 @@
                 # Must be an empty collection, NOT $null - $null means "could not read".
                 $null -ne $result | Should -BeTrue
                 $result.Count | Should -Be 0
+            }
+        }
+    }
+
+    Context 'Get-MtMacOSGatekeeperEnforcement' {
+        It 'returns null when the per-policy settings request fails' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*configurationPolicies*' -and
+                $RelativeUri -notlike '*/settings*' -and $RelativeUri -notlike '*/assignments*'
+            } -MockWith {
+                return @([pscustomobject]@{ id = 'p1'; name = 'Gatekeeper' })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*/settings*'
+            } -MockWith { return @($null) }
+
+            InModuleScope Maester {
+                $null -eq (Get-MtMacOSGatekeeperEnforcement) | Should -BeTrue
+            }
+        }
+
+        It 'reports AllowIdentifiedDevelopers as null when the key is absent' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*configurationPolicies*' -and
+                $RelativeUri -notlike '*/settings*' -and $RelativeUri -notlike '*/assignments*'
+            } -MockWith {
+                return @([pscustomobject]@{ id = 'p1'; name = 'Gatekeeper' })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*/settings*'
+            } -MockWith {
+                return @([pscustomobject]@{
+                        settingInstance = [pscustomobject]@{
+                            settingDefinitionId       = 'com.apple.systempolicy.control_enableassessment'
+                            choiceSettingValue        = [pscustomobject]@{ value = 'com.apple.systempolicy.control_enableassessment_true' }
+                            groupSettingCollectionValue = @()
+                        }
+                    })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*/assignments*'
+            } -MockWith { return @([pscustomobject]@{ id = 'a1' }) }
+
+            InModuleScope Maester {
+                $r = Get-MtMacOSGatekeeperEnforcement
+                $r.Count | Should -Be 1
+                $r[0].AssessmentEnabled | Should -BeTrue
+                $null -eq $r[0].AllowIdentifiedDevelopers | Should -BeTrue
             }
         }
     }

@@ -19,7 +19,9 @@
 
     - enableassessment - whether Gatekeeper assessment is on at all. With it disabled, any app runs.
     - allowidentifieddevelopers - whether Developer ID signed apps are permitted in addition to App
-      Store apps. Disabling it is the stricter App Store only posture.
+      Store apps. Disabling it is the stricter App Store only posture. This is reported as $null when
+      the key is absent from the payload, because an omitted key leaves the device's existing setting
+      untouched and is not the same as disabling it.
 
     Returns $null when the configuration policies could not be read, so that callers can report a
     skip rather than a failure.
@@ -53,10 +55,18 @@
         $settings = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies('$($policy.id)')/settings?`$top=1000" `
                 -ApiVersion beta -ErrorAction Stop)
 
+        # Same guard as the policy list. Without it a failed settings read leaves no setting
+        # instances, the policy is skipped silently, and an enforced tenant looks unconfigured.
+        $usableSettings = @($settings | Where-Object { $_ -and $_.settingInstance })
+        if ($settings.Count -gt 0 -and $usableSettings.Count -eq 0) {
+            Write-Verbose "Settings for policy '$($policy.name)' could not be read; returning null so the caller reports a skip."
+            return $null
+        }
+
         # Settings catalog nests the payload keys inside groupSettingCollectionValue.children,
         # so flatten one level to reach them.
         $instances = [System.Collections.Generic.List[object]]::new()
-        foreach ($setting in $settings) {
+        foreach ($setting in $usableSettings) {
             $instance = $setting.settingInstance
             if ($null -eq $instance) { continue }
             $instances.Add($instance)
@@ -70,11 +80,26 @@
         $assessment = $instances | Where-Object { $_.settingDefinitionId -eq 'com.apple.systempolicy.control_enableassessment' } | Select-Object -First 1
         if ($null -eq $assessment) { continue }
 
+        # An omitted key is not the same as a disabled one. The MDM payload only applies the
+        # keys it contains, so when allowidentifieddevelopers is absent the device keeps its
+        # existing setting. Reporting $false here would claim a stricter App Store only posture
+        # than the policy actually enforces.
         $identified = $instances | Where-Object { $_.settingDefinitionId -eq 'com.apple.systempolicy.control_allowidentifieddevelopers' } | Select-Object -First 1
+        $allowIdentified = if ($null -eq $identified) {
+            $null
+        } else {
+            $identified.choiceSettingValue.value -eq 'com.apple.systempolicy.control_allowidentifieddevelopers_true'
+        }
 
         $assignments = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies('$($policy.id)')/assignments" `
                 -ApiVersion beta -ErrorAction Stop)
-        $assignmentCount = @($assignments | Where-Object { $_ -and $_.id }).Count
+
+        $usableAssignments = @($assignments | Where-Object { $_ -and $_.id })
+        if ($assignments.Count -gt 0 -and $usableAssignments.Count -eq 0) {
+            Write-Verbose "Assignments for policy '$($policy.name)' could not be read; returning null so the caller reports a skip."
+            return $null
+        }
+        $assignmentCount = $usableAssignments.Count
 
         $result.Add([pscustomobject]@{
                 Id                        = $policy.id
@@ -82,7 +107,7 @@
                 AssignmentCount           = $assignmentCount
                 IsAssigned                = ($assignmentCount -gt 0)
                 AssessmentEnabled         = ($assessment.choiceSettingValue.value -eq 'com.apple.systempolicy.control_enableassessment_true')
-                AllowIdentifiedDevelopers = ($identified.choiceSettingValue.value -eq 'com.apple.systempolicy.control_allowidentifieddevelopers_true')
+                AllowIdentifiedDevelopers = $allowIdentified
             })
     }
 
