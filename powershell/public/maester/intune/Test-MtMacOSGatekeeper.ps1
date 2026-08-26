@@ -1,33 +1,34 @@
 ﻿function Test-MtMacOSGatekeeper {
     <#
     .SYNOPSIS
-    Ensure at least one assigned macOS compliance policy restricts where apps may be downloaded from.
+    Ensure macOS devices are restricted to trusted app download locations by Gatekeeper.
 
     .DESCRIPTION
-    Gatekeeper is the macOS control that decides which app download locations are permitted. It has
-    three meaningful states, exposed by Intune compliance policy as gatekeeperAllowedAppSource:
+    Gatekeeper decides which app download locations are permitted on macOS. Intune can address it two
+    ways, and both count for this check:
 
-    - macAppStore - only App Store apps may run. The most restrictive option.
-    - macAppStoreAndIdentifiedDevelopers - App Store apps plus apps signed by a developer whose
-      identity Apple has verified and notarized. The practical baseline for most organizations.
-    - anywhere - any app from any source may run, including unsigned binaries. This is the least
-      secure setting and Apple removed it from the macOS user interface for good reason.
+    - A macOS compliance policy evaluates the device's current Gatekeeper state through
+      gatekeeperAllowedAppSource and marks the device non-compliant if it is looser than required,
+      which feeds Conditional Access. Acceptable values are macAppStore and
+      macAppStoreAndIdentifiedDevelopers.
+    - A macOS configuration policy pushes the com.apple.systempolicy.control payload, enforcing the
+      setting on the device rather than merely observing it. The macOS endpoint protection template
+      is deprecated, so this is authored in the settings catalog.
 
-    When the setting is left as notConfigured, Gatekeeper has no effect on the compliance verdict,
-    so a device whose user has allowed apps from anywhere is still reported as compliant.
-
-    Unrestricted app sources are a direct initial-access path: unsigned or ad-hoc signed binaries
+    Unrestricted app sources are a direct initial-access path. Unsigned or ad-hoc signed binaries
     delivered by phishing or a drive-by download execute without Gatekeeper objection, which is how
-    macOS infostealers are commonly installed.
+    macOS infostealers are routinely installed. Restricting the allowed source breaks that chain at
+    execution.
 
-    This test passes if at least one assigned macOS compliance policy sets the allowed app source to
-    macAppStore or macAppStoreAndIdentifiedDevelopers. A policy set to anywhere or left unconfigured
-    does not count.
+    The check passes if at least one assigned policy of either kind restricts app sources. A
+    compliance policy set to anywhere or left unconfigured does not count, and neither does a
+    configuration policy that disables Gatekeeper assessment. Unassigned policies are reported but do
+    not count towards a pass, because they are never applied or evaluated.
 
     .EXAMPLE
     Test-MtMacOSGatekeeper
 
-    Returns true if at least one assigned macOS compliance policy restricts app download locations.
+    Returns true if at least one assigned policy restricts macOS app download locations.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtMacOSGatekeeper
@@ -42,21 +43,26 @@
     }
 
     try {
-        Write-Verbose "Querying macOS compliance policies..."
-        $policies = Get-MtMacOSCompliancePolicy
-        if ($null -eq $policies) {
+        Write-Verbose "Querying macOS compliance policies and Gatekeeper configuration policies..."
+        $compliancePolicies = Get-MtMacOSCompliancePolicy
+        if ($null -eq $compliancePolicies) {
             # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
             # Report a skip rather than a false security finding.
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
 
+        $enforcementPolicies = Get-MtMacOSGatekeeperEnforcement
+        if ($null -eq $enforcementPolicies) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+            return $null
+        }
 
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No macOS compliance policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without a macOS compliance policy, a Mac configured to allow apps from anywhere is still reported as compliant. "
-            $testResultMarkdown += "Create a macOS compliance policy and set **Allow apps downloaded from these locations** to "
-            $testResultMarkdown += "**Mac App Store and identified developers** or stricter."
+        if ($compliancePolicies.Count -eq 0 -and $enforcementPolicies.Count -eq 0) {
+            $testResultMarkdown = "No macOS compliance policies or Gatekeeper configuration policies were found in Intune.`n`n"
+            $testResultMarkdown += "A Mac configured to allow apps from anywhere is neither corrected nor reported as non-compliant. "
+            $testResultMarkdown += "Set **Allow apps downloaded from these locations** to **Mac App Store and identified developers** in a "
+            $testResultMarkdown += "macOS compliance policy, or enforce the **System Policy Control** payload from the settings catalog."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }
@@ -70,40 +76,67 @@
         }
         $acceptableSources = @('macAppStore', 'macAppStoreAndIdentifiedDevelopers')
 
-        $compliant = @($policies | Where-Object { $_.IsAssigned -and $acceptableSources -contains $_.GatekeeperAllowedSource })
-        $testResult = $compliant.Count -gt 0
+        $rows = [System.Collections.Generic.List[pscustomobject]]::new()
 
-        $testResultMarkdown = "Found $($policies.Count) macOS compliance policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Allowed app source | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- |`n"
-        foreach ($policy in $policies) {
+        foreach ($policy in $compliancePolicies) {
             $source = $policy.GatekeeperAllowedSource
-            # Fall back to the raw value for anything unrecognised. Graph enums gain
-            # values over time, and calling a real-but-unknown setting "Not configured"
-            # would hide it from the reader.
-            $sourceLabel = if ([string]::IsNullOrWhiteSpace($source)) {
+            # Fall back to the raw value for anything unrecognised. Graph enums gain values over
+            # time, and calling a real-but-unknown setting "Not configured" would hide it.
+            $label = if ([string]::IsNullOrWhiteSpace($source)) {
                 'Not configured'
             } elseif ($sourceLabels.ContainsKey($source)) {
                 $sourceLabels[$source]
             } else {
                 $source
             }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $sourceLabel | $assignmentState |`n"
+            $rows.Add([pscustomobject]@{
+                    Name       = $policy.Name
+                    Source     = 'Compliance policy'
+                    Setting    = $label
+                    IsAssigned = $policy.IsAssigned
+                    Assignment = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+                    Restricts  = ($acceptableSources -contains $source)
+                })
         }
 
+        foreach ($policy in $enforcementPolicies) {
+            if ($policy.AssessmentEnabled) {
+                $label = if ($policy.AllowIdentifiedDevelopers) { 'Enforced: App Store and identified developers' } else { 'Enforced: Mac App Store only' }
+            } else {
+                $label = 'Enforced: Gatekeeper assessment disabled'
+            }
+            $rows.Add([pscustomobject]@{
+                    Name       = $policy.Name
+                    Source     = 'Settings catalog'
+                    Setting    = $label
+                    IsAssigned = $policy.IsAssigned
+                    Assignment = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+                    Restricts  = $policy.AssessmentEnabled
+                })
+        }
+
+        $compliant = @($rows | Where-Object { $_.IsAssigned -and $_.Restricts })
+        $testResult = $compliant.Count -gt 0
+
+        $testResultMarkdown = "Found $($rows.Count) macOS policy/policies affecting Gatekeeper in Intune.`n`n"
+        $testResultMarkdown += "| Policy | Source | Allowed app source | Assignments |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- |`n"
+        foreach ($row in $rows) {
+            $testResultMarkdown += "| $($row.Name) | $($row.Source) | $($row.Setting) | $($row.Assignment) |`n"
+        }
 
         if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned macOS compliance policy restricts where apps may be downloaded from."
-            $permissive = @($policies | Where-Object { $_.IsAssigned -and $_.GatekeeperAllowedSource -eq 'anywhere' })
+            $testResultMarkdown += "`nWell done. At least one assigned policy restricts where apps may be downloaded from."
+
+            $permissive = @($rows | Where-Object { $_.IsAssigned -and -not $_.Restricts -and $_.Setting -in @('Anywhere', 'Enforced: Gatekeeper assessment disabled') })
             if ($permissive.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Warning:** $($permissive.Count) assigned policy/policies allow apps from **anywhere**, "
-                $testResultMarkdown += "which permits unsigned binaries to run on devices scoped to them."
+                $testResultMarkdown += "`n`n> **Warning:** $($permissive.Count) assigned policy/policies allow apps from anywhere or disable Gatekeeper "
+                $testResultMarkdown += "assessment, which permits unsigned binaries to run on devices scoped to them."
             }
         } else {
-            $testResultMarkdown += "`nNo assigned macOS compliance policy restricts app download locations. "
+            $testResultMarkdown += "`nNo assigned policy restricts macOS app download locations. "
             $testResultMarkdown += "Set **Allow apps downloaded from these locations** to **Mac App Store and identified developers** or stricter, "
-            $testResultMarkdown += "and assign the policy to your macOS groups."
+            $testResultMarkdown += "or enforce the **System Policy Control** payload, and assign the policy to your macOS groups."
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown

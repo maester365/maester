@@ -1591,7 +1591,7 @@
     {
       "Id": "MT.1215",
       "Severity": "Medium",
-      "Title": "Ensure macOS compliance policy restricts app download locations"
+      "Title": "Ensure Gatekeeper restricts macOS app download locations"
     },
     {
       "Id": "MT.1216",

@@ -1,6 +1,11 @@
-Ensure at least one **assigned** macOS compliance policy restricts where applications may be downloaded from.
+Ensure macOS devices are restricted to trusted app download locations by Gatekeeper.
 
-Gatekeeper is the macOS control that decides which app download locations are permitted. Intune compliance policy exposes it as **Allow apps downloaded from these locations**, with three meaningful states:
+Gatekeeper decides which app download locations are permitted on macOS. Intune can address it two ways, and this check credits either:
+
+- A **macOS compliance policy** evaluates the device's current Gatekeeper state and marks the device non-compliant if it is looser than required, which feeds Conditional Access.
+- A **macOS configuration policy** pushes the `com.apple.systempolicy.control` payload, enforcing the setting on the device rather than merely observing it. The macOS endpoint protection template is deprecated, so this is authored in the settings catalog under **System Policy Control**.
+
+The compliance policy exposes it as **Allow apps downloaded from these locations**, with three meaningful states:
 
 - **Mac App Store** - only App Store apps may run. The most restrictive option.
 - **Mac App Store and identified developers** - App Store apps plus apps signed by a developer whose identity Apple has verified and notarized. The practical baseline for most organizations.
@@ -10,7 +15,9 @@ When the setting is left as **Not configured**, Gatekeeper has no effect on the 
 
 Unrestricted app sources are a direct initial-access path. Unsigned or ad-hoc signed binaries delivered by phishing or a drive-by download execute without Gatekeeper objection, which is how macOS infostealers such as Atomic Stealer are routinely installed. Restricting the allowed source breaks that chain at execution.
 
-This test passes if at least one assigned macOS compliance policy sets the allowed app source to **Mac App Store** or **Mac App Store and identified developers**. A policy set to **Anywhere**, or left unconfigured, does not count.
+On the configuration side, two payload keys matter: `enableassessment` controls whether Gatekeeper is active at all, and `allowidentifieddevelopers` decides whether Developer ID signed apps are permitted alongside App Store apps.
+
+This test passes if at least one **assigned** policy of either kind restricts app sources. A compliance policy set to **Anywhere** or left unconfigured does not count, and neither does a configuration policy that disables Gatekeeper assessment. Unassigned policies are reported but never applied or evaluated, so they do not count either.
 
 #### Remediation action
 
@@ -20,6 +27,13 @@ This test passes if at least one assigned macOS compliance policy sets the allow
 4. Under **Compliance settings** > **System Security** > **Gatekeeper**, set **Allow apps downloaded from these locations** to **Mac App Store and identified developers** (or **Mac App Store** if your app estate allows it).
 5. On the **Assignments** tab, assign the policy to your macOS device or user groups.
 6. Select **Next** and then **Create** or **Save**.
+
+To enforce the setting rather than only report on it, also create a configuration policy:
+
+1. Go to **Devices** > **Manage devices** > **[Configuration](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/configuration)** > **Create** > **New policy**.
+2. Set **Platform** to **macOS** and **Profile type** to **Settings catalog**.
+3. Add the **System Policy Control** category, then enable **Enable Assessment** and set **Allow Identified Developers** as your app estate requires.
+4. Assign the policy to your macOS groups.
 
 #### Related links
 

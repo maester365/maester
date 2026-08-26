@@ -104,10 +104,10 @@
         }
     }
 
-    It "MT.1215: Ensure macOS compliance policy restricts app download locations. See https://maester.dev/docs/tests/MT.1215" -Tag "MT.1215" {
+    It "MT.1215: Ensure Gatekeeper restricts macOS app download locations. See https://maester.dev/docs/tests/MT.1215" -Tag "MT.1215" {
         $result = Test-MtMacOSGatekeeper
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "at least one assigned macOS compliance policy restricts Gatekeeper to the Mac App Store or identified developers."
+            $result | Should -Be $true -Because "at least one assigned compliance or configuration policy restricts macOS app download locations."
         }
     }
 

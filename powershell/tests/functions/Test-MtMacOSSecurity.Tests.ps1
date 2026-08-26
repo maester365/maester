@@ -24,6 +24,24 @@
             }
         }
 
+        function Get-TestGatekeeperEnforcement {
+            param(
+                [string] $Name = 'Gatekeeper',
+                [int] $AssignmentCount = 3,
+                [bool] $AssessmentEnabled = $true,
+                [bool] $AllowIdentifiedDevelopers = $true
+            )
+
+            return [pscustomobject]@{
+                Id                        = [guid]::NewGuid().ToString()
+                Name                      = $Name
+                AssignmentCount           = $AssignmentCount
+                IsAssigned                = ($AssignmentCount -gt 0)
+                AssessmentEnabled         = $AssessmentEnabled
+                AllowIdentifiedDevelopers = $AllowIdentifiedDevelopers
+            }
+        }
+
         function Get-TestEnrollmentProfile {
             param(
                 [string] $Name = 'macOS ADE',
@@ -55,6 +73,9 @@
         $script:Investigate = $false
 
         Mock -ModuleName Maester Get-MtLicenseInformation { return $true }
+        Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+            Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+        }
         Mock -ModuleName Maester Add-MtTestResultDetail {
             param($Result, $SkippedBecause, $Investigate)
 
@@ -154,6 +175,81 @@
             }
 
             Test-MtMacOSGatekeeper | Should -BeFalse
+        }
+
+        It 'passes on settings catalog enforcement alone, with no compliance rule' {
+            # A tenant that enforces the System Policy Control payload but has no Gatekeeper
+            # compliance rule is still restricting app sources.
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                return @(Get-TestGatekeeperEnforcement -AssessmentEnabled $true)
+            }
+
+            Test-MtMacOSGatekeeper | Should -BeTrue
+            $script:TestResult | Should -Match 'Settings catalog'
+            $script:TestResult | Should -Match 'Enforced: App Store and identified developers'
+        }
+
+        It 'reports App Store only when identified developers are blocked' {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                return @(Get-TestGatekeeperEnforcement -AllowIdentifiedDevelopers $false)
+            }
+
+            Test-MtMacOSGatekeeper | Should -BeTrue
+            $script:TestResult | Should -Match 'Enforced: Mac App Store only'
+        }
+
+        It 'does not count enforcement that disables Gatekeeper assessment' {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                return @(Get-TestGatekeeperEnforcement -AssessmentEnabled $false)
+            }
+
+            Test-MtMacOSGatekeeper | Should -BeFalse
+            $script:TestResult | Should -Match 'assessment disabled'
+        }
+
+        It 'does not count unassigned settings catalog enforcement' {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                Write-Output ([System.Collections.Generic.List[pscustomobject]]::new()) -NoEnumerate
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                return @(Get-TestGatekeeperEnforcement -AssignmentCount 0)
+            }
+
+            Test-MtMacOSGatekeeper | Should -BeFalse
+        }
+
+        It 'skips as NotAuthorized when the enforcement policies cannot be read' {
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                return @(Get-TestCompliancePolicy)
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement { return $null }
+
+            $null -eq (Test-MtMacOSGatekeeper) | Should -BeTrue
+            $script:SkippedBecause | Should -Be 'NotAuthorized'
+        }
+
+        It 'shows both sources when a tenant has compliance and enforcement' {
+            # Mirrors a real tenant: a compliance rule plus an assigned enforcement policy.
+            Mock -ModuleName Maester Get-MtMacOSCompliancePolicy {
+                return @(Get-TestCompliancePolicy -Name 'Mac Compliance')
+            }
+            Mock -ModuleName Maester Get-MtMacOSGatekeeperEnforcement {
+                return @(Get-TestGatekeeperEnforcement -Name 'Gatekeeper')
+            }
+
+            Test-MtMacOSGatekeeper | Should -BeTrue
+            $script:TestResult | Should -Match 'Compliance policy'
+            $script:TestResult | Should -Match 'Settings catalog'
+            $script:TestResult | Should -Match 'Found 2 macOS policy/policies'
         }
 
         It 'does not count a restricted but unassigned policy' {
