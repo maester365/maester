@@ -2145,7 +2145,7 @@
         "MT.1110"
       ],
       "initials": "JG",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "PetterFauske",
@@ -2316,7 +2316,7 @@
         "MT.1020"
       ],
       "initials": "M",
-      "recentCommits": 4
+      "recentCommits": 3
     },
     {
       "id": "agnivesh",
@@ -2672,7 +2672,7 @@
       ],
       "testsContributed": [],
       "initials": "E",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "jflieben",
@@ -2791,6 +2791,29 @@
       ],
       "initials": "RD",
       "recentCommits": 0
+    },
+    {
+      "id": "royklo",
+      "github": "royklo",
+      "name": "Roy Klooster",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/royklo.png",
+      "firstContribution": "2026-08-26",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1123",
+        "MT.1178"
+      ],
+      "initials": "RK",
+      "recentCommits": 2
     },
     {
       "id": "ThorNicolai",
@@ -5994,7 +6017,8 @@
       "author": "OfirGavish",
       "contributors": [
         "BuckeyeGuyJFlo",
-        "massimomazzariol"
+        "massimomazzariol",
+        "royklo"
       ]
     },
     "MT.1147": {
@@ -6138,7 +6162,8 @@
     "MT.1178": {
       "author": "OfirGavish",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "royklo"
       ]
     },
     "MT.1179": {
