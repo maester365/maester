@@ -1,0 +1,73 @@
+.button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #10131a;
+  color: #b6b9c2;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 8px 20px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.08);
+}
+
+.button:focus-visible {
+  outline: 2px solid #ff6363;
+  outline-offset: 2px;
+}
+
+.button.isPlaying {
+  color: #ff6363;
+  border-color: rgba(255, 99, 99, 0.5);
+}
+
+.icon {
+  width: 17px;
+  height: 17px;
+}
+
+.isPlaying .waveInner {
+  animation: pulse 900ms ease-in-out infinite;
+}
+
+.isPlaying .waveOuter {
+  animation: pulse 900ms ease-in-out 150ms infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button:hover,
+  .button:focus-visible {
+    transform: none;
+    transition: none;
+  }
+
+  .isPlaying .waveInner,
+  .isPlaying .waveOuter {
+    animation: none;
+  }
+}
