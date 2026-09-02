@@ -47,12 +47,15 @@ export default function PronunciationButton({
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Runs on unmount and whenever the source changes, so a clip belonging to a
+  // previous `src` cannot carry on playing under the new one.
   useEffect(
     () => () => {
       audioRef.current?.element.pause();
       audioRef.current = null;
+      setIsPlaying(false);
     },
-    [],
+    [audioUrl],
   );
 
   const play = useCallback(() => {
