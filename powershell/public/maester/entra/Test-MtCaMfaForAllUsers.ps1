@@ -33,11 +33,19 @@
 
         $result = $false
         foreach ($policy in $policies) {
+            $hasCustomAuthenticationFactor = $false
+            if ($null -ne $policy.grantControls -and $null -ne $policy.grantControls.customAuthenticationFactors) {
+                $hasCustomAuthenticationFactor = @(
+                    $policy.grantControls.customAuthenticationFactors |
+                        Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
+                ).Count -gt 0
+            }
+
             if (
                 (
                     $policy.grantControls.builtInControls -contains 'mfa' -or
                     $policy.grantControls.authenticationStrength.requirementsSatisfied -contains 'mfa' -or
-                    $policy.grantControls.customAuthenticationFactors -ne ''
+                    $hasCustomAuthenticationFactor
                 ) -and
                 $policy.conditions.users.includeUsers -eq 'All' -and
                 $policy.conditions.applications.includeApplications -eq 'All'
