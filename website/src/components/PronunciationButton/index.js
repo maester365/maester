@@ -4,6 +4,7 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 
 import styles from "./styles.module.css";
 
+/** Speaker glyph; the two arcs are the waves that pulse during playback. */
 function SpeakerIcon() {
   return (
     <svg
@@ -48,26 +49,33 @@ export default function PronunciationButton({
 
   useEffect(
     () => () => {
-      audioRef.current?.pause();
+      audioRef.current?.element.pause();
       audioRef.current = null;
     },
     [],
   );
 
   const play = useCallback(() => {
-    let audio = audioRef.current;
-    if (!audio) {
-      audio = new Audio(audioUrl);
-      audio.preload = "none";
-      audio.addEventListener("ended", () => setIsPlaying(false));
-      audio.addEventListener("error", () => setIsPlaying(false));
-      audioRef.current = audio;
+    let cached = audioRef.current;
+
+    // The URL is kept with the element so that a caller which swaps `src`
+    // does not keep hearing the recording from the previous one.
+    if (!cached || cached.url !== audioUrl) {
+      cached?.element.pause();
+
+      const element = new Audio(audioUrl);
+      element.preload = "none";
+      element.addEventListener("ended", () => setIsPlaying(false));
+      element.addEventListener("error", () => setIsPlaying(false));
+
+      cached = { url: audioUrl, element };
+      audioRef.current = cached;
     }
 
-    audio.currentTime = 0;
+    cached.element.currentTime = 0;
     setIsPlaying(true);
     // Safari returns undefined instead of a promise, so wrap it before catching.
-    Promise.resolve(audio.play()).catch(() => setIsPlaying(false));
+    Promise.resolve(cached.element.play()).catch(() => setIsPlaying(false));
   }, [audioUrl]);
 
   return (
