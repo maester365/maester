@@ -27,6 +27,15 @@
 
     try {
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+        # Remove policies that only require MFA in response to elevated risk (password change or risk
+        # remediation grant control, or scoped via user/sign-in risk conditions), as those are conditional
+        # on Identity Protection risk detections rather than requiring MFA on every sign-in.
+        $policies = $policies | Where-Object {
+            $_.grantControls.builtInControls -notcontains 'passwordChange' -and
+            $_.grantControls.builtInControls -notcontains 'riskRemediation' -and
+            -not $_.conditions.userRiskLevels -and
+            -not $_.conditions.signInRiskLevels
+        }
         $policiesResult = New-Object System.Collections.ArrayList
 
         $testDescription = '
