@@ -1,4 +1,4 @@
-Describe "Maester/Intune" -Tag "Maester", "Intune" {
+﻿Describe "Maester/Intune" -Tag "Maester", "Intune" {
     It "MT.1053: Ensure intune device clean-up rule is configured" -Tag "MT.1053" {
         $result = Test-MtManagedDeviceCleanupSettings
         if ($null -ne $result) {
@@ -94,6 +94,34 @@ Describe "Maester/Intune" -Tag "Maester", "Intune" {
         $result = Test-MtIntuneManagedInstallerRules
         if ($null -ne $result) {
             $result | Should -Be $true -Because "'Trust apps from managed installer' is enabled in at least one App Control policy."
+        }
+    }
+
+    It "MT.1214: Ensure macOS compliance policy requires System Integrity Protection. See https://maester.dev/docs/tests/MT.1214" -Tag "MT.1214" {
+        $result = Test-MtMacOSSystemIntegrityProtection
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "at least one assigned macOS compliance policy requires System Integrity Protection."
+        }
+    }
+
+    It "MT.1215: Ensure Gatekeeper restricts macOS app download locations. See https://maester.dev/docs/tests/MT.1215" -Tag "MT.1215" {
+        $result = Test-MtMacOSGatekeeper
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "at least one assigned compliance or configuration policy restricts macOS app download locations."
+        }
+    }
+
+    It "MT.1216: Ensure macOS compliance policy requires a Defender machine risk score level. See https://maester.dev/docs/tests/MT.1216" -Tag "MT.1216" {
+        $result = Test-MtMacOSDefenderRiskScore
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "at least one assigned macOS compliance policy requires a Microsoft Defender machine risk score level."
+        }
+    }
+
+    It "MT.1217: Ensure macOS LAPS is configured on Automated Device Enrollment profiles. See https://maester.dev/docs/tests/MT.1217" -Tag "MT.1217" {
+        $result = Test-MtMacOSLAPSConfiguration
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "at least one macOS enrollment profile provisions a managed local administrator account with password rotation."
         }
     }
 }
