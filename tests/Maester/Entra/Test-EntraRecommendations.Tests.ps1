@@ -69,6 +69,33 @@ Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $En
             Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
             return $null
         }
+
+        # Break-glass (emergency access) accounts are intentionally excluded from risk-based Conditional
+        # Access policies to avoid locking out the accounts needed to recover the tenant, so the sign-in
+        # risk and user risk recommendations always flag them as impacted resources that are never
+        # remediated. When the configured break-glass accounts are the only accounts still flagged, they
+        # are the sole reason the recommendation is not complete and must not fail the test. See #2103.
+        $breakGlassAwareRecommendationTypes = @('userRiskPolicy', 'signinRiskPolicy')
+        if ( $_.status -ne 'completedBySystem' -and $_.recommendationType -in $breakGlassAwareRecommendationTypes ) {
+            try {
+                $breakGlassObjectId = @((Get-MtEmergencyAccessAccount).ObjectId)
+            } catch {
+                # A break-glass account that cannot be resolved must not become a false pass. Leave the
+                # list empty so the exclusion does not apply and the recommendation is evaluated as-is.
+                $breakGlassObjectId = @()
+                Write-Verbose "MT.1024: could not resolve emergency access accounts, evaluating recommendation without break-glass exclusion. $($_.Exception.Message)"
+            }
+
+            $onlyBreakGlassImpacted = Test-MtRecommendationBreakGlassOnly -ImpactedResources $_.impactedResources -BreakGlassObjectId $breakGlassObjectId
+            if ( $onlyBreakGlassImpacted ) {
+                $breakGlassNames = @($_.impactedResources | Where-Object { $_.status -ne 'completedBySystem' } | ForEach-Object { $_.displayName }) -join ', '
+                $breakGlassNote = "`n`n> ℹ️ The only impacted resources are configured emergency access (break-glass) accounts, which are intentionally excluded from risk-based policies and are reported here for information only: $breakGlassNames."
+                Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result ($resultMd + $breakGlassNote)
+                $onlyBreakGlassImpacted | Should -BeTrue -Because "the only impacted resources are the configured emergency access (break-glass) accounts, which are intentionally excluded from risk-based policies"
+                return $null
+            }
+        }
+
         Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result $resultMd
 
         # Actual test
