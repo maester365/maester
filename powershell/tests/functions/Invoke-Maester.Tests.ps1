@@ -1,4 +1,32 @@
 ﻿Describe 'Invoke-Maester' {
+    It 'requests preview scopes when the selected tags can run preview tests: <Case>' -TestCases @(
+        @{ Case = 'Preview switch'; Parameters = @{ IncludePreview = $true }; Expected = $true }
+        @{ Case = 'specific tag'; Parameters = @{ Tag = 'Entra' }; Expected = $true }
+        @{
+            Case = 'All tag'; Parameters = @{ Tag = 'All'; ExcludeTag = 'Preview' }
+            Expected = $true
+        }
+        @{ Case = 'default selection'; Parameters = @{}; Expected = $false }
+        @{
+            Case = 'explicit exclusion'; Parameters = @{ Tag = 'Entra'; ExcludeTag = 'Preview' }
+            Expected = $false
+        }
+    ) {
+        param ($Parameters, $Expected)
+
+        Mock -ModuleName Maester Test-MtContext { throw 'Context selection captured.' }
+
+        $ExpectedIncludePreview = $Expected
+        $Parameters.DisableTelemetry = $true
+        $Parameters.NoLogo = $true
+        $Parameters.NonInteractive = $true
+
+        { Invoke-Maester @Parameters } | Should -Throw 'Context selection captured.'
+        Should -Invoke -ModuleName Maester Test-MtContext -Times 1 -Exactly -ParameterFilter {
+            [bool]$IncludePreview -eq $ExpectedIncludePreview
+        }
+    }
+
     It 'Not connected to graph should return error' {
         if (Get-MgContext) { Disconnect-Graph } # Ensure we are disconnected
         { Invoke-Maester } | Should -Throw 'Not connected to Microsoft Graph.*'
