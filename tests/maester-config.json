@@ -1559,6 +1559,11 @@
       "Title": "Dynamic groups should not use the retiring memberOf rule operator"
     },
     {
+      "Id": "MT.1198",
+      "Severity": "Medium",
+      "Title": "App registration certificates should not have excessive validity periods."
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
