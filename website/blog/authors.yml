@@ -104,6 +104,16 @@ samerde:
     github: samerde
     x: samerde
     bluesky: https://bsky.app/profile/samerde.day3bits.com
+mynster9361:
+  name: Morten Mynster
+  title: Cybersecurity Consultant, TDC Erhverv
+  url: https://mynster-it.dk
+  image_url: https://github.com/Mynster9361.png
+  page: true
+  socials:
+    website: https://mynster-it.dk
+    linkedin: https://www.linkedin.com/in/mortenmynster/
+    github: Mynster9361
 maesterteam:
   name: Maester Team
   title: Maester Contributors
