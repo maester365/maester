@@ -4,7 +4,7 @@
 > **Summary**: Classify every shipped AD test by the minimum capabilities required for meaningful results, document current misleading failure behavior, and publish guidance that distinguishes domain-user-friendly checks from tests that require additional privileged-object reads — without changing collector code or skip logic.
 > **Deliverables**: complete AD capability matrix, created or updated `docs/e2e-ad-testing-guide.md`, automated completeness/vocabulary checks, spot-check evidence across representative AD areas.
 > **Effort**: Medium
-> **Parallel**: YES — 2 waves
+> **Parallel**: YES — 2 waves. **Can execute in parallel with Plans 1–3**; it is classification/documentation only and does not depend on the protocol migration.
 > **Critical Path**: Inventory → capability model → matrix publication → automated completeness checks
 
 ## Context

@@ -8,7 +8,7 @@
 > **Effort**: XL
 > **Parallel**: YES — 3 waves
 > **Critical Path**: 9 → 10 and 11 → 12/13
-> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete; Plan 2 (LDAP Collectors) preferred for Task 10.
+> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete; Plan 2 (LDAP Collectors) preferred for Task 10. Plan 4 Task 20b (E2E Re-Validation) must run after Plans 1–3 are complete.
 
 ## Context
 This plan implements the cross-platform transports that Plan 2 deliberately excludes: reading GPO files from SYSVOL, executing remote WMI over WinRM/PSRP for DNS and SMB state, and composing the final GPO report from LDAP metadata plus SYSVOL content.

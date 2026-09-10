@@ -12,18 +12,29 @@
 > - Windows PowerShell 5.1, Windows PowerShell 7, and Ubuntu PowerShell 7 E2E evidence
 > **Effort**: XL
 > **Parallel**: YES - 10 waves
-> **Critical Path**: 1 → 2 → 3 → 4 → 5 → 6/7 → 8/9/10 → 11/12/13 → 14 → 15/16 → 17 → 18/19 → 20
+> **Critical Path**: 1 → 2 → 3 → 4 → 5 → 6/7 → 8/9/10 → 11/12/13 → 14 → 15/16 → 17 → 18/19 → 20 → 20b
+> **Parallel Tracks**: Plan 5 research (Tasks 21–22), Plan 7 (SACL cache), and Plan 8 (least-privilege matrix) can execute in parallel with Tasks 1–20.
 
 ## Pre-Flight: Plan Selection & Branch Setup
 
 ### Plan Hierarchy
 This file is the **canonical execution plan** for Tasks 1–20. Plans `01-ad-protocol-foundation.md` through `04-integration-docs-and-e2e.md` are **reference views** only — they segment this master plan by topic for readability but lack the per-task QA scenarios, agent profiles, and dependency matrices required for execution. **Always execute from this file.**
 
+> **Plan 4 Status**: Tasks 16–20 (baseline validation of the legacy module-based approach) are complete. **Task 20b (re-validation against protocol-migrated code)** must run after Plans 1–3 are implemented.
+
 Plan `05-tier-model-alignment.md` is a **separate dependent workstream** (Tasks 21–26). It can begin research (Tasks 21–22) in parallel with protocol work, but implementation (Tasks 23–25) requires Plan 2 query catalog stability, and validation (Task 26) requires Plan 4 E2E lab availability.
+
+Plans `07-ad-sacl-cache-stability.md` and `08-ad-least-privilege-matrix.md` are **discrete workstreams** that can execute in parallel with Plans 1–3. They do not depend on the protocol migration and are intentionally scoped to avoid overlap.
 
 ### Execution Policy
 - **Sequential plan execution**: Do not automatically start all plans. Each `/start-work` session targets **one plan at a time** as explicitly requested by the user.
-- **Suggested order**: Master plan (Tasks 1–20) first, then Plan 5 (Tasks 21–26) after Plan 2 is stable.
+- **Suggested order**:
+  1. Master plan Tasks 1–20 (protocol migration + baseline docs/E2E)
+  2. Plan 7 (SACL cache) and Plan 8 (least-privilege matrix) — in parallel with Tasks 1–20
+  3. Plan 5 research (Tasks 21–22) — in parallel with Tasks 1–20
+  4. Plan 5 implementation (Tasks 23–25) — after Plan 2 is stable
+  5. Plan 4 Task 20b (E2E Re-Validation) — after Plans 1–3 are complete
+  6. Plan 5 validation (Task 26) — after Plan 4 Task 20b
 
 ### Branch Setup (Required Before Task 1)
 1. Ensure `main` is clean and up to date with `upstream/main`.

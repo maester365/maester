@@ -4,7 +4,7 @@
 > **Summary**: Stabilize the narrow SACL/ACL collector path in `Get-MtADDacls` so large-object environments stop freezing PowerShell sessions, without widening scope into the broader AD collector architecture.
 > **Deliverables**: preserved-function contract baseline, memory-safe `Get-MtADDacls` implementation, scoped cache-key fix for `-DnBase`, AD-capable regression/perf evidence.
 > **Effort**: Short
-> **Parallel**: YES — 2 waves
+> **Parallel**: YES — 2 waves. **Can execute in parallel with Plans 1–3**; it is scoped to `Get-MtADDacls` only and does not depend on the protocol migration.
 > **Critical Path**: Contract baseline → collector stabilization → cache-scope fix → perf/correctness verification
 
 ## Context

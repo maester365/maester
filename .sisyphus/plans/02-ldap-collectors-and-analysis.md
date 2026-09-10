@@ -8,7 +8,7 @@
 > **Effort**: XL
 > **Parallel**: YES — 3 waves
 > **Critical Path**: 6 → 7 → 8 → 14
-> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete
+> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete. Plan 4 Task 20b (E2E Re-Validation) must run after Plans 1–3 are complete.
 
 ## Context
 This plan implements all directory-state collection via LDAP and migrates every analysis function away from `Get-AD*` / `DirectoryEntry` / `DirectorySearcher`. It does NOT touch SYSVOL, WinRM/PSRP, DNS WMI, or SMB remoting—those are in Plan 3.

@@ -3,15 +3,18 @@
 > **Reference View** — This is a segmented summary of the master plan `ad-integration-protocol-targeting.md` (Tasks 16–20). For execution, always use the master plan which contains full QA scenarios, agent profiles, and dependency matrices.
 
 ## TL;DR
+> **Status**: Tasks 16–20 (Baseline Validation) COMPLETED. Tasks 18–20 generated evidence against the **legacy** ActiveDirectory/GroupPolicy/DnsServer module-based approach. A **Re-Validation round** (Task 20b) is required after Plans 1–3 are implemented to confirm the protocol-based approach produces equivalent results.
 > **Scope**: Documentation, build/runner updates, local validation, Azure E2E lab deployment, live cross-platform testing, and final cleanup. Each `Connect-Maester`/`Invoke-Maester` cycle targets exactly one endpoint; results are not self-invoked or merged across runs.
 > **Deliverables**: Complete docs, updated runners, passing validation, live E2E evidence, clean teardown.
 > **Effort**: XL
 > **Parallel**: YES — 4 waves
-> **Critical Path**: 16 → 17 → 18 → 19 → 20
-> **Prerequisite**: Plans 1–3 complete
+> **Critical Path**: 16 → 17 → 18 → 19 → 20 → 20b
+> **Prerequisite**: Plans 1–3 complete (for Task 20b re-validation); no prerequisite for Tasks 16–20 (baseline)
 
 ## Context
 This plan is the integration and validation layer. It documents every selector combination, updates build scripts, validates locally, deploys an Azure lab, runs live tests from Windows PS5.1/PS7 and Ubuntu PS7, and tears everything down cleanly. Each run is independent; there is no merge workflow.
+
+> **Important distinction**: The evidence captured in Tasks 16–20 was generated against the **current legacy module-based code** (`Get-ADDomain`, `Get-ADForest`, etc.). The E2E lab infrastructure and runner scripts are ready for reuse, but the protocol migration (Plans 1–3) must be completed **before** the final validation can certify the removal of ActiveDirectory, GroupPolicy, and DnsServer dependencies. Task 20b is the explicit re-validation step for the migrated code.
 
 ## Wave 1: Documentation & Runners (Task 16)
 
@@ -98,11 +101,34 @@ This plan is the integration and validation layer. It documents every selector c
 
 **References**: Task 16 docs; Azure teardown scripts.
 
-## Final Verification Wave (F1–F4)
+---
+
+### Task 20b — Re-validate E2E against protocol-migrated code (POST-Plans 1–3)
+**What to do**:
+- After Plans 1–3 are complete and the product code contains zero `Get-AD*` / `Get-GPO*` / `Get-DnsServer*` calls, redeploy the Azure E2E lab using the existing `build/activeDirectory/azure-lab/` automation.
+- Run the same test matrix as Task 19: Windows PS5.1/PS7 integrated and explicit credential runs; Ubuntu PS7 explicit credential runs.
+- Cover root forest-only, child Domain+Server, second Forest+Domain+Server, Server-only, and representative aligned combinations.
+- Assert that result counts and shapes match the **baseline evidence** already captured in `build/activeDirectory/azure-lab/evidence/`.
+- Verify that the removed modules (ActiveDirectory, GroupPolicy, DnsServer) are absent on both runners.
+- Emit JSON/Markdown/HTML reports and compare report structure against baseline.
+
+**Must NOT do**: Do not treat baseline evidence as final certification; do not skip re-validation if Plans 1–3 change collector shapes.
+
+**Acceptance Criteria**:
+- Each run exits 0 with `TotalCount > 0`; result counts match baseline within acceptable variance (±5% for pass/fail/skip counts due to environmental differences).
+- Structural scan confirms zero legacy module imports on runners.
+- Report formats (JSON/Markdown/HTML) are structurally equivalent to baseline.
+- Any divergence from baseline is documented with root cause.
+
+**References**: Task 19 baseline evidence; Plan 1 contracts; `build/activeDirectory/azure-lab/` automation.
+
+## Final Verification Wave (F1–F4) — Baseline (Tasks 16–20)
 Run in parallel after Task 20. All must approve; present results and wait for explicit user approval.
 
+> **Note**: This verification wave certified the **baseline** (legacy module-based) execution. A **second verification wave (F5–F8)** must be run after Task 20b to certify the protocol-migrated code.
+
 - **F1. Plan Compliance Audit** — oracle
-  - Check every acceptance criterion and verify all removed dependencies/registry architecture are absent.
+  - Check every acceptance criterion for Tasks 16–20 and verify all removed dependencies/registry architecture are absent from docs/runners.
   - Verify no `Merge-MtMaesterResult` invocation for AD runs, no target registry, and no self-invoking patterns.
   - Expected: `APPROVE` with zero unmet criteria.
 
@@ -119,11 +145,19 @@ Run in parallel after Task 20. All must approve; present results and wait for ex
   - Expected: `APPROVE` confirming minimal core changes, complete protocol migration, and no self-invoking/merging behavior.
 
 ## Success Criteria
-- [ ] Documentation covers every selector combination with copyable commands for single-target runs.
-- [ ] Local validation passes on PS5.1/PS7 with zero banned calls or secret leakage.
-- [ ] Azure lab deploys, runs succeed on both platforms, and teardown leaves zero resources.
-- [ ] Each run produces exactly one result set for exactly one target; no merge or self-invocation exists.
-- [ ] Final verification waves (F1–F4) all approve.
+
+### Baseline (Tasks 16–20) — COMPLETED
+- [x] Documentation covers every selector combination with copyable commands for single-target runs.
+- [x] Local validation passes on PS5.1/PS7 with zero banned calls or secret leakage.
+- [x] Azure lab deploys, runs succeed on both platforms, and teardown leaves zero resources.
+- [x] Each run produces exactly one result set for exactly one target; no merge or self-invocation exists.
+- [x] Final verification waves (F1–F4) all approve.
+
+### Re-Validation (Task 20b) — PENDING Plans 1–3
+- [ ] Protocol-migrated code produces result counts within ±5% of baseline evidence.
+- [ ] Runners confirm zero ActiveDirectory, GroupPolicy, DnsServer module presence.
+- [ ] Report formats remain structurally equivalent to baseline.
+- [ ] Final verification waves (F5–F8) all approve.
 
 ## Commit Strategy
 - Work only on `ad-multiforest-targeting`.

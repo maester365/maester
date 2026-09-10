@@ -4,7 +4,7 @@
 > **Scope**: Align Maester's Active Directory security checks with Microsoft's Active Directory Tier Model guidance. Map existing checks, identify gaps, and implement new checks for tier separation, privileged access hygiene, and administrative forest controls.
 > **Deliverables**: Tier Model coverage matrix, gap analysis, new/modified checks, documentation.
 > **Effort**: L–XL
-> **Parallel**: YES — 3 waves
+> **Parallel**: YES — 3 waves. **Research waves (Tasks 21–22) can run in parallel with Plans 1–3.** Implementation waves (Tasks 23–25) require Plan 2 query catalog stability.
 > **Prerequisite**: Plan 1 (AD Protocol Foundation) for protocol primitives; Plan 2 (LDAP Collectors) for directory-state queries. Can begin research in parallel with protocol work.
 
 ## Context

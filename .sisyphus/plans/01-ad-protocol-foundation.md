@@ -110,3 +110,6 @@ This is the foundation for all subsequent AD protocol work. It establishes the b
 - Work only on `ad-multiforest-targeting`.
 - Do not commit unless separately requested.
 - If requested later, split into: branch/scope reset, contracts, packaging, LDAP transport, targeting.
+
+## Downstream Dependency Note
+Plan 4 (Integration & E2E) contains a **Task 20b — Re-Validation** that must run after Plans 1–3 are complete. The E2E lab infrastructure and baseline evidence already exist on the branch, but the final certification of the protocol-migrated code cannot occur until this plan delivers zero legacy module calls.
