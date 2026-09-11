@@ -93,8 +93,14 @@ function initialsFor(name) {
 // Single pass over the full git history, following renames so that the person
 // who moved a file is not credited as its creator.
 function loadGitFileHistory() {
-  const raw = execSync(
-    "git log --reverse --no-merges --name-status -M --format='%x01%ae%x02%an%x02%aI'",
+  // Uses execFileSync (no shell) so the %x01/%x02-delimited format string reaches
+  // git unmodified on every OS. execSync with a shell-quoted string is not
+  // portable here: Windows spawns cmd.exe by default, which does not strip the
+  // POSIX-style single quotes the format was previously wrapped in, so git would
+  // receive literal quote characters and every line would fail to parse.
+  const raw = execFileSync(
+    "git",
+    ["log", "--reverse", "--no-merges", "--name-status", "-M", "--format=%x01%ae%x02%an%x02%aI"],
     { cwd: repoRoot, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }
   );
   const history = new Map(); // current repo-relative path -> [{ email, name, date }]

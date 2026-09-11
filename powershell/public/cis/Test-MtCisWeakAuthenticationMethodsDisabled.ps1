@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         Weak authentication methods such as SMS, voice call, and email OTP should be disabled.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.3.5, L1)
 
     .EXAMPLE
         Test-MtCisWeakAuthenticationMethodsDisabled

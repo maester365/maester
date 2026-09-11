@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         Non-admin users should be restricted from creating tenants.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.2.3, L1)
 
     .EXAMPLE
         Test-MtCisCreateTenantDisallowed

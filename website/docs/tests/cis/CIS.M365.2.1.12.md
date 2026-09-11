@@ -13,7 +13,7 @@ keywords:
   - "CIS"
   - "CIS E3 Level 1"
   - "CIS E3"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
 ---
 
@@ -65,7 +65,7 @@ Set-HostedConnectionFilterPolicy -Identity Default -IPAllowList @{}
 * [Configure connection filtering in cloud organizations](https://learn.microsoft.com/defender-office-365/connection-filter-policies-configure)
 * [Create sender allowlists for cloud mailboxes](https://learn.microsoft.com/defender-office-365/create-safe-sender-lists-in-office-365#use-the-ip-allow-list)
 * [When user and organization settings conflict](https://learn.microsoft.com/defender-office-365/how-policies-and-protections-are-combined#user-and-tenant-settings-conflict)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 116](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 128](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -76,7 +76,7 @@ Set-HostedConnectionFilterPolicy -Identity Default -IPAllowList @{}
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisHostedConnectionFilterPolicy](/docs/commands/Test-MtCisHostedConnectionFilterPolicy) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v6.0.1, CIS.M365.2.1.12, L1 |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.12, L1 |
 
 ## Source
 

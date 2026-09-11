@@ -15,7 +15,7 @@ keywords:
   - "CIS E3"
   - "CIS E5"
   - "CIS E5 Level 2"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L2"
   - "Security"
 ---
@@ -64,7 +64,7 @@ Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
 #### Related links
 
 * [Microsoft 365 admin center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 63](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 67](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -75,7 +75,7 @@ Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
 | PowerShell test | [Test-MtCisThirdPartyStorageServicesRestricted](/docs/commands/Test-MtCisThirdPartyStorageServicesRestricted) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v6.0.1, CIS.M365.1.3.7, L2, Security |
+| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.7, L2, Security |
 
 ## Source
 

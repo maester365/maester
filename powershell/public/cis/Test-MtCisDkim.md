@@ -10,6 +10,8 @@ By enabling DKIM with Office 365, messages that are sent from Exchange Online wi
 
 There should be no impact of setting up DKIM however, organizations should ensure appropriate setup to ensure continuous mail-flow.
 
+>Note: Initial (MOERA, e.g. `contoso.onmicrosoft.com`) and coexistence (`*.mail.onmicrosoft.com`) domains are excluded from this check, as Microsoft automatically signs outbound mail for those domains.
+
 #### Remediation action
 
 To remediate using a DNS Provider:
@@ -33,7 +35,7 @@ domainGUID is the same as the domainGUID in the customized MX record for your cu
 contoso.com. 3600 IN MX 5 contoso-com.mail.protection.outlook.com
 ```
 
-The initial domain is the domain that you used when you signed up for Office 365. Initial domains always end with on.microsoft.com.
+The initial domain is the domain that you used when you signed up for Office 365. Initial domains always end with onmicrosoft.com.
 
 1. After the DNS records are created, enable DKIM signing in Defender.
 2. Navigate to [Microsoft 365 Defender](https://security.microsoft.com)
@@ -55,7 +57,7 @@ Set-DkimSigningConfig -Identity < domainName > -Enabled $True
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
 * [Set up DKIM to sign mail from your cloud domain](https://learn.microsoft.com/defender-office-365/email-authentication-dkim-configure?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 102](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 112](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

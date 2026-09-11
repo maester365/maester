@@ -242,7 +242,7 @@
         'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCreateTenantDisallowed', 'Test-MtCisCustomerLockBox',
         'Test-MtCisDevicesWithoutCompliancePolicyMarked', 'Test-MtCisDkim', 'Test-MtCisEnsureBitLockerKeyRecoveryRestricted',
         'Test-MtCisEnsureGuestAccessRestricted',
-        'Test-MtCisEnsureGuestUserDynamicGroup', 'Test-MtCisEnsureUserConsentToAppsDisallowed', 'Test-MtCisExoAdditionalStorageProvider',
+        'Test-MtCisEnsureUserConsentToAppsDisallowed', 'Test-MtCisExoAdditionalStorageProvider',
         'Test-MtCisFormsPhishingProtectionEnabled', 'Test-MtCisGitHubIssueDeletionLimited',
         'Test-MtCisGitHubRepositoryCreationLimited', 'Test-MtCisGitHubRepositoryDeletionLimited',
         'Test-MtCisGitHubStrictBasePermission', 'Test-MtCisGitHubTeamCreationLimited',

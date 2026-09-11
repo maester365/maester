@@ -34,7 +34,7 @@ AdditionalStorageProvidersAvailable : True
 * [Set-OwaMailboxPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/set-owamailboxpolicy?view=exchange-ps)
 * [3rd party cloud storage services supported by Office apps](https://support.microsoft.com/office/3rd-party-cloud-storage-services-supported-by-office-apps-fce12782-eccc-4cf5-8f4b-d1ebec513f72)
 * [Microsoft Secure Score - Restrict third-party storage services](https://security.microsoft.com/securescore)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 356](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 454](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

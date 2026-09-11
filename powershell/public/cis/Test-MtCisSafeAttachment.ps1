@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     The Safe Attachments policy is enabled
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.4, L2)
 
     .EXAMPLE
     Test-MtCisSafeAttachment

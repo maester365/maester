@@ -2,7 +2,7 @@
 
 This policy setting configures the expiration time for each guest that is invited to the SharePoint site or with whom users share individual files and folders with.
 
-The recommended state is **30** or less.
+The recommended state is **30**. This is the minimum value SharePoint allows for this setting.
 
 ## Rationale
 
@@ -38,7 +38,7 @@ Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True
 
 * [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
 * [Managing SharePoint Online Security: A Team Effort](https://learn.microsoft.com/microsoft-365/community/sharepoint-security-a-team-effort)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 385](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 487](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

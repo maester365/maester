@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     The anti-phishing policy should be enabled, and the settings for PhishThresholdLevel, EnableMailboxIntelligenceProtection, EnableMailboxIntelligence, EnableSpoofIntelligence controls match CIS recommendations
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.7, L1)
 
     .EXAMPLE
     Test-MtCisSafeAntiPhishingPolicy

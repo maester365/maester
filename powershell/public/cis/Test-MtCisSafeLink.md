@@ -80,7 +80,7 @@ New-SafeLinksRule -Name "CIS SafeLinks" -SafeLinksPolicy "CIS SafeLinks Policy" 
 * [Set-SafeLinksPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/set-safelinkspolicy?view=exchange-ps)
 * [Set up Safe Links policies in Microsoft Defender for Office 365](https://learn.microsoft.com/defender-office-365/safe-links-policies-configure?view=o365-worldwide)
 * [Preset security policies in cloud organizations](https://learn.microsoft.com/defender-office-365/preset-security-policies?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 73](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 78](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

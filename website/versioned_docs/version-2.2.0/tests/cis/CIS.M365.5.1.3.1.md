@@ -87,7 +87,7 @@ New-MgGroup @params
 | Severity | Unknown |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisEnsureGuestUserDynamicGroup](/docs/commands/Test-MtCisEnsureGuestUserDynamicGroup) |
+| PowerShell test | `Test-MtCisEnsureGuestUserDynamicGroup` (removed from the module; this control is no longer part of the CIS benchmark) |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v6.0.1, CIS.M365.5.1.3.1, L1, Security |
 
 ## Source

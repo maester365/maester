@@ -51,7 +51,7 @@ Update-MgPolicyAuthenticationMethodPolicy -AuthenticationMethodConfigurations $p
 * [Manage authentication methods for Microsoft Entra ID](https://learn.microsoft.com/entra/identity/authentication/concept-authentication-methods-manage)
 * [Context and problem](https://learn.microsoft.com/security/zero-trust/sfi/phishing-resistant-mfa#context-and-problem)
 * [What is SIM swapping & how does the hijacking scam work?](https://www.microsoft.com/microsoft-365-life-hacks/privacy-and-safety/what-is-sim-swapping)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 288](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 363](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

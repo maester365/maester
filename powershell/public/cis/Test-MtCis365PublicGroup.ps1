@@ -4,8 +4,9 @@
     Checks if there are public groups
 
     .DESCRIPTION
-    Ensure that only organizationally managed and approved public groups exist
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    Ensure that only organizationally managed and approved public groups exist.
+    Only Microsoft 365 (unified) groups are evaluated, matching the CIS audit procedure.
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.2.1, L2)
 
     .EXAMPLE
     Test-MtCis365PublicGroup
@@ -26,7 +27,7 @@
 
     try {
         Write-Verbose 'Getting all Microsoft 365 Groups'
-        $365GroupList = Invoke-MtGraphRequest -RelativeUri 'groups' -ApiVersion v1.0
+        $365GroupList = Invoke-MtGraphRequest -RelativeUri 'groups' -ApiVersion v1.0 -Filter "groupTypes/any(c:c eq 'Unified')"
 
         Write-Verbose 'Filtering out private 365 groups'
         $result = $365GroupList | Where-Object { $_.visibility -eq 'Public' }

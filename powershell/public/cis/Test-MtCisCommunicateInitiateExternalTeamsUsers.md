@@ -53,7 +53,7 @@ Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerInbound $false
 * [IT Admins - Manage external meetings and chat with people and organizations using Microsoft identities](https://learn.microsoft.com/microsoftteams/trusted-organizations-external-meetings-chat?tabs=organization-settings)
 * [Midnight Blizzard conducts targeted social engineering over Microsoft Teams](https://www.microsoft.com/security/blog/2023/08/02/midnight-blizzard-conducts-targeted-social-engineering-over-microsoft-teams/)
 * [GIFShell Attack Lets Hackers Create Reverse Shell through Microsoft Teams GIFs](https://www.bitdefender.com/en-us/blog/hotforsecurity/gifshell-attack-lets-hackers-create-reverse-shell-through-microsoft-teams-gifs)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 416](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 516](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         7.3.1 (L2) Ensure Office 365 SharePoint infected files are disallowed for download
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (7.3.1, L2)
 
     .EXAMPLE
         Test-MtCisSpoPreventDownloadMaliciousFile

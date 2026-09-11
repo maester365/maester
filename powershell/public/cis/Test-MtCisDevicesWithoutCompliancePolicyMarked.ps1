@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         Devices without a compliance policy assigned should be marked "not compliant".
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (4.1, L1)
 
     .EXAMPLE
         Test-MtCisDevicesWithoutCompliancePolicyMarked

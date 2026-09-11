@@ -13,7 +13,7 @@ keywords:
   - "CIS"
   - "CIS E3 Level 2"
   - "CIS E3"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L2"
 ---
 
@@ -57,12 +57,14 @@ To enable only organizationally managed/approved public groups exist:
 4. On the popup groups name page, **Select Settings**.
 5. Under Privacy, select **Private**.
 
+>Note: This check only evaluates Microsoft 365 (unified) groups, matching the CIS audit procedure (`groupTypes/any(c:c eq 'Unified')`).
+
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Set up self-service group management in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/users/groups-self-service-management)
 * [Compare types of groups in Microsoft 365](https://learn.microsoft.com/microsoft-365/admin/create-groups/compare-groups?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 36](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 39](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -73,7 +75,7 @@ To enable only organizationally managed/approved public groups exist:
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
 | PowerShell test | [Test-MtCis365PublicGroup](/docs/commands/Test-MtCis365PublicGroup) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v6.0.1, CIS.M365.1.2.1, L2 |
+| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.1.2.1, L2 |
 
 ## Source
 

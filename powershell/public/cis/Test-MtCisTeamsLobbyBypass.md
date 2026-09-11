@@ -37,7 +37,7 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 * [Overview of lobby settings and policies](https://learn.microsoft.com/microsoftteams/who-can-bypass-meeting-lobby#overview-of-lobby-settings-and-policies)
 * [Set-CsTeamsMeetingPolicy](https://learn.microsoft.com/powershell/module/microsoftteams/set-csteamsmeetingpolicy?view=teams-ps&viewFallbackFrom=skype-ps)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 434](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 535](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

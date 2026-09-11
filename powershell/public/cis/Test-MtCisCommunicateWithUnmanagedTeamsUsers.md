@@ -2,7 +2,7 @@
 
 This policy setting controls chats and meetings with external unmanaged Teams users (those not managed by an organization, such as Microsoft Teams (free)).
 
-The recommended state is: **People in my organization can communicate with unmanaged Teams accounts set to Off**.
+The recommended state is: **People in my org can chat and have meetings with external users who have unmanaged Microsoft accounts set to Off**.
 
 #### Rationale
 
@@ -24,11 +24,13 @@ Users will be unable to communicate with Teams users who are not managed by an o
 To remediate using the UI:
 
 1. Navigate to [Microsoft 365 Teams Admin Center](https://admin.teams.microsoft.com).
-2. Click to expand **Users** select **External access**.
+2. Click to expand **External collaboration** and select **External access**.
 3. Select the **Policies** tab
 4. Click on the **Global (Org-wide default)** policy.
-5. Set **People in my organization can communicate with unmanaged Teams accounts** to **Off**.
+5. Set **People in my org can chat and have meetings with external users who have unmanaged Microsoft accounts** to **Off**.
 6. Click **Save**.
+
+>Note: Configuring this setting at the organization level, in the **Organization settings** tab, to **Off** is also a compliant remediation.
 
 ##### PowerShell
 
@@ -47,7 +49,7 @@ Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerAccess $false
 * [IT Admins - Manage external meetings and chat with people and organizations using Microsoft identities](https://learn.microsoft.com/microsoftteams/trusted-organizations-external-meetings-chat?tabs=organization-settings)
 * [Midnight Blizzard conducts targeted social engineering over Microsoft Teams](https://www.microsoft.com/security/blog/2023/08/02/midnight-blizzard-conducts-targeted-social-engineering-over-microsoft-teams/)
 * [GIFShell Attack Lets Hackers Create Reverse Shell through Microsoft Teams GIFs](https://www.bitdefender.com/en-us/blog/hotforsecurity/gifshell-attack-lets-hackers-create-reverse-shell-through-microsoft-teams-gifs)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 413](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 512](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         7.2.11 (L1) Ensure the SharePoint default sharing link permission is set
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (7.2.11, L1)
 
     .EXAMPLE
         Test-MtCisSpoDefaultSharingLinkPermission

@@ -6,6 +6,10 @@ This setting sets the default link type that a user will see when sharing conten
 
 By defaulting to specific people, the user will first need to consider whether or not the content being shared should be accessible by the entire organization versus select individuals. This aids in reinforcing the concept of least privilege.
 
+## Impact
+
+Changing the default sharing link type influences the user experience when sharing files and folders in SharePoint and OneDrive. The configured default option will appear pre-selected in the sharing dialog, guiding users toward the organization's preferred sharing method.
+
 ## Remediation
 
 1. Navigate to [SharePoint admin center](https://admin.microsoft.com/sharepoint)
@@ -33,7 +37,7 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 ## Related Links
 
 * [Set-SPOTenant](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 381](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 480](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

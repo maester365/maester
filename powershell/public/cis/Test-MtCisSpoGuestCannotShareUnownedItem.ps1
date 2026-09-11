@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         7.2.5 (L2) Ensure that SharePoint guest users cannot share items they don't own
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (7.2.5, L2)
 
     .EXAMPLE
         Test-MtCisSpoGuestCannotShareUnownedItem

@@ -1,14 +1,14 @@
-5.1.2.2 (L2) Ensure third party integrated applications are not allowed
+5.1.2.2 (L1) Ensure users cannot register applications
 
-App registration allows users to register custom-developed applications for use within the directory.
+This setting controls whether standard users can register applications in the Microsoft Entra ID directory. When enabled, any user can create app registrations, which function as identity objects for applications.
 
 #### Rationale
 
-Third-party integrated applications connection to services should be disabled unless there is a very clear value and robust security controls are in place. While there are legitimate uses, attackers can grant access from breached accounts to third party applications to exfiltrate data from your tenancy without having to maintain the breached account.
+Allowing standard users to create app registrations expands the tenant's attack surface. A compromised account or malicious insider could create a rogue app registration to establish a persistent OAuth client, facilitate token theft, or impersonate a legitimate application. Restricting app registration to privileged roles ensures that new application identities in the directory are subject to administrative review and approval before they can be granted permissions to organizational resources.
 
 #### Impact
 
-The implementation of this change will impact both end users and administrators. End users will not be able to integrate third-party applications that they may wish to use. Administrators are likely to receive requests from end users to grant them permission to the necessary third-party applications.
+End users will no longer be able to register applications independently, including both third-party integrations and custom applications. Developers and IT staff who create app registrations as part of normal workflows will be affected and will need to submit registration requests to a privileged administrator (e.g., Application Administrator or Cloud Application Administrator). Organizations should establish a formal request and approval process before implementing this change to avoid workflow disruption.
 
 #### Remediation action
 
@@ -23,7 +23,7 @@ The implementation of this change will impact both end users and administrators.
 2. Run the following commands:
 
 ```powershell
-$param = @{ AllowedToCreateApps = "$false" }
+$param = @{ AllowedToCreateApps = $false }
 Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $param
 ```
 
@@ -31,7 +31,7 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $param
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
 * [How and why applications are added to Microsoft Entra ID](https://learn.microsoft.com/entra/identity-platform/how-applications-are-added)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 173](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 197](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

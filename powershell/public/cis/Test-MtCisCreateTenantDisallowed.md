@@ -31,7 +31,7 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $params
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
 * [Restrict member users' default permissions](https://learn.microsoft.com/entra/fundamentals/users-default-permissions#restrict-member-users-default-permissions)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 175](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 200](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Ensure Sign ins are blocked for shared mailboxes.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.2.2, L1)
 
     .EXAMPLE
     Test-MtCisSharedMailboxSignIn

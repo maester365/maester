@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     The common attachment types filter should be comprehensive
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.11, L2)
 
     .EXAMPLE
     Test-MtCisAttachmentFilterComprehensive
@@ -29,7 +29,7 @@
     try {
         # Set CIS supplied comprehensive extension list
         $L2Extensions = @(
-            '7z', 'a3x', 'ace', 'ade', 'adp', 'ani', 'app', 'appinstaller',
+            '7z', 'a3x', 'ace', 'ade', 'adp', 'ani', 'apk', 'app', 'appinstaller',
             'applescript', 'application', 'appref-ms', 'appx', 'appxbundle', 'arj',
             'asd', 'asx', 'bas', 'bat', 'bgi', 'bz2', 'cab', 'chm', 'cmd', 'com',
             'cpl', 'crt', 'cs', 'csh', 'daa', 'dbf', 'dcr', 'deb',
@@ -37,7 +37,7 @@
             'doc', 'docm', 'dot', 'dotm', 'elf', 'eml', 'exe', 'fxp', 'gadget', 'gz',
             'hlp', 'hta', 'htc', 'htm', 'html', 'hwpx', 'ics', 'img',
             'inf', 'ins', 'iqy', 'iso', 'isp', 'jar', 'jnlp', 'js', 'jse', 'kext',
-            'ksh', 'lha', 'lib', 'library-ms', 'lnk', 'lzh', 'macho', 'mam', 'mda',
+            'ksh', 'lha', 'lib', 'library', 'library-ms', 'lnk', 'lzh', 'macho', 'mam', 'mda',
             'mdb', 'mde', 'mdt', 'mdw', 'mdz', 'mht', 'mhtml', 'mof', 'msc', 'msi',
             'msix', 'msp', 'msrcincident', 'mst', 'ocx', 'odt', 'ops', 'oxps', 'pcd',
             'pif', 'plg', 'pot', 'potm', 'ppa', 'ppam', 'ppkg', 'pps', 'ppsm', 'ppt',

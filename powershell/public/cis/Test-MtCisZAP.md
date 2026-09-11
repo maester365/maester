@@ -32,7 +32,7 @@ Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Zero-hour auto purge (ZAP) in Microsoft Teams](https://learn.microsoft.com/defender-office-365/zero-hour-auto-purge?view=o365-worldwide#zero-hour-auto-purge-zap-in-microsoft-teams)
 * [Configure ZAP for Teams protection in Defender for Office 365](https://learn.microsoft.com/defender-office-365/mdo-support-teams-about?view=o365-worldwide#configure-zap-for-teams-protection-in-defender-for-office-365-plan-2)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 145](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 157](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

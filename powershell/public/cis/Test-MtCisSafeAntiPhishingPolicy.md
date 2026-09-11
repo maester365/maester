@@ -82,7 +82,7 @@ New-AntiPhishRule -Name $params.Name -AntiPhishPolicy $params.Name -RecipientDom
 * [Microsoft 365 Defender](https://security.microsoft.com)
 * [Anti-phishing protection in cloud organizations](https://learn.microsoft.com/defender-office-365/anti-phishing-protection-about)
 * [Configure anti-phishing policies for all cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-phishing-policies-eop-configure)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 94](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 102](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

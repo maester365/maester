@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     A minimum of two users and a maximum of four users SHALL be provisioned with the Global Administrator role.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.1.3, L1)
 
     .EXAMPLE
     Test-MtCisGlobalAdminCount

@@ -13,7 +13,7 @@ keywords:
   - "CIS"
   - "CIS E3 Level 1"
   - "CIS E3"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
 ---
 
@@ -52,7 +52,7 @@ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
 #### Related links
 
 * [Microsoft 365 Purview](https://purview.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 149](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 164](https://www.cisecurity.org/benchmark/microsoft_365)
 * [Turn auditing on or off](https://learn.microsoft.com/purview/audit-log-enable-disable?view=o365-worldwide&tabs=microsoft-purview-portal)
 * [Set-AdminAuditLogConfig](https://learn.microsoft.com/powershell/module/exchangepowershell/set-adminauditlogconfig?view=exchange-ps)
 * [Verify the auditing status for your organization](https://learn.microsoft.com/purview/audit-log-enable-disable?view=o365-worldwide&tabs=microsoft-purview-portal#verify-the-auditing-status-for-your-organization)
@@ -66,7 +66,7 @@ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisAuditLogSearch](/docs/commands/Test-MtCisAuditLogSearch) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v6.0.1, CIS.M365.3.1.1, L1 |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.3.1.1, L1 |
 
 ## Source
 

@@ -33,7 +33,7 @@ Set-SharingPolicy -Identity "Default Sharing Policy" -Enabled $False
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Share Microsoft 365 calendars with people outside your organization](https://learn.microsoft.com/microsoft-365/admin/manage/share-calendars-with-external-users?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 53](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 56](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -1,11 +1,11 @@
 ﻿function Test-MtCisThirdPartyAndCustomApps {
     <#
     .SYNOPSIS
-    Ensure all or a majority of third-party and custom apps are blocked
+    Ensure app permission policies are configured
 
     .DESCRIPTION
     Ensure all or a majority of third-party and custom apps are blocked
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.4.1, L1)
 
     .EXAMPLE
     Test-MtCisThirdPartyAndCustomApps
@@ -36,18 +36,6 @@
 
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
-
-        # CIS test 8.4.1 is "On or less permissive" for Microsoft Apps, so all Microsoft Apps states pass. The checks are retained for display purposes but do not affect the overall result.
-        if (($appPermPolicy.DefaultCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.DefaultCatalogApps)) {
-            # Microsoft apps
-            $result += "| Microsoft apps | Allow all apps | $passResult |`n"
-        } elseif (($appPermPolicy.DefaultCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.DefaultCatalogApps)) {
-            $result += "| Microsoft apps | Allow specific apps and block all others | $passResult |`n"
-        } elseif (($appPermPolicy.DefaultCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.DefaultCatalogApps)) {
-            $result += "| Microsoft apps | Block specific apps and allow all others | $passResult |`n"
-        } else {
-            $result += "| Microsoft apps | Block all apps | $passResult |`n"
-        }
 
         if (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.GlobalCatalogApps)) {
             # Third-party apps

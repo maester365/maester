@@ -39,17 +39,17 @@ The tables below list every tag discovered from Pester test metadata and link to
 
 | Tag | Tests | Examples |
 | --- | ---: | --- |
-| CIS | 50 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8), [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), ... |
-| CIS E3 | 34 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
+| CIS | 49 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8), [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), ... |
+| CIS E3 | 32 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
 | CIS E3 Level 1 | 27 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.2](../CIS.M365.2.1.2), [CIS.M365.2.1.3](../CIS.M365.2.1.3), ... |
-| CIS E3 Level 2 | 11 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.11](../CIS.M365.2.1.11), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), ... |
+| CIS E3 Level 2 | 9 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.11](../CIS.M365.2.1.11), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), [CIS.M365.6.5.3](../CIS.M365.6.5.3), [CIS.M365.7.2.5](../CIS.M365.7.2.5), ... |
 | CIS E5 | 25 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.7](../CIS.M365.2.1.7), ... |
-| CIS E5 Level 1 | 13 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.7](../CIS.M365.2.1.7), [CIS.M365.2.4.4](../CIS.M365.2.4.4), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.5.2](../CIS.M365.5.1.5.2), [CIS.M365.5.1.6.2](../CIS.M365.5.1.6.2), ... |
-| CIS E5 Level 2 | 12 | [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), ... |
+| CIS E5 Level 1 | 15 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.7](../CIS.M365.2.1.7), [CIS.M365.2.4.4](../CIS.M365.2.4.4), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.5.2](../CIS.M365.5.1.5.2), ... |
+| CIS E5 Level 2 | 10 | [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), [CIS.M365.6.5.3](../CIS.M365.6.5.3), ... |
 | CIS GH | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
 | CIS GH Level 1 | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
 | CIS GitHub v1.2.0 | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
-| CIS M365 v6.0.1 | 45 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
+| CIS M365 v7.0.0 | 44 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), ... |
 | CIS.GH.1.2.2 | 1 | [CIS.GH.1.2.2](../CIS.GH.1.2.2) |
 | CIS.GH.1.2.3 | 1 | [CIS.GH.1.2.3](../CIS.GH.1.2.3) |
 | CIS.GH.1.2.4 | 1 | [CIS.GH.1.2.4](../CIS.GH.1.2.4) |
@@ -81,7 +81,6 @@ The tables below list every tag discovered from Pester test metadata and link to
 | CIS.M365.4.1 | 1 | [CIS.M365.4.1](../CIS.M365.4.1) |
 | CIS.M365.5.1.2.2 | 1 | [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2) |
 | CIS.M365.5.1.2.3 | 1 | [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3) |
-| CIS.M365.5.1.3.1 | 1 | [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1) |
 | CIS.M365.5.1.4.6 | 1 | [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6) |
 | CIS.M365.5.1.5.1 | 1 | [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1) |
 | CIS.M365.5.1.5.2 | 1 | [CIS.M365.5.1.5.2](../CIS.M365.5.1.5.2) |
@@ -100,44 +99,14 @@ The tables below list every tag discovered from Pester test metadata and link to
 | CIS.M365.8.4.1 | 1 | [CIS.M365.8.4.1](../CIS.M365.8.4.1) |
 | CIS.M365.8.5.3 | 1 | [CIS.M365.8.5.3](../CIS.M365.8.5.3) |
 | CIS.M365.8.6.1 | 1 | [CIS.M365.8.6.1](../CIS.M365.8.6.1) |
-| L1 | 31 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8), [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), ... |
-| L2 | 15 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.11](../CIS.M365.2.1.11), ... |
+| L1 | 32 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8), [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), ... |
+| L2 | 13 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.11](../CIS.M365.2.1.11), ... |
 
 ### CISA
 
 | Tag | Tests | Examples |
 | --- | ---: | --- |
-| CISA | 79 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
-| CISA.MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
-| CISA.MS.AAD.2.1 | 1 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1) |
-| CISA.MS.AAD.2.2 | 1 | [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2) |
-| CISA.MS.AAD.2.3 | 1 | [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3) |
-| CISA.MS.AAD.3.1 | 1 | [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1) |
-| CISA.MS.AAD.3.2 | 1 | [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2) |
-| CISA.MS.AAD.3.3 | 1 | [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3) |
-| CISA.MS.AAD.3.4 | 1 | [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4) |
-| CISA.MS.AAD.3.5 | 1 | [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5) |
-| CISA.MS.AAD.3.6 | 1 | [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6) |
-| CISA.MS.AAD.3.7 | 1 | [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7) |
-| CISA.MS.AAD.3.8 | 1 | [CISA.MS.AAD.3.8](../CISA.MS.AAD.3.8) |
-| CISA.MS.AAD.4.1 | 1 | [CISA.MS.AAD.4.1](../CISA.MS.AAD.4.1) |
-| CISA.MS.AAD.5.1 | 1 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1) |
-| CISA.MS.AAD.5.2 | 1 | [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2) |
-| CISA.MS.AAD.5.3 | 1 | [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3) |
-| CISA.MS.AAD.5.4 | 1 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4) |
-| CISA.MS.AAD.6.1 | 1 | [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1) |
-| CISA.MS.AAD.7.1 | 1 | [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1) |
-| CISA.MS.AAD.7.2 | 1 | [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2) |
-| CISA.MS.AAD.7.3 | 1 | [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3) |
-| CISA.MS.AAD.7.4 | 1 | [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4) |
-| CISA.MS.AAD.7.5 | 1 | [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5) |
-| CISA.MS.AAD.7.6 | 1 | [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6) |
-| CISA.MS.AAD.7.7 | 1 | [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7) |
-| CISA.MS.AAD.7.8 | 1 | [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8) |
-| CISA.MS.AAD.7.9 | 1 | [CISA.MS.AAD.7.9](../CISA.MS.AAD.7.9) |
-| CISA.MS.AAD.8.1 | 1 | [CISA.MS.AAD.8.1](../CISA.MS.AAD.8.1) |
-| CISA.MS.AAD.8.2 | 1 | [CISA.MS.AAD.8.2](../CISA.MS.AAD.8.2) |
-| CISA.MS.AAD.8.3 | 1 | [CISA.MS.AAD.8.3](../CISA.MS.AAD.8.3) |
+| CISA | 79 | [CISA.MS.EXO.1.1](../CISA.MS.EXO.1.1), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.2.2](../CISA.MS.EXO.2.2), [CISA.MS.EXO.3.1](../CISA.MS.EXO.3.1), [CISA.MS.EXO.4.1](../CISA.MS.EXO.4.1), [CISA.MS.EXO.4.2](../CISA.MS.EXO.4.2), [CISA.MS.EXO.4.3](../CISA.MS.EXO.4.3), [CISA.MS.EXO.5.1](../CISA.MS.EXO.5.1), ... |
 | CISA.MS.EXO.1.1 | 1 | [CISA.MS.EXO.1.1](../CISA.MS.EXO.1.1) |
 | CISA.MS.EXO.2.1 | 1 | [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1) |
 | CISA.MS.EXO.2.2 | 1 | [CISA.MS.EXO.2.2](../CISA.MS.EXO.2.2) |
@@ -187,37 +156,36 @@ The tables below list every tag discovered from Pester test metadata and link to
 | CISA.MS.SHAREPOINT.3.1 | 1 | [CISA.MS.SHAREPOINT.3.1](../CISA.MS.SHAREPOINT.3.1) |
 | CISA.MS.SHAREPOINT.3.2 | 1 | [CISA.MS.SHAREPOINT.3.2](../CISA.MS.SHAREPOINT.3.2) |
 | CISA.MS.SHAREPOINT.3.3 | 1 | [CISA.MS.SHAREPOINT.3.3](../CISA.MS.SHAREPOINT.3.3) |
-| MS.AAD | 30 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
-| MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
-| MS.AAD.2.1 | 1 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1) |
-| MS.AAD.2.2 | 1 | [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2) |
-| MS.AAD.2.3 | 1 | [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3) |
-| MS.AAD.3.1 | 1 | [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1) |
-| MS.AAD.3.2 | 1 | [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2) |
-| MS.AAD.3.3 | 1 | [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3) |
-| MS.AAD.3.4 | 1 | [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4) |
-| MS.AAD.3.5 | 1 | [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5) |
-| MS.AAD.3.6 | 1 | [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6) |
-| MS.AAD.3.7 | 1 | [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7) |
-| MS.AAD.3.8 | 1 | [CISA.MS.AAD.3.8](../CISA.MS.AAD.3.8) |
-| MS.AAD.4.1 | 1 | [CISA.MS.AAD.4.1](../CISA.MS.AAD.4.1) |
-| MS.AAD.5.1 | 1 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1) |
-| MS.AAD.5.2 | 1 | [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2) |
-| MS.AAD.5.3 | 1 | [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3) |
-| MS.AAD.5.4 | 1 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4) |
-| MS.AAD.6.1 | 1 | [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1) |
-| MS.AAD.7.1 | 1 | [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1) |
-| MS.AAD.7.2 | 1 | [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2) |
-| MS.AAD.7.3 | 1 | [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3) |
-| MS.AAD.7.4 | 1 | [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4) |
-| MS.AAD.7.5 | 1 | [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5) |
-| MS.AAD.7.6 | 1 | [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6) |
-| MS.AAD.7.7 | 1 | [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7) |
-| MS.AAD.7.8 | 1 | [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8) |
-| MS.AAD.7.9 | 1 | [CISA.MS.AAD.7.9](../CISA.MS.AAD.7.9) |
-| MS.AAD.8.1 | 1 | [CISA.MS.AAD.8.1](../CISA.MS.AAD.8.1) |
-| MS.AAD.8.2 | 1 | [CISA.MS.AAD.8.2](../CISA.MS.AAD.8.2) |
-| MS.AAD.8.3 | 1 | [CISA.MS.AAD.8.3](../CISA.MS.AAD.8.3) |
+| CISA.MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
+| CISA.MS.AAD.2.1 | 1 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1) |
+| CISA.MS.AAD.2.2 | 1 | [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2) |
+| CISA.MS.AAD.2.3 | 1 | [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3) |
+| CISA.MS.AAD.3.1 | 1 | [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1) |
+| CISA.MS.AAD.3.2 | 1 | [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2) |
+| CISA.MS.AAD.3.3 | 1 | [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3) |
+| CISA.MS.AAD.3.4 | 1 | [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4) |
+| CISA.MS.AAD.3.5 | 1 | [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5) |
+| CISA.MS.AAD.3.6 | 1 | [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6) |
+| CISA.MS.AAD.3.7 | 1 | [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7) |
+| CISA.MS.AAD.3.8 | 1 | [CISA.MS.AAD.3.8](../CISA.MS.AAD.3.8) |
+| CISA.MS.AAD.4.1 | 1 | [CISA.MS.AAD.4.1](../CISA.MS.AAD.4.1) |
+| CISA.MS.AAD.5.1 | 1 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1) |
+| CISA.MS.AAD.5.2 | 1 | [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2) |
+| CISA.MS.AAD.5.3 | 1 | [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3) |
+| CISA.MS.AAD.5.4 | 1 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4) |
+| CISA.MS.AAD.6.1 | 1 | [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1) |
+| CISA.MS.AAD.7.1 | 1 | [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1) |
+| CISA.MS.AAD.7.2 | 1 | [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2) |
+| CISA.MS.AAD.7.3 | 1 | [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3) |
+| CISA.MS.AAD.7.4 | 1 | [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4) |
+| CISA.MS.AAD.7.5 | 1 | [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5) |
+| CISA.MS.AAD.7.6 | 1 | [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6) |
+| CISA.MS.AAD.7.7 | 1 | [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7) |
+| CISA.MS.AAD.7.8 | 1 | [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8) |
+| CISA.MS.AAD.7.9 | 1 | [CISA.MS.AAD.7.9](../CISA.MS.AAD.7.9) |
+| CISA.MS.AAD.8.1 | 1 | [CISA.MS.AAD.8.1](../CISA.MS.AAD.8.1) |
+| CISA.MS.AAD.8.2 | 1 | [CISA.MS.AAD.8.2](../CISA.MS.AAD.8.2) |
+| CISA.MS.AAD.8.3 | 1 | [CISA.MS.AAD.8.3](../CISA.MS.AAD.8.3) |
 | MS.EXO | 41 | [CISA.MS.EXO.1.1](../CISA.MS.EXO.1.1), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.2.2](../CISA.MS.EXO.2.2), [CISA.MS.EXO.3.1](../CISA.MS.EXO.3.1), [CISA.MS.EXO.4.1](../CISA.MS.EXO.4.1), [CISA.MS.EXO.4.2](../CISA.MS.EXO.4.2), [CISA.MS.EXO.4.3](../CISA.MS.EXO.4.3), [CISA.MS.EXO.5.1](../CISA.MS.EXO.5.1), ... |
 | MS.EXO.1.1 | 1 | [CISA.MS.EXO.1.1](../CISA.MS.EXO.1.1) |
 | MS.EXO.2.1 | 1 | [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1) |
@@ -269,6 +237,37 @@ The tables below list every tag discovered from Pester test metadata and link to
 | MS.SHAREPOINT.3.1 | 1 | [CISA.MS.SHAREPOINT.3.1](../CISA.MS.SHAREPOINT.3.1) |
 | MS.SHAREPOINT.3.2 | 1 | [CISA.MS.SHAREPOINT.3.2](../CISA.MS.SHAREPOINT.3.2) |
 | MS.SHAREPOINT.3.3 | 1 | [CISA.MS.SHAREPOINT.3.3](../CISA.MS.SHAREPOINT.3.3) |
+| MS.AAD | 30 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
+| MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
+| MS.AAD.2.1 | 1 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1) |
+| MS.AAD.2.2 | 1 | [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2) |
+| MS.AAD.2.3 | 1 | [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3) |
+| MS.AAD.3.1 | 1 | [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1) |
+| MS.AAD.3.2 | 1 | [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2) |
+| MS.AAD.3.3 | 1 | [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3) |
+| MS.AAD.3.4 | 1 | [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4) |
+| MS.AAD.3.5 | 1 | [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5) |
+| MS.AAD.3.6 | 1 | [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6) |
+| MS.AAD.3.7 | 1 | [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7) |
+| MS.AAD.3.8 | 1 | [CISA.MS.AAD.3.8](../CISA.MS.AAD.3.8) |
+| MS.AAD.4.1 | 1 | [CISA.MS.AAD.4.1](../CISA.MS.AAD.4.1) |
+| MS.AAD.5.1 | 1 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1) |
+| MS.AAD.5.2 | 1 | [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2) |
+| MS.AAD.5.3 | 1 | [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3) |
+| MS.AAD.5.4 | 1 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4) |
+| MS.AAD.6.1 | 1 | [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1) |
+| MS.AAD.7.1 | 1 | [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1) |
+| MS.AAD.7.2 | 1 | [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2) |
+| MS.AAD.7.3 | 1 | [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3) |
+| MS.AAD.7.4 | 1 | [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4) |
+| MS.AAD.7.5 | 1 | [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5) |
+| MS.AAD.7.6 | 1 | [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6) |
+| MS.AAD.7.7 | 1 | [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7) |
+| MS.AAD.7.8 | 1 | [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8) |
+| MS.AAD.7.9 | 1 | [CISA.MS.AAD.7.9](../CISA.MS.AAD.7.9) |
+| MS.AAD.8.1 | 1 | [CISA.MS.AAD.8.1](../CISA.MS.AAD.8.1) |
+| MS.AAD.8.2 | 1 | [CISA.MS.AAD.8.2](../CISA.MS.AAD.8.2) |
+| MS.AAD.8.3 | 1 | [CISA.MS.AAD.8.3](../CISA.MS.AAD.8.3) |
 
 ### EIDSCA
 
@@ -584,7 +583,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | CAWhatIf | 2 | [MT.1033](../MT.1033), [MT.1034](../MT.1034) |
 | CopilotStudio | 10 | [MT.1113](../MT.1113), [MT.1114](../MT.1114), [MT.1115](../MT.1115), [MT.1116](../MT.1116), [MT.1117](../MT.1117), [MT.1118](../MT.1118), [MT.1119](../MT.1119), [MT.1120](../MT.1120), ... |
 | Defender | 25 | [MT.1059](../MT.1059), [MT.1148](../MT.1148), [MT.1149](../MT.1149), [MT.1150](../MT.1150), [MT.1151](../MT.1151), [MT.1152](../MT.1152), [MT.1153](../MT.1153), [MT.1154](../MT.1154), ... |
-| Deprecated | 3 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
+| Deprecated | 3 | [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4) |
 | Device | 7 | [MT.1070](../MT.1070), [MT.1086](../MT.1086), [MT.1087](../MT.1087), [MT.1088](../MT.1088), [MT.1089](../MT.1089), [MT.1090](../MT.1090), [MT.1091](../MT.1091) |
 | Entra | 43 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
 | Entra ID Free | 11 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1), [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2), [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1), [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1), [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2), [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3), ... |
@@ -607,7 +606,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | Privileged | 16 | [MT.1025](../MT.1025), [MT.1026](../MT.1026), [MT.1027](../MT.1027), [MT.1028](../MT.1028), [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032), ... |
 | Purview | 5 | [MT.1172](../MT.1172), [MT.1173](../MT.1173), [MT.1174](../MT.1174), [MT.1175](../MT.1175), [MT.1176](../MT.1176) |
 | Recommendation | 1 | [MT.1024](../MT.1024) |
-| Security | 13 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), ... |
+| Security | 12 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.4.6](../CIS.M365.5.1.4.6), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), ... |
 | Severity:$($_.Group[0].severity) | 1 | [MT.1059](../MT.1059) |
 | SharePoint Online | 6 | [CIS.M365.7.2.2](../CIS.M365.7.2.2), [CIS.M365.7.2.5](../CIS.M365.7.2.5), [CIS.M365.7.2.7](../CIS.M365.7.2.7), [CIS.M365.7.2.9](../CIS.M365.7.2.9), [CIS.M365.7.2.11](../CIS.M365.7.2.11), [CIS.M365.7.3.1](../CIS.M365.7.3.1) |
 | Teams | 6 | [MT.1037](../MT.1037), [MT.1042](../MT.1042), [MT.1045](../MT.1045), [MT.1046](../MT.1046), [MT.1047](../MT.1047), [MT.1048](../MT.1048) |

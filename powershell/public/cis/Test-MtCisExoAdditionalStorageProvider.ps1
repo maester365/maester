@@ -7,7 +7,7 @@
     This setting allows users to open certain external files while working in Outlook on the web.
     If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of
     those third-party services.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.5.3, L2)
     6.5.3 (L2) Ensure additional storage providers are restricted in Outlook on the web (Automated)
 
     .EXAMPLE

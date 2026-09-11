@@ -4,7 +4,7 @@ Microsoft cloud-only accounts have a pre-defined password policy that cannot be 
 
 #### Rationale
 
-Organizations such as NIST and Microsoft have updated their password policy recommendations to not arbitrarily require users to change their passwords after a specific amount of time, unless there is evidence that the password is compromised, or the user forgot it. They suggest this even for single factor (Password Only) use cases, with a reasoning that forcing arbitrary password changes on users actually make the passwords less secure. Other recommendations within this Benchmark suggest the use of MFA authentication for at least critical accounts (at minimum), which makes password expiration even less useful as well as password protection for Entra ID.
+Organizations such as NIST and Microsoft recommend against arbitrarily requiring users to change their passwords after a set period, unless there is evidence of compromise or the user has forgotten the password. This guidance applies even to single-factor (password-only) scenarios, as forced, periodic changes often lead to weaker passwords and reduced security. Additionally, this Benchmark advises implementing multi-factor authentication (MFA) for all accounts, which further diminishes the value of password expiration policies. Long-lived passwords can be further strengthened by enabling additional password protection features in Entra ID.
 
 #### Impact
 
@@ -39,7 +39,7 @@ Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 * [NIST Special Publication 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html)
 * [CIS Password Policy Guide](https://www.cisecurity.org/insights/white-papers/cis-password-policy-guide)
 * [Password policy recommendations for Microsoft 365 passwords](https://learn.microsoft.com/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 43](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 47](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

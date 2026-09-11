@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         The admin consent workflow should be enabled.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.5.2, L1)
 
     .EXAMPLE
         Test-MtCisAdminConsentWorkflowEnabled
