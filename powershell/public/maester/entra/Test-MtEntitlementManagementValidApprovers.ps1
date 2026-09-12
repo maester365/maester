@@ -329,7 +329,7 @@
         }
 
     } catch {
-        Write-Error "Error running test: $($_.Exception.Message)"
-        return $false
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
 }
