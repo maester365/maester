@@ -2428,6 +2428,32 @@
       "recentCommits": 0
     },
     {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "eduardarbona",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1024",
+        "MT.1107",
+        "MT.1108",
+        "MT.1109",
+        "MT.1191"
+      ],
+      "initials": "E",
+      "recentCommits": 3
+    },
+    {
       "id": "magnusjak",
       "github": "magnusjak",
       "name": "Magnus Jakobsen",
@@ -2477,31 +2503,6 @@
       ],
       "initials": "A",
       "recentCommits": 0
-    },
-    {
-      "id": "earbona23",
-      "github": "earbona23",
-      "name": "eduardarbona",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/earbona23.png",
-      "firstContribution": "2026-09-14",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1107",
-        "MT.1108",
-        "MT.1109",
-        "MT.1191"
-      ],
-      "initials": "E",
-      "recentCommits": 2
     },
     {
       "id": "rafalfitt",
@@ -5313,7 +5314,8 @@
         "weyCC81",
         "SamErde",
         "svrooij",
-        "massimomazzariol"
+        "massimomazzariol",
+        "earbona23"
       ]
     },
     "MT.1025": {
