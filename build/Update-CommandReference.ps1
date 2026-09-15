@@ -8,11 +8,11 @@ $platyPSVersion = "0.14.2"
 
 if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable | Where-Object { $_.Version -eq $alt3DocusaurusVersion })) { Install-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion -Scope CurrentUser -Force -SkipPublisherCheck }
 if (-not (Get-Module PlatyPS -ListAvailable | Where-Object { $_.Version -eq $platyPSVersion })) { Install-Module PlatyPS -RequiredVersion $platyPSVersion -Scope CurrentUser -Force -SkipPublisherCheck }
-if (-not (Get-Module Pester -ListAvailable)) { Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck }
+if (-not (Get-Module Pester -ListAvailable | Where-Object { $_.Version -eq '5.7.1' })) { Install-Module Pester -RequiredVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck }
 
 Import-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion
 Import-Module PlatyPS -RequiredVersion $platyPSVersion
-Import-Module Pester
+Import-Module Pester -RequiredVersion 5.7.1
 Import-Module DnsClient
 
 # Generate the command reference markdown
