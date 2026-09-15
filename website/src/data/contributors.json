@@ -2479,6 +2479,31 @@
       "recentCommits": 0
     },
     {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "eduardarbona",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1107",
+        "MT.1108",
+        "MT.1109",
+        "MT.1191"
+      ],
+      "initials": "E",
+      "recentCommits": 2
+    },
+    {
       "id": "rafalfitt",
       "github": "rafalfitt",
       "name": "Rafał Fitt",
@@ -5922,7 +5947,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1108": {
@@ -5930,7 +5956,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1109": {
@@ -5938,7 +5965,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1110": {
@@ -6245,7 +6273,8 @@
       "author": "crmhh",
       "contributors": [
         "merill",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "earbona23"
       ]
     },
     "MT.1192": {
