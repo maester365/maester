@@ -411,6 +411,7 @@ module.exports = [
     'commands/Test-MtApplePushNotificationCertificate',
     'commands/Test-MtAppleVolumePurchaseProgramToken',
     'commands/Test-MtAppManagementPolicyEnabled',
+    'commands/Test-MtAppRegistrationCertificateLifetime',
     'commands/Test-MtAppRegistrationOwnersWithoutMFA',
     'commands/Test-MtAppRegistrationsWithSecrets',
     'commands/Test-MtAuthenticationPolicyReferencedObjectsExist',
