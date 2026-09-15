@@ -13,7 +13,7 @@ Users will only be able to install approved classes of apps.
 #### Remediation action
 
 1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-2. Click to expand **Teams apps** select **Permission policies**.
+2. Click to expand **Teams apps**, then select **Permission policies**.
 3. Select the **Global (Org-wide default)** policy.
 4. Under **Third-party apps**, set to **Block all apps** (or **Allow specific apps and block all others**).
 5. Under **Custom apps**, set to **Block all apps** (or **Allow specific apps and block all others**).
@@ -25,7 +25,7 @@ Users will only be able to install approved classes of apps.
 2. Run the following command to block all third-party and custom apps:
 
 ```powershell
-Set-CsTeamsAppPermissionPolicy -Identity Global -GlobalCatalogAppsType BlockedAppList -PrivateCatalogAppsType BlockedAppList
+Set-CsTeamsAppPermissionPolicy -Identity Global -GlobalCatalogAppsType AllowedAppList -GlobalCatalogApps @() -PrivateCatalogAppsType AllowedAppList -PrivateCatalogApps @()
 ```
 
 #### Related links
