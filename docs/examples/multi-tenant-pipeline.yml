@@ -85,7 +85,8 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams', 'ADOPS' -Confirm:$false -Force
+        Install-Module 'Pester' -RequiredVersion 5.7.1 -Confirm:$false -Force
+        Install-Module 'Maester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams', 'ADOPS' -Confirm:$false -Force
         New-Item -ItemType Directory -Force -Path '$(ResultsDir)'
     displayName: 'Install required modules'
 
