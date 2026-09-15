@@ -396,7 +396,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 
 | Tag | Tests | Examples |
 | --- | ---: | --- |
-| Maester | 158 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
+| Maester | 159 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
 | MT.1001 | 1 | [MT.1001](../MT.1001) |
 | MT.1002 | 1 | [MT.1002](../MT.1002) |
 | MT.1003 | 1 | [MT.1003](../MT.1003) |
@@ -567,6 +567,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | MT.1195 | 1 | [MT.1195](../MT.1195) |
 | MT.1196 | 1 | [MT.1196](../MT.1196) |
 | MT.1197 | 1 | [MT.1197](../MT.1197) |
+| MT.1198 | 1 | [MT.1198](../MT.1198) |
 
 ### Ungrouped
 
@@ -575,7 +576,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | $($_.recommendationType) | 1 | [MT.1024](../MT.1024) |
 | AccessPackages | 5 | [MT.1106](../MT.1106), [MT.1107](../MT.1107), [MT.1108](../MT.1108), [MT.1109](../MT.1109), [MT.1110](../MT.1110) |
 | AIAgent | 10 | [MT.1113](../MT.1113), [MT.1114](../MT.1114), [MT.1115](../MT.1115), [MT.1116](../MT.1116), [MT.1117](../MT.1117), [MT.1118](../MT.1118), [MT.1119](../MT.1119), [MT.1120](../MT.1120), ... |
-| App | 8 | [MT.1002](../MT.1002), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), [MT.1186](../MT.1186) |
+| App | 9 | [MT.1002](../MT.1002), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), [MT.1186](../MT.1186), ... |
 | Authentication | 1 | [MT.1067](../MT.1067) |
 | Azure | 3 | [MT.1056](../MT.1056), [MT.1064](../MT.1064), [MT.1065](../MT.1065) |
 | Backup | 1 | [MT.1065](../MT.1065) |
@@ -585,7 +586,7 @@ The tables below list every tag discovered from Pester test metadata and link to
 | Defender | 25 | [MT.1059](../MT.1059), [MT.1148](../MT.1148), [MT.1149](../MT.1149), [MT.1150](../MT.1150), [MT.1151](../MT.1151), [MT.1152](../MT.1152), [MT.1153](../MT.1153), [MT.1154](../MT.1154), ... |
 | Deprecated | 3 | [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4) |
 | Device | 7 | [MT.1070](../MT.1070), [MT.1086](../MT.1086), [MT.1087](../MT.1087), [MT.1088](../MT.1088), [MT.1089](../MT.1089), [MT.1090](../MT.1090), [MT.1091](../MT.1091) |
-| Entra | 43 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
+| Entra | 44 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
 | Entra ID Free | 11 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1), [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2), [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1), [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1), [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2), [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3), ... |
 | Entra ID P1 | 10 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5), [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6), [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7), ... |
 | Entra ID P2 | 9 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4), [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5), [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6), [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7), [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8), ... |
@@ -594,11 +595,11 @@ The tables below list every tag discovered from Pester test metadata and link to
 | EXO | 67 | [ORCA.100](../ORCA.100), [ORCA.101](../ORCA.101), [ORCA.102](../ORCA.102), [ORCA.103](../ORCA.103), [ORCA.104](../ORCA.104), [ORCA.105](../ORCA.105), [ORCA.106](../ORCA.106), [ORCA.107](../ORCA.107), ... |
 | GitHub | 5 | [CIS.GH.1.2.2](../CIS.GH.1.2.2), [CIS.GH.1.2.3](../CIS.GH.1.2.3), [CIS.GH.1.2.4](../CIS.GH.1.2.4), [CIS.GH.1.3.2](../CIS.GH.1.3.2), [CIS.GH.1.3.8](../CIS.GH.1.3.8) |
 | Governance | 5 | [MT.1106](../MT.1106), [MT.1107](../MT.1107), [MT.1108](../MT.1108), [MT.1109](../MT.1109), [MT.1110](../MT.1110) |
-| Graph | 18 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1073](../MT.1073), [MT.1075](../MT.1075), [MT.1077](../MT.1077), [MT.1078](../MT.1078), ... |
+| Graph | 19 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1073](../MT.1073), [MT.1075](../MT.1075), [MT.1077](../MT.1077), [MT.1078](../MT.1078), ... |
 | Group | 2 | [MT.1055](../MT.1055), [MT.1069](../MT.1069) |
 | Hybrid | 4 | [MT.1073](../MT.1073), [MT.1084](../MT.1084), [MT.1147](../MT.1147), [MT.1183](../MT.1183) |
 | Intune | 20 | [MT.1053](../MT.1053), [MT.1054](../MT.1054), [MT.1092](../MT.1092), [MT.1093](../MT.1093), [MT.1094](../MT.1094), [MT.1095](../MT.1095), [MT.1096](../MT.1096), [MT.1097](../MT.1097), ... |
-| LongRunning | 19 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
+| LongRunning | 20 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
 | MDI | 1 | [MT.1059](../MT.1059) |
 | OneDrive | 5 | [CIS.M365.7.2.2](../CIS.M365.7.2.2), [CIS.M365.7.2.5](../CIS.M365.7.2.5), [CIS.M365.7.2.7](../CIS.M365.7.2.7), [CIS.M365.7.2.9](../CIS.M365.7.2.9), [CIS.M365.7.2.11](../CIS.M365.7.2.11) |
 | PIM | 4 | [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032) |

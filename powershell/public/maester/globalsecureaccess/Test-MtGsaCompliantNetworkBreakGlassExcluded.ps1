@@ -45,7 +45,7 @@
 
         $emergencyAccounts = Get-MtEmergencyAccessAccount
         if (-not $emergencyAccounts) {
-            Add-MtTestResultDetail -Result 'No emergency access accounts are configured in maester-config.json (EmergencyAccessAccounts), so break-glass exclusion cannot be verified.'
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No emergency access accounts are configured in maester-config.json (EmergencyAccessAccounts), so break-glass exclusion cannot be verified.'
             return $null
         }
 

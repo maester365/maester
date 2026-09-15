@@ -1281,7 +1281,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 3
+      "recentCommits": 5
     },
     {
       "id": "oed-metzb",
@@ -2479,6 +2479,31 @@
       "recentCommits": 0
     },
     {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "eduardarbona",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1107",
+        "MT.1108",
+        "MT.1109",
+        "MT.1191"
+      ],
+      "initials": "E",
+      "recentCommits": 2
+    },
+    {
       "id": "rafalfitt",
       "github": "rafalfitt",
       "name": "Rafał Fitt",
@@ -2697,6 +2722,30 @@
       "testsContributed": [],
       "initials": "JL",
       "recentCommits": 0
+    },
+    {
+      "id": "simon-vedder",
+      "github": "simon-vedder",
+      "name": "Simon Vedder",
+      "title": "Azure Platform & Security Engineer",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Zurich, Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://simonvedder.com",
+      "socials": {
+        "linkedin": "simonvedder"
+      },
+      "avatar": "https://github.com/simon-vedder.png",
+      "firstContribution": "2026-09-15",
+      "testsAuthored": [
+        "MT.1198"
+      ],
+      "testsContributed": [],
+      "initials": "SV",
+      "recentCommits": 1
     },
     {
       "id": "Korthal-Maiyn",
@@ -5922,7 +5971,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1108": {
@@ -5930,7 +5980,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1109": {
@@ -5938,7 +5989,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1110": {
@@ -6245,7 +6297,8 @@
       "author": "crmhh",
       "contributors": [
         "merill",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "earbona23"
       ]
     },
     "MT.1192": {
@@ -6279,6 +6332,10 @@
     },
     "MT.1197": {
       "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1198": {
+      "author": "simon-vedder",
       "contributors": []
     },
     "ORCA.100": {
@@ -8263,6 +8320,10 @@
     "MT.1197": {
       "title": "Dynamic groups should not use the retiring memberOf rule operator",
       "path": "/docs/next/tests/MT.1197"
+    },
+    "MT.1198": {
+      "title": "App registration certificates should not have excessive validity periods.",
+      "path": "/docs/next/tests/MT.1198"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
