@@ -2724,6 +2724,30 @@
       "recentCommits": 0
     },
     {
+      "id": "simon-vedder",
+      "github": "simon-vedder",
+      "name": "Simon Vedder",
+      "title": "Azure Platform & Security Engineer",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Zurich, Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://simonvedder.com",
+      "socials": {
+        "linkedin": "simonvedder"
+      },
+      "avatar": "https://github.com/simon-vedder.png",
+      "firstContribution": "2026-09-15",
+      "testsAuthored": [
+        "MT.1198"
+      ],
+      "testsContributed": [],
+      "initials": "SV",
+      "recentCommits": 1
+    },
+    {
       "id": "Korthal-Maiyn",
       "github": "Korthal-Maiyn",
       "name": "Christopher Edwards",
@@ -6310,6 +6334,10 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1198": {
+      "author": "simon-vedder",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": [
@@ -8292,6 +8320,10 @@
     "MT.1197": {
       "title": "Dynamic groups should not use the retiring memberOf rule operator",
       "path": "/docs/next/tests/MT.1197"
+    },
+    "MT.1198": {
+      "title": "App registration certificates should not have excessive validity periods.",
+      "path": "/docs/next/tests/MT.1198"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

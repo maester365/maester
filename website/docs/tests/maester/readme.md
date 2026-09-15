@@ -188,3 +188,4 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Unknown | Entra |
 | [MT.1196](./MT.1196.md) | Review who can change attributes used by dynamic group rules | Medium | Entra |
 | [MT.1197](./MT.1197.md) | Dynamic groups should not use the retiring memberOf rule operator | High | Entra |
+| [MT.1198](./MT.1198.md) | App registration certificates should not have excessive validity periods. | Medium | App |
