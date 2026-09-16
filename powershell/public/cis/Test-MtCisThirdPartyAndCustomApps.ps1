@@ -4,13 +4,14 @@
     Ensure app permission policies are configured
 
     .DESCRIPTION
-    Ensure all or a majority of third-party and custom apps are blocked
+    The Global (Org-wide default) app permission policy should block third-party and custom Teams apps,
+    either entirely or by allowing only an approved list.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.4.1, L1)
 
     .EXAMPLE
     Test-MtCisThirdPartyAndCustomApps
 
-    Returns true if all or a majority of third-party and custom apps are blocked
+    Returns true if the Global app permission policy blocks third-party and custom apps
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisThirdPartyAndCustomApps
