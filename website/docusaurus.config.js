@@ -144,6 +144,7 @@ const config = {
           },
           { to: 'manifesto', label: 'Manifesto', position: 'left' },
           { to: 'contributors', label: 'Contributors', position: 'left' },
+          { to: 'community-tests', label: 'Community Tests', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
           {
             "aria-label": "GitHub Repository",
@@ -185,6 +186,10 @@ const config = {
               {
                 label: "Twitter",
                 href: "https://twitter.com/maester365",
+              },
+              {
+                label: "Community Tests",
+                to: "/community-tests",
               },
             ],
           },
