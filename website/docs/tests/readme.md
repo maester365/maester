@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 171 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 175 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
@@ -373,6 +373,10 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1196](./MT.1196) | Review who can change attributes used by dynamic group rules | Maester | Medium | Entra |
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
 | [MT.1198](./MT.1198) | App registration certificates should not have excessive validity periods. | Maester | Medium | App |
+| [MT.1214](./MT.1214) | Ensure macOS compliance policy requires System Integrity Protection | Maester | Medium | Intune |
+| [MT.1215](./MT.1215) | Ensure Gatekeeper restricts macOS app download locations | Maester | Medium | Intune |
+| [MT.1216](./MT.1216) | Ensure macOS compliance policy requires a Defender machine risk score level | Maester | Medium | Intune |
+| [MT.1217](./MT.1217) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles | Maester | High | Intune |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

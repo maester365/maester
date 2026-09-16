@@ -2037,6 +2037,31 @@
       "recentCommits": 0
     },
     {
+      "id": "DanielLystad",
+      "github": "DanielLystad",
+      "name": "Daniel Lystad",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Norway",
+      "locationFlag": "🇳🇴",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/DanielLystad.png",
+      "firstContribution": "2026-09-16",
+      "testsAuthored": [
+        "MT.1214",
+        "MT.1215",
+        "MT.1216",
+        "MT.1217"
+      ],
+      "testsContributed": [],
+      "initials": "DL",
+      "recentCommits": 1
+    },
+    {
       "id": "marcel-ngn",
       "github": "marcel-ngn",
       "name": "Marcel N.",
@@ -6328,6 +6353,22 @@
       "author": "simon-vedder",
       "contributors": []
     },
+    "MT.1214": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1215": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1216": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1217": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": [
@@ -8310,6 +8351,22 @@
     "MT.1198": {
       "title": "App registration certificates should not have excessive validity periods.",
       "path": "/docs/next/tests/MT.1198"
+    },
+    "MT.1214": {
+      "title": "Ensure macOS compliance policy requires System Integrity Protection",
+      "path": "/docs/next/tests/MT.1214"
+    },
+    "MT.1215": {
+      "title": "Ensure Gatekeeper restricts macOS app download locations",
+      "path": "/docs/next/tests/MT.1215"
+    },
+    "MT.1216": {
+      "title": "Ensure macOS compliance policy requires a Defender machine risk score level",
+      "path": "/docs/next/tests/MT.1216"
+    },
+    "MT.1217": {
+      "title": "Ensure macOS LAPS is configured on Automated Device Enrollment profiles",
+      "path": "/docs/next/tests/MT.1217"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
