@@ -540,7 +540,6 @@ module.exports = [
     'commands/Test-MtCisDkim',
     'commands/Test-MtCisEnsureBitLockerKeyRecoveryRestricted',
     'commands/Test-MtCisEnsureGuestAccessRestricted',
-    'commands/Test-MtCisEnsureGuestUserDynamicGroup',
     'commands/Test-MtCisEnsureUserConsentToAppsDisallowed',
     'commands/Test-MtCisExoAdditionalStorageProvider',
     'commands/Test-MtCisFormsPhishingProtectionEnabled',
