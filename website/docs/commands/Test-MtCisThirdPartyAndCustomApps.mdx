@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Ensure all or a majority of third-party and custom apps are blocked"
+description: "Ensure app permission policies are configured"
 id: Test-MtCisThirdPartyAndCustomApps
 title: Test-MtCisThirdPartyAndCustomApps
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Ensure all or a majority of third-party and custom apps are blocked
+Ensure app permission policies are configured
 
 ## SYNTAX
 
@@ -20,8 +20,9 @@ Test-MtCisThirdPartyAndCustomApps [-ProgressAction <ActionPreference>] [<CommonP
 
 ## DESCRIPTION
 
-Ensure all or a majority of third-party and custom apps are blocked
-CIS Microsoft 365 Foundations Benchmark v6.0.1
+The Global (Org-wide default) app permission policy should block third-party and custom Teams apps,
+either entirely or by allowing only an approved list.
+CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.4.1, L1)
 
 ## EXAMPLES
 
@@ -31,7 +32,7 @@ CIS Microsoft 365 Foundations Benchmark v6.0.1
 Test-MtCisThirdPartyAndCustomApps
 ```
 
-Returns true if all or a majority of third-party and custom apps are blocked
+Returns true if the Global app permission policy blocks third-party and custom apps
 
 ## PARAMETERS
 
