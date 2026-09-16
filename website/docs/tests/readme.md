@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 171 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 175 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
@@ -79,6 +79,36 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure app permission policies are configured | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3) | (L1) Ensure only people in my org can bypass the lobby | CIS | Medium | CIS E3 Level 1 |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | CIS E5 Level 1 |
+| [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.2.3](./CISA.MS.AAD.2.3) | Sign-ins detected as high risk SHALL be blocked. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.3.1](./CISA.MS.AAD.3.1) | Phishing-resistant MFA SHALL be enforced for all users. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.3.2](./CISA.MS.AAD.3.2) | If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.3.3](./CISA.MS.AAD.3.3) | If Microsoft Authenticator is enabled, it SHALL be configured to show login context information. | CISA | Medium | Entra ID P1 |
+| [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6) | Phishing-resistant MFA SHALL be required for highly privileged roles. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1) | Security logs SHALL be sent to the agency's security operations center for monitoring. | CISA | High | Entra ID P1 |
+| [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1) | Only administrators SHALL be allowed to register applications. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2) | Only administrators SHALL be allowed to consent to applications. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.5.3](./CISA.MS.AAD.5.3) | An admin consent workflow SHALL be configured for applications. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.5.4](./CISA.MS.AAD.5.4) | Group owners SHALL NOT be allowed to consent to applications. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.6.1](./CISA.MS.AAD.6.1) | User passwords SHALL NOT expire. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.7.1](./CISA.MS.AAD.7.1) | A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.7.2](./CISA.MS.AAD.7.2) | Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.7.3](./CISA.MS.AAD.7.3) | Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.7.4](./CISA.MS.AAD.7.4) | Permanent active role assignments SHALL NOT be allowed for highly privileged roles. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.7.5](./CISA.MS.AAD.7.5) | Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6) | Activation of the Global Administrator role SHALL require approval. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8) | User activation of the Global Administrator role SHALL trigger an alert. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9) | User activation of other highly privileged roles SHOULD trigger an alert. | CISA | High | Entra ID P2 |
+| [CISA.MS.AAD.8.1](./CISA.MS.AAD.8.1) | Guest users SHOULD have limited or restricted access to Azure AD directory objects. | CISA | Medium | Entra ID Free |
+| [CISA.MS.AAD.8.2](./CISA.MS.AAD.8.2) | Only users with the Guest Inviter role SHOULD be able to invite guest users. | CISA | High | Entra ID Free |
+| [CISA.MS.AAD.8.3](./CISA.MS.AAD.8.3) | Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes. | CISA | Medium | Entra ID Free |
 | [CISA.MS.EXO.1.1](./CISA.MS.EXO.1.1) | Automatic forwarding to external domains SHALL be disabled. | CISA | High | exchange |
 | [CISA.MS.EXO.10.1](./CISA.MS.EXO.10.1) | Emails SHALL be scanned for malware. | CISA | High | exchange |
 | [CISA.MS.EXO.10.2](./CISA.MS.EXO.10.2) | Emails identified as containing malware SHALL be quarantined or dropped. | CISA | High | exchange |
@@ -128,36 +158,6 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1) | Expiration days for Anyone links SHALL be set to 30 days or less. | CISA | Unknown | spo |
 | [CISA.MS.SHAREPOINT.3.2](./CISA.MS.SHAREPOINT.3.2) | Allowable file and folder permissions for Anyone links SHALL be set to View only. | CISA | Unknown | spo |
 | [CISA.MS.SHAREPOINT.3.3](./CISA.MS.SHAREPOINT.3.3) | Reauthentication days for people who use a verification code SHALL be set to 30 days or less. | CISA | Unknown | spo |
-| [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.2.3](./CISA.MS.AAD.2.3) | Sign-ins detected as high risk SHALL be blocked. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.3.1](./CISA.MS.AAD.3.1) | Phishing-resistant MFA SHALL be enforced for all users. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.3.2](./CISA.MS.AAD.3.2) | If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.3.3](./CISA.MS.AAD.3.3) | If Microsoft Authenticator is enabled, it SHALL be configured to show login context information. | CISA | Medium | Entra ID P1 |
-| [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6) | Phishing-resistant MFA SHALL be required for highly privileged roles. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1) | Security logs SHALL be sent to the agency's security operations center for monitoring. | CISA | High | Entra ID P1 |
-| [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1) | Only administrators SHALL be allowed to register applications. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2) | Only administrators SHALL be allowed to consent to applications. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.5.3](./CISA.MS.AAD.5.3) | An admin consent workflow SHALL be configured for applications. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.5.4](./CISA.MS.AAD.5.4) | Group owners SHALL NOT be allowed to consent to applications. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.6.1](./CISA.MS.AAD.6.1) | User passwords SHALL NOT expire. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.7.1](./CISA.MS.AAD.7.1) | A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.7.2](./CISA.MS.AAD.7.2) | Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.7.3](./CISA.MS.AAD.7.3) | Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.7.4](./CISA.MS.AAD.7.4) | Permanent active role assignments SHALL NOT be allowed for highly privileged roles. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.7.5](./CISA.MS.AAD.7.5) | Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6) | Activation of the Global Administrator role SHALL require approval. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8) | User activation of the Global Administrator role SHALL trigger an alert. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9) | User activation of other highly privileged roles SHOULD trigger an alert. | CISA | High | Entra ID P2 |
-| [CISA.MS.AAD.8.1](./CISA.MS.AAD.8.1) | Guest users SHOULD have limited or restricted access to Azure AD directory objects. | CISA | Medium | Entra ID Free |
-| [CISA.MS.AAD.8.2](./CISA.MS.AAD.8.2) | Only users with the Guest Inviter role SHOULD be able to invite guest users. | CISA | High | Entra ID Free |
-| [CISA.MS.AAD.8.3](./CISA.MS.AAD.8.3) | Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes. | CISA | Medium | Entra ID Free |
 | [EIDSCA.AF01](./EIDSCA.AF01) | Authentication Method - FIDO2 security key - State. | Entra ID SCA | High | General |
 | [EIDSCA.AF02](./EIDSCA.AF02) | Authentication Method - FIDO2 security key - Allow self-service set up. | Entra ID SCA | Medium | General |
 | [EIDSCA.AF03](./EIDSCA.AF03) | Authentication Method - FIDO2 security key - Enforce attestation. | Entra ID SCA | High | General |
@@ -373,6 +373,10 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1196](./MT.1196) | Review who can change attributes used by dynamic group rules | Maester | Medium | Entra |
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
 | [MT.1198](./MT.1198) | App registration certificates should not have excessive validity periods. | Maester | Medium | App |
+| [MT.1214](./MT.1214) | Ensure macOS compliance policy requires System Integrity Protection | Maester | Medium | Intune |
+| [MT.1215](./MT.1215) | Ensure Gatekeeper restricts macOS app download locations | Maester | Medium | Intune |
+| [MT.1216](./MT.1216) | Ensure macOS compliance policy requires a Defender machine risk score level | Maester | Medium | Intune |
+| [MT.1217](./MT.1217) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles | Maester | High | Intune |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

@@ -706,7 +706,7 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
+        "CIS.M365.5.1.4.6",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -724,7 +724,7 @@
         "MT.1098"
       ],
       "initials": "M",
-      "recentCommits": 3
+      "recentCommits": 4
     },
     {
       "id": "weyCC81",
@@ -969,7 +969,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -1307,7 +1306,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -1428,7 +1426,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.4.6",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
@@ -2038,6 +2035,31 @@
       ],
       "initials": "LG",
       "recentCommits": 0
+    },
+    {
+      "id": "DanielLystad",
+      "github": "DanielLystad",
+      "name": "Daniel Lystad",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Norway",
+      "locationFlag": "🇳🇴",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/DanielLystad.png",
+      "firstContribution": "2026-09-16",
+      "testsAuthored": [
+        "MT.1214",
+        "MT.1215",
+        "MT.1216",
+        "MT.1217"
+      ],
+      "testsContributed": [],
+      "initials": "DL",
+      "recentCommits": 1
     },
     {
       "id": "marcel-ngn",
@@ -3254,7 +3276,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -3740,19 +3761,11 @@
         "BuckeyeGuyJFlo"
       ]
     },
-    "CIS.M365.5.1.3.1": {
-      "author": "oed-metzb",
-      "contributors": [
-        "Mynster9361",
-        "merill",
-        "SamErde",
-        "BuckeyeGuyJFlo"
-      ]
-    },
     "CIS.M365.5.1.4.6": {
       "author": "BakkerJan",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "Mynster9361"
       ]
     },
     "CIS.M365.5.1.5.1": {
@@ -6340,6 +6353,22 @@
       "author": "simon-vedder",
       "contributors": []
     },
+    "MT.1214": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1215": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1216": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1217": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": [
@@ -7068,16 +7097,12 @@
       "path": "/docs/tests/CIS.M365.4.1"
     },
     "CIS.M365.5.1.2.2": {
-      "title": "Ensure third party integrated applications are not allowed",
+      "title": "Ensure users cannot register applications",
       "path": "/docs/tests/CIS.M365.5.1.2.2"
     },
     "CIS.M365.5.1.2.3": {
       "title": "Ensure",
       "path": "/docs/tests/CIS.M365.5.1.2.3"
-    },
-    "CIS.M365.5.1.3.1": {
-      "title": "Ensure a dynamic group for guest users is created",
-      "path": "/docs/tests/CIS.M365.5.1.3.1"
     },
     "CIS.M365.5.1.4.6": {
       "title": "Ensure users are restricted from recovering BitLocker keys",
@@ -7140,7 +7165,7 @@
       "path": "/docs/tests/CIS.M365.8.2.3"
     },
     "CIS.M365.8.4.1": {
-      "title": "(L1) Ensure all or a majority of third-party and custom apps are blocked",
+      "title": "(L1) Ensure app permission policies are configured",
       "path": "/docs/tests/CIS.M365.8.4.1"
     },
     "CIS.M365.8.5.3": {
@@ -7148,7 +7173,7 @@
       "path": "/docs/tests/CIS.M365.8.5.3"
     },
     "CIS.M365.8.6.1": {
-      "title": "(L1) Ensure users can report security concerns in Teams to internal destination",
+      "title": "(L1) Ensure users can report security concerns in Teams",
       "path": "/docs/tests/CIS.M365.8.6.1"
     },
     "CISA.MS.AAD.1.1": {
@@ -8326,6 +8351,22 @@
     "MT.1198": {
       "title": "App registration certificates should not have excessive validity periods.",
       "path": "/docs/next/tests/MT.1198"
+    },
+    "MT.1214": {
+      "title": "Ensure macOS compliance policy requires System Integrity Protection",
+      "path": "/docs/next/tests/MT.1214"
+    },
+    "MT.1215": {
+      "title": "Ensure Gatekeeper restricts macOS app download locations",
+      "path": "/docs/next/tests/MT.1215"
+    },
+    "MT.1216": {
+      "title": "Ensure macOS compliance policy requires a Defender machine risk score level",
+      "path": "/docs/next/tests/MT.1216"
+    },
+    "MT.1217": {
+      "title": "Ensure macOS LAPS is configured on Automated Device Enrollment profiles",
+      "path": "/docs/next/tests/MT.1217"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
