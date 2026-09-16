@@ -51,7 +51,7 @@ Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa
 * [Microsoft Entra ID admin center](https://entra.microsoft.com)
 * [Restrict guest access permissions in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/users/users-restrict-guest-permissions)
 * [Cyber Kill Chain](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 221](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 269](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

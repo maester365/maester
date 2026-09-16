@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Communication with unmanaged Teams users is disabled
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.2.2, L1)
 
     .EXAMPLE
     Test-MtCisCommunicateWithUnmanagedTeamsUsers

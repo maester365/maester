@@ -35,7 +35,7 @@ Set-HostedConnectionFilterPolicy -Identity Default -EnableSafeList $false
 * [Configure connection filtering in cloud organizations](https://learn.microsoft.com/defender-office-365/connection-filter-policies-configure)
 * [Create sender allowlists for cloud mailboxes](https://learn.microsoft.com/defender-office-365/create-safe-sender-lists-in-office-365#use-the-ip-allow-list)
 * [When user and organization settings conflict](https://learn.microsoft.com/defender-office-365/how-policies-and-protections-are-combined#user-and-tenant-settings-conflict)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 119](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 131](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

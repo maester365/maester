@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         Users should not be allowed to consent to applications.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.5.1, L2)
 
     .EXAMPLE
         Test-MtCisEnsureUserConsentToAppsDisallowed

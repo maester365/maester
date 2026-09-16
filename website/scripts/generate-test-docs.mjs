@@ -80,6 +80,14 @@ function yamlQuote(value) {
   return JSON.stringify(String(value ?? ""));
 }
 
+// Source paths are embedded in generated docs and used as contributors.mjs
+// lookup keys against git's always-forward-slash paths; node:path's relative()
+// returns native separators, which would silently break both on Windows
+// (backslashes never match, so every test's contributor attribution is empty).
+function toPosixPath(value) {
+  return sep === "/" ? value : value.split(sep).join("/");
+}
+
 function escapeTable(value) {
   return String(value ?? "")
     .replaceAll("|", "\\|")
@@ -170,6 +178,11 @@ function parseTags(value = "") {
 
 function normalizeMarkdown(markdown) {
   return markdown
+    // extractSection() below rejoins split lines with plain "\n"; leaving CRLF
+    // here would make that rejoined text byte-different from this string, so
+    // the duplicate-section .includes() guards in renderTestPage() would never
+    // match and every section would be emitted twice.
+    .replace(/\r\n/g, "\n")
     .replace(/<br>/gi, "<br />")
     .replace(/\[([^\]]+)\]\(#[^)]+\)/g, "$1");
 }
@@ -272,7 +285,10 @@ function suiteFrom(testId, tags, filePath) {
 }
 
 function categoryFrom(tags, filePath) {
-  const candidates = tags.filter((tag) => !/^(MT\.|CIS\.|CISA\.|MS\.|EIDSCA\.|ORCA\.|L1$|L2$|Maester$|CIS$|CISA$|ORCA$|EIDSCA$)/i.test(tag));
+  // Excludes benchmark-version tags (e.g. "CIS M365 v7.0.0", "CIS GitHub v1.2.0") too, so a
+  // Describe-level version tag never wins over a more specific It-level "CIS E3 Level 1" tag
+  // just because it appears first in the combined (Describe then It) tag list.
+  const candidates = tags.filter((tag) => !/^(MT\.|CIS\.|CISA\.|MS\.|EIDSCA\.|ORCA\.|L1$|L2$|Maester$|CIS$|CISA$|ORCA$|EIDSCA$|CIS\s+\S+\s+v[\d.]+$)/i.test(tag));
   if (candidates.length > 0) return candidates[0];
   const parts = relative(testsRoot, filePath).split(sep);
   const meaningfulParts = parts.slice(0, -1).filter((part) => !/^(maester|cis|cisa|eidsca|orca)$/i.test(part));
@@ -377,8 +393,8 @@ function buildInventory() {
       category: categoryFrom(test.tags, test.filePath),
       tags: test.tags.sort((a, b) => a.localeCompare(b)),
       functionName,
-      sourceTestFile: relative(repoRoot, test.filePath),
-      sourceFunctionFile: doc.functionPath ? relative(repoRoot, doc.functionPath) : "",
+      sourceTestFile: toPosixPath(relative(repoRoot, test.filePath)),
+      sourceFunctionFile: doc.functionPath ? toPosixPath(relative(repoRoot, doc.functionPath)) : "",
       synopsis: doc.synopsis ?? "",
       helpDescription: doc.description ?? "",
       markdown: doc.markdown ?? "",
@@ -631,7 +647,7 @@ function main() {
 
   if (checkMode && writes.length > 0) {
     console.error(`Generated test docs are stale. Run npm run generate-test-docs. Stale files: ${writes.length}`);
-    for (const file of writes.slice(0, 20)) console.error(`- ${relative(repoRoot, file)}`);
+    for (const file of writes.slice(0, 20)) console.error(`- ${toPosixPath(relative(repoRoot, file))}`);
     process.exit(1);
   }
 

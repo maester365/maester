@@ -14,54 +14,70 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
         }
     }
 
-    It '<CommandName> returns <ExpectedOutcome> for <DomainName>' -ForEach @(
+    It '<CommandName> handles domain <DomainName> correctly' -ForEach @(
         @{
             DomainName                = 'contoso.onmicrosoft.com'
             InitialDomain             = $true
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $false
-            ExpectedOutcome           = 'passed'
-            ExpectedResult            = $true
+            # Test-MtCisDkim (CIS v7.0.0) excludes the initial (MOERA) domain from the audit entirely,
+            # while Test-MtCisaDkim still auto-passes it.
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $null
+                'Test-MtCisaDkim' = $true
+            }
         }
         @{
             DomainName                = 'secondary.onmicrosoft.com'
             InitialDomain             = $false
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $false
-            ExpectedOutcome           = 'failed'
-            ExpectedResult            = $false
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $false
+                'Test-MtCisaDkim' = $false
+            }
         }
         @{
             DomainName                = 'parked.example'
             InitialDomain             = $false
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $true
-            ExpectedOutcome           = 'skipped'
-            ExpectedResult            = $null
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $null
+                'Test-MtCisaDkim' = $null
+            }
         }
         @{
             DomainName                = 'contoso.mail.onmicrosoft.com'
             InitialDomain             = $false
             IsCoexistenceDomain       = $true
             SendingFromDomainDisabled = $false
-            ExpectedOutcome           = 'failed'
-            ExpectedResult            = $false
+            # Test-MtCisDkim (CIS v7.0.0) excludes coexistence domains from the audit entirely,
+            # while Test-MtCisaDkim still evaluates them (and fails, since no signing config exists).
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $null
+                'Test-MtCisaDkim' = $false
+            }
         }
         @{
             DomainName                = 'contoso.mail.onmicrosoft.com'
             InitialDomain             = $false
             IsCoexistenceDomain       = $true
             SendingFromDomainDisabled = $true
-            ExpectedOutcome           = 'skipped'
-            ExpectedResult            = $null
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $null
+                'Test-MtCisaDkim' = $null
+            }
         }
         @{
             DomainName                = 'contoso.com'
             InitialDomain             = $false
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $false
-            ExpectedOutcome           = 'failed'
-            ExpectedResult            = $false
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $false
+                'Test-MtCisaDkim' = $false
+            }
         }
     ) {
         Mock -ModuleName Maester Get-MtExo {
@@ -77,11 +93,13 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
             return @()
         }
 
+        $expectedResult = $ExpectedResultByCommand[$CommandName]
+
         $result = & $CommandName
-        if ($null -eq $ExpectedResult) {
+        if ($null -eq $expectedResult) {
             $result | Should -BeNullOrEmpty
         } else {
-            $result | Should -Be $ExpectedResult
+            $result | Should -Be $expectedResult
         }
         Should -Invoke Get-MailAuthenticationRecord -ModuleName Maester -Exactly 0
     }

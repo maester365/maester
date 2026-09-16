@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         Guest user access should be restricted to only necessary resources.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.6.2, L1)
 
     .EXAMPLE
         Test-MtCisEnsureGuestAccessRestricted

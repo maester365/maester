@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         The internal phishing protection for Microsoft Forms should be enabled.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.3.5, L1)
 
     .EXAMPLE
         Test-MtCisFormsPhishingProtectionEnabled

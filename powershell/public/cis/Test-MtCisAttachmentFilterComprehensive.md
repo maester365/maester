@@ -1,7 +1,7 @@
 2.1.11 (L2) Ensure comprehensive attachment filtering is applied
 
 The Common Attachment Types Filter lets a user block known and custom malicious file types from being attached to emails. The policy provided by Microsoft covers 53 extensions, and an additional custom list of extensions can be defined.
-The list of 184 extensions provided in this recommendation is comprehensive but not exhaustive.
+The list of 186 extensions provided in this recommendation is comprehensive but not exhaustive.
 
 #### Rationale
 
@@ -19,7 +19,7 @@ To implement a new policy containing a comprehensive list of extensions:
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following script after editing **InternalSenderAdminAddress**:
 
-```
+```powershell
 # Create an attachment policy and associated rule. The rule is
 # intentionally disabled allowing the org to enable it when ready
 $Policy = @{
@@ -30,7 +30,7 @@ $Policy = @{
     InternalSenderAdminAddress             = 'admin@contoso.com' # Change this.
 }
 $L2Extensions = @(
-    "7z", "a3x", "ace", "ade", "adp", "ani", "app", "appinstaller",
+    "7z", "a3x", "ace", "ade", "adp", "ani", "apk", "app", "appinstaller",
     "applescript", "application", "appref-ms", "appx", "appxbundle", "arj",
     "asd", "asx", "bas", "bat", "bgi", "bz2", "cab", "chm", "cmd", "com",
     "cpl", "crt", "cs", "csh", "daa", "dbf", "dcr", "deb",
@@ -38,7 +38,7 @@ $L2Extensions = @(
     "doc", "docm", "dot", "dotm", "elf", "eml", "exe", "fxp", "gadget", "gz",
     "hlp", "hta", "htc", "htm", "html", "hwpx", "ics", "img",
     "inf", "ins", "iqy", "iso", "isp", "jar", "jnlp", "js", "jse", "kext",
-    "ksh", "lha", "lib", "library-ms", "lnk", "lzh", "macho", "mam", "mda",
+    "ksh", "lha", "lib", "library", "library-ms", "lnk", "lzh", "macho", "mam", "mda",
     "mdb", "mde", "mdt", "mdw", "mdz", "mht", "mhtml", "mof", "msc", "msi",
     "msix", "msp", "msrcincident", "mst", "ocx", "odt", "ops", "oxps", "pcd",
     "pif", "plg", "pot", "potm", "ppa", "ppam", "ppkg", "pps", "ppsm", "ppt",
@@ -73,7 +73,7 @@ New-MalwareFilterRule @Rule
 * [Get-MalwareFilterPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
 * [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
 * [File format reference for Word, Excel, and PowerPoint](https://learn.microsoft.com/office/compatibility/office-file-format-reference)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 109](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 121](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

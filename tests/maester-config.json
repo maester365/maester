@@ -152,7 +152,7 @@
     {
       "Id": "CIS.M365.8.4.1",
       "Severity": "High",
-      "Title": "(L1) Ensure all or a majority of third-party and custom apps are blocked"
+      "Title": "(L1) Ensure app permission policies are configured"
     },
     {
       "Id": "CIS.M365.8.5.3",
@@ -162,7 +162,7 @@
     {
       "Id": "CIS.M365.8.6.1",
       "Severity": "Medium",
-      "Title": "(L1) Ensure users can report security concerns in Teams to internal destination"
+      "Title": "(L1) Ensure users can report security concerns in Teams"
     },
     {
       "Id": "CISA.MS.AAD.1.1",

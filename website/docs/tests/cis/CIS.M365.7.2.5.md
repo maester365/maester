@@ -16,7 +16,7 @@ keywords:
   - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L2"
   - "OneDrive"
 ---
@@ -63,7 +63,7 @@ Set-SPOTenant -PreventExternalUsersFromResharing $True
 
 * [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
 * [Overview of external sharing in SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/external-sharing-overview)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 376](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 474](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -74,7 +74,7 @@ Set-SPOTenant -PreventExternalUsersFromResharing $True
 | Suite | CIS |
 | Category | SharePoint Online |
 | PowerShell test | [Test-MtCisSpoGuestCannotShareUnownedItem](/docs/commands/Test-MtCisSpoGuestCannotShareUnownedItem) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v6.0.1, CIS.M365.7.2.5, L2, OneDrive, SharePoint Online |
+| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.7.2.5, L2, OneDrive, SharePoint Online |
 
 ## Source
 

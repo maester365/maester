@@ -15,7 +15,7 @@ keywords:
   - "CIS E3"
   - "CIS E5"
   - "CIS E5 Level 1"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
   - "Security"
 ---
@@ -74,7 +74,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 
 * [Microsoft 365 admin center](https://admin.microsoft.com)
 * [Manage add-ins in the Microsoft 365 admin center](https://learn.microsoft.com/microsoft-365/admin/manage/manage-addins-in-the-admin-center?view=o365-worldwide&tabs=word-excel-powerpoint#manage-add-in-downloads-by-turning-onoff-the-office-store-across-all-apps-except-outlook)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 56](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 59](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -85,7 +85,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisUserOwnedAppsRestricted](/docs/commands/Test-MtCisUserOwnedAppsRestricted) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v6.0.1, CIS.M365.1.3.4, L1, Security |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.4, L1, Security |
 
 ## Source
 
