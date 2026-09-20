@@ -21,7 +21,7 @@
     )
 
     if (!$ValidateRequiredTablesOnly) {
-        $ExternalDataUris = Get-MtXspmExternalDataUris
+        $ExternalDataUris = Get-MtXspmExternalDataUri
         $Query = "
         // Define the UnifiedIdentityInfo function
         let Int_PrivilegedIdentityInfo = (UserPrincipalName:string='', ObjectId:string='', EntraRoleDefinitionName:string='', EntraRolePermission:string='', LookbackTimestamp:datetime=datetime(now)) {

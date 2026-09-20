@@ -1,4 +1,4 @@
-﻿function Get-MtXspmExternalDataUris {
+﻿function Get-MtXspmExternalDataUri {
     <#
     .SYNOPSIS
     Gets the validated external data sources used by XSPM hunting queries.
