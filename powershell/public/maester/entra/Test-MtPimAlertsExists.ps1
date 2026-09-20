@@ -46,6 +46,8 @@
       Write-Verbose 'Getting PIM Alerts'
       $AlertResourceId = "DirectoryRole_$($tenantId)_$AlertId"
       $Alert = Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri "identityGovernance/roleManagementAlerts/alerts/$($AlertResourceId)?`$expand=alertDefinition,alertConfiguration,alertIncidents"
+      # Keep per-call compatibility properties and filtered counts out of the Graph cache.
+      $Alert = $Alert.PSObject.Copy()
       $AlertDefinition = $Alert.alertDefinition
       $AffectedRoleAssignments = if ($Alert.isActive) { @($Alert.alertIncidents) } else { @() }
 

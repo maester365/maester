@@ -147,15 +147,18 @@
 
     It 'applies changing pipeline tiers while loading classification once' {
         $incident = New-PimAlertIncident -AssigneeId 'user-1' -AssigneeDisplayName 'Control User' -RoleTemplateId 'control-plane-role'
-        Mock -ModuleName Maester Invoke-MtGraphRequest { New-PimAlert -AlertIncidents @($incident) }
+        $cachedAlert = New-PimAlert -AlertIncidents @($incident)
+        Mock -ModuleName Maester Invoke-MtGraphRequest { $cachedAlert }
         Mock -ModuleName Maester Get-MtEamClassification { @{ 'control-plane-role' = 'ControlPlane'; 'management-plane-role' = 'ManagementPlane' } }
         # AlertId binds by value; tier binds by property on each string item.
         $control = 'RedundantAssignmentAlert' | Add-Member -NotePropertyName FilteredAccessLevel -NotePropertyValue 'ControlPlane' -PassThru
-        $management = 'StaleSignInAlert' | Add-Member -NotePropertyName FilteredAccessLevel -NotePropertyValue 'ManagementPlane' -PassThru
+        $management = 'RedundantAssignmentAlert' | Add-Member -NotePropertyName FilteredAccessLevel -NotePropertyValue 'ManagementPlane' -PassThru
         $results = @($control, $management) | Test-MtPimAlertsExists -FilteredBreakGlass @()
         $results.Count | Should -Be 2
         $results[0].numberOfAffectedItems | Should -Be 1
         $results[1].numberOfAffectedItems | Should -Be 0
+        [object]::ReferenceEquals($results[0], $results[1]) | Should -BeFalse
+        $cachedAlert.PSObject.Properties.Name | Should -Not -Contain 'numberOfAffectedItems'
         Should -Invoke Get-MtEamClassification -ModuleName Maester -Exactly 1
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly 0
     }
