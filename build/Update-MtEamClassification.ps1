@@ -3,10 +3,13 @@
     Updates the generated Enterprise Access Model role classification table.
 
     .DESCRIPTION
-    Downloads the EntraOps directory-role classification at build time, projects
+    Downloads the EntraOps directory-role classification during maintenance, projects
     it to the role ID and EAM tier used by Maester, validates the result, and
-    writes the generated table into the module's internal source. The module does
-    not fetch this third-party data during a test run.
+    writes the generated table into the module's internal source. Permanent-role
+    checks use that table without downloading classification data at runtime.
+    Run manually when updating the snapshot, review the generated diff, and commit
+    it with the module. Ordinary module builds do not download or refresh the data.
+    For reproducibility, pass a commit-pinned raw URL with -SourceUrl.
 
     .EXAMPLE
     ./build/Update-MtEamClassification.ps1
@@ -28,6 +31,7 @@ $ErrorActionPreference = 'Stop'
 
 function Get-EamClassificationData {
     [CmdletBinding()]
+    [OutputType([System.Collections.Generic.List[hashtable]])]
     param(
         [Parameter(Mandatory)]
         [string] $Json,
@@ -36,7 +40,7 @@ function Get-EamClassificationData {
         [int] $MinimumRoleCount
     )
 
-    $rows = @($Json | ConvertFrom-Json -Depth 10)
+    $rows = @($Json | ConvertFrom-Json)
     if ($rows.Count -lt $MinimumRoleCount) {
         throw "Only $($rows.Count) EAM role classifications found; expected at least $MinimumRoleCount. Possible parsing issue."
     }
@@ -53,6 +57,7 @@ function Get-EamClassificationData {
         if (-not [guid]::TryParse($roleId, [ref]$roleGuid)) {
             throw "Role classification contains an invalid RoleId '$roleId'."
         }
+        $roleId = $roleGuid.ToString('D')
         if ([string]::IsNullOrWhiteSpace($tier) -or $tier -notin $validTiers) {
             throw "Role '$roleId' contains an unknown or empty EAM tier '$tier'."
         }
@@ -72,6 +77,7 @@ function Get-EamClassificationData {
 
 function Get-ClassificationFileContent {
     [CmdletBinding()]
+    [OutputType([string])]
     param(
         [Parameter(Mandatory)]
         [System.Collections.Generic.List[hashtable]] $Classification,
@@ -93,6 +99,28 @@ function Get-ClassificationFileContent {
 # Source: $SourceUrl
 # Source SHA-256: $SourceSha256
 # Source rows: $($Classification.Count)
+<#
+Classification derived from Cloud-Architekt/AzurePrivilegedIAM (MIT License).
+Copyright (c) 2024 Thomas Naunheim
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+#>
 
 function Initialize-MtEamClassification {
     [CmdletBinding()]
@@ -124,7 +152,7 @@ function Get-MtEamClassification {
 "@
 }
 
-Write-Host 'Fetching EAM role classifications from GitHub...' -ForegroundColor Cyan
+Write-Verbose 'Fetching EAM role classifications from GitHub...'
 try {
     $response = Invoke-WebRequest -Uri $SourceUrl -UseBasicParsing -ErrorAction Stop
 } catch {
@@ -162,7 +190,4 @@ if (Test-Path -LiteralPath $ClassificationPath) {
 $utf8Bom = [System.Text.UTF8Encoding]::new($true)
 [System.IO.File]::WriteAllText($resolvedPath, $generatedContent.TrimEnd() + "`n", $utf8Bom)
 
-Write-Host 'Update complete!' -ForegroundColor Green
-Write-Host "  Roles:       $($classification.Count)"
-Write-Host "  Source hash: $sourceHash"
-Write-Host "  Updated:     $resolvedPath"
+Write-Verbose "Updated $resolvedPath with $($classification.Count) roles; source SHA-256: $sourceHash"

@@ -2,16 +2,17 @@
     . "$PSScriptRoot/../../internal/Get-MtEamClassification.ps1"
 
     $buildScriptPath = Resolve-Path "$PSScriptRoot/../../../build/Update-MtEamClassification.ps1"
-    $buildContent = Get-Content $buildScriptPath -Raw
-    $helperSection = ($buildContent -split [regex]::Escape("Write-Host 'Fetching EAM role classifications from GitHub..."))[0]
-    . ([scriptblock]::Create($helperSection))
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($buildScriptPath, [ref]$null, [ref]$null)
+    foreach ($function in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false)) {
+        . ([scriptblock]::Create($function.Extent.Text))
+    }
 }
 
 Describe 'Get-EamClassificationData' {
     It 'projects role IDs and EAM tiers from valid source data' {
         $json = @(
             [pscustomobject]@{
-                RoleId         = '62E90394-69F5-4237-9190-012177145E10'
+                RoleId         = '{62E90394-69F5-4237-9190-012177145E10}'
                 Classification = [pscustomobject]@{ EAMTierLevelName = 'ControlPlane' }
             }
             [pscustomobject]@{
@@ -30,7 +31,7 @@ Describe 'Get-EamClassificationData' {
     It 'rejects duplicate role IDs' {
         $json = @(
             [pscustomobject]@{
-                RoleId         = '62e90394-69f5-4237-9190-012177145e10'
+                RoleId         = '62e9039469f542379190012177145e10'
                 Classification = [pscustomobject]@{ EAMTierLevelName = 'ControlPlane' }
             }
             [pscustomobject]@{
