@@ -123,7 +123,7 @@
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
     }
 
-    It 'returns unfiltered incidents with a warning when classification is unavailable' {
+    It 'skips when a requested classification is unavailable' {
         $controlPlaneIncident = New-PimAlertIncident -AssigneeId 'user-1' -AssigneeDisplayName 'Control User' -AssigneeUserPrincipalName 'control@contoso.com' -RoleTemplateId 'control-plane-role'
         $managementPlaneIncident = New-PimAlertIncident -AssigneeId 'user-2' -AssigneeDisplayName 'Management User' -AssigneeUserPrincipalName 'management@contoso.com' -RoleTemplateId 'management-plane-role'
         Mock -ModuleName Maester Invoke-MtGraphRequest {
@@ -133,11 +133,31 @@
 
         $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredAccessLevel ControlPlane -FilteredBreakGlass @()
 
-        $result.numberOfAffectedItems | Should -Be 2
-        $script:testDescription | Should -Match 'filtering was unavailable'
-        $script:testResult | Should -Match 'Management User'
-        $script:skippedBecause | Should -BeNullOrEmpty
+        $result | Should -BeNullOrEmpty
+        $script:skippedBecause | Should -Be 'Error'
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+    }
+
+    It 'skips when a requested classification is empty' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest { New-PimAlert }
+        Mock -ModuleName Maester Get-MtEamClassification { @{} }
+        Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredAccessLevel ControlPlane -FilteredBreakGlass @() | Should -BeNullOrEmpty
+        $script:skippedBecause | Should -Be 'Error'
+    }
+
+    It 'applies changing pipeline tiers while loading classification once' {
+        $incident = New-PimAlertIncident -AssigneeId 'user-1' -AssigneeDisplayName 'Control User' -RoleTemplateId 'control-plane-role'
+        Mock -ModuleName Maester Invoke-MtGraphRequest { New-PimAlert -AlertIncidents @($incident) }
+        Mock -ModuleName Maester Get-MtEamClassification { @{ 'control-plane-role' = 'ControlPlane'; 'management-plane-role' = 'ManagementPlane' } }
+        # AlertId binds by value; tier binds by property on each string item.
+        $control = 'RedundantAssignmentAlert' | Add-Member -NotePropertyName FilteredAccessLevel -NotePropertyValue 'ControlPlane' -PassThru
+        $management = 'StaleSignInAlert' | Add-Member -NotePropertyName FilteredAccessLevel -NotePropertyValue 'ManagementPlane' -PassThru
+        $results = @($control, $management) | Test-MtPimAlertsExists -FilteredBreakGlass @()
+        $results.Count | Should -Be 2
+        $results[0].numberOfAffectedItems | Should -Be 1
+        $results[1].numberOfAffectedItems | Should -Be 0
+        Should -Invoke Get-MtEamClassification -ModuleName Maester -Exactly 1
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly 0
     }
 
     It 'excludes break-glass accounts and updates the affected item count' {
