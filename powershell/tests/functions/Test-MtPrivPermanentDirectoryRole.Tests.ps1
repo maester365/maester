@@ -58,7 +58,7 @@
     It 'skips when the checked-in classification cannot be initialized' {
         Mock -ModuleName Maester Get-MtEamClassification { throw 'classification unavailable' }
 
-        $result = Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel ControlPlane -FilterPrincipal ExternalUser
+        $result = Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel ControlPlane -FilterPrincipal ExternalUser -ErrorAction SilentlyContinue
 
         $result | Should -BeNullOrEmpty
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
@@ -84,5 +84,21 @@
         Mock -ModuleName Maester Get-MtEamClassification { @{} }
         Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel ControlPlane -FilterPrincipal ExternalUser -ErrorAction SilentlyContinue | Should -BeNullOrEmpty
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $SkippedBecause -eq 'Error' }
+    }
+
+    It 'honors ErrorAction <Action> when classification fails' -ForEach @(
+        @{ Action = 'SilentlyContinue'; ExpectedErrors = 0 }
+        @{ Action = 'Continue'; ExpectedErrors = 1 }
+    ) {
+        Mock -ModuleName Maester Get-MtEamClassification { throw 'classification unavailable' }
+        $output = @(Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel ControlPlane -FilterPrincipal ExternalUser -ErrorAction $Action 2>&1)
+        @($output | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] }).Count | Should -Be $ExpectedErrors
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $SkippedBecause -eq 'Error' }
+    }
+
+    It 'honors ErrorAction Stop when classification fails' {
+        Mock -ModuleName Maester Get-MtEamClassification { throw 'classification unavailable' }
+        { Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel ControlPlane -FilterPrincipal ExternalUser -ErrorAction Stop } |
+            Should -Throw '*classification unavailable*'
     }
 }
