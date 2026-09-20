@@ -63,4 +63,26 @@
         $result | Should -BeNullOrEmpty
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
     }
+
+    It 'honors changing pipeline tiers and loads classification once' {
+        $results = @(
+            [pscustomobject]@{ FilterPrincipal = 'ExternalUser'; FilteredAccessLevel = 'ControlPlane' }
+            [pscustomobject]@{ FilterPrincipal = 'ExternalUser'; FilteredAccessLevel = 'ManagementPlane' }
+        ) | Test-MtPrivPermanentDirectoryRole
+        $results.Count | Should -Be 2
+        $results | Should -Not -Contain $false
+        Should -Invoke Get-MtEamClassification -ModuleName Maester -Exactly 1
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $Result -match 'Guest User' -and $Result -notmatch 'Management User'
+        }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $Result -match 'Management User' -and $Result -notmatch 'Guest User'
+        }
+    }
+
+    It 'skips an empty classification instead of reporting no assignments' {
+        Mock -ModuleName Maester Get-MtEamClassification { @{} }
+        Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel ControlPlane -FilterPrincipal ExternalUser -ErrorAction SilentlyContinue | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $SkippedBecause -eq 'Error' }
+    }
 }

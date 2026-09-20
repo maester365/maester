@@ -30,26 +30,24 @@
     $mgContext = Get-MgContext
     $tenantId = $mgContext.TenantId
 
-    $EamClassificationError = $null
-    $FilteredClassification = $null
-    if ($null -ne $FilteredAccessLevel) {
-      try {
-        $EamClassification = Get-MtEamClassification
+    $EamClassification = $null
+  }
+
+  process {
+    try {
+      if ($null -ne $FilteredAccessLevel) {
+        if ($null -eq $EamClassification) {
+          $EamClassification = Get-MtEamClassification
+        }
+        if ($null -eq $EamClassification -or $EamClassification.Count -eq 0) {
+          throw 'The EAM classification table is empty.'
+        }
+        # Pipeline properties are bound for each process invocation, after begin.
         $FilteredClassification = @(
           $EamClassification.GetEnumerator() |
             Where-Object { $_.Value -in $FilteredAccessLevel } |
             ForEach-Object Key
         )
-      } catch {
-        $EamClassificationError = $_
-      }
-    }
-  }
-
-  process {
-    try {
-      if ($null -ne $EamClassificationError) {
-        throw $EamClassificationError
       }
 
       $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta
@@ -155,7 +153,7 @@
       Add-MtTestResultDetail -Description $testDescription -Result $testResult
       return $result
     } catch {
-      Write-Error "An error occurred while testing Permanent Directory Role Assignments: $_"
+      Write-Error "An error occurred while testing Permanent Directory Role Assignments: $_" -ErrorAction Continue
       Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
       return $null
     }
