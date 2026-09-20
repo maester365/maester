@@ -391,13 +391,6 @@
         // Lookback feature is limited to user identities only
         UnifiedIdentityInfoXdr(ObjectName='',ObjectId='',LookbackTimestamp=datetime(now))
         "
-        $ExternalDataSourceSummary = @(
-            $ExternalDataUris.GetEnumerator() | ForEach-Object {
-                $ParsedUri = [System.Uri]$_.Value
-                "{0}={1}" -f $_.Key, $ParsedUri.GetLeftPart([System.UriPartial]::Path)
-            }
-        ) -join ', '
-
         try {
             # Graph cache verbose output includes the query, which may contain signed URIs.
             $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D" -Verbose:$false
@@ -410,7 +403,17 @@
                     $QueryErrorMessage = $QueryErrorMessage.Replace($SourceUri.Query, '?[redacted]')
                 }
             }
-            throw "The XSPM unified identity Advanced Hunting query failed. Original error: $QueryErrorMessage. If the error concerns externaldata, check service-side access and source schemas: $ExternalDataSourceSummary"
+            $ErrorMessage = "The XSPM unified identity Advanced Hunting query failed. Original error: $QueryErrorMessage"
+            if ($QueryErrorMessage -match '\bexternaldata\b') {
+                $ExternalDataSourceSummary = @(
+                    $ExternalDataUris.GetEnumerator() | ForEach-Object {
+                        $ParsedUri = [System.Uri]$_.Value
+                        "{0}={1}" -f $_.Key, $ParsedUri.GetLeftPart([System.UriPartial]::Path)
+                    }
+                ) -join ', '
+                $ErrorMessage += ". Check service-side access and source schemas: $ExternalDataSourceSummary"
+            }
+            throw $ErrorMessage
         }
 
         if ( $XspmUnifiedIdentityInfoResult ) {

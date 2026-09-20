@@ -84,7 +84,10 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         } | Should -Throw '*externaldata failed*EntraDirectoryRoles=https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json*'
     }
 
-    It 'preserves partial overrides and redacts a signed URI from service errors' {
+    It 'preserves partial overrides and redacts a signed URI from <ErrorPrefix> errors' -ForEach @(
+        @{ ErrorPrefix = 'externaldata: Cannot read' }
+        @{ ErrorPrefix = 'Cannot read' }
+    ) {
         Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
             @{ MicrosoftApps = 'https://mirror.contoso.com/apps.json?sig=secret' }
         }
@@ -92,7 +95,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
             param($Query)
             $Query | Should -Match 'https://mirror.contoso.com/apps.json\?sig=secret'
             $Query | Should -Match 'raw.githubusercontent.com/Cloud-Architekt'
-            throw 'Cannot read https://mirror.contoso.com/apps.json?sig=secret'
+            throw "$ErrorPrefix https://mirror.contoso.com/apps.json?sig=secret"
         }
         $message = try { InModuleScope Maester { Get-MtXspmUnifiedIdentityInfo }; '' } catch { $_.Exception.Message }
         $message | Should -Match 'Cannot read https://mirror.contoso.com/apps.json'
@@ -105,6 +108,6 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { throw 'License required' }
         $message = try { InModuleScope Maester { Get-MtXspmUnifiedIdentityInfo }; '' } catch { $_.Exception.Message }
         $message | Should -Match 'Original error: License required'
-        $message | Should -Not -Match 'could not load its external data sources'
+        $message | Should -Not -Match 'externaldata|EntraDirectoryRoles=|MicrosoftApps=|ApiPermissions=|ArmApiRequests='
     }
 }
