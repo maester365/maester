@@ -40,7 +40,8 @@ function Get-EamClassificationData {
         [int] $MinimumRoleCount
     )
 
-    $rows = @($Json | ConvertFrom-Json)
+    $rows = ConvertFrom-Json -InputObject $Json
+    $rows = @($rows)
     if ($rows.Count -lt $MinimumRoleCount) {
         throw "Only $($rows.Count) EAM role classifications found; expected at least $MinimumRoleCount. Possible parsing issue."
     }
