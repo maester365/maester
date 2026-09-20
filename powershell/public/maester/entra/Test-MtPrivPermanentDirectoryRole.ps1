@@ -29,10 +29,29 @@
   begin {
     $mgContext = Get-MgContext
     $tenantId = $mgContext.TenantId
+
+    $EamClassificationError = $null
+    $FilteredClassification = $null
+    if ($null -ne $FilteredAccessLevel) {
+      try {
+        $EamClassification = Get-MtEamClassification
+        $FilteredClassification = @(
+          $EamClassification.GetEnumerator() |
+            Where-Object { $_.Value -in $FilteredAccessLevel } |
+            ForEach-Object Key
+        )
+      } catch {
+        $EamClassificationError = $_
+      }
+    }
   }
 
   process {
     try {
+      if ($null -ne $EamClassificationError) {
+        throw $EamClassificationError
+      }
+
       $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta
       $RoleDefinitions = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta
 
@@ -41,8 +60,6 @@
       }
 
       if ($null -ne $FilteredAccessLevel) {
-        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json -Depth 10
-        $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
         $DirectAssignments = $DirectAssignments | Where-Object { $_.roleDefinitionId -in $FilteredClassification }
       }
 
