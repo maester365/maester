@@ -32,7 +32,7 @@
                 Categories: string,
                 Classification: dynamic,
                 RolePermissions: dynamic
-                ) [@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
+                ) [h@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
             | project RoleDefinitionName = RoleName, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let IdentityInfoUpdateInterval = -14;
             let IdentityInfoLookbackWindow = datetime_add('day', IdentityInfoUpdateInterval, LookbackTimestamp);
@@ -105,7 +105,7 @@
                 AppDisplayName: string,
                 AppOwnerOrganizationId: string,
                 Source: string
-                ) [@'$($ExternalDataUris.MicrosoftApps)'] with (format='multijson')
+                ) [h@'$($ExternalDataUris.MicrosoftApps)'] with (format='multijson')
                 | project OAuthAppId = AppId, AppOwnerTenantId = AppOwnerOrganizationId;
             let SensitiveEntraDirectoryRoles = externaldata(
                 RoleName: string,
@@ -114,7 +114,7 @@
                 Categories: string,
                 Classification: dynamic,
                 RolePermissions: dynamic
-                ) [@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
+                ) [h@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
                 | project RoleDefinitionName = RoleName, RoleId, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let SensitiveApiPermissions = externaldata(
                 PermissionId: string,
@@ -124,11 +124,11 @@
                 TargetAppId: string,
                 Category: string,
                 EAMTierLevelName: string
-                ) [@'$($ExternalDataUris.ApiPermissions)'] with (format='multijson');
+                ) [h@'$($ExternalDataUris.ApiPermissions)'] with (format='multijson');
             let PrivilegedAzureRoles = dynamic(['Owner','Contributor','Access Review Operator Service Role','Azure File Sync Administrator','Role Based Access Control Administrator','User Access Administrator']);
             let PrivilegedArmOperations = externaldata(
                 RoleAction: string
-                ) [@'$($ExternalDataUris.ArmApiRequests)'] with (format='csv', ignoreFirstRecord=true);
+                ) [h@'$($ExternalDataUris.ArmApiRequests)'] with (format='csv', ignoreFirstRecord=true);
             let PrivilegedArmOperationsPattern = @'Microsoft\.Authorization/.*/action';
             let PrivilegedGroupMinCriticalLevel = 2;
             IdentityInfo
@@ -399,9 +399,18 @@
         ) -join ', '
 
         try {
-            $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D"
+            # Graph cache verbose output includes the query, which may contain signed URIs.
+            $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D" -Verbose:$false
         } catch {
-            throw "The XSPM unified identity Advanced Hunting query could not load its external data sources ($ExternalDataSourceSummary). Verify that Defender Advanced Hunting can reach the configured HTTPS sources. Original error: $($_.Exception.Message)"
+            $QueryErrorMessage = $_.Exception.Message
+            foreach ($Source in $ExternalDataUris.Values) {
+                $SourceUri = [System.Uri]$Source
+                $QueryErrorMessage = $QueryErrorMessage.Replace($Source, $SourceUri.GetLeftPart([System.UriPartial]::Path))
+                if ($SourceUri.Query) {
+                    $QueryErrorMessage = $QueryErrorMessage.Replace($SourceUri.Query, '?[redacted]')
+                }
+            }
+            throw "The XSPM unified identity Advanced Hunting query failed. Original error: $QueryErrorMessage. If the error concerns externaldata, check service-side access and source schemas: $ExternalDataSourceSummary"
         }
 
         if ( $XspmUnifiedIdentityInfoResult ) {

@@ -59,6 +59,8 @@ The XSPM unified identity query uses Advanced Hunting `externaldata` sources to 
 
 All values must be absolute HTTPS URIs. Because `externaldata` is evaluated by Defender Advanced Hunting, the mirror must be reachable by that service, not only by the computer running Maester. See Microsoft's [Advanced Hunting best practices](https://learn.microsoft.com/en-us/microsoft-365/security/defender/advanced-hunting-best-practices) for details.
 
+Omitted keys retain their built-in defaults. A mirror must preserve the original JSON or CSV schema. Use an immutable commit URL or a versioned mirror object when reproducible classification is required; the default URLs still track upstream branches. User information and fragments in URIs are rejected. Signed query strings are supported, but treat the configuration file as a secret and grant only read access to the mirrored data. Maester suppresses verbose configuration/query logging on this path and redacts configured query strings in its diagnostic message. This does not control logging by the service or by external instrumentation.
+
 ### TestSettings
 
 The `TestSettings` section allows you to customize individual test behavior, such as overriding the default severity level. See [Severity Levels](./severity-levels) for more details.

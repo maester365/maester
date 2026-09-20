@@ -50,10 +50,16 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         $script:xspmQuery | Should -Not -Match 'raw\.githubusercontent\.com'
     }
 
-    It 'rejects non-HTTPS or KQL-breaking configured sources before querying Graph' {
+    It 'rejects invalid source <Uri> before querying Graph' -ForEach @(
+        @{ Uri = 'http://mirror.contoso.com/roles.json' }
+        @{ Uri = "https://mirror.contoso.com/roles.json' ] | where true" }
+        @{ Uri = 'https://user:secret@mirror.contoso.com/roles.json' }
+        @{ Uri = 'https://mirror.contoso.com/roles.json#fragment' }
+        @{ Uri = '' }
+    ) {
         Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
             return [PSCustomObject]@{
-                EntraDirectoryRoles = "https://mirror.contoso.com/roles.json' ] | where true"
+                EntraDirectoryRoles = $Uri
             }
         }
 
@@ -75,6 +81,30 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
             InModuleScope Maester {
                 Get-MtXspmUnifiedIdentityInfo
             }
-        } | Should -Throw '*EntraDirectoryRoles=https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json*externaldata failed*'
+        } | Should -Throw '*externaldata failed*EntraDirectoryRoles=https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json*'
+    }
+
+    It 'preserves partial overrides and redacts a signed URI from service errors' {
+        Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
+            @{ MicrosoftApps = 'https://mirror.contoso.com/apps.json?sig=secret' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphSecurityQuery {
+            param($Query)
+            $Query | Should -Match 'https://mirror.contoso.com/apps.json\?sig=secret'
+            $Query | Should -Match 'raw.githubusercontent.com/Cloud-Architekt'
+            throw 'Cannot read https://mirror.contoso.com/apps.json?sig=secret'
+        }
+        $message = try { InModuleScope Maester { Get-MtXspmUnifiedIdentityInfo }; '' } catch { $_.Exception.Message }
+        $message | Should -Match 'Cannot read https://mirror.contoso.com/apps.json'
+        $message | Should -Not -Match 'secret'
+        Should -Invoke Get-MtMaesterConfigGlobalSetting -ModuleName Maester -Exactly 1 -ParameterFilter { $Verbose -eq $false }
+        Should -Invoke Invoke-MtGraphSecurityQuery -ModuleName Maester -Exactly 1 -ParameterFilter { $Verbose -eq $false }
+    }
+
+    It 'does not diagnose a licensing failure as an externaldata failure' {
+        Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { throw 'License required' }
+        $message = try { InModuleScope Maester { Get-MtXspmUnifiedIdentityInfo }; '' } catch { $_.Exception.Message }
+        $message | Should -Match 'Original error: License required'
+        $message | Should -Not -Match 'could not load its external data sources'
     }
 }

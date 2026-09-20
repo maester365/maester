@@ -10,7 +10,7 @@
     are validated before they are used in a query.
     #>
     [CmdletBinding()]
-    [OutputType([System.Collections.IDictionary])]
+    [OutputType([System.Collections.Specialized.OrderedDictionary])]
     param()
 
     $Uris = [ordered]@{
@@ -20,7 +20,7 @@
         ArmApiRequests      = 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/main/PrivilegedOperations/ArmApiRequest.csv'
     }
 
-    $ConfiguredUris = Get-MtMaesterConfigGlobalSetting -SettingName 'XspmExternalDataUris'
+    $ConfiguredUris = Get-MtMaesterConfigGlobalSetting -SettingName 'XspmExternalDataUris' -Verbose:$false
     if ($null -ne $ConfiguredUris) {
         foreach ($Name in @($Uris.Keys)) {
             $HasConfiguredValue = $false
@@ -52,9 +52,11 @@
         if ([string]::IsNullOrWhiteSpace($Value) -or
             -not [System.Uri]::TryCreate($Value, [System.UriKind]::Absolute, [ref]$ParsedUri) -or
             $ParsedUri.Scheme -ne 'https' -or
+            -not [string]::IsNullOrEmpty($ParsedUri.UserInfo) -or
+            -not [string]::IsNullOrEmpty($ParsedUri.Fragment) -or
             [string]::IsNullOrWhiteSpace($ParsedUri.Host) -or
             $Value -match "['\[\]\r\n]") {
-            throw "XSPM external data source '$($Entry.Key)' must be an absolute HTTPS URI without quotes, brackets, or line breaks."
+            throw "XSPM external data source '$($Entry.Key)' must be an absolute HTTPS URI without user information, fragments, quotes, brackets, or line breaks."
         }
     }
 
