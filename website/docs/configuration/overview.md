@@ -40,6 +40,25 @@ The configuration file has two main sections:
 
 The `GlobalSettings` section contains organization-wide configuration that can be used by multiple tests. For example, you can define your emergency access accounts here so that all related tests use the same accounts.
 
+### XSPM external data sources
+
+The XSPM unified identity query uses Advanced Hunting `externaldata` sources to enrich identity results. You can override these sources with HTTPS mirrors by adding `XspmExternalDataUris` to the `GlobalSettings` section of your custom configuration:
+
+```json
+{
+  "GlobalSettings": {
+    "XspmExternalDataUris": {
+      "EntraDirectoryRoles": "https://mirror.contoso.com/Classification_EntraIdDirectoryRoles.json",
+      "MicrosoftApps": "https://mirror.contoso.com/MicrosoftApps.json",
+      "ApiPermissions": "https://mirror.contoso.com/Classification_ApiPermissions.json",
+      "ArmApiRequests": "https://mirror.contoso.com/ArmApiRequest.csv"
+    }
+  }
+}
+```
+
+All values must be absolute HTTPS URIs. Because `externaldata` is evaluated by Defender Advanced Hunting, the mirror must be reachable by that service, not only by the computer running Maester. See Microsoft's [Advanced Hunting best practices](https://learn.microsoft.com/en-us/microsoft-365/security/defender/advanced-hunting-best-practices) for details.
+
 ### TestSettings
 
 The `TestSettings` section allows you to customize individual test behavior, such as overriding the default severity level. See [Severity Levels](./severity-levels) for more details.
@@ -89,6 +108,7 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
 
 ## How Settings Are Merged
 

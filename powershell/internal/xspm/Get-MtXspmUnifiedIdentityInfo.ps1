@@ -21,6 +21,7 @@
     )
 
     if (!$ValidateRequiredTablesOnly) {
+        $ExternalDataUris = Get-MtXspmExternalDataUris
         $Query = "
         // Define the UnifiedIdentityInfo function
         let Int_PrivilegedIdentityInfo = (UserPrincipalName:string='', ObjectId:string='', EntraRoleDefinitionName:string='', EntraRolePermission:string='', LookbackTimestamp:datetime=datetime(now)) {
@@ -31,7 +32,7 @@
                 Categories: string,
                 Classification: dynamic,
                 RolePermissions: dynamic
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with (format='multijson')
+                ) [@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
             | project RoleDefinitionName = RoleName, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let IdentityInfoUpdateInterval = -14;
             let IdentityInfoLookbackWindow = datetime_add('day', IdentityInfoUpdateInterval, LookbackTimestamp);
@@ -104,7 +105,7 @@
                 AppDisplayName: string,
                 AppOwnerOrganizationId: string,
                 Source: string
-                ) [@'https://raw.githubusercontent.com/merill/microsoft-info/main/_info/MicrosoftApps.json'] with (format='multijson')
+                ) [@'$($ExternalDataUris.MicrosoftApps)'] with (format='multijson')
                 | project OAuthAppId = AppId, AppOwnerTenantId = AppOwnerOrganizationId;
             let SensitiveEntraDirectoryRoles = externaldata(
                 RoleName: string,
@@ -113,7 +114,7 @@
                 Categories: string,
                 Classification: dynamic,
                 RolePermissions: dynamic
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with (format='multijson')
+                ) [@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
                 | project RoleDefinitionName = RoleName, RoleId, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let SensitiveApiPermissions = externaldata(
                 PermissionId: string,
@@ -123,11 +124,11 @@
                 TargetAppId: string,
                 Category: string,
                 EAMTierLevelName: string
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_ApiPermissions.json'] with (format='multijson');
+                ) [@'$($ExternalDataUris.ApiPermissions)'] with (format='multijson');
             let PrivilegedAzureRoles = dynamic(['Owner','Contributor','Access Review Operator Service Role','Azure File Sync Administrator','Role Based Access Control Administrator','User Access Administrator']);
             let PrivilegedArmOperations = externaldata(
                 RoleAction: string
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/main/PrivilegedOperations/ArmApiRequest.csv'] with (format='csv', ignoreFirstRecord=true);
+                ) [@'$($ExternalDataUris.ArmApiRequests)'] with (format='csv', ignoreFirstRecord=true);
             let PrivilegedArmOperationsPattern = @'Microsoft\.Authorization/.*/action';
             let PrivilegedGroupMinCriticalLevel = 2;
             IdentityInfo
@@ -390,7 +391,18 @@
         // Lookback feature is limited to user identities only
         UnifiedIdentityInfoXdr(ObjectName='',ObjectId='',LookbackTimestamp=datetime(now))
         "
-        $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D"
+        $ExternalDataSourceSummary = @(
+            $ExternalDataUris.GetEnumerator() | ForEach-Object {
+                $ParsedUri = [System.Uri]$_.Value
+                "{0}={1}" -f $_.Key, $ParsedUri.GetLeftPart([System.UriPartial]::Path)
+            }
+        ) -join ', '
+
+        try {
+            $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D"
+        } catch {
+            throw "The XSPM unified identity Advanced Hunting query could not load its external data sources ($ExternalDataSourceSummary). Verify that Defender Advanced Hunting can reach the configured HTTPS sources. Original error: $($_.Exception.Message)"
+        }
 
         if ( $XspmUnifiedIdentityInfoResult ) {
             return $XspmUnifiedIdentityInfoResult
