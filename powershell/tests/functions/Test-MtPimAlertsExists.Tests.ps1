@@ -1,4 +1,4 @@
-Describe 'Test-MtPimAlertsExists' {
+﻿Describe 'Test-MtPimAlertsExists' {
     BeforeAll {
         function New-PimAlert {
             [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
@@ -63,6 +63,7 @@ Describe 'Test-MtPimAlertsExists' {
             $script:testResult = $Result
             $script:skippedBecause = $SkippedBecause
         }
+        Mock -ModuleName Maester Invoke-WebRequest
     }
 
     It 'queries the PIM v3 alert endpoint and preserves the existing result contract' {
@@ -106,8 +107,11 @@ Describe 'Test-MtPimAlertsExists' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             return New-PimAlert -AlertIncidents @($controlPlaneIncident, $managementPlaneIncident)
         }
-        Mock -ModuleName Maester Invoke-WebRequest {
-            return '[{"RoleId":"control-plane-role","Classification":{"EAMTierLevelName":"ControlPlane"}},{"RoleId":"management-plane-role","Classification":{"EAMTierLevelName":"ManagementPlane"}}]'
+        Mock -ModuleName Maester Get-MtEamClassification {
+            return @{
+                'control-plane-role'    = 'ControlPlane'
+                'management-plane-role' = 'ManagementPlane'
+            }
         }
 
         $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredAccessLevel ControlPlane -FilteredBreakGlass @()
@@ -115,6 +119,25 @@ Describe 'Test-MtPimAlertsExists' {
         $result.numberOfAffectedItems | Should -Be 1
         $script:testResult | Should -Match 'Control User'
         $script:testResult | Should -Not -Match 'Management User'
+        Should -Invoke Get-MtEamClassification -ModuleName Maester -Exactly 1
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+    }
+
+    It 'returns unfiltered incidents with a warning when classification is unavailable' {
+        $controlPlaneIncident = New-PimAlertIncident -AssigneeId 'user-1' -AssigneeDisplayName 'Control User' -AssigneeUserPrincipalName 'control@contoso.com' -RoleTemplateId 'control-plane-role'
+        $managementPlaneIncident = New-PimAlertIncident -AssigneeId 'user-2' -AssigneeDisplayName 'Management User' -AssigneeUserPrincipalName 'management@contoso.com' -RoleTemplateId 'management-plane-role'
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return New-PimAlert -AlertIncidents @($controlPlaneIncident, $managementPlaneIncident)
+        }
+        Mock -ModuleName Maester Get-MtEamClassification { throw 'classification unavailable' }
+
+        $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredAccessLevel ControlPlane -FilteredBreakGlass @()
+
+        $result.numberOfAffectedItems | Should -Be 2
+        $script:testDescription | Should -Match 'filtering was unavailable'
+        $script:testResult | Should -Match 'Management User'
+        $script:skippedBecause | Should -BeNullOrEmpty
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
     }
 
     It 'excludes break-glass accounts and updates the affected item count' {

@@ -35,6 +35,27 @@
   begin {
     $mgContext = Get-MgContext
     $tenantId = $mgContext.TenantId
+
+    $EamClassification = $null
+    $FilteredClassification = $null
+    $ClassificationWarning = $null
+    if ($null -ne $FilteredAccessLevel) {
+      try {
+        $EamClassification = Get-MtEamClassification
+        if ($null -eq $EamClassification -or $EamClassification.Count -eq 0) {
+          throw 'The EAM classification table is empty.'
+        }
+
+        $FilteredClassification = @(
+          $EamClassification.GetEnumerator() |
+            Where-Object { $_.Value -in $FilteredAccessLevel } |
+            ForEach-Object Key
+        )
+      } catch {
+        $ClassificationWarning = 'Enterprise Access Model filtering was unavailable; this result includes all PIM alert assignments.'
+        Write-Warning "$ClassificationWarning $($_.Exception.Message)"
+      }
+    }
   }
 
   process {
@@ -59,10 +80,8 @@
       }
 
       # Filtering based on (EntraOps) Enterprise Access Model Tiering
-      if ($null -ne $FilteredAccessLevel) {
+      if ($null -ne $FilteredAccessLevel -and $null -ne $EamClassification) {
         Write-Verbose 'Filtering based on Enterprise Access Model Tiering'
-        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json
-        $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
         $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.RoleTemplateId -in $FilteredClassification }
       }
 
@@ -91,6 +110,10 @@ $($Alert.mitigationSteps -replace $convertHtmlLinkToMD, '[$2]($1)')
 $($Alert.howToPrevent -replace $convertHtmlLinkToMD, '[$2]($1)')
 "
 
+      if ($null -ne $ClassificationWarning) {
+        $testDescription += "`n`n**Warning**`n`n$ClassificationWarning"
+      }
+
       $AffectedRoleAssignmentSummary = @()
       $AffectedRoleAssignmentSummary += foreach ($AffectedRoleAssignment in $AffectedRoleAssignments) {
         if ($null -ne $AffectedRoleAssignment.AssigneeDisplayName -or $null -ne $AffectedRoleAssignment.RoleDisplayName) {
@@ -107,6 +130,10 @@ Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.c
 "
       } else {
         $testResult = 'All privileged role assignments are managed by PIM. Well done!'
+      }
+
+      if ($null -ne $ClassificationWarning) {
+        $testResult = "$ClassificationWarning`n`n$testResult"
       }
 
       Add-MtTestResultDetail -Description $testDescription -Result $testResult
