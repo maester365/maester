@@ -153,7 +153,7 @@
       Add-MtTestResultDetail -Description $testDescription -Result $testResult
       return $result
     } catch {
-      Write-Error "An error occurred while testing Permanent Directory Role Assignments: $_" -ErrorAction Continue
+      Write-Error "An error occurred while testing Permanent Directory Role Assignments: $_"
       Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
       return $null
     }
