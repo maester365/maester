@@ -16,7 +16,7 @@ keywords:
   - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
   - "OneDrive"
 ---
@@ -36,6 +36,10 @@ This setting sets the default link type that a user will see when sharing conten
 ## Rationale
 
 By defaulting to specific people, the user will first need to consider whether or not the content being shared should be accessible by the entire organization versus select individuals. This aids in reinforcing the concept of least privilege.
+
+## Impact
+
+Changing the default sharing link type influences the user experience when sharing files and folders in SharePoint and OneDrive. The configured default option will appear pre-selected in the sharing dialog, guiding users toward the organization's preferred sharing method.
 
 ## Remediation
 
@@ -64,7 +68,7 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 ## Related Links
 
 * [Set-SPOTenant](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 381](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 480](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -75,7 +79,7 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 | Suite | CIS |
 | Category | SharePoint Online |
 | PowerShell test | [Test-MtCisSpoDefaultSharingLink](/docs/commands/Test-MtCisSpoDefaultSharingLink) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v6.0.1, CIS.M365.7.2.7, L1, OneDrive, SharePoint Online |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.7.2.7, L1, OneDrive, SharePoint Online |
 
 ## Source
 

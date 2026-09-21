@@ -188,3 +188,8 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Unknown | Entra |
 | [MT.1196](./MT.1196.md) | Review who can change attributes used by dynamic group rules | Medium | Entra |
 | [MT.1197](./MT.1197.md) | Dynamic groups should not use the retiring memberOf rule operator | High | Entra |
+| [MT.1198](./MT.1198.md) | App registration certificates should not have excessive validity periods. | Medium | App |
+| [MT.1214](./MT.1214.md) | Ensure macOS compliance policy requires System Integrity Protection | Medium | Intune |
+| [MT.1215](./MT.1215.md) | Ensure Gatekeeper restricts macOS app download locations | Medium | Intune |
+| [MT.1216](./MT.1216.md) | Ensure macOS compliance policy requires a Defender machine risk score level | Medium | Intune |
+| [MT.1217](./MT.1217.md) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles | High | Intune |

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         7.2.7 (L1) Ensure link sharing is restricted in SharePoint and OneDrive
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (7.2.7, L1)
 
     .EXAMPLE
         Test-MtCisSpoDefaultSharingLink

@@ -20,10 +20,10 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 170 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 175 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
@@ -58,10 +58,9 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | CIS | Medium | CIS E5 Level 1 |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | CIS | High | CIS E3 Level 1 |
-| [CIS.M365.4.1](./CIS.M365.4.1) | Ensure devices without a compliance policy are marked | CIS | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure third party integrated applications are not allowed | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.4.1](./CIS.M365.4.1) | Ensure devices without a compliance policy are marked | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure users cannot register applications | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | Ensure | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1) | Ensure a dynamic group for guest users is created | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | Ensure users are restricted from recovering BitLocker keys | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | Ensure the admin consent workflow is enabled | CIS | Unknown | CIS E3 Level 1 |
@@ -74,12 +73,12 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.7.2.7](./CIS.M365.7.2.7) | Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Unknown | SharePoint Online |
 | [CIS.M365.7.2.9](./CIS.M365.7.2.9) | Ensure guest access to a site or OneDrive will expire automatically | CIS | Unknown | SharePoint Online |
 | [CIS.M365.7.3.1](./CIS.M365.7.3.1) | Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Unknown | SharePoint Online |
-| [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS M365 v6.0.1 |
-| [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS M365 v6.0.1 |
-| [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS M365 v6.0.1 |
-| [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure all or a majority of third-party and custom apps are blocked | CIS | High | CIS M365 v6.0.1 |
+| [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS E3 Level 2 |
+| [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS E3 Level 1 |
+| [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure app permission policies are configured | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3) | (L1) Ensure only people in my org can bypass the lobby | CIS | Medium | CIS E3 Level 1 |
-| [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams to internal destination | CIS | Medium | CIS E3 Level 1 |
+| [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | CIS E5 Level 1 |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID P1 |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID P2 |
 | [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | High | Entra ID P2 |
@@ -373,6 +372,11 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1195](./MT.1195) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Maester | Unknown | Entra |
 | [MT.1196](./MT.1196) | Review who can change attributes used by dynamic group rules | Maester | Medium | Entra |
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
+| [MT.1198](./MT.1198) | App registration certificates should not have excessive validity periods. | Maester | Medium | App |
+| [MT.1214](./MT.1214) | Ensure macOS compliance policy requires System Integrity Protection | Maester | Medium | Intune |
+| [MT.1215](./MT.1215) | Ensure Gatekeeper restricts macOS app download locations | Maester | Medium | Intune |
+| [MT.1216](./MT.1216) | Ensure macOS compliance policy requires a Defender machine risk score level | Maester | Medium | Intune |
+| [MT.1217](./MT.1217) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles | Maester | High | Intune |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

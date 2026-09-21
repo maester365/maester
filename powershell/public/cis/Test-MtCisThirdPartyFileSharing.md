@@ -27,7 +27,7 @@ To change third-party cloud services using PowerShell:
 1. Connect to Teams using **Connect-MicrosoftTeams**.
 2. Run the following PowerShell command to disable external providers that are not authorized. (the example disables Citrix Files, DropBox, Box, Google Drive and Egnyte)
 
-```
+```powershell
 $Params = @{
  Identity = 'Global'
  AllowGoogleDrive = $false
@@ -44,7 +44,7 @@ Set-CsTeamsClientConfiguration @Params
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 * [Manage Teams with Microsoft Teams PowerShell](https://learn.microsoft.com/microsoftteams/teams-powershell-managing-teams)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 401](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 500](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

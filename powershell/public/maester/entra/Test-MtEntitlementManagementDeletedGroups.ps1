@@ -316,7 +316,7 @@
         return $result
 
     } catch {
-        Write-Error "Error checking access packages and catalogs: $($_.Exception.Message)"
-        return $false
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
 }

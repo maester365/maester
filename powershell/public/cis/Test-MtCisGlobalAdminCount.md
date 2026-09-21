@@ -4,13 +4,19 @@ Between two and four Global Administrators should be designated in the tenant. I
 
 #### Rationale
 
-If there is only one Global Administrator, they could perform malicious activities without being detected by another admin. Designating multiple Global Administrators eliminates this risk and ensures redundancy if the sole remaining Global Administrator leaves the organization. However, to minimize the attack surface, there should be no more than four global admins set for any tenant. A large number of global admins increases the likelihood of a successful account breach by an external attacker.
+The Global Administrator role grants unrestricted access across all services in Microsoft Entra ID and should never be used for routine daily activities. Limiting the number of Global Administrators reduces the attack surface of the tenant and aligns with the principle of least privilege.
+
+Fewer than two Global Administrators creates a single point of failure and removes the peer oversight needed to detect unauthorized actions. More than four increases the likelihood of account compromise by an external attacker. Maintaining between two and four Global Administrators balances operational redundancy against privileged access risk.
+
+For any accounts assigned the Global Administrator role, at least one strong authentication method such as a FIDO2 key or certificate is strongly advised.
 
 #### Impact
 
 The potential impact associated with ensuring compliance with this requirement is dependent upon the current number of Global Administrators configured in the tenant. If there is only one Global Administrator in a tenant, an additional Global Administrator will need to be identified and configured. If there are more than four Global Administrators, a review of role requirements for current Global Administrators will be required to identify which of the users require Global Administrator access.
 
 #### Remediation action
+
+Note: If an organization's tenant is using a third-party identity provider, this remediation may not be relevant. The principle of the recommendation is still relevant, and compensating controls that are relevant to the third-party identity provider should be implemented.
 
 To correct the number of global tenant administrators:
 
@@ -32,13 +38,15 @@ To remove Global Admins:
 3. De-Select the appropriate role.
 4. Click **Save changes**.
 
+Note: When tallying the number of Global Administrators, Partner relationships (Settings > Partner Relationships) are not accounted for and should be reviewed on a recurring basis.
+
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Get-MgDirectoryRole](https://learn.microsoft.com/powershell/module/microsoft.graph.identity.directorymanagement/get-mgdirectoryrole?view=graph-powershell-1.0)
 * [All roles](https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference#all-roles)
 * [5. Limit the number of Global Administrators to less than 5](https://learn.microsoft.com/entra/identity/role-based-access-control/best-practices#5-limit-the-number-of-global-administrators-to-less-than-5)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 27](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 28](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

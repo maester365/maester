@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Users should be restricted to install add-ins from the Office Store and start trials on behalf of the organization.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.3.4, L1)
 
     .EXAMPLE
     Test-MtCisUserOwnedAppsRestricted

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         7.2.2 (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (7.2.2, L1)
 
     .EXAMPLE
         Test-MtCisSpoB2BIntegration

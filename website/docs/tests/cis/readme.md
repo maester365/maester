@@ -46,10 +46,9 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13.md) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | Medium | CIS E3 Level 1 |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4.md) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | Medium | CIS E5 Level 1 |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1.md) | (L1) Ensure Microsoft 365 audit log search is Enabled | High | CIS E3 Level 1 |
-| [CIS.M365.4.1](./CIS.M365.4.1.md) | Ensure devices without a compliance policy are marked | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | Ensure third party integrated applications are not allowed | Unknown | CIS E3 Level 2 |
+| [CIS.M365.4.1](./CIS.M365.4.1.md) | Ensure devices without a compliance policy are marked | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | Ensure users cannot register applications | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3.md) | Ensure | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1.md) | Ensure a dynamic group for guest users is created | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6.md) | Ensure users are restricted from recovering BitLocker keys | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | Ensure user consent to apps accessing company data on their behalf is not allowed | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | Ensure the admin consent workflow is enabled | Unknown | CIS E3 Level 1 |
@@ -62,9 +61,9 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.7.2.9](./CIS.M365.7.2.9.md) | Ensure guest access to a site or OneDrive will expire automatically | Unknown | SharePoint Online |
 | [CIS.M365.7.2.11](./CIS.M365.7.2.11.md) | Ensure the SharePoint default sharing link permission is set | Unknown | SharePoint Online |
 | [CIS.M365.7.3.1](./CIS.M365.7.3.1.md) | Ensure Office 365 SharePoint infected files are disallowed for download | Unknown | SharePoint Online |
-| [CIS.M365.8.1.1](./CIS.M365.8.1.1.md) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | Medium | CIS M365 v6.0.1 |
-| [CIS.M365.8.2.2](./CIS.M365.8.2.2.md) | (L1) Ensure communication with unmanaged Teams users is disabled | Medium | CIS M365 v6.0.1 |
-| [CIS.M365.8.2.3](./CIS.M365.8.2.3.md) | Ensure external Teams users cannot initiate conversations | Unknown | CIS M365 v6.0.1 |
-| [CIS.M365.8.4.1](./CIS.M365.8.4.1.md) | (L1) Ensure all or a majority of third-party and custom apps are blocked | High | CIS M365 v6.0.1 |
+| [CIS.M365.8.1.1](./CIS.M365.8.1.1.md) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | Medium | CIS E3 Level 2 |
+| [CIS.M365.8.2.2](./CIS.M365.8.2.2.md) | (L1) Ensure communication with unmanaged Teams users is disabled | Medium | CIS E3 Level 1 |
+| [CIS.M365.8.2.3](./CIS.M365.8.2.3.md) | Ensure external Teams users cannot initiate conversations | Unknown | CIS E3 Level 1 |
+| [CIS.M365.8.4.1](./CIS.M365.8.4.1.md) | (L1) Ensure app permission policies are configured | High | CIS E3 Level 1 |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3.md) | (L1) Ensure only people in my org can bypass the lobby | Medium | CIS E3 Level 1 |
-| [CIS.M365.8.6.1](./CIS.M365.8.6.1.md) | (L1) Ensure users can report security concerns in Teams to internal destination | Medium | CIS E3 Level 1 |
+| [CIS.M365.8.6.1](./CIS.M365.8.6.1.md) | (L1) Ensure users can report security concerns in Teams | Medium | CIS E5 Level 1 |

@@ -21,6 +21,7 @@
     )
 
     if (!$ValidateRequiredTablesOnly) {
+        $ExternalDataUris = Get-MtXspmExternalDataUri
         $Query = "
         // Define the UnifiedIdentityInfo function
         let Int_PrivilegedIdentityInfo = (UserPrincipalName:string='', ObjectId:string='', EntraRoleDefinitionName:string='', EntraRolePermission:string='', LookbackTimestamp:datetime=datetime(now)) {
@@ -31,7 +32,7 @@
                 Categories: string,
                 Classification: dynamic,
                 RolePermissions: dynamic
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with (format='multijson')
+                ) [h@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
             | project RoleDefinitionName = RoleName, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let IdentityInfoUpdateInterval = -14;
             let IdentityInfoLookbackWindow = datetime_add('day', IdentityInfoUpdateInterval, LookbackTimestamp);
@@ -104,7 +105,7 @@
                 AppDisplayName: string,
                 AppOwnerOrganizationId: string,
                 Source: string
-                ) [@'https://raw.githubusercontent.com/merill/microsoft-info/main/_info/MicrosoftApps.json'] with (format='multijson')
+                ) [h@'$($ExternalDataUris.MicrosoftApps)'] with (format='multijson')
                 | project OAuthAppId = AppId, AppOwnerTenantId = AppOwnerOrganizationId;
             let SensitiveEntraDirectoryRoles = externaldata(
                 RoleName: string,
@@ -113,7 +114,7 @@
                 Categories: string,
                 Classification: dynamic,
                 RolePermissions: dynamic
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with (format='multijson')
+                ) [h@'$($ExternalDataUris.EntraDirectoryRoles)'] with (format='multijson')
                 | project RoleDefinitionName = RoleName, RoleId, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let SensitiveApiPermissions = externaldata(
                 PermissionId: string,
@@ -123,11 +124,11 @@
                 TargetAppId: string,
                 Category: string,
                 EAMTierLevelName: string
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_ApiPermissions.json'] with (format='multijson');
+                ) [h@'$($ExternalDataUris.ApiPermissions)'] with (format='multijson');
             let PrivilegedAzureRoles = dynamic(['Owner','Contributor','Access Review Operator Service Role','Azure File Sync Administrator','Role Based Access Control Administrator','User Access Administrator']);
             let PrivilegedArmOperations = externaldata(
                 RoleAction: string
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/main/PrivilegedOperations/ArmApiRequest.csv'] with (format='csv', ignoreFirstRecord=true);
+                ) [h@'$($ExternalDataUris.ArmApiRequests)'] with (format='csv', ignoreFirstRecord=true);
             let PrivilegedArmOperationsPattern = @'Microsoft\.Authorization/.*/action';
             let PrivilegedGroupMinCriticalLevel = 2;
             IdentityInfo
@@ -390,7 +391,30 @@
         // Lookback feature is limited to user identities only
         UnifiedIdentityInfoXdr(ObjectName='',ObjectId='',LookbackTimestamp=datetime(now))
         "
-        $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D"
+        try {
+            # Graph cache verbose output includes the query, which may contain signed URIs.
+            $XspmUnifiedIdentityInfoResult = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D" -Verbose:$false
+        } catch {
+            $QueryErrorMessage = $_.Exception.Message
+            foreach ($Source in $ExternalDataUris.Values) {
+                $SourceUri = [System.Uri]$Source
+                $QueryErrorMessage = $QueryErrorMessage.Replace($Source, $SourceUri.GetLeftPart([System.UriPartial]::Path))
+                if ($SourceUri.Query) {
+                    $QueryErrorMessage = $QueryErrorMessage.Replace($SourceUri.Query, '?[redacted]')
+                }
+            }
+            $ErrorMessage = "The XSPM unified identity Advanced Hunting query failed. Original error: $QueryErrorMessage"
+            if ($QueryErrorMessage -match '\bexternaldata\b') {
+                $ExternalDataSourceSummary = @(
+                    $ExternalDataUris.GetEnumerator() | ForEach-Object {
+                        $ParsedUri = [System.Uri]$_.Value
+                        "{0}={1}" -f $_.Key, $ParsedUri.GetLeftPart([System.UriPartial]::Path)
+                    }
+                ) -join ', '
+                $ErrorMessage += ". Check service-side access and source schemas: $ExternalDataSourceSummary"
+            }
+            throw $ErrorMessage
+        }
 
         if ( $XspmUnifiedIdentityInfoResult ) {
             return $XspmUnifiedIdentityInfoResult

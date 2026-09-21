@@ -262,7 +262,7 @@
         "MT.1087"
       ],
       "initials": "TN",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "f-bader",
@@ -645,7 +645,7 @@
         "ORCA.244"
       ],
       "initials": "TS",
-      "recentCommits": 2
+      "recentCommits": 1
     },
     {
       "id": "Mynster9361",
@@ -706,7 +706,7 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
+        "CIS.M365.5.1.4.6",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -969,7 +969,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -1281,7 +1280,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 4
+      "recentCommits": 5
     },
     {
       "id": "oed-metzb",
@@ -1307,7 +1306,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -1350,7 +1348,7 @@
       ],
       "testsContributed": [],
       "initials": "OG",
-      "recentCommits": 2
+      "recentCommits": 1
     },
     {
       "id": "lnfernux",
@@ -1428,7 +1426,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.4.6",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
@@ -2040,6 +2037,31 @@
       "recentCommits": 0
     },
     {
+      "id": "DanielLystad",
+      "github": "DanielLystad",
+      "name": "Daniel Lystad",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Norway",
+      "locationFlag": "🇳🇴",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/DanielLystad.png",
+      "firstContribution": "2026-09-16",
+      "testsAuthored": [
+        "MT.1214",
+        "MT.1215",
+        "MT.1216",
+        "MT.1217"
+      ],
+      "testsContributed": [],
+      "initials": "DL",
+      "recentCommits": 1
+    },
+    {
       "id": "marcel-ngn",
       "github": "marcel-ngn",
       "name": "Marcel N.",
@@ -2145,7 +2167,7 @@
         "MT.1110"
       ],
       "initials": "JG",
-      "recentCommits": 5
+      "recentCommits": 2
     },
     {
       "id": "PetterFauske",
@@ -2259,7 +2281,7 @@
         "MT.1048"
       ],
       "initials": "SR",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "bastienperez",
@@ -2316,7 +2338,7 @@
         "MT.1020"
       ],
       "initials": "M",
-      "recentCommits": 4
+      "recentCommits": 2
     },
     {
       "id": "agnivesh",
@@ -2341,6 +2363,35 @@
       ],
       "testsContributed": [],
       "initials": "AS",
+      "recentCommits": 2
+    },
+    {
+      "id": "nathanmcnulty",
+      "github": "nathanmcnulty",
+      "name": "Nathan McNulty",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/nathanmcnulty.png",
+      "firstContribution": "2026-09-20",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1025",
+        "MT.1026",
+        "MT.1027",
+        "MT.1028",
+        "MT.1029",
+        "MT.1030",
+        "MT.1031",
+        "MT.1032"
+      ],
+      "initials": "NM",
       "recentCommits": 2
     },
     {
@@ -2398,7 +2449,7 @@
         "MT.1007"
       ],
       "initials": "BR",
-      "recentCommits": 2
+      "recentCommits": 1
     },
     {
       "id": "knussbaumer",
@@ -2426,6 +2477,32 @@
       ],
       "initials": "KN",
       "recentCommits": 0
+    },
+    {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "eduardarbona",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1024",
+        "MT.1107",
+        "MT.1108",
+        "MT.1109",
+        "MT.1191"
+      ],
+      "initials": "E",
+      "recentCommits": 3
     },
     {
       "id": "magnusjak",
@@ -2672,7 +2749,7 @@
       ],
       "testsContributed": [],
       "initials": "E",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "jflieben",
@@ -2699,6 +2776,30 @@
       "recentCommits": 0
     },
     {
+      "id": "simon-vedder",
+      "github": "simon-vedder",
+      "name": "Simon Vedder",
+      "title": "Azure Platform & Security Engineer",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Zurich, Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://simonvedder.com",
+      "socials": {
+        "linkedin": "simonvedder"
+      },
+      "avatar": "https://github.com/simon-vedder.png",
+      "firstContribution": "2026-09-15",
+      "testsAuthored": [
+        "MT.1198"
+      ],
+      "testsContributed": [],
+      "initials": "SV",
+      "recentCommits": 1
+    },
+    {
       "id": "Korthal-Maiyn",
       "github": "Korthal-Maiyn",
       "name": "Christopher Edwards",
@@ -2721,7 +2822,7 @@
         "CIS.M365.4.1"
       ],
       "initials": "CE",
-      "recentCommits": 2
+      "recentCommits": 0
     },
     {
       "id": "amlhive-tech",
@@ -2791,6 +2892,29 @@
       ],
       "initials": "RD",
       "recentCommits": 0
+    },
+    {
+      "id": "royklo",
+      "github": "royklo",
+      "name": "Roy Klooster",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/royklo.png",
+      "firstContribution": "2026-08-26",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1123",
+        "MT.1178"
+      ],
+      "initials": "RK",
+      "recentCommits": 2
     },
     {
       "id": "ThorNicolai",
@@ -3002,7 +3126,7 @@
         "MT.1020"
       ],
       "initials": "JH",
-      "recentCommits": 2
+      "recentCommits": 0
     },
     {
       "id": "m-hanisch",
@@ -3181,7 +3305,6 @@
         "CIS.M365.4.1",
         "CIS.M365.5.1.2.2",
         "CIS.M365.5.1.2.3",
-        "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.5.1",
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
@@ -3387,7 +3510,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 16
+      "recentCommits": 15
     }
   ],
   "attributions": {
@@ -3667,19 +3790,11 @@
         "BuckeyeGuyJFlo"
       ]
     },
-    "CIS.M365.5.1.3.1": {
-      "author": "oed-metzb",
-      "contributors": [
-        "Mynster9361",
-        "merill",
-        "SamErde",
-        "BuckeyeGuyJFlo"
-      ]
-    },
     "CIS.M365.5.1.4.6": {
       "author": "BakkerJan",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "Mynster9361"
       ]
     },
     "CIS.M365.5.1.5.1": {
@@ -5241,7 +5356,8 @@
         "weyCC81",
         "SamErde",
         "svrooij",
-        "massimomazzariol"
+        "massimomazzariol",
+        "earbona23"
       ]
     },
     "MT.1025": {
@@ -5254,7 +5370,8 @@
         "SamErde",
         "JeanPhilippeGeorge",
         "kij",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1026": {
@@ -5267,7 +5384,8 @@
         "SamErde",
         "JeanPhilippeGeorge",
         "kij",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1027": {
@@ -5280,7 +5398,8 @@
         "SamErde",
         "JeanPhilippeGeorge",
         "kij",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1028": {
@@ -5293,7 +5412,8 @@
         "SamErde",
         "JeanPhilippeGeorge",
         "kij",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1029": {
@@ -5304,7 +5424,8 @@
         "fflaten",
         "thomas-s-schmidt",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1030": {
@@ -5315,7 +5436,8 @@
         "fflaten",
         "thomas-s-schmidt",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1031": {
@@ -5326,7 +5448,8 @@
         "fflaten",
         "thomas-s-schmidt",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1032": {
@@ -5337,7 +5460,8 @@
         "fflaten",
         "thomas-s-schmidt",
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "nathanmcnulty"
       ]
     },
     "MT.1033": {
@@ -5899,7 +6023,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1108": {
@@ -5907,7 +6032,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1109": {
@@ -5915,7 +6041,8 @@
       "contributors": [
         "SamErde",
         "JeanPhilippeGeorge",
-        "merill"
+        "merill",
+        "earbona23"
       ]
     },
     "MT.1110": {
@@ -5994,7 +6121,8 @@
       "author": "OfirGavish",
       "contributors": [
         "BuckeyeGuyJFlo",
-        "massimomazzariol"
+        "massimomazzariol",
+        "royklo"
       ]
     },
     "MT.1147": {
@@ -6138,7 +6266,8 @@
     "MT.1178": {
       "author": "OfirGavish",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "royklo"
       ]
     },
     "MT.1179": {
@@ -6220,7 +6349,8 @@
       "author": "crmhh",
       "contributors": [
         "merill",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "earbona23"
       ]
     },
     "MT.1192": {
@@ -6254,6 +6384,26 @@
     },
     "MT.1197": {
       "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1198": {
+      "author": "simon-vedder",
+      "contributors": []
+    },
+    "MT.1214": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1215": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1216": {
+      "author": "DanielLystad",
+      "contributors": []
+    },
+    "MT.1217": {
+      "author": "DanielLystad",
       "contributors": []
     },
     "ORCA.100": {
@@ -6984,16 +7134,12 @@
       "path": "/docs/tests/CIS.M365.4.1"
     },
     "CIS.M365.5.1.2.2": {
-      "title": "Ensure third party integrated applications are not allowed",
+      "title": "Ensure users cannot register applications",
       "path": "/docs/tests/CIS.M365.5.1.2.2"
     },
     "CIS.M365.5.1.2.3": {
       "title": "Ensure",
       "path": "/docs/tests/CIS.M365.5.1.2.3"
-    },
-    "CIS.M365.5.1.3.1": {
-      "title": "Ensure a dynamic group for guest users is created",
-      "path": "/docs/tests/CIS.M365.5.1.3.1"
     },
     "CIS.M365.5.1.4.6": {
       "title": "Ensure users are restricted from recovering BitLocker keys",
@@ -7056,7 +7202,7 @@
       "path": "/docs/tests/CIS.M365.8.2.3"
     },
     "CIS.M365.8.4.1": {
-      "title": "(L1) Ensure all or a majority of third-party and custom apps are blocked",
+      "title": "(L1) Ensure app permission policies are configured",
       "path": "/docs/tests/CIS.M365.8.4.1"
     },
     "CIS.M365.8.5.3": {
@@ -7064,7 +7210,7 @@
       "path": "/docs/tests/CIS.M365.8.5.3"
     },
     "CIS.M365.8.6.1": {
-      "title": "(L1) Ensure users can report security concerns in Teams to internal destination",
+      "title": "(L1) Ensure users can report security concerns in Teams",
       "path": "/docs/tests/CIS.M365.8.6.1"
     },
     "CISA.MS.AAD.1.1": {
@@ -8238,6 +8384,26 @@
     "MT.1197": {
       "title": "Dynamic groups should not use the retiring memberOf rule operator",
       "path": "/docs/next/tests/MT.1197"
+    },
+    "MT.1198": {
+      "title": "App registration certificates should not have excessive validity periods.",
+      "path": "/docs/next/tests/MT.1198"
+    },
+    "MT.1214": {
+      "title": "Ensure macOS compliance policy requires System Integrity Protection",
+      "path": "/docs/next/tests/MT.1214"
+    },
+    "MT.1215": {
+      "title": "Ensure Gatekeeper restricts macOS app download locations",
+      "path": "/docs/next/tests/MT.1215"
+    },
+    "MT.1216": {
+      "title": "Ensure macOS compliance policy requires a Defender machine risk score level",
+      "path": "/docs/next/tests/MT.1216"
+    },
+    "MT.1217": {
+      "title": "Ensure macOS LAPS is configured on Automated Device Enrollment profiles",
+      "path": "/docs/next/tests/MT.1217"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

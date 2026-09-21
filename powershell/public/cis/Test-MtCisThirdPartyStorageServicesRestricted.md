@@ -34,7 +34,7 @@ Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
 #### Related links
 
 * [Microsoft 365 admin center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 63](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 67](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -1,11 +1,11 @@
 ﻿function Test-MtCisThirdPartyApplicationsDisallowed {
     <#
     .SYNOPSIS
-        Checks if users are not allowed to register applications.
+        Checks if users cannot register applications.
 
     .DESCRIPTION
         Users should not be allowed to register applications in the tenant.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.2.2, L1)
 
     .EXAMPLE
         Test-MtCisThirdPartyApplicationsDisallowed

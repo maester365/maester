@@ -21,7 +21,9 @@ Test-MtCisDkim [[-Selector] <String>] [-ProgressAction <ActionPreference>] [<Com
 ## DESCRIPTION
 
 DKIM SHOULD be enabled for all domains.
-CIS Microsoft 365 Foundations Benchmark v6.0.1
+Initial (MOERA) and coexistence domains are excluded, as
+Microsoft automatically signs outbound mail for those domains.
+CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.9, L1)
 
 ## EXAMPLES
 
@@ -31,7 +33,8 @@ CIS Microsoft 365 Foundations Benchmark v6.0.1
 Test-MtCisDkim
 ```
 
-Returns true if DKIM record exists and EXO shows DKIM enabled
+Returns true if a DKIM record exists and EXO shows DKIM enabled for every evaluated domain.
+Initial and coexistence domains are excluded from evaluation; if no domains remain, the test is skipped.
 
 ## PARAMETERS
 

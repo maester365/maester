@@ -16,7 +16,7 @@ keywords:
   - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
   - "OneDrive"
 ---
@@ -64,7 +64,7 @@ Set-SPOTenant -DefaultLinkPermission View
 ## Related Links
 
 * [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off#file-and-folder-links)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 391](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 493](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -75,7 +75,7 @@ Set-SPOTenant -DefaultLinkPermission View
 | Suite | CIS |
 | Category | SharePoint Online |
 | PowerShell test | [Test-MtCisSpoDefaultSharingLinkPermission](/docs/commands/Test-MtCisSpoDefaultSharingLinkPermission) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v6.0.1, CIS.M365.7.2.11, L1, OneDrive, SharePoint Online |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.7.2.11, L1, OneDrive, SharePoint Online |
 
 ## Source
 

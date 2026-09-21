@@ -13,7 +13,7 @@ keywords:
   - "CIS"
   - "CIS E5 Level 2"
   - "CIS E5"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L2"
 ---
 
@@ -63,7 +63,7 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
 * [Safe Attachments for SharePoint, OneDrive, and Microsoft Teams](https://learn.microsoft.com/defender-office-365/safe-attachments-for-spo-odfb-teams-about)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 88](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 96](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -74,7 +74,7 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 | Suite | CIS |
 | Category | CIS E5 Level 2 |
 | PowerShell test | [Test-MtCisSafeAttachmentsAtpPolicy](/docs/commands/Test-MtCisSafeAttachmentsAtpPolicy) |
-| Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v6.0.1, CIS.M365.2.1.5, L2 |
+| Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.5, L2 |
 
 ## Source
 

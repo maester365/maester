@@ -15,7 +15,7 @@ keywords:
   - "CIS E3"
   - "CIS E5"
   - "CIS E5 Level 1"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
   - "Security"
 ---
@@ -53,7 +53,7 @@ To approve requests, a reviewer must be a Global Administrator, Cloud Applicatio
 
 * [Microsoft Entra ID admin center](https://entra.microsoft.com)
 * [Configure the admin consent workflow](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-admin-consent-workflow)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 214](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 242](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -64,7 +64,7 @@ To approve requests, a reviewer must be a Global Administrator, Cloud Applicatio
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisAdminConsentWorkflowEnabled](/docs/commands/Test-MtCisAdminConsentWorkflowEnabled) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v6.0.1, CIS.M365.5.1.5.2, L1, Security |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.5.2, L1, Security |
 
 ## Source
 

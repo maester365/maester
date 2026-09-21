@@ -145,6 +145,10 @@ DanielBradley1:
     linkedin: danielbradley2
     x: DanielatOCN
 
+DanielLystad:
+  name: Daniel Lystad
+  location: Norway
+
 DanielWahlgren:
   name: Daniel Wahlgren
   company: Accigo AB
@@ -472,6 +476,14 @@ seick:
   location: Germany
   socials:
     bluesky: seick.it
+
+simon-vedder:
+  name: Simon Vedder
+  title: Azure Platform & Security Engineer
+  location: Zurich, Switzerland
+  url: https://simonvedder.com
+  socials:
+    linkedin: simonvedder
 
 SoufiyanAk:
 

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Safe Attachments for SharePoint, OneDrive, and Microsoft Teams should be enabled
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.5, L2)
 
     .EXAMPLE
     Test-MtCisSafeAttachmentsAtpPolicy

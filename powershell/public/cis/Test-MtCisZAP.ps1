@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Zero-hour auto purge (ZAP) should be enabled for Microsoft Teams
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.4.4, L1)
 
     .EXAMPLE
     Test-MtCisZAP

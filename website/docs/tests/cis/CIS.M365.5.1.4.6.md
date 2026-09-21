@@ -15,7 +15,7 @@ keywords:
   - "CIS E3"
   - "CIS E5"
   - "CIS E5 Level 2"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L2"
   - "Security"
 ---
@@ -24,7 +24,7 @@ keywords:
 
 # CIS.M365.5.1.4.6 - Ensure users are restricted from recovering BitLocker keys
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -63,7 +63,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 
 * [Microsoft 365 Entra admin center - Device settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Overview)
 * [Manage devices in Microsoft Entra ID using the Microsoft Entra admin center](https://learn.microsoft.com/entra/identity/devices/manage-device-identities#configure-device-settings)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Control 5.1.4.6](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 235](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -74,7 +74,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
 | PowerShell test | [Test-MtCisEnsureBitLockerKeyRecoveryRestricted](/docs/commands/Test-MtCisEnsureBitLockerKeyRecoveryRestricted) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v6.0.1, CIS.M365.5.1.4.6, L2, Security |
+| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.5.1.4.6, L2, Security |
 
 ## Source
 

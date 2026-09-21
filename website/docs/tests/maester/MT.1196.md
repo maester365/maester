@@ -92,7 +92,7 @@ population than an exact comparison.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtDynamicGroupUserControlledAttributes` |
+| PowerShell test | [Test-MtDynamicGroupUserControlledAttributes](/docs/commands/Test-MtDynamicGroupUserControlledAttributes) |
 | Tags | Entra, Maester, MT.1196 |
 
 ## Source

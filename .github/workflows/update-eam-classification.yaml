@@ -1,0 +1,190 @@
+name: update-eam-classification
+
+on:
+  schedule:
+    - cron: "0 8 3 * *" # Monthly on the 3rd at 08:00 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: update-eam-classification
+  cancel-in-progress: false
+
+env:
+  CLASSIFICATION_PATH: powershell/internal/Get-MtEamClassification.ps1
+  UPSTREAM_REPO: Cloud-Architekt/AzurePrivilegedIAM
+  UPSTREAM_FILE: Classification/Classification_EntraIdDirectoryRoles.json
+
+jobs:
+  update-eam-classification:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The generated table records the exact upstream bytes it was built from, so
+      # resolve the current commit for the source file and build a pinned raw URL
+      # rather than reading a moving branch.
+      - name: Resolve upstream commit
+        id: upstream
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $sha = gh api "repos/$env:UPSTREAM_REPO/commits?path=$env:UPSTREAM_FILE&per_page=1" --jq '.[0].sha'
+          if ($LASTEXITCODE -ne 0) { throw "Failed to query upstream commits for $env:UPSTREAM_REPO/$env:UPSTREAM_FILE." }
+          if ($sha -notmatch '^[0-9a-f]{40}$') { throw "Unexpected upstream commit SHA '$sha'." }
+
+          $url = "https://raw.githubusercontent.com/$env:UPSTREAM_REPO/$sha/$env:UPSTREAM_FILE"
+          "sha=$sha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "url=$url" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host "Upstream commit: $sha"
+
+      - name: Update EAM role classification
+        shell: pwsh
+        run: ./build/Update-MtEamClassification.ps1 -SourceUrl '${{ steps.upstream.outputs.url }}' -Verbose
+
+      # Upstream commits often touch the source file without changing the role/tier
+      # projection Maester consumes. Only raise a PR when the table itself moves,
+      # so every PR from this workflow is one a reviewer needs to look at.
+      - name: Summarize classification changes
+        id: diff
+        shell: pwsh
+        env:
+          SOURCE_URL: ${{ steps.upstream.outputs.url }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $entryPattern = "^(?<sign>[+-])\s+'(?<roleId>[0-9a-f-]{36})' = '(?<tier>\w+)'$"
+
+          $diff = @(git diff --unified=0 -- $env:CLASSIFICATION_PATH)
+          $entries = @($diff | Select-String -Pattern $entryPattern -AllMatches)
+
+          if ($entries.Count -eq 0) {
+            Write-Host 'No role or tier changes; discarding provenance-only churn.'
+            git checkout -- $env:CLASSIFICATION_PATH
+            'changed=false' | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+            exit 0
+          }
+
+          $before = @{}
+          $after = @{}
+          foreach ($entry in $entries) {
+            $groups = $entry.Matches[0].Groups
+            $table = if ($groups['sign'].Value -eq '-') { $before } else { $after }
+            $table[$groups['roleId'].Value] = $groups['tier'].Value
+          }
+
+          # Role IDs alone say nothing to a reviewer, so resolve display names from
+          # the same pinned source the table was generated from.
+          $names = @{}
+          try {
+            $source = Invoke-RestMethod -Uri $env:SOURCE_URL -ErrorAction Stop
+            foreach ($row in @($source)) {
+              $roleId = ([string]$row.RoleId).Trim().ToLowerInvariant()
+              if (-not [string]::IsNullOrWhiteSpace($roleId)) { $names[$roleId] = [string]$row.RoleName }
+            }
+          } catch {
+            Write-Warning "Could not resolve role names from $env:SOURCE_URL. Falling back to role IDs. Error: $_"
+          }
+
+          function Format-Role {
+            param([string] $RoleId)
+            $name = $names[$RoleId]
+            if ([string]::IsNullOrWhiteSpace($name)) { return "``$RoleId``" }
+            return "$name (``$RoleId``)"
+          }
+
+          $added = @($after.Keys | Where-Object { -not $before.ContainsKey($_) } | Sort-Object)
+          $removed = @($before.Keys | Where-Object { -not $after.ContainsKey($_) } | Sort-Object)
+          $retiered = @($after.Keys | Where-Object { $before.ContainsKey($_) -and $before[$_] -ne $after[$_] } | Sort-Object)
+
+          $lines = [System.Collections.Generic.List[string]]::new()
+          $lines.Add("| Change | Roles |")
+          $lines.Add("| --- | --- |")
+          $lines.Add("| Added | $($added.Count) |")
+          $lines.Add("| Removed | $($removed.Count) |")
+          $lines.Add("| Re-tiered | $($retiered.Count) |")
+          $lines.Add('')
+
+          if ($retiered.Count -gt 0) {
+            $lines.Add('### Re-tiered roles')
+            $lines.Add('')
+            $lines.Add('These change which roles the permanent-role and PIM alert checks flag.')
+            $lines.Add('')
+            foreach ($roleId in $retiered) {
+              $lines.Add("- $(Format-Role -RoleId $roleId): ``$($before[$roleId])`` → ``$($after[$roleId])``")
+            }
+            $lines.Add('')
+          }
+          foreach ($section in @(
+              @{ Title = 'Added roles'; Ids = $added; Table = $after },
+              @{ Title = 'Removed roles'; Ids = $removed; Table = $before })) {
+            if ($section.Ids.Count -eq 0) { continue }
+            $lines.Add("### $($section.Title)")
+            $lines.Add('')
+            foreach ($roleId in $section.Ids) {
+              $lines.Add("- $(Format-Role -RoleId $roleId) (``$($section.Table[$roleId])``)")
+            }
+            $lines.Add('')
+          }
+
+          $summary = $lines -join "`n"
+          Write-Host $summary
+          $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+          # Multi-line output via heredoc-style EOF delimiter (GitHub Actions requirement).
+          # Use a random delimiter to prevent injection if summary content ever contains the delimiter string.
+          $delimiter = "DIFF_$(New-Guid)"
+          "changed=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "diff_summary<<$delimiter`n$summary`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Generate maester-bot app token
+        id: app-token
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Create Pull Request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'chore: update EAM role classification'
+          branch: 'automation/update-eam-classification'
+          delete-branch: true
+          title: 'chore: update EAM role classification'
+          body: |
+            Refreshes `powershell/internal/Get-MtEamClassification.ps1` from the Enterprise Access Model
+            classification published by [Cloud-Architekt/AzurePrivilegedIAM](https://github.com/Cloud-Architekt/AzurePrivilegedIAM)
+            (MIT licensed, maintained by Thomas Naunheim).
+
+            Source pinned at commit [`${{ steps.upstream.outputs.sha }}`](https://github.com/Cloud-Architekt/AzurePrivilegedIAM/commit/${{ steps.upstream.outputs.sha }}).
+
+            Why this matters in Maester:
+            - `Test-MtPrivPermanentDirectoryRole` uses the role-to-tier table to decide which permanent
+              role assignments count as Control Plane or Management Plane.
+            - `Test-MtPimAlertsExists` uses the same table to scope PIM alerts to a tier.
+
+            Both read the checked-in table, so a tier change here directly changes which assignments
+            those checks report.
+
+            ## Diff summary
+
+            ${{ steps.diff.outputs.diff_summary }}
+
+            Reviewer note:
+            - Re-tiered roles are the ones to look at closely: a role moving into Control Plane makes
+              the checks stricter, and a role moving out makes them quieter.
+            - This PR is only raised when the role-to-tier table actually changes. Upstream commits that
+              leave the projection identical are discarded rather than raised as provenance-only churn.
+          labels: automation

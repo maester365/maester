@@ -13,7 +13,7 @@ keywords:
   - "CIS"
   - "CIS E3 Level 2"
   - "CIS E3"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L2"
 ---
 
@@ -60,7 +60,7 @@ Set-SharingPolicy -Identity "Default Sharing Policy" -Enabled $False
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Share Microsoft 365 calendars with people outside your organization](https://learn.microsoft.com/microsoft-365/admin/manage/share-calendars-with-external-users?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 53](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 56](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -71,7 +71,7 @@ Set-SharingPolicy -Identity "Default Sharing Policy" -Enabled $False
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
 | PowerShell test | [Test-MtCisCalendarSharing](/docs/commands/Test-MtCisCalendarSharing) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v6.0.1, CIS.M365.1.3.3, L2 |
+| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.3, L2 |
 
 ## Source
 
