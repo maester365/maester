@@ -7,8 +7,9 @@
     it to the role ID and EAM tier used by Maester, validates the result, and
     writes the generated table into the module's internal source. Permanent-role
     checks use that table without downloading classification data at runtime.
-    Run manually when updating the snapshot, review the generated diff, and commit
-    it with the module. Ordinary module builds do not download or refresh the data.
+    The update-eam-classification workflow runs this monthly and raises a pull request
+    when the role-to-tier table changes; run it by hand to refresh the snapshot sooner.
+    Ordinary module builds do not download or refresh the data.
     For reproducibility, pass a commit-pinned raw URL with -SourceUrl.
 
     .EXAMPLE
