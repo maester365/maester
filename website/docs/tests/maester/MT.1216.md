@@ -56,7 +56,7 @@ Note that a threshold has no effect until the macOS devices are actually onboard
 | Severity | Medium |
 | Suite | Maester |
 | Category | Intune |
-| PowerShell test | `Test-MtMacOSDefenderRiskScore` |
+| PowerShell test | [Test-MtMacOSDefenderRiskScore](/docs/commands/Test-MtMacOSDefenderRiskScore) |
 | Tags | Intune, Maester, MT.1216 |
 
 ## Source
