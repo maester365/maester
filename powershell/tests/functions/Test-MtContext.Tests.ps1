@@ -40,4 +40,18 @@ Describe 'Test-MtContext — Microsoft Graph scopes' {
                 Should -Throw -ExpectedMessage '*Reports.Read.All*'
         }
     }
+
+    It 'Requests preview scopes only when IncludePreview is specified' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{ AuthType = 'Delegated'; Scopes = @('Directory.Read.All') }
+        } -ModuleName Maester
+        Mock Get-MtGraphScope { @('Directory.Read.All') } -ModuleName Maester
+
+        InModuleScope Maester {
+            Test-MtContext -IncludePreview | Should -BeTrue
+        }
+
+        Should -Invoke Get-MtGraphScope -ModuleName Maester -Times 1 -Exactly `
+            -ParameterFilter { $IncludePreview }
+    }
 }

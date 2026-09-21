@@ -47,6 +47,16 @@ Describe 'Connect-Maester' {
         $clientTimeoutParameter.ParameterType | Should -Be ([double])
     }
 
+    It 'Passes IncludePreview to Get-MtGraphScope' {
+        Mock Connect-MgGraph -ModuleName Maester {}
+        Mock Get-MtGraphScope -ModuleName Maester { @('AgentIdentity.Read.All') }
+
+        Connect-Maester -IncludePreview
+
+        Should -Invoke Get-MtGraphScope -ModuleName Maester -Times 1 -Exactly `
+            -ParameterFilter { $IncludePreview }
+    }
+
     It 'Passes an explicit ClientTimeout to Connect-MgGraph' {
         Mock Connect-MgGraph -ModuleName Maester {}
 

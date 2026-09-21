@@ -9,6 +9,41 @@ Describe 'Get-MtGraphScope' {
         $scopes | Should -Contain 'EntitlementManagement.Read.All'
     }
 
+    It 'Excludes Agent ID read permissions from default scopes' {
+        $scopes = Get-MtGraphScope
+
+        $scopes | Should -Not -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Not -Contain 'AgentIdentityBlueprint.Read.All'
+        $scopes | Should -Not -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
+        $scopes | Should -Not -Contain 'Application.Read.All'
+        $scopes | Should -Contain 'Directory.Read.All'
+        $scopes | Should -Not -Contain 'User.ReadBasic.All'
+    }
+
+    It 'Includes Agent ID read permissions with IncludePreview' {
+        $scopes = Get-MtGraphScope -IncludePreview
+
+        $scopes | Should -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Contain 'AgentIdentityBlueprint.Read.All'
+        $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
+        $scopes | Should -Contain 'Application.Read.All'
+        $scopes | Should -Contain 'AuditLog.Read.All'
+
+        $agentIdentityIndex = [array]::IndexOf($scopes, 'AgentIdentity.Read.All')
+        $BlueprintIndex = [array]::IndexOf($scopes, 'AgentIdentityBlueprint.Read.All')
+        $blueprintPrincipalIndex = [array]::IndexOf(
+            $scopes,
+            'AgentIdentityBlueprintPrincipal.Read.All'
+        )
+        $applicationIndex = [array]::IndexOf($scopes, 'Application.Read.All')
+        $auditLogIndex = [array]::IndexOf($scopes, 'AuditLog.Read.All')
+
+        $agentIdentityIndex | Should -BeLessThan $BlueprintIndex
+        $BlueprintIndex | Should -BeLessThan $blueprintPrincipalIndex
+        $blueprintPrincipalIndex | Should -BeLessThan $applicationIndex
+        $applicationIndex | Should -BeLessThan $auditLogIndex
+    }
+
     It 'Keeps EntitlementManagement.Read.All in sorted position between DirectoryRecommendations and IdentityRiskEvent' {
         $scopes = Get-MtGraphScope
         $directoryRecommendationsIndex = [array]::IndexOf($scopes, 'DirectoryRecommendations.Read.All')

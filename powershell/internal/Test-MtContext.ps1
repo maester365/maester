@@ -12,7 +12,11 @@
 
         # If specified, the scope will be checked to send Teams channel messages.
         [Parameter(Mandatory = $false)]
-        [switch] $SendTeamsMessage
+        [switch] $SendTeamsMessage,
+
+        # If specified, scopes required by preview tests will be checked.
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludePreview
     )
 
     $validContext = $true
@@ -22,10 +26,11 @@
         $validContext = $false
     } else {
         $requiredScopes = if ($context.AuthType -eq 'Delegated') {
-            Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage
+            Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage `
+                -IncludePreview:$IncludePreview
         } else {
             # Do not include Mail.Send for applications. Not compatible with Exchange Online RBAC for Applications
-            Get-MtGraphScope -SendTeamsMessage:$SendTeamsMessage
+            Get-MtGraphScope -SendTeamsMessage:$SendTeamsMessage -IncludePreview:$IncludePreview
         }
         $scopeComparison = Compare-MtGraphScope `
             -CurrentScopes $context.Scopes `
