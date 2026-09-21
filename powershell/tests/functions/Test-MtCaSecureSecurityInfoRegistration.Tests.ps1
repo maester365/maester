@@ -3,9 +3,11 @@ Describe 'Test-MtCaSecureSecurityInfoRegistration' {
     Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
 
-    # Valid "secure security info registration from a trusted location" policy,
-    # but scoped to the browser client app only (the client used to register
-    # security info). Regression case for issue #2105 - this must pass.
+    # Otherwise valid "secure security info registration from a trusted location"
+    # policy, but scoped to the browser client app only. Registration is also
+    # triggered from native apps such as Microsoft Authenticator, so this leaves a
+    # gap and must fail. Reported as a false positive in #2105; the check is
+    # working as intended and the test result now explains why.
     function Get-SecureRegistrationPolicyBrowserClientApp {
       $policyJson = @"
 [
@@ -127,8 +129,8 @@ Describe 'Test-MtCaSecureSecurityInfoRegistration' {
       return $policyJson | ConvertFrom-Json
     }
 
-    # Policy scoped only to non-interactive client apps (no browser). Security
-    # info registration happens in the browser, so this must fail.
+    # Policy scoped only to mobile apps and desktop clients. Like the browser-only
+    # policy above, this covers some registration paths but not all, so it must fail.
     function Get-SecureRegistrationPolicyMobileClientAppOnly {
       $policyJson = @"
 [
@@ -214,11 +216,11 @@ Describe 'Test-MtCaSecureSecurityInfoRegistration' {
 
   Context "CA: Secure security info registration" {
 
-    It 'Policy scoped to the browser client app should pass (regression #2105)' {
+    It 'Policy scoped to the browser client app only should fail (#2105)' {
       $policy = Get-SecureRegistrationPolicyBrowserClientApp
       Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
 
-      Test-MtCaSecureSecurityInfoRegistration | Should -BeTrue
+      Test-MtCaSecureSecurityInfoRegistration | Should -BeFalse
     }
 
     It 'Policy scoped to all client apps should pass' {
@@ -235,7 +237,7 @@ Describe 'Test-MtCaSecureSecurityInfoRegistration' {
       Test-MtCaSecureSecurityInfoRegistration | Should -BeFalse
     }
 
-    It 'Policy scoped only to non-browser client apps should fail' {
+    It 'Policy scoped only to mobile apps and desktop clients should fail' {
       $policy = Get-SecureRegistrationPolicyMobileClientAppOnly
       Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
 
