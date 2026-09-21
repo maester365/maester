@@ -57,7 +57,7 @@ Consider also configuring **Actions for noncompliance** so that users are notifi
 | Severity | Medium |
 | Suite | Maester |
 | Category | Intune |
-| PowerShell test | `Test-MtMacOSSystemIntegrityProtection` |
+| PowerShell test | [Test-MtMacOSSystemIntegrityProtection](/docs/commands/Test-MtMacOSSystemIntegrityProtection) |
 | Tags | Intune, Maester, MT.1214 |
 
 ## Source
