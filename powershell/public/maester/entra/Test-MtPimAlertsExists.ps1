@@ -35,6 +35,8 @@
   begin {
     $mgContext = Get-MgContext
     $tenantId = $mgContext.TenantId
+
+    $EamClassification = $null
   }
 
   process {
@@ -44,6 +46,8 @@
       Write-Verbose 'Getting PIM Alerts'
       $AlertResourceId = "DirectoryRole_$($tenantId)_$AlertId"
       $Alert = Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri "identityGovernance/roleManagementAlerts/alerts/$($AlertResourceId)?`$expand=alertDefinition,alertConfiguration,alertIncidents"
+      # Keep per-call compatibility properties and filtered counts out of the Graph cache.
+      $Alert = $Alert.PSObject.Copy()
       $AlertDefinition = $Alert.alertDefinition
       $AffectedRoleAssignments = if ($Alert.isActive) { @($Alert.alertIncidents) } else { @() }
 
@@ -60,9 +64,19 @@
 
       # Filtering based on (EntraOps) Enterprise Access Model Tiering
       if ($null -ne $FilteredAccessLevel) {
+        if ($null -eq $EamClassification) {
+          $EamClassification = Get-MtEamClassification
+        }
+        if ($null -eq $EamClassification -or $EamClassification.Count -eq 0) {
+          throw 'The EAM classification table is empty.'
+        }
+        # Derive each item's tier filter after pipeline property binding.
+        $FilteredClassification = @(
+          $EamClassification.GetEnumerator() |
+            Where-Object { $_.Value -in $FilteredAccessLevel } |
+            ForEach-Object Key
+        )
         Write-Verbose 'Filtering based on Enterprise Access Model Tiering'
-        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json
-        $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
         $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.RoleTemplateId -in $FilteredClassification }
       }
 
