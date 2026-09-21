@@ -40,6 +40,27 @@ The configuration file has two main sections:
 
 The `GlobalSettings` section contains organization-wide configuration that can be used by multiple tests. For example, you can define your emergency access accounts here so that all related tests use the same accounts.
 
+### XSPM external data sources
+
+The XSPM unified identity query uses Advanced Hunting `externaldata` sources to enrich identity results. You can override these sources with HTTPS mirrors by adding `XspmExternalDataUris` to the `GlobalSettings` section of your custom configuration:
+
+```json
+{
+  "GlobalSettings": {
+    "XspmExternalDataUris": {
+      "EntraDirectoryRoles": "https://mirror.contoso.com/Classification_EntraIdDirectoryRoles.json",
+      "MicrosoftApps": "https://mirror.contoso.com/MicrosoftApps.json",
+      "ApiPermissions": "https://mirror.contoso.com/Classification_ApiPermissions.json",
+      "ArmApiRequests": "https://mirror.contoso.com/ArmApiRequest.csv"
+    }
+  }
+}
+```
+
+All values must be absolute HTTPS URIs. Because `externaldata` is evaluated by Defender Advanced Hunting, the mirror must be reachable by that service, not only by the computer running Maester. See Microsoft's [Advanced Hunting best practices](https://learn.microsoft.com/en-us/microsoft-365/security/defender/advanced-hunting-best-practices) for details.
+
+Omitted keys retain their built-in defaults. A mirror must preserve the original JSON or CSV schema. Use an immutable commit URL or a versioned mirror object when reproducible classification is required; the default URLs still track upstream branches. User information and fragments in URIs are rejected. Signed query strings are supported, but treat the configuration file as a secret and grant only read access to the mirrored data. Maester suppresses verbose configuration/query logging on this path and redacts configured query strings in its diagnostic message. This does not control logging by the service or by external instrumentation.
+
 ### TestSettings
 
 The `TestSettings` section allows you to customize individual test behavior, such as overriding the default severity level. See [Severity Levels](./severity-levels) for more details.
@@ -89,6 +110,7 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
 
 ## How Settings Are Merged
 
