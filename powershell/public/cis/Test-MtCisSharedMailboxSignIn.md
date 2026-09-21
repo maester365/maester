@@ -43,7 +43,7 @@ $MBX | ForEach-Object { Update-MgUser -UserId $_.ExternalDirectoryObjectId -Acco
 * [About shared mailboxes in Microsoft 365](https://learn.microsoft.com/microsoft-365/admin/email/about-shared-mailboxes?view=o365-worldwide)
 * [Create a shared mailbox](https://learn.microsoft.com/microsoft-365/admin/email/create-a-shared-mailbox?view=o365-worldwide#block-sign-in-for-the-shared-mailbox-account)
 * [Block Microsoft 365 user accounts with PowerShell](https://learn.microsoft.com/microsoft-365/enterprise/block-user-accounts-with-microsoft-365-powershell?view=o365-worldwide#block-individual-user-accounts)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 39](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 42](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

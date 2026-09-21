@@ -20,8 +20,10 @@ Test-MtIntuneASRRules [-ProgressAction <ActionPreference>] [<CommonParameters>]
 
 ## DESCRIPTION
 
-Checks Intune Endpoint Security Attack Surface Reduction policies (configurationPolicies API) for
-ASR rule configurations.
+Checks Intune Windows configuration policies (configurationPolicies API) for ASR rule
+configurations.
+Covers both Endpoint Security Attack Surface Reduction profiles and Settings
+catalog policies, since ASR rules share the same setting definition IDs in both.
 
 ASR rules reduce the attack surface of applications by preventing behaviors commonly abused by malware,
 such as Office macros spawning child processes, credential theft from LSASS, or execution of obfuscated scripts.

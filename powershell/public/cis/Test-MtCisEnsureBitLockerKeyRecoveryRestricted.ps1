@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         Non-admin users should not be able to view or copy the BitLocker recovery key(s) for devices they own.
-        CIS Microsoft 365 Foundations Benchmark v6.0.1
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.4.6, L2)
 
     .EXAMPLE
         Test-MtCisEnsureBitLockerKeyRecoveryRestricted

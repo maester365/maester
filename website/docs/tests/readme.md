@@ -20,10 +20,10 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 184 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 176 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
@@ -58,10 +58,9 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | CIS | Medium | CIS E5 Level 1 |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | CIS | High | CIS E3 Level 1 |
-| [CIS.M365.4.1](./CIS.M365.4.1) | Ensure devices without a compliance policy are marked | CIS | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure third party integrated applications are not allowed | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.4.1](./CIS.M365.4.1) | Ensure devices without a compliance policy are marked | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure users cannot register applications | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | Ensure | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1) | Ensure a dynamic group for guest users is created | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | Ensure users are restricted from recovering BitLocker keys | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | Ensure the admin consent workflow is enabled | CIS | Unknown | CIS E3 Level 1 |
@@ -74,12 +73,12 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.7.2.7](./CIS.M365.7.2.7) | Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Unknown | SharePoint Online |
 | [CIS.M365.7.2.9](./CIS.M365.7.2.9) | Ensure guest access to a site or OneDrive will expire automatically | CIS | Unknown | SharePoint Online |
 | [CIS.M365.7.3.1](./CIS.M365.7.3.1) | Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Unknown | SharePoint Online |
-| [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS M365 v6.0.1 |
-| [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS M365 v6.0.1 |
-| [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS M365 v6.0.1 |
-| [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure all or a majority of third-party and custom apps are blocked | CIS | High | CIS M365 v6.0.1 |
+| [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS E3 Level 2 |
+| [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS E3 Level 1 |
+| [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure app permission policies are configured | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3) | (L1) Ensure only people in my org can bypass the lobby | CIS | Medium | CIS E3 Level 1 |
-| [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams to internal destination | CIS | Medium | CIS E3 Level 1 |
+| [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | CIS E5 Level 1 |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID P1 |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID P2 |
 | [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | High | Entra ID P2 |
@@ -373,20 +372,12 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1195](./MT.1195) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Maester | Unknown | Entra |
 | [MT.1196](./MT.1196) | Review who can change attributes used by dynamic group rules | Maester | Medium | Entra |
 | [MT.1197](./MT.1197) | Dynamic groups should not use the retiring memberOf rule operator | Maester | High | Entra |
-| [MT.1200](./MT.1200) | Agent Identities should have an active Agent Identity Blueprint Principal (Preview) | Maester | Medium | Entra |
-| [MT.1201](./MT.1201) | Agent Users should have an existing parent Agent Identity (Preview) | Maester | Medium | Entra |
-| [MT.1203](./MT.1203) | Agent Identity Blueprint Principals should have an existing Blueprint (Preview) | Maester | Medium | Entra |
-| [MT.1204](./MT.1204) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview) | Maester | Medium | Entra |
-| [MT.1205](./MT.1205) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview) | Maester | Medium | Entra |
-| [MT.1206](./MT.1206) | Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview) | Maester | Medium | Entra |
-| [MT.1207](./MT.1207) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview) | Maester | High | Entra |
-| [MT.1208](./MT.1208) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview) | Maester | High | Entra |
-| [MT.1209](./MT.1209) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview) | Maester | High | Entra |
-| [MT.1210](./MT.1210) | Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview) | Maester | High | Entra |
-| [MT.1211](./MT.1211) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview) | Maester | High | Entra |
-| [MT.1212](./MT.1212) | Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview) | Maester | Medium | Entra |
-| [MT.1213](./MT.1213) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview) | Maester | High | Entra |
-| [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview) | Maester | High | Entra |
+| [MT.1198](./MT.1198) | App registration certificates should not have excessive validity periods. | Maester | Medium | App |
+| [MT.1199](./MT.1199) | App registration credentials should not be expired or expiring soon. | Maester | Medium | App |
+| [MT.1214](./MT.1214) | Ensure macOS compliance policy requires System Integrity Protection | Maester | Medium | Intune |
+| [MT.1215](./MT.1215) | Ensure Gatekeeper restricts macOS app download locations | Maester | Medium | Intune |
+| [MT.1216](./MT.1216) | Ensure macOS compliance policy requires a Defender machine risk score level | Maester | Medium | Intune |
+| [MT.1217](./MT.1217) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles | Maester | High | Intune |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

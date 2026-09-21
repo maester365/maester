@@ -1,4 +1,4 @@
-﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph', 'Agent ID' {
+﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph' {
     It 'MT.1203: Agent Identity Blueprint Principals should have an existing Blueprint (Preview). See https://maester.dev/docs/tests/MT.1203' -Tag 'MT.1203', 'Severity:Medium', 'Preview' {
         $Result = Test-MtEntraAgentBlueprintOrphaned
 

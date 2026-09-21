@@ -1,14 +1,13 @@
-Ensure at least one Intune Disk Encryption policy enforces BitLocker with **full disk encryption type**.
+Ensure at least one Intune policy enforces BitLocker **full encryption** on operating system drives.
 
-BitLocker Drive Encryption protects data on Windows devices by encrypting the disk.
-However, BitLocker supports two encryption types that have very different security implications:
+BitLocker offers two encryption types, and the difference matters:
 
-- **Full disk encryption** — encrypts the entire drive including free space. This is the recommended and secure option.
-- **Used space only encryption** — only encrypts sectors currently holding data. **This is dangerous on drives that previously contained unencrypted data**, because previously deleted files remain as raw data in unencrypted free space. This data can be recovered using commonly available data recovery software (e.g., Recuva, PhotoRec, or forensic imaging tools). NTFS marks deleted file sectors as "free" but does not zero them out — the original bytes stay on disk until overwritten by new data.
+- **Full encryption** encrypts the entire drive, including free space.
+- **Used Space Only encryption** encrypts only the sectors that currently hold data.
 
-**Bottom line:** If BitLocker is enabled with "Used space only" on a drive that already had data on it before encryption was turned on, that pre-existing deleted data is fully recoverable. Only "Full disk encryption" guarantees that the entire drive surface is protected.
+Used Space Only is the risk. When NTFS deletes a file it marks those sectors as free without zeroing them, so the original bytes stay on disk until something overwrites them. Enable BitLocker with Used Space Only on a drive that already held data and everything deleted beforehand remains recoverable with ordinary tools such as Recuva or PhotoRec, or with forensic imaging. Only Full encryption protects the whole drive surface.
 
-This test queries the Intune **Endpoint Security > Disk Encryption** policies via the `configurationPolicies` Graph API and inspects the BitLocker CSP settings to verify that **Enforce drive encryption type** is set to **Full encryption** for OS drives.
+BitLocker can be configured from either **Endpoint security** > **Disk encryption** or **Devices** > **Configuration** > **Settings catalog**. Both write the same settings, and both satisfy this check.
 
 #### Remediation action
 

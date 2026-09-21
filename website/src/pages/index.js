@@ -5,6 +5,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 
 import Heading from "@theme/Heading";
+import PronunciationButton from "@site/src/components/PronunciationButton";
 import styles from "./index.module.css";
 
 const textContent = {
@@ -165,6 +166,7 @@ function Hero() {
           </span>
           <div className={styles.heroLogoWrap}>
             <img className={styles.heroLogo} src={logoUrl} alt="Maester" />
+            <PronunciationButton className={styles.heroPronunciation} />
           </div>
           <Heading as="h1" className={styles.heroTitle}>
             Test automation for your <em>Microsoft 365</em> security posture

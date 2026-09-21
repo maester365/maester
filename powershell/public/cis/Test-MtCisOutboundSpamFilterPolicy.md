@@ -40,7 +40,7 @@ Set-HostedOutboundSpamFilterPolicy -Identity Default -BccSuspiciousOutboundAddit
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
 * [Outbound spam protection for cloud mailboxes](https://learn.microsoft.com/defender-office-365/outbound-spam-protection-about)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 91](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 99](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

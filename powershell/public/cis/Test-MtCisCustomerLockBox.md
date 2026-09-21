@@ -34,7 +34,7 @@ Set-OrganizationConfig -CustomerLockBoxEnabled $true
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Turn Customer Lockbox requests on or off](https://learn.microsoft.com/purview/customer-lockbox-requests#turn-customer-lockbox-requests-on-or-off)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 61](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 65](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     The customer lockbox feature should be enabled
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.3.6)
 
     .EXAMPLE
     Test-MtCisCustomerLockBox

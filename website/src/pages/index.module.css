@@ -157,6 +157,12 @@
   height: 92px;
 }
 
+.heroPronunciation {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+}
+
 .heroTitle {
   font-size: clamp(2.4rem, 5vw, 3.75rem);
   line-height: 1.05;

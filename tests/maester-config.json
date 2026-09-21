@@ -152,7 +152,7 @@
     {
       "Id": "CIS.M365.8.4.1",
       "Severity": "High",
-      "Title": "(L1) Ensure all or a majority of third-party and custom apps are blocked"
+      "Title": "(L1) Ensure app permission policies are configured"
     },
     {
       "Id": "CIS.M365.8.5.3",
@@ -162,7 +162,7 @@
     {
       "Id": "CIS.M365.8.6.1",
       "Severity": "Medium",
-      "Title": "(L1) Ensure users can report security concerns in Teams to internal destination"
+      "Title": "(L1) Ensure users can report security concerns in Teams"
     },
     {
       "Id": "CISA.MS.AAD.1.1",
@@ -1559,74 +1559,14 @@
       "Title": "Dynamic groups should not use the retiring memberOf rule operator"
     },
     {
-      "Id": "MT.1200",
+      "Id": "MT.1198",
       "Severity": "Medium",
-      "Title": "Agent Identities should have an active Agent Identity Blueprint Principal (Preview)"
+      "Title": "App registration certificates should not have excessive validity periods."
     },
     {
-      "Id": "MT.1201",
+      "Id": "MT.1199",
       "Severity": "Medium",
-      "Title": "Agent Users should have an existing parent Agent Identity (Preview)"
-    },
-    {
-      "Id": "MT.1203",
-      "Severity": "Medium",
-      "Title": "Agent Identity Blueprint Principals should have an existing Blueprint (Preview)"
-    },
-    {
-      "Id": "MT.1204",
-      "Severity": "Medium",
-      "Title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview)"
-    },
-    {
-      "Id": "MT.1205",
-      "Severity": "Medium",
-      "Title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview)"
-    },
-    {
-      "Id": "MT.1206",
-      "Severity": "Medium",
-      "Title": "Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview)"
-    },
-    {
-      "Id": "MT.1207",
-      "Severity": "High",
-      "Title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview)"
-    },
-    {
-      "Id": "MT.1208",
-      "Severity": "High",
-      "Title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview)"
-    },
-    {
-      "Id": "MT.1209",
-      "Severity": "High",
-      "Title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview)"
-    },
-    {
-      "Id": "MT.1210",
-      "Severity": "High",
-      "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview)"
-    },
-    {
-      "Id": "MT.1211",
-      "Severity": "High",
-      "Title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview)"
-    },
-    {
-      "Id": "MT.1212",
-      "Severity": "Medium",
-      "Title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview)"
-    },
-    {
-      "Id": "MT.1213",
-      "Severity": "High",
-      "Title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview)"
-    },
-    {
-      "Id": "MT.1223",
-      "Severity": "High",
-      "Title": "Agent Identities should not have high-risk Microsoft Graph permissions (Preview)"
+      "Title": "App registration credentials should not be expired or expiring soon."
     },
     {
       "Id": "MT.1178",
@@ -1652,6 +1592,26 @@
       "Id": "MT.1183",
       "Severity": "Medium",
       "Title": "Temporary bypass for onPremisesObjectIdentifier updates should be disabled"
+    },
+    {
+      "Id": "MT.1214",
+      "Severity": "Medium",
+      "Title": "Ensure macOS compliance policy requires System Integrity Protection"
+    },
+    {
+      "Id": "MT.1215",
+      "Severity": "Medium",
+      "Title": "Ensure Gatekeeper restricts macOS app download locations"
+    },
+    {
+      "Id": "MT.1216",
+      "Severity": "Medium",
+      "Title": "Ensure macOS compliance policy requires a Defender machine risk score level"
+    },
+    {
+      "Id": "MT.1217",
+      "Severity": "High",
+      "Title": "Ensure macOS LAPS is configured on Automated Device Enrollment profiles"
     },
     {
       "Id": "ORCA.100",
@@ -2242,6 +2202,76 @@
       "Id": "AZDO.1045",
       "Severity": "Info",
       "Title": "(Organization) Copilot code review: allowed for repositories"
+    },
+    {
+      "Id": "MT.1200",
+      "Severity": "Medium",
+      "Title": "Agent Identities should have an active Agent Identity Blueprint Principal (Preview)"
+    },
+    {
+      "Id": "MT.1201",
+      "Severity": "Medium",
+      "Title": "Agent Users should have an existing parent Agent Identity (Preview)"
+    },
+    {
+      "Id": "MT.1203",
+      "Severity": "Medium",
+      "Title": "Agent Identity Blueprint Principals should have an existing Blueprint (Preview)"
+    },
+    {
+      "Id": "MT.1204",
+      "Severity": "Medium",
+      "Title": "Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview)"
+    },
+    {
+      "Id": "MT.1205",
+      "Severity": "Medium",
+      "Title": "Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview)"
+    },
+    {
+      "Id": "MT.1206",
+      "Severity": "Medium",
+      "Title": "Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview)"
+    },
+    {
+      "Id": "MT.1207",
+      "Severity": "High",
+      "Title": "Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview)"
+    },
+    {
+      "Id": "MT.1208",
+      "Severity": "High",
+      "Title": "Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview)"
+    },
+    {
+      "Id": "MT.1209",
+      "Severity": "High",
+      "Title": "Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview)"
+    },
+    {
+      "Id": "MT.1210",
+      "Severity": "High",
+      "Title": "Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview)"
+    },
+    {
+      "Id": "MT.1211",
+      "Severity": "High",
+      "Title": "Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview)"
+    },
+    {
+      "Id": "MT.1212",
+      "Severity": "Medium",
+      "Title": "Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview)"
+    },
+    {
+      "Id": "MT.1213",
+      "Severity": "High",
+      "Title": "Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview)"
+    },
+    {
+      "Id": "MT.1223",
+      "Severity": "High",
+      "Title": "Agent Identities should not have high-risk Microsoft Graph permissions (Preview)"
     }
   ]
 }

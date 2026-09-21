@@ -20,8 +20,10 @@ Test-MtBitLockerFullDiskEncryption [-ProgressAction <ActionPreference>] [<Common
 
 ## DESCRIPTION
 
-Checks Intune Endpoint Security Disk Encryption policies (configurationPolicies API) for BitLocker
-profiles that enforce full disk encryption rather than "Used space only" encryption.
+Checks Intune Windows configuration policies (configurationPolicies API) for BitLocker settings
+that enforce full disk encryption rather than "Used space only" encryption.
+Covers both Endpoint
+Security Disk Encryption profiles and Settings catalog policies.
 
 BitLocker supports two encryption types with very different security implications:
 - "Full disk encryption" -- encrypts the entire drive including free space.
@@ -33,17 +35,17 @@ Previously deleted
 This is because
   NTFS marks sectors as free but does not zero them out -- the raw data stays on disk until overwritten.
 
-This test queries the configurationPolicies Graph API (used by Endpoint Security &gt; Disk Encryption)
-which exposes the actual BitLocker CSP settings including:
+This test queries the configurationPolicies Graph API, which exposes the actual BitLocker CSP
+settings including:
 - SystemDrivesEncryptionType (OS drive encryption type: full vs used space only)
 - FixedDrivesEncryptionType (fixed drive encryption type: full vs used space only)
 - RequireDeviceEncryption (require BitLocker encryption)
 - EncryptionMethodByDriveType (cipher strength: XTS-AES 128/256, AES-CBC 128/256)
 
-The test passes only if at least one BitLocker Disk Encryption policy has the OS drive encryption
-type set to "Full encryption".
-It fails if no policies exist, if encryption type is set to
-"Used space only", or if the encryption type setting is not configured.
+The test passes only if at least one BitLocker policy has the OS drive encryption type set to
+"Full encryption".
+It fails if no BitLocker settings exist in any policy, if encryption type is
+set to "Used space only", or if the encryption type setting is not configured.
 
 ## EXAMPLES
 

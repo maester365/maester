@@ -22,7 +22,7 @@ If user consent is disabled, previous consent grants will still be honored but a
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
 * [Configure how users consent to applications](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-user-consent?pivots=portal)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 211](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 239](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -50,7 +50,7 @@ New-SafeAttachmentRule -Name "CIS 2.1.4 Rule" -SafeAttachmentPolicy "CIS 2.1.4" 
 * [Microsoft 365 Defender](https://security.microsoft.com)
 * [Safe Attachments in Microsoft Defender for Office 365](https://learn.microsoft.com/defender-office-365/safe-attachments-about)
 * [Set up Safe Attachments policies in Microsoft Defender for Office 365](https://learn.microsoft.com/defender-office-365/safe-attachments-policies-configure)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 84](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 92](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

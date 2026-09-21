@@ -1,4 +1,4 @@
-Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph', 'Agent ID' {
+﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph' {
     It 'MT.1204: Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview). See https://maester.dev/docs/tests/MT.1204' -Tag 'MT.1204', 'Severity:Medium', 'Preview' {
         $Result = Test-MtEntraAgentOwner
 

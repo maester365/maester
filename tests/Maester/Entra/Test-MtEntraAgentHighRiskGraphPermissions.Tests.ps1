@@ -1,4 +1,4 @@
-﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra' {
+﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph' {
     It 'MT.1223: Agent Identities should not have high-risk Microsoft Graph permissions (Preview). See https://maester.dev/docs/tests/MT.1223' -Tag 'MT.1223', 'Severity:High', 'Preview', 'LongRunning' {
         $Result = Test-MtEntraAgentHighRiskGraphPermissions
 

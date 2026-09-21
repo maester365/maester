@@ -15,7 +15,7 @@ keywords:
   - "CIS E3"
   - "CIS E5"
   - "CIS E5 Level 1"
-  - "CIS M365 v6.0.1"
+  - "CIS M365 v7.0.0"
   - "L1"
   - "Security"
 ---
@@ -64,7 +64,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 * [Microsoft 365 admin center](https://admin.microsoft.com)
 * [Administrator settings for Microsoft Forms](https://learn.microsoft.com/microsoft-forms/administrator-settings-microsoft-forms)
 * [Review and unblock forms or users detected and blocked for potential phishing](https://learn.microsoft.com/microsoft-forms/review-unblock-forms-users-detected-blocked-potential-phishing)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 59](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 63](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
 
@@ -75,7 +75,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisFormsPhishingProtectionEnabled](/docs/commands/Test-MtCisFormsPhishingProtectionEnabled) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v6.0.1, CIS.M365.1.3.5, L1, Security |
+| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.5, L1, Security |
 
 ## Source
 

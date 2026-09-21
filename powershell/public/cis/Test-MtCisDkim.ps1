@@ -4,13 +4,15 @@
     Checks state of DKIM for all EXO domains
 
     .DESCRIPTION
-    DKIM SHOULD be enabled for all domains.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    DKIM SHOULD be enabled for all domains. Initial (MOERA) and coexistence domains are excluded, as
+    Microsoft automatically signs outbound mail for those domains.
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.9, L1)
 
     .EXAMPLE
     Test-MtCisDkim
 
-    Returns true if DKIM record exists and EXO shows DKIM enabled
+    Returns true if a DKIM record exists and EXO shows DKIM enabled for every evaluated domain.
+    Initial and coexistence domains are excluded from evaluation; if no domains remain, the test is skipped.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisDkim
@@ -38,6 +40,17 @@
 
         $dkimRecords = @()
         foreach ($domain in $acceptedDomains) {
+            if ($domain.InitialDomain -eq $true -or $domain.IsCoExistenceDomain -eq $true) {
+                $dkimRecord = [PSCustomObject]@{
+                    domain     = $domain.DomainName
+                    pass       = 'Skipped'
+                    reason     = 'Initial or coexistence domain excluded from DKIM audit (Microsoft auto-signs outbound mail for this domain)'
+                    dkimRecord = $null
+                }
+                $dkimRecords += $dkimRecord
+                continue
+            }
+
             $dkimSigningConfig = $dkimSigningConfigs | Where-Object {
                 $_.domain -eq $domain.domainname
             }
@@ -45,8 +58,8 @@
             if (-not $dkimSigningConfig) {
                 $dkimRecord = [PSCustomObject]@{
                     domain     = $domain.DomainName
-                    pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
-                    reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
+                    pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } else { 'Failed' }
+                    reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } else { 'No DkimSigningConfig found for domain' }
                     dkimRecord = $null
                 }
                 $dkimRecords += $dkimRecord

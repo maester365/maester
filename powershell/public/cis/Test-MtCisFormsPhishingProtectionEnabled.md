@@ -34,7 +34,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 * [Microsoft 365 admin center](https://admin.microsoft.com)
 * [Administrator settings for Microsoft Forms](https://learn.microsoft.com/microsoft-forms/administrator-settings-microsoft-forms)
 * [Review and unblock forms or users detected and blocked for potential phishing](https://learn.microsoft.com/microsoft-forms/review-unblock-forms-users-detected-blocked-potential-phishing)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 59](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 63](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Ensure Administrative accounts are cloud-only
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.1.1, L1)
 
     .EXAMPLE
     Test-MtCisCloudAdmin

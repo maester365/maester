@@ -69,7 +69,7 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com)
 * [Microsoft 365 Defender](https://security.microsoft.com)
 * [User reported settings in Microsoft Teams](https://learn.microsoft.com/defender-office-365/submissions-teams?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 451](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 554](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

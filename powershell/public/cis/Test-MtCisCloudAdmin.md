@@ -22,7 +22,7 @@ Remediation will require first identifying the privileged accounts that are sync
 * [9. Use cloud native accounts for Microsoft Entra roles](https://learn.microsoft.com/entra/identity/role-based-access-control/best-practices#9-use-cloud-native-accounts-for-microsoft-entra-roles)
 * [What is Microsoft Entra?](https://learn.microsoft.com/entra/fundamentals/what-is-entra)
 * [Microsoft Entra built-in roles](https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 20](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 21](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

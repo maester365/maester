@@ -26,7 +26,7 @@ Remove-Module Maester -ErrorAction Ignore
 Import-Module "$PSScriptRoot\..\Maester.psd1"
 
 Import-Module PSModuleDevelopment
-Import-Module Pester
+Import-Module Pester -RequiredVersion 5.7.1
 
 Write-PSFMessage -Level Important -Message "Creating test result folder"
 $null = New-Item -Path "$PSScriptRoot\..\.." -Name TestResults -ItemType Directory -Force

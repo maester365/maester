@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Passwords should not be set to expire
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (1.3.1, L1)
 
     .EXAMPLE
     Test-MtCisPasswordExpiry

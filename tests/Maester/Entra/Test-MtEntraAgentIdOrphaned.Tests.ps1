@@ -1,4 +1,4 @@
-﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph', 'Agent ID' {
+﻿Describe 'Maester/Entra' -Tag 'Maester', 'Entra', 'Graph' {
     It 'MT.1200: Agent Identities should have an active Agent Identity Blueprint Principal (Preview). See https://maester.dev/docs/tests/MT.1200' -Tag 'MT.1200', 'Severity:Medium', 'Preview' {
         $Result = Test-MtEntraAgentIdentityOrphaned
 

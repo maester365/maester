@@ -4,8 +4,9 @@
     Ensure at least one Intune Disk Encryption policy enforces BitLocker with full disk encryption type.
 
     .DESCRIPTION
-    Checks Intune Endpoint Security Disk Encryption policies (configurationPolicies API) for BitLocker
-    profiles that enforce full disk encryption rather than "Used space only" encryption.
+    Checks Intune Windows configuration policies (configurationPolicies API) for BitLocker settings
+    that enforce full disk encryption rather than "Used space only" encryption. Covers both Endpoint
+    Security Disk Encryption profiles and Settings catalog policies.
 
     BitLocker supports two encryption types with very different security implications:
     - "Full disk encryption" -- encrypts the entire drive including free space. This is the secure option.
@@ -14,16 +15,16 @@
       recovered using data recovery software (e.g., Recuva, PhotoRec, or forensic tools). This is because
       NTFS marks sectors as free but does not zero them out -- the raw data stays on disk until overwritten.
 
-    This test queries the configurationPolicies Graph API (used by Endpoint Security > Disk Encryption)
-    which exposes the actual BitLocker CSP settings including:
+    This test queries the configurationPolicies Graph API, which exposes the actual BitLocker CSP
+    settings including:
     - SystemDrivesEncryptionType (OS drive encryption type: full vs used space only)
     - FixedDrivesEncryptionType (fixed drive encryption type: full vs used space only)
     - RequireDeviceEncryption (require BitLocker encryption)
     - EncryptionMethodByDriveType (cipher strength: XTS-AES 128/256, AES-CBC 128/256)
 
-    The test passes only if at least one BitLocker Disk Encryption policy has the OS drive encryption
-    type set to "Full encryption". It fails if no policies exist, if encryption type is set to
-    "Used space only", or if the encryption type setting is not configured.
+    The test passes only if at least one BitLocker policy has the OS drive encryption type set to
+    "Full encryption". It fails if no BitLocker settings exist in any policy, if encryption type is
+    set to "Used space only", or if the encryption type setting is not configured.
 
     .EXAMPLE
     Test-MtBitLockerFullDiskEncryption
@@ -37,25 +38,24 @@
     [OutputType([bool])]
     param()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
-        # Query Endpoint Security Disk Encryption policies (server-side filter).
-        # This template family can include non-BitLocker templates (e.g., Personal Data Encryption);
-        # BitLocker-specific settings are evaluated per-policy below.
-        Write-Verbose "Querying Intune Endpoint Security Disk Encryption policies..."
-        $diskEncryptionPolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityDiskEncryption'&`$select=id,name,description,templateReference" -ApiVersion beta)
+        # BitLocker settings carry visibility 'settingsCatalog,template', so they can be configured
+        # from either Endpoint Security > Disk Encryption or the Settings catalog. Filtering on
+        # template family misses the latter, so identify BitLocker policies by their settings.
+        Write-Verbose "Querying Intune Windows configuration policies..."
+        $candidatePolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=platforms has 'windows10'&`$select=id,name,description,templateReference" -ApiVersion beta)
 
-        if ($diskEncryptionPolicies.Count -eq 0) {
-            $testResultMarkdown = "No Endpoint Security Disk Encryption policies found in Intune.`n`n"
-            $testResultMarkdown += "Create a Disk Encryption policy under **Endpoint Security > Disk Encryption** with "
-            $testResultMarkdown += "**Enforce drive encryption type** set to **Full encryption** for OS and fixed data drives."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        Write-Verbose "Found $($candidatePolicies.Count) Windows configuration policies to inspect."
 
         # Setting definition IDs for BitLocker CSP settings
         $osEncryptionTypeId = 'device_vendor_msft_bitlocker_systemdrivesencryptiontype'
@@ -84,13 +84,14 @@
         $policyResults = [System.Collections.Generic.List[hashtable]]::new()
         $hasFullEncryption = $false
 
-        foreach ($policy in $diskEncryptionPolicies) {
+        foreach ($policy in $candidatePolicies) {
             # Fetch settings for this policy with definitions expanded
             $settingsUri = "deviceManagement/configurationPolicies('$($policy.id)')/settings?`$expand=settingDefinitions&`$top=1000"
             $settingsResponse = @(Invoke-MtGraphRequest -RelativeUri $settingsUri -ApiVersion beta)
 
             $policyDetail = @{
                 Name               = $policy.name
+                Source             = if ($policy.templateReference.templateFamily -eq 'endpointSecurityDiskEncryption') { 'Endpoint Security' } else { 'Settings catalog' }
                 RequireEncryption  = 'Not configured'
                 OsEncryptionType   = 'Not configured'
                 FixedEncryptionType = 'Not configured'
@@ -172,26 +173,25 @@
                 }
             }
 
+            if (-not $policyDetail.IsBitLockerPolicy) { continue }
             $policyResults.Add($policyDetail)
         }
 
-        # Filter to only BitLocker policies (those with BitLocker CSP settings)
-        $bitLockerPolicies = @($policyResults | Where-Object { $_.IsBitLockerPolicy })
+        $bitLockerPolicies = @($policyResults)
 
         if ($bitLockerPolicies.Count -eq 0) {
-            $testResultMarkdown = "Found $($diskEncryptionPolicies.Count) Disk Encryption policy/policies in Intune, but none are BitLocker policies.`n`n"
+            $testResultMarkdown = "No BitLocker settings found in any Intune Windows configuration policy.`n`n"
             $testResultMarkdown += "Create a BitLocker policy under **Endpoint Security > Disk Encryption** with "
             $testResultMarkdown += "**Enforce drive encryption type** set to **Full encryption** for OS and fixed data drives."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }
 
-        # Build result markdown (only BitLocker policies)
-        $testResultMarkdown = "Found $($bitLockerPolicies.Count) BitLocker Disk Encryption policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Require Encryption | OS Encryption Type | Fixed Encryption Type | OS Cipher |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- | --- |`n"
+        $testResultMarkdown = "Found $($bitLockerPolicies.Count) BitLocker policy/policies in Intune.`n`n"
+        $testResultMarkdown += "| Policy | Configured via | Require Encryption | OS Encryption Type | Fixed Encryption Type | OS Cipher |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
         foreach ($p in $bitLockerPolicies) {
-            $testResultMarkdown += "| $($p.Name) | $($p.RequireEncryption) | $($p.OsEncryptionType) | $($p.FixedEncryptionType) | $($p.OsEncryptionMethod) |`n"
+            $testResultMarkdown += "| $($p.Name) | $($p.Source) | $($p.RequireEncryption) | $($p.OsEncryptionType) | $($p.FixedEncryptionType) | $($p.OsEncryptionMethod) |`n"
         }
 
         if ($hasFullEncryption) {

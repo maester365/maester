@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Microsoft 365 audit log search should be enabled
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (3.1.1, L1)
 
     .EXAMPLE
     Test-MtCisAuditLogSearch
