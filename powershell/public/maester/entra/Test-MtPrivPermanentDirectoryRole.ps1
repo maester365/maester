@@ -29,10 +29,27 @@
   begin {
     $mgContext = Get-MgContext
     $tenantId = $mgContext.TenantId
+
+    $EamClassification = $null
   }
 
   process {
     try {
+      if ($null -ne $FilteredAccessLevel) {
+        if ($null -eq $EamClassification) {
+          $EamClassification = Get-MtEamClassification
+        }
+        if ($null -eq $EamClassification -or $EamClassification.Count -eq 0) {
+          throw 'The EAM classification table is empty.'
+        }
+        # Pipeline properties are bound for each process invocation, after begin.
+        $FilteredClassification = @(
+          $EamClassification.GetEnumerator() |
+            Where-Object { $_.Value -in $FilteredAccessLevel } |
+            ForEach-Object Key
+        )
+      }
+
       $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta
       $RoleDefinitions = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta
 
@@ -41,8 +58,6 @@
       }
 
       if ($null -ne $FilteredAccessLevel) {
-        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json -Depth 10
-        $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
         $DirectAssignments = $DirectAssignments | Where-Object { $_.roleDefinitionId -in $FilteredClassification }
       }
 
