@@ -2366,6 +2366,31 @@
       "recentCommits": 2
     },
     {
+      "id": "simon-vedder",
+      "github": "simon-vedder",
+      "name": "Simon Vedder",
+      "title": "Azure Platform & Security Engineer",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "Zurich, Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://simonvedder.com",
+      "socials": {
+        "linkedin": "simonvedder"
+      },
+      "avatar": "https://github.com/simon-vedder.png",
+      "firstContribution": "2026-09-15",
+      "testsAuthored": [
+        "MT.1198",
+        "MT.1199"
+      ],
+      "testsContributed": [],
+      "initials": "SV",
+      "recentCommits": 2
+    },
+    {
       "id": "nathanmcnulty",
       "github": "nathanmcnulty",
       "name": "Nathan McNulty",
@@ -2392,7 +2417,7 @@
         "MT.1032"
       ],
       "initials": "NM",
-      "recentCommits": 2
+      "recentCommits": 3
     },
     {
       "id": "kij",
@@ -2774,30 +2799,6 @@
       "testsContributed": [],
       "initials": "JL",
       "recentCommits": 0
-    },
-    {
-      "id": "simon-vedder",
-      "github": "simon-vedder",
-      "name": "Simon Vedder",
-      "title": "Azure Platform & Security Engineer",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "Zurich, Switzerland",
-      "locationFlag": "🇨🇭",
-      "url": "https://simonvedder.com",
-      "socials": {
-        "linkedin": "simonvedder"
-      },
-      "avatar": "https://github.com/simon-vedder.png",
-      "firstContribution": "2026-09-15",
-      "testsAuthored": [
-        "MT.1198"
-      ],
-      "testsContributed": [],
-      "initials": "SV",
-      "recentCommits": 1
     },
     {
       "id": "Korthal-Maiyn",
@@ -6390,6 +6391,10 @@
       "author": "simon-vedder",
       "contributors": []
     },
+    "MT.1199": {
+      "author": "simon-vedder",
+      "contributors": []
+    },
     "MT.1214": {
       "author": "DanielLystad",
       "contributors": []
@@ -8388,6 +8393,10 @@
     "MT.1198": {
       "title": "App registration certificates should not have excessive validity periods.",
       "path": "/docs/next/tests/MT.1198"
+    },
+    "MT.1199": {
+      "title": "App registration credentials should not be expired or expiring soon.",
+      "path": "/docs/next/tests/MT.1199"
     },
     "MT.1214": {
       "title": "Ensure macOS compliance policy requires System Integrity Protection",
