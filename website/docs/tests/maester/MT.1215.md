@@ -73,7 +73,7 @@ To enforce the setting rather than only report on it, also create a configuratio
 | Severity | Medium |
 | Suite | Maester |
 | Category | Intune |
-| PowerShell test | `Test-MtMacOSGatekeeper` |
+| PowerShell test | [Test-MtMacOSGatekeeper](/docs/commands/Test-MtMacOSGatekeeper) |
 | Tags | Intune, Maester, MT.1215 |
 
 ## Source
