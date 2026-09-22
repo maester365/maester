@@ -24,6 +24,41 @@ Plan 1 (AD Protocol Foundation) was rerun under the Plan 9 hard-gated validation
 
 ---
 
+## Lab Topology
+
+The Maester AD E2E lab is deployed in Azure resource group `RG_5100_MiSoule_2` (eastus) on VNet `MiSouleADTestVNet` (`10.20.0.0/24`). The topology consists of three forests, three domain controllers, and two test runners.
+
+### Forests and Domains
+
+| Forest | Domain | Type | Trust Relationship |
+|--------|--------|------|-------------------|
+| `misoule02.local` | `misoule02.local` | Root | N/A (root forest) |
+| `misoule02.local` | `child.misoule02.local` | Child | Automatic two-way transitive intra-forest trust |
+| `misoule03.local` | `misoule03.local` | Root | **No trust** with `misoule02.local` |
+
+### Domain Controllers
+
+| DC | FQDN | IP | Forest | Domain Role |
+|----|------|-----|--------|-------------|
+| DC02 | `MiSouleDC02.misoule02.local` | `10.20.0.4` | `misoule02.local` | Root domain controller |
+| DC03 | `MiSouleDC03.child.misoule02.local` | `10.20.0.5` | `misoule02.local` | Child domain controller |
+| DC04 | `MiSouleDC04.misoule03.local` | `10.20.0.6` | `misoule03.local` | Separate forest root DC |
+
+### Test Runners
+
+| Runner | VM Name | IP | OS | Domain State | Auth Capabilities |
+|--------|---------|-----|-----|-------------|-------------------|
+| Windows | `MiSouleRunW` | `10.20.0.10` | Windows Server 2022 | Domain-joined to `misoule02.local` | Implicit (Kerberos) + Explicit (Basic/Negotiate) |
+| Linux | `MiSouleRunnerLinux` | `10.20.0.11` | Ubuntu 22.04 | Enrolled via realmd/SSSD | Explicit only (Basic/Negotiate) |
+
+### DNS and Certificate Trust
+
+- **DNS**: DC02 (`10.20.0.4`) is the canonical resolver for the VNet. A conditional forwarder for `misoule03.local` routes to DC04 (`10.20.0.6`).
+- **LDAPS Certificates**: Each DC has a self-signed server-auth certificate supporting LDAPS (port 636) and StartTLS (port 389). Certificates are installed in `LocalMachine\Root` on the Windows runner and the system CA store on the Linux runner.
+- **Reader Accounts**: Low-privilege `maesterreader` accounts exist on all three DCs with domain-specific credentials for explicit authentication testing.
+
+---
+
 ## Infrastructure Fixes Applied
 
 1. **Lab VM revival** — Started all 5 deallocated VMs after expiry on 2026-08-21.
