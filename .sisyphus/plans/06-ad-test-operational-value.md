@@ -53,6 +53,7 @@ Transform Maester's AD test suite from a collection of data-retrieval checks int
 - [ ] Report renders both lightweight and rich markdown correctly in HTML output.
 - [ ] No existing test ID has changed pass/fail semantics.
 - [ ] Dependent-category work is either completed (if Plan 2/3 gate passes) or documented as deferred with a follow-on plan reference.
+- [ ] Any E2E validation of new or enriched checks follows the Plan 9 three-track mandatory process against the canonical lab topology (`MiSouleDC02/misoule02.local`, `MiSouleDC03/child.misoule02.local`, `MiSouleDC04/misoule03.local`, `MiSouleRunnerWin`, `MiSouleRunnerLinux`).
 
 ### Must Have
 - Complete inventory and classification of all AD checks.
@@ -475,6 +476,7 @@ Transform Maester's AD test suite from a collection of data-retrieval checks int
   - Run `./build/Build-MaesterModule.ps1` and `./build/Test-MaesterModuleOutput.ps1`.
   - Run `./powershell/tests/pester.ps1`.
   - Verify report rendering: build report app (`cd report && npm ci && npm run build`) and inspect HTML output for both lightweight and rich markdown examples.
+  - Ensure any E2E validation references in generated docs align with Plan 9's canonical topology and three-track mandatory validation process.
 
   **Must NOT do**: Do not hand-edit generated docs. Do not finalize deprecation list without overlap justification.
 
@@ -616,3 +618,4 @@ Transform Maester's AD test suite from a collection of data-retrieval checks int
 - **Conditional**: If Plan 2/3 stability gate passes, dependent-category guidance enrichment and ≥10 additional net-new assertion tests are also completed.
 - **If gate fails**: Deferred categories and their blocked tasks are documented with a follow-on plan reference.
 - Final verification wave (F1–F4) receives explicit user approval.
+- Plan 9 E2E alignment: any live E2E validation of new or enriched checks follows the three-track mandatory process (preflight gate, protocol probe matrix, public E2E runner matrix) against the canonical lab topology, with machine-readable evidence artifacts for every mandatory row.

@@ -22,6 +22,7 @@ Introduce a new plan on `ad-multiforest-targeting` to address a bug around SACL 
 - Preserve the public contract of `Get-MtADDacls` up front: same return shape, same disconnected behavior, same `-Refresh` semantics, same default `DnBase` behavior.
 - Treat the root cause as **memory / materialization pressure**, not as “SACL alone did it”: `FindAll()`, repeated ADSI rebinding, `$dacls +=`, undisposed search results, and unbounded session caching are all in scope.
 - Keep known broader issues explicit but deferred: generalized AD cache redesign, `Get-MtADDomainState` memory pressure, and permission-signaling inconsistencies in other collectors.
+- E2E validation alignment: any AD-capable repro or regression evidence must be compatible with the Plan 9 canonical lab topology (`MiSouleDC02/misoule02.local`, `MiSouleDC03/child.misoule02.local`, `MiSouleDC04/misoule03.local`, `MiSouleRunnerWin`, `MiSouleRunnerLinux`) and three-track mandatory validation process.
 
 ## Work Objectives
 
@@ -292,3 +293,4 @@ Wave 2: cache-scope fix + AD-capable regression/perf verification
 - Explicit SACL overfetch is removed from the default path.
 - Evidence exists for happy-path, disconnected, and access-denied behavior.
 - Final verification wave passes and is approved.
+- Plan 9 E2E alignment: the stabilized `Get-MtADDacls` does not break the Plan 9 three-track mandatory validation process (preflight gate, protocol probe matrix, public E2E runner matrix); any AD-capable repro evidence uses the canonical lab topology and machine-readable artifact format required by Plan 9.

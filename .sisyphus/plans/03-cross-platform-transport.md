@@ -8,7 +8,7 @@
 > **Effort**: XL
 > **Parallel**: YES — 3 waves
 > **Critical Path**: 9 → 10 and 11 → 12/13
-> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete; Plan 2 (LDAP Collectors) preferred for Task 10. Plan 4 Task 20b (E2E Re-Validation) must run after Plans 1–3 are complete.
+> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete; Plan 2 (LDAP Collectors) preferred for Task 10. Plan 4 Task 20b (E2E Re-Validation) must run after Plans 1–3 are complete under the Plan 9 three-track mandatory validation process.
 
 ## Context
 This plan implements the cross-platform transports that Plan 2 deliberately excludes: reading GPO files from SYSVOL, executing remote WMI over WinRM/PSRP for DNS and SMB state, and composing the final GPO report from LDAP metadata plus SYSVOL content.
@@ -21,7 +21,7 @@ The cross-platform transport tests run against the canonical Azure AD lab define
 - **Windows runner**: `MiSouleRunnerWin` (guest `MSRunnerWin`) — domain-joined to `misoule02.local`, supports implicit credentials
 - **Linux runner**: `MiSouleRunnerLinux` — enrolled in `misoule02.local` with realmd/SSSD; explicit credentials only
 
-All transport validation (SMB/WinRM/PSRP) is now part of the mandatory E2E matrix. StartTLS and LDAPS certificate trust are validated by the hard preflight gate (`Test-LabPrerequisites.ps1`) before any transport or collector tests execute. Cross-platform transport rows must cover both runners against all three domains where the platform contract supports the transport.
+All transport validation (SMB/WinRM/PSRP) is certified through the Plan 9 three-track mandatory validation process: hard preflight gate (`Test-LabPrerequisites.ps1`), protocol probe matrix (`Invoke-ProtocolProbeMatrix.ps1`), and public E2E runner matrix (`Invoke-PublicE2EMatrix.ps1`). StartTLS and LDAPS certificate trust are validated by the hard preflight gate before any transport or collector tests execute. Cross-platform transport rows must cover both runners against all three domains where the platform contract supports the transport. Every mandatory row must assert requested target, resolved target identity, auth mode, TLS mode, runner/runtime, and output artifact path. No row is optional.
 
 ## Wave 1: SYSVOL Transport (Task 9)
 
@@ -111,6 +111,7 @@ All transport validation (SMB/WinRM/PSRP) is now part of the mandatory E2E matri
 - [ ] DNS state is collected via WMI with no DnsServer dependency and no silent truncation.
 - [ ] SMB state is collected per-DC with exact boolean contracts.
 - [ ] `Get-MtADGpoState` composes LDAP + SYSVOL into the existing shape with zero GroupPolicy calls.
+- [ ] Plan 9 E2E validation passes for all transport rows: preflight exits 0, every mandatory protocol probe and public E2E row completes with machine-readable evidence, runners confirm zero legacy module imports, and report formats remain structurally equivalent to baseline.
 
 ## Commit Strategy
 - Work only on `ad-multiforest-targeting`.

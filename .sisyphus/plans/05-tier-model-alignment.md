@@ -28,6 +28,7 @@ This plan adds Tier Model coverage to Maester's AD test suite without modifying 
 - All new checks are gated by the AD opt-in guard and use only protocol primitives from Plans 1–3.
 - Documentation accurately represents coverage, gaps, and tier-boundary configuration options.
 - Existing AD check suite passes without regression.
+- All E2E validation of new checks follows the Plan 9 three-track mandatory process: hard preflight gate (`Test-LabPrerequisites.ps1`), protocol probe matrix (`Invoke-ProtocolProbeMatrix.ps1`), and public E2E runner matrix (`Invoke-PublicE2EMatrix.ps1`) against the canonical lab topology (`MiSouleDC02/misoule02.local`, `MiSouleDC03/child.misoule02.local`, `MiSouleDC04/misoule03.local`, `MiSouleRunnerWin`, `MiSouleRunnerLinux`).
 
 ### Must NOT Have
 - No new module dependencies beyond what Plans 1–3 already require.
@@ -301,7 +302,7 @@ Scenario: No tier separation environment
 - Update `website/docs/monitoring/active-directory.md` (from Plan 4 Task 16) with a Tier Model section: what Maester checks, what it does not check, and why.
 - Document the tier-boundary configuration options (e.g., groups/OU paths that define each tier).
 - Produce a coverage report comparing Maester checks to Microsoft Tier Model controls.
-- Run all new checks against the Azure E2E lab from Plan 4 (if available) or against fixtures.
+- Run all new checks against the Azure E2E lab from Plan 4 under the Plan 9 three-track mandatory validation process (if available) or against fixtures.
 - Validate that new checks do not regress existing check performance or results.
 
 **Must NOT do**: Do not claim full Tier Model compliance if gaps remain; document gaps honestly. Do not add checks that require endpoint agents or non-directory data sources.
@@ -373,6 +374,7 @@ Scenario: E2E validation against live lab
 - [ ] Documentation accurately represents what Maester checks and what it does not.
 - [ ] No new module dependencies; all checks use existing protocol primitives.
 - [ ] Existing AD check suite continues to pass without regression.
+- [ ] Plan 9 E2E validation passes for all applicable Tier Model rows: preflight exits 0, every mandatory protocol probe and public E2E row completes with machine-readable evidence, runners confirm zero legacy module imports, and report formats remain structurally equivalent to baseline.
 
 ## Final Verification Wave
 > Run in parallel after Task 26. All must approve; present results and wait for explicit user approval.

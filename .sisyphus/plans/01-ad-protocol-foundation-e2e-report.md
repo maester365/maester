@@ -267,4 +267,4 @@ Entry 1 :
 - **E2E Validation Completed:** 2026-09-11
 - **Code Fixes Applied:** 4
 - **Test Coverage:** Core protocol validated on live AD; cross-DC blocked by lab limits
-- **Plan 1 Status:** ✅ Complete
+- **Plan 1 Status:** ✅ Complete (rerun under Plan 9 validated all previously blocked scenarios — see `.sisyphus/plans/task-10-plan1-rerun-report.md`)

@@ -8,10 +8,13 @@
 > **Effort**: XL
 > **Parallel**: YES — 3 waves
 > **Critical Path**: 6 → 7 → 8 → 14
-> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete. Plan 4 Task 20b (E2E Re-Validation) must run after Plans 1–3 are complete.
+> **Prerequisite**: Plan 1 (AD Protocol Foundation) complete. Plan 4 Task 20b (E2E Re-Validation) must run after Plans 1–3 are complete under the Plan 9 three-track mandatory validation process.
 
 ## Context
 This plan implements all directory-state collection via LDAP and migrates every analysis function away from `Get-AD*` / `DirectoryEntry` / `DirectorySearcher`. It does NOT touch SYSVOL, WinRM/PSRP, DNS WMI, or SMB remoting—those are in Plan 3.
+
+### E2E Validation Alignment (Plan 9)
+All LDAP collectors and analysis functions in this plan are certified through the Plan 9 three-track mandatory validation process: hard preflight gate (`Test-LabPrerequisites.ps1`), protocol probe matrix (`Invoke-ProtocolProbeMatrix.ps1`), and public E2E runner matrix (`Invoke-PublicE2EMatrix.ps1`). The canonical lab topology is: `MiSouleDC02/misoule02.local`, `MiSouleDC03/child.misoule02.local`, `MiSouleDC04/misoule03.local`, `MiSouleRunnerWin`, `MiSouleRunnerLinux`. Every mandatory E2E row must emit machine-readable identity/auth/TLS artifacts plus JSON/Markdown/HTML Maester reports. Plan 9 Task 10 (full re-validation cycle) replaces the old Plan 1 "could not be validated" table with definitive pass/fail outcomes for every row.
 
 ## Wave 1: Query Catalog & Normalizers (Task 6)
 
@@ -85,6 +88,7 @@ This plan implements all directory-state collection via LDAP and migrates every 
 - [ ] GPO metadata/links/permissions are produced from LDAP alone with canonical aliases.
 - [ ] All analysis functions pass baseline fixture tests with zero banned AST calls.
 - [ ] No credential material in logs, cache keys, or results.
+- [ ] Plan 9 E2E validation passes after Plans 1–3 complete: preflight exits 0, every mandatory protocol probe and public E2E row completes with machine-readable evidence, runners confirm zero legacy module imports, and report formats remain structurally equivalent to baseline.
 
 ## Commit Strategy
 - Work only on `ad-multiforest-targeting`.

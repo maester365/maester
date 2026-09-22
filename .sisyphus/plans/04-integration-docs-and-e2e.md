@@ -103,10 +103,10 @@ This plan is the integration and validation layer. It documents every selector c
 
 ---
 
-### Task 20b — Re-validate E2E against protocol-migrated code (POST-Plans 1–3, under Plan 9 process)
+### Task 20b — Re-validate E2E against protocol-migrated code (POST-Plans 1–3, governed by Plan 9)
 **What to do**:
 - After Plans 1–3 are complete and the product code contains zero `Get-AD*` / `Get-GPO*` / `Get-DnsServer*` calls in the certified path, redeploy the Azure E2E lab using `build/activeDirectory/azure-lab/Deploy-Lab.ps1`.
-- Execute the **three-track mandatory validation process** defined in Plan 9:
+- Execute the **three-track mandatory validation process** defined in Plan 9 (the authoritative E2E closure plan):
   1. **Hard preflight gate**: `Test-LabPrerequisites.ps1` — must pass DNS, RootDSE identity, cert trust, StartTLS, runner implicit-auth state, and banned-module checks before any E2E row runs.
   2. **Protocol probe matrix**: `Invoke-ProtocolProbeMatrix.ps1` — low-level protocol validation covering Basic-over-LDAPS, Basic-over-389 rejection, StartTLS success/failure, and implicit/explicit credential binds.
   3. **Public E2E runner matrix**: `Invoke-PublicE2EMatrix.ps1` — full Maester test execution through the certified public path (`Connect-Maester -Service ActiveDirectory` → `Connect-MtAdTarget`).
@@ -155,6 +155,9 @@ Run in parallel after Task 20. All must approve; present results and wait for ex
   - Expected: `APPROVE` confirming minimal core changes, complete protocol migration, and no self-invoking/merging behavior.
 
 ## Success Criteria
+
+### Plan 9 Alignment
+This plan's Task 20b re-validation is governed by Plan 9 (AD E2E Validation Closure), which is the authoritative source for the canonical lab topology, three-track mandatory validation process, and evidence requirements. All E2E success criteria below must satisfy Plan 9's Definition of Done and Must Have/Must NOT Have guardrails.
 
 ### Baseline (Tasks 16–20) — COMPLETED
 - [x] Documentation covers every selector combination with copyable commands for single-target runs.

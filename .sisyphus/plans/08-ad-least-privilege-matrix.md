@@ -211,6 +211,7 @@ Wave 2: docs publication + automated completeness/vocabulary checks
     - how to use the matrix before running tests in constrained environments
     - current known misleading outcomes (`NotConnectedActiveDirectory`, empty DACL/GPO findings, partial data)
     - clear statement that the matrix documents **current behavior**, not a future enforcement model
+    - Plan 9 E2E validation overview: canonical lab topology (`MiSouleDC02/misoule02.local`, `MiSouleDC03/child.misoule02.local`, `MiSouleDC04/misoule03.local`, `MiSouleRunnerWin`, `MiSouleRunnerLinux`), the three-track mandatory validation process (hard preflight gate, protocol probe matrix, public E2E runner matrix), and how the capability matrix maps to mandatory E2E rows
   - When mentioning domain-user-friendly scenarios, phrase them as capability guidance (for example, “tests requiring only `AD read` often succeed with ordinary directory read access commonly available to domain users”), not as role requirements.
   - Keep generated docs untouched.
 
@@ -321,3 +322,4 @@ Wave 2: docs publication + automated completeness/vocabulary checks
 - `docs/e2e-ad-testing-guide.md` explains how to use the matrix without overstating current behavior.
 - Representative DACL, GPO/GPOState, and domain/domaincontroller or DNS examples are evidence-backed.
 - Final verification wave passes and is approved.
+- Plan 9 E2E alignment: `docs/e2e-ad-testing-guide.md` references the canonical lab topology and three-track mandatory validation process; the capability matrix supports the mandatory public E2E runner matrix and protocol probe matrix rows defined in Plan 9.
