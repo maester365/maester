@@ -1,0 +1,67 @@
+Task 2: Runner Prerequisite Entrypoint and Contract
+====================================================
+Date: 2026-09-18
+
+CANONICAL ENTRYPOINT
+--------------------
+build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1
+
+PARAMETERS
+----------
+-TargetName          (Mandatory) DC hostname/FQDN to validate against
+-Credential          (Optional)  Explicit credential for authenticated probes
+-MaesterModulePath   (Optional)  Path to Maester module root
+-SkipCertificateCheck (Optional) Skip TLS cert validation (test env only)
+
+OUTPUT CONTRACT (PSCustomObject)
+--------------------------------
+IsReady              [bool]   True when all prerequisites are satisfied
+TargetName           [string] The directory server that was validated
+AuthModes            [string[]] Supported authentication modes for the runner platform
+TlsModes             [string[]] Supported TLS modes for the runner platform
+PlatformProfile      [string] Runner platform profile (e.g. WindowsPS7, LinuxPS7)
+MissingPrerequisites [string[]] List of failed prerequisite checks
+RemediationActions   [string[]] List of remediation steps for failures
+PortResults          [PSCustomObject[]] Per-protocol TCP port check results
+
+VALIDATION CHECKS PERFORMED
+---------------------------
+1. Platform capability matrix via Test-MtAdProtocolPrerequisites
+   - System.DirectoryServices.Protocols availability
+   - PSWSMan presence (non-Windows)
+   - smbclient presence (non-Windows)
+   - Supported auth modes and TLS modes per platform profile
+
+2. TCP port reachability (cross-platform TcpClient)
+   - LDAP   TCP/389  (required)
+   - LDAPS  TCP/636  (optional)
+   - DNS    TCP/53   (required)
+   - SMB    TCP/445  (optional)
+   - WinRM  TCP/5985 (optional)
+   - WinRM  TCP/5986 (optional)
+
+3. TLS certificate validation (SslStream)
+   - LDAPS certificate trust and hostname match on port 636
+   - WinRM HTTPS certificate trust and hostname match on port 5986
+
+RUNNER INTEGRATION
+------------------
+Run-ADTests-And-CopyReports.ps1 now invokes the prerequisite script
+before any Maester tests are executed. If prerequisites fail, the
+runner throws and exits before attempting to connect or run tests.
+
+CROSS-PLATFORM SUPPORT
+----------------------
+- Windows: Uses native .NET TcpClient and SslStream; WinRM/SMB are native
+- Linux:   Uses .NET TcpClient and SslStream; validates PSWSMan and smbclient
+
+FILES CREATED/MODIFIED
+----------------------
+CREATED:
+  build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1
+
+MODIFIED:
+  build/activeDirectory/Run-ADTests-And-CopyReports.ps1
+  build/activeDirectory/README-ADTestRunner.md
+  build/activeDirectory/Phase19-Validation-README.md
+  build/activeDirectory/CollaborationProcess.md

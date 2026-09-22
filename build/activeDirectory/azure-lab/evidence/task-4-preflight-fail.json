@@ -1,0 +1,40 @@
+{
+  "Timestamp": "2026-09-18T14:35:00.0000000Z",
+  "LabId": "misoule-lab-preflight-failure",
+  "ResourceGroup": "RG_5100_MiSoule_2",
+  "OverallSuccess": false,
+  "Synthetic": true,
+  "Summary": {
+    "TotalChecks": 28,
+    "PassedCount": 27,
+    "FailedCount": 1,
+    "MandatoryFailedCount": 1,
+    "OptionalFailedCount": 0,
+    "BannedModuleCountWin": 0,
+    "BannedModuleCountLinux": 0
+  },
+  "RunnerState": {
+    "Windows": { "DomainJoined": true, "BannedModulesOk": true },
+    "Linux": { "PSWSManOk": true, "SmbClientOk": true, "RealmdOk": true, "BannedModulesOk": true }
+  },
+  "AuthTlsAssertions": {
+    "LdapsTrustedAll": true,
+    "StartTlsSuccessAll": false,
+    "RootDseMatchedAll": true,
+    "DnsResolvedAll": true
+  },
+  "Checks": [
+    {
+      "CheckId": "StartTLS.MiSouleDC04.misoule03.local",
+      "Category": "StartTLS",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Runner": "MiSouleRunnerWin",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "Failed",
+      "Success": false,
+      "Mandatory": true,
+      "Details": { "Port": 389, "TlsMode": "StartTls", "Error": "Synthetic certificate trust failure." }
+    }
+  ],
+  "Note": "Deterministic hard-gate failure fixture; replace with live preflight evidence."
+}

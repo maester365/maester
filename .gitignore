@@ -10,6 +10,9 @@
 *.userosscache
 *.sln.docstates
 .test
+
+# Live AD lab rerun evidence may contain environment and account metadata.
+build/activeDirectory/azure-lab/evidence/plan1-rerun-*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -531,3 +534,5 @@ website/build/
 build/orca/orca/
 
 powershell/maester-tests
+PowerShellEditorServices.json
+.sisyphus/boulder.json

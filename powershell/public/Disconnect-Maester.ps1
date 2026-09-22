@@ -59,9 +59,10 @@ function Disconnect-Maester {
 
    if ($MyInvocation.InvocationName -notmatch '(^|\\)Disconnect-MtGraph$') {
       if ($null -ne $__MtSession.ADConnection) {
-         Write-Verbose -Message "Clearing Active Directory connection data."
-         $__MtSession.ADConnection = $null
-         Clear-MtADCache
+          Write-Verbose -Message "Clearing Active Directory connection data."
+          $__MtSession.ADConnection = $null
+          $__MtSession.ADCredential = $null
+          Clear-MtADCache
       }
 
       Write-Verbose -Message "Disconnecting from GitHub."

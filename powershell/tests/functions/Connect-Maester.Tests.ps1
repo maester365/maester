@@ -3,7 +3,7 @@ BeforeAll {
 
     # Keep -Service All tests isolated from optional service modules that may not be installed.
     $script:createdStubs = @()
-    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams','Get-ADRootDSE') {
+    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams') {
         if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
             New-Item -Path "function:global:$cmd" -Value { } | Out-Null
             $script:createdStubs += $cmd
@@ -98,19 +98,55 @@ Describe 'Connect-Maester' {
         Should -Invoke Connect-MtGitHub -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'myorg' }
     }
 
-    It 'Validates Active Directory when -Service ActiveDirectory is specified' {
-        Mock Get-ADRootDSE -ModuleName Maester {
-            [PSCustomObject]@{
-                defaultNamingContext       = 'DC=contoso,DC=com'
-                configurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
-                schemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
-                dnsHostName                = 'dc01.contoso.com'
+    It 'Validates Active Directory through the protocol-aware target selector' {
+        Mock Connect-MtAdTarget -ModuleName Maester {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = [PSCustomObject]@{
+                    Connected          = $true
+                    ProtocolValidated  = $true
+                    ResolvedServer     = 'dc01.contoso.com'
+                    ResolvedDomain     = 'contoso.com'
+                    ResolvedForest     = 'contoso.com'
+                    AuthenticationMode = 'Negotiate'
+                    TlsMode            = 'Ldaps'
+                }
             }
         }
 
-        Connect-Maester -Service ActiveDirectory
+        $verboseOutput = Connect-Maester -Service ActiveDirectory -Verbose 4>&1
 
-        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 1 -Exactly
+        Should -Invoke Connect-MtAdTarget -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $AuthMode -eq 'Negotiate' -and $TlsMode -eq 'Auto'
+        }
+        $verboseOutput -join "`n" | Should -Match "resolved target 'dc01.contoso.com'.*auth 'Negotiate'.*TLS 'Ldaps'"
+    }
+
+    It 'Forwards Active Directory target, credential, authentication, and TLS options' {
+        $credential = [PSCredential]::new('CONTOSO\Maester', (ConvertTo-SecureString 'not-a-real-password' -AsPlainText -Force))
+        Mock Connect-MtAdTarget -ModuleName Maester {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = [PSCustomObject]@{
+                    Connected          = $true
+                    ProtocolValidated  = $true
+                    ResolvedServer     = 'dc02.contoso.com'
+                    ResolvedDomain     = 'contoso.com'
+                    ResolvedForest     = 'contoso.com'
+                    AuthenticationMode = 'Basic'
+                    TlsMode            = 'StartTls'
+                }
+            }
+        }
+
+        Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer 'dc02.contoso.com' -ActiveDirectoryDomain 'contoso.com' -ActiveDirectoryForest 'contoso.com' -ActiveDirectoryCredential $credential -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode StartTls
+
+        Should -Invoke Connect-MtAdTarget -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $ActiveDirectoryServer -eq 'dc02.contoso.com' -and
+            $ActiveDirectoryDomain -eq 'contoso.com' -and
+            $ActiveDirectoryForest -eq 'contoso.com' -and
+            $ActiveDirectoryCredential.UserName -eq 'CONTOSO\Maester' -and
+            $AuthMode -eq 'Basic' -and
+            $TlsMode -eq 'StartTls'
+        }
     }
 
     It 'Does not call opt-in services when -Service All is specified' {
@@ -122,11 +158,11 @@ Describe 'Connect-Maester' {
         Mock Connect-MgGraph -ModuleName Maester {}
         Mock Connect-MicrosoftTeams -ModuleName Maester {}
         Mock Connect-MtGitHub -ModuleName Maester { throw 'Connect-MtGitHub should not be called for -Service All.' }
-        Mock Get-ADRootDSE -ModuleName Maester { throw 'Get-ADRootDSE should not be called for -Service All.' }
+        Mock Connect-MtAdTarget -ModuleName Maester { throw 'Connect-MtAdTarget should not be called for -Service All.' }
 
         Connect-Maester -Service All 3>$null 6>$null
 
         Should -Invoke Connect-MtGitHub -ModuleName Maester -Times 0 -Exactly
-        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 0 -Exactly
+        Should -Invoke Connect-MtAdTarget -ModuleName Maester -Times 0 -Exactly
     }
 }

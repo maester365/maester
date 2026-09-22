@@ -1,3 +1,5 @@
+<!-- HISTORICAL: This file reflects the original Plan 1 validation state (2026-08-20) and uses pre-Plan-9 topology names (MiSouleRunW). Do not use for current certification. See Plan 9 process for current validation requirements. -->
+
 # Maester AD Test Lab - Validation Evidence
 
 ## Date

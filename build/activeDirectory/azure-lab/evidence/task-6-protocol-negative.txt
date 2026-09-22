@@ -1,0 +1,24 @@
+Active Directory Protocol Negative Tests Evidence
+==================================================
+Date: 2026-09-18
+Command: pwsh ./powershell/tests/pester.ps1 -Include '*ActiveDirectoryProtocol*'
+
+Negative test cases (deterministic, no live lab required):
+
+1. Basic-over-389 rejection
+   [+] New-MtLdapConnection with -AuthType Basic -Port 389 should throw
+   Verifies: Basic auth guard rejects plaintext port 389
+
+2. Selector mismatch
+   [+] Passing conflicting selectors should throw
+   Verifies: Domain/server/forest selector consistency is enforced post-resolution
+
+3. Non-Windows implicit targeting
+   [+] On Linux/Mac, ambient discovery without explicit credentials should fail gracefully
+   Verifies: Non-Windows runtimes require explicit -ActiveDirectoryServer/Domain/Forest
+
+4. IP/SPN mismatch
+   [+] Connecting by IP address with Negotiate auth should fail with SPN mismatch
+   Verifies: IP-based server targeting propagates SPN mismatch from the LDAP bind layer
+
+Result: 4/4 negative tests passed

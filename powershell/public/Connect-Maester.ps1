@@ -171,7 +171,29 @@
       [string]$SharePointCertificateThumbprint,
 
       # The GitHub organization login name to connect to when Service includes GitHub.
-      [string]$GitHubOrganization
+      [string]$GitHubOrganization,
+
+      # The Active Directory forest DNS name to discover when Service includes ActiveDirectory.
+      [object]$ActiveDirectoryForest,
+
+      # The Active Directory domain DNS name to discover when Service includes ActiveDirectory.
+      [object]$ActiveDirectoryDomain,
+
+      # The Active Directory domain controller to connect to when Service includes ActiveDirectory.
+      [object]$ActiveDirectoryServer,
+
+      # The credential used for the Active Directory LDAP connection.
+      [System.Management.Automation.PSCredential]$ActiveDirectoryCredential,
+
+      # The authentication mode used for the Active Directory LDAP connection.
+      [Alias('AuthMode')]
+      [ValidateSet('Negotiate', 'Kerberos', 'Ntlm', 'Basic')]
+      [string]$ActiveDirectoryAuthMode = 'Negotiate',
+
+      # The TLS mode used for the Active Directory LDAP connection. Auto tries LDAPS before StartTLS.
+      [Alias('TlsMode')]
+      [ValidateSet('Auto', 'Ldaps', 'StartTls')]
+      [string]$ActiveDirectoryTlsMode = 'Auto'
    )
 
    $__MtSession.Connections = $Service
@@ -485,31 +507,30 @@
       Connect-MtGitHub @connectGitHubParams
    }
 
-   # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
-   if ($Service -contains 'ActiveDirectory') {
-      Write-Verbose 'Validating Active Directory connectivity'
-      try {
-         $adRootDSE = Get-ADRootDSE -ErrorAction Stop
-         $__MtSession.ADConnection = @{
-            Connected                  = $true
-            DefaultNamingContext       = $adRootDSE.defaultNamingContext
-            ConfigurationNamingContext = $adRootDSE.configurationNamingContext
-            SchemaNamingContext        = $adRootDSE.schemaNamingContext
-            DomainController           = $adRootDSE.dnsHostName
-         }
-         Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
-      } catch [Management.Automation.CommandNotFoundException] {
-         $__MtSession.ADConnection = @{
-            Connected = $false
-            Error     = 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
-         }
-         Write-Error 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
-      } catch {
-         $__MtSession.ADConnection = @{
-            Connected = $false
-            Error     = $_.Exception.Message
-         }
-         Write-Error "Failed to connect to Active Directory: $($_.Exception.Message)"
-      }
-   }
+    # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
+    if ($Service -contains 'ActiveDirectory') {
+       Write-Verbose 'Connecting to Active Directory through the protocol-aware LDAP path'
+       try {
+          $connectAdParameters = @{
+             AuthMode = $ActiveDirectoryAuthMode
+             TlsMode  = $ActiveDirectoryTlsMode
+          }
+
+          foreach ($selectorName in 'ActiveDirectoryForest', 'ActiveDirectoryDomain', 'ActiveDirectoryServer', 'ActiveDirectoryCredential') {
+             if ($PSBoundParameters.ContainsKey($selectorName)) {
+                $connectAdParameters[$selectorName] = $PSBoundParameters[$selectorName]
+             }
+          }
+
+          Connect-MtAdTarget @connectAdParameters
+          Write-Verbose ("Active Directory protocol evidence: resolved target '{0}', domain '{1}', forest '{2}', auth '{3}', TLS '{4}'." -f `
+                $__MtSession.ADConnection.ResolvedServer,
+                $__MtSession.ADConnection.ResolvedDomain,
+                $__MtSession.ADConnection.ResolvedForest,
+                $__MtSession.ADConnection.AuthenticationMode,
+                $__MtSession.ADConnection.TlsMode)
+       } catch {
+          Write-Error $_.Exception.Message
+       }
+    }
 } # end function Connect-Maester

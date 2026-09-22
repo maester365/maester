@@ -1,0 +1,28 @@
+Task 3 - Lab hardening DNS automation evidence
+Date: 2026-09-18
+Method: Static deployment-automation assertions (Azure resources were not deployed by this task)
+
+PASS: VNet advertises canonical DNS
+PASS: Runner resolver is DC02 only
+PASS: Cross-forest forwarders configured
+PASS: Child delegation is retained
+PASS: All canonical FQDNs are resolve-tested
+
+Canonical runner-visible targets:
+TARGET: MiSouleDC02.misoule02.local -> 10.20.0.4
+TARGET: MiSouleDC03.child.misoule02.local -> 10.20.0.5
+TARGET: MiSouleDC04.misoule03.local -> 10.20.0.6
+
+Implementation contract:
+- New-LabVNet.ps1 exposes explicit VNet DNS configuration. Deploy-Lab.ps1 keeps
+  Azure DNS during DC02 bootstrap and advertises DC02 (10.20.0.4) only after the
+  root controller is ready.
+- Deploy-Lab.ps1 assigns DC02 to both runner NICs instead of relying on fallback among unrelated authoritative DNS servers.
+- Child promotion creates the child.misoule02.local delegation in the root forest.
+- A forest-replicated conditional forwarder routes misoule03.local to DC04.
+- DC04 conditionally forwards misoule02.local to DC02; the root DNS delegation then resolves the child domain.
+- Deploy-Lab.ps1 resolves each canonical DC FQDN and verifies its expected IP before runner creation.
+
+Live resolution is intentionally enforced as a deployment-time hard gate. This
+file proves the automation contract only; it does not claim that an undeployed
+or currently running Azure environment passed a live DNS probe.

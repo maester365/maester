@@ -1,0 +1,28 @@
+Task 9 - Plan Alignment Verification
+Date: 2026-09-18
+
+VERIFICATION: Active inter-dependent plans reference the same canonical topology and validation matrix assumptions.
+
+Plan 1 (01-ad-protocol-foundation-e2e-report.md):
+- Line 8: Contains "RERUN REQUIRED" banner referencing Plan 9 process
+- Line 114-122: "What Could Not Be Validated" renamed to "NOW MANDATORY" with Plan 9 mandatory row mapping
+- Line 126-133: Explicitly states rerun must execute Test-LabPrerequisites, Invoke-ProtocolProbeMatrix, Invoke-PublicE2EMatrix
+- Topology references: MiSouleDC02/misoule02.local, MiSouleDC03/child.misoule02.local, MiSouleDC04/misoule03.local
+
+Plan 3 (03-cross-platform-transport.md):
+- Lines 16-25: Added "E2E Lab Topology and Transport Validation (Plan 9 Alignment)" section
+- References canonical DC/host names and runner semantics
+- States StartTLS/LDAPS validation is part of mandatory preflight
+
+Plan 4 (04-integration-docs-and-e2e.md):
+- Lines 109-123: Task 20b updated with three-track mandatory validation process
+- Explicitly distinguishes: preflight gate, protocol probe matrix, public E2E runner matrix
+- Lists mandatory public E2E rows for root forest, child domain, separate forest
+- Lists mandatory protocol probe rows (Basic/LDAPS, StartTLS, implicit/explicit binds)
+- References canonical topology and warns against collapsing rows or skipping Linux
+
+Plan 9 (09-ad-e2e-validation-closure.md):
+- Serves as the authoritative new process plan
+- All implementation tasks 1-8 are complete
+
+CONCLUSION: All active inter-dependent plans are aligned on canonical topology and validation matrix assumptions.

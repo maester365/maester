@@ -15,8 +15,12 @@
     - MiSouleDC02       10.20.0.4   root forest for misoule02.local
     - MiSouleDC03       10.20.0.5   child domain controller for child.misoule02.local
     - MiSouleDC04       10.20.0.6   separate forest for misoule03.local
-    - MiSouleRunnerWin  10.20.0.10  Windows runner
-    - MiSouleRunnerLinux 10.20.0.11 Ubuntu runner
+    - MiSouleRunnerWin  10.20.0.10  Windows runner, joined to misoule02.local
+    - MiSouleRunnerLinux 10.20.0.11 Ubuntu runner, enrolled in misoule02.local
+
+    The root and child domains use their automatic two-way transitive intra-forest
+    trust. No trust is configured with misoule03.local. Each domain controller
+    issues an LDAPS/StartTLS certificate that is trusted by both runners.
 
     The runners are intentionally configured without the ActiveDirectory,
     GroupPolicy, or DnsServer PowerShell modules.
@@ -149,7 +153,21 @@ function Invoke-LabAzCli {
     }
 
     if ($exitCode -ne 0 -and -not $AllowFailure.IsPresent) {
-        throw "Azure CLI command failed ($exitCode): az $($Arguments -join ' ')`n$output"
+        $redactedArguments = @($Arguments)
+        $sensitiveValues = [System.Collections.Generic.List[string]]::new()
+        for ($index = 0; $index -lt $redactedArguments.Count; $index++) {
+            if ($index -gt 0 -and $redactedArguments[$index - 1] -match '(?i)^--(admin-password|password|value)$') {
+                $sensitiveValues.Add($redactedArguments[$index])
+                $redactedArguments[$index] = '[REDACTED]'
+            } elseif ($redactedArguments[$index] -match '(?i)^(?<name>[^=]*(password|secret|token)[^=]*)=(?<value>.+)$') {
+                $sensitiveValues.Add($Matches.value)
+                $redactedArguments[$index] = $Matches.name + '=[REDACTED]'
+            }
+        }
+        foreach ($sensitiveValue in $sensitiveValues) {
+            $output = $output.Replace($sensitiveValue, '[REDACTED]')
+        }
+        throw "Azure CLI command failed ($exitCode): az $($redactedArguments -join ' ')`n$output"
     }
 
     if ($ExpectJson.IsPresent -and $output) {
@@ -250,6 +268,33 @@ function Set-LabSecret {
     }
 }
 
+function Invoke-LabVmRunCommand {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string]$VmName,
+
+        [Parameter(Mandatory)]
+        [string]$ScriptContent
+    )
+
+    $temporaryFile = [System.IO.Path]::GetTempFileName()
+    try {
+        Set-Content -LiteralPath $temporaryFile -Value $ScriptContent -Encoding utf8
+        Invoke-LabAzCli -Arguments @(
+            'vm', 'run-command', 'invoke',
+            '--resource-group', $ResourceGroupName,
+            '--name', $VmName,
+            '--command-id', 'RunPowerShellScript',
+            '--scripts', ('@{0}' -f $temporaryFile),
+            '--query', 'value[0].message',
+            '--output', 'tsv'
+        )
+    } finally {
+        Remove-Item -LiteralPath $temporaryFile -Force -ErrorAction SilentlyContinue
+    }
+}
+
 $newLabVnetPath = Join-Path -Path $script:ScriptRoot -ChildPath 'New-LabVNet.ps1'
 $newDomainControllerPath = Join-Path -Path $script:ScriptRoot -ChildPath 'New-DomainController.ps1'
 $newRunnerVmPath = Join-Path -Path $script:ScriptRoot -ChildPath 'New-RunnerVm.ps1'
@@ -269,8 +314,9 @@ $labTopology = [ordered]@{
         [ordered]@{ Name = 'MiSouleDC04'; Role = 'SeparateForest'; DomainName = 'misoule03.local'; ChildName = $null; NetBios = 'MISOULE03'; PrivateIp = '10.20.0.6'; ParentDomain = $null; ParentDns = $null; PromotionUser = $null }
     )
     Runners           = @(
-        [ordered]@{ Name = 'MiSouleRunnerWin'; OsType = 'Windows'; PrivateIp = '10.20.0.10' },
-        [ordered]@{ Name = 'MiSouleRunnerLinux'; OsType = 'Ubuntu'; PrivateIp = '10.20.0.11' }
+        # Keep the canonical Azure VM name while using a <=15-character Windows computer name.
+        [ordered]@{ Name = 'MiSouleRunnerWin'; ComputerName = 'MSRunnerWin'; OsType = 'Windows'; PrivateIp = '10.20.0.10'; DomainName = 'misoule02.local'; DomainJoinUser = 'MISOULE02\maesterjoin' },
+        [ordered]@{ Name = 'MiSouleRunnerLinux'; ComputerName = $null; OsType = 'Ubuntu'; PrivateIp = '10.20.0.11'; DomainName = 'misoule02.local'; DomainJoinUser = 'maesterjoin@misoule02.local' }
     )
 }
 
@@ -292,12 +338,14 @@ $tags = @(
 
 $credentialBundle = [ordered]@{
     WindowsLocalAdminPassword = Get-LabRandomPassword
+    WindowsRunnerLocalAdminPassword = Get-LabRandomPassword
     LinuxLocalAdminPassword   = Get-LabRandomPassword
     Misoule02SafeModePassword = Get-LabRandomPassword
     Misoule03SafeModePassword = Get-LabRandomPassword
     RootDomainReaderPassword  = Get-LabRandomPassword
     ChildDomainReaderPassword = Get-LabRandomPassword
     ForestDomainReaderPassword = Get-LabRandomPassword
+    RootDomainJoinPassword    = Get-LabRandomPassword
 }
 
 $summary = [ordered]@{
@@ -390,6 +438,8 @@ try {
         SafeModePassword  = $credentialBundle.Misoule02SafeModePassword
         TestUserName      = 'maesterreader'
         TestUserPassword  = $credentialBundle.RootDomainReaderPassword
+        DomainJoinUserName = 'maesterjoin'
+        DomainJoinUserPassword = $credentialBundle.RootDomainJoinPassword
         KeyVaultName      = $summary.KeyVaultName
         Tag               = $tags
         Force             = $Force.IsPresent
@@ -402,6 +452,16 @@ try {
         if ($rootResult.LdapsCertificateBase64) {
             $domainCertificates.Add($rootResult.LdapsCertificateBase64)
         }
+    }
+
+    if ($PSCmdlet.ShouldProcess($labTopology.VNetName, 'Advertise DC02 as the canonical VNet DNS resolver after it is ready')) {
+        Invoke-LabAzCli -Arguments @(
+            'network', 'vnet', 'update',
+            '--resource-group', $ResourceGroupName,
+            '--name', $labTopology.VNetName,
+            '--dns-servers', $rootController.PrivateIp,
+            '--output', 'none'
+        ) | Out-Null
     }
 
     $childController = $labTopology.DomainControllers[1]
@@ -468,15 +528,76 @@ try {
         }
     }
 
-    $runnerDnsServers = @(
-        $rootController.PrivateIp,
-        $childController.PrivateIp,
-        $forestController.PrivateIp
+    $dnsForwarderTopology = @(
+        [ordered]@{
+            VmName = $rootController.Name
+            Zones  = @(
+                [ordered]@{ Name = $forestController.DomainName; MasterServer = $forestController.PrivateIp }
+            )
+        },
+        [ordered]@{
+            VmName = $forestController.Name
+            Zones  = @(
+                [ordered]@{ Name = $rootController.DomainName; MasterServer = $rootController.PrivateIp }
+            )
+        }
     )
+
+    foreach ($dnsHost in $dnsForwarderTopology) {
+        $dnsZoneJson = $dnsHost.Zones | ConvertTo-Json -Compress
+        $dnsForwarderScript = @"
+Set-StrictMode -Version Latest
+`$ErrorActionPreference = 'Stop'
+Import-Module DnsServer
+`$zones = '$dnsZoneJson' | ConvertFrom-Json
+foreach (`$zone in @(`$zones)) {
+    `$existing = Get-DnsServerConditionalForwarderZone -Name `$zone.Name -ErrorAction SilentlyContinue
+    if (`$existing) {
+        Set-DnsServerConditionalForwarderZone -Name `$zone.Name -MasterServers @(`$zone.MasterServer) -PassThru | Out-Null
+    } else {
+        Add-DnsServerConditionalForwarderZone -Name `$zone.Name -MasterServers @(`$zone.MasterServer) -ReplicationScope Forest -PassThru | Out-Null
+    }
+}
+@(`$zones | ForEach-Object { Resolve-DnsName -Name `$_.Name -Type SOA -ErrorAction Stop }).Count
+"@
+
+        if ($PSCmdlet.ShouldProcess($dnsHost.VmName, 'Configure cross-domain and cross-forest DNS conditional forwarders')) {
+            Write-Verbose (Invoke-LabVmRunCommand -VmName $dnsHost.VmName -ScriptContent $dnsForwarderScript)
+        }
+    }
+
+    # The child-domain promotion creates its authoritative delegation beneath
+    # misoule02.local. Validate that delegation and both forest forwarders before
+    # creating runners that depend on DC02 for all three namespaces.
+    $dnsValidationJson = $labTopology.DomainControllers | ForEach-Object {
+        [ordered]@{ Name = ('{0}.{1}' -f $_.Name, $_.DomainName); ExpectedAddress = $_.PrivateIp }
+    } | ConvertTo-Json -Compress
+    $dnsValidationScript = @"
+Set-StrictMode -Version Latest
+`$ErrorActionPreference = 'Stop'
+`$targets = '$dnsValidationJson' | ConvertFrom-Json
+foreach (`$target in @(`$targets)) {
+    `$addresses = @(Resolve-DnsName -Name `$target.Name -Type A -ErrorAction Stop | Where-Object Type -eq 'A' | Select-Object -ExpandProperty IPAddress)
+    if (`$addresses -notcontains `$target.ExpectedAddress) {
+        throw "DNS target '`$(`$target.Name)' did not resolve to expected address '`$(`$target.ExpectedAddress)'."
+    }
+}
+"@
+    if ($PSCmdlet.ShouldProcess($rootController.Name, 'Validate runner-visible root, child, and separate-forest DNS targets')) {
+        Write-Verbose (Invoke-LabVmRunCommand -VmName $rootController.Name -ScriptContent $dnsValidationScript)
+    }
+
+    if (-not $WhatIfPreference -and $domainCertificates.Count -ne $labTopology.DomainControllers.Count) {
+        throw "Expected one LDAPS/StartTLS trust anchor from each domain controller; received $($domainCertificates.Count) of $($labTopology.DomainControllers.Count)."
+    }
+
+    # DC02 is the canonical resolver. Its conditional forwarders route child and
+    # separate-forest names without relying on DNS-client fallback after NXDOMAIN.
+    $runnerDnsServers = @($rootController.PrivateIp)
 
     foreach ($runner in $labTopology.Runners) {
         $runnerAdminPassword = if ($runner.OsType -eq 'Windows') {
-            $credentialBundle.WindowsLocalAdminPassword
+            $credentialBundle.WindowsRunnerLocalAdminPassword
         } else {
             $credentialBundle.LinuxLocalAdminPassword
         }
@@ -487,11 +608,15 @@ try {
             VNetName                = $labTopology.VNetName
             SubnetName              = $labTopology.SubnetName
             VmName                  = $runner.Name
+            ComputerName            = $runner.ComputerName
             OsType                  = $runner.OsType
             PrivateIpAddress        = $runner.PrivateIp
             DnsServer               = $runnerDnsServers
             AdminUsername           = 'labadmin'
             AdminPassword           = $runnerAdminPassword
+            DomainName              = $runner.DomainName
+            DomainJoinUsername      = $runner.DomainJoinUser
+            DomainJoinPassword      = $(if ($runner.DomainName) { $credentialBundle.RootDomainJoinPassword } else { $null })
             TrustedCertificateBase64 = $domainCertificates.ToArray()
             Tag                     = $tags
             Force                   = $Force.IsPresent
@@ -526,7 +651,7 @@ try {
 
     if ($CleanupOnFailure) {
         Write-Warning "Deployment failed. Starting cleanup for lab ID '$LabId'."
-        & $removeLabPath -ResourceGroupName $ResourceGroupName -TagName 'maester-lab-id' -TagValue $LabId -Verbose:$VerbosePreference
+        & $removeLabPath -ResourceGroupName $ResourceGroupName -TagName 'maester-lab-id' -TagValue $LabId -Verbose:($VerbosePreference -eq 'Continue')
     }
 
     throw

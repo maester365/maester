@@ -103,19 +103,29 @@ This plan is the integration and validation layer. It documents every selector c
 
 ---
 
-### Task 20b — Re-validate E2E against protocol-migrated code (POST-Plans 1–3)
+### Task 20b — Re-validate E2E against protocol-migrated code (POST-Plans 1–3, under Plan 9 process)
 **What to do**:
-- After Plans 1–3 are complete and the product code contains zero `Get-AD*` / `Get-GPO*` / `Get-DnsServer*` calls, redeploy the Azure E2E lab using the existing `build/activeDirectory/azure-lab/` automation.
-- Run the same test matrix as Task 19: Windows PS5.1/PS7 integrated and explicit credential runs; Ubuntu PS7 explicit credential runs.
-- Cover root forest-only, child Domain+Server, second Forest+Domain+Server, Server-only, and representative aligned combinations.
-- Assert that result counts and shapes match the **baseline evidence** already captured in `build/activeDirectory/azure-lab/evidence/`.
+- After Plans 1–3 are complete and the product code contains zero `Get-AD*` / `Get-GPO*` / `Get-DnsServer*` calls in the certified path, redeploy the Azure E2E lab using `build/activeDirectory/azure-lab/Deploy-Lab.ps1`.
+- Execute the **three-track mandatory validation process** defined in Plan 9:
+  1. **Hard preflight gate**: `Test-LabPrerequisites.ps1` — must pass DNS, RootDSE identity, cert trust, StartTLS, runner implicit-auth state, and banned-module checks before any E2E row runs.
+  2. **Protocol probe matrix**: `Invoke-ProtocolProbeMatrix.ps1` — low-level protocol validation covering Basic-over-LDAPS, Basic-over-389 rejection, StartTLS success/failure, and implicit/explicit credential binds.
+  3. **Public E2E runner matrix**: `Invoke-PublicE2EMatrix.ps1` — full Maester test execution through the certified public path (`Connect-Maester -Service ActiveDirectory` → `Connect-MtAdTarget`).
+- **Mandatory public E2E rows** (no row is optional):
+  - Root forest (misoule02.local): Win implicit+implicit, Win implicit+explicit, Win explicit+implicit, Win explicit+explicit, Linux explicit+explicit
+  - Child domain (child.misoule02.local): Win explicit+implicit, Win explicit+explicit, Linux explicit+explicit
+  - Separate forest (misoule03.local): Win explicit+explicit, Linux explicit+explicit
+- **Mandatory protocol probe rows**: Basic-over-LDAPS (PASS), Basic-over-389 (FAIL), StartTLS-on-389 (PASS), broken-trust StartTLS (FAIL), root-forest implicit bind (PASS), child-domain explicit bind (PASS), separate-forest explicit bind (PASS).
+- Reference the canonical topology: DC02/misoule02.local, DC03/child.misoule02.local, DC04/misoule03.local, MiSouleRunnerWin/MSRunnerWin, MiSouleRunnerLinux.
+- Each row runs in a **fresh PowerShell process** to prevent session contamination.
+- Every row emits a machine-readable identity/auth/TLS artifact plus JSON/Markdown/HTML Maester reports.
 - Verify that the removed modules (ActiveDirectory, GroupPolicy, DnsServer) are absent on both runners.
-- Emit JSON/Markdown/HTML reports and compare report structure against baseline.
 
-**Must NOT do**: Do not treat baseline evidence as final certification; do not skip re-validation if Plans 1–3 change collector shapes.
+**Must NOT do**: Do not treat baseline evidence as final certification; do not skip re-validation if collector shapes change; do not collapse public-path and protocol-probe rows into a single combined run; do not skip Linux rows where the platform contract supports them.
 
 **Acceptance Criteria**:
-- Each run exits 0 with `TotalCount > 0`; result counts match baseline within acceptable variance (±5% for pass/fail/skip counts due to environmental differences).
+- Preflight exits 0 with all mandatory checks passing.
+- Every expected-PASS protocol probe and public E2E row completes with evidence artifacts.
+- Every expected-FAIL row fails closed with redacted error attribution.
 - Structural scan confirms zero legacy module imports on runners.
 - Report formats (JSON/Markdown/HTML) are structurally equivalent to baseline.
 - Any divergence from baseline is documented with root cause.

@@ -7,14 +7,14 @@
     alternative management channel to Azure VM Run Commands. This is particularly
     useful for Active Directory operations that fail under the Azure VM Agent service
     context due to Kerberos credential delegation limitations.
-    
+
     The script:
     1. Installs the OpenSSH Server optional feature
     2. Configures the sshd service to start automatically
     3. Sets up firewall rules for SSH (port 22)
     4. Configures PowerShell as the default SSH shell
     5. Optionally configures key-based authentication
-    
+
     Based on patterns from: https://github.com/soulemike/microsoft-skills/tree/main/skills/vm-guest-management
 
 .PARAMETER PublicKey
@@ -30,7 +30,7 @@
 
 .NOTES
     Requires administrative privileges.
-    
+
     For AD domain operations (e.g., child domain promotion), SSH may provide a different
     execution context than Azure VM Run Commands. However, Kerberos credential delegation
     still requires a domain-joined orchestrator or interactive session for some operations.

@@ -26,5 +26,6 @@ function Clear-ModuleVariable {
     # Disconnect-MtGitHub, including through Disconnect-Maester, owns clearing GitHubConnection and GitHubAuthHeader.
     $__MtSession.GitHubCache = @{}
     $__MtSession.SpoCache = @{}
-    # $__MtSession.Connections = @() # Do not clear connections as they are used to track the connection state. This module variable should only be set by Connect-Maester and Disconnect-Maester.
+    # Do not clear Connections, ADConnection, or ADCredential here. Connect-Maester
+    # and Disconnect-Maester own connection state across an Invoke-Maester run.
 }

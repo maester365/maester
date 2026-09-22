@@ -23,6 +23,9 @@
     [OutputType([bool])]
     param()
 
+    # LEGACY-ONLY / NON-CERTIFYING: this check consumes RSAT-enriched GPO data
+    # only after Get-MtADGpoState verifies an explicitly certified AD session.
+
     Write-Verbose "Starting Test-MtAdGpoUnlinkedTargetCount"
 
     # Get AD GPO state data (uses cached data if available)

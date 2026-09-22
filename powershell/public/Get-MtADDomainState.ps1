@@ -50,12 +50,90 @@ function Get-MtADDomainState {
         return $null
     }
 
+    if (-not $__MtSession.ADConnection.ProtocolValidated) {
+        Write-Verbose 'Active Directory domain collection requires a protocol-validated Connect-Maester session.'
+        return $null
+    }
+
     $cacheKey = if ($ComputerName) { "DomainState:$ComputerName" } else { 'DomainState' }
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
         Write-Verbose 'Collecting AD Domain State data from Active Directory'
 
         try {
+            # This protocol proof is the certifying path. The RSAT collection below is
+            # retained only as a legacy enrichment path and cannot establish certification.
+            $protocolTargetParameters = @{
+                AuthMode = $__MtSession.ADConnection.RequestedAuthMode
+                TlsMode  = $__MtSession.ADConnection.RequestedTlsMode
+                PassThru = $true
+            }
+            if ($ComputerName) {
+                $protocolTargetParameters['ActiveDirectoryServer'] = $ComputerName
+            }
+            elseif ($__MtSession.ADConnection.RequestedServer) {
+                $protocolTargetParameters['ActiveDirectoryServer'] = $__MtSession.ADConnection.RequestedServer
+            }
+            elseif ($__MtSession.ADConnection.RequestedDomain) {
+                $protocolTargetParameters['ActiveDirectoryDomain'] = $__MtSession.ADConnection.RequestedDomain
+            }
+            elseif ($__MtSession.ADConnection.RequestedForest) {
+                $protocolTargetParameters['ActiveDirectoryForest'] = $__MtSession.ADConnection.RequestedForest
+            }
+            if ($null -ne $__MtSession.ADCredential) {
+                $protocolTargetParameters['ActiveDirectoryCredential'] = $__MtSession.ADCredential
+            }
+
+            $protocolConnectionState = Connect-MtAdTarget @protocolTargetParameters
+            $ldapConnectionParameters = @{
+                Server   = $protocolConnectionState.ResolvedServer
+                AuthType = $protocolConnectionState.AuthenticationMode
+            }
+            if ($protocolConnectionState.TlsMode -eq 'StartTls') {
+                $ldapConnectionParameters['Port'] = 389
+                $ldapConnectionParameters['UseStartTls'] = $true
+            }
+            else {
+                $ldapConnectionParameters['Port'] = 636
+            }
+            if ($null -ne $__MtSession.ADCredential) {
+                $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential
+            }
+
+            $protocolConnection = $null
+            try {
+                $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+                $protocolRootDse = Get-MtLdapRootDse -Connection $protocolConnection
+            }
+            finally {
+                if ($null -ne $protocolConnection) {
+                    $protocolConnection.Dispose()
+                }
+            }
+
+            $protocolEvidence = [PSCustomObject]@{
+                ResolvedServer       = $protocolConnectionState.ResolvedServer
+                ResolvedDomain       = $protocolConnectionState.ResolvedDomain
+                ResolvedForest       = $protocolConnectionState.ResolvedForest
+                AuthenticationMode   = $protocolConnectionState.AuthenticationMode
+                TlsMode              = $protocolConnectionState.TlsMode
+                DefaultNamingContext = $protocolRootDse.DefaultNamingContext
+                VerifiedAt           = Get-Date
+            }
+
+            if ($null -eq (Get-Command -Name Get-ADDomain -ErrorAction SilentlyContinue)) {
+                $protocolOnlyState = [PSCustomObject]@{
+                    RootDSE          = $protocolRootDse
+                    ProtocolEvidence = $protocolEvidence
+                    CollectionMode   = 'ProtocolOnly'
+                    CollectionTime   = Get-Date
+                }
+                $__MtSession.ADCache[$cacheKey] = $protocolOnlyState
+                $__MtSession.ADCollectionTime = Get-Date
+                return $protocolOnlyState
+            }
+
+            # Legacy-only, non-certifying RSAT enrichment begins here.
             $adServerParameters = @{}
             if ($ComputerName) {
                 $adServerParameters['Server'] = $ComputerName
@@ -74,6 +152,8 @@ function Get-MtADDomainState {
                 RootDSE           = Get-ADRootDSE @adServerParameters | Select-Object *
                 OptionalFeatures  = Get-ADOptionalFeature -Filter * -Properties * @adServerParameters
                 CollectionTime    = Get-Date
+                ProtocolEvidence  = $protocolEvidence
+                CollectionMode    = 'ProtocolWithLegacyRsatEnrichment'
             }
 
             if (-not $domainState.Domain) {

@@ -31,6 +31,10 @@
 .PARAMETER ExecutorPublicIp
     Executor IP address or CIDR allowed to manage the runners.
 
+.PARAMETER DnsServer
+    DNS resolver addresses advertised by the VNet. The root domain controller
+    is the canonical resolver and forwards the child and separate-forest zones.
+
 .PARAMETER Tag
     Azure resource tags in key=value format.
 
@@ -64,6 +68,9 @@ param(
 
     [Parameter(Mandatory)]
     [string]$ExecutorPublicIp,
+
+    [Parameter()]
+    [string[]]$DnsServer = @(),
 
     [Parameter()]
     [string[]]$Tag = @(),
@@ -209,6 +216,17 @@ if ($existingVnet) {
     Invoke-LabAzCli -Arguments $createVnetArguments | Out-Null
 }
 
+if ($DnsServer.Count -gt 0 -and $PSCmdlet.ShouldProcess($VNetName, 'Configure canonical lab DNS resolvers')) {
+    $dnsArguments = @(
+        'network', 'vnet', 'update',
+        '--resource-group', $ResourceGroupName,
+        '--name', $VNetName,
+        '--dns-servers'
+    ) + $DnsServer + @('--output', 'none')
+
+    Invoke-LabAzCli -Arguments $dnsArguments | Out-Null
+}
+
 $existingNsg = Invoke-LabAzCli -Arguments @(
     'network', 'nsg', 'show',
     '--resource-group', $ResourceGroupName,
@@ -254,4 +272,5 @@ if ($PSCmdlet.ShouldProcess($SubnetName, 'Associate subnet with the lab NSG')) {
     SubnetPrefix      = $SubnetPrefix
     NsgName           = $NsgName
     ExecutorPublicIp  = $executorCidr
+    DnsServer         = $DnsServer
 }

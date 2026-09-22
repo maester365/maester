@@ -4,17 +4,35 @@
 
 This document captures all issues discovered during the deployment of the Maester end-to-end Active Directory lab in resource group `RG_5100_MiSoule_2` using Azure managed identity authentication. The deployment was partially successful: two forests with their root domains were created, but child domain promotion failed due to Azure VM Run Command credential delegation limitations.
 
-## Successfully Deployed Resources
+## Historical deployment snapshot
+
+The table below records the original deployment attempt that exposed these
+issues. It is historical evidence, not the expected state after the remediations
+later in this document and the current automation are applied.
 
 | Resource | Type | Status | IP Address | Domain |
 |----------|------|--------|------------|--------|
 | MiSouleDC02 | Domain Controller | ✅ Running | 10.20.0.4 | misoule02.local (root forest) |
 | MiSouleDC04 | Domain Controller | ✅ Running | 10.20.0.6 | misoule03.local (separate forest) |
-| MiSouleRunW | Windows Runner | ✅ Running | 10.20.0.10 | N/A |
-| MiSouleRunnerLinux | Linux Runner | ✅ Running | 10.20.0.11 | N/A |
+| MiSouleRunnerWin | Windows Runner | ✅ Running | 10.20.0.10 | misoule02.local (guest name `MSRunnerWin`) |
+| MiSouleRunnerLinux | Linux Runner | ✅ Running | 10.20.0.11 | Enrolled in misoule02.local with realmd/SSSD |
 | MiSouleDC03 | VM (AD DS installed) | ⚠️ Partial | 10.20.0.5 | WORKGROUP (child domain promotion failed) |
 | MiSouleNATGW | NAT Gateway | ✅ Running | 172.174.32.50 | N/A |
 | MiSouleADTestVNet | Virtual Network | ✅ Running | 10.20.0.0/24 | N/A |
+
+The canonical lab uses the automatic two-way transitive trust between
+`misoule02.local` and its child `child.misoule02.local`. It configures no trust
+with the separate `misoule03.local` forest, so that forest requires explicit
+credentials. Every DC's LDAPS/StartTLS certificate is trusted by both runners,
+and WinRM HTTPS certificates match the endpoint names used for remoting.
+
+DNS and certificate trust are deliberately independent from authentication
+trust. DC02 is the runners' canonical resolver: the AD-created child delegation
+resolves `child.misoule02.local`, and conditional forwarders resolve the separate
+`misoule03.local` forest. The reciprocal forest forwarder permits diagnostics
+from DC04. There is no forest trust between `misoule02.local` and
+`misoule03.local`, so cross-forest success always requires an explicit secure
+credential even though the endpoint name resolves and its TLS chain is trusted.
 
 ## Issues Discovered
 
@@ -208,16 +226,16 @@ This wrapper inspects `instanceView.executionState`, `exitCode`, `output`, and `
 **Impact:** VM creation fails if the VM name exceeds 15 characters.
 
 **Description:**
-Windows computer names cannot exceed 15 characters. The original runner name `MiSouleRunnerWin` (16 characters) caused VM creation to fail with:
+Windows computer names cannot exceed 15 characters. Using the canonical Azure VM resource name `MiSouleRunnerWin` as the guest computer name caused VM creation to fail with:
 
 ```
 InvalidParameter: Windows computer name cannot be more than 15 characters long
 ```
 
 **Remediation:**
-Use a shorter VM name. The runner was successfully created as `MiSouleRunW` (11 characters).
+Keep the canonical Azure VM/resource name `MiSouleRunnerWin`, but pass the shorter guest computer name `MSRunnerWin` through `az vm create --computer-name`. The deployment then joins `MSRunnerWin` to `misoule02.local` for implicit Windows credentials.
 
-**Recommended fix:** Update `Deploy-Lab.ps1` to validate VM name lengths or use shorter default names.
+**Implemented fix:** `Deploy-Lab.ps1` defines the Azure VM name and guest computer name separately, and `New-RunnerVm.ps1` validates the 15-character Windows limit before creation.
 
 ---
 
@@ -236,25 +254,100 @@ Pre-install the Maester module on a custom VM image, or install it during VM pro
 
 ---
 
+### Issue 7: Azure VM Run Command Extension Permanently Stuck
+
+**Severity:** Critical  
+**Impact:** All Azure VM Run Command operations fail permanently on affected VMs. Windows runner E2E validation is blocked.
+
+**Description:** During the Plan 01 rerun under Plan 9, the Azure VM Run Command extension on `MiSouleRunW` entered a stuck state with error:
+```
+Conflict: Run command extension execution is in progress. Please wait for completion before invoking a run command.
+```
+
+**Recovery attempts that failed:**
+- VM restart (multiple times)
+- Extension deletion (blocked: "managed by Compute Resource Provider")
+- Managed run command invocation (timed out)
+- Custom Script Extension deployment (timed out)
+- Waiting 24+ hours for automatic recovery
+
+**Root cause:** Azure VM Agent extension state corruption. The guest OS remains healthy; only the Azure management channel is broken.
+
+**Validated solution:** SSH-based management. See `README.md` "Azure VM Run Command stuck state" section for complete setup instructions.
+
+**Key findings from SSH validation:**
+- OpenSSH Server installs successfully via Run Command (last viable use of Run Command for bootstrapping)
+- Password auth works for both local admin and domain users
+- PowerShell default shell enables native `pwsh` execution
+- `scp` enables file transfer (scripts, evidence, certificates)
+- DC LDAPS certificates can be extracted via `openssl s_client` on Linux runner and installed into Windows runner `LocalMachine\Root` store
+
+**Recommendation:** Deprecate Azure VM Run Command for Windows runner management. Use SSH as the canonical transport. Update all documentation and automation to prefer SSH.
+
+---
+
+### Issue 8: StartTLS on Linux — Known Upstream .NET Bug
+
+**Severity:** Medium  
+**Impact:** StartTLS protocol probe rows cannot be validated on the Linux runner.
+
+**Description:** `System.DirectoryServices.Protocols.LdapConnection.StartTransportLayerSecurity()` fails with:
+```
+Exception calling "StartTransportLayerSecurity" with "1" argument(s): "The LDAP server is unavailable."
+```
+
+**Root cause:** This is a **known upstream bug in .NET on Linux**, not a Maester code defect. The underlying OpenLDAP library works correctly — `ldapsearch -ZZ` completes StartTLS successfully on the same host. The failure occurs in .NET's managed-to-native interop layer.
+
+**Upstream tracking:**
+- [dotnet/runtime#60972](https://github.com/dotnet/runtime/issues/60972) — `VerifyServerCertificate` unsupported on Linux
+- [dotnet/runtime#96988](https://github.com/dotnet/runtime/issues/96988) — StartTLS fails on .NET 8 Linux
+- [dotnet/runtime#103243](https://github.com/dotnet/runtime/issues/103243) — LDAPS/StartTLS confusion
+- [dotnet/runtime#110391](https://github.com/dotnet/runtime/issues/110391) — StartTLS "LDAP server is unavailable"
+- [dotnet/runtime#123676](https://github.com/dotnet/runtime/issues/123676) — libldap issues on .NET 10
+
+**Empirical evidence from this lab:**
+| Test | .NET 8 (PS 7.4.6) | .NET 10 (PS 7.6.5) | OpenLDAP |
+|------|-------------------|--------------------|----------|
+| LDAPS port 636 | ✅ PASS | ✅ PASS | N/A |
+| StartTLS port 389 | ❌ FAIL | ❌ FAIL | ✅ PASS |
+| StartTLS with `TLS_REQCERT never` | ❌ FAIL | ❌ FAIL | ✅ PASS |
+| StartTLS with DC cert in CA store | ❌ FAIL | ❌ FAIL | ✅ PASS |
+
+**Impact on validation:**
+- LDAPS (port 636) rows validate correctly on Linux
+- StartTLS rows must be validated from the Windows runner
+- The broken-cert negative control bind cannot be certified on Linux
+
+**Recommendation:**
+- Document StartTLS as a **known upstream .NET bug on Linux**, not a Maester defect.
+- Use LDAPS (port 636) for all TLS validation on the Linux runner.
+- Perform StartTLS validation exclusively from the Windows runner.
+
+---
+
 ## Recommendations for Future Deployments
 
 1. **Pre-requisites check:** Before running `Deploy-Lab.ps1`, verify:
    - Managed identity has Key Vault Secrets Officer role
    - NAT Gateway exists or default outbound access is enabled
-   - VM names are <= 15 characters
+   - Windows guest computer names are <= 15 characters (Azure resource names may be longer)
 
 2. **Timeout configuration:** Always set `-CompletionTimeoutMinutes` to at least 120 minutes.
 
-3. **Child domain workaround:** For fully automated deployments, avoid child domains. Use multiple separate forests instead, which can be promoted without parent domain credentials.
+3. **Child domain promotion:** Keep the implemented join-first state machine: join DC03 to `misoule02.local`, reboot, promote it with `Install-ADDSDomain`, and reboot again.
 
 4. **Custom images:** Build a custom Windows Server 2022 image with AD-Domain-Services feature pre-installed and Maester module pre-installed to reduce deployment time.
 
 5. **Monitoring:** Add progress logging to the bootstrap script so operators can verify that execution has started, rather than waiting blindly for 30-50 minutes.
 
-6. **VM Guest Management skill integration:** Consider leveraging the [microsoft-skills vm-guest-management skill](https://github.com/soulemike/microsoft-skills/tree/main/skills/vm-guest-management) for:
-   - Enhanced Run Command error handling via `Invoke-VmRunCommand.ps1` patterns
-   - Bastion SSH tunneling for secure, persistent connections
-   - SSH key lifecycle management for Linux runners
+6. **SSH as canonical transport:** Update all automation to use SSH instead of Azure VM Run Command for Windows runner management:
+   - Install OpenSSH Server during runner provisioning
+   - Generate SSH key pair on Linux runner during deployment
+   - Configure `sshd` with PowerShell as default shell
+   - Use `sshpass` + `ssh`/`scp` for execution and file transfer
+   - Document implicit-credential limitations over SSH (non-interactive sessions lack Kerberos tickets)
+
+7. **StartTLS platform limitation:** Document that StartTLS validation requires the Windows runner. Linux runner LDAPS validation is sufficient for TLS coverage.
 
 ## New Files Added
 
@@ -272,7 +365,7 @@ RG_5100_MiSoule_2 (eastus)
 │   │   ├── MiSouleDC02     10.20.0.4   DC: misoule02.local          ✅
 │   │   ├── MiSouleDC03     10.20.0.5   DC: child.misoule02.local   ✅ (domain-join + promotion)
 │   │   ├── MiSouleDC04     10.20.0.6   DC: misoule03.local         ✅
-│   │   ├── MiSouleRunW     10.20.0.10  Windows Runner              ✅
+│   │   ├── MiSouleRunnerWin 10.20.0.10 Windows Runner (`MSRunnerWin`, joined to misoule02.local) ✅
 │   │   └── MiSouleRunnerLinux 10.20.0.11 Linux Runner             ✅
 │   └── MiSouleNATGW (outbound internet)
 ├── MiSouleADTestNsg (network security)

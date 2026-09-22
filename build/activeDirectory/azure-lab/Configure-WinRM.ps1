@@ -18,7 +18,7 @@
     Output the configuration script instead of executing it locally.
 
 .EXAMPLE
-    ./Configure-WinRM.ps1 -ListenerDnsName MiSouleRunnerWin -EmitScript
+    ./Configure-WinRM.ps1 -ListenerDnsName MSRunnerWin -EmitScript
 
     Emits a PowerShell script string that can be passed to az vm run-command.
 #>

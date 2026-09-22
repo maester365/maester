@@ -1,0 +1,4 @@
+- Problem: Documentation and evidence inconsistencies for Plan 1 AD E2E validation.
+- Impact: Certification evidence may be rejected due to synthetic content not clearly labeled.
+- Risk: If synthetic evidence is misinterpreted as live results, could mislead reviewers.
+- Mitigation: Enforce explicit Synthetic and Note fields; add HISTORICAL headers to outdated files; document limitations due to lack of live lab.

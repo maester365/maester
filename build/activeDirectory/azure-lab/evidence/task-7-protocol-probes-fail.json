@@ -1,0 +1,15 @@
+{
+  "SchemaVersion": 1,
+  "EvidenceType": "protocol-probe-negative-matrix-definition",
+  "ValidatedAt": "2026-09-18T00:00:00Z",
+  "LiveDirectoryBind": false,
+  "Script": "build/activeDirectory/azure-lab/Invoke-ProtocolProbeMatrix.ps1",
+  "VerificationOutcome": "PASS",
+  "Rows": [
+    "win-dc02-explicit-explicit-basic-none",
+    "win-dc04-explicit-implicit-negotiate-ldaps-no-trust",
+    "win-dc02-explicit-explicit-negotiate-starttls-broken-cert",
+    "linux-dc02-explicit-explicit-negotiate-starttls-broken-cert"
+  ],
+  "Notes": "Expected-failure definitions only; live runner execution must prove each error contract."
+}

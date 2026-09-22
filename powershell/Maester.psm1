@@ -11,6 +11,9 @@
 ## Initialize Module Configuration
 #Requires -Modules Pester, Microsoft.Graph.Authentication
 
+# Load required .NET assemblies for Active Directory protocol support
+Add-Type -AssemblyName System.DirectoryServices.Protocols
+
 ## Initialize Module Variables
 ## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
 $__MtSession = @{
@@ -30,6 +33,7 @@ $__MtSession = @{
 	GitHubCache            = @{}                 # Per-session REST response cache; cleared each Invoke-Maester run
 	ADCache                = @{}                 # Active Directory data cache
 	ADConnection           = $null               # Active Directory connection state
+	ADCredential           = $null               # Active Directory credential retained only for the connected session
 	ADCollectionTime       = $null               # Timestamp of last AD data collection
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force

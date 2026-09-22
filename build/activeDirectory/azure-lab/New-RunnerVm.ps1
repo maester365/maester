@@ -15,6 +15,15 @@
 .PARAMETER TrustedCertificateBase64
     Base64-encoded public certificates trusted by the runner for LDAPS/StartTLS.
 
+.PARAMETER ComputerName
+    Guest operating system name. This permits a Windows computer name of at most
+    15 characters while retaining a longer canonical Azure VM resource name.
+
+.PARAMETER DomainName
+    Optional root domain to join after runner configuration. Windows uses
+    Add-Computer; Ubuntu uses realmd/SSSD so a PowerShell process launched as a
+    domain user has a Kerberos-backed implicit credential.
+
 .EXAMPLE
     ./New-RunnerVm.ps1 -VmName MiSouleRunnerLinux -OsType Ubuntu -PrivateIpAddress 10.20.0.11
 
@@ -24,6 +33,11 @@
     'PSAvoidUsingPlainTextForPassword',
     'AdminPassword',
     Justification = 'Azure CLI VM creation requires a plain-text password argument at execution time.'
+)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSAvoidUsingPlainTextForPassword',
+    'DomainJoinPassword',
+    Justification = 'The password is passed to the remote domain-join operation at execution time.'
 )]
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -42,6 +56,9 @@ param(
     [Parameter(Mandatory)]
     [string]$VmName,
 
+    [Parameter()]
+    [string]$ComputerName,
+
     [Parameter(Mandatory)]
     [ValidateSet('Windows', 'Ubuntu')]
     [string]$OsType,
@@ -57,6 +74,15 @@ param(
 
     [Parameter(Mandatory)]
     [string]$AdminPassword,
+
+    [Parameter()]
+    [string]$DomainName,
+
+    [Parameter()]
+    [string]$DomainJoinUsername,
+
+    [Parameter()]
+    [string]$DomainJoinPassword,
 
     [Parameter()]
     [string[]]$TrustedCertificateBase64 = @(),
@@ -107,7 +133,21 @@ function Invoke-LabAzCli {
     }
 
     if ($exitCode -ne 0 -and -not $AllowFailure.IsPresent) {
-        throw "Azure CLI command failed ($exitCode): az $($Arguments -join ' ')`n$output"
+        $redactedArguments = @($Arguments)
+        $sensitiveValues = [System.Collections.Generic.List[string]]::new()
+        for ($index = 0; $index -lt $redactedArguments.Count; $index++) {
+            if ($index -gt 0 -and $redactedArguments[$index - 1] -match '(?i)^--(admin-password|password|value)$') {
+                $sensitiveValues.Add($redactedArguments[$index])
+                $redactedArguments[$index] = '[REDACTED]'
+            } elseif ($redactedArguments[$index] -match '(?i)^(?<name>[^=]*(password|secret|token)[^=]*)=(?<value>.+)$') {
+                $sensitiveValues.Add($Matches.value)
+                $redactedArguments[$index] = $Matches.name + '=[REDACTED]'
+            }
+        }
+        foreach ($sensitiveValue in $sensitiveValues) {
+            $output = $output.Replace($sensitiveValue, '[REDACTED]')
+        }
+        throw "Azure CLI command failed ($exitCode): az $($redactedArguments -join ' ')`n$output"
     }
 
     if ($ExpectJson.IsPresent -and $output) {
@@ -159,6 +199,15 @@ function Invoke-LabVmRunCommand {
 
 $publicIpName = '{0}-pip' -f $VmName
 $nicName = '{0}-nic' -f $VmName
+$effectiveComputerName = if ($ComputerName) { $ComputerName } else { $VmName }
+
+if ($OsType -eq 'Windows' -and $effectiveComputerName.Length -gt 15) {
+    throw "Windows computer name '$effectiveComputerName' exceeds the 15-character limit."
+}
+
+if ($DomainName -and (-not $DomainJoinUsername -or -not $DomainJoinPassword)) {
+    throw 'DomainName requires DomainJoinUsername and DomainJoinPassword.'
+}
 
 $existingPublicIp = Invoke-LabAzCli -Arguments @(
     'network', 'public-ip', 'show',
@@ -248,12 +297,16 @@ if ($existingVm) {
         '--tags'
     ) + $Tag + @('--output', 'none')
 
+    if ($OsType -eq 'Windows') {
+        $createVmArguments += @('--computer-name', $effectiveComputerName)
+    }
+
     Invoke-LabAzCli -Arguments $createVmArguments | Out-Null
 }
 
 if ($OsType -eq 'Windows') {
     $configureWinRmPath = Join-Path -Path $PSScriptRoot -ChildPath 'Configure-WinRM.ps1'
-    $winRmScriptText = & $configureWinRmPath -ListenerDnsName $VmName -EmitScript
+    $winRmScriptText = & $configureWinRmPath -ListenerDnsName $effectiveComputerName -EmitScript
     $winRmScriptBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($winRmScriptText))
     $trustedCertificateLiteral = @($TrustedCertificateBase64 | ForEach-Object { "'$_'" }) -join ', '
 
@@ -294,9 +347,41 @@ foreach (`$moduleName in @('ActiveDirectory', 'GroupPolicy', 'DnsServer')) {
 "@
 
     Write-Verbose (Invoke-LabVmRunCommand -CommandId 'RunPowerShellScript' -ScriptContent $windowsConfigurationScript)
+
+    if ($DomainName) {
+        $domainJoinScript = @'
+param($domainName, $domainJoinUsername, $domainJoinPassword)
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+$computerSystem = Get-CimInstance -ClassName Win32_ComputerSystem
+if ($computerSystem.PartOfDomain -and $computerSystem.Domain -eq $domainName) {
+    'AlreadyJoined'
+    return
+}
+
+$securePassword = ConvertTo-SecureString -String $domainJoinPassword -AsPlainText -Force
+$credential = [System.Management.Automation.PSCredential]::new($domainJoinUsername, $securePassword)
+Add-Computer -DomainName $domainName -Credential $credential -Force
+'Joined'
+'@
+        $joinResult = Invoke-LabVmRunCommand -CommandId 'RunPowerShellScript' -ScriptContent $domainJoinScript -Parameter @{
+            domainName         = $DomainName
+            domainJoinUsername = $DomainJoinUsername
+            domainJoinPassword = $DomainJoinPassword
+        }
+        if ($joinResult -match '(?m)^Joined\r?$') {
+            Invoke-LabAzCli -Arguments @('vm', 'restart', '--resource-group', $ResourceGroupName, '--name', $VmName, '--output', 'none') | Out-Null
+        }
+    }
 } else {
     $installPsWsManPath = Join-Path -Path $PSScriptRoot -ChildPath 'Install-PSWSMan.ps1'
     $baseInstallScript = & $installPsWsManPath -EmitScript
+    $realmJoinUsername = if ($DomainJoinUsername) {
+        (($DomainJoinUsername -split '@')[0] -split '\\')[-1]
+    } else {
+        ''
+    }
     $linuxConfigurationScript = @'
 set -euo pipefail
 
@@ -316,16 +401,36 @@ certificate_directory = Path('/usr/local/share/ca-certificates/maester-lab')
 certificate_values = json.loads((certificate_directory / 'certificates.json').read_text())
 for index, value in enumerate(certificate_values, start=1):
     if value:
-        (certificate_directory / f'lab-{index}.crt').write_bytes(base64.b64decode(value))
+        der_value = base64.b64decode(value)
+        pem_value = base64.b64encode(der_value).decode('ascii')
+        pem_lines = [pem_value[offset:offset + 64] for offset in range(0, len(pem_value), 64)]
+        certificate_text = '-----BEGIN CERTIFICATE-----\n' + '\n'.join(pem_lines) + '\n-----END CERTIFICATE-----\n'
+        (certificate_directory / f'lab-{index}.crt').write_text(certificate_text)
 PYCODE
 
 sudo update-ca-certificates
 pwsh -NoLogo -NoProfile -Command "if ((Get-Module -ListAvailable -Name ActiveDirectory,GroupPolicy,DnsServer).Count -ne 0) { throw 'Banned modules were found on the Ubuntu runner.' }"
+
+if [ -n '__DOMAIN_NAME__' ]; then
+    export DEBIAN_FRONTEND=noninteractive
+    sudo apt-get update
+    sudo apt-get install -y realmd sssd-ad sssd-tools adcli krb5-user packagekit
+    if ! realm list --name-only | grep -Fxqi '__DOMAIN_NAME__'; then
+        printf '%s' "$1" | sudo realm join --user='__REALM_JOIN_USERNAME__' '__DOMAIN_NAME__'
+    fi
+    sudo realm permit '__DOMAIN_JOIN_USERNAME__'
+    realm list
+    getent passwd '__DOMAIN_JOIN_USERNAME__'
+fi
 '@
 
     $linuxConfigurationScript = $linuxConfigurationScript.Replace('__INSTALL_SCRIPT__', $baseInstallScript.TrimEnd())
-    $linuxConfigurationScript = $linuxConfigurationScript.Replace('__CERTIFICATES_JSON__', ($TrustedCertificateBase64 | ConvertTo-Json -Compress))
-    Write-Verbose (Invoke-LabVmRunCommand -CommandId 'RunShellScript' -ScriptContent $linuxConfigurationScript)
+    $linuxConfigurationScript = $linuxConfigurationScript.Replace('__CERTIFICATES_JSON__', (ConvertTo-Json -InputObject @($TrustedCertificateBase64) -Compress))
+    $linuxConfigurationScript = $linuxConfigurationScript.Replace('__DOMAIN_NAME__', $DomainName)
+    $linuxConfigurationScript = $linuxConfigurationScript.Replace('__DOMAIN_JOIN_USERNAME__', $DomainJoinUsername)
+    $linuxConfigurationScript = $linuxConfigurationScript.Replace('__REALM_JOIN_USERNAME__', $realmJoinUsername)
+    $linuxParameters = if ($DomainName) { @{ domainJoinPassword = $DomainJoinPassword } } else { @{} }
+    Write-Verbose (Invoke-LabVmRunCommand -CommandId 'RunShellScript' -ScriptContent $linuxConfigurationScript -Parameter $linuxParameters)
 }
 
 $publicIpAddress = Invoke-LabAzCli -Arguments @(
@@ -338,6 +443,7 @@ $publicIpAddress = Invoke-LabAzCli -Arguments @(
 
 [PSCustomObject]@{
     VmName           = $VmName
+    ComputerName     = $effectiveComputerName
     OsType           = $OsType
     PrivateIpAddress = $PrivateIpAddress
     PublicIpAddress  = $publicIpAddress

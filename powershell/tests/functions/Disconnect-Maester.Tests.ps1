@@ -108,6 +108,7 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
                 Connected        = $true
                 DomainController = 'dc01.contoso.com'
             }
+            $__MtSession.ADCredential = [PSCredential]::new('CONTOSO\Maester', (ConvertTo-SecureString 'not-a-real-password' -AsPlainText -Force))
             $__MtSession.ADCache = @{ DomainState = [PSCustomObject]@{ Domain = 'contoso.com' } }
         }
     }
@@ -116,6 +117,7 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
         InModuleScope Maester {
             $__MtSession.Connections = @()
             $__MtSession.ADConnection = $null
+            $__MtSession.ADCredential = $null
             $__MtSession.ADCache = @{}
         }
     }
@@ -129,6 +131,7 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
 
         InModuleScope Maester {
             $__MtSession.ADConnection | Should -BeNullOrEmpty
+            $__MtSession.ADCredential | Should -BeNullOrEmpty
             $__MtSession.ADCache.Count | Should -Be 0
         }
     }
@@ -138,6 +141,7 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
 
         InModuleScope Maester {
             $__MtSession.ADConnection.Connected | Should -BeTrue
+            $__MtSession.ADCredential.UserName | Should -Be 'CONTOSO\Maester'
             $__MtSession.ADCache.Count | Should -Be 1
         }
     }

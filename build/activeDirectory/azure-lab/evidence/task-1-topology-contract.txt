@@ -1,0 +1,53 @@
+Task 1 - Canonical AD Lab Topology Contract
+Date: 2026-09-18
+
+DOMAIN CONTROLLERS
+DC02
+  Azure VM / computer name: MiSouleDC02
+  FQDN: MiSouleDC02.misoule02.local
+  Address: 10.20.0.4
+  Role: root domain controller for forest misoule02.local
+
+DC03
+  Azure VM / computer name: MiSouleDC03
+  FQDN: MiSouleDC03.child.misoule02.local
+  Address: 10.20.0.5
+  Role: child domain controller in forest misoule02.local
+
+DC04
+  Azure VM / computer name: MiSouleDC04
+  FQDN: MiSouleDC04.misoule03.local
+  Address: 10.20.0.6
+  Role: root domain controller for separate forest misoule03.local
+
+RUNNERS
+Windows
+  Azure VM name: MiSouleRunnerWin
+  Windows computer name: MSRunnerWin
+  FQDN after join: MSRunnerWin.misoule02.local
+  Address: 10.20.0.10
+  Authentication: joined to misoule02.local for implicit Windows credentials
+
+Linux
+  Azure VM / host name: MiSouleRunnerLinux
+  Address: 10.20.0.11
+  Authentication: enrolled in misoule02.local with realmd/SSSD; explicit credentials only
+
+TRUST AND CERTIFICATES
+- misoule02.local and child.misoule02.local use their automatic two-way
+  transitive intra-forest trust.
+- No trust is configured between misoule02.local and misoule03.local.
+- Separate-forest operations use explicit credentials.
+- Every DC has a server certificate valid for LDAPS and StartTLS.
+- Both runners trust every DC certificate.
+- WinRM HTTPS certificates match the endpoint names used for remoting.
+
+IMPLEMENTATION EVIDENCE
+- Deploy-Lab.ps1 stores Azure VM and Windows computer names separately.
+- New-RunnerVm.ps1 passes MSRunnerWin with az vm create --computer-name and
+  rejects Windows computer names longer than 15 characters.
+- New-RunnerVm.ps1 joins the Windows runner to misoule02.local and restarts it
+  when the join is newly applied.
+- Deploy-Lab.ps1, New-RunnerVm.ps1, and Configure-WinRM.ps1 parse successfully.
+- PowerShell language-server diagnostics report zero findings on those scripts.
+- PSScriptAnalyzer reports zero errors on the deployment and runner scripts.

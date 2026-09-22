@@ -16,7 +16,7 @@ Copy-Item -Path ".\powershell" -Destination "\\DC01\C$\temp\maester" -Recurse -F
 Import-Module C:\temp\maester\Maester.psd1 -Force
 
 # Validate protocol prerequisites before running AD tests
-./build/activeDirectory/Test-ADProtocolPrerequisites.ps1 -DirectoryServer 'misoule02.local'
+./build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
 
 # Run one isolated AD test cycle (single-target rule)
 ./build/activeDirectory/Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -TargetName 'misoule02.local'

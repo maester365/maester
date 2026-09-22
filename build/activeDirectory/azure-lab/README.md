@@ -1,5 +1,7 @@
 # Azure multi-platform, multi-forest E2E lab automation
 
+> ⚠️ **Validation Process Update (Plan 9)**: Current AD E2E certification requires execution through the hard preflight gate (`Test-LabPrerequisites.ps1`), protocol probe matrix (`Invoke-ProtocolProbeMatrix.ps1`), and public E2E runner matrix (`Invoke-PublicE2EMatrix.ps1`). All validation must run FROM the runners (`MiSouleRunnerWin` / `MiSouleRunnerLinux`), not directly on the DCs. DC-local execution examples in this document are retained for troubleshooting only and are not accepted as certification evidence.
+
 This folder contains the Azure deployment automation for the Maester end-to-end
 Active Directory lab described in Plan 04 Task 18. The scripts are written to
 create the lab when an operator runs them later, but this task only adds the
@@ -11,13 +13,46 @@ automation — it does **not** deploy any Azure resources during development.
 - Region: `eastus`
 - VNet: `MiSouleADTestVNet` / `10.20.0.0/24`
 - Subnet: `LabSubnet` / `10.20.0.0/24`
-- Domain controllers:
-  - `MiSouleDC02` — `10.20.0.4` — root forest `misoule02.local`
-  - `MiSouleDC03` — `10.20.0.5` — child domain `child.misoule02.local`
-  - `MiSouleDC04` — `10.20.0.6` — separate forest `misoule03.local`
-- Runners:
-  - `MiSouleRunnerWin` — `10.20.0.10`
-  - `MiSouleRunnerLinux` — `10.20.0.11`
+| Role | Azure VM name | Guest name / FQDN | IP | Forest and authentication state |
+| --- | --- | --- | --- | --- |
+| Root DC | `MiSouleDC02` | `MiSouleDC02.misoule02.local` | `10.20.0.4` | Root of `misoule02.local` |
+| Child DC | `MiSouleDC03` | `MiSouleDC03.child.misoule02.local` | `10.20.0.5` | Child domain in the `misoule02.local` forest |
+| Separate-forest DC | `MiSouleDC04` | `MiSouleDC04.misoule03.local` | `10.20.0.6` | Root of separate forest `misoule03.local` |
+| Windows runner | `MiSouleRunnerWin` | `MSRunnerWin.misoule02.local` | `10.20.0.10` | Joined to `misoule02.local` for implicit Windows credentials |
+| Linux runner | `MiSouleRunnerLinux` | `MiSouleRunnerLinux` | `10.20.0.11` | Enrolled in `misoule02.local` with realmd/SSSD; explicit credentials only |
+
+The root and child domains have the automatic two-way transitive intra-forest
+trust. Child-domain rows can therefore use the logged-in root-forest identity or
+an explicit child credential. No trust is configured between `misoule02.local`
+and `misoule03.local`, so every separate-forest authentication row uses an
+explicit secure credential; DNS forwarding and certificate trust do not create
+an authentication trust. Every DC receives a server-authentication certificate
+whose SANs contain its short name, FQDN, and domain name. The same certificate
+supports LDAPS on 636 and StartTLS negotiation on 389, and its public certificate
+is installed in `LocalMachine\Root` on Windows and the system CA store on Ubuntu.
+WinRM HTTPS uses a separate server certificate whose name matches the endpoint.
+
+## DNS, trust, and runner identity model
+
+- The VNet and both runner NICs use `MiSouleDC02` (`10.20.0.4`) as the canonical
+  resolver. Child promotion creates the authoritative
+  `child.misoule02.local` delegation, while forest-replicated conditional
+  forwarders route `misoule03.local` to `10.20.0.6` and route
+  `misoule02.local` back to `10.20.0.4` from the separate forest.
+- `MiSouleRunnerWin` is joined to `misoule02.local`. Root rows use the logged-in
+  domain user's Windows token for implicit credentials. A dedicated low-privilege
+  `maesterjoin` account performs runner enrollment; runner local-admin and forest-
+  administrator passwords are separate. Child rows may use the logged-in identity
+  through intra-forest trust or an explicit `CHILD` credential.
+- `MiSouleRunnerLinux` is enrolled in `misoule02.local` with realmd/SSSD. Linux
+  implicit-credential rows must launch a fresh `pwsh` process as a domain user
+  (for example, `sudo -iu 'maesterjoin@misoule02.local' pwsh`) so the process has a
+  root-forest Kerberos identity; Azure Run Command's root identity is not proof
+  of implicit authentication readiness.
+- There is intentionally no forest trust with `misoule03.local`. Separate-forest
+  rows use `MISOULE03\maesterreader` (or its UPN) as an explicit runtime
+  credential over LDAPS/StartTLS. No trust-aware separate-forest success row is
+  expected in this topology.
 
 ## Files
 
@@ -43,15 +78,20 @@ automation — it does **not** deploy any Azure resources during development.
    collision avoidance, and expiration.
 3. Create an ephemeral Key Vault unless `-SkipKeyVault` is used.
 4. Generate random runtime credentials.
-5. Create `MiSouleADTestVNet`, `LabSubnet`, and `MiSouleADTestNsg`.
+5. Create `MiSouleADTestVNet`, `LabSubnet`, and `MiSouleADTestNsg` with Azure DNS
+   retained for the root-DC bootstrap.
 6. Deploy and promote the domain controllers in DNS order:
    1. `MiSouleDC02` for `misoule02.local` (root forest)
-   2. `MiSouleDC04` for `misoule03.local` (separate forest)
-   3. `MiSouleDC03` for `child.misoule02.local` (child domain — requires domain-join-first approach)
-7. Export the LDAPS/StartTLS certificates from each domain controller and trust
-   them on both runners.
-8. Deploy the Windows runner with WinRM HTTPS/Negotiate enabled.
-9. Deploy the Ubuntu runner with `pwsh`, `smbclient`, and `PSWSMan`.
+   2. `MiSouleDC03` for `child.misoule02.local` (child domain — domain join first)
+   3. `MiSouleDC04` for `misoule03.local` (separate forest)
+7. After DC02 is ready, advertise it as VNet DNS. Configure and resolve-test the
+   child delegation and cross-forest conditional
+   forwarders, then require exactly one exported LDAPS/StartTLS trust anchor per
+   domain controller.
+8. Deploy `MiSouleRunnerWin` with guest computer name `MSRunnerWin`, join it to
+   `misoule02.local`, and enable WinRM HTTPS/Negotiate for implicit credentials.
+9. Deploy the Ubuntu runner with `pwsh`, `smbclient`, PSWSMan, realmd/SSSD, and
+   root-forest enrollment for Kerberos-backed implicit credentials.
 10. Validate the lab unless `-SkipValidation` is supplied.
 
 > **Note on child domain deployment:** The child domain controller (`MiSouleDC03`) must be joined to the parent domain (`misoule02.local`) before it can be promoted to a child domain controller. This is because `Install-ADDSDomain` requires the computer to have a valid Kerberos identity in the parent domain. See "Known issues and remediations" below for the complete procedure.
@@ -62,6 +102,10 @@ automation — it does **not** deploy any Azure resources during development.
   Azure Key Vault by default.
 - **No hardcoded secrets:** the scripts contain no embedded passwords or sample
   credentials.
+- **Credential tiering:** runner local administration, root-domain enrollment,
+  and forest administration use distinct generated passwords. The low-privilege
+  `maesterjoin` account uses the domain's default computer-join quota and is not
+  a member of an administrative group.
 - **NSGs:** inbound access is limited to the executor IP for RDP, WinRM, and SSH.
   East-west traffic is restricted to the lab subnet.
 - **Collision guard:** tags include a lab ID and expiration timestamp.
@@ -70,6 +114,9 @@ automation — it does **not** deploy any Azure resources during development.
 - **Runner posture:** the automation explicitly verifies that the Windows and
   Ubuntu runners do **not** expose the `ActiveDirectory`, `GroupPolicy`, or
   `DnsServer` PowerShell modules.
+- **TLS trust is explicit:** runner creation fails unless all three DC public
+  certificates were exported. Port 389/636 reachability alone is not accepted
+  as evidence of LDAPS or StartTLS trust.
 
 ## Prerequisites
 
@@ -79,6 +126,65 @@ automation — it does **not** deploy any Azure resources during development.
 - Existing resource group `RG_5100_MiSoule_2` in `eastus`
 
 ## Known issues and remediations
+
+### Azure VM Run Command stuck state (CRITICAL — SSH is now the preferred transport)
+
+> **Deprecation notice:** Azure VM Run Command is no longer the recommended management channel for the Windows runner (`MiSouleRunnerWin`). During the Plan 01 rerun under Plan 9, the Run Command extension on `MiSouleRunW` entered a permanent stuck state with error `Conflict: Run command extension execution is in progress`. All recovery attempts (reboot, extension redeploy, managed run commands, CustomScriptExtension) failed. SSH has been validated as a fully functional alternative.
+
+**Symptom:** `az vm run-command invoke` returns:
+```
+Conflict: Run command extension execution is in progress. Please wait for completion before invoking a run command.
+```
+The extension remains stuck indefinitely (observed >24 hours).
+
+**Root cause:** Azure VM Agent extension state corruption. The guest OS is healthy; only the Azure management channel is broken.
+
+**Validated solution — SSH-based management:**
+
+1. **Install OpenSSH Server** on the Windows runner (one-time bootstrap):
+   ```powershell
+   $feature = Get-WindowsCapability -Online | Where-Object { $_.Name -like 'OpenSSH.Server*' }
+   if ($feature.State -ne 'Installed') { Add-WindowsCapability -Online -Name $feature.Name }
+   Set-Service -Name sshd -StartupType Automatic
+   Start-Service -Name sshd
+   New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' `
+     -Enabled True -Direction Inbound -Protocol TCP -LocalPort 22 -Action Allow
+   ```
+
+2. **Set PowerShell as the default SSH shell:**
+   ```powershell
+   $regPath = 'HKLM:\SOFTWARE\OpenSSH'
+   if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+   Set-ItemProperty -Path $regPath -Name 'DefaultShell' `
+     -Value (Get-Command powershell.exe).Source -Type String -Force
+   Restart-Service -Name sshd -Force
+   ```
+
+3. **From the Linux runner, execute tests via SSH:**
+   ```bash
+   # Install sshpass if not present
+   sudo apt-get update && sudo apt-get install -y sshpass
+
+   # Set password from Key Vault
+   export SSHPASS=$(az keyvault secret show --vault-name <vault-name> `
+     --name <windows-password-secret> --query value -o tsv)
+
+   # Execute as domain user (for explicit-credential rows)
+   sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
+     'MISOULE02\maesterreader'@10.20.0.10 `
+     'pwsh -Command "& { <maester-test-command> }"'
+   ```
+
+**Why SSH is preferred:**
+- No Azure Agent dependency — cannot get stuck in `Conflict` state
+- Supports both local admin and domain user authentication
+- Enables `scp` for file transfer (copying scripts, evidence, certificates)
+- PowerShell default shell provides native `pwsh` execution
+- Session context is predictable and debuggable
+
+**Note on implicit credentials over SSH:** Non-interactive SSH sessions as a domain user cannot obtain an ambient Kerberos ticket for `System.DirectoryServices.ActiveDirectory` DC discovery. Implicit-credential rows (e.g., `1-win-dc02-implicit-implicit-negotiate-ldaps`) will fail with "Unable to discover an ambient Active Directory domain controller for the current Windows session." This is a session-context limitation, not a code defect. To test implicit credentials, use an interactive RDP or WinRM session with proper Kerberos ticket initialization.
+
+---
 
 ### Azure VM Run Command credential delegation limitations
 
@@ -142,7 +248,9 @@ az role assignment create `
 
 Some Azure subscriptions disable default outbound access on subnets. Windows Server VMs in the lab require outbound internet to download AD DS feature payloads during promotion.
 
-**Remediation:** A NAT Gateway (`MiSouleNATGW`) is automatically created and associated with `LabSubnet` by the deployment scripts. If deploying manually, ensure the subnet has outbound internet access via NAT Gateway or public IPs.
+**Remediation:** Ensure the subnet has outbound internet access before deployment,
+for example by manually associating a NAT Gateway such as `MiSouleNATGW`. The
+current deployment scripts do not create a NAT Gateway.
 
 ### Azure VM Run Command startup delays
 
@@ -161,6 +269,52 @@ The default `CompletionTimeoutMinutes` (60) in `New-DomainController.ps1` can be
   -CompletionTimeoutMinutes 120 `
   ...
 ```
+
+### StartTLS on Linux — Known Upstream .NET Bug
+
+**Severity:** Medium  
+**Impact:** StartTLS rows cannot be validated on the Linux runner.
+
+**Description:** `System.DirectoryServices.Protocols.LdapConnection.StartTransportLayerSecurity()` throws:
+```
+Exception calling "StartTransportLayerSecurity" with "1" argument(s): "The LDAP server is unavailable."
+```
+
+**Root cause:** This is a **known upstream bug in .NET on Linux**, not a Maester code defect. The underlying OpenLDAP library (`libldap` 2.5) works correctly — `ldapsearch -ZZ` completes StartTLS successfully on the same host with the same server and certificate. The failure occurs in .NET's managed-to-native interop layer when calling `ldap_start_tls_s`.
+
+**Upstream tracking:**
+- [dotnet/runtime#60972](https://github.com/dotnet/runtime/issues/60972) — `VerifyServerCertificate` unsupported on Linux (related, but not the root cause)
+- [dotnet/runtime#96988](https://github.com/dotnet/runtime/issues/96988) — StartTLS fails on .NET 8 Linux with error 81
+- [dotnet/runtime#103243](https://github.com/dotnet/runtime/issues/103243) — LDAPS/StartTLS confusion on .NET 8 Linux
+- [dotnet/runtime#110391](https://github.com/dotnet/runtime/issues/110391) — StartTLS "LDAP server is unavailable" on Linux
+- [dotnet/runtime#123676](https://github.com/dotnet/runtime/issues/123676) — libldap loading issues on .NET 10 Ubuntu 24.04
+
+**Empirical evidence from this lab:**
+| Test | .NET 8 (PS 7.4.6) | .NET 10 (PS 7.6.5) | OpenLDAP (`ldapsearch`) |
+|------|-------------------|--------------------|-------------------------|
+| LDAPS port 636 | ✅ PASS | ✅ PASS | N/A |
+| StartTLS port 389 | ❌ FAIL | ❌ FAIL | ✅ PASS |
+| StartTLS with `TLS_REQCERT never` | ❌ FAIL | ❌ FAIL | ✅ PASS |
+| StartTLS with DC cert in system CA store | ❌ FAIL | ❌ FAIL | ✅ PASS |
+
+**Conclusion:** StartTLS is broken in .NET on Linux regardless of .NET version (tested 8 and 10) or certificate configuration. LDAPS (port 636) is the reliable TLS path on Linux.
+
+**Remediation:**
+- Use **LDAPS (port 636)** for all TLS validation on the Linux runner. `SecureSocketLayer = $true` works correctly.
+- Perform StartTLS validation exclusively from the **Windows runner**, where `StartTransportLayerSecurity()` works correctly.
+- Do not attempt to work around this with certificate trust configuration — the bug is in .NET's interop layer, not certificate validation.
+
+### Linux runner prerequisite clarification
+
+During the Plan 01 rerun, three packages were installed on the Linux runner. Their necessity is clarified below:
+
+| Package | Required? | Purpose |
+|---------|-----------|---------|
+| `Microsoft.Graph.Authentication` | **Yes** | Required by Maester for Graph API connectivity. Must be present before running any Maester tests. |
+| `PSWSMan` | **No** (for AD protocol tests) | Required only for WinRM-based remoting from Linux to Windows. Not needed for LDAPS/StartTLS protocol validation. Was installed to fix outdated PSWSMan after VM deallocation. |
+| `smbclient` | **No** | Lab recovery fix for file share access after VM deallocation. Not a Maester prerequisite. |
+
+**Recommendation:** Update `Test-LabPrerequisites.ps1` to check for `Microsoft.Graph.Authentication` as a mandatory prerequisite, while treating `PSWSMan` and `smbclient` as optional (warn but do not block).
 
 ## End-to-End Test Execution
 
@@ -396,9 +550,13 @@ ls -lh evidence/reports-full/
 
 - `MiSouleRunnerWin` and `MiSouleRunnerLinux` are the only public ingress points.
   The domain controllers are private-only.
-- The Windows runner can be used for RDP/WinRM-based execution.
-- The Ubuntu runner is prepared for PSWSMan-based remoting and direct SMB client
-  checks.
+- The Windows runner is joined to `misoule02.local` and can use implicit root-
+  forest credentials for RDP/WinRM-based execution. Its Azure VM name is
+  `MiSouleRunnerWin`; its 15-character-safe Windows computer name is `MSRunnerWin`.
+- The Ubuntu runner is prepared for PSWSMan-based remoting, direct SMB client
+  checks, and root-forest Kerberos identity through realmd/SSSD. Start `pwsh` as
+  a domain account when a row calls for implicit credentials; use explicit
+  credentials for all separate-forest rows.
 - **SSH-based management** is available as an alternative channel after running
   `Enable-WindowsOpenSSH.ps1` on Windows VMs. This is useful for:
   - Running Maester tests from the Linux runner

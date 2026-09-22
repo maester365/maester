@@ -52,7 +52,7 @@ Describe 'Validating the module manifest' -ForEach @{ moduleRoot = $moduleRoot; 
         }
 
         Context 'Testing types files' -Skip:$(-not $manifest.ContainsKey('TypesToProcess')) {
-            It 'The file <_> should exist' -ForEach $manifest.TypesToProcess {
+            It 'The file <_> should exist' -ForEach $manifest.TypesToProcess -AllowNullOrEmptyForEach {
                 Join-Path -Path $moduleRoot -ChildPath $_ | Should -Exist
             }
         }

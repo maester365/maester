@@ -39,8 +39,16 @@
         [switch]$Refresh
     )
 
+    # LEGACY-ONLY / NON-CERTIFYING: ADSI/RSAT collection is retained for test
+    # compatibility. Connect-Maester must establish protocol certification first.
+
     if (-not (Test-MtConnection -Service ActiveDirectory)) {
         Write-Verbose 'Active Directory is not connected. Run Connect-Maester -Service ActiveDirectory before collecting ACLs.'
+        return $null
+    }
+
+    if (-not $__MtSession.ADConnection.ProtocolValidated) {
+        Write-Verbose 'Active Directory ACL enrichment requires a protocol-validated Connect-Maester session.'
         return $null
     }
 

@@ -1,0 +1,33 @@
+Task 1 - Topology Contract Verification History
+Date: 2026-09-18
+
+ACTIVE EDITABLE FILES NORMALIZED
+- build/activeDirectory/azure-lab/README.md
+- build/activeDirectory/azure-lab/Deploy-Lab.ps1
+- build/activeDirectory/azure-lab/New-RunnerVm.ps1
+- build/activeDirectory/azure-lab/Configure-WinRM.ps1
+- build/activeDirectory/azure-lab/DEPLOYMENT-ISSUES.md
+- build/activeDirectory/README-ADTestRunner.md
+
+READ-ONLY PLAN REVIEW
+- Plan 04 already contains the canonical DC/domain and Azure runner mapping.
+- Plan 01 contains legacy observations, but workspace policy declares every
+  file under .sisyphus/plans read-only and forbids modification. It was audited
+  but not changed.
+
+HISTORICAL RECORDS
+- Repository-wide scans also report legacy aliases in prior-plan notepads and
+  captured deployment/test evidence. These files record historical execution
+  and were intentionally not rewritten, as required by the task.
+
+VERIFICATION SUMMARY
+- Active editable PowerShell and Markdown files contain no legacy runner alias,
+  retired separate-forest domain, or retired child-DC FQDN.
+- Active references map DC03 only to child.misoule02.local.
+- Active references map DC04 only to misoule03.local.
+- Azure VM MiSouleRunnerWin uses Windows computer name MSRunnerWin and joins
+  misoule02.local; MiSouleRunnerLinux is enrolled in misoule02.local with
+  realmd/SSSD and uses explicit credentials.
+- The exact repository-wide scans were executed. Their residual output is only
+  the immutable Plan 01 report, historical notepads/evidence, and the plan text
+  that literally documents the stale-pattern verification command.

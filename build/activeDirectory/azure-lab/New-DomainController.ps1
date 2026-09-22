@@ -51,6 +51,11 @@
     'TestUserPassword',
     Justification = 'The test account password is generated per deployment and not stored in source control.'
 )]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSAvoidUsingPlainTextForPassword',
+    'DomainJoinUserPassword',
+    Justification = 'The delegated join-account password is generated per deployment and passed only at provisioning time.'
+)]
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter()]
@@ -109,6 +114,12 @@ param(
     [string]$TestUserPassword,
 
     [Parameter()]
+    [string]$DomainJoinUserName,
+
+    [Parameter()]
+    [string]$DomainJoinUserPassword,
+
+    [Parameter()]
     [string]$KeyVaultName,
 
     [Parameter()]
@@ -163,7 +174,21 @@ function Invoke-LabAzCli {
     }
 
     if ($exitCode -ne 0 -and -not $AllowFailure.IsPresent) {
-        throw "Azure CLI command failed ($exitCode): az $($Arguments -join ' ')`n$output"
+        $redactedArguments = @($Arguments)
+        $sensitiveValues = [System.Collections.Generic.List[string]]::new()
+        for ($index = 0; $index -lt $redactedArguments.Count; $index++) {
+            if ($index -gt 0 -and $redactedArguments[$index - 1] -match '(?i)^--(admin-password|password|value)$') {
+                $sensitiveValues.Add($redactedArguments[$index])
+                $redactedArguments[$index] = '[REDACTED]'
+            } elseif ($redactedArguments[$index] -match '(?i)^(?<name>[^=]*(password|secret|token)[^=]*)=(?<value>.+)$') {
+                $sensitiveValues.Add($Matches.value)
+                $redactedArguments[$index] = $Matches.name + '=[REDACTED]'
+            }
+        }
+        foreach ($sensitiveValue in $sensitiveValues) {
+            $output = $output.Replace($sensitiveValue, '[REDACTED]')
+        }
+        throw "Azure CLI command failed ($exitCode): az $($redactedArguments -join ' ')`n$output"
     }
 
     if ($ExpectJson.IsPresent -and $output) {
@@ -353,6 +378,9 @@ param(
     [string]$TestUserPassword,
     [string]$SafeModePassword,
     [string]$PromotionPassword
+    ,
+    [string]$DomainJoinUserName,
+    [string]$DomainJoinUserPassword
 )
 
 Set-StrictMode -Version Latest
@@ -377,11 +405,13 @@ $configuration = [ordered]@{
     TestUserPassword   = $TestUserPassword
     SafeModePassword   = $SafeModePassword
     PromotionPassword  = $PromotionPassword
+    DomainJoinUserName = $DomainJoinUserName
+    DomainJoinUserPassword = $DomainJoinUserPassword
 }
 
 $configuration | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path -Path $labRoot -ChildPath 'config.json') -Encoding utf8
 
-$finalizeScript = @"
+$finalizeScript = {
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -418,6 +448,11 @@ function New-LabLdapsCertificate {
         Where-Object { $_.FriendlyName -eq 'Maester Lab LDAPS' } |
         Select-Object -First 1
 
+    if ($certificate -and @($DnsName | Where-Object { $certificate.DnsNameList.Unicode -notcontains $_ }).Count -gt 0) {
+        Remove-Item -LiteralPath $certificate.PSPath -Force
+        $certificate = $null
+    }
+
     if (-not $certificate) {
         $certificateParameters = @{
             DnsName           = $DnsName
@@ -425,6 +460,8 @@ function New-LabLdapsCertificate {
             FriendlyName      = 'Maester Lab LDAPS'
             KeyAlgorithm      = 'RSA'
             KeyLength         = 2048
+            KeySpec           = 'KeyExchange'
+            HashAlgorithm     = 'SHA256'
             TextExtension     = @('2.5.29.37={text}1.3.6.1.5.5.7.3.1')
             NotAfter          = (Get-Date).AddDays(14)
         }
@@ -466,6 +503,27 @@ function Set-LabReaderAccount {
         if ($group) {
             Add-ADGroupMember -Identity $group.DistinguishedName -Members $configuration.TestUserName -ErrorAction SilentlyContinue
         }
+    }
+}
+
+function Set-LabDomainJoinAccount {
+    [CmdletBinding()]
+    param()
+
+    if ([string]::IsNullOrWhiteSpace($configuration.DomainJoinUserName)) {
+        return
+    }
+
+    Import-Module ActiveDirectory
+    $joinPassword = ConvertTo-SecureString -String $configuration.DomainJoinUserPassword -AsPlainText -Force
+    $domain = Get-ADDomain -Identity $configuration.DomainName
+    $userPath = 'CN=Users,' + $domain.DistinguishedName
+    $joinUser = Get-ADUser -Filter "SamAccountName -eq '$($configuration.DomainJoinUserName)'" -SearchBase $userPath -ErrorAction SilentlyContinue
+    if (-not $joinUser) {
+        New-ADUser -Name $configuration.DomainJoinUserName `
+            -SamAccountName $configuration.DomainJoinUserName `
+            -UserPrincipalName ($configuration.DomainJoinUserName + '@' + $configuration.DomainName) `
+            -Path $userPath -AccountPassword $joinPassword -Enabled $true -PasswordNeverExpires $true
     }
 }
 
@@ -517,6 +575,18 @@ if (-not (Test-Path -LiteralPath $promotionMarker)) {
                 }
 
                 Start-Sleep -Seconds 15
+            }
+
+
+            $computerSystem = Get-CimInstance -ClassName Win32_ComputerSystem
+            if (-not $computerSystem.PartOfDomain) {
+                Add-Computer -DomainName $configuration.ParentDomainName -Credential $credential -Force
+                Restart-Computer -Force
+                return
+            }
+
+            if ($computerSystem.Domain -ne $configuration.ParentDomainName) {
+                throw "Child domain controller is joined to '$($computerSystem.Domain)', expected '$($configuration.ParentDomainName)'."
             }
 
             $childDomainParameters = @{
@@ -573,6 +643,16 @@ try {
 $certificatePath = $null
 try {
     $certificatePath = New-LabLdapsCertificate -DnsName @($env:COMPUTERNAME, ($env:COMPUTERNAME + '.' + $configuration.DomainName), $configuration.DomainName)
+    Restart-Service -Name NTDS -Force -ErrorAction Stop
+    for ($attempt = 1; $attempt -le 30; $attempt++) {
+        try {
+            $null = Get-ADRootDSE -ErrorAction Stop
+            break
+        } catch {
+            if ($attempt -eq 30) { throw }
+            Start-Sleep -Seconds 5
+        }
+    }
 } catch {
     $errors.Add("Failed to create LDAPS certificate: $($_.Exception.Message)")
 }
@@ -589,6 +669,12 @@ try {
     $errors.Add("Failed to set reader account: $($_.Exception.Message)")
 }
 
+try {
+    Set-LabDomainJoinAccount
+} catch {
+    $errors.Add("Failed to create delegated domain-join account: $($_.Exception.Message)")
+}
+
 $result = [ordered]@{
     VmName                 = $env:COMPUTERNAME
     DomainName             = $configuration.DomainName
@@ -601,7 +687,7 @@ $result = [ordered]@{
 
 $result | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $completionPath -Encoding utf8
 Unregister-ScheduledTask -TaskName 'MaesterLab-DomainControllerFinalize' -Confirm:$false -ErrorAction SilentlyContinue
-"@
+}.ToString()
 
 $finalizeScript | Set-Content -LiteralPath (Join-Path -Path $labRoot -ChildPath 'finalize.ps1') -Encoding utf8
 
@@ -625,10 +711,12 @@ $bootstrapResult = Invoke-LabVmRunCommand -CommandId 'RunPowerShellScript' -Scri
         PromotionUserName = $(if ($PromotionUserName) { $PromotionUserName } else { '' })
         WinRmScriptBase64 = $winRmScriptBase64
         TestUserName      = $TestUserName
+        DomainJoinUserName = $(if ($DomainJoinUserName) { $DomainJoinUserName } else { '' })
     } -ProtectedParameter @{
         TestUserPassword  = $TestUserPassword
         SafeModePassword  = $SafeModePassword
         PromotionPassword = $(if ($PromotionPassword) { $PromotionPassword } else { $AdminPassword })
+        DomainJoinUserPassword = $(if ($DomainJoinUserPassword) { $DomainJoinUserPassword } else { '' })
     }
 
 Write-Verbose $bootstrapResult

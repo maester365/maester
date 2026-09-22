@@ -1,0 +1,24 @@
+Task 5 public-path legacy dependency scan
+Date: 2026-09-18
+
+Command:
+grep -R -n --include='*.ps1' -E 'Get-ADRootDSE|Get-ADDomain|Get-ADForest|Get-GPO|Get-DnsServer' powershell/public build/activeDirectory
+
+Certified path result:
+- powershell/public/Connect-Maester.ps1: no matches
+- build/activeDirectory/Run-ADTests-And-CopyReports.ps1: no matches
+- Certified connection path: Connect-Maester -> Connect-MtAdTarget -> New-MtLdapConnection -> Get-MtLdapRootDse
+- The runner requires ADConnection.ProtocolValidated before Invoke-Maester and writes resolved target/auth/TLS JSON evidence.
+
+Explicitly grandfathered legacy-only, non-certifying matches:
+- powershell/public/Get-MtADDomainState.ps1: RSAT enrichment after mandatory protocol target and LDAP RootDSE verification; marked LEGACY-ONLY / NON-CERTIFYING.
+- powershell/public/Get-MtADDacls.ps1: ADSI/RSAT compatibility collector; marked LEGACY-ONLY / NON-CERTIFYING.
+- powershell/public/Get-MtADGpoState.ps1 and powershell/public/ad/gpo/Test-MtAdGpoUnlinkedTargetCount.ps1: GroupPolicy/RSAT compatibility collection; marked LEGACY-ONLY / NON-CERTIFYING.
+- build/activeDirectory/Get-DomainState.ps1 and build/activeDirectory/Get-GpoState.ps1: standalone snapshot utilities; explicitly classified here as LEGACY-ONLY / NON-CERTIFYING and not called by the certified runner.
+
+Lab infrastructure matches (not E2E collection paths):
+- build/activeDirectory/azure-lab/Deploy-Lab.ps1: DNS conditional-forwarder provisioning.
+- build/activeDirectory/azure-lab/New-DomainController.ps1: domain-controller provisioning/readiness.
+- build/activeDirectory/azure-lab/Invoke-LabVmRunCommand.ps1: lab VM connectivity probe.
+
+Historical report artifacts under build/activeDirectory/AD-TestResults-* are retained evidence, not executable source, and are excluded from source-path certification.

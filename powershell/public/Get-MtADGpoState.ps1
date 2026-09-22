@@ -29,8 +29,16 @@ function Get-MtADGpoState {
         [switch]$Refresh
     )
 
+    # LEGACY-ONLY / NON-CERTIFYING: GroupPolicy/RSAT collection is retained for
+    # test compatibility. Connect-Maester must establish protocol certification first.
+
     if (-not (Test-MtConnection -Service ActiveDirectory)) {
         Write-Verbose 'Active Directory is not connected. Run Connect-Maester -Service ActiveDirectory before collecting Group Policy state.'
+        return $null
+    }
+
+    if (-not $__MtSession.ADConnection.ProtocolValidated) {
+        Write-Verbose 'Active Directory GPO enrichment requires a protocol-validated Connect-Maester session.'
         return $null
     }
 

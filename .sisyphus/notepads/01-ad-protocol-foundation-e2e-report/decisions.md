@@ -1,0 +1,3 @@
+- Decision: Adopt canonical topology for AD protocol foundation e2e report as per plan 01.
+- Rationale: Aligns with lab canonical contracts; ensures consistency across environments and downstream references.
+- Consequences: Requires updating transcripts, environment, and follow-up sections to canonical names; no change to code behavior.

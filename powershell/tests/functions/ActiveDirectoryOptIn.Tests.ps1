@@ -44,6 +44,18 @@ Describe 'Active Directory collectors require an explicit connection' {
         Should -Invoke Get-ADDomain -ModuleName Maester -Times 0 -Exactly
     }
 
+    It 'Does not collect domain state from a legacy-only connection marker' {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected         = $true
+                ProtocolValidated = $false
+            }
+        }
+
+        Get-MtADDomainState | Should -BeNullOrEmpty
+        Should -Invoke Get-ADDomain -ModuleName Maester -Times 0 -Exactly
+    }
+
     It 'Does not collect or return cached ACLs' {
         Get-MtADDacls | Should -BeNullOrEmpty
         Should -Invoke Get-ADDomain -ModuleName Maester -Times 0 -Exactly

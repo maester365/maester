@@ -69,3 +69,18 @@
 - F4 Scope Fidelity: APPROVED — Work matches original scope (end-to-end testing capabilities)
 
 > **Note**: A second verification wave (F5–F8) is required after Task 20b to certify the protocol-migrated implementation.
+Topology notes for Plan 4 (04-integration-docs-and-e2e.md):
+- Observed topology references:
+  - Five hosts in Azure E2E lab are described: DC02 root misoule02.local, DC03 child misoule02.local, DC04 forest misoule03.local, Windows runner MiSouleRunnerWin, Linux runner MiSouleRunnerLinux.
+  - The plan specifies IP placeholders (e.g., .4, .5, .6, .10, .11) indicating lab VM addressing in the described VNet (MiSouleADTestVNet 10.20.0.0/24).
+- Domains/forests:
+  - misoule02.local as root for DC02 and misoule02.local as domain for DC03; misoule03.local as forest root for DC04.
+- Runners:
+  - MiSouleRunnerWin (Windows) and MiSouleRunnerLinux (Ubuntu) with explicit topologies.
+- Trust/Join/auth context:
+  - Plan states that runners should lack legacy modules and validate PS5.1/PS7; no explicit domain-join status is stated in Wave 1/2 descriptions.
+- Notable quotes:
+  - "MiSouleDC02 root misoule02.local" (Plan 4, Wave 2 section)
+  - "MiSouleDC03 child misoule02.local" (Plan 4, Wave 2 section)
+  - "MiSouleDC04 forest misoule03.local" (Plan 4, Wave 2 section)
+  - "Five hosts healthy; domain topology/certs/WinRM/SMB/PSWSMan verified; removed modules absent on runners" (Plan 4, Wave 4 Acceptance Criteria)

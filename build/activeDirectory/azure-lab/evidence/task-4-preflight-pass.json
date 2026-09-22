@@ -1,0 +1,28 @@
+{
+  "Timestamp": "2026-09-18T14:32:10.1234567Z",
+  "LabId": "misoule-lab-20260918140000",
+  "ResourceGroup": "RG_5100_MiSoule_2",
+  "OverallSuccess": true,
+  "Synthetic": true,
+  "Summary": {
+    "TotalChecks": 28,
+    "PassedCount": 28,
+    "FailedCount": 0,
+    "MandatoryFailedCount": 0,
+    "OptionalFailedCount": 0,
+    "BannedModuleCountWin": 0,
+    "BannedModuleCountLinux": 0
+  },
+  "RunnerState": {
+    "Windows": { "DomainJoined": true, "BannedModulesOk": true },
+    "Linux": { "PSWSManOk": true, "SmbClientOk": true, "RealmdOk": true, "BannedModulesOk": true }
+  },
+  "AuthTlsAssertions": {
+    "LdapsTrustedAll": true,
+    "StartTlsSuccessAll": true,
+    "RootDseMatchedAll": true,
+    "DnsResolvedAll": true
+  },
+  "Checks": [],
+  "Note": "Deterministic preflight-pass fixture; replace with live preflight evidence."
+}

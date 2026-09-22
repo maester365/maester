@@ -13,6 +13,22 @@ Before running AD tests, validate that the runner can reach and negotiate the re
 
 When using LDAPS / StartTLS and WinRM over HTTPS, ensure the runner trusts the server certificates.
 
+## Canonical E2E lab contract
+
+| Role | Endpoint | Forest / authentication state |
+|---|---|---|
+| Root DC | `MiSouleDC02.misoule02.local` | Root forest `misoule02.local` |
+| Child DC | `MiSouleDC03.child.misoule02.local` | Child domain in the `misoule02.local` forest |
+| Separate-forest DC | `MiSouleDC04.misoule03.local` | Separate forest `misoule03.local` |
+| Windows runner | Azure VM `MiSouleRunnerWin`; guest `MSRunnerWin.misoule02.local` | Joined to the root forest for implicit credentials |
+| Linux runner | `MiSouleRunnerLinux` | Enrolled in `misoule02.local` with realmd/SSSD; explicit credentials only |
+
+The root and child domains use their automatic two-way transitive intra-forest
+trust. There is no trust between the root forest and `misoule03.local`, so
+separate-forest runs require explicit credentials. Each DC's LDAPS/StartTLS
+certificate must be trusted by both runners, and each WinRM HTTPS certificate
+must match the endpoint name used for remoting.
+
 ## Single-target rule (recommended)
 Run exactly one directory server per invocation:
 
@@ -27,7 +43,7 @@ Do not loop over multiple `TargetName` values in a single run.
 
 | Script | Purpose |
 |---|---|
-| `Test-ADProtocolPrerequisites.ps1` | Validates reachability and protocol/TLS/remoting prerequisites for one directory server. |
+| `azure-lab/Test-ADProtocolPrerequisites.ps1` | Validates reachability and protocol/TLS/remoting prerequisites for one directory server. |
 | `Run-ADTests-And-CopyReports.ps1` | Runs the Maester Active Directory test suite (tag `AD`) for one target and copies the generated report artifacts to `build/activeDirectory`. |
 
 ## Quick start
@@ -35,7 +51,7 @@ Do not loop over multiple `TargetName` values in a single run.
 ### 1) Validate prerequisites for one directory server
 
 ```powershell
-./build/activeDirectory/Test-ADProtocolPrerequisites.ps1 -DirectoryServer 'misoule02.local'
+./build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
 ```
 
 ### 2) Run one isolated AD test cycle and copy reports

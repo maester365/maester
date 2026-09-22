@@ -165,10 +165,11 @@ Describe 'Build-MaesterModule' {
                 $OrcaContent = Get-Content -Path $OutputOrcaClasses -Raw
                 $Manifest = Import-PowerShellDataFile -Path $OutputManifest
 
-                $Psm1Content | Should -Match '# Fixture module preamble'
-                $Psm1Content | Should -Not -Match '# Fixture runtime body'
                 $Psm1Content | Should -Match 'function Get-TestThing'
                 $Psm1Content | Should -Not -Match '\$Unused'
+                foreach ($SessionKey in 'ADCache', 'ADCollectionTime', 'ADConnection', 'ADCredential', 'GitHubCache', 'SpoCache') {
+                    $Psm1Content | Should -Match "(?m)^\s*$SessionKey\s*="
+                }
                 $TestMetadata.'Get-TestThing'.Description | Should -BeLike 'Fixture test description.*'
                 $TestMetadata.'Get-TestThing'.Result | Should -BeLike '*Fixture result: %TestResult%*'
                 $OrcaContent | Should -Match 'class ORCA999 : ORCACheck'

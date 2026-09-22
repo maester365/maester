@@ -5,13 +5,13 @@
 .DESCRIPTION
     This script wraps Azure VM Run Command execution with the patterns from the
     microsoft-skills vm-guest-management skill (https://github.com/soulemike/microsoft-skills).
-    
+
     Key improvements over raw 'az vm run-command invoke':
     - Inspects instanceView for executionState, exitCode, output, and error
     - Distinguishes provisioning success from guest script success
     - Supports managed Run Command resources for production scenarios
     - Better timeout handling and diagnostics for credential-sensitive operations
-    
+
     This wrapper is particularly valuable for AD DS operations where credential
     delegation issues require detailed error diagnostics.
 
@@ -60,7 +60,7 @@
         -VmName 'MiSouleDC02' `
         -ScriptString 'Get-ADRootDSE | Select-Object dnsHostName' `
         -RunCommandName 'ad-diagnostics'
-    
+
     if ($result.ExecutionState -ne 'Succeeded' -or $result.ExitCode -ne 0) {
         throw "Guest execution failed: $($result.Error)"
     }
@@ -68,7 +68,7 @@
 
 .NOTES
     Based on patterns from: https://github.com/soulemike/microsoft-skills/tree/main/skills/vm-guest-management
-    
+
     Critical pattern: Always inspect instanceView, not just provisioningState.
     ARM provisioning success does NOT guarantee guest script success.
 #>
@@ -138,11 +138,11 @@ function Invoke-AzCliWithRetry {
             $output = $proc.StandardOutput.ReadToEnd()
             $errorOutput = $proc.StandardError.ReadToEnd()
             $proc.WaitForExit()
-            
+
             if ($proc.ExitCode -ne 0) {
                 throw "Azure CLI exited with code $($proc.ExitCode): $errorOutput"
             }
-            
+
             if ($ExpectJson.IsPresent -and $output) {
                 return $output | ConvertFrom-Json
             }
@@ -192,14 +192,14 @@ function Wait-RunCommandCompletion {
 
     while ((Get-Date) -lt $deadline) {
         Start-Sleep -Seconds $pollInterval
-        
+
         try {
             $instanceView = Get-RunCommandInstanceView -ResourceGroupName $ResourceGroupName -VmName $VmName -RunCommandName $RunCommandName
-            
+
             if ($instanceView.instanceView -and $instanceView.instanceView.executionState) {
                 $state = $instanceView.instanceView.executionState
                 Write-Verbose "Run Command '$RunCommandName' state: $state"
-                
+
                 if ($state -in @('Succeeded', 'Failed', 'Canceled')) {
                     return $instanceView.instanceView
                 }

@@ -13,6 +13,16 @@
 ## Context
 This plan implements the cross-platform transports that Plan 2 deliberately excludes: reading GPO files from SYSVOL, executing remote WMI over WinRM/PSRP for DNS and SMB state, and composing the final GPO report from LDAP metadata plus SYSVOL content.
 
+### E2E Lab Topology and Transport Validation (Plan 9 Alignment)
+The cross-platform transport tests run against the canonical Azure AD lab defined in Plan 9:
+- **DC02**: `MiSouleDC02.misoule02.local` — root forest `misoule02.local`
+- **DC03**: `MiSouleDC03.child.misoule02.local` — child domain in `misoule02.local` forest
+- **DC04**: `MiSouleDC04.misoule03.local` — separate forest `misoule03.local`
+- **Windows runner**: `MiSouleRunnerWin` (guest `MSRunnerWin`) — domain-joined to `misoule02.local`, supports implicit credentials
+- **Linux runner**: `MiSouleRunnerLinux` — enrolled in `misoule02.local` with realmd/SSSD; explicit credentials only
+
+All transport validation (SMB/WinRM/PSRP) is now part of the mandatory E2E matrix. StartTLS and LDAPS certificate trust are validated by the hard preflight gate (`Test-LabPrerequisites.ps1`) before any transport or collector tests execute. Cross-platform transport rows must cover both runners against all three domains where the platform contract supports the transport.
+
 ## Wave 1: SYSVOL Transport (Task 9)
 
 ### Task 9 — Implement credentialed cross-platform SYSVOL transport and bounded parsers

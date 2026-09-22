@@ -1,0 +1,19 @@
+build/activeDirectory/Validate-Phase19-GPOState.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+build/activeDirectory/Simple-Validate-Phase19.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+build/activeDirectory/Run-ADTests-And-CopyReports.ps1:$prereqScript = Join-Path $PSScriptRoot 'azure-lab\Test-ADProtocolPrerequisites.ps1'
+build/activeDirectory/validate-dns-tests.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+build/activeDirectory/Validate-Phase7-GPO.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+build/activeDirectory/Phase19-Validation-README.md:./build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
+build/activeDirectory/Standalone-Phase19-Validation.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1:    ./Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
+build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1:    ./Test-ADProtocolPrerequisites.ps1 -TargetName 'MiSouleDC04.misoule03.local' -Credential (Get-Credential)
+build/activeDirectory/CollaborationProcess.md:     ./build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
+build/activeDirectory/README-ADTestRunner.md:| `azure-lab/Test-ADProtocolPrerequisites.ps1` | Validates reachability and protocol/TLS/remoting prerequisites for one directory server. |
+build/activeDirectory/README-ADTestRunner.md:./build/activeDirectory/azure-lab/Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
+build/activeDirectory/validate-dns-tests-v2.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+build/activeDirectory/Validate-Phase7-Simple.ps1:Write-Host 'Use azure-lab/Test-ADProtocolPrerequisites.ps1 to validate network, TLS, authentication, and remoting prerequisites.' -ForegroundColor Yellow
+.sisyphus/notepads/04-integration-docs-and-e2e/learnings.md:- `Test-ADProtocolPrerequisites.ps1` created — validates LDAP/LDAPS/DNS/SMB/WinRM
+.sisyphus/plans/09-ad-e2e-validation-closure.md:- Resolve the current runner mismatch: `README-ADTestRunner.md` references `Test-ADProtocolPrerequisites.ps1`, but the file is missing and must be restored or replaced by a canonical preflight entrypoint.
+.sisyphus/plans/09-ad-e2e-validation-closure.md:  **What to do**: Reconcile `build/activeDirectory/README-ADTestRunner.md` with reality by either restoring `Test-ADProtocolPrerequisites.ps1` as the canonical runner prerequisite entrypoint or replacing the reference everywhere with a new, explicit preflight command. The resulting entrypoint must expose the protocol capability matrix from `powershell/internal/ad/Test-MtAdProtocolPrerequisites.ps1` in a runner-usable form and become the required first step of every AD E2E cycle.
+.sisyphus/plans/09-ad-e2e-validation-closure.md:  - [ ] `glob "build/activeDirectory/**/Test-ADProtocolPrerequisites.ps1"` returns the canonical entrypoint, or active docs/scripts contain no references to that legacy name.
+.sisyphus/plans/09-ad-e2e-validation-closure.md:  - [ ] `grep -R "Test-ADProtocolPrerequisites.ps1" build/activeDirectory .sisyphus` shows either one valid script path or zero active references after replacement.
