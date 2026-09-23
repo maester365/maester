@@ -12,6 +12,7 @@ keywords:
   - "High"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:High"
 ---
@@ -55,8 +56,8 @@ This test reports Agent Identity Blueprints that allow all delegated scopes or a
 | Severity | High |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentBlueprintAllAllowedInheritance` |
-| Tags | Entra, Graph, Maester, MT.1211, Preview, Severity:High |
+| PowerShell test | [Test-MtEntraAgentBlueprintAllAllowedInheritance](/docs/commands/Test-MtEntraAgentBlueprintAllAllowedInheritance) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1211, Preview, Severity:High |
 
 ## Source
 

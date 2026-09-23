@@ -67,7 +67,7 @@ permissions and access assignments.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentBlueprintOrphaned` |
+| PowerShell test | [Test-MtEntraAgentBlueprintOrphaned](/docs/commands/Test-MtEntraAgentBlueprintOrphaned) |
 | Tags | Entra, Graph, Maester, MT.1203, Preview, Severity:Medium |
 
 ## Source

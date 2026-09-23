@@ -12,6 +12,7 @@ keywords:
   - "High"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:High"
 ---
@@ -57,8 +58,8 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 | Severity | High |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentBlueprintCredentialHygiene` |
-| Tags | Entra, Graph, Maester, MT.1208, Preview, Severity:High |
+| PowerShell test | [Test-MtEntraAgentBlueprintCredentialHygiene](/docs/commands/Test-MtEntraAgentBlueprintCredentialHygiene) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1208, Preview, Severity:High |
 
 ## Source
 

@@ -12,6 +12,7 @@ keywords:
   - "Medium"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:Medium"
 ---
@@ -60,8 +61,8 @@ This check audits all Agent Identities, Blueprint Principals, and Blueprints in 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentOwner` |
-| Tags | Entra, Graph, Maester, MT.1204, Preview, Severity:Medium |
+| PowerShell test | [Test-MtEntraAgentOwner](/docs/commands/Test-MtEntraAgentOwner) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1204, Preview, Severity:Medium |
 
 ## Source
 

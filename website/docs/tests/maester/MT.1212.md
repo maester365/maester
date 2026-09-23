@@ -61,7 +61,7 @@ roles aren't included in the assessment.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentBlueprintOpenAccess` |
+| PowerShell test | [Test-MtEntraAgentBlueprintOpenAccess](/docs/commands/Test-MtEntraAgentBlueprintOpenAccess) |
 | Tags | Entra, Graph, Maester, MT.1212, Preview, Severity:Medium |
 
 ## Source

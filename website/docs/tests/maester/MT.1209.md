@@ -12,6 +12,7 @@ keywords:
   - "High"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:High"
 ---
@@ -57,8 +58,8 @@ This check queries all active directory role assignments to identify Agent Ident
 | Severity | High |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentDirectoryRoles` |
-| Tags | Entra, Graph, Maester, MT.1209, Preview, Severity:High |
+| PowerShell test | [Test-MtEntraAgentDirectoryRoles](/docs/commands/Test-MtEntraAgentDirectoryRoles) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1209, Preview, Severity:High |
 
 ## Source
 

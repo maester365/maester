@@ -71,7 +71,7 @@ That makes it harder to tell why the account exists and whether it should still 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentUserOrphaned` |
+| PowerShell test | [Test-MtEntraAgentUserOrphaned](/docs/commands/Test-MtEntraAgentUserOrphaned) |
 | Tags | Entra, Graph, Maester, MT.1201, Preview, Severity:Medium |
 
 ## Source
