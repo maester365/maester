@@ -89,7 +89,7 @@ escalation path. The check evaluates the following permissions:
 | Severity | High |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentHighRiskGraphPermissions` |
+| PowerShell test | [Test-MtEntraAgentHighRiskGraphPermissions](/docs/commands/Test-MtEntraAgentHighRiskGraphPermissions) |
 | Tags | Entra, Graph, LongRunning, Maester, MT.1223, Preview, Severity:High |
 
 ## Source

@@ -12,6 +12,7 @@ keywords:
   - "Medium"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:Medium"
 ---
@@ -59,8 +60,8 @@ This check reviews interactive, delegated, and application sign-in activity. It 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentInactive` |
-| Tags | Entra, Graph, Maester, MT.1206, Preview, Severity:Medium |
+| PowerShell test | [Test-MtEntraAgentInactive](/docs/commands/Test-MtEntraAgentInactive) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1206, Preview, Severity:Medium |
 
 ## Source
 

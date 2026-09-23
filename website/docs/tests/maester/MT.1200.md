@@ -78,7 +78,7 @@ deleting it.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentIdentityOrphaned` |
+| PowerShell test | [Test-MtEntraAgentIdentityOrphaned](/docs/commands/Test-MtEntraAgentIdentityOrphaned) |
 | Tags | Entra, Graph, Maester, MT.1200, Preview, Severity:Medium |
 
 ## Source

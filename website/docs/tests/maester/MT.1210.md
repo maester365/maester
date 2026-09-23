@@ -12,6 +12,7 @@ keywords:
   - "High"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:High"
 ---
@@ -55,8 +56,8 @@ This check inspects all Agent Users in the tenant and verifies that they do not 
 | Severity | High |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentUserExcessiveAccess` |
-| Tags | Entra, Graph, Maester, MT.1210, Preview, Severity:High |
+| PowerShell test | [Test-MtEntraAgentUserExcessiveAccess](/docs/commands/Test-MtEntraAgentUserExcessiveAccess) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1210, Preview, Severity:High |
 
 ## Source
 

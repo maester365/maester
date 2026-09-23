@@ -12,6 +12,7 @@ keywords:
   - "High"
   - "Entra"
   - "Graph"
+  - "LongRunning"
   - "Preview"
   - "Severity:High"
 ---
@@ -57,8 +58,8 @@ Foreign Blueprint Principals and their child Agent Identities must not be assign
 | Severity | High |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtEntraAgentForeignPrivileged` |
-| Tags | Entra, Graph, Maester, MT.1207, Preview, Severity:High |
+| PowerShell test | [Test-MtEntraAgentForeignPrivileged](/docs/commands/Test-MtEntraAgentForeignPrivileged) |
+| Tags | Entra, Graph, LongRunning, Maester, MT.1207, Preview, Severity:High |
 
 ## Source
 
