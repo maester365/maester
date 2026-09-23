@@ -37,6 +37,19 @@
 
     $groups = $adState.Groups
 
+    $ldapConnectionParameters = @{
+        Server   = $adState.ProtocolEvidence.ResolvedServer
+        AuthType = $adState.ProtocolEvidence.AuthenticationMode
+    }
+    if ($adState.ProtocolEvidence.TlsMode -eq 'StartTls') {
+        $ldapConnectionParameters['Port'] = 389
+        $ldapConnectionParameters['UseStartTls'] = $true
+    } else {
+        $ldapConnectionParameters['Port'] = 636
+    }
+    if ($null -ne $__MtSession.ADCredential) { $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential }
+    $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+
     # Well-known privileged group RIDs
     $privilegedRIDs = @{
         '512' = 'Domain Admins'
@@ -66,7 +79,7 @@
             $totalPrivileged++
 
             try {
-                $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+                $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
                 $memberCount = ($members | Measure-Object).Count
 
                 if ($memberCount -gt 0) {
@@ -90,6 +103,8 @@
             }
         }
     }
+
+    $protocolConnection.Dispose()
 
     $testResult = $true
 

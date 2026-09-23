@@ -177,6 +177,11 @@ function Test-MtAdProtocolPrerequisites {
         $remediationActions.Add('Use Windows PowerShell 5.1, Windows PowerShell 7, Linux PowerShell 7, or macOS PowerShell 7 for cross-platform Active Directory LDAP connectivity.') | Out-Null
     }
 
+    if ($runtimeProfileName -eq 'WindowsPS51') {
+        $missingPrerequisites.Add('Windows PowerShell 5.1 has module scope limitations that prevent Maester internal LDAP functions from resolving when invoked outside the module context (e.g., via Azure VM Run Command or remote sessions).') | Out-Null
+        $remediationActions.Add('Use Windows PowerShell 7 (pwsh.exe) for E2E validation and runner-based test execution.') | Out-Null
+    }
+
     $authModes = if ($null -ne $runtimeProfile) { [string[]]@($runtimeProfile.SupportedAuthModes) } else { [string[]]@() }
     $tlsModes = if ($null -ne $runtimeProfile) { [string[]]@($runtimeProfile.TlsModes) } else { [string[]]@('Ldaps', 'StartTls') }
 

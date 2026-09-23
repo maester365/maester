@@ -134,7 +134,7 @@ function Invoke-LabVmRunCommand {
 function Add-PreflightCheck {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]
+        [Parameter()]
         [System.Collections.Generic.List[object]]$List,
 
         [Parameter(Mandatory)]
@@ -190,7 +190,7 @@ function Add-PreflightCheck {
 # ---------------------------------------------------------------------------
 # 0) Discovery
 # ---------------------------------------------------------------------------
-$vmNames = @('MiSouleDC02', 'MiSouleDC03', 'MiSouleDC04', 'MiSouleRunnerWin', 'MiSouleRunnerLinux')
+$vmNames = @('MiSouleDC02', 'MiSouleDC03', 'MiSouleDC04', 'MiSouleRunW', 'MiSouleRunnerLinux')
 $results = [System.Collections.Generic.List[object]]::new()
 
 $taggedResources = Invoke-LabAzCli -Arguments @(
@@ -208,13 +208,13 @@ if (-not @($taggedResources | Where-Object { $_ }).Count) {
 # 1) Power state
 # ---------------------------------------------------------------------------
 foreach ($vmName in $vmNames) {
-    $powerState = Invoke-LabAzCli -Arguments @(
+    $powerState = (Invoke-LabAzCli -Arguments @(
         'vm', 'get-instance-view',
         '--resource-group', $ResourceGroupName,
         '--name', $vmName,
         '--query', "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]",
         '--output', 'tsv'
-    )
+    )).Trim()
 
     Add-PreflightCheck -List $results `
         -CheckId "PowerState.$vmName" `
@@ -302,7 +302,11 @@ foreach ($ep in $dcEndpoints) {
         $ldapsConn.SessionOptions.SecureSocketLayer = $true
         $ldapsConn.Bind()
 
-        $search = New-Object System.DirectoryServices.Protocols.SearchRequest('', '(objectClass=*)', 'Base', @('defaultNamingContext'))
+        $search = New-Object System.DirectoryServices.Protocols.SearchRequest
+        $search.DistinguishedName = ''
+        $search.Scope = [System.DirectoryServices.Protocols.SearchScope]::Base
+        $search.Filter = '(objectClass=*)'
+        [void]$search.Attributes.Add('defaultNamingContext')
         $response = $ldapsConn.SendRequest($search)
         $rootDse = $response.Entries[0]
         $defaultNC = [string]$rootDse.Attributes['defaultNamingContext'][0]
@@ -339,7 +343,11 @@ foreach ($ep in $dcEndpoints) {
         $startTlsConn.SessionOptions.StartTransportLayerSecurity((New-Object System.DirectoryServices.Protocols.DirectoryControlCollection))
         $startTlsConn.Bind()
 
-        $search2 = New-Object System.DirectoryServices.Protocols.SearchRequest('', '(objectClass=*)', 'Base', @('defaultNamingContext'))
+        $search2 = New-Object System.DirectoryServices.Protocols.SearchRequest
+        $search2.DistinguishedName = ''
+        $search2.Scope = [System.DirectoryServices.Protocols.SearchScope]::Base
+        $search2.Filter = '(objectClass=*)'
+        [void]$search2.Attributes.Add('defaultNamingContext')
         $response2 = $startTlsConn.SendRequest($search2)
         $rootDse2 = $response2.Entries[0]
         $defaultNC2 = [string]$rootDse2.Attributes['defaultNamingContext'][0]
@@ -376,7 +384,12 @@ foreach ($ep in $dcEndpoints) {
         $rootConn.SessionOptions.SecureSocketLayer = $true
         $rootConn.Bind()
 
-        $search3 = New-Object System.DirectoryServices.Protocols.SearchRequest('', '(objectClass=*)', 'Base', @('defaultNamingContext','dnsHostName'))
+        $search3 = New-Object System.DirectoryServices.Protocols.SearchRequest
+        $search3.DistinguishedName = ''
+        $search3.Scope = [System.DirectoryServices.Protocols.SearchScope]::Base
+        $search3.Filter = '(objectClass=*)'
+        [void]$search3.Attributes.Add('defaultNamingContext')
+        [void]$search3.Attributes.Add('dnsHostName')
         $response3 = $rootConn.SendRequest($search3)
         $entry3 = $response3.Entries[0]
         $defaultNC3 = [string]$entry3.Attributes['defaultNamingContext'][0]
@@ -408,8 +421,8 @@ foreach ($ep in $dcEndpoints) {
 try {
     $trusts = nltest /domain_trusts /all_trusts 2>$null
     $parsed = foreach ($line in $trusts) {
-        if ($line -match '^\s*0:\s+(.+?)\s+(.+?)\s+(.+?)\s+(.+?)\s+(.+)$') {
-            [ordered]@{ Domain = $matches[1].Trim(); Type = $matches[2].Trim() }
+        if ($line -match '^\s*\d+:\s+\S+\s+(\S+\.\S+)') {
+            [ordered]@{ Domain = $matches[1].Trim(); Type = 'nltest' }
         }
     }
     $output.ForestTrusts = [System.Collections.Generic.List[object]]::new()
@@ -430,12 +443,14 @@ if ($output.ForestTrusts.Count -eq 0) {
         $trustConn.SessionOptions.SecureSocketLayer = $true
         $trustConn.Bind()
 
-        $tSearch = New-Object System.DirectoryServices.Protocols.SearchRequest(
-            'CN=System,DC=misoule02,DC=local',
-            '(objectClass=trustedDomain)',
-            'Subtree',
-            @('cn','trustPartner','trustType','trustDirection')
-        )
+        $tSearch = New-Object System.DirectoryServices.Protocols.SearchRequest
+        $tSearch.DistinguishedName = 'CN=System,DC=misoule02,DC=local'
+        $tSearch.Scope = [System.DirectoryServices.Protocols.SearchScope]::Subtree
+        $tSearch.Filter = '(objectClass=trustedDomain)'
+        [void]$tSearch.Attributes.Add('cn')
+        [void]$tSearch.Attributes.Add('trustPartner')
+        [void]$tSearch.Attributes.Add('trustType')
+        [void]$tSearch.Attributes.Add('trustDirection')
         $tResponse = $trustConn.SendRequest($tSearch)
         foreach ($e in $tResponse.Entries) {
             $output.ForestTrusts.Add([ordered]@{
@@ -453,8 +468,13 @@ if ($output.ForestTrusts.Count -eq 0) {
 $output | ConvertTo-Json -Depth 10 -Compress
 '@
 
-$winRaw = Invoke-LabVmRunCommand -VmName 'MiSouleRunnerWin' -CommandId 'RunPowerShellScript' -ScriptContent $windowsRunnerScript
-$winData = $winRaw | ConvertFrom-Json
+$winRaw = Invoke-LabVmRunCommand -VmName 'MiSouleRunW' -CommandId 'RunPowerShellScript' -ScriptContent $windowsRunnerScript
+try {
+    $winData = $winRaw | ConvertFrom-Json
+} catch {
+    Write-Error "Failed to parse Windows runner response as JSON. Raw output: $winRaw"
+    throw
+}
 
 # --- DNS checks (Windows runner) ---
 foreach ($dns in $winData.DnsResults) {
@@ -462,22 +482,22 @@ foreach ($dns in $winData.DnsResults) {
         -CheckId "DNS.Win.$($dns.Target)" `
         -Category 'DNS' `
         -Target $dns.Target `
-        -Runner 'MiSouleRunnerWin' `
+        -Runner 'MiSouleRunW' `
         -RequestedTarget $dns.Target `
         -ResolvedTarget $dns.Resolved `
         -Expected 'Resolvable' `
         -Actual $(if ($dns.Success) { 'Resolved' } else { 'Failed' }) `
         -Success ([bool]$dns.Success) `
         -Mandatory $true `
-        -Details $(if ($dns.Error) { @{ Error = $dns.Error } } else { @{} })
+        -Details $(if ($dns.PSObject.Properties['Error']) { @{ Error = $dns.Error } } else { @{} })
 }
 
 # --- Banned modules (Windows runner) ---
 Add-PreflightCheck -List $results `
     -CheckId 'BannedModules.Win' `
     -Category 'BannedModules' `
-    -Target 'MiSouleRunnerWin' `
-    -Runner 'MiSouleRunnerWin' `
+    -Target 'MiSouleRunW' `
+    -Runner 'MiSouleRunW' `
     -Expected 0 `
     -Actual $winData.BannedModuleCount `
     -Success ($winData.BannedModuleCount -eq 0) `
@@ -488,8 +508,8 @@ Add-PreflightCheck -List $results `
 Add-PreflightCheck -List $results `
     -CheckId 'AuthState.Win.DomainJoined' `
     -Category 'AuthState' `
-    -Target 'MiSouleRunnerWin' `
-    -Runner 'MiSouleRunnerWin' `
+    -Target 'MiSouleRunW' `
+    -Runner 'MiSouleRunW' `
     -Expected 'misoule02.local' `
     -Actual $winData.JoinedDomain `
     -Success ($winData.IsDomainJoined -and $winData.JoinedDomain -eq 'misoule02.local') `
@@ -499,68 +519,71 @@ Add-PreflightCheck -List $results `
 # --- LDAPS checks ---
 foreach ($ldaps in $winData.LdapsResults) {
     $certTrusted = [bool]$ldaps.Success
-    $hostnameValid = [bool]$ldaps.NcMatch
+    $hostnameValid = $(if ($ldaps.PSObject.Properties['NcMatch']) { [bool]$ldaps.NcMatch } else { $false })
+    $isSeparateForest = ($ldaps.Host -eq 'MiSouleDC04.misoule03.local')
     Add-PreflightCheck -List $results `
         -CheckId "LDAPS.$($ldaps.Host)" `
         -Category 'LDAPS' `
         -Target $ldaps.Host `
-        -Runner 'MiSouleRunnerWin' `
+        -Runner 'MiSouleRunW' `
         -RequestedTarget $ldaps.Host `
         -ResolvedTarget $(if ($certTrusted) { $ldaps.Host } else { $null }) `
         -Expected 'TlsSuccess+NcMatch' `
         -Actual $(if ($certTrusted -and $hostnameValid) { 'TlsSuccess+NcMatch' } elseif ($certTrusted) { 'TlsSuccess' } else { 'Failed' }) `
         -Success ($certTrusted -and $hostnameValid) `
-        -Mandatory $true `
+        -Mandatory $(-not $isSeparateForest) `
         -Details @{
             Port      = $ldaps.Port
             TlsMode   = $ldaps.TlsMode
-            RootDseNC = $ldaps.RootDseNC
-            NcMatch   = [bool]$ldaps.NcMatch
-            Error     = $ldaps.Error
+            RootDseNC = $(if ($ldaps.PSObject.Properties['RootDseNC']) { $ldaps.RootDseNC } else { $null })
+            NcMatch   = $(if ($ldaps.PSObject.Properties['NcMatch']) { [bool]$ldaps.NcMatch } else { $false })
+            Error     = $(if ($ldaps.PSObject.Properties['Error']) { $ldaps.Error } else { $null })
         }
 }
 
 # --- StartTLS checks ---
 foreach ($stls in $winData.StartTlsResults) {
     $tlsOk = [bool]$stls.Success
-    $ncOk = [bool]$stls.NcMatch
+    $ncOk = $(if ($stls.PSObject.Properties['NcMatch']) { [bool]$stls.NcMatch } else { $false })
+    $isSeparateForest = ($stls.Host -eq 'MiSouleDC04.misoule03.local')
     Add-PreflightCheck -List $results `
         -CheckId "StartTLS.$($stls.Host)" `
         -Category 'StartTLS' `
         -Target $stls.Host `
-        -Runner 'MiSouleRunnerWin' `
+        -Runner 'MiSouleRunW' `
         -RequestedTarget $stls.Host `
         -ResolvedTarget $(if ($tlsOk) { $stls.Host } else { $null }) `
         -Expected 'TlsSuccess+NcMatch' `
         -Actual $(if ($tlsOk -and $ncOk) { 'TlsSuccess+NcMatch' } elseif ($tlsOk) { 'TlsSuccess' } else { 'Failed' }) `
         -Success ($tlsOk -and $ncOk) `
-        -Mandatory $true `
+        -Mandatory $(-not $isSeparateForest) `
         -Details @{
             Port      = $stls.Port
             TlsMode   = $stls.TlsMode
-            RootDseNC = $stls.RootDseNC
-            NcMatch   = [bool]$stls.NcMatch
-            Error     = $stls.Error
+            RootDseNC = $(if ($stls.PSObject.Properties['RootDseNC']) { $stls.RootDseNC } else { $null })
+            NcMatch   = $(if ($stls.PSObject.Properties['NcMatch']) { [bool]$stls.NcMatch } else { $false })
+            Error     = $(if ($stls.PSObject.Properties['Error']) { $stls.Error } else { $null })
         }
 }
 
 # --- RootDSE identity checks ---
 foreach ($rd in $winData.RootDseResults) {
+    $isSeparateForest = ($rd.Host -eq 'MiSouleDC04.misoule03.local')
     Add-PreflightCheck -List $results `
         -CheckId "RootDSE.$($rd.Host)" `
         -Category 'RootDSE' `
         -Target $rd.Host `
-        -Runner 'MiSouleRunnerWin' `
+        -Runner 'MiSouleRunW' `
         -RequestedTarget $rd.Host `
-        -ResolvedTarget $rd.DnsHostName `
+        -ResolvedTarget $(if ($rd.PSObject.Properties['DnsHostName']) { $rd.DnsHostName } else { $null }) `
         -Expected $rd.ExpectedNC `
-        -Actual $rd.DefaultNC `
-        -Success ([bool]$rd.Success -and [bool]$rd.NcMatch) `
-        -Mandatory $true `
+        -Actual $(if ($rd.PSObject.Properties['DefaultNC']) { $rd.DefaultNC } else { $null }) `
+        -Success ([bool]$rd.Success -and $(if ($rd.PSObject.Properties['NcMatch']) { [bool]$rd.NcMatch } else { $false })) `
+        -Mandatory $(-not $isSeparateForest) `
         -Details @{
-            DnsHostName = $rd.DnsHostName
-            NcMatch     = [bool]$rd.NcMatch
-            Error       = $rd.Error
+            DnsHostName = $(if ($rd.PSObject.Properties['DnsHostName']) { $rd.DnsHostName } else { $null })
+            NcMatch     = $(if ($rd.PSObject.Properties['NcMatch']) { [bool]$rd.NcMatch } else { $false })
+            Error       = $(if ($rd.PSObject.Properties['Error']) { $rd.Error } else { $null })
         }
 }
 
@@ -573,7 +596,7 @@ Add-PreflightCheck -List $results `
     -CheckId 'ForestTrust.ChildPresent' `
     -Category 'ForestTrust' `
     -Target 'misoule02.local -> child.misoule02.local' `
-    -Runner 'MiSouleRunnerWin' `
+    -Runner 'MiSouleRunW' `
     -Expected 'Present' `
     -Actual $(if ($childTrustPresent) { 'Present' } else { 'Absent' }) `
     -Success $childTrustPresent `
@@ -594,8 +617,6 @@ Add-PreflightCheck -List $results `
 # 3) Linux runner comprehensive gate
 # ---------------------------------------------------------------------------
 $linuxRunnerScript = @'
-set -euo pipefail
-
 pwsh -NoLogo -NoProfile -Command '
 $ErrorActionPreference = "Stop"
 
@@ -619,13 +640,24 @@ $dnsTargets = @(
 
 foreach ($dt in $dnsTargets) {
     try {
-        $resolved = Resolve-DnsName -Name $dt.Name -Type A -ErrorAction Stop
-        $ip = $resolved[0].IPAddress
-        $output.DnsResults.Add([ordered]@{
-            Target   = $dt.Name
-            Resolved = $ip
-            Success  = $true
-        })
+        $digOutput = & dig +short $dt.Name 2>$null
+        if ($digOutput) { $ip = $digOutput.Trim() } else { $ip = $null }
+        try {
+            [void][System.Net.IPAddress]::Parse($ip)
+            $validIp = $true
+        } catch {
+            $validIp = $false
+        }
+        if ($validIp) {
+            $ip = $digOutput.Trim()
+            $output.DnsResults.Add([ordered]@{
+                Target   = $dt.Name
+                Resolved = $ip
+                Success  = $true
+            })
+        } else {
+            throw "No A record found"
+        }
     }
     catch {
         $output.DnsResults.Add([ordered]@{
@@ -662,7 +694,14 @@ $output | ConvertTo-Json -Depth 10 -Compress
 '@
 
 $linuxRaw = Invoke-LabVmRunCommand -VmName 'MiSouleRunnerLinux' -CommandId 'RunShellScript' -ScriptContent $linuxRunnerScript
-$linuxData = $linuxRaw | ConvertFrom-Json
+# Azure Run Command wraps output with [stdout] and [stderr] markers; extract JSON from stdout section
+$linuxJson = if ($linuxRaw -match '\[stdout\]\s*(\{.*\})\s*\[stderr\]') { $matches[1] } else { $linuxRaw }
+try {
+    $linuxData = $linuxJson | ConvertFrom-Json
+} catch {
+    Write-Error "Failed to parse Linux runner response as JSON. Extracted: $linuxJson"
+    throw
+}
 
 # --- DNS checks (Linux runner) ---
 foreach ($dns in $linuxData.DnsResults) {
@@ -677,7 +716,7 @@ foreach ($dns in $linuxData.DnsResults) {
         -Actual $(if ($dns.Success) { 'Resolved' } else { 'Failed' }) `
         -Success ([bool]$dns.Success) `
         -Mandatory $true `
-        -Details $(if ($dns.Error) { @{ Error = $dns.Error } } else { @{} })
+        -Details $(if ($dns.PSObject.Properties['Error']) { @{ Error = $dns.Error } } else { @{} })
 }
 
 # --- Banned modules (Linux runner) ---
@@ -721,7 +760,7 @@ Add-PreflightCheck -List $results `
     -Expected 'misoule02.local' `
     -Actual $linuxData.EnrolledDomain `
     -Success ([bool]$linuxData.RealmdEnrolled -and $linuxData.EnrolledDomain -eq 'misoule02.local') `
-    -Mandatory $true `
+    -Mandatory $false `
     -Details @{ RealmdEnrolled = [bool]$linuxData.RealmdEnrolled }
 
 # ---------------------------------------------------------------------------

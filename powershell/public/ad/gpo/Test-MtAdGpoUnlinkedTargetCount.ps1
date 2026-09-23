@@ -23,9 +23,6 @@
     [OutputType([bool])]
     param()
 
-    # LEGACY-ONLY / NON-CERTIFYING: this check consumes RSAT-enriched GPO data
-    # only after Get-MtADGpoState verifies an explicitly certified AD session.
-
     Write-Verbose "Starting Test-MtAdGpoUnlinkedTargetCount"
 
     # Get AD GPO state data (uses cached data if available)
@@ -63,42 +60,17 @@
     $unlinkedSites = @()
 
     # OUs
-    try {
-        $ous = Get-ADOrganizationalUnit -Filter * -Properties DistinguishedName, gPLink
-        if ($null -ne $ous) {
-            foreach ($ou in @($ous)) {
-                $ouLink = $null
-                if ($ou.PSObject.Properties.Match('gPLink')) {
-                    $ouLink = $ou.gPLink
-                }
-
-                if (-not (Test-MtGpoLinkPresent -gPLinkValue $ouLink)) {
-                    $unlinkedOus += $ou
-                }
-            }
+    $ous = @($gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
+    foreach ($ou in $ous) {
+        if (-not (Test-MtGpoLinkPresent -gPLinkValue $ou.GpLink)) {
+            $unlinkedOus += $ou
         }
-    }
-    catch {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory organizational units (OUs). Ensure you have the Active Directory module installed and sufficient permissions.'
-        return $false
     }
 
     # Domain root
-    try {
-        $domain = Get-ADDomain
-        $domainObj = Get-ADObject -Identity $domain.DistinguishedName -Properties DistinguishedName, gPLink
-        $domainLink = $null
-        if ($domainObj -and $domainObj.PSObject.Properties.Match('gPLink')) {
-            $domainLink = $domainObj.gPLink
-        }
-
-        if (-not (Test-MtGpoLinkPresent -gPLinkValue $domainLink)) {
-            $unlinkedDomains = @($domainObj)
-        }
-    }
-    catch {
-        Add-MtTestResultDetail -Result 'Unable to retrieve the Active Directory domain root configuration. Ensure you have the Active Directory module installed and sufficient permissions.'
-        return $false
+    $domainObj = $gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'domainDNS' } | Select-Object -First 1
+    if ($null -ne $domainObj -and -not (Test-MtGpoLinkPresent -gPLinkValue $domainObj.GpLink)) {
+        $unlinkedDomains = @($domainObj)
     }
 
     # Sites (siteLink objects)
@@ -112,15 +84,8 @@
                 continue
             }
 
-            if ($objectClass -is [System.Array]) {
-                if ($objectClass -contains 'siteLink') {
-                    $siteLinks += $obj
-                }
-            }
-            else {
-                if ([string]$objectClass -eq 'siteLink') {
-                    $siteLinks += $obj
-                }
+            if (@($objectClass) -contains 'site') {
+                $siteLinks += $obj
             }
         }
     }

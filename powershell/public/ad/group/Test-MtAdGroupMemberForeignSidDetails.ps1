@@ -31,6 +31,19 @@
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
 
+    $ldapConnectionParameters = @{
+        Server   = $adState.ProtocolEvidence.ResolvedServer
+        AuthType = $adState.ProtocolEvidence.AuthenticationMode
+    }
+    if ($adState.ProtocolEvidence.TlsMode -eq 'StartTls') {
+        $ldapConnectionParameters['Port'] = 389
+        $ldapConnectionParameters['UseStartTls'] = $true
+    } else {
+        $ldapConnectionParameters['Port'] = 636
+    }
+    if ($null -ne $__MtSession.ADCredential) { $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential }
+    $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+
     # Collect all foreign SIDs from group members
     $foreignSidsByDomain = @{}
     $totalForeignSids = 0
@@ -38,7 +51,7 @@
     foreach ($group in $groups) {
         try {
             # Get group members
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
 
             foreach ($member in $members) {
                 if ($member.SID -and $member.SID.Value) {
@@ -71,6 +84,8 @@
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $testResult = $true
 

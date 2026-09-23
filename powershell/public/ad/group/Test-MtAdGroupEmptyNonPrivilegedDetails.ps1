@@ -29,12 +29,25 @@
 
     $groups = $adState.Groups
 
+    $ldapConnectionParameters = @{
+        Server   = $adState.ProtocolEvidence.ResolvedServer
+        AuthType = $adState.ProtocolEvidence.AuthenticationMode
+    }
+    if ($adState.ProtocolEvidence.TlsMode -eq 'StartTls') {
+        $ldapConnectionParameters['Port'] = 389
+        $ldapConnectionParameters['UseStartTls'] = $true
+    } else {
+        $ldapConnectionParameters['Port'] = 636
+    }
+    if ($null -ne $__MtSession.ADCredential) { $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential }
+    $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+
     # Collect empty non-privileged groups
     $emptyNonPrivilegedGroups = @()
 
     foreach ($group in $groups) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             $memberCount = ($members | Measure-Object).Count
 
             if ($memberCount -eq 0 -and $group.adminCount -ne 1) {
@@ -51,6 +64,8 @@
             Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $testResult = $true
 

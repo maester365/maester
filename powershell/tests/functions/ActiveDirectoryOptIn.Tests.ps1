@@ -199,18 +199,38 @@ Describe 'Active Directory test source safety' {
 
             if ($null -eq $collector) {
                 $issues += "$($file.FullName): does not call a guarded Active Directory collector."
-                continue
             }
 
-            $earlierAdOperation = $commands |
+            $bannedOperation = $commands |
                 Where-Object {
-                    $_.Extent.StartOffset -lt $collector.Extent.StartOffset -and
                     ($_.GetCommandName() -match '^(Get-AD|Get-GPO|Get-DnsServer)' -or $_.GetCommandName() -eq 'Invoke-Command')
                 } |
                 Select-Object -First 1
 
-            if ($null -ne $earlierAdOperation) {
-                $issues += "$($file.FullName): calls $($earlierAdOperation.GetCommandName()) before checking the explicit AD connection."
+            if ($null -ne $bannedOperation) {
+                $issues += "$($file.FullName): calls banned command $($bannedOperation.GetCommandName())."
+            }
+
+            $bannedType = $ast.FindAll({
+                    param($node)
+                    ($node -is [System.Management.Automation.Language.TypeExpressionAst] -or
+                        $node -is [System.Management.Automation.Language.TypeConstraintAst]) -and
+                    $node.TypeName.FullName -match '(^|\.)(ADSI|DirectoryEntry|DirectorySearcher)$'
+                }, $true) | Select-Object -First 1
+
+            if ($null -ne $bannedType) {
+                $issues += "$($file.FullName): uses banned type $($bannedType.TypeName.FullName)."
+            }
+
+            $bannedTypeCommand = $commands |
+                Where-Object {
+                    $_.GetCommandName() -eq 'New-Object' -and
+                    $_.Extent.Text -match '(?i)(^|\.)(DirectoryEntry|DirectorySearcher)\b'
+                } |
+                Select-Object -First 1
+
+            if ($null -ne $bannedTypeCommand) {
+                $issues += "$($file.FullName): constructs a banned DirectoryEntry or DirectorySearcher type."
             }
         }
 

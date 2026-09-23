@@ -1,0 +1,493 @@
+{
+  "Timestamp": "2026-09-22T20:40:52.3590504Z",
+  "LabId": "misoule-lab-20260820200638",
+  "ResourceGroup": "RG_5100_MiSoule_2",
+  "OverallSuccess": true,
+  "Summary": {
+    "TotalChecks": 28,
+    "PassedCount": 24,
+    "FailedCount": 4,
+    "MandatoryFailedCount": 0,
+    "OptionalFailedCount": 4,
+    "BannedModuleCountWin": 0,
+    "BannedModuleCountLinux": 0
+  },
+  "RunnerState": {
+    "Windows": {
+      "DomainJoined": true,
+      "BannedModulesOk": true
+    },
+    "Linux": {
+      "PSWSManOk": true,
+      "SmbClientOk": true,
+      "RealmdOk": false,
+      "BannedModulesOk": true
+    }
+  },
+  "AuthTlsAssertions": {
+    "LdapsTrustedAll": false,
+    "StartTlsSuccessAll": false,
+    "RootDseMatchedAll": false,
+    "DnsResolvedAll": true
+  },
+  "Checks": [
+    {
+      "CheckId": "PowerState.MiSouleDC02",
+      "Category": "PowerState",
+      "Target": "MiSouleDC02",
+      "Runner": "",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "VM running",
+      "Actual": "VM running",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:39:41.1826475Z"
+    },
+    {
+      "CheckId": "PowerState.MiSouleDC03",
+      "Category": "PowerState",
+      "Target": "MiSouleDC03",
+      "Runner": "",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "VM running",
+      "Actual": "VM running",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:39:43.6066624Z"
+    },
+    {
+      "CheckId": "PowerState.MiSouleDC04",
+      "Category": "PowerState",
+      "Target": "MiSouleDC04",
+      "Runner": "",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "VM running",
+      "Actual": "VM running",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:39:44.7038021Z"
+    },
+    {
+      "CheckId": "PowerState.MiSouleRunW",
+      "Category": "PowerState",
+      "Target": "MiSouleRunW",
+      "Runner": "",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "VM running",
+      "Actual": "VM running",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:39:45.9507771Z"
+    },
+    {
+      "CheckId": "PowerState.MiSouleRunnerLinux",
+      "Category": "PowerState",
+      "Target": "MiSouleRunnerLinux",
+      "Runner": "",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "VM running",
+      "Actual": "VM running",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:39:47.0865447Z"
+    },
+    {
+      "CheckId": "DNS.Win.MiSouleDC02.misoule02.local",
+      "Category": "DNS",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC02.misoule02.local",
+      "ResolvedTarget": "10.20.0.4",
+      "Expected": "Resolvable",
+      "Actual": "Resolved",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:19.9731483Z"
+    },
+    {
+      "CheckId": "DNS.Win.MiSouleDC03.child.misoule02.local",
+      "Category": "DNS",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC03.child.misoule02.local",
+      "ResolvedTarget": "10.20.0.5",
+      "Expected": "Resolvable",
+      "Actual": "Resolved",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:19.9737173Z"
+    },
+    {
+      "CheckId": "DNS.Win.MiSouleDC04.misoule03.local",
+      "Category": "DNS",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC04.misoule03.local",
+      "ResolvedTarget": "10.20.0.6",
+      "Expected": "Resolvable",
+      "Actual": "Resolved",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:19.9741124Z"
+    },
+    {
+      "CheckId": "BannedModules.Win",
+      "Category": "BannedModules",
+      "Target": "MiSouleRunW",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": 0,
+      "Actual": 0,
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "BannedModules": []
+      },
+      "Timestamp": "2026-09-22T20:40:19.9785335Z"
+    },
+    {
+      "CheckId": "AuthState.Win.DomainJoined",
+      "Category": "AuthState",
+      "Target": "MiSouleRunW",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "misoule02.local",
+      "Actual": "misoule02.local",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "IsDomainJoined": true
+      },
+      "Timestamp": "2026-09-22T20:40:19.9802473Z"
+    },
+    {
+      "CheckId": "LDAPS.MiSouleDC02.misoule02.local",
+      "Category": "LDAPS",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC02.misoule02.local",
+      "ResolvedTarget": "MiSouleDC02.misoule02.local",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "TlsSuccess+NcMatch",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "TlsMode": "Ldaps",
+        "RootDseNC": "DC=misoule02,DC=local",
+        "Error": null,
+        "NcMatch": true,
+        "Port": 636
+      },
+      "Timestamp": "2026-09-22T20:40:19.9872233Z"
+    },
+    {
+      "CheckId": "LDAPS.MiSouleDC03.child.misoule02.local",
+      "Category": "LDAPS",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC03.child.misoule02.local",
+      "ResolvedTarget": "MiSouleDC03.child.misoule02.local",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "TlsSuccess+NcMatch",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "TlsMode": "Ldaps",
+        "RootDseNC": "DC=child,DC=misoule02,DC=local",
+        "Error": null,
+        "NcMatch": true,
+        "Port": 636
+      },
+      "Timestamp": "2026-09-22T20:40:19.9876142Z"
+    },
+    {
+      "CheckId": "LDAPS.MiSouleDC04.misoule03.local",
+      "Category": "LDAPS",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC04.misoule03.local",
+      "ResolvedTarget": "",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "Failed",
+      "Success": false,
+      "Mandatory": false,
+      "Details": {
+        "TlsMode": "Ldaps",
+        "RootDseNC": null,
+        "Error": "Exception calling \"Bind\" with \"0\" argument(s): \"The supplied credential is invalid.\"",
+        "NcMatch": false,
+        "Port": 636
+      },
+      "Timestamp": "2026-09-22T20:40:19.9886378Z"
+    },
+    {
+      "CheckId": "StartTLS.MiSouleDC02.misoule02.local",
+      "Category": "StartTLS",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC02.misoule02.local",
+      "ResolvedTarget": "MiSouleDC02.misoule02.local",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "TlsSuccess+NcMatch",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "TlsMode": "StartTls",
+        "RootDseNC": "DC=misoule02,DC=local",
+        "Error": null,
+        "NcMatch": true,
+        "Port": 389
+      },
+      "Timestamp": "2026-09-22T20:40:19.9898119Z"
+    },
+    {
+      "CheckId": "StartTLS.MiSouleDC03.child.misoule02.local",
+      "Category": "StartTLS",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC03.child.misoule02.local",
+      "ResolvedTarget": "MiSouleDC03.child.misoule02.local",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "TlsSuccess+NcMatch",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "TlsMode": "StartTls",
+        "RootDseNC": "DC=child,DC=misoule02,DC=local",
+        "Error": null,
+        "NcMatch": true,
+        "Port": 389
+      },
+      "Timestamp": "2026-09-22T20:40:19.9901676Z"
+    },
+    {
+      "CheckId": "StartTLS.MiSouleDC04.misoule03.local",
+      "Category": "StartTLS",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC04.misoule03.local",
+      "ResolvedTarget": "",
+      "Expected": "TlsSuccess+NcMatch",
+      "Actual": "Failed",
+      "Success": false,
+      "Mandatory": false,
+      "Details": {
+        "TlsMode": "StartTls",
+        "RootDseNC": null,
+        "Error": "Exception calling \"Bind\" with \"0\" argument(s): \"The supplied credential is invalid.\"",
+        "NcMatch": false,
+        "Port": 389
+      },
+      "Timestamp": "2026-09-22T20:40:19.9904732Z"
+    },
+    {
+      "CheckId": "RootDSE.MiSouleDC02.misoule02.local",
+      "Category": "RootDSE",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC02.misoule02.local",
+      "ResolvedTarget": "MiSouleDC02.misoule02.local",
+      "Expected": "DC=misoule02,DC=local",
+      "Actual": "DC=misoule02,DC=local",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "DnsHostName": "MiSouleDC02.misoule02.local",
+        "NcMatch": true,
+        "Error": null
+      },
+      "Timestamp": "2026-09-22T20:40:19.9936438Z"
+    },
+    {
+      "CheckId": "RootDSE.MiSouleDC03.child.misoule02.local",
+      "Category": "RootDSE",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC03.child.misoule02.local",
+      "ResolvedTarget": "MiSouleDC03.child.misoule02.local",
+      "Expected": "DC=child,DC=misoule02,DC=local",
+      "Actual": "DC=child,DC=misoule02,DC=local",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "DnsHostName": "MiSouleDC03.child.misoule02.local",
+        "NcMatch": true,
+        "Error": null
+      },
+      "Timestamp": "2026-09-22T20:40:19.9940073Z"
+    },
+    {
+      "CheckId": "RootDSE.MiSouleDC04.misoule03.local",
+      "Category": "RootDSE",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "MiSouleDC04.misoule03.local",
+      "ResolvedTarget": "",
+      "Expected": "DC=misoule03,DC=local",
+      "Actual": null,
+      "Success": false,
+      "Mandatory": false,
+      "Details": {
+        "DnsHostName": null,
+        "NcMatch": false,
+        "Error": "Exception calling \"Bind\" with \"0\" argument(s): \"The supplied credential is invalid.\""
+      },
+      "Timestamp": "2026-09-22T20:40:19.9944161Z"
+    },
+    {
+      "CheckId": "ForestTrust.ChildPresent",
+      "Category": "ForestTrust",
+      "Target": "misoule02.local -> child.misoule02.local",
+      "Runner": "MiSouleRunW",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "Present",
+      "Actual": "Present",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "DiscoveredTrusts": [
+          "child.misoule02.local",
+          "misoule02.local"
+        ]
+      },
+      "Timestamp": "2026-09-22T20:40:19.9982146Z"
+    },
+    {
+      "CheckId": "ForestTrust.SeparateAbsent",
+      "Category": "ForestTrust",
+      "Target": "misoule02.local -> misoule03.local",
+      "Runner": "",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "Absent",
+      "Actual": "Absent",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "DiscoveredTrusts": [
+          "child.misoule02.local",
+          "misoule02.local"
+        ]
+      },
+      "Timestamp": "2026-09-22T20:40:19.9984164Z"
+    },
+    {
+      "CheckId": "DNS.Linux.MiSouleDC02.misoule02.local",
+      "Category": "DNS",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "MiSouleDC02.misoule02.local",
+      "ResolvedTarget": "10.20.0.4",
+      "Expected": "Resolvable",
+      "Actual": "Resolved",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:52.3509505Z"
+    },
+    {
+      "CheckId": "DNS.Linux.MiSouleDC03.child.misoule02.local",
+      "Category": "DNS",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "MiSouleDC03.child.misoule02.local",
+      "ResolvedTarget": "10.20.0.5",
+      "Expected": "Resolvable",
+      "Actual": "Resolved",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:52.3512394Z"
+    },
+    {
+      "CheckId": "DNS.Linux.MiSouleDC04.misoule03.local",
+      "Category": "DNS",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "MiSouleDC04.misoule03.local",
+      "ResolvedTarget": "10.20.0.6",
+      "Expected": "Resolvable",
+      "Actual": "Resolved",
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:52.3514652Z"
+    },
+    {
+      "CheckId": "BannedModules.Linux",
+      "Category": "BannedModules",
+      "Target": "MiSouleRunnerLinux",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": 0,
+      "Actual": 0,
+      "Success": true,
+      "Mandatory": true,
+      "Details": {
+        "BannedModules": []
+      },
+      "Timestamp": "2026-09-22T20:40:52.3516385Z"
+    },
+    {
+      "CheckId": "AuthState.Linux.PSWSMan",
+      "Category": "AuthState",
+      "Target": "MiSouleRunnerLinux",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": true,
+      "Actual": true,
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:52.3527369Z"
+    },
+    {
+      "CheckId": "AuthState.Linux.SmbClient",
+      "Category": "AuthState",
+      "Target": "MiSouleRunnerLinux",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": true,
+      "Actual": true,
+      "Success": true,
+      "Mandatory": true,
+      "Details": {},
+      "Timestamp": "2026-09-22T20:40:52.3536364Z"
+    },
+    {
+      "CheckId": "AuthState.Linux.Realmd",
+      "Category": "AuthState",
+      "Target": "MiSouleRunnerLinux",
+      "Runner": "MiSouleRunnerLinux",
+      "RequestedTarget": "",
+      "ResolvedTarget": "",
+      "Expected": "misoule02.local",
+      "Actual": null,
+      "Success": false,
+      "Mandatory": false,
+      "Details": {
+        "RealmdEnrolled": false
+      },
+      "Timestamp": "2026-09-22T20:40:52.3551285Z"
+    }
+  ]
+}

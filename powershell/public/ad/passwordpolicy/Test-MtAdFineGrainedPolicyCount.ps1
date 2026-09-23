@@ -34,13 +34,8 @@
     }
 
     # Get fine-grained password policies
-    try {
-        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -ErrorAction Stop
-        $policyCount = ($fgppPolicies | Measure-Object).Count
-    } catch {
-        Write-Error "Failed to retrieve fine-grained password policies: $($_.Exception.Message)"
-        return $null
-    }
+    $fgppPolicies = $adState.FineGrainedPasswordPolicies
+    $policyCount = ($fgppPolicies | Measure-Object).Count
 
     # Test passes if we successfully retrieved the policies
     $testResult = $null -ne $fgppPolicies

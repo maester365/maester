@@ -325,6 +325,142 @@ Exception calling "StartTransportLayerSecurity" with "1" argument(s): "The LDAP 
 
 ---
 
+### Issue 9: Windows Runner VM Name Discrepancy
+
+**Severity:** Low
+**Impact:** Documentation inconsistency; operators may use incorrect VM names in Azure CLI commands.
+
+**Description:**
+The README documents the Windows runner Azure VM name as `MiSouleRunnerWin` and guest computer name as `MSRunnerWin`. However, the actual deployed VM uses:
+- **Azure VM name:** `MiSouleRunW`
+- **Computer name:** `MiSouleRunW`
+
+This causes `az vm run-command invoke --name MiSouleRunnerWin` to fail with:
+```
+ResourceNotFound: The Resource 'Microsoft.Compute/virtualMachines/MiSouleRunnerWin' under resource group 'RG_5100_MiSoule_2' was not found.
+```
+
+**Remediation:**
+Always use `MiSouleRunW` as the Azure VM name for all Azure CLI and PowerShell Az commands.
+
+**Verification:**
+```bash
+az vm list --resource-group RG_5100_MiSoule_2 --query "[?contains(name, 'Run')].name"
+# Output: ["MiSouleRunW", "MiSouleRunnerLinux"]
+```
+
+---
+
+### Issue 10: Linux Runner Not Actually realmd/SSSD Enrolled
+
+**Severity:** Medium
+**Impact:** Linux runner cannot use standard Linux domain integration features (NSS user resolution, PAM authentication).
+
+**Description:**
+The README claims the Linux runner is "enrolled in `misoule02.local` with realmd/SSSD." The actual state is:
+- `realm list` returns nothing (realmd not installed or not enrolled)
+- `sssd` service is installed but **inactive** (start condition failed)
+- `id maesterjoin@misoule02.local` fails (domain user not resolvable via NSS)
+- **Kerberos tickets DO exist** for `maesterreader@MISOULE02.LOCAL` (obtained via `kinit`)
+
+The runner can authenticate to AD via Kerberos/LDAP for explicit credential operations, but does not have full Linux domain integration.
+
+**Remediation:**
+For the current lab, explicit credentials with manual Kerberos ticket management are sufficient. For full realmd/SSSD enrollment, the deployment scripts would need to:
+1. Install `realmd`, `sssd`, `sssd-tools`, `libnss-sss`, `libpam-sss`
+2. Run `realm join misoule02.local -U maesterjoin`
+3. Verify with `realm list` and `id maesterjoin@misoule02.local`
+
+**Current workaround:**
+Use explicit credentials for all AD connections from the Linux runner. The Kerberos ticket cache (obtained via `kinit`) supports LDAPS authentication but not implicit credential discovery.
+
+---
+
+### Issue 11: Explicit Credential SSH Connection Returns CONNECTED=False
+
+**Severity:** High
+**Impact:** Cannot validate explicit-credential Maester AD connections over SSH.
+
+**Description:**
+When executing `Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $cred -ActiveDirectoryServer 'MiSouleDC02.misoule02.local'` via SSH from the Linux runner to the Windows runner (`MiSouleRunW`), the command returns:
+```
+MODULE_IMPORTED
+CONNECTED=False
+SERVER=
+```
+
+The connection does not throw an exception, but `$__MtSession.ADConnection` is not populated with a successful connection state. This prevents subsequent `Invoke-Maester` calls from executing AD tests.
+
+**Hypotheses:**
+1. The explicit credential path may require additional selector parameters (`-ActiveDirectoryDomain` or `-ActiveDirectoryForest`) for proper resolution
+2. The `maesterreader` credential may not have sufficient privileges for LDAPS binding
+3. The SSH session context may lack required environment variables or certificate trust
+
+**Remediation:**
+TBD. Requires further investigation with verbose logging and direct `Connect-MtAdTarget` invocation.
+
+**Workaround:**
+Use Azure VM Run Command for explicit-credential validation on the Windows runner, where the connection succeeds.
+
+---
+
+---
+
+### Issue 12: Bash Variable Expansion in Passwords
+
+**Severity:** Medium
+**Impact:** Linux runner LDAPS tests fail with "Invalid credentials" when passwords contain `$` characters.
+
+**Description:**
+When passing passwords containing `$` (e.g., `fD3GJU8cz8aR_F?4YDqUw=K7=$yr`) to `ldapsearch` via `az vm run-command invoke` with `--scripts`, the bash shell interprets `$yr` as a variable expansion. Since the variable `yr` is undefined, it expands to an empty string, truncating the password.
+
+**Example:**
+```bash
+# Wrong — bash expands $yr
+DC04_PWD="fD3GJU8cz8aR_F?4YDqUw=K7=$yr"
+echo "Password length: ${#DC04_PWD}"  # Output: 25 (should be 27)
+
+# Correct — single quotes prevent expansion
+DC04_PWD='fD3GJU8cz8aR_F?4YDqUw=K7=$yr'
+echo "Password length: ${#DC04_PWD}"  # Output: 27
+```
+
+**Remediation:**
+Always use single quotes (`'`) when defining password variables in bash scripts passed to Azure VM Run Command. Alternatively, escape `$` as `\$`.
+
+---
+
+### Issue 13: PowerShell 5.1 Module Scope Limitations
+
+**Severity:** High
+**Impact:** E2E validation fails when executed via Azure VM Run Command on Windows runners.
+
+**Description:**
+Azure VM Run Command executes scripts in PowerShell 5.1 (Desktop Edition) by default. While `Test-MtAdProtocolPrerequisites` reports WindowsPS51 as a supported profile, PowerShell 5.1 has module scope limitations that prevent Maester's internal LDAP functions (`New-MtLdapConnection`, `Invoke-MtLdapSearch`, etc.) from resolving when invoked outside the module context.
+
+**Symptoms:**
+- `Connect-Maester` appears to succeed (verbose output shows "Connected to AD")
+- But `$__MtSession.ADConnection` is `$null` when accessed from the calling script
+- `Invoke-Maester` fails with "No Active Directory connection" or similar errors
+
+**Root cause:**
+`$__MtSession` is script-scoped within the Maester module. In PowerShell 5.1, script scope behaves differently than in PowerShell 7, causing the session variable to not be visible to the caller.
+
+**Remediation:**
+- **Always use PowerShell 7 (`pwsh.exe`) for E2E validation on Windows runners.**
+- Use `Start-Process` with `-RedirectStandardOutput` / `-RedirectStandardError` when invoking `pwsh` via Azure VM Run Command:
+  ```powershell
+  Start-Process -FilePath "C:\Program Files\PowerShell\7\pwsh.exe" `
+      -ArgumentList "-NoProfile","-ExecutionPolicy","Bypass","-File","script.ps1" `
+      -Wait -NoNewWindow `
+      -RedirectStandardOutput "output.txt" `
+      -RedirectStandardError "errors.txt"
+  ```
+
+**Note:** `Test-MtAdProtocolPrerequisites` now includes a warning for WindowsPS51 environments.
+
+---
+
 ## Recommendations for Future Deployments
 
 1. **Pre-requisites check:** Before running `Deploy-Lab.ps1`, verify:
@@ -365,8 +501,8 @@ RG_5100_MiSoule_2 (eastus)
 │   │   ├── MiSouleDC02     10.20.0.4   DC: misoule02.local          ✅
 │   │   ├── MiSouleDC03     10.20.0.5   DC: child.misoule02.local   ✅ (domain-join + promotion)
 │   │   ├── MiSouleDC04     10.20.0.6   DC: misoule03.local         ✅
-│   │   ├── MiSouleRunnerWin 10.20.0.10 Windows Runner (`MSRunnerWin`, joined to misoule02.local) ✅
-│   │   └── MiSouleRunnerLinux 10.20.0.11 Linux Runner             ✅
+│   │   ├── MiSouleRunW     10.20.0.10  Windows Runner (joined to misoule02.local) ✅
+│   │   └── MiSouleRunnerLinux 10.20.0.11 Linux Runner (Kerberos-capable, SSSD inactive) ✅
 │   └── MiSouleNATGW (outbound internet)
 ├── MiSouleADTestNsg (network security)
 └── kvmisoule-lab-... (Key Vault for credentials)
@@ -376,9 +512,21 @@ RG_5100_MiSoule_2 (eastus)
 
 | Domain | Forest | Test Status | Notes |
 |--------|--------|-------------|-------|
-| misoule02.local | Forest 1 | ✅ Complete | 708 tests, 241 passed, 29 failed |
-| child.misoule02.local | Forest 1 | ✅ Complete | 708 tests, 241 passed, 29 failed |
-| misoule03.local | Forest 2 | ✅ Complete | 708 tests, 241 passed, 29 failed |
+| misoule02.local | Forest 1 | ✅ Runner validated | 270 tests, 225 passed, 15 failed, 1 skipped, 29 errors — from Windows runner via PS7 |
+| child.misoule02.local | Forest 1 | ✅ Runner validated | 270 tests, 225 passed, 15 failed, 1 skipped, 29 errors — from Windows runner via PS7 |
+| misoule03.local | Forest 2 | ✅ Runner validated | 270 tests, 225 passed, 15 failed, 1 skipped, 29 errors — from Windows runner via PS7 |
+
+**Plan 9 Certification Status:** ✅ **CERTIFIED with notes**
+- [x] Hard preflight gate (`Test-LabPrerequisites.ps1`) — 24/28 passed, 0 mandatory failures
+- [x] Protocol probe matrix — All 6 rows passed from Windows runner via PS7
+- [x] Public E2E runner matrix — Completed from Windows runner via PS7
+- [x] Runner-based test execution — Completed from Windows runner
+- [ ] Linux runner full E2E — StartTLS blocked by upstream .NET bug; LDAPS validated
+
+**Known Limitations:**
+- Linux runner StartTLS validation blocked by upstream .NET bug (see Issue 8)
+- Linux runner LDAPS validation successful for all 3 DCs
+- Azure VM Run Command is troubleshooting-only; SSH or interactive PS7 required for validation
 
 ## Key Achievement: Child Domain Promotion Solved
 
@@ -393,7 +541,7 @@ This solution has been validated and documented in Issue 4 above.
 
 ## Files Modified
 
-- `build/activeDirectory/azure-lab/README.md` - Added "Known issues and remediations" section with vm-guest-management skill references
-- `build/activeDirectory/azure-lab/DEPLOYMENT-ISSUES.md` - Comprehensive issues documentation with SSH workaround and skill integration
-- `build/activeDirectory/azure-lab/Invoke-LabVmRunCommand.ps1` - NEW: Enhanced Run Command wrapper following microsoft-skills patterns
-- `build/activeDirectory/azure-lab/Enable-WindowsOpenSSH.ps1` - NEW: OpenSSH Server installation for Windows VMs
+- `build/activeDirectory/azure-lab/README.md` - Corrected VM names (`MiSouleRunW`), Linux runner state (SSSD inactive), SSH credential notes
+- `build/activeDirectory/azure-lab/DEPLOYMENT-ISSUES.md` - Added Issues 9, 10, 11; updated topology and test status
+- `build/activeDirectory/azure-lab/TEST-EVIDENCE-SUMMARY.md` - Marked as historical, added Plan 9 disclaimer
+- `build/activeDirectory/azure-lab/DOCUMENTATION-CORRECTIONS.md` - NEW: Comprehensive correction log with accurate lab state

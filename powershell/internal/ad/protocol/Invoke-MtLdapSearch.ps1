@@ -1,4 +1,4 @@
-function Invoke-MtLdapSearch {
+﻿function Invoke-MtLdapSearch {
     [CmdletBinding()]
     [OutputType([object[]])]
     param(
@@ -19,6 +19,8 @@ function Invoke-MtLdapSearch {
         [int] $PageSize = 1000,
 
         [switch] $ReturnDirectoryEntry,
+
+        [System.DirectoryServices.SecurityMasks] $SecurityDescriptorFlags,
 
         [timespan] $Timeout
     )
@@ -145,6 +147,11 @@ function Invoke-MtLdapSearch {
             $pageControl = New-Object -TypeName System.DirectoryServices.Protocols.PageResultRequestControl -ArgumentList $PageSize
             $pageControl.Cookie = $pageCookie
             [void]$request.Controls.Add($pageControl)
+        }
+
+        if ($PSBoundParameters.ContainsKey('SecurityDescriptorFlags')) {
+            $securityDescriptorControl = New-Object -TypeName System.DirectoryServices.Protocols.SecurityDescriptorFlagControl -ArgumentList $SecurityDescriptorFlags
+            [void]$request.Controls.Add($securityDescriptorControl)
         }
 
         try {

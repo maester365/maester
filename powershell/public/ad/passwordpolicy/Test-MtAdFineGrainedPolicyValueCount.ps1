@@ -33,13 +33,8 @@
     }
 
     # Get fine-grained password policies
-    try {
-        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -ErrorAction Stop
-        $policyCount = ($fgppPolicies | Measure-Object).Count
-    } catch {
-        Write-Error "Failed to retrieve fine-grained password policies: $($_.Exception.Message)"
-        return $null
-    }
+    $fgppPolicies = $adState.FineGrainedPasswordPolicies
+    $policyCount = ($fgppPolicies | Measure-Object).Count
 
     # Test passes if we successfully retrieved the policies
     $testResult = $null -ne $fgppPolicies
@@ -48,10 +43,10 @@
     if ($testResult) {
         if ($policyCount -gt 0) {
             # Count distinct values across all policies
-            $distinctMinLength = ($fgppPolicies | Select-Object -ExpandProperty MinPasswordLength -Unique | Measure-Object).Count
-            $distinctMaxAge = ($fgppPolicies | Select-Object -ExpandProperty MaxPasswordAge -Unique | Measure-Object).Count
-            $distinctHistory = ($fgppPolicies | Select-Object -ExpandProperty PasswordHistoryCount -Unique | Measure-Object).Count
-            $distinctComplexity = ($fgppPolicies | Select-Object -ExpandProperty ComplexityEnabled -Unique | Measure-Object).Count
+            $distinctMinLength = ($fgppPolicies | Select-Object -ExpandProperty MinPwdLength -Unique | Measure-Object).Count
+            $distinctMaxAge = ($fgppPolicies | Select-Object -ExpandProperty MaxPwdAge -Unique | Measure-Object).Count
+            $distinctHistory = ($fgppPolicies | Select-Object -ExpandProperty PwdHistoryLength -Unique | Measure-Object).Count
+            $distinctComplexity = ($fgppPolicies | Select-Object -ExpandProperty PwdProperties -Unique | Measure-Object).Count
             $distinctLockoutThreshold = ($fgppPolicies | Select-Object -ExpandProperty LockoutThreshold -Unique | Measure-Object).Count
 
             $result = "| Metric | Distinct Values |" + "`n"

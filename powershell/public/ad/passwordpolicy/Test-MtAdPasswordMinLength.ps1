@@ -33,13 +33,8 @@
     }
 
     # Get the default domain password policy
-    try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
-        $minPasswordLength = $passwordPolicy.MinPasswordLength
-    } catch {
-        Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"
-        return $null
-    }
+    $passwordPolicy = $adState.Domain
+    $minPasswordLength = $passwordPolicy.MinPwdLength
 
     # Test passes if we successfully retrieved the password policy
     $testResult = $null -ne $minPasswordLength

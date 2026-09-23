@@ -1,6 +1,6 @@
-function ConvertFrom-MtLdapValue {
+﻿function ConvertFrom-MtLdapValue {
     [CmdletBinding()]
-    [OutputType([byte[]], [datetime], [int], [PSCustomObject], [string])]
+    [OutputType([byte[]], [datetime], [int], [PSCustomObject], [System.Security.Principal.SecurityIdentifier], [string], [timespan])]
     param(
         [AllowNull()]
         [Parameter(Mandatory)]
@@ -53,10 +53,64 @@ function ConvertFrom-MtLdapValue {
             return $InputValue
         }
 
-        if ($NormalizedAttributeName -in @('useraccountcontrol', 'forestfunctionality', 'domainfunctionality', 'ms-ds-machineaccountquota', 'lockoutthreshold')) {
+        $intervalAttributes = @(
+            'maxpwdage',
+            'minpwdage',
+            'lockoutduration',
+            'msds-lockoutduration',
+            'msds-maximumpasswordage',
+            'msds-minimumpasswordage'
+        )
+        if ($NormalizedAttributeName -in $intervalAttributes) {
+            $intervalValue = 0L
+            if ([long]::TryParse($InputValue, [ref]$intervalValue)) {
+                if ($intervalValue -eq [long]::MinValue) {
+                    return $null
+                }
+
+                return [timespan]::FromTicks([Math]::Abs($intervalValue))
+            }
+        }
+
+        $integerAttributes = @(
+            'useraccountcontrol',
+            'forestfunctionality',
+            'domainfunctionality',
+            'ms-ds-machineaccountquota',
+            'lockoutthreshold',
+            'minpwdlength',
+            'pwdproperties',
+            'pwdhistorylength',
+            'objectversion',
+            'msds-behavior-version',
+            'primarygroupid',
+            'admincount',
+            'grouptype',
+            'options',
+            'trusttype',
+            'trustdirection',
+            'trustattributes',
+            'gpoptions',
+            'flags',
+            'versionnumber',
+            'msds-passwordsettingsprecedence',
+            'msds-lockoutthreshold',
+            'msds-minimumpasswordlength',
+            'msds-passwordhistorylength',
+            'msds-requiredforestbehaviorversion',
+            'tombstonelifetime'
+        )
+        if ($NormalizedAttributeName -in $integerAttributes) {
             $convertedInt = 0
             if ([int]::TryParse($InputValue, [ref]$convertedInt)) {
                 return $convertedInt
+            }
+        }
+
+        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled')) {
+            $convertedBoolean = $false
+            if ([bool]::TryParse($InputValue, [ref]$convertedBoolean)) {
+                return $convertedBoolean
             }
         }
 
@@ -106,20 +160,20 @@ function ConvertFrom-MtLdapValue {
 
     if ($Value -is [byte[]]) {
         switch ($normalizedAttributeName) {
-            'objectsid' {
+            { $_ -in @('objectsid', 'sidhistory', 'securityidentifier') } {
                 try {
-                    return (New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $Value, 0).Value
+                    return New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $Value, 0
                 }
                 catch {
                     $sidString = Convert-ByteArrayToSidString -SidBytes $Value
                     if (-not [string]::IsNullOrWhiteSpace($sidString)) {
-                        return $sidString
+                        return [PSCustomObject]@{ Value = $sidString }
                     }
 
                     return $Value
                 }
             }
-            'objectguid' {
+            { $_ -in @('objectguid', 'invocationid', 'msds-optionalfeatureguid') } {
                 try {
                     return ([guid]::new($Value)).ToString()
                 }
@@ -147,6 +201,10 @@ function ConvertFrom-MtLdapValue {
     }
 
     if ($Value -is [System.Security.Principal.SecurityIdentifier]) {
+        if ($normalizedAttributeName -in @('objectsid', 'sidhistory', 'securityidentifier')) {
+            return $Value
+        }
+
         return $Value.Value
     }
 
@@ -160,6 +218,15 @@ function ConvertFrom-MtLdapValue {
 
     if ($normalizedAttributeName -eq 'useraccountcontrol') {
         return [int]$Value
+    }
+
+    if ($normalizedAttributeName -in @('maxpwdage', 'minpwdage', 'lockoutduration', 'msds-lockoutduration', 'msds-maximumpasswordage', 'msds-minimumpasswordage')) {
+        $intervalValue = [long]$Value
+        if ($intervalValue -eq [long]::MinValue) {
+            return $null
+        }
+
+        return [timespan]::FromTicks([Math]::Abs($intervalValue))
     }
 
     return $Value

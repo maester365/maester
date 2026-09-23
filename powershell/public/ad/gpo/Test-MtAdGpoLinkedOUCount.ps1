@@ -32,7 +32,7 @@
 
     # Get all OUs in the domain
     try {
-        $allOUs = Get-ADOrganizationalUnit -Filter * -Properties gPLink
+        $allOUs = @($gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
         $totalOUs = ($allOUs | Measure-Object).Count
 
         # Count OUs with GPO links (gPLink is not null or empty)

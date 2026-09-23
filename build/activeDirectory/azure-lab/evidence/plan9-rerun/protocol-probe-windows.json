@@ -1,0 +1,93 @@
+{
+  "SchemaVersion": 1,
+  "RecordedAt": "2026-09-22T21:42:59.4293736Z",
+  "LiveProbeExecution": true,
+  "Runner": "Windows",
+  "AllExpectationsMet": true,
+  "Rows": [
+    {
+      "ProbeId": "ldaps-basic-MiSouleDC02.misoule02.local",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Port": 636,
+      "TlsMode": "LDAPS",
+      "AuthType": "Basic",
+      "ExpectedOutcome": "PASS",
+      "ActualOutcome": "PASS",
+      "ExpectationMet": true,
+      "ErrorMessage": null,
+      "ResolvedNC": "DC=misoule02,DC=local",
+      "ExpectedNC": "DC=misoule02,DC=local",
+      "NcMatch": true
+    },
+    {
+      "ProbeId": "starttls-basic-MiSouleDC02.misoule02.local",
+      "Target": "MiSouleDC02.misoule02.local",
+      "Port": 389,
+      "TlsMode": "StartTLS",
+      "AuthType": "Basic",
+      "ExpectedOutcome": "PASS",
+      "ActualOutcome": "PASS",
+      "ExpectationMet": true,
+      "ErrorMessage": null,
+      "ResolvedNC": "DC=misoule02,DC=local",
+      "ExpectedNC": "DC=misoule02,DC=local",
+      "NcMatch": true
+    },
+    {
+      "ProbeId": "ldaps-basic-MiSouleDC03.child.misoule02.local",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Port": 636,
+      "TlsMode": "LDAPS",
+      "AuthType": "Basic",
+      "ExpectedOutcome": "PASS",
+      "ActualOutcome": "PASS",
+      "ExpectationMet": true,
+      "ErrorMessage": null,
+      "ResolvedNC": "DC=child,DC=misoule02,DC=local",
+      "ExpectedNC": "DC=child,DC=misoule02,DC=local",
+      "NcMatch": true
+    },
+    {
+      "ProbeId": "starttls-basic-MiSouleDC03.child.misoule02.local",
+      "Target": "MiSouleDC03.child.misoule02.local",
+      "Port": 389,
+      "TlsMode": "StartTLS",
+      "AuthType": "Basic",
+      "ExpectedOutcome": "PASS",
+      "ActualOutcome": "PASS",
+      "ExpectationMet": true,
+      "ErrorMessage": null,
+      "ResolvedNC": "DC=child,DC=misoule02,DC=local",
+      "ExpectedNC": "DC=child,DC=misoule02,DC=local",
+      "NcMatch": true
+    },
+    {
+      "ProbeId": "ldaps-basic-MiSouleDC04.misoule03.local",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Port": 636,
+      "TlsMode": "LDAPS",
+      "AuthType": "Basic",
+      "ExpectedOutcome": "PASS",
+      "ActualOutcome": "PASS",
+      "ExpectationMet": true,
+      "ErrorMessage": null,
+      "ResolvedNC": "DC=misoule03,DC=local",
+      "ExpectedNC": "DC=misoule03,DC=local",
+      "NcMatch": true
+    },
+    {
+      "ProbeId": "starttls-basic-MiSouleDC04.misoule03.local",
+      "Target": "MiSouleDC04.misoule03.local",
+      "Port": 389,
+      "TlsMode": "StartTLS",
+      "AuthType": "Basic",
+      "ExpectedOutcome": "PASS",
+      "ActualOutcome": "PASS",
+      "ExpectationMet": true,
+      "ErrorMessage": null,
+      "ResolvedNC": "DC=misoule03,DC=local",
+      "ExpectedNC": "DC=misoule03,DC=local",
+      "NcMatch": true
+    }
+  ]
+}

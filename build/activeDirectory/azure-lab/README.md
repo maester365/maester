@@ -18,8 +18,8 @@ automation — it does **not** deploy any Azure resources during development.
 | Root DC | `MiSouleDC02` | `MiSouleDC02.misoule02.local` | `10.20.0.4` | Root of `misoule02.local` |
 | Child DC | `MiSouleDC03` | `MiSouleDC03.child.misoule02.local` | `10.20.0.5` | Child domain in the `misoule02.local` forest |
 | Separate-forest DC | `MiSouleDC04` | `MiSouleDC04.misoule03.local` | `10.20.0.6` | Root of separate forest `misoule03.local` |
-| Windows runner | `MiSouleRunnerWin` | `MSRunnerWin.misoule02.local` | `10.20.0.10` | Joined to `misoule02.local` for implicit Windows credentials |
-| Linux runner | `MiSouleRunnerLinux` | `MiSouleRunnerLinux` | `10.20.0.11` | Enrolled in `misoule02.local` with realmd/SSSD; explicit credentials only |
+| Windows runner | `MiSouleRunW` | `MiSouleRunW.misoule02.local` | `10.20.0.10` | Joined to `misoule02.local` for implicit Windows credentials |
+| Linux runner | `MiSouleRunnerLinux` | `MiSouleRunnerLinux` | `10.20.0.11` | Kerberos-capable (manual `kinit`) but NOT fully enrolled via realmd/SSSD; explicit credentials only |
 
 The root and child domains have the automatic two-way transitive intra-forest
 trust. Child-domain rows can therefore use the logged-in root-forest identity or
@@ -39,16 +39,16 @@ WinRM HTTPS uses a separate server certificate whose name matches the endpoint.
   `child.misoule02.local` delegation, while forest-replicated conditional
   forwarders route `misoule03.local` to `10.20.0.6` and route
   `misoule02.local` back to `10.20.0.4` from the separate forest.
-- `MiSouleRunnerWin` is joined to `misoule02.local`. Root rows use the logged-in
+- `MiSouleRunW` is joined to `misoule02.local`. Root rows use the logged-in
   domain user's Windows token for implicit credentials. A dedicated low-privilege
   `maesterjoin` account performs runner enrollment; runner local-admin and forest-
   administrator passwords are separate. Child rows may use the logged-in identity
   through intra-forest trust or an explicit `CHILD` credential.
-- `MiSouleRunnerLinux` is enrolled in `misoule02.local` with realmd/SSSD. Linux
-  implicit-credential rows must launch a fresh `pwsh` process as a domain user
-  (for example, `sudo -iu 'maesterjoin@misoule02.local' pwsh`) so the process has a
-  root-forest Kerberos identity; Azure Run Command's root identity is not proof
-  of implicit authentication readiness.
+- `MiSouleRunnerLinux` has Kerberos authentication capability (via `kinit` and
+  manual ticket cache) but is **not fully enrolled** via realmd/SSSD. The `sssd`
+  service is inactive and domain users are not resolvable through standard Linux
+  NSS (`id`, `getent passwd`). Use explicit credentials for all AD connections
+  from the Linux runner.
 - There is intentionally no forest trust with `misoule03.local`. Separate-forest
   rows use `MISOULE03\maesterreader` (or its UPN) as an explicit runtime
   credential over LDAPS/StartTLS. No trust-aware separate-forest success row is
@@ -318,39 +318,33 @@ During the Plan 01 rerun, three packages were installed on the Linux runner. The
 
 ## End-to-End Test Execution
 
+> ⚠️ **PowerShell 7 Requirement:** All runner-based validation **must** use PowerShell 7 (`pwsh.exe`). PowerShell 5.1 has module scope issues that prevent Maester's internal LDAP functions from resolving correctly. Use `Start-Process` with `-RedirectStandardOutput` / `-RedirectStandardError` when invoking `pwsh` via Azure VM Run Command.
+
+> ⚠️ **Azure VM Run Command Limitation:** Azure VM Run Command executes scripts in PowerShell 5.1 by default and has module scope issues with Maester's LDAP functions. It is suitable for **troubleshooting and bootstrapping only** (e.g., installing OpenSSH, copying files). It is **not** a valid validation path for E2E certification. All E2E validation must run via SSH or interactive PowerShell 7 sessions on the runners.
+
 After the lab is deployed, run Maester Active Directory tests against each domain:
 
-### Test Execution via Azure VM Run Command
+### Test Execution via SSH (Recommended)
+
+SSH is the preferred transport for E2E validation. It provides predictable PowerShell 7 execution context and avoids Azure VM Run Command module scope issues.
+
+#### Windows Runner via SSH
 
 ```powershell
-# Test misoule02.local (DC02)
-az vm run-command invoke `
-  --resource-group RG_5100_MiSoule_2 `
-  --name MiSouleDC02 `
-  --command-id RunPowerShellScript `
-  --scripts "Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect"
-
-# Test child.misoule02.local (DC03)
-az vm run-command invoke `
-  --resource-group RG_5100_MiSoule_2 `
-  --name MiSouleDC03 `
-  --command-id RunPowerShellScript `
-  --scripts "Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect"
-
-# Test misoule03.local (DC04)
-az vm run-command invoke `
-  --resource-group RG_5100_MiSoule_2 `
-  --name MiSouleDC04 `
-  --command-id RunPowerShellScript `
-  --scripts "Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect"
+# From operator machine or Linux runner
+ssh labadmin@10.20.0.10
+# Then in the SSH session:
+pwsh
+Import-Module C:\MaesterProtocol\module\Maester.psd1 -Force
+$rootCred = New-Object PSCredential('MISOULE02\maesterreader', (ConvertTo-SecureString '...' -AsPlainText -Force))
+Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $rootCred -ActiveDirectoryServer 'MiSouleDC02.misoule02.local' -ActiveDirectoryDomain 'misoule02.local' -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
+Invoke-Maester -Path C:\MaesterTests\ad -Tag AD -NonInteractive -SkipGraphConnect
 ```
 
-### Test Execution via SSH (Linux Runner)
-
-The Linux runner can execute tests remotely via SSH after OpenSSH Server is installed on the DCs:
+#### Linux Runner via SSH
 
 ```bash
-# Prerequisites: Install sshpass on the Linux runner
+# Install sshpass if not present
 sudo apt-get update && sudo apt-get install -y sshpass
 
 # Set password from Key Vault
@@ -358,20 +352,40 @@ export SSHPASS=$(az keyvault secret show --vault-name <vault-name> --name <secre
 
 # Execute Maester tests on DC02 via SSH
 sshpass -e ssh -o StrictHostKeyChecking=no labadmin@10.20.0.4 \
-  'powershell.exe -Command "& { Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect }"'
+  'pwsh -Command "& { Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect }"'
 ```
 
-This approach has been validated successfully. See `DEPLOYMENT-ISSUES.md` for details.
+### Test Execution via Azure VM Run Command (Troubleshooting Only)
+
+> ⚠️ **Not for E2E certification.** Use this only for troubleshooting or initial bootstrap.
+
+```powershell
+# Test misoule02.local (DC02) - TROUBLESHOOTING ONLY
+az vm run-command invoke `
+  --resource-group RG_5100_MiSoule_2 `
+  --name MiSouleDC02 `
+  --command-id RunPowerShellScript `
+  --scripts "Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect"
+```
+
+**Why this is troubleshooting-only:**
+- Executes in PowerShell 5.1, which cannot resolve Maester's internal LDAP module scope
+- Cannot reliably run `Invoke-ProtocolProbeMatrix.ps1` or `Invoke-PublicE2EMatrix.ps1`
+- Session context is unpredictable for implicit credential validation
 
 ### Expected Test Results
 
-All three domains execute 708 AD tests with consistent results:
+All three domains execute 270 AD tests with consistent results when run from the Windows runner via PowerShell 7 with explicit credentials:
 
-| Domain | Total | Passed | Failed | Skipped |
-|--------|-------|--------|--------|---------|
-| misoule02.local | 708 | 241 | 29 | 0 |
-| child.misoule02.local | 708 | 241 | 29 | 0 |
-| misoule03.local | 708 | 241 | 29 | 0 |
+| Domain | Total | Passed | Failed | Skipped | Error |
+|--------|-------|--------|--------|---------|-------|
+| misoule02.local | 270 | 225 | 15 | 1 | 29 |
+| child.misoule02.local | 270 | 225 | 15 | 1 | 29 |
+| misoule03.local | 270 | 225 | 15 | 1 | 29 |
+
+**Note:** The 270 total tests represent the AD-only test subset (`-Tag AD`). The 29 "Error" results are non-blocking test execution errors (e.g., missing properties in minimal lab). The 15 "Failed" results are expected security configuration findings in a minimal lab environment.
+
+**PowerShell 5.1 vs 7 difference:** When executed via Azure VM Run Command (PS 5.1), test counts may differ due to module scope issues. Always use PowerShell 7 for consistent results.
 
 ### Post-Deployment Validation Checklist
 
@@ -548,20 +562,27 @@ ls -lh evidence/reports-full/
 
 ## Notes for operators
 
-- `MiSouleRunnerWin` and `MiSouleRunnerLinux` are the only public ingress points.
+- `MiSouleRunW` and `MiSouleRunnerLinux` are the only public ingress points.
   The domain controllers are private-only.
 - The Windows runner is joined to `misoule02.local` and can use implicit root-
   forest credentials for RDP/WinRM-based execution. Its Azure VM name is
-  `MiSouleRunnerWin`; its 15-character-safe Windows computer name is `MSRunnerWin`.
-- The Ubuntu runner is prepared for PSWSMan-based remoting, direct SMB client
-  checks, and root-forest Kerberos identity through realmd/SSSD. Start `pwsh` as
-  a domain account when a row calls for implicit credentials; use explicit
-  credentials for all separate-forest rows.
+  `MiSouleRunW`; its computer name is also `MiSouleRunW`.
+- The Ubuntu runner has Kerberos authentication capability (via `kinit` and
+  manual ticket cache) but is **not fully enrolled** via realmd/SSSD. The `sssd`
+  service is inactive and domain users are not resolvable through standard Linux
+  NSS. Use explicit credentials for all separate-forest rows.
 - **SSH-based management** is available as an alternative channel after running
   `Enable-WindowsOpenSSH.ps1` on Windows VMs. This is useful for:
   - Running Maester tests from the Linux runner
   - Executing commands when Azure VM Run Commands are unavailable
   - Operations that require a persistent interactive session
+- **Note on SSH implicit credentials:** Non-interactive SSH sessions as a domain
+  user cannot obtain an ambient Kerberos ticket for DC discovery. Implicit-
+  credential rows will fail over SSH. Use interactive RDP or WinRM for implicit
+  credential validation.
+- **Note on SSH explicit credentials:** The `Connect-Maester -ActiveDirectoryCredential`
+  path has not been fully validated over SSH and may return `CONNECTED=False`.
+  Further investigation is required.
 - **Child domain deployment** requires a two-step process:
   1. Join the child DC VM to the parent domain (`Add-Computer`)
   2. Reboot, then promote to child domain (`Install-ADDSDomain`)

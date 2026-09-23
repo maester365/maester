@@ -35,7 +35,7 @@
     $computers = $adState.Computers
 
     # Count enabled computers with CreatorSid attribute
-    # Note: CreatorSid is not a default property from Get-ADComputer, so we check if it exists
+    # CreatorSid is optional in the collected computer contract, so check whether it exists.
     $computersWithCreatorSid = $computers | Where-Object {
         $_.Enabled -eq $true -and
         $_.PSObject.Properties['ms-ds-CreatorSid'] -and

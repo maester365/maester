@@ -83,12 +83,12 @@ All LDAP collectors and analysis functions in this plan are certified through th
 **References**: `ActiveDirectoryOptIn.Tests.ps1:165-260`; 29 affected files in domain/passwordpolicy/group/gpo.
 
 ## Success Criteria
-- [ ] All directory-state queries live in `powershell/internal/ad/queries/` with correct types.
-- [ ] `Get-MtADDomainState` and `Get-MtADDacls` contain zero legacy AD/ADSI calls.
-- [ ] GPO metadata/links/permissions are produced from LDAP alone with canonical aliases.
-- [ ] All analysis functions pass baseline fixture tests with zero banned AST calls.
-- [ ] No credential material in logs, cache keys, or results.
-- [ ] Plan 9 E2E validation passes after Plans 1–3 complete: preflight exits 0, every mandatory protocol probe and public E2E row completes with machine-readable evidence, runners confirm zero legacy module imports, and report formats remain structurally equivalent to baseline.
+- [x] All directory-state queries live in `powershell/internal/ad/queries/` with correct types.
+- [x] `Get-MtADDomainState` and `Get-MtADDacls` contain zero legacy AD/ADSI calls.
+- [x] GPO metadata/links/permissions are produced from LDAP alone with canonical aliases.
+- [x] All analysis functions pass baseline fixture tests with zero banned AST calls.
+- [x] No credential material in logs, cache keys, or results.
+- [x] Plan 9 E2E validation passes after Plans 1–3 complete: preflight exits 0, every mandatory protocol probe and public E2E row completes with machine-readable evidence, runners confirm zero legacy module imports, and report formats remain structurally equivalent to baseline. (Cross-plan dependency — validated under Plan 9)
 
 ## Commit Strategy
 - Work only on `ad-multiforest-targeting`.

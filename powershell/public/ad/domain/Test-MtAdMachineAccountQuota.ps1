@@ -21,6 +21,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdMachineAccountQuota"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -32,15 +34,8 @@
 
     $domain = $adState.Domain
 
-    # Try to get machine account quota from the domain object
-    $machineAccountQuota = $null
-    try {
-        $domainObject = Get-ADObject -Identity $domain.DistinguishedName -Properties ms-DS-MachineAccountQuota
-        $machineAccountQuota = $domainObject.'ms-DS-MachineAccountQuota'
-    }
-    catch {
-        Write-Verbose "Could not retrieve machine account quota: $($_.Exception.Message)"
-    }
+    # Get machine account quota from the collected domain object
+    $machineAccountQuota = $domain.MsDsMachineAccountQuota
 
     # Default is 10 if not explicitly set
     if ($null -eq $machineAccountQuota) {

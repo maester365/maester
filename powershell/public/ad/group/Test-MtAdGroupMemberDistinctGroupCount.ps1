@@ -33,6 +33,19 @@
     $groups = $adState.Groups
     $totalGroupCount = ($groups | Measure-Object).Count
 
+    $ldapConnectionParameters = @{
+        Server   = $adState.ProtocolEvidence.ResolvedServer
+        AuthType = $adState.ProtocolEvidence.AuthenticationMode
+    }
+    if ($adState.ProtocolEvidence.TlsMode -eq 'StartTls') {
+        $ldapConnectionParameters['Port'] = 389
+        $ldapConnectionParameters['UseStartTls'] = $true
+    } else {
+        $ldapConnectionParameters['Port'] = 636
+    }
+    if ($null -ne $__MtSession.ADCredential) { $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential }
+    $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+
     # Query members for each group to find groups with members
     # Limit to first 100 groups for performance if there are many
     $groupsToCheck = $groups | Select-Object -First 100
@@ -40,7 +53,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             if ($members -and ($members | Measure-Object).Count -gt 0) {
                 $groupsWithMembers += $group
             }
@@ -49,6 +62,8 @@
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $groupsWithMembersCount = $groupsWithMembers.Count
     $emptyGroupsCount = $totalGroupCount - $groupsWithMembersCount

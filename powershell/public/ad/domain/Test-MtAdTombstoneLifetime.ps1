@@ -22,6 +22,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdTombstoneLifetime"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -31,19 +33,8 @@
         return $null
     }
 
-    $domain = $adState.Domain
-
-    # Try to get tombstone lifetime from the domain object
-    $tombstoneLifetime = $null
-    try {
-        # Get the tombstone lifetime from the directory configuration
-        $configurationNC = $domain.ConfigurationNamingContext
-        $tombstoneObject = Get-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configurationNC" -Properties tombstoneLifetime -ErrorAction SilentlyContinue
-        $tombstoneLifetime = $tombstoneObject.tombstoneLifetime
-    }
-    catch {
-        Write-Verbose "Could not retrieve tombstone lifetime: $($_.Exception.Message)"
-    }
+    # Get tombstone lifetime from the collected directory configuration
+    $tombstoneLifetime = $adState.Configuration.TombstoneLifetime
 
     # Default values: 60 days for older forests, 180 days for newer forests
     $defaultValue = 180
