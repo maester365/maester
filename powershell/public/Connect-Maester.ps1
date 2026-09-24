@@ -510,6 +510,7 @@
     # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
     if ($Service -contains 'ActiveDirectory') {
        Write-Verbose 'Connecting to Active Directory through the protocol-aware LDAP path'
+       Add-Type -AssemblyName System.DirectoryServices.Protocols
        try {
           $connectAdParameters = @{
              AuthMode = $ActiveDirectoryAuthMode

@@ -11,9 +11,6 @@
 ## Initialize Module Configuration
 #Requires -Modules Pester, Microsoft.Graph.Authentication
 
-# Load required .NET assemblies for Active Directory protocol support
-Add-Type -AssemblyName System.DirectoryServices.Protocols
-
 ## Initialize Module Variables
 ## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
 $__MtSession = @{
