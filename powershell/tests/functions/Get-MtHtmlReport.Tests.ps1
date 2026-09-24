@@ -154,6 +154,36 @@ Describe 'Get-MtHtmlReport' {
         }
     }
 
+    Context 'Embedded JSON safety' {
+        BeforeEach {
+            if (-not $templateAvailable) {
+                Set-ItResult -Skipped -Because 'ReportTemplate.html not found'
+            }
+        }
+
+        It 'Preserves hostile values without introducing script markup (multi-tenant: <_>)' -ForEach @($false, $true) {
+            $payload = "</script><script>alert('XSS')</script><!--<script> & > " + '\u003c \\ path\file' + [char]0x2028
+            $results = [ordered]@{ TenantName = $payload }
+            if ($_) {
+                $results.Tenants = @(@{ Tests = @(@{ ResultDetail = @{ TestResult = $payload } }) })
+            }
+            $results.EndOfJson = 'EndOfJson'
+
+            $html = Get-MtHtmlReport -MaesterResults ([PSCustomObject]$results)
+            $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value
+            $json | Should -Not -BeNullOrEmpty
+            $json | Should -Not -Match '[<>&]'
+            $decoded = $json | ConvertFrom-Json
+            $decoded.TenantName | Should -BeExactly $payload
+            if ($_) {
+                $decoded.Tenants[0].Tests[0].ResultDetail.TestResult | Should -BeExactly $payload
+            }
+            $template = Get-Content $templatePath -Raw
+            ([regex]::Matches($html, '</script', 'IgnoreCase')).Count |
+                Should -Be ([regex]::Matches($template, '</script', 'IgnoreCase')).Count
+        }
+    }
+
     Context 'Multi-tenant report' {
         BeforeAll {
             $merged = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2)
