@@ -53,6 +53,9 @@
         Write-Verbose "Generating HTML report."
         $json = $MaesterResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
 
+        # Prevent values from terminating the script element while preserving them when JavaScript parses the JSON.
+        $json = $json.Replace('&', '\u0026').Replace('<', '\u003c').Replace('>', '\u003e')
+
         $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
         $templateHtml = Get-Content -Path $htmlFilePath -Raw
 

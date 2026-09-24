@@ -140,6 +140,18 @@ Describe 'Get-MtHtmlReport' {
 
             $html | Should -Not -BeLike '*Pora Inc*'
         }
+
+        It 'Should not embed a raw script injection payload' {
+            $payload = "</script><script>alert('XSS')</script>"
+            $maliciousResults = [PSCustomObject]@{
+                TenantName = $payload
+                EndOfJson  = 'EndOfJson'
+            }
+
+            $html = Get-MtHtmlReport -MaesterResults $maliciousResults
+
+            $html | Should -Not -BeLike "*$payload*"
+        }
     }
 
     Context 'Multi-tenant report' {
