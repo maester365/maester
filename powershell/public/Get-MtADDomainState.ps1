@@ -17,6 +17,17 @@ function Get-MtADDomainState {
     data collection. When provided, LDAP and DNS queries are directed to this
     server. If not specified, the target selected by Connect-Maester is used.
 
+    .PARAMETER DnsTimeoutSeconds
+    Specifies the timeout, in seconds, for remote DNS inventory collection.
+
+    .PARAMETER MaxZoneCount
+    Specifies the maximum number of DNS zones that may be normalized. Collection
+    fails explicitly if the remote inventory exceeds this value.
+
+    .PARAMETER MaxRecordCount
+    Specifies the maximum number of DNS records that may be normalized. Collection
+    fails explicitly if the remote inventory exceeds this value.
+
     .EXAMPLE
     Get-MtADDomainState
 
@@ -39,7 +50,16 @@ function Get-MtADDomainState {
     param(
         [switch]$Refresh,
 
-        [string]$ComputerName
+        [string]$ComputerName,
+
+        [ValidateRange(1, 3600)]
+        [int]$DnsTimeoutSeconds = 60,
+
+        [ValidateRange(1, 100000)]
+        [int]$MaxZoneCount = 500,
+
+        [ValidateRange(1, 1000000)]
+        [int]$MaxRecordCount = 10000
     )
 
     if (-not (Test-MtConnection -Service ActiveDirectory)) {
@@ -270,26 +290,27 @@ function Get-MtADDomainState {
                 Write-Verbose "Could not collect Organizational Unit data: $($_.Exception.Message)"
             }
 
-            $resolvedComputerName = if ($ComputerName) {
-                $ComputerName
-            }
-            elseif ($domainState.Domain.DnsRoot) {
-                $domainState.Domain.DnsRoot
-            }
-            else {
-                $protocolConnectionState.ResolvedServer
-            }
-
             $smbConfigurations = @()
             foreach ($dc in $domainState.DomainControllers) {
                 $dcName = if ($dc.DnsHostName) { $dc.DnsHostName } else { $dc.Name }
                 try {
-                    $smbConfig = Invoke-Command -ComputerName $dcName -ScriptBlock {
-                        Get-SmbServerConfiguration -ErrorAction SilentlyContinue | Select-Object EnableSMB1Protocol, EnableSMB2Protocol, EnableSecuritySignature, RequireSecuritySignature, EnableSMB3_1_1Protocol
-                    } -ErrorAction SilentlyContinue
-                    if ($smbConfig) {
-                        $smbConfig | Add-Member -NotePropertyName 'DCName' -NotePropertyValue $dcName -Force
-                        $smbConfigurations += $smbConfig
+                    $smbConfig = Invoke-MtADManagementCommand -Operation SmbConfiguration -ComputerName $dcName
+                    if ($null -eq $smbConfig) {
+                        Write-Verbose "Could not retrieve SMB configuration from $dcName`: The management executor returned no SMB configuration."
+                        continue
+                    }
+                    if ($null -ne $smbConfig.PSObject.Properties['ErrorCategory']) {
+                        Write-Verbose "Could not retrieve SMB configuration from $dcName`: $($smbConfig.RedactedMessage)"
+                        continue
+                    }
+
+                    $smbConfigurations += [PSCustomObject][ordered]@{
+                        DCName                   = [string]$smbConfig.DCName
+                        EnableSMB1Protocol       = [bool]$smbConfig.EnableSMB1Protocol
+                        EnableSMB2Protocol       = [bool]$smbConfig.EnableSMB2Protocol
+                        EnableSMB3_1_1Protocol   = [bool]$smbConfig.EnableSMB3_1_1Protocol
+                        EnableSecuritySignature  = [bool]$smbConfig.EnableSecuritySignature
+                        RequireSecuritySignature = [bool]$smbConfig.RequireSecuritySignature
                     }
                 }
                 catch {
@@ -299,28 +320,196 @@ function Get-MtADDomainState {
             $domainState['SmbConfigurations'] = $smbConfigurations
 
             try {
-                $dnsZones = Get-DnsServerZone -ComputerName $resolvedComputerName -ErrorAction Stop | Select-Object *
-                $domainState['DNSZones'] = @($dnsZones)
-
-                $dnsRecords = @()
-                foreach ($zone in $dnsZones | Where-Object { $_.ZoneType -eq 'Primary' -or $_.ZoneType -eq 'ActiveDirectory-Integrated' } | Select-Object -First 20) {
-                    try {
-                        $records = Get-DnsServerResourceRecord -ComputerName $resolvedComputerName -ZoneName $zone.ZoneName -ErrorAction SilentlyContinue | Select-Object *
-                        foreach ($record in $records) {
-                            $record | Add-Member -NotePropertyName 'ZoneName' -NotePropertyValue $zone.ZoneName -Force
-                        }
-                        $dnsRecords += $records
-                    }
-                    catch {
-                        Write-Verbose "Could not retrieve records for zone $($zone.ZoneName): $($_.Exception.Message)"
-                    }
+                $dnsInventory = Invoke-MtADManagementCommand -Operation DnsInventory -TimeoutSeconds $DnsTimeoutSeconds
+                if ($null -eq $dnsInventory -or $null -ne $dnsInventory.PSObject.Properties['ErrorCategory']) {
+                    $dnsError = if ($null -ne $dnsInventory) { $dnsInventory.RedactedMessage } else { 'The management executor returned no DNS inventory.' }
+                    throw [System.InvalidOperationException]::new($dnsError)
                 }
-                $domainState['DNSRecords'] = $dnsRecords
-            }
-            catch [Management.Automation.CommandNotFoundException] {
-                Write-Verbose 'DnsServer module not available. DNS data will not be collected.'
+
+                $wmiZones = @($dnsInventory.Zones)
+                $wmiRecords = @($dnsInventory.Records)
+                $wmiRootHints = @($dnsInventory.RootHints)
+                if ($wmiZones.Count -gt $MaxZoneCount) {
+                    throw [System.InvalidOperationException]::new("DNS inventory truncation prevented: received $($wmiZones.Count) zones, exceeding MaxZoneCount $MaxZoneCount.")
+                }
+                if ($wmiRecords.Count -gt $MaxRecordCount) {
+                    throw [System.InvalidOperationException]::new("DNS inventory truncation prevented: received $($wmiRecords.Count) records, exceeding MaxRecordCount $MaxRecordCount.")
+                }
+
+                $getDnsPropertyValue = {
+                    param(
+                        [object]$InputObject,
+                        [string[]]$PropertyNames
+                    )
+
+                    if ($null -eq $InputObject) {
+                        return $null
+                    }
+
+                    foreach ($propertyName in $PropertyNames) {
+                        $property = $InputObject.PSObject.Properties[$propertyName]
+                        if ($null -ne $property -and $null -ne $property.Value) {
+                            return $property.Value
+                        }
+                    }
+
+                    return $null
+                }
+
+                $dnsZones = foreach ($wmiZone in $wmiZones) {
+                    $zoneProperties = [ordered]@{}
+                    foreach ($property in $wmiZone.PSObject.Properties) {
+                        if ($property.Name -notin @('ZoneName', 'ZoneType')) {
+                            $zoneProperties[$property.Name] = $property.Value
+                        }
+                    }
+
+                    $wmiZoneType = & $getDnsPropertyValue -InputObject $wmiZone -PropertyNames @('ZoneType')
+                    $isDsIntegrated = [bool](& $getDnsPropertyValue -InputObject $wmiZone -PropertyNames @('DsIntegrated'))
+                    $zoneType = switch ([int]$wmiZoneType) {
+                        1 { if ($isDsIntegrated) { 'ActiveDirectory-Integrated' } else { 'Primary' } }
+                        2 { 'Secondary' }
+                        3 { 'Stub' }
+                        4 { 'Forwarder' }
+                        default { [string]$wmiZoneType }
+                    }
+                    $zoneProperties['ZoneName'] = [string](& $getDnsPropertyValue -InputObject $wmiZone -PropertyNames @('Name', 'ZoneName'))
+                    $zoneProperties['ZoneType'] = $zoneType
+                    [PSCustomObject]$zoneProperties
+                }
+
+                if ($wmiRootHints.Count -gt 0 -and 'RootDNSServers' -notin @($dnsZones.ZoneName)) {
+                    $rootHintProperties = [ordered]@{}
+                    foreach ($property in $wmiRootHints[0].PSObject.Properties) {
+                        if ($property.Name -notin @('ZoneName', 'ZoneType')) {
+                            $rootHintProperties[$property.Name] = $property.Value
+                        }
+                    }
+                    $rootHintProperties['ZoneName'] = 'RootDNSServers'
+                    $rootHintProperties['ZoneType'] = 'Primary'
+                    $dnsZones = @($dnsZones) + [PSCustomObject]$rootHintProperties
+                }
+
+                if (@($dnsZones).Count -gt $MaxZoneCount) {
+                    throw [System.InvalidOperationException]::new("DNS inventory truncation prevented: normalization produced $(@($dnsZones).Count) zones, exceeding MaxZoneCount $MaxZoneCount.")
+                }
+
+                $dnsRecords = foreach ($wmiRecord in $wmiRecords) {
+                    $recordProperties = [ordered]@{}
+                    foreach ($property in $wmiRecord.PSObject.Properties) {
+                        if ($property.Name -notin @('ZoneName', 'HostName', 'RecordType', 'RecordData', 'Timestamp', 'TTL')) {
+                            $recordProperties[$property.Name] = $property.Value
+                        }
+                    }
+
+                    $recordType = [string](& $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('RecordType'))
+                    if ([string]::IsNullOrWhiteSpace($recordType)) {
+                        $className = [string](& $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('__CLASS', 'CimClassName'))
+                        if ([string]::IsNullOrWhiteSpace($className)) {
+                            $cimClass = & $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('CimClass')
+                            $className = [string](& $getDnsPropertyValue -InputObject $cimClass -PropertyNames @('CimClassName'))
+                        }
+                        if ([string]::IsNullOrWhiteSpace($className)) {
+                            $className = @($wmiRecord.PSObject.TypeNames | Where-Object { $_ -match 'MicrosoftDNS_[A-Za-z0-9]+Type' } | Select-Object -First 1)
+                        }
+                        if ($className -match 'MicrosoftDNS_([A-Za-z0-9]+)Type') {
+                            $recordType = $Matches[1].ToUpperInvariant()
+                        }
+                    }
+                    if ([string]::IsNullOrWhiteSpace($recordType)) {
+                        $textRepresentation = [string](& $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('TextRepresentation'))
+                        if ($textRepresentation -match '(?i)\sIN\s+([A-Z0-9]+)\s') {
+                            $recordType = $Matches[1].ToUpperInvariant()
+                        }
+                    }
+
+                    $rawRecordData = & $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('RecordData')
+                    $recordDataSource = if ($null -ne $rawRecordData -and $rawRecordData -isnot [string] -and $rawRecordData -isnot [ValueType]) {
+                        $rawRecordData
+                    }
+                    else {
+                        $wmiRecord
+                    }
+                    $recordData = switch ($recordType.ToUpperInvariant()) {
+                        'SOA' {
+                            [PSCustomObject][ordered]@{
+                                PrimaryServer      = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('PrimaryNameServer', 'PrimaryServer')
+                                ResponsibleParty   = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('ResponsiblePerson', 'ResponsibleParty')
+                                SerialNumber       = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('SerialNumber')
+                                RefreshInterval    = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Refresh-TTL', 'RefreshInterval')
+                                RetryInterval      = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Retry-TTL', 'RetryInterval', 'RetryDelay')
+                                ExpireLimit        = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Expire-TTL', 'ExpireInterval', 'ExpireLimit')
+                                MinimumTimeToLive  = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Minimum-TTL', 'MinimumTimeToLive', 'MinimumTTL')
+                            }
+                        }
+                        'SRV' {
+                            [PSCustomObject][ordered]@{
+                                Priority   = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Priority')
+                                Weight     = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Weight')
+                                Port       = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('Port')
+                                DomainName = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('SRVDomainName', 'DomainName')
+                            }
+                        }
+                        'A' {
+                            $ipAddressValue = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('IPAddress', 'IPv4Address')
+                            if ($null -eq $ipAddressValue) {
+                                $ipAddressValue = $rawRecordData
+                            }
+                            try {
+                                $ipAddressValue = [System.Net.IPAddress]::Parse([string]$ipAddressValue)
+                            }
+                            catch {
+                                Write-Verbose "Could not parse DNS A record address '$ipAddressValue'."
+                            }
+                            [PSCustomObject][ordered]@{ IPv4Address = $ipAddressValue }
+                        }
+                        'NS' {
+                            [PSCustomObject][ordered]@{
+                                NameServer = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('NSName', 'NameServer', 'NSHost')
+                            }
+                        }
+                        'AAAA' {
+                            [PSCustomObject][ordered]@{
+                                IPv6Address = & $getDnsPropertyValue -InputObject $recordDataSource -PropertyNames @('IPv6Address')
+                            }
+                        }
+                        default {
+                            [PSCustomObject][ordered]@{ Data = $rawRecordData }
+                        }
+                    }
+
+                    $zoneName = [string](& $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('ContainerName'))
+                    if ([string]::IsNullOrWhiteSpace($zoneName)) {
+                        $zoneName = [string](& $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('DomainName'))
+                    }
+                    if ($zoneName -in @('.RootHints', '..RootHints', 'RootHints')) {
+                        $zoneName = 'RootDNSServers'
+                    }
+
+                    $hostName = & $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('OwnerName')
+                    if ($null -eq $hostName) {
+                        $hostName = & $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('DomainName')
+                    }
+                    $timestamp = & $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('Timestamp', 'TimeStamp')
+                    if ($null -eq $timestamp -or [uint64]$timestamp -eq 0) {
+                        $timestamp = $null
+                    }
+
+                    $recordProperties['ZoneName'] = $zoneName
+                    $recordProperties['HostName'] = $hostName
+                    $recordProperties['RecordType'] = $recordType.ToUpperInvariant()
+                    $recordProperties['RecordData'] = $recordData
+                    $recordProperties['Timestamp'] = $timestamp
+                    $recordProperties['TTL'] = & $getDnsPropertyValue -InputObject $wmiRecord -PropertyNames @('TTL')
+                    [PSCustomObject]$recordProperties
+                }
+
+                $domainState['DNSZones'] = @($dnsZones)
+                $domainState['DNSRecords'] = @($dnsRecords)
             }
             catch {
+                $domainState.Remove('DNSZones')
+                $domainState.Remove('DNSRecords')
                 Write-Verbose "Could not collect DNS data: $($_.Exception.Message)"
             }
 

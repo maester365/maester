@@ -9,43 +9,38 @@
 ## Inaccurate Claims from Initial Validation (2026-09-23)
 
 ### Claim 1: "Implicit credential tests passed"
-**Status:** ❌ **INACCURATE**
+**Status:** ⚠️ **PARTIALLY INACCURATE (outdated)**
 
-**What actually happened:**
+**What actually happened (initial validation):**
 - Implicit credential tests **only passed via Azure VM Run Command** on the Windows runner
 - Azure VM Run Command executes as `SYSTEM`, which has ambient domain context through the computer account
-- **SSH sessions as local admin (`labadmin`) CANNOT obtain Kerberos tickets** for `System.DirectoryServices.ActiveDirectory` DC discovery
-- When testing `Connect-Maester -Service ActiveDirectory` via SSH (even with PowerShell 7 as default shell), it fails with:
-  ```
-  Failed to connect to Active Directory: Unable to discover an ambient Active Directory domain controller for the current Windows session.
-  ```
+- **Password-based SSH sessions as local admin (`labadmin`) CANNOT obtain Kerberos tickets** for `System.DirectoryServices.ActiveDirectory` DC discovery
+
+**Current state (validated 2026-09-24):**
+- **GSSAPI (Kerberos) SSH sessions CAN obtain Kerberos tickets** and validate implicit-credential rows
+- The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` (using `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name`) activates when `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty
+- All 11 matrix rows (including implicit-credential rows 1, 2, 3, 5) pass via GSSAPI SSH with 0 mismatches
 
 **Correct statement:**
-> Implicit credential authentication works only in interactive Windows sessions (RDP, WinRM, or Azure VM Run Command as SYSTEM) where the host has a valid computer account in the target domain. Non-interactive SSH sessions as local admin lack the Kerberos ticket cache required for ambient DC discovery.
+> Implicit credential authentication works in any session with a valid domain identity: interactive Windows sessions (RDP, WinRM), Azure VM Run Command as SYSTEM, or **GSSAPI (Kerberos) SSH**. Password-based SSH lacks the Kerberos ticket cache required for ambient DC discovery — use GSSAPI SSH for implicit-credential validation.
 
 ---
 
 ### Claim 2: "SSH is validated and ready for explicit-credential test scenarios"
-**Status:** ❌ **PARTIALLY INACCURATE**
+**Status:** ✅ **RESOLVED**
 
-**What actually happened:**
+**What actually happened (initial validation):**
 - SSH connectivity itself works: Linux runner → Windows runner (10.20.0.10) via `sshpass`
 - PowerShell 7 is confirmed as the default SSH shell
-- **BUT:** Explicit credential tests via SSH returned `CONNECTED=False`:
-  ```powershell
-  $cred = New-Object PSCredential('MISOULE02\maesterreader', $pwd)
-  Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $cred -ActiveDirectoryServer 'MiSouleDC02.misoule02.local'
-  # Output: CONNECTED=False, SERVER=
-  ```
-- The connection attempt did not throw, but `$__MtSession.ADConnection` was not populated with a successful connection state
+- Initial explicit-credential tests via password-based SSH returned `CONNECTED=False` due to missing `-ActiveDirectoryDomain` parameter and certificate trust issues
 
-**Root cause hypothesis:**
-- The explicit credential path may require additional parameters (e.g., `-ActiveDirectoryDomain` or `-ActiveDirectoryForest`) for proper resolution
-- Alternatively, the credential may not have sufficient privileges for LDAPS/StartTLS binding
-- The `Connect-MtAdTarget` function validates selectors and resolves the target, but the actual LDAP connection may fail silently in certain SSH session contexts
+**Current state (validated 2026-09-24):**
+- Explicit-credential tests **PASS via both password-based SSH and GSSAPI SSH**
+- All 11 public E2E matrix rows pass via GSSAPI SSH (including explicit-credential rows)
+- The DC04 explicit-basic-ldaps row passes via SSH but fails via Azure VM Run Command (transport issue, not code)
 
 **Correct statement:**
-> SSH is validated as a transport channel, but explicit-credential Maester AD connections via SSH require further investigation. The `Connect-Maester -ActiveDirectoryCredential` path did not produce a successful connection state in initial testing.
+> SSH is fully validated as the canonical transport for E2E validation. Both password-based SSH (explicit credentials only) and GSSAPI SSH (explicit + implicit credentials) work correctly. Azure VM Run Command is deprecated for E2E certification.
 
 ---
 

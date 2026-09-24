@@ -182,7 +182,7 @@ The extension remains stuck indefinitely (observed >24 hours).
 - PowerShell default shell provides native `pwsh` execution
 - Session context is predictable and debuggable
 
-**Note on implicit credentials over SSH:** Non-interactive SSH sessions as a domain user cannot obtain an ambient Kerberos ticket for `System.DirectoryServices.ActiveDirectory` DC discovery. Implicit-credential rows (e.g., `1-win-dc02-implicit-implicit-negotiate-ldaps`) will fail with "Unable to discover an ambient Active Directory domain controller for the current Windows session." This is a session-context limitation, not a code defect. To test implicit credentials, use an interactive RDP or WinRM session with proper Kerberos ticket initialization.
+**Note on implicit credentials over SSH:** Password-based SSH sessions as a domain user cannot obtain an ambient Kerberos ticket for `System.DirectoryServices.ActiveDirectory` DC discovery. However, **GSSAPI (Kerberos) SSH sessions CAN** obtain Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` (using `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name`) activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. To test implicit credentials over SSH, use GSSAPI authentication with a valid Kerberos TGT.
 
 ---
 
@@ -571,18 +571,11 @@ ls -lh evidence/reports-full/
   manual ticket cache) but is **not fully enrolled** via realmd/SSSD. The `sssd`
   service is inactive and domain users are not resolvable through standard Linux
   NSS. Use explicit credentials for all separate-forest rows.
-- **SSH-based management** is available as an alternative channel after running
-  `Enable-WindowsOpenSSH.ps1` on Windows VMs. This is useful for:
-  - Running Maester tests from the Linux runner
-  - Executing commands when Azure VM Run Commands are unavailable
-  - Operations that require a persistent interactive session
-- **Note on SSH implicit credentials:** Non-interactive SSH sessions as a domain
-  user cannot obtain an ambient Kerberos ticket for DC discovery. Implicit-
-  credential rows will fail over SSH. Use interactive RDP or WinRM for implicit
-  credential validation.
-- **Note on SSH explicit credentials:** The `Connect-Maester -ActiveDirectoryCredential`
-  path has not been fully validated over SSH and may return `CONNECTED=False`.
-  Further investigation is required.
+- **SSH-based management** is the canonical transport for E2E validation. Two modes are supported:
+  - **GSSAPI (Kerberos) SSH:** Required for implicit-credential rows. The Linux runner acquires a TGT via `kinit` and connects to the Windows runner using Kerberos authentication. All 11 public E2E matrix rows pass via GSSAPI SSH.
+  - **Password-based SSH:** Works for explicit-credential rows only. Use `sshpass` with the Windows runner local admin password. Implicit-credential rows will fail because password auth does not provide a domain identity.
+- **Note on SSH implicit credentials:** GSSAPI (Kerberos) SSH sessions **CAN** obtain ambient Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. Password-based SSH cannot validate implicit credentials.
+- **Note on SSH explicit credentials:** The `Connect-Maester -ActiveDirectoryCredential` path is fully validated over both password-based and GSSAPI SSH. All explicit-credential rows pass.
 - **Child domain deployment** requires a two-step process:
   1. Join the child DC VM to the parent domain (`Add-Computer`)
   2. Reboot, then promote to child domain (`Install-ADDSDomain`)

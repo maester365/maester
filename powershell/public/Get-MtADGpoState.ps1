@@ -39,7 +39,8 @@ function Get-MtADGpoState {
         return $null
     }
 
-    $cacheKey = 'GpoState'
+    $resolvedDomain = [string]$__MtSession.ADConnection.ResolvedDomain
+    $cacheKey = if ($resolvedDomain) { "GpoState:$resolvedDomain" } else { 'GpoState' }
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
         Write-Verbose 'Collecting AD GPO State data from Active Directory'
@@ -190,16 +191,41 @@ function Get-MtADGpoState {
                                 (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
                         } | Select-Object -First 1)
 
-                    [PSCustomObject]@{
+                    $hasVersionMismatch = $null
+                    $cpasswordFound = $null
+                    $defaultPasswordFound = $null
+                    $errors = [System.Collections.Generic.List[object]]::new()
+                    try {
+                        Write-Verbose "Collecting SYSVOL content for GPO '$gpoGuid'"
+                        $sysvolContent = Get-MtSysvolContent -Operation Connect -GpoGuid $gpoGuid
+                        if ($null -ne $sysvolContent.GptIni -and $null -ne $sysvolContent.GptIni.Version) {
+                            $hasVersionMismatch = [long]$gpo.VersionNumber -ne [long]$sysvolContent.GptIni.Version
+                        }
+                        $cpasswordFound = [bool]$sysvolContent.CpasswordFound
+                        $defaultPasswordFound = [bool]$sysvolContent.DefaultPasswordFound
+                    }
+                    catch {
+                        $errors.Add([PSCustomObject][ordered]@{
+                                Transport = 'SYSVOL'
+                                Message   = $_.Exception.Message
+                            }) | Out-Null
+                        Write-Verbose "Could not collect SYSVOL content for GPO '$gpoGuid': $($_.Exception.Message)"
+                    }
+
+                    $enforcementEnabled = [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                    [PSCustomObject][ordered]@{
                         GPOId                  = $gpo.Id
                         GPOName                = $gpo.DisplayName
+                        Name                   = $gpo.DisplayName
                         DisabledLinks          = @($gpoLinks | Where-Object { $_.IsDisabled }).Count
-                        HasVersionMismatch     = $false
-                        CpasswordFound         = $false
-                        DefaultPasswordFound   = $false
+                        HasVersionMismatch     = $hasVersionMismatch
+                        CpasswordFound         = $cpasswordFound
+                        DefaultPasswordFound   = $defaultPasswordFound
                         HasApplyGroupPolicyAce = $hasApplyGroupPolicyAce
                         HasDenyAce             = $hasDenyAce
-                        EnforcementEnabled     = [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                        EnforcementEnabled     = $enforcementEnabled
+                        Enforcement            = $enforcementEnabled
+                        Errors                 = @($errors)
                     }
                 }
                 $gpoState['GPOReports'] = @($gpoReports)

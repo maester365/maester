@@ -461,6 +461,171 @@ Azure VM Run Command executes scripts in PowerShell 5.1 (Desktop Edition) by def
 
 ---
 
+### Issue 14: DC04 Reader Credential Password Mismatch
+
+**Severity:** High
+**Impact:** All DC04 E2E validation rows fail with "The supplied credential is invalid."
+
+**Description:**
+The `MISOULE03\maesterreader` account password on DC04 did not match the `ForestDomainReaderPassword` stored in Azure Key Vault. This caused LDAP bind failures for all DC04 test rows.
+
+**Root cause:**
+The DC04 password was reset or changed after initial deployment, causing it to diverge from the Key Vault secret value.
+
+**Remediation:**
+1. Retrieve the correct password from Key Vault:
+   ```powershell
+   az keyvault secret show --vault-name kvmisoule-lab-20260820 `
+     --name misoule-lab-20260820200638-forestdomainreaderpassword `
+     --query value -o tsv
+   ```
+2. Reset the `maesterreader` password on DC04 to match the Key Vault value:
+   ```powershell
+   $pass = ConvertTo-SecureString '<key-vault-password>' -AsPlainText -Force
+   Set-ADAccountPassword -Identity 'maesterreader' -NewPassword $pass -Reset
+   ```
+3. Verify the credential works:
+   ```powershell
+   $cred = New-Object PSCredential('MISOULE03\maesterreader', $pass)
+   Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $cred `
+     -ActiveDirectoryServer 'MiSouleDC04.misoule03.local' -ActiveDirectoryDomain 'misoule03.local' `
+     -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
+   ```
+
+**Prevention:**
+Add a post-deployment verification step that tests each reader credential against its respective DC and alerts if authentication fails.
+
+---
+
+### Issue 15: Linux Runner Certificate Format (DER vs PEM)
+
+**Severity:** Medium
+**Impact:** Linux runner cannot validate LDAPS connections to DC03 and DC04; `openssl s_client` returns "Verify return code: 18 (self-signed certificate)."
+
+**Description:**
+The Linux runner's certificate installation script (`New-RunnerVm.ps1`) places DC LDAPS certificates in `/usr/local/share/ca-certificates/maester-lab/` in DER format. The `update-ca-certificates` tool on Ubuntu expects PEM format. While symlinks are created, OpenSSL cannot use DER-formatted certificates in the system CA store, causing TLS validation failures.
+
+**Evidence:**
+```bash
+# Before fix
+MiSouleDC03.child.misoule02.local: Verify return code: 18 (self-signed certificate)
+MiSouleDC04.misoule03.local: Verify return code: 18 (self-signed certificate)
+
+# After fix (convert DER → PEM)
+MiSouleDC03.child.misoule02.local: Verify return code: 0 (ok)
+MiSouleDC04.misoule03.local: Verify return code: 0 (ok)
+```
+
+**Remediation:**
+Convert DER certificates to PEM format before running `update-ca-certificates`:
+```bash
+for f in /usr/local/share/ca-certificates/maester-lab/*.crt; do
+  if ! head -1 "$f" | grep -q 'BEGIN CERTIFICATE'; then
+    openssl x509 -in "$f" -inform DER -out "$f.pem" -outform PEM
+    mv "$f.pem" "$f"
+  fi
+done
+sudo update-ca-certificates
+```
+
+**Permanent fix:**
+Update `New-RunnerVm.ps1` to export certificates in PEM format directly, or add the DER→PEM conversion step to the Linux runner bootstrap script.
+
+---
+
+### Issue 16: WinRM Remote Management Users Group Membership Silent Failure
+
+**Severity:** High
+**Impact:** `maesterreader` cannot establish PSSessions to DCs, blocking DNS WMI and SMB configuration collection.
+
+**Description:**
+`New-DomainController.ps1` attempts to add `maesterreader` to `Remote Management Users`, `Event Log Readers`, `Distributed COM Users`, and `Performance Log Users` using:
+```powershell
+Add-ADGroupMember -Identity $group.DistinguishedName -Members $configuration.TestUserName -ErrorAction SilentlyContinue
+```
+
+The `-ErrorAction SilentlyContinue` suppresses all errors, including failures to add the user to groups. In the deployed lab, `maesterreader` was NOT a member of `Remote Management Users` on any DC, despite the script appearing to succeed.
+
+**Verification:**
+```powershell
+([ADSI]'WinNT://./Remote Management Users,group').Members() | ForEach-Object { $_.GetType().InvokeMember('Name', 'GetProperty', $null, $_, $null) }
+# Output was empty on all DCs before manual remediation
+```
+
+**Remediation:**
+1. Add `maesterreader` to the required groups on each DC:
+   ```powershell
+   foreach ($groupName in @('Remote Management Users', 'Event Log Readers', 'Distributed COM Users', 'Performance Log Users')) {
+       $group = Get-ADGroup -Identity $groupName
+       Add-ADGroupMember -Identity $group.DistinguishedName -Members 'maesterreader'
+   }
+   ```
+2. Verify membership:
+   ```powershell
+   Get-ADPrincipalGroupMembership -Identity 'maesterreader' | Select-Object Name
+   ```
+
+**Permanent fix:**
+Update `New-DomainController.ps1` to:
+1. Remove `-ErrorAction SilentlyContinue` from `Add-ADGroupMember`
+2. Add explicit verification after group membership assignment
+3. Fail the deployment if group membership cannot be established
+
+---
+
+### Issue 17: DC04 Public E2E Matrix Row Fails via Azure VM Run Command
+
+**Severity:** Medium
+**Impact:** Row 7 (`7-win-dc04-explicit-explicit-basic-ldaps`) in `Invoke-PublicE2EMatrix.ps1` consistently fails when the parent script is launched via Azure VM Run Command, despite the credential being valid.
+
+**Description:**
+The DC04 credential (`MISOULE03\maesterreader`) works correctly in all manual test contexts:
+- Direct `Connect-Maester` in same process ✅
+- Direct `Connect-Maester` in fresh pwsh process ✅
+- `Test-ADProtocolPrerequisites.ps1` + `Connect-Maester` in fresh process ✅
+- Cross-process file-based credential serialization ✅
+- **Full `Invoke-PublicE2EMatrix.ps1` via SSH ✅ (see Resolution)**
+
+When launched via **Azure VM Run Command**, the DC04 row fails with:
+```
+The supplied credential is invalid.
+```
+
+All other matrix rows (root domain, child domain) pass correctly using the same infrastructure.
+
+**Root cause:**
+Azure VM Run Command executes scripts in a constrained context that interferes with `Invoke-PublicE2EMatrix.ps1`'s internal `Start-Process` worker mechanism. The credential serialization through the named pipe works correctly when the parent process has a normal interactive/service context (SSH), but fails when launched via the Azure VM Agent's Run Command extension.
+
+**Resolution:**
+Execute `Invoke-PublicE2EMatrix.ps1` via **GSSAPI (Kerberos) SSH** instead of Azure VM Run Command. When run via GSSAPI SSH:
+- Row 7 (DC04 explicit-explicit-basic-ldaps): **PASS** (270 tests executed)
+- All explicit-credential rows: **PASS**
+- All implicit-credential rows: **PASS** (GSSAPI provides domain identity)
+- **Total: 11/11 rows pass with 0 mismatches**
+
+Password-based SSH works for explicit-credential rows only; GSSAPI SSH is required for implicit-credential rows.
+
+**Evidence:**
+```json
+{
+  "RowId": "7-win-dc04-explicit-explicit-basic-ldaps",
+  "ExpectedOutcome": "PASS",
+  "ActualOutcome": "PASS",
+  "TestResultCount": 270,
+  "ResolvedServer": "misouledc04.misoule03.local",
+  "ResolvedDomain": "misoule03.local",
+  "ResolvedForest": "misoule03.local"
+}
+```
+
+**Required action:**
+None for the matrix script itself — the failure is a transport-layer issue, not a code defect. Update all E2E validation procedures to use SSH as the canonical transport for Windows runner execution.
+
+**Note on transport:**
+SSH is the canonical transport for all runner-based validation. Azure VM Run Command is deprecated for E2E certification and should only be used for bootstrapping (e.g., installing OpenSSH Server). **GSSAPI (Kerberos) SSH is required for implicit-credential rows** — password-based SSH lacks the domain identity needed for ambient DC discovery. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty.
+
+---
+
 ## Recommendations for Future Deployments
 
 1. **Pre-requisites check:** Before running `Deploy-Lab.ps1`, verify:
@@ -478,10 +643,12 @@ Azure VM Run Command executes scripts in PowerShell 5.1 (Desktop Edition) by def
 
 6. **SSH as canonical transport:** Update all automation to use SSH instead of Azure VM Run Command for Windows runner management:
    - Install OpenSSH Server during runner provisioning
+   - Ensure `sshd` has `GSSAPIAuthentication yes`
    - Generate SSH key pair on Linux runner during deployment
    - Configure `sshd` with PowerShell as default shell
-   - Use `sshpass` + `ssh`/`scp` for execution and file transfer
-   - Document implicit-credential limitations over SSH (non-interactive sessions lack Kerberos tickets)
+   - Use `sshpass` + `ssh`/`scp` for password-based execution (explicit credentials only)
+   - Use `kinit` + GSSAPI SSH for full matrix validation (explicit + implicit credentials)
+   - Document that GSSAPI SSH is required for implicit-credential rows
 
 7. **StartTLS platform limitation:** Document that StartTLS validation requires the Windows runner. Linux runner LDAPS validation is sufficient for TLS coverage.
 

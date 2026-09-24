@@ -535,4 +535,31 @@ build/orca/orca/
 
 powershell/maester-tests
 PowerShellEditorServices.json
-.sisyphus/boulder.json
+
+# AD development planning artifacts (preserved on archive branch)
+.sisyphus/
+
+# AD lab evidence and test results
+build/activeDirectory/azure-lab/evidence/
+build/activeDirectory/AD-TEST-RESULTS*
+build/activeDirectory/AD-TestResults-*
+build/activeDirectory/*.bak
+
+# Old AD backlog and retired scripts
+build/activeDirectory/ADTestBacklog.md
+build/activeDirectory/AD_Test_Backlog_Analysis.md
+build/activeDirectory/CollaborationProcess.md
+build/activeDirectory/SingleTestWorkPlan.md
+build/activeDirectory/Phase19-Validation-README.md
+build/activeDirectory/Simple-Validate-Phase19.ps1
+build/activeDirectory/Standalone-Phase19-Validation.ps1
+build/activeDirectory/Validate-Phase19-GPOState.ps1
+build/activeDirectory/Validate-Phase7-GPO.ps1
+build/activeDirectory/Validate-Phase7-Simple.ps1
+build/activeDirectory/validate-dns-tests.ps1
+build/activeDirectory/validate-dns-tests-v2.ps1
+build/activeDirectory/Get-Analysis.ps1
+build/activeDirectory/Get-AdDacls.ps1
+build/activeDirectory/Get-DomainState.ps1
+build/activeDirectory/Get-GpoState.ps1
+build/activeDirectory/dns-validation-results.csv
