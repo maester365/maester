@@ -1,5 +1,8 @@
 DKIM SHOULD be enabled for all domains.
 
+Coexistence domains related to Hybrid Configuration Wizard (HCW) are skipped.
+Production use of coexistence domains is discouraged, and additional controls, such as transport rules, should be used to restrict their use.
+
 Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Enabling DKIM is another means for recipients to detect spoofed emails and verify the integrity of email content.
 
 ### Remediation action
