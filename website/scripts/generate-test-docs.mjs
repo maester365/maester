@@ -170,9 +170,9 @@ function unique(values) {
 function parseTags(value = "") {
   const tags = [];
   const tagArgument = value.match(/-Tag\s+(.+?)(?=\s+-\w+|$)/i)?.[1] ?? "";
-  const regex = /"([^"]+)"|'([^']+)'/g;
+  const regex = /"([^"]+)"|'((?:[^']|'')+)'/g;
   let match;
-  while ((match = regex.exec(tagArgument))) tags.push(match[1] ?? match[2]);
+  while ((match = regex.exec(tagArgument))) tags.push(match[1] ?? match[2].replaceAll("''", "'"));
   return tags;
 }
 
@@ -315,14 +315,14 @@ function parseTests() {
   for (const file of walkFiles(testsRoot, (path) => path.endsWith(".Tests.ps1"))) {
     const content = readFileSync(file, "utf8");
     const describes = [];
-    for (const match of content.matchAll(/Describe\s+(?:"[^"]+"|'[^']+')([^\r\n{]*)/gim)) {
+    for (const match of content.matchAll(/Describe\s+(?:"[^"]+"|'(?:[^']|'')+')([^\r\n{]*)/gim)) {
       describes.push({ index: match.index ?? 0, tags: parseTags(match[1] ?? "") });
     }
 
-    const itRegex = /It\s+(?:"([^"]+)"|'([^']+)')([^\r\n{]*)\{/gim;
+    const itRegex = /It\s+(?:"([^"]+)"|'((?:[^']|'')+)')([^\r\n{]*)\{/gim;
     let match;
     while ((match = itRegex.exec(content))) {
-      const testName = (match[1] ?? match[2] ?? "").trim();
+      const testName = (match[1] ?? match[2]?.replaceAll("''", "'") ?? "").trim();
       const itArguments = match[3] ?? "";
       const blockStart = itRegex.lastIndex;
       const nextIt = content.slice(blockStart).search(/\n\s*It\s+["']/i);
