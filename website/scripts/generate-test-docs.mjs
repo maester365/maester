@@ -170,9 +170,9 @@ function unique(values) {
 function parseTags(value = "") {
   const tags = [];
   const tagArgument = value.match(/-Tag\s+(.+?)(?=\s+-\w+|$)/i)?.[1] ?? "";
-  const regex = /["']([^"']+)["']/g;
+  const regex = /"([^"]+)"|'([^']+)'/g;
   let match;
-  while ((match = regex.exec(tagArgument))) tags.push(match[1]);
+  while ((match = regex.exec(tagArgument))) tags.push(match[1] ?? match[2]);
   return tags;
 }
 
@@ -315,15 +315,15 @@ function parseTests() {
   for (const file of walkFiles(testsRoot, (path) => path.endsWith(".Tests.ps1"))) {
     const content = readFileSync(file, "utf8");
     const describes = [];
-    for (const match of content.matchAll(/Describe\s+["'][^"']+["']([^\r\n{]*)/gim)) {
+    for (const match of content.matchAll(/Describe\s+(?:"[^"]+"|'[^']+')([^\r\n{]*)/gim)) {
       describes.push({ index: match.index ?? 0, tags: parseTags(match[1] ?? "") });
     }
 
-    const itRegex = /It\s+["']([^"']+)["']([^\r\n{]*)\{/gim;
+    const itRegex = /It\s+(?:"([^"]+)"|'([^']+)')([^\r\n{]*)\{/gim;
     let match;
     while ((match = itRegex.exec(content))) {
-      const testName = match[1].trim();
-      const itArguments = match[2] ?? "";
+      const testName = (match[1] ?? match[2] ?? "").trim();
+      const itArguments = match[3] ?? "";
       const blockStart = itRegex.lastIndex;
       const nextIt = content.slice(blockStart).search(/\n\s*It\s+["']/i);
       const block = nextIt === -1 ? content.slice(blockStart) : content.slice(blockStart, blockStart + nextIt);
@@ -383,9 +383,20 @@ function buildInventory() {
       ? trimDescription(doc.markdown)
       : trimDescription(doc.description || doc.synopsis || config.Title || test.rawTitle);
     const suite = suiteFrom(test.id, test.tags, test.filePath);
+    // CIS benchmark levels (L1/L2) live in Describe tags ("L1"/"L2" or
+    // "CIS E3 Level 1") and maester-config.json titles. When a test has no
+    // config title, prefix the level so generated titles stay consistent,
+    // e.g. "(L1) Ensure ...".
+    let title = config.Title ?? test.rawTitle;
+    if (!config.Title && test.id.startsWith("CIS.") && !/^\(L\d\)\s*/i.test(title)) {
+      const levelTag = test.tags.find((tag) => /^L[12]$/i.test(tag));
+      const levelFromSuite = test.tags.map((tag) => tag.match(/level\s*([12])\b/i)?.[1]).find(Boolean);
+      const level = levelTag ? levelTag.toUpperCase() : levelFromSuite ? `L${levelFromSuite}` : null;
+      if (level) title = `(${level}) ${title}`;
+    }
     testsById.set(key, {
       id: test.id,
-      title: config.Title ?? test.rawTitle,
+      title,
       rawTitle: test.rawTitle,
       description,
       severity: config.Severity ?? "Unknown",
