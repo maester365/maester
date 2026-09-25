@@ -172,7 +172,14 @@
         # No email will be sent if this parameter is not provided.
         [string[]] $MailRecipient,
 
-        # If sending the report to an email recipient, provide a Uri to the detailed test results page.
+        # If sending the report to an email recipient, provide an absolute HTTP or HTTPS Uri to the detailed test results page.
+        [ValidateScript({
+                $uri = $null
+                if ($_ -and -not ([Uri]::TryCreate($_, [UriKind]::Absolute, [ref]$uri) -and $uri.Scheme -in @('http', 'https'))) {
+                    throw 'MailTestResultsUri must be an absolute HTTP or HTTPS URI, e.g. https://contoso.com/maester/report.html'
+                }
+                return $true
+            })]
         [string] $MailTestResultsUri,
 
         # The user id of the sender of the mail. Defaults to the current user.
