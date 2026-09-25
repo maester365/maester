@@ -110,7 +110,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         }
 
         $script:xspmQuery | Should -Match 'where Timestamp >\(IdentityInfoLookbackWindow\)'
-        $script:xspmQuery | Should -Match 'where Timestamp <\(LookbackTimestamp\)'
+        $script:xspmQuery | Should -Match 'and Timestamp <\(LookbackTimestamp\)'
         $script:xspmQuery | Should -Not -Match 'TimeGenerated'
     }
 
