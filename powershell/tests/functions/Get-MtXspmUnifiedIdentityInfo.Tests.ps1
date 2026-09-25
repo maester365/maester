@@ -104,6 +104,16 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         Should -Invoke Invoke-MtGraphSecurityQuery -ModuleName Maester -Exactly 1 -ParameterFilter { $Verbose -eq $false }
     }
 
+    It 'uses Timestamp instead of TimeGenerated for IdentityInfo lookups' {
+        InModuleScope Maester {
+            Get-MtXspmUnifiedIdentityInfo | Should -Not -BeNullOrEmpty
+        }
+
+        $script:xspmQuery | Should -Match 'where Timestamp >\(IdentityInfoLookbackWindow\)'
+        $script:xspmQuery | Should -Match 'where Timestamp <\(LookbackTimestamp\)'
+        $script:xspmQuery | Should -Not -Match 'TimeGenerated'
+    }
+
     It 'does not diagnose a licensing failure as an externaldata failure' {
         Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { throw 'License required' }
         $message = try { InModuleScope Maester { Get-MtXspmUnifiedIdentityInfo }; '' } catch { $_.Exception.Message }
