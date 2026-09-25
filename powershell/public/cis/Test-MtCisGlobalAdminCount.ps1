@@ -24,6 +24,13 @@
         return $null
     }
 
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+        return $null
+    }
+
     try {
         Write-Verbose 'Getting role'
         $role = Get-MtRole | Where-Object {

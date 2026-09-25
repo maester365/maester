@@ -19,6 +19,18 @@
     [OutputType([bool])]
     param()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+        return $null
+    }
+
     try {
         Write-Verbose 'Getting Global Administrator role'
         $role = Get-MtRole | Where-Object {
