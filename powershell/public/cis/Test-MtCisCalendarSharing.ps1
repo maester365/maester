@@ -48,7 +48,7 @@
             if ($item.ExchangeObjectId -in $resultPolicies.ExchangeObjectId) {
                 $itemResult = '❌ Fail'
             }
-            $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
+            $result += "| [$(Get-MtSafeMarkdown $item.Name)]($portalLink) | $($itemResult) |`n"
         }
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 

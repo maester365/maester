@@ -53,7 +53,7 @@
             if ($filteredApiPermissions) {
                 foreach ($filteredApiPermission in $filteredApiPermissions) {
                     if ($filteredApiPermission.Classification -eq "") { $filteredApiPermission.Classification = "Unknown" }
-                    $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
+                    $ServicePrincipalLink = "[$(Get-MtSafeMarkdown $SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
                     $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $SensitiveApp.Classification
                     $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($filteredApiPermission.Classification) | $($filteredApiPermission.PermissionValue) | $($filteredApiPermission.PermissionType) | $($filteredApiPermission.TargetAppDisplayName) |`n"
                 }

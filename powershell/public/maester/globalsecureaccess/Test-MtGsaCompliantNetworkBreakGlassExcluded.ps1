@@ -87,7 +87,7 @@
         } else {
             $testResult = "These Compliant Network enforcement policies do **not** exclude all break-glass accounts (directly or via an excluded group) - lock-out risk:`n`n| Policy | Not excluded |`n| --- | --- |`n"
             foreach ($policy in $policiesMissingExclusion) {
-                $testResult += "| $($policy.DisplayName) | $($policy.Uncovered) |`n"
+                $testResult += "| $(Get-MtSafeMarkdown $policy.DisplayName) | $($policy.Uncovered) |`n"
             }
         }
 

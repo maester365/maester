@@ -146,7 +146,7 @@
           }
 
           $Role = $RoleDefinitions | Where-Object { $_.templateId -eq $PermDirRoleAssignment.roleDefinitionId }
-          $testResult += "  - [$($PermDirRoleAssignment.principal.displayName)]($($PortalDeepLink)$($PermDirRoleAssignment.principal.id)) with $($Role.displayName) on scope $($PermDirRoleAssignment.directoryScopeId)`n"
+          $testResult += "  - [$(Get-MtSafeMarkdown $PermDirRoleAssignment.principal.displayName)]($($PortalDeepLink)$($PermDirRoleAssignment.principal.id)) with $($Role.displayName) on scope $($PermDirRoleAssignment.directoryScopeId)`n"
           Write-Verbose "Directory Role Assignment of $($FilterPrincipal) exists $($PermDirRoleAssignment.principal.displayName) is $($FilterPrincipal) as $($Role.displayName) on $($PermDirRoleAssignment.directoryScopeId)"
         }
       }

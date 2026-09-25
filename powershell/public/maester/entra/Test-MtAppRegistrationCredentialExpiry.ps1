@@ -114,7 +114,7 @@ function Test-MtAppRegistrationCredentialExpiry {
             $result = "| Application | Type | Credential | Expires | Status |`n"
             $result += "| --- | --- | --- | --- | --- |`n"
             foreach ($credential in ($affectedCredentials | Sort-Object -Property EndDateTime)) {
-                $appMdLink = "[$($credential.DisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($credential.AppId)/isMSAApp~/false)"
+                $appMdLink = "[$(Get-MtSafeMarkdown $credential.DisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($credential.AppId)/isMSAApp~/false)"
                 $result += "| $appMdLink | $($credential.Type) | $($credential.CredentialName) | $($credential.EndDateTime.ToString('yyyy-MM-dd')) | $($credential.Status) |`n"
             }
             $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $result)

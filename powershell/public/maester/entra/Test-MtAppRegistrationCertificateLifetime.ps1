@@ -103,7 +103,7 @@
             $result = "| Application | Certificate | Valid for | Expires |`n"
             $result += "| --- | --- | --- | --- |`n"
             foreach ($certificate in ($longLivedCertificates | Sort-Object -Property ValidityDays -Descending)) {
-                $appMdLink = "[$($certificate.DisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($certificate.AppId)/isMSAApp~/false)"
+                $appMdLink = "[$(Get-MtSafeMarkdown $certificate.DisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($certificate.AppId)/isMSAApp~/false)"
                 $result += "| $appMdLink | $($certificate.CertificateName) | $($certificate.ValidityDays) days | $($certificate.EndDateTime.ToString('yyyy-MM-dd')) |`n"
             }
             $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $result)

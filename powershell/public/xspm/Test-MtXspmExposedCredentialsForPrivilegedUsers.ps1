@@ -57,8 +57,8 @@
                     $Severity = "High"
                 }
 
-                $UserLink = "[$($EnrichedUserDetails.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnrichedUserDetails.AccountObjectId))"
-                $DeviceLink = "[$($ExposedUserAuthArtifact.Device)](https://security.microsoft.com/machines/v2/$($ExposedUserAuthArtifact.DeviceId)?tid=$($EnrichedUserDetails.TenantId))"
+                $UserLink = "[$(Get-MtSafeMarkdown $EnrichedUserDetails.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnrichedUserDetails.AccountObjectId))"
+                $DeviceLink = "[$(Get-MtSafeMarkdown $ExposedUserAuthArtifact.Device)](https://security.microsoft.com/machines/v2/$($ExposedUserAuthArtifact.DeviceId)?tid=$($EnrichedUserDetails.TenantId))"
                 foreach ($ExposedTokenArtifact in $ExposedUserAuthArtifact.TokenArtifacts) {
                     $UserArtifactItem = (Get-MtXspmAuthenticationArtifactIcon -ArtifactType $ExposedTokenArtifact) + " " + ((($ExposedTokenArtifact -csplit '(?=[A-Z])') -ne '') -join ' ') | Where-Object { $_ -and $_.Trim() -ne '' } | ForEach-Object { $_.Trim() }
                     $result += "| $($AdminTierLevelIcon) $($UserLink)  | $($DeviceLink) | $($EnrichedUserDetails.Classification) | $($EnrichedUserDetails.CriticalityLevel) | $($UserArtifactItem) | $($ExposedUserAuthArtifact.ExposureScore) | $($ExposedUserAuthArtifact.RiskScore) |`n"

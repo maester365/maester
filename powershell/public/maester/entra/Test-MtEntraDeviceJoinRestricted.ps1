@@ -144,7 +144,7 @@
             if ($allowedObjects.Count -gt 0) {
                 $testResultMarkdown += "`n`n**Allowed Users and Groups:**`n`n| Type | Name |`n| --- | --- |`n"
                 foreach ($obj in $allowedObjects) {
-                    $testResultMarkdown += "| $($obj.Type) | $($obj.DisplayName) |`n"
+                    $testResultMarkdown += "| $($obj.Type) | $(Get-MtSafeMarkdown $obj.DisplayName) |`n"
                 }
             }
 

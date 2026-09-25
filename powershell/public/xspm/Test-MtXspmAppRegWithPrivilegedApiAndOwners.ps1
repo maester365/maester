@@ -69,9 +69,9 @@
                     }
                     $OwnerAdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $MatchedOwner.Classification
                     if ($MatchedOwner.Type -eq "Workload") {
-                        $OwnerLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($MatchedOwner.AccountObjectId)/appId/$($MatchedOwner.AppId))"
+                        $OwnerLink = "[$(Get-MtSafeMarkdown $SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($MatchedOwner.AccountObjectId)/appId/$($MatchedOwner.AppId))"
                     } else {
-                        $OwnerLink = "[$($MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
+                        $OwnerLink = "[$(Get-MtSafeMarkdown $MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
                     }
                     $Owner = "$($OwnerAdminTierLevelIcon) $OwnerLink"
                     $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and ($permissionClassifications -notcontains $MatchedOwner.Classification)
@@ -88,7 +88,7 @@
                     "$TargetAppDisplayName ($PermissionType)" + ": " + "$($ApiPermissions| ForEach-Object { '`' + $_.PermissionValue + '`' })"
                 }
 
-                $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($SensitiveApp.AppId)/isMSAApp~/false)"
+                $ServicePrincipalLink = "[$(Get-MtSafeMarkdown $SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($SensitiveApp.AppId)/isMSAApp~/false)"
                 $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($ApiPermissionSummary) |`n"
             }
         }
