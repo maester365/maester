@@ -46,11 +46,14 @@ Describe 'Send-MtMail HTML encoding' {
         $body.Contains("' onclick='") | Should -BeFalse
     }
 
-    It 'Rejects unsafe or relative links: <_>' -ForEach @(
+    It 'Omits unsafe or relative links with a warning instead of failing: <_>' -ForEach @(
         'javascript:alert(1)', 'data:text/html,<script>alert(1)</script>',
-        'file:///tmp/report.html', '//example.com/report', '/report.html'
+        'file:///tmp/report.html', '//example.com/report', '/report.html', 'maester.contoso.com/report.html'
     ) {
-        { Send-MtMail @parameters -TestResultsUri $_ } | Should -Throw '*absolute HTTP or HTTPS*'
+        $mail = Send-MtMail @parameters -TestResultsUri $_ -WarningVariable warnings -WarningAction SilentlyContinue
+        $warnings | Should -BeLike '*absolute HTTP or HTTPS*'
+        $mail.message.body.content | Should -Not -BeLike '*View detailed test results*'
+        $mail.message.body.content | Should -BeLike '*Example test*'
     }
 
     It 'Preserves ordinary content and missing-count fallbacks' {

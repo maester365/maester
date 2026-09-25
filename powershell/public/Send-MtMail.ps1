@@ -120,7 +120,9 @@
 
     # Add a hidden div that will show in the preview line of the message.
     $bodyElement = [regex]::Match($emailTemplate, '<body\b[^>]*>', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Value
-    $emailTemplate = $emailTemplate.Replace($bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: %TotalCount%, ✅ Passed: %PassedCount%, ❌ Failed: %FailedCount%, 🔍 Investigate: %InvestigateCount%, ⏭️ Skipped: %SkippedCount%, ⬇️ Not Run: %NotRunCount%</div>"))
+    if ($bodyElement) {
+        $emailTemplate = $emailTemplate.Replace($bodyElement,($bodyElement + "<div style='display:none;'>🔥 Total: %TotalCount%, ✅ Passed: %PassedCount%, ❌ Failed: %FailedCount%, 🔍 Investigate: %InvestigateCount%, ⏭️ Skipped: %SkippedCount%, ⬇️ Not Run: %NotRunCount%</div>"))
+    }
     $StatusIcon = @{
         Passed      = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed      = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
@@ -146,12 +148,14 @@
     $testResultsLink = ""
     if ($TestResultsUri) {
         $resultsUri = $null
-        if (-not [Uri]::TryCreate($TestResultsUri, [UriKind]::Absolute, [ref]$resultsUri) -or
-            $resultsUri.Scheme -notin @('http', 'https')) {
-            throw 'TestResultsUri must be an absolute HTTP or HTTPS URI.'
+        if ([Uri]::TryCreate($TestResultsUri, [UriKind]::Absolute, [ref]$resultsUri) -and
+            $resultsUri.Scheme -in @('http', 'https')) {
+            $encodedUri = [System.Net.WebUtility]::HtmlEncode($resultsUri.AbsoluteUri)
+            $testResultsLink = "<a href='$encodedUri'>View detailed test results</a>"
+        } else {
+            # Don't fail the whole run (e.g. at the end of Invoke-Maester) over a bad link; send without it.
+            Write-Warning 'TestResultsUri must be an absolute HTTP or HTTPS URI. The link to the detailed test results was omitted from the email.'
         }
-        $encodedUri = [System.Net.WebUtility]::HtmlEncode($resultsUri.AbsoluteUri)
-        $testResultsLink = "<a href='$encodedUri'>View detailed test results</a>"
     }
     $templateValues.TestResultsLink = $testResultsLink
 
