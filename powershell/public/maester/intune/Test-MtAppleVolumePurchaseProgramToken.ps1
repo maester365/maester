@@ -38,7 +38,7 @@
         $healthStatus = foreach ($token in $vppTokens) {
             $expiresInDays = [System.Math]::Ceiling(([datetime]$token.expirationDateTime - (Get-Date)).TotalDays)
             $lastSyncDiffDays = [System.Math]::Floor(((Get-Date) - [datetime]$token.lastSyncDateTime).TotalDays)
-            $testResultMarkdown += "| $($token.displayName) | $($token.state) | $($token.expirationDateTime) | $($token.lastSyncDateTime) |`n"
+            $testResultMarkdown += "| $(Get-MtSafeMarkdown $token.displayName) | $($token.state) | $($token.expirationDateTime) | $($token.lastSyncDateTime) |`n"
             Write-Output $($expiresInDays -gt $expirationThresholdDays -and $lastSyncDiffDays -le 1)
         }
 

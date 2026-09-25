@@ -223,7 +223,7 @@
 
             foreach ($item in $unusedResourcesFound) {
                 $catalogLink = "https://portal.azure.com/#view/Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/$($item.CatalogId)"
-                $catalogCell = "[$($item.CatalogName)]($catalogLink)"
+                $catalogCell = "[$(Get-MtSafeMarkdown $item.CatalogName)]($catalogLink)"
 
                 $friendlyType = switch -Wildcard ($item.ResourceType) {
                     "*Group*" { "Group" }

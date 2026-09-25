@@ -6,6 +6,7 @@ import StatusLabelSm from "./StatusLabelSm";
 import SeverityBadge from "./SeverityBadge";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { markdownUrlTransform } from "@/lib/markdownUrl";
 
 export default function ResultInfo({ Item, isPrintView }) {
   const openInNewTab = useCallback((url) => {
@@ -91,13 +92,13 @@ export default function ResultInfo({ Item, isPrintView }) {
           <Title>Test result</Title><StatusLabelSm Result={Item.Result} />
         </div>
         <div className="prose max-w-fit dark:prose-invert">
-          <Markdown remarkPlugins={[remarkGfm]}>{getTestResult()}</Markdown>
+          <Markdown remarkPlugins={[remarkGfm]} urlTransform={markdownUrlTransform}>{getTestResult()}</Markdown>
         </div>
       </Card>
       <Card className="mt-4 bg-slate-50">
         <Title>Test details</Title>
         <div className="prose max-w-fit dark:prose-invert">
-          <Markdown remarkPlugins={[remarkGfm]}>{getTestDetails()}</Markdown>
+          <Markdown remarkPlugins={[remarkGfm]} urlTransform={markdownUrlTransform}>{getTestDetails()}</Markdown>
         </div>
       </Card>
 

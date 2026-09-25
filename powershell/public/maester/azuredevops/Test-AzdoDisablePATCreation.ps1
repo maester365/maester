@@ -42,7 +42,7 @@ function Test-AzdoDisablePATCreation {
             $resultMarkdown += "`n| Display Name | Object ID |`n"
             $resultMarkdown += "| --- | --- |`n"
             $Policy.properties.allowedUsersAndGroupObjectIds | ForEach-Object {
-                $resultMarkdown += "| $($_.displayName) | $($_.objectId) |`n"
+                $resultMarkdown += "| $(Get-MtSafeMarkdown $_.displayName) | $($_.objectId) |`n"
             }
         }
     } else {

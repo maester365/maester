@@ -317,7 +317,7 @@
 
             foreach ($item in $invalidApproversFound) {
                 $packageLink = "https://portal.azure.com/#view/Microsoft_Azure_ELMAdmin/EntitlementMenuBlade/~/overview/entitlementId/$($item.PackageId)"
-                $packageName = "[$($item.PackageName)]($packageLink)"
+                $packageName = "[$(Get-MtSafeMarkdown $item.PackageName)]($packageLink)"
 
                 $testResult += "| $packageName | $($item.PolicyName) | $($item.Issue) | $($item.ApproverType) | $($item.ApproverDetails) |`n"
             }

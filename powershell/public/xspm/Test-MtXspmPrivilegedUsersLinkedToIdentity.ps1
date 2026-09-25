@@ -76,7 +76,7 @@
                 $Severity = "High"
             }
 
-            $PrivilegedUserLink = "[$($UnlinkedPrivilegedUser.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($UnlinkedPrivilegedUser.AccountObjectId))"
+            $PrivilegedUserLink = "[$(Get-MtSafeMarkdown $UnlinkedPrivilegedUser.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($UnlinkedPrivilegedUser.AccountObjectId))"
             $result += "| $($AdminTierLevelIcon) $($PrivilegedUserLink) | $($UnlinkedPrivilegedUser.Classification) | $($UserSensitiveDirectoryRolesResult) | $($UnlinkedPrivilegedUser.CriticalAssetDetails) |`n"
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

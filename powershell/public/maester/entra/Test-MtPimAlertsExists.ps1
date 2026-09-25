@@ -117,7 +117,7 @@ $($Alert.howToPrevent -replace $convertHtmlLinkToMD, '[$2]($1)')
       if ($null -ne $Alert -and @($AffectedRoleAssignments).Count -gt 0) {
         $testResult = "$($Alert.alertDescription)`n`n
 $($AffectedRoleAssignmentSummary)
-Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
+Get more details from the PIM alert [$(Get-MtSafeMarkdown $Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
 "
       } else {
         $testResult = 'All privileged role assignments are managed by PIM. Well done!'

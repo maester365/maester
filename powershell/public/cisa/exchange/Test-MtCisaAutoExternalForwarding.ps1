@@ -48,7 +48,7 @@
             $itemResult = "❌ Fail"
             $itemState = "Allow automatic forwarding"
         }
-        $result += "| [$($item.Name)]($portalLink) | $($item.DomainName) | $($itemState) | $($itemResult) |`n"
+        $result += "| [$(Get-MtSafeMarkdown $item.Name)]($portalLink) | $($item.DomainName) | $($itemState) | $($itemResult) |`n"
     }
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 

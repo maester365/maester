@@ -294,7 +294,7 @@
                 if ($catalogsForGroup.Count -gt 0) {
                     $testResult += "**Referenced in Catalog(s):**`n"
                     foreach ($item in $catalogsForGroup) {
-                        $testResult += "- [$($item.Name)](https://portal.azure.com/#view/Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/$($item.Id))`n"
+                        $testResult += "- [$(Get-MtSafeMarkdown $item.Name)](https://portal.azure.com/#view/Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/$($item.Id))`n"
                     }
                     $testResult += "`n"
                 }
@@ -302,7 +302,7 @@
                 if ($packagesForGroup.Count -gt 0) {
                     $testResult += "**Referenced in Access Package(s):**`n"
                     foreach ($item in $packagesForGroup) {
-                        $testResult += "- [$($item.Name)](https://portal.azure.com/#view/Microsoft_Azure_ELMAdmin/EntitlementMenuBlade/~/overview/entitlementId/$($item.Id))`n"
+                        $testResult += "- [$(Get-MtSafeMarkdown $item.Name)](https://portal.azure.com/#view/Microsoft_Azure_ELMAdmin/EntitlementMenuBlade/~/overview/entitlementId/$($item.Id))`n"
                     }
                     $testResult += "`n"
                 }

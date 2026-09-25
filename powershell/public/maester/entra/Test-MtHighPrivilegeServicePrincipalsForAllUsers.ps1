@@ -105,7 +105,7 @@
             $table = "| Application | Application Id | Status |`n"
             $table += "| --- | --- | --- |`n"
             foreach ($row in $Rows) {
-                $nameCell = "[$($row.Name)]($($row.SpnLink) `"$($row.Reason)`")"
+                $nameCell = "[$(Get-MtSafeMarkdown $row.Name)]($($row.SpnLink) `"$($row.Reason)`")"
                 $table += "| $nameCell | $($row.AppId) | $($row.Status) |`n"
             }
             return $table
