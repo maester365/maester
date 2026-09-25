@@ -22,7 +22,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclDenyAceCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'

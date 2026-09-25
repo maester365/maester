@@ -21,7 +21,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclIdentityAceDistribution"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

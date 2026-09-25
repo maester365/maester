@@ -4,7 +4,7 @@ function Test-MtAdDaclUnresolvedSidDetails {
     Returns unresolved SID details from Active Directory DACL entries.
 
     .DESCRIPTION
-    This test analyzes DACL entries from Get-MtADDomainState and groups orphaned SID
+    This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and groups orphaned SID
     references by directory object. Reviewing unresolved SIDs by object helps identify
     where stale ACEs remain after account deletions, migrations, or delegated access
     changes.
@@ -24,14 +24,14 @@ function Test-MtAdDaclUnresolvedSidDetails {
 
     Write-Verbose "Starting Test-MtAdDaclUnresolvedSidDetails"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
+        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
         return $false
     }
 

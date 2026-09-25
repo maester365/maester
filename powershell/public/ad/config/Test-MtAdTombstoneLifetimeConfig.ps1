@@ -21,7 +21,7 @@
 
     Write-Verbose "Starting Test-MtAdTombstoneLifetimeConfig"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Configuration')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

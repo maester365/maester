@@ -40,7 +40,7 @@ function Get-MtLdapRangedValue {
             } |
             Select-Object -First 1
 
-        if ($null -eq $rangeProperty) {
+        if ($null -eq $rangeProperty -or $null -eq $rangeProperty.Value) {
             break
         }
 

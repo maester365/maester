@@ -19,7 +19,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdUserNeverLoggedInCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Users')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."

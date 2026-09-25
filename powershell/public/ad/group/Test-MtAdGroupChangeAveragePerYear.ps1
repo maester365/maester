@@ -28,7 +28,7 @@
 
     Write-Verbose "Starting Test-MtAdGroupChangeAveragePerYear"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Groups')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null

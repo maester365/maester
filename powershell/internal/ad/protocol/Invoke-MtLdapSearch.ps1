@@ -57,44 +57,79 @@
             DistinguishedName = [string]$Entry.DistinguishedName
         }
 
-        if ($null -eq $Entry.Attributes) {
-            if ($ReturnDirectoryEntry.IsPresent) {
-                $properties['DirectoryEntry'] = $Entry
-            }
-
-            return [PSCustomObject]$properties
-        }
-
-        $attributeNames = if ($Entry.Attributes -is [System.Collections.IDictionary]) {
-            @($Entry.Attributes.Keys)
-        }
-        else {
-            @($Entry.Attributes.AttributeNames)
-        }
-
-        foreach ($attributeName in $attributeNames) {
-            $rawAttribute = if ($Entry.Attributes -is [System.Collections.IDictionary]) {
-                $Entry.Attributes[$attributeName]
+        if ($null -ne $Entry.Attributes) {
+            $attributeNames = if ($Entry.Attributes -is [System.Collections.IDictionary]) {
+                @($Entry.Attributes.Keys)
             }
             else {
-                $Entry.Attributes[[string]$attributeName]
+                @($Entry.Attributes.AttributeNames)
             }
 
-            $convertedValues = [System.Collections.Generic.List[object]]::new()
-            if ($rawAttribute -is [byte[]]) {
-                $convertedValues.Add((ConvertFrom-MtLdapValue -Value $rawAttribute -AttributeName ([string]$attributeName))) | Out-Null
-            }
-            else {
-                foreach ($rawValue in @($rawAttribute)) {
-                    $convertedValues.Add((ConvertFrom-MtLdapValue -Value $rawValue -AttributeName ([string]$attributeName))) | Out-Null
+            foreach ($attributeName in $attributeNames) {
+                $rawAttribute = if ($Entry.Attributes -is [System.Collections.IDictionary]) {
+                    $Entry.Attributes[$attributeName]
+                }
+                else {
+                    $Entry.Attributes[[string]$attributeName]
+                }
+
+                $convertedValues = [System.Collections.Generic.List[object]]::new()
+                if ($rawAttribute -is [byte[]]) {
+                    $convertedValues.Add((ConvertFrom-MtLdapValue -Value $rawAttribute -AttributeName ([string]$attributeName))) | Out-Null
+                }
+                else {
+                    foreach ($rawValue in @($rawAttribute)) {
+                        $convertedValues.Add((ConvertFrom-MtLdapValue -Value $rawValue -AttributeName ([string]$attributeName))) | Out-Null
+                    }
+                }
+
+                $properties[[string]$attributeName] = if ($convertedValues.Count -le 1) {
+                    if ($convertedValues.Count -eq 0) { $null } else { $convertedValues[0] }
+                }
+                else {
+                    @($convertedValues)
                 }
             }
+        }
 
-            $properties[[string]$attributeName] = if ($convertedValues.Count -le 1) {
-                if ($convertedValues.Count -eq 0) { $null } else { $convertedValues[0] }
-            }
-            else {
-                @($convertedValues)
+        if ($null -ne $requestedAttributes) {
+            foreach ($requestedAttr in $requestedAttributes) {
+                if ($requestedAttr -eq '*' -or $requestedAttr -eq '+' -or $requestedAttr -eq '1.1') {
+                    continue
+                }
+
+                if ($requestedAttr -ieq 'distinguishedName') {
+                    continue
+                }
+
+                $existingKey = $null
+                foreach ($key in $properties.Keys) {
+                    if ($key -ieq $requestedAttr) {
+                        $existingKey = $key
+                        break
+                    }
+                }
+
+                if ($null -ne $existingKey) {
+                    continue
+                }
+
+                if ($requestedAttr -imatch '^([^;]+);range=\d+-\*$') {
+                    $baseName = $matches[1]
+                    $hasRangedResponse = $false
+                    foreach ($key in $properties.Keys) {
+                        if ($key -imatch ('^' + [regex]::Escape($baseName) + ';range=\d+-(?:\d+|\*)$')) {
+                            $hasRangedResponse = $true
+                            break
+                        }
+                    }
+
+                    if ($hasRangedResponse) {
+                        continue
+                    }
+                }
+
+                $properties[$requestedAttr] = $null
             }
         }
 

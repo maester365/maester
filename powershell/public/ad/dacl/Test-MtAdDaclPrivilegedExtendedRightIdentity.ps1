@@ -4,7 +4,7 @@ function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     Returns identities with privileged extended rights in Active Directory DACLs.
 
     .DESCRIPTION
-    This test analyzes DACL entries collected by Get-MtADDomainState and identifies
+    This test analyzes DACL entries collected by Get-MtADDomainState -Categories @('DaclEntries') and identifies
     identities that are granted privileged extended rights through allow ACEs.
     Extended rights such as password reset and replication-related permissions can
     enable sensitive directory operations and should be tightly controlled.
@@ -22,7 +22,7 @@ function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     param()
 
     Write-Verbose "Starting Test-MtAdDaclPrivilegedExtendedRightIdentity"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -31,7 +31,7 @@ function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     Write-Verbose "Filtering/counting dacl privileged extended right identity"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
+        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
         return $false
     }
 

@@ -26,7 +26,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdKrbtgtLastLogon"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Users')
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {

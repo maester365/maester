@@ -4,7 +4,7 @@
     Returns inherited object type breakdown from Active Directory DACL entries.
 
     .DESCRIPTION
-    This test analyzes DACL entries from Get-MtADDomainState and groups ACEs by the
+    This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and groups ACEs by the
     specific inherited object type GUID they target. This helps reviewers understand
     which descendant object classes are in scope for inherited delegations.
 
@@ -22,7 +22,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclInheritedObjectTypeDetails"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -31,7 +31,7 @@
     Write-Verbose "Filtering/counting dacl inherited object type details"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
+        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
         return $false
     }
 

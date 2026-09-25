@@ -21,7 +21,7 @@
     [OutputType([bool])]
     param()
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain', 'Groups')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null

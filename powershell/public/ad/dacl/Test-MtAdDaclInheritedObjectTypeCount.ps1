@@ -4,7 +4,7 @@
     Counts inherited object types referenced by Active Directory DACL entries.
 
     .DESCRIPTION
-    This test analyzes DACL entries from Get-MtADDomainState and counts distinct
+    This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and counts distinct
     inherited object type GUIDs that are explicitly targeted by ACE inheritance.
     Reviewing inherited object type scope helps identify how broadly delegated access
     applies to descendant object classes.
@@ -22,7 +22,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclInheritedObjectTypeCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -31,7 +31,7 @@
     Write-Verbose "Filtering/counting dacl inherited object type count"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
+        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
         return $false
     }
 

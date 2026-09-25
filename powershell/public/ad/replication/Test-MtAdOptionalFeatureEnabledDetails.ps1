@@ -28,7 +28,7 @@
 
     Write-Verbose "Starting Test-MtAdOptionalFeatureEnabledDetails"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('OptionalFeatures')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

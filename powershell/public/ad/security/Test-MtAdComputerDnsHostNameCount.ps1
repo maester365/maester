@@ -27,7 +27,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdComputerDnsHostNameCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {

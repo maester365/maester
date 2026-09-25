@@ -4,7 +4,7 @@ function Test-MtAdDaclNonInheritedAceCount {
     Counts non-inherited ACEs in Active Directory DACLs.
 
     .DESCRIPTION
-    This test analyzes DACL entries from Get-MtADDomainState and counts ACEs that are
+    This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and counts ACEs that are
     explicitly assigned rather than inherited. Non-inherited ACEs are often where
     custom delegations, exceptions, and potentially risky access grants are introduced.
 
@@ -21,7 +21,7 @@ function Test-MtAdDaclNonInheritedAceCount {
     param()
 
     Write-Verbose "Starting Test-MtAdDaclNonInheritedAceCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -30,7 +30,7 @@ function Test-MtAdDaclNonInheritedAceCount {
     Write-Verbose "Filtering/counting dacl non inherited ace count"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
+        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
         return $false
     }
 
