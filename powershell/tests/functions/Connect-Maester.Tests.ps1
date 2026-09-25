@@ -57,6 +57,16 @@ Describe 'Connect-Maester' {
             -ParameterFilter { $IncludePreview }
     }
 
+    It 'Includes the openid scope when connecting to Graph' {
+        Mock Connect-MgGraph -ModuleName Maester {}
+        Mock Get-MtGraphScope -ModuleName Maester { @('Directory.Read.All') }
+
+        Connect-Maester
+
+        Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly `
+            -ParameterFilter { $Scopes -contains 'openid' }
+    }
+
     It 'Passes an explicit ClientTimeout to Connect-MgGraph' {
         Mock Connect-MgGraph -ModuleName Maester {}
 

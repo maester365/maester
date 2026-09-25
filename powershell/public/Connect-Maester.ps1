@@ -361,6 +361,7 @@
 
                $scopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage `
                   -Privileged:$Privileged -IncludePreview:$IncludePreview
+               $scopes = @('openid') + @($scopes)
 
                $connectParams = @{
                   Scopes        = $scopes
