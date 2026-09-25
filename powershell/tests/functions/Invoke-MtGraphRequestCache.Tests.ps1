@@ -8,10 +8,10 @@ Describe 'Invoke-MtGraphRequestCache' {
         InModuleScope Maester {
             $__MtSession.GraphCache = @{}
         }
-        $global:MtGraphRetryTest = @{ Calls = 0; Failures = 1; StatusCode = 500; RetryAfter = $null }
+        $script:MtGraphRetryTest = @{ Calls = 0; Failures = 1; StatusCode = 500; RetryAfter = $null }
         Mock Start-Sleep -ModuleName Maester {}
         Mock Invoke-MgGraphRequest -ModuleName Maester {
-            $test = $global:MtGraphRetryTest
+            $test = $script:MtGraphRetryTest
             $test.Calls++
             if ($test.Calls -le $test.Failures) {
                 $response = [System.Net.Http.HttpResponseMessage]::new($test.StatusCode)
@@ -25,7 +25,7 @@ Describe 'Invoke-MtGraphRequestCache' {
     }
 
     AfterEach {
-        Remove-Variable -Name MtGraphRetryTest -Scope Global -ErrorAction SilentlyContinue
+        Remove-Variable -Name MtGraphRetryTest -Scope Script -ErrorAction SilentlyContinue
     }
 
     Context 'Transient server errors' {
@@ -33,7 +33,7 @@ Describe 'Invoke-MtGraphRequestCache' {
             @{ StatusCode = 500 }
             @{ StatusCode = 502 }
         ) {
-            $global:MtGraphRetryTest.StatusCode = $StatusCode
+            $script:MtGraphRetryTest.StatusCode = $StatusCode
             InModuleScope Maester {
                 $result = Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject
                 $result.value | Should -Be 'ok'
@@ -50,7 +50,7 @@ Describe 'Invoke-MtGraphRequestCache' {
         }
 
         It 'Rethrows the original error after two retries' {
-            $global:MtGraphRetryTest.Failures = 3
+            $script:MtGraphRetryTest.Failures = 3
             InModuleScope Maester {
                 { Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject } | Should -Throw 'Graph error'
             }
@@ -60,7 +60,7 @@ Describe 'Invoke-MtGraphRequestCache' {
         }
 
         It 'Waits for Retry-After when Graph sends it' {
-            $global:MtGraphRetryTest.RetryAfter = 7
+            $script:MtGraphRetryTest.RetryAfter = 7
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject
             }
@@ -68,7 +68,7 @@ Describe 'Invoke-MtGraphRequestCache' {
         }
 
         It 'Caps Retry-After at 30 seconds' {
-            $global:MtGraphRetryTest.RetryAfter = 600
+            $script:MtGraphRetryTest.RetryAfter = 600
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject
             }
@@ -83,7 +83,7 @@ Describe 'Invoke-MtGraphRequestCache' {
             @{ StatusCode = 404 }
             @{ StatusCode = 503 }
         ) {
-            $global:MtGraphRetryTest.StatusCode = $StatusCode
+            $script:MtGraphRetryTest.StatusCode = $StatusCode
             InModuleScope Maester {
                 { Invoke-MtGraphRequestCache -Uri 'https://graph.microsoft.com/v1.0/users' -OutputType PSObject } | Should -Throw 'Graph error'
             }
@@ -105,7 +105,6 @@ Describe 'Invoke-MtGraphRequestCache' {
             @{ Path = '$batch' }
         ) {
             InModuleScope Maester -Parameters @{ Path = $Path } {
-                param($Path)
                 { Invoke-MtGraphRequestCache -Method POST -Uri "https://graph.microsoft.com/v1.0/$Path" -Body '{}' -OutputType PSObject } | Should -Throw 'Graph error'
             }
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly
