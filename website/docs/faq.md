@@ -51,7 +51,7 @@ When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is 
 
 **Symptom**: When running `Invoke-Maester` with certificate-based service principal authentication (or GitLab OIDC/federated token), ORCA tests report failures in the HTML report, but the same tests pass when run individually or with interactive authentication.
 
-**Cause**: The service principal (Enterprise Application) is missing the **Security Reader** Microsoft Entra role (or equivalent Exchange Online RBAC role).
+**Possible cause**: The service principal (Enterprise Application) may be missing the **Security Reader** Microsoft Entra role (or equivalent Exchange Online RBAC role).
 
 **Explanation**:
 - `Connect-ExchangeOnline` / `Connect-IPPSSession` succeeds (authentication works)
