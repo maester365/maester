@@ -535,6 +535,62 @@ ls -lh evidence/reports-full/
 | MiSouleDC03 | child.misoule02.local | `C:\MaesterReports\DC03-child\` | `evidence/reports-full/DC03-child-testresults.*` |
 | MiSouleDC04 | misoule03.local | `C:\MaesterReports\DC04-misoule03\` | `evidence/reports-full/DC04-misoule03-testresults.*` |
 
+## E2E Certification Checklist
+
+Before declaring E2E validation complete, the following hard requirements **must** all pass. Any SKIP or PARTIAL result invalidates the certification.
+
+### Execution Environment
+
+- [ ] **PowerShell 7 Only** — All validation executed via `pwsh.exe` / `pwsh`. PowerShell 5.1 is explicitly prohibited for certification tests.
+- [ ] **SSH Transport Only** — All runner-based validation executed via SSH (password-based or GSSAPI/Kerberos). Azure VM Run Command is **not** an acceptable validation transport.
+- [ ] **Module Scope Clean** — `Import-Module Maester -Force` used in every session; no stale module versions or cached state from previous runs.
+
+### Credential Coverage
+
+- [ ] **Privileged User Tests** — All AD tests executed with a domain user holding at least read permissions on all target domains.
+- [ ] **Non-Privileged User Tests** — All AD tests executed with a low-privilege (`maesterreader`) account to validate that tests do not silently require elevated permissions or RSAT/AD module cmdlets.
+- [ ] **Implicit Credential Rows** — Windows runner implicit-credential rows validated via GSSAPI SSH (Kerberos) or domain-joined interactive session.
+- [ ] **Explicit Credential Rows** — All three forests (root, child, separate-forest) validated with explicit credentials over LDAPS.
+
+### Code Prohibitions (Must Verify)
+
+- [ ] **No `Get-AD*` Cmdlets** — `grep -r 'Get-AD[A-Z]' powershell/public/ad/` returns zero matches in `.ps1` files. Markdown documentation may reference them for user context, but implementation code must not call them.
+- [ ] **No RSAT Dependencies** — Tests pass on runners that explicitly do **not** have `ActiveDirectory`, `GroupPolicy`, or `DnsServer` PowerShell modules installed.
+- [ ] **No Active Directory Module References** — Error messages like `The term 'Get-ADDefaultDomainPasswordPolicy' is not recognized` or `Property "OperatingSystem" cannot be found` (indicating `Select-Object -ExpandProperty` on AD module objects) must not appear in any test output.
+
+### Test Scenarios (All Must Pass)
+
+- [ ] **Preflight Gate** — `Test-LabPrerequisites.ps1` returns zero mandatory failures.
+- [ ] **Protocol Probe Matrix** — `Invoke-ProtocolProbeMatrix.ps1` run on **both** Windows and Linux runners. All expected PASS rows observe PASS; all expected FAIL rows observe FAIL.
+- [ ] **Public E2E Matrix** — `Invoke-PublicE2EMatrix.ps1` run on **both** Windows and Linux runners with nonzero AD check count and no expectation mismatches.
+- [ ] **Per-Subquery Resilience** — `Get-MtLdapConfigurationContainer` returns non-null partial objects when individual sub-queries fail (AD-CFG-22 and related config tests).
+- [ ] **Missing Attribute Materialization** — `Invoke-MtLdapSearch` materializes all requested attributes as `$null` when omitted by LDAP (password policy, tombstone lifetime, and other property-dependent tests).
+- [ ] **Scoped Category Collection** — `Get-MtADDomainState -Categories` collects only requested categories plus dependencies; unrequested categories return safe defaults.
+
+### Evidence Package (Must Be Complete)
+
+- [ ] **Protocol Probe Artifacts** — JSON artifacts from **both** runners for all DCs (DC02, DC03, DC04) present in `evidence/`.
+- [ ] **Maester Reports from Windows Runner** — All 4 report formats (`.html`, `.json`, `.md`, `-summary.md`) from Windows runner present.
+- [ ] **Maester Reports from Linux Runner** — All 4 report formats from Linux runner present.
+- [ ] **Preflight Results** — `preflight-*.json` artifact present.
+- [ ] **Public Matrix Results** — `task-*-public-matrix-*.json` and `task-*-public-matrix-summary.json` present.
+- [ ] **Evidence Index** — `EVIDENCE-INDEX.md` catalogues every file, its source runner, and the scenario it validates.
+- [ ] **User Verification** — Evidence tar/zip inspected and explicitly confirmed by user as complete before upload.
+
+### Common Failure Patterns to Reject
+
+| Pattern | Rejection Reason |
+|---|---|
+| `az vm run-command invoke` used for test execution | Wrong PowerShell version (5.1), module scope issues, not certified |
+| `Get-ADDefaultDomainPasswordPolicy not recognized` | Test still depends on RSAT/AD module instead of `System.DirectoryServices.Protocols` |
+| `Select-Object -ExpandProperty OperatingSystem` / `Site` not found | Code expects AD module object schema instead of LDAP-returned attributes |
+| Windows runner evidence missing from bundle | Incomplete certification package |
+| Public E2E matrix skipped | Required component of full E2E certification |
+| Only privileged user tested | Non-privileged path may expose hidden RSAT dependencies |
+| Password escaping caused failures | `$` in passwords must be properly escaped in both bash and PowerShell |
+
+---
+
 ## Examples
 
 ### Full deployment
