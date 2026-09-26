@@ -26,9 +26,15 @@
 
     try {
         Write-Verbose 'Get audit log search status'
-        # Use module-qualified name to ensure we call the Exchange Online version,
-        # not the Security & Compliance version which always returns False for this property.
-        $auditLogSearch = ExchangeOnlineManagement\Get-AdminAuditLogConfig
+        # Use the session module name from the Exchange Online connection to call the correct
+        # Get-AdminAuditLogConfig, not the Security & Compliance version which always returns False.
+        $exoModuleName = Get-ConnectionInformation |
+            Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+            Select-Object -ExpandProperty ModuleName -First 1
+        if (-not $exoModuleName) {
+            throw 'Could not determine Exchange Online session module name.'
+        }
+        $auditLogSearch = & "$exoModuleName\Get-AdminAuditLogConfig"
 
         if ($auditLogSearch | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }) {
             $testResult = $false
