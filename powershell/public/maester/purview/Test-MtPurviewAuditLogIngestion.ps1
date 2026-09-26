@@ -37,7 +37,9 @@
     }
 
     try {
-        $config = Get-AdminAuditLogConfig -ErrorAction Stop
+        # Use module-qualified name to ensure we call the Exchange Online version,
+        # not the Security & Compliance version which always returns False for this property.
+        $config = ExchangeOnlineManagement\Get-AdminAuditLogConfig -ErrorAction Stop
         $enabled = [bool]$config.UnifiedAuditLogIngestionEnabled
 
         $portalLink = "https://purview.microsoft.com/audit/auditsearch"

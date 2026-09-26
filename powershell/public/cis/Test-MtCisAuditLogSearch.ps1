@@ -26,7 +26,9 @@
 
     try {
         Write-Verbose 'Get audit log search status'
-        $auditLogSearch = Get-AdminAuditLogConfig
+        # Use module-qualified name to ensure we call the Exchange Online version,
+        # not the Security & Compliance version which always returns False for this property.
+        $auditLogSearch = ExchangeOnlineManagement\Get-AdminAuditLogConfig
 
         if ($auditLogSearch | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }) {
             $testResult = $false

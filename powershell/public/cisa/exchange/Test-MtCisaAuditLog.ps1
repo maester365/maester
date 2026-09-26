@@ -26,7 +26,9 @@
         return $null
     }
 
-    $config = Get-AdminAuditLogConfig
+    # Use module-qualified name to ensure we call the Exchange Online version,
+    # not the Security & Compliance version which always returns False for this property.
+    $config = ExchangeOnlineManagement\Get-AdminAuditLogConfig
 
     $testResult = $config.UnifiedAuditLogIngestionEnabled
 
