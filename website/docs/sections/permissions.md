@@ -9,6 +9,7 @@
 - **IdentityRiskEvent.Read.All**
 - **NetworkAccess.Read.All**
 - **OnPremDirectorySynchronization.Read.All**
+- **openid**
 - **OrgSettings-AppsAndServices.Read.All**
 - **OrgSettings-Forms.Read.All**
 - **Policy.Read.All**
