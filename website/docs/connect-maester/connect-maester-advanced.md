@@ -174,6 +174,35 @@ Connect-ExchangeOnline -Certificate $cert -AppID $applicationId -Organization $m
 Connect-IPPSSession -Certificate $cert -AppID $applicationId -Organization $moera -ShowBanner:$false
 ```
 
+#### Required Exchange Online RBAC roles for service principals
+
+> **Important**: When using certificate-based (app-only) authentication for Exchange Online or Security & Compliance PowerShell, the service principal (Enterprise Application) **must be assigned appropriate Microsoft Entra roles** to read Exchange Online Protection (EOP) and Microsoft Defender for Office 365 (MDO) configurations.
+
+Without these role assignments, `Connect-ExchangeOnline`/`Connect-IPPSSession` will succeed, but EXO cmdlets (e.g., `Get-AcceptedDomain`, `Get-SafeLinksPolicy`, `Get-AntiPhishPolicy`) return empty results, causing ORCA tests to report false failures.
+
+**Minimum required role**: **Security Reader** (provides read access to EOP/MDO configurations)
+
+**Supported roles** (assign one or more):
+
+| Role | Exchange Online | Security & Compliance | Use Case |
+|------|-----------------|----------------------|----------|
+| **Security Reader** | ✔ | ✔ | **Minimum for ORCA tests** - read-only access to security configs |
+| Global Reader | ✔ | ✔ | Read-only access to all admin centers |
+| Exchange Administrator | ✔ | | Full Exchange management |
+| Compliance Administrator | ✔ | ✔ | Compliance & security configs |
+| Security Administrator | ✔ | ✔ | Security configs + some management |
+| Exchange Recipient Administrator | ✔ | | Recipient management |
+| Helpdesk Administrator | ✔ | | Limited recipient management |
+| Global Administrator | ✔ | ✔ | Full access (not recommended for automation) |
+
+**To assign the role** (in Microsoft Entra admin center):
+1. Go to **Identity** → **Roles & admins** → **Security Reader**
+2. Select **Add assignments**
+3. Search for and select your **Enterprise Application** (service principal name)
+4. Select **Add**
+
+> For least-privilege automation, **Security Reader** is recommended. See [Microsoft Learn: App-only authentication - Step 5](https://learn.microsoft.com/powershell/exchange/app-only-auth-powershell-v2#step-5-assign-role-permissions-to-the-application) for details.
+
 ### Microsoft Teams PowerShell Module
 
 The Microsoft Teams PowerShell Module supports both interactive and non-interactive [authentication methods](https://learn.microsoft.com/powershell/module/teams/connect-microsoftteams?view=teams-ps).

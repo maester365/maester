@@ -122,6 +122,9 @@ If you need to connect to just a subset of the services you can specifiy them us
 Connect-Maester -Service Azure,Graph,Teams
 ```
 
+> **Important for Exchange Online / Security & Compliance (app-only authentication):**
+> When using certificate-based service principal authentication (automation scenarios), the **service principal (Enterprise Application) must be assigned the "Security Reader" Microsoft Entra role** (or equivalent) to read EOP/MDO configurations. Without this, `Connect-ExchangeOnline` succeeds but EXO cmdlets return empty data, causing ORCA tests to report false failures. See [Connect-Maester Advanced: Required Exchange Online RBAC roles](/docs/connect-maester/connect-maester-advanced#required-exchange-online-rbac-roles-for-service-principals) for details.
+
 ### Connect to Copilot Studio (via Dataverse)
 
 To run the Copilot Studio Security Tests (MT.1113–MT.1122), connect with the `Dataverse` service:
