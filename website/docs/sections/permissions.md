@@ -68,6 +68,5 @@ Without the Security Reader role (or equivalent):
 - `Connect-ExchangeOnline` / `Connect-IPPSSession` **succeeds** (authentication works)
 - But EXO cmdlets (`Get-AcceptedDomain`, `Get-SafeLinksPolicy`, `Get-AntiPhishPolicy`, etc.) return **empty results**
 - ORCA tests evaluate against empty data → **report false failures**
-- This is the root cause of [GitHub Issue #1374](https://github.com/maester365/maester/issues/1374)
 
 See [Connect-Maester Advanced: Certificate-based authentication](/docs/connect-maester/connect-maester-advanced#required-exchange-online-rbac-roles-for-service-principals) for full details.
