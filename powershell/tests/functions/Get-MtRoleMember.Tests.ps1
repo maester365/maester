@@ -58,4 +58,13 @@ Describe 'Get-MtRoleMember' -Tag 'Unit' {
         { Get-MtRoleMember -RoleId '62e90394-69f5-4237-9190-012177145e10' } | Should -Throw -ErrorId 'InvokeGraphHttpResponseException'
         Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 0 -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleAssignments' }
     }
+
+    It 'rethrows the license error when only eligible members are requested' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            throw (Get-GraphErrorRecord -Code 'AadPremiumLicenseRequired')
+        } -ParameterFilter { $RelativeUri -like '*ScheduleInstances' }
+
+        { Get-MtRoleMember -RoleId '62e90394-69f5-4237-9190-012177145e10' -MemberStatus Eligible } | Should -Throw -ErrorId 'InvokeGraphHttpResponseException'
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 0 -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleAssignments' }
+    }
 }

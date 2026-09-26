@@ -157,7 +157,7 @@ function Get-MtRoleMember {
                 }
             } catch {
                 # subscribedSkus can report a P2 service plan that the PIM APIs do not accept
-                if ($_.ErrorDetails.Message -match 'AadPremiumLicenseRequired') {
+                if ($Active -and $_.ErrorDetails.Message -match 'AadPremiumLicenseRequired') {
                     Write-Verbose 'PIM APIs require Entra ID P2 or Governance in this tenant. Using role assignments instead.'
                     $pim = $false
                     $assignments = @()
