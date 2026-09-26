@@ -144,20 +144,32 @@ function Get-MtRoleMember {
 
     foreach ($directoryRoleId in $RoleId) {
         $assignments = @()
-        if ($Active) {
-            if ($pim) {
-                $uri = 'roleManagement/directory/roleAssignmentScheduleInstances'
-                # assignmentType eq 'Assigned' filters out eligible users that have temporarily activated the role
-                $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active -Filter "assignmentType eq 'Assigned'"
-            } else {
-                #Free or P1 tenant (PIM APIs cannot be called on non-P2 tenants)
-                $uri = 'roleManagement/directory/roleAssignments'
-                $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
+        if ($pim) {
+            try {
+                if ($Active) {
+                    $uri = 'roleManagement/directory/roleAssignmentScheduleInstances'
+                    # assignmentType eq 'Assigned' filters out eligible users that have temporarily activated the role
+                    $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active -Filter "assignmentType eq 'Assigned'"
+                }
+                if ($Eligible) {
+                    $uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
+                    $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
+                }
+            } catch {
+                # subscribedSkus can report a P2 service plan that the PIM APIs do not accept
+                if ($_.ErrorDetails.Message -match 'AadPremiumLicenseRequired') {
+                    Write-Verbose 'PIM APIs require Entra ID P2 or Governance in this tenant. Using role assignments instead.'
+                    $pim = $false
+                    $assignments = @()
+                } else {
+                    throw
+                }
             }
         }
-        if ($pim -and $Eligible) {
-            $uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
-            $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
+        if (-not $pim -and $Active) {
+            #Free or P1 tenant (PIM APIs cannot be called on non-P2 tenants)
+            $uri = 'roleManagement/directory/roleAssignments'
+            $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
         }
 
         $assignments | Sort-Object id -Unique
