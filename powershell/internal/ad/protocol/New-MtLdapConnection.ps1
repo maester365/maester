@@ -66,6 +66,21 @@ function New-MtLdapConnection {
 
         if ($PSBoundParameters.ContainsKey('Credential')) {
             $networkCredential = $Credential.GetNetworkCredential()
+
+            # When using Basic authentication, .NET System.DirectoryServices.Protocols
+            # does not accept DNS domain format (e.g. domain.com\user) for the credential
+            # domain. It requires either NetBIOS (DOMAIN\user) or UPN (user@domain.com).
+            # If the domain contains a dot, convert to UPN format automatically.
+            if ($AuthType -eq 'Basic' -and
+                -not [string]::IsNullOrWhiteSpace($networkCredential.Domain) -and
+                $networkCredential.Domain.Contains('.')) {
+                $upnUserName = "$($networkCredential.UserName)@$($networkCredential.Domain)"
+                $networkCredential = New-Object -TypeName System.Net.NetworkCredential -ArgumentList @(
+                    $upnUserName,
+                    $networkCredential.SecurePassword
+                )
+            }
+
             $connection.Credential = $networkCredential
         }
 

@@ -127,6 +127,7 @@
             if ([long]::TryParse($InputValue, [ref]$fileTimeValue) -and $fileTimeValue -gt 0 -and $fileTimeValue -lt [datetime]::MaxValue.ToFileTimeUtc()) {
                 return [datetime]::FromFileTimeUtc($fileTimeValue)
             }
+            return $null
         }
 
         $generalizedTimeAttributes = @(
@@ -142,6 +143,7 @@
             if ([datetime]::TryParseExact($normalizedValue, $formats, [System.Globalization.CultureInfo]::InvariantCulture, ([System.Globalization.DateTimeStyles]::AssumeUniversal -bor [System.Globalization.DateTimeStyles]::AdjustToUniversal), [ref]$parsedDate)) {
                 return $parsedDate.ToUniversalTime()
             }
+            return $null
         }
 
         return $InputValue
@@ -195,7 +197,7 @@
                     return $Value
                 }
 
-                return $decodedString.TrimEnd([char]0)
+                return Convert-StringBackedValue -InputValue $decodedString.TrimEnd([char]0) -NormalizedAttributeName $normalizedAttributeName
             }
         }
     }
