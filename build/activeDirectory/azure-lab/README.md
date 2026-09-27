@@ -23,8 +23,8 @@ The lab deploys a multi-forest Active Directory environment with three domain co
 
 The root and child domains have the automatic two-way transitive intra-forest
 trust. Child-domain rows can therefore use the logged-in root-forest identity or
-an explicit child credential. No trust is configured between `misoule02.local`
-and `misoule03.local`, so every separate-forest authentication row uses an
+an explicit child credential. No trust is configured between the primary forest
+and the separate forest, so every separate-forest authentication row uses an
 explicit secure credential; DNS forwarding and certificate trust do not create
 an authentication trust. Every DC receives a server-authentication certificate
 whose SANs contain its short name, FQDN, and domain name. The same certificate
@@ -198,13 +198,13 @@ Azure VM Run Commands execute via the Azure VM Agent using WinRM with constraine
 
 ```powershell
 # Step 1: Join computer to parent domain
-$credential = [System.Management.Automation.PSCredential]::new('MISOULE02\labadmin', $password)
-Add-Computer -DomainName 'misoule02.local' -Credential $credential -Force
+$credential = [System.Management.Automation.PSCredential]::new('<DOMAIN>\<admin-username>', $password)
+Add-Computer -DomainName '<parent-domain>' -Credential $credential -Force
 Restart-Computer -Force
 
 # Step 2: After reboot, promote to child domain
 Import-Module ADDSDeployment
-Install-ADDSDomain -ParentDomainName 'misoule02.local' -NewDomainName 'child' `
+Install-ADDSDomain -ParentDomainName '<parent-domain>' -NewDomainName '<child-name>' `
   -DomainType 'ChildDomain' -InstallDns:$true -Credential $credential `
   -SafeModeAdministratorPassword $safeModePassword -Force -NoRebootOnCompletion
 Restart-Computer -Force
@@ -251,7 +251,7 @@ az role assignment create `
 Some Azure subscriptions disable default outbound access on subnets. Windows Server VMs in the lab require outbound internet to download AD DS feature payloads during promotion.
 
 **Remediation:** Ensure the subnet has outbound internet access before deployment,
-for example by manually associating a NAT Gateway such as `MiSouleNATGW`. The
+for example by manually associating a NAT Gateway. The
 current deployment scripts do not create a NAT Gateway.
 
 ### Azure VM Run Command startup delays
@@ -386,9 +386,9 @@ All three domains execute 270 AD tests with consistent results when run from the
 
 | Domain | Total | Passed | Failed | Skipped | Error |
 |--------|-------|--------|--------|---------|-------|
-| misoule02.local | 270 | 225 | 15 | 1 | 29 |
-| child.misoule02.local | 270 | 225 | 15 | 1 | 29 |
-| misoule03.local | 270 | 225 | 15 | 1 | 29 |
+| <root-domain> | 270 | 225 | 15 | 1 | 29 |
+| <child-domain> | 270 | 225 | 15 | 1 | 29 |
+| <separate-forest-domain> | 270 | 225 | 15 | 1 | 29 |
 
 **Note:** The 270 total tests represent the AD-only test subset (`-Tag AD`). The 29 "Error" results are non-blocking test execution errors (e.g., missing properties in minimal lab). The 15 "Failed" results are expected security configuration findings in a minimal lab environment.
 

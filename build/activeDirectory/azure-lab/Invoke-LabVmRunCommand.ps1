@@ -47,17 +47,17 @@
 
 .EXAMPLE
     ./Invoke-LabVmRunCommand.ps1 `
-        -ResourceGroupName 'RG_5100_MiSoule_2' `
-        -VmName 'MiSouleDC03' `
-        -ScriptString 'Install-ADDSDomain -ParentDomainName misoule02.local ...' `
+        -ResourceGroupName '<resource-group-name>' `
+        -VmName '<vm-name>' `
+        -ScriptString 'Install-ADDSDomain -ParentDomainName <domain-name> ...' `
         -TimeoutInSeconds 3600
 
     Executes a child domain promotion with extended timeout and detailed diagnostics.
 
 .EXAMPLE
     $result = ./Invoke-LabVmRunCommand.ps1 `
-        -ResourceGroupName 'RG_5100_MiSoule_2' `
-        -VmName 'MiSouleDC02' `
+        -ResourceGroupName '<resource-group-name>' `
+        -VmName '<vm-name>' `
         -ScriptString 'Get-ADRootDSE | Select-Object dnsHostName' `
         -RunCommandName 'ad-diagnostics'
 
