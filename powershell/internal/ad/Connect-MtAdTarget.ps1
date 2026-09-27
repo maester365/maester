@@ -216,10 +216,18 @@ function Connect-MtAdTarget {
         # are not populated but a valid domain identity exists via Kerberos.
         try {
             $currentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
-            if ($null -ne $currentDomain -and $null -ne $currentDomain.PdcRoleOwner) {
-                $fallbackDc = ConvertTo-MtNormalizedDnsName -Value $currentDomain.PdcRoleOwner.Name
-                if (-not [string]::IsNullOrWhiteSpace($fallbackDc)) {
-                    return $fallbackDc
+            if ($null -ne $currentDomain) {
+                if ($null -ne $currentDomain.PdcRoleOwner) {
+                    $fallbackDc = ConvertTo-MtNormalizedDnsName -Value $currentDomain.PdcRoleOwner.Name
+                    if (-not [string]::IsNullOrWhiteSpace($fallbackDc)) {
+                        return $fallbackDc
+                    }
+                }
+                # GSSAPI SSH sessions may return a domain object without PdcRoleOwner
+                # populated. Fall back to DNS SRV discovery using the domain name.
+                $domainName = ConvertTo-MtNormalizedDnsName -Value $currentDomain.Name
+                if (-not [string]::IsNullOrWhiteSpace($domainName)) {
+                    return Get-MtDiscoveredDomainController -DnsName $domainName -DiscoveryScope 'domain'
                 }
             }
         }
