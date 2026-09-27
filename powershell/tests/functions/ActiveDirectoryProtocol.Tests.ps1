@@ -295,6 +295,15 @@ Describe 'Active Directory Protocol Contracts' {
                 $connection.SessionOptions.ReferralChasing | Should -Be ([System.DirectoryServices.Protocols.ReferralChasingOptions]::None)
             }
         }
+
+        It 'New-MtLdapConnection with -AuthType Basic should convert DNS domain format to UPN' {
+            InModuleScope Maester {
+                $cred = [PSCredential]::new('contoso.com\Maester', (ConvertTo-SecureString 'not-a-real-password' -AsPlainText -Force))
+                $connection = New-MtLdapConnection -Server 'dc01.contoso.com' -Port 636 -AuthType Basic -Credential $cred
+                $connection.Credential.UserName | Should -Be 'Maester@contoso.com'
+                $connection.Credential.Domain | Should -BeNullOrEmpty
+            }
+        }
     }
 
     Describe 'StartTLS negotiation invocation' {
