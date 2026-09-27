@@ -10,17 +10,12 @@
     in Azure Key Vault unless SkipKeyVault is specified, and tears the lab back
     down automatically when a deployment step fails.
 
-    The deployed topology matches the fixed lab layout for Plan 04 Task 18:
-
-    - MiSouleDC02       10.20.0.4   root forest for misoule02.local
-    - MiSouleDC03       10.20.0.5   child domain controller for child.misoule02.local
-    - MiSouleDC04       10.20.0.6   separate forest for misoule03.local
-    - MiSouleRunnerWin  10.20.0.10  Windows runner, joined to misoule02.local
-    - MiSouleRunnerLinux 10.20.0.11 Ubuntu runner, enrolled in misoule02.local
-
-    The root and child domains use their automatic two-way transitive intra-forest
-    trust. No trust is configured with misoule03.local. Each domain controller
-    issues an LDAPS/StartTLS certificate that is trusted by both runners.
+    The deployed topology is read from LabConfig.json. A typical multi-forest
+    layout includes a root forest DC, a child domain DC, a separate-forest DC,
+    a Windows runner, and a Linux runner. The root and child domains share an
+    automatic two-way transitive intra-forest trust. No trust is configured
+    between separate forests. Each domain controller issues an LDAPS/StartTLS
+    certificate that is trusted by both runners.
 
     The runners are intentionally configured without the ActiveDirectory,
     GroupPolicy, or DnsServer PowerShell modules.
@@ -75,16 +70,16 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter()]
-    [string]$ResourceGroupName = 'RG_5100_MiSoule_2',
+    [string]$ResourceGroupName,
 
     [Parameter()]
-    [string]$Location = 'eastus',
+    [string]$Location,
 
     [Parameter()]
     [string]$ExecutorPublicIp,
 
     [Parameter()]
-    [string]$LabId = ('misoule-lab-{0}' -f (Get-Date -Format 'yyyyMMddHHmmss')),
+    [string]$LabId,
 
     [Parameter()]
     [string]$KeyVaultName,
@@ -99,7 +94,19 @@ param(
     [string]$OwnerTag = $env:USER,
 
     [Parameter()]
-    [string]$CostCenterTag = 'Plan04Task18',
+    [string]$CostCenterTag,
+
+    [Parameter()]
+    [string]$AdminUsername,
+
+    [Parameter()]
+    [string]$TestUserName,
+
+    [Parameter()]
+    [string]$DomainJoinUserName,
+
+    [Parameter()]
+    [string]$LabConfigPath = (Join-Path -Path $PSScriptRoot -ChildPath 'LabConfig.json'),
 
     [Parameter()]
     [bool]$CleanupOnFailure = $true,
@@ -115,6 +122,20 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $script:ScriptRoot = $PSScriptRoot
+
+if (-not (Test-Path -LiteralPath $LabConfigPath)) {
+    throw "Lab configuration file not found: $LabConfigPath. Copy LabConfig.template.json to LabConfig.json and fill in your deployment-specific values."
+}
+
+$labConfig = Get-Content -LiteralPath $LabConfigPath -Raw | ConvertFrom-Json
+
+if (-not $ResourceGroupName) { $ResourceGroupName = $labConfig.deployment.resourceGroupName }
+if (-not $Location) { $Location = $labConfig.deployment.location }
+if (-not $LabId) { $LabId = ('{0}-lab-{1}' -f $labConfig.deployment.labPrefix, (Get-Date -Format 'yyyyMMddHHmmss')) }
+if (-not $CostCenterTag) { $CostCenterTag = $labConfig.deployment.costCenterTag }
+if (-not $AdminUsername) { $AdminUsername = $labConfig.credentials.localAdminUsername }
+if (-not $TestUserName) { $TestUserName = $labConfig.credentials.testUserName }
+if (-not $DomainJoinUserName) { $DomainJoinUserName = $labConfig.credentials.domainJoinUserName }
 
 function Invoke-LabAzCli {
     [CmdletBinding()]
@@ -304,20 +325,37 @@ $removeLabPath = Join-Path -Path $script:ScriptRoot -ChildPath 'Remove-Lab.ps1'
 $labTopology = [ordered]@{
     ResourceGroupName = $ResourceGroupName
     Location          = $Location
-    VNetName          = 'MiSouleADTestVNet'
-    AddressPrefix     = '10.20.0.0/24'
-    SubnetName        = 'LabSubnet'
-    NsgName           = 'MiSouleADTestNsg'
-    DomainControllers = @(
-        [ordered]@{ Name = 'MiSouleDC02'; Role = 'RootForest'; DomainName = 'misoule02.local'; ChildName = $null; NetBios = 'MISOULE02'; PrivateIp = '10.20.0.4'; ParentDomain = $null; ParentDns = $null; PromotionUser = $null },
-        [ordered]@{ Name = 'MiSouleDC03'; Role = 'ChildDomain'; DomainName = 'child.misoule02.local'; ChildName = 'child'; NetBios = 'CHILD'; PrivateIp = '10.20.0.5'; ParentDomain = 'misoule02.local'; ParentDns = '10.20.0.4'; PromotionUser = 'MISOULE02\labadmin' },
-        [ordered]@{ Name = 'MiSouleDC04'; Role = 'SeparateForest'; DomainName = 'misoule03.local'; ChildName = $null; NetBios = 'MISOULE03'; PrivateIp = '10.20.0.6'; ParentDomain = $null; ParentDns = $null; PromotionUser = $null }
-    )
-    Runners           = @(
-        # Keep the canonical Azure VM name while using a <=15-character Windows computer name.
-        [ordered]@{ Name = 'MiSouleRunnerWin'; ComputerName = 'MSRunnerWin'; OsType = 'Windows'; PrivateIp = '10.20.0.10'; DomainName = 'misoule02.local'; DomainJoinUser = 'MISOULE02\maesterjoin' },
-        [ordered]@{ Name = 'MiSouleRunnerLinux'; ComputerName = $null; OsType = 'Ubuntu'; PrivateIp = '10.20.0.11'; DomainName = 'misoule02.local'; DomainJoinUser = 'maesterjoin@misoule02.local' }
-    )
+    VNetName          = $labConfig.network.vnetName
+    AddressPrefix     = $labConfig.network.vnetAddressSpace
+    SubnetName        = $labConfig.network.subnetName
+    NsgName           = $labConfig.network.nsgName
+    DomainControllers = @()
+    Runners           = @()
+}
+
+foreach ($dc in $labConfig.domainControllers) {
+    $labTopology.DomainControllers += [ordered]@{
+        Name          = $dc.azureVmName
+        Role          = $dc.role
+        DomainName    = $dc.domain
+        ChildName     = $dc.childName
+        NetBios       = $dc.netBiosName
+        PrivateIp     = $dc.privateIp
+        ParentDomain  = $dc.parentDomain
+        ParentDns     = $dc.parentDnsIp
+        PromotionUser = $dc.promotionUser
+    }
+}
+
+foreach ($runner in $labConfig.runners) {
+    $labTopology.Runners += [ordered]@{
+        Name           = $runner.azureVmName
+        ComputerName   = $runner.computerName
+        OsType         = $runner.osType
+        PrivateIp      = $runner.privateIp
+        DomainName     = $runner.domain
+        DomainJoinUser = $runner.domainJoinUser
+    }
 }
 
 if ($ExpiresOnUtc -gt (Get-Date).ToUniversalTime().AddDays(7)) {
@@ -337,15 +375,24 @@ $tags = @(
 )
 
 $credentialBundle = [ordered]@{
-    WindowsLocalAdminPassword = Get-LabRandomPassword
+    WindowsLocalAdminPassword       = Get-LabRandomPassword
     WindowsRunnerLocalAdminPassword = Get-LabRandomPassword
-    LinuxLocalAdminPassword   = Get-LabRandomPassword
-    Misoule02SafeModePassword = Get-LabRandomPassword
-    Misoule03SafeModePassword = Get-LabRandomPassword
-    RootDomainReaderPassword  = Get-LabRandomPassword
-    ChildDomainReaderPassword = Get-LabRandomPassword
-    ForestDomainReaderPassword = Get-LabRandomPassword
-    RootDomainJoinPassword    = Get-LabRandomPassword
+    LinuxLocalAdminPassword         = Get-LabRandomPassword
+    RootDomainJoinPassword          = Get-LabRandomPassword
+}
+
+foreach ($dc in $labTopology.DomainControllers) {
+    if ($dc.Role -eq 'ChildDomain' -and $dc.ParentDomain) {
+        $parentDc = $labTopology.DomainControllers | Where-Object { $_.Role -eq 'RootForest' -and $_.DomainName -eq $dc.ParentDomain } | Select-Object -First 1
+        if ($parentDc -and $credentialBundle.Contains(('{0}SafeModePassword' -f $parentDc.Name))) {
+            $credentialBundle[('{0}SafeModePassword' -f $dc.Name)] = $credentialBundle[('{0}SafeModePassword' -f $parentDc.Name)]
+        } else {
+            $credentialBundle[('{0}SafeModePassword' -f $dc.Name)] = Get-LabRandomPassword
+        }
+    } else {
+        $credentialBundle[('{0}SafeModePassword' -f $dc.Name)] = Get-LabRandomPassword
+    }
+    $credentialBundle[('{0}ReaderPassword' -f $dc.Name)] = Get-LabRandomPassword
 }
 
 $summary = [ordered]@{
@@ -433,12 +480,12 @@ try {
         DomainRole        = $rootController.Role
         DomainName        = $rootController.DomainName
         DomainNetbiosName = $rootController.NetBios
-        AdminUsername     = 'labadmin'
+        AdminUsername     = $AdminUsername
         AdminPassword     = $credentialBundle.WindowsLocalAdminPassword
-        SafeModePassword  = $credentialBundle.Misoule02SafeModePassword
-        TestUserName      = 'maesterreader'
-        TestUserPassword  = $credentialBundle.RootDomainReaderPassword
-        DomainJoinUserName = 'maesterjoin'
+        SafeModePassword  = $credentialBundle[('{0}SafeModePassword' -f $rootController.Name)]
+        TestUserName      = $TestUserName
+        TestUserPassword  = $credentialBundle[('{0}ReaderPassword' -f $rootController.Name)]
+        DomainJoinUserName = $DomainJoinUserName
         DomainJoinUserPassword = $credentialBundle.RootDomainJoinPassword
         KeyVaultName      = $summary.KeyVaultName
         Tag               = $tags
@@ -479,11 +526,11 @@ try {
         ParentDnsServer   = $childController.ParentDns
         PromotionUserName = $childController.PromotionUser
         PromotionPassword = $credentialBundle.WindowsLocalAdminPassword
-        AdminUsername     = 'labadmin'
+        AdminUsername     = $AdminUsername
         AdminPassword     = $credentialBundle.WindowsLocalAdminPassword
-        SafeModePassword  = $credentialBundle.Misoule02SafeModePassword
-        TestUserName      = 'maesterreader'
-        TestUserPassword  = $credentialBundle.ChildDomainReaderPassword
+        SafeModePassword  = $credentialBundle[('{0}SafeModePassword' -f $childController.Name)]
+        TestUserName      = $TestUserName
+        TestUserPassword  = $credentialBundle[('{0}ReaderPassword' -f $childController.Name)]
         KeyVaultName      = $summary.KeyVaultName
         Tag               = $tags
         Force             = $Force.IsPresent
@@ -509,11 +556,11 @@ try {
         DomainRole        = $forestController.Role
         DomainName        = $forestController.DomainName
         DomainNetbiosName = $forestController.NetBios
-        AdminUsername     = 'labadmin'
+        AdminUsername     = $AdminUsername
         AdminPassword     = $credentialBundle.WindowsLocalAdminPassword
-        SafeModePassword  = $credentialBundle.Misoule03SafeModePassword
-        TestUserName      = 'maesterreader'
-        TestUserPassword  = $credentialBundle.ForestDomainReaderPassword
+        SafeModePassword  = $credentialBundle[('{0}SafeModePassword' -f $forestController.Name)]
+        TestUserName      = $TestUserName
+        TestUserPassword  = $credentialBundle[('{0}ReaderPassword' -f $forestController.Name)]
         KeyVaultName      = $summary.KeyVaultName
         Tag               = $tags
         Force             = $Force.IsPresent
@@ -566,9 +613,9 @@ foreach (`$zone in @(`$zones)) {
         }
     }
 
-    # The child-domain promotion creates its authoritative delegation beneath
-    # misoule02.local. Validate that delegation and both forest forwarders before
-    # creating runners that depend on DC02 for all three namespaces.
+    # The child-domain promotion creates its authoritative delegation beneath the
+    # root domain. Validate that delegation and both forest forwarders before
+    # creating runners that depend on the root DC for all three namespaces.
     $dnsValidationJson = $labTopology.DomainControllers | ForEach-Object {
         [ordered]@{ Name = ('{0}.{1}' -f $_.Name, $_.DomainName); ExpectedAddress = $_.PrivateIp }
     } | ConvertTo-Json -Compress
@@ -612,7 +659,7 @@ foreach (`$target in @(`$targets)) {
             OsType                  = $runner.OsType
             PrivateIpAddress        = $runner.PrivateIp
             DnsServer               = $runnerDnsServers
-            AdminUsername           = 'labadmin'
+            AdminUsername           = $AdminUsername
             AdminPassword           = $runnerAdminPassword
             DomainName              = $runner.DomainName
             DomainJoinUsername      = $runner.DomainJoinUser
