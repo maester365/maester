@@ -75,22 +75,7 @@
             }
 
             $protocolConnectionState = Connect-MtAdTarget @protocolTargetParameters
-            $ldapConnectionParameters = @{
-                Server   = $protocolConnectionState.ResolvedServer
-                AuthType = $protocolConnectionState.AuthenticationMode
-            }
-            if ($protocolConnectionState.TlsMode -eq 'StartTls') {
-                $ldapConnectionParameters['Port'] = 389
-                $ldapConnectionParameters['UseStartTls'] = $true
-            }
-            else {
-                $ldapConnectionParameters['Port'] = 636
-            }
-            if ($null -ne $__MtSession.ADCredential) {
-                $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential
-            }
-
-            $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+            $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $protocolConnectionState
             $protocolRootDse = Get-MtLdapRootDse -Connection $protocolConnection
 
             if (-not $DnBase) {

@@ -37,18 +37,7 @@
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
 
-    $ldapConnectionParameters = @{
-        Server   = $adState.ProtocolEvidence.ResolvedServer
-        AuthType = $adState.ProtocolEvidence.AuthenticationMode
-    }
-    if ($adState.ProtocolEvidence.TlsMode -eq 'StartTls') {
-        $ldapConnectionParameters['Port'] = 389
-        $ldapConnectionParameters['UseStartTls'] = $true
-    } else {
-        $ldapConnectionParameters['Port'] = 636
-    }
-    if ($null -ne $__MtSession.ADCredential) { $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential }
-    $protocolConnection = New-MtLdapConnection @ldapConnectionParameters
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Collect trust members per group
     # Limit to first 50 groups for performance
