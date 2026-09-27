@@ -30,13 +30,13 @@
     Explicit credential override for a single-target invocation.
 
 .PARAMETER RootCredential
-    Explicit misoule02.local credential used by DC02 rows.
+    Explicit credential for the root forest DC rows.
 
 .PARAMETER ChildCredential
-    Explicit child.misoule02.local credential used by DC03 rows.
+    Explicit credential for the child domain DC rows.
 
 .PARAMETER SeparateForestCredential
-    Explicit misoule03.local credential used by DC04 rows.
+    Explicit credential for the separate-forest DC rows.
 
 .EXAMPLE
     ./Invoke-ProtocolProbeMatrix.ps1 -Runner Windows -RootCredential $rootCredential `
@@ -72,7 +72,6 @@ param(
     [string]$Runner,
 
     [Parameter()]
-    [ValidateSet('DC02', 'DC03', 'DC04')]
     [string]$Target,
 
     [Parameter()]
@@ -107,11 +106,20 @@ param(
     [string]$MaesterModulePath = (Join-Path $PSScriptRoot '..\..\..\powershell'),
 
     [Parameter()]
-    [string]$EvidencePath = (Join-Path $PSScriptRoot 'evidence')
+    [string]$EvidencePath = (Join-Path $PSScriptRoot 'evidence'),
+
+    [Parameter()]
+    [string]$LabConfigPath = (Join-Path $PSScriptRoot 'LabConfig.json')
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+if (-not (Test-Path -LiteralPath $LabConfigPath)) {
+    throw "Lab configuration file not found: $LabConfigPath. Copy LabConfig.template.json to LabConfig.json and fill in your deployment-specific values."
+}
+
+$labConfig = Get-Content -LiteralPath $LabConfigPath -Raw | ConvertFrom-Json
 
 function Get-RedactedProbeError {
     [CmdletBinding()]
@@ -266,25 +274,25 @@ function Write-MergedProbeSummary {
 
 $targetDefinitions = @{
     DC02 = [ordered]@{
-        Fqdn              = 'MiSouleDC02.misoule02.local'
-        Ip                = '10.20.0.4'
-        Domain            = 'misoule02.local'
-        Forest            = 'misoule02.local'
-        CredentialDomains = @('MISOULE02', 'misoule02.local')
+        Fqdn              = $labConfig.domainControllers[0].fqdn
+        Ip                = $labConfig.domainControllers[0].privateIp
+        Domain            = $labConfig.domainControllers[0].domain
+        Forest            = $labConfig.domainControllers[0].forest
+        CredentialDomains = @($labConfig.domainControllers[0].netBiosName, $labConfig.domainControllers[0].domain)
     }
     DC03 = [ordered]@{
-        Fqdn              = 'MiSouleDC03.child.misoule02.local'
-        Ip                = '10.20.0.5'
-        Domain            = 'child.misoule02.local'
-        Forest            = 'misoule02.local'
-        CredentialDomains = @('CHILD', 'child.misoule02.local')
+        Fqdn              = $labConfig.domainControllers[1].fqdn
+        Ip                = $labConfig.domainControllers[1].privateIp
+        Domain            = $labConfig.domainControllers[1].domain
+        Forest            = $labConfig.domainControllers[1].forest
+        CredentialDomains = @($labConfig.domainControllers[1].netBiosName, $labConfig.domainControllers[1].domain)
     }
     DC04 = [ordered]@{
-        Fqdn              = 'MiSouleDC04.misoule03.local'
-        Ip                = '10.20.0.6'
-        Domain            = 'misoule03.local'
-        Forest            = 'misoule03.local'
-        CredentialDomains = @('MISOULE03', 'misoule03.local')
+        Fqdn              = $labConfig.domainControllers[2].fqdn
+        Ip                = $labConfig.domainControllers[2].privateIp
+        Domain            = $labConfig.domainControllers[2].domain
+        Forest            = $labConfig.domainControllers[2].forest
+        CredentialDomains = @($labConfig.domainControllers[2].netBiosName, $labConfig.domainControllers[2].domain)
     }
 }
 

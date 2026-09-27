@@ -13,13 +13,13 @@
     The lab runner executing this invocation: Win or Linux.
 
 .PARAMETER RootCredential
-    Explicit credential for misoule02.local.
+    Explicit credential for the root forest domain.
 
 .PARAMETER ChildCredential
-    Explicit credential for child.misoule02.local.
+    Explicit credential for the child domain.
 
 .PARAMETER SeparateForestCredential
-    Explicit credential for misoule03.local.
+    Explicit credential for the separate forest domain.
 
 .EXAMPLE
     ./Invoke-PublicE2EMatrix.ps1 -Runner Win -RootCredential $rootCredential `
@@ -83,11 +83,26 @@ param(
     [string]$PipeName,
 
     [Parameter(Mandatory, ParameterSetName = 'Worker')]
-    [string]$ResultPath
+    [string]$ResultPath,
+
+    [Parameter()]
+    [string]$LabConfigPath = (Join-Path $PSScriptRoot 'LabConfig.json')
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+if (-not (Test-Path -LiteralPath $LabConfigPath)) {
+    throw "Lab configuration file not found: $LabConfigPath. Copy LabConfig.template.json to LabConfig.json and fill in your deployment-specific values."
+}
+
+$labConfig = Get-Content -LiteralPath $LabConfigPath -Raw | ConvertFrom-Json
+
+$winRunnerVm = $labConfig.runners | Where-Object osType -eq 'Windows' | Select-Object -ExpandProperty azureVmName -First 1
+$linuxRunnerVm = $labConfig.runners | Where-Object osType -eq 'Ubuntu' | Select-Object -ExpandProperty azureVmName -First 1
+$rootDc = $labConfig.domainControllers | Where-Object role -eq 'RootForest' | Select-Object -First 1
+$childDc = $labConfig.domainControllers | Where-Object role -eq 'ChildDomain' | Select-Object -First 1
+$forestDc = $labConfig.domainControllers | Where-Object role -eq 'SeparateForest' | Select-Object -First 1
 
 function ConvertTo-RedactedMatrixError {
     [CmdletBinding()]
@@ -192,7 +207,7 @@ if ($Worker.IsPresent) {
             $connectParameters.ActiveDirectoryServer = $row.Fqdn
         }
         if ($row.FailureCondition -eq 'SelectorMismatch') {
-            $connectParameters.ActiveDirectoryDomain = 'child.misoule02.local'
+            $connectParameters.ActiveDirectoryDomain = $childDc.domain
         }
         if ($null -ne $rowCredential) {
             $connectParameters.ActiveDirectoryCredential = $rowCredential
@@ -277,7 +292,7 @@ if ($Worker.IsPresent) {
             Targeting            = [ordered]@{
                 Mode             = $row.TargetingMode
                 RequestedServer  = if ($row.TargetingMode -eq 'Explicit') { $row.Fqdn } else { $null }
-                RequestedDomain  = if ($row.FailureCondition -eq 'SelectorMismatch') { 'child.misoule02.local' } else { $null }
+                RequestedDomain  = if ($row.FailureCondition -eq 'SelectorMismatch') { $childDc.domain } else { $null }
                 ExpectedDomain   = $row.Domain
                 ExpectedForest   = $row.Forest
                 ResolvedServer   = if ($null -eq $connectionDetails) { $null } else { $connectionDetails.ResolvedServer }
@@ -353,35 +368,35 @@ function Get-PublicMatrixRow {
     }
 }
 
-$dc02 = @{ Target = 'DC02'; Fqdn = 'MiSouleDC02.misoule02.local'; Domain = 'misoule02.local'; Forest = 'misoule02.local' }
-$dc03 = @{ Target = 'DC03'; Fqdn = 'MiSouleDC03.child.misoule02.local'; Domain = 'child.misoule02.local'; Forest = 'misoule02.local' }
-$dc04 = @{ Target = 'DC04'; Fqdn = 'MiSouleDC04.misoule03.local'; Domain = 'misoule03.local'; Forest = 'misoule03.local' }
+$dc02 = @{ Target = 'DC02'; Fqdn = $rootDc.fqdn; Domain = $rootDc.domain; Forest = $rootDc.forest }
+$dc03 = @{ Target = 'DC03'; Fqdn = $childDc.fqdn; Domain = $childDc.domain; Forest = $childDc.forest }
+$dc04 = @{ Target = 'DC04'; Fqdn = $forestDc.fqdn; Domain = $forestDc.domain; Forest = $forestDc.forest }
 
 # Matrix design notes:
-# - Windows runner (MiSouleRunnerWin) exercises all four implicit/explicit targeting + credential
+# - Windows runner exercises all four implicit/explicit targeting + credential
 #   combinations for the root forest (DC02), plus child-domain and separate-forest rows.
-# - Linux runner (MiSouleRunnerLinux) is enrolled in misoule02.local via realmd/SSSD and CAN
+# - Linux runner is enrolled in the root domain via realmd/SSSD and CAN
 #   obtain Kerberos tickets, but Connect-MtAdTarget rejects implicit targeting on non-Windows
 #   platforms (line 372). Therefore Linux PASS rows use explicit targeting only.
 # - Linux implicit targeting is covered by mandatory negative row N2.
 # No trust-aware separate-forest success row is approved: the lab intentionally
 # has no forest trust. All separate-forest success rows therefore use explicit credentials.
 $matrix = @(
-    Get-PublicMatrixRow -Id '1-win-dc02-implicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '2-win-dc02-implicit-explicit-negotiate-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Implicit -CredentialKind Explicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '3-win-dc02-explicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Explicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '4-win-dc02-explicit-explicit-basic-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '5-win-dc03-explicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc03 -TargetingMode Explicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '6-win-dc03-explicit-explicit-basic-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc03 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '7-win-dc04-explicit-explicit-basic-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc04 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '8-linux-dc02-explicit-explicit-basic-ldaps' -Runner Linux -RunnerVm MiSouleRunnerLinux @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '9-linux-dc03-explicit-explicit-basic-ldaps' -Runner Linux -RunnerVm MiSouleRunnerLinux @dc03 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id '10-linux-dc04-explicit-explicit-basic-ldaps' -Runner Linux -RunnerVm MiSouleRunnerLinux @dc04 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
-    Get-PublicMatrixRow -Id 'N1-win-dc02-implicit-implicit-negotiate-none' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode None -ExpectedOutcome FAIL -ExpectedErrorPattern '(?i)(ActiveDirectoryTlsMode|validation set|does not belong to the set)' -FailureCondition NoTls
-    Get-PublicMatrixRow -Id 'N2-linux-dc02-implicit-implicit-negotiate-ldaps' -Runner Linux -RunnerVm MiSouleRunnerLinux @dc02 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Non-Windows platforms require an explicit Active Directory endpoint' -FailureCondition UnsupportedImplicitTargeting
-    Get-PublicMatrixRow -Id 'N3-win-dc04-implicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc04 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Resolved identity does not match requested target' -FailureCondition SeparateForestImplicitTargeting
-    Get-PublicMatrixRow -Id 'N4-win-dc02-explicit-invalid-basic-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Explicit -CredentialKind Invalid -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern '(?i)(authentication|credential|logon|invalid credentials|bind.*(fail|reject))' -FailureCondition InvalidCredential
-    Get-PublicMatrixRow -Id 'N5-win-dc02-selector-mismatch-explicit-basic-ldaps' -Runner Win -RunnerVm MiSouleRunnerWin @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Explicit selector values must resolve to the same forest/domain/server' -FailureCondition SelectorMismatch
+    Get-PublicMatrixRow -Id '1-win-dc02-implicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '2-win-dc02-implicit-explicit-negotiate-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Implicit -CredentialKind Explicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '3-win-dc02-explicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Explicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '4-win-dc02-explicit-explicit-basic-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '5-win-dc03-explicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc03 -TargetingMode Explicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '6-win-dc03-explicit-explicit-basic-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc03 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '7-win-dc04-explicit-explicit-basic-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc04 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '8-linux-dc02-explicit-explicit-basic-ldaps' -Runner Linux -RunnerVm $linuxRunnerVm @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '9-linux-dc03-explicit-explicit-basic-ldaps' -Runner Linux -RunnerVm $linuxRunnerVm @dc03 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id '10-linux-dc04-explicit-explicit-basic-ldaps' -Runner Linux -RunnerVm $linuxRunnerVm @dc04 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome PASS
+    Get-PublicMatrixRow -Id 'N1-win-dc02-implicit-implicit-negotiate-none' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode None -ExpectedOutcome FAIL -ExpectedErrorPattern '(?i)(ActiveDirectoryTlsMode|validation set|does not belong to the set)' -FailureCondition NoTls
+    Get-PublicMatrixRow -Id 'N2-linux-dc02-implicit-implicit-negotiate-ldaps' -Runner Linux -RunnerVm $linuxRunnerVm @dc02 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Non-Windows platforms require an explicit Active Directory endpoint' -FailureCondition UnsupportedImplicitTargeting
+    Get-PublicMatrixRow -Id 'N3-win-dc04-implicit-implicit-negotiate-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc04 -TargetingMode Implicit -CredentialKind Implicit -AuthMode Negotiate -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Resolved identity does not match requested target' -FailureCondition SeparateForestImplicitTargeting
+    Get-PublicMatrixRow -Id 'N4-win-dc02-explicit-invalid-basic-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Explicit -CredentialKind Invalid -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern '(?i)(authentication|credential|logon|invalid credentials|bind.*(fail|reject))' -FailureCondition InvalidCredential
+    Get-PublicMatrixRow -Id 'N5-win-dc02-selector-mismatch-explicit-basic-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Explicit selector values must resolve to the same forest/domain/server' -FailureCondition SelectorMismatch
 )
 
 $actualRunner = if ($IsWindows) { 'Win' } else { 'Linux' }
@@ -557,7 +572,7 @@ $summary = [ordered]@{
     LivePublicPath             = $livePublicPath
     Status                     = if ($completedRowCount -eq $matrix.Count) { 'Complete' } else { 'Partial' }
     LastRunner                 = $Runner
-    RunnerVms                  = @('MiSouleRunnerWin', 'MiSouleRunnerLinux')
+    RunnerVms                  = @($winRunnerVm, $linuxRunnerVm)
     ApprovedTrustAwareRows     = @()
     TrustAwareRowStatus        = 'No separate-forest trust is configured; no trust-aware success row is approved.'
     MatrixDefinition           = $matrix

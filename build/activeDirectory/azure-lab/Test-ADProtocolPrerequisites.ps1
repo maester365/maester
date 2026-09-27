@@ -10,7 +10,7 @@
     This is the canonical prerequisite step and must pass before running Maester AD tests.
 
 .PARAMETER TargetName
-    The hostname or FQDN of the directory server to validate against (e.g. 'misoule02.local').
+    The hostname or FQDN of the directory server to validate against (e.g. 'dc01.contoso.local').
 
 .PARAMETER MaesterModulePath
     Path to the Maester module root (contains Maester.psd1). Defaults to the repository's
@@ -20,12 +20,12 @@
     Skip TLS certificate validation (for test environments only).
 
 .EXAMPLE
-    ./Test-ADProtocolPrerequisites.ps1 -TargetName 'misoule02.local'
+    ./Test-ADProtocolPrerequisites.ps1 -TargetName 'dc01.contoso.local'
 
     Validates protocol prerequisites for the root forest DC.
 
 .EXAMPLE
-    ./Test-ADProtocolPrerequisites.ps1 -TargetName 'MiSouleDC04.misoule03.local' -SkipCertificateCheck
+    ./Test-ADProtocolPrerequisites.ps1 -TargetName 'dc03.fabrikam.local' -SkipCertificateCheck
 
     Validates prerequisites for the separate-forest DC (test environment, skips certificate validation).
 #>

@@ -43,8 +43,8 @@
     Justification = 'Runner script provides status output and emits machine-readable JSON artifact.'
 )]
 param(
-    [Parameter()]
-    [string]$ResourceGroupName = 'RG_5100_MiSoule_2',
+    [Parameter(Mandatory)]
+    [string]$ResourceGroupName,
 
     [Parameter(Mandatory)]
     [string]$TagName,
@@ -53,11 +53,26 @@ param(
     [string]$TagValue,
 
     [Parameter()]
-    [string]$EvidencePath = (Join-Path $PSScriptRoot 'evidence')
+    [string]$EvidencePath = (Join-Path $PSScriptRoot 'evidence'),
+
+    [Parameter()]
+    [string]$LabConfigPath = (Join-Path $PSScriptRoot 'LabConfig.json')
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+if (-not (Test-Path -LiteralPath $LabConfigPath)) {
+    throw "Lab configuration file not found: $LabConfigPath. Copy LabConfig.template.json to LabConfig.json and fill in your deployment-specific values."
+}
+
+$labConfig = Get-Content -LiteralPath $LabConfigPath -Raw | ConvertFrom-Json
+
+$rootDc = $labConfig.domainControllers | Where-Object role -eq 'RootForest' | Select-Object -First 1
+$childDc = $labConfig.domainControllers | Where-Object role -eq 'ChildDomain' | Select-Object -First 1
+$forestDc = $labConfig.domainControllers | Where-Object role -eq 'SeparateForest' | Select-Object -First 1
+$winRunner = $labConfig.runners | Where-Object osType -eq 'Windows' | Select-Object -First 1
+$linuxRunner = $labConfig.runners | Where-Object osType -eq 'Ubuntu' | Select-Object -First 1
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -190,7 +205,7 @@ function Add-PreflightCheck {
 # ---------------------------------------------------------------------------
 # 0) Discovery
 # ---------------------------------------------------------------------------
-$vmNames = @('MiSouleDC02', 'MiSouleDC03', 'MiSouleDC04', 'MiSouleRunW', 'MiSouleRunnerLinux')
+$vmNames = @($labConfig.domainControllers.azureVmName) + @($labConfig.runners.azureVmName)
 $results = [System.Collections.Generic.List[object]]::new()
 
 $taggedResources = Invoke-LabAzCli -Arguments @(
@@ -246,11 +261,9 @@ $output = [ordered]@{
 }
 
 # --- DNS resolution ---
-$dnsTargets = @(
-    [ordered]@{ Name = 'MiSouleDC02.misoule02.local'; ExpectedDomain = 'misoule02.local' }
-    [ordered]@{ Name = 'MiSouleDC03.child.misoule02.local'; ExpectedDomain = 'child.misoule02.local' }
-    [ordered]@{ Name = 'MiSouleDC04.misoule03.local'; ExpectedDomain = 'misoule03.local' }
-)
+$dnsTargets = @($labConfig.domainControllers | ForEach-Object {
+    [ordered]@{ Name = $_.fqdn; ExpectedDomain = $_.domain }
+})
 
 foreach ($dt in $dnsTargets) {
     try {
@@ -285,11 +298,10 @@ if ($output.IsDomainJoined) { $output.JoinedDomain = $cs.Domain }
 # --- Protocol path: LDAPS, StartTLS, RootDSE ---
 Add-Type -AssemblyName System.DirectoryServices.Protocols
 
-$dcEndpoints = @(
-    [ordered]@{ Host = 'MiSouleDC02.misoule02.local'; ExpectedNC = 'DC=misoule02,DC=local' }
-    [ordered]@{ Host = 'MiSouleDC03.child.misoule02.local'; ExpectedNC = 'DC=child,DC=misoule02,DC=local' }
-    [ordered]@{ Host = 'MiSouleDC04.misoule03.local'; ExpectedNC = 'DC=misoule03,DC=local' }
-)
+$dcEndpoints = @($labConfig.domainControllers | ForEach-Object {
+    $expectedNc = 'DC=' + ($_.domain -split '\.' -join ',DC=')
+    [ordered]@{ Host = $_.fqdn; ExpectedNC = $expectedNc }
+})
 
 foreach ($ep in $dcEndpoints) {
     # LDAPS on 636
@@ -436,7 +448,7 @@ catch {
 if ($output.ForestTrusts.Count -eq 0) {
     $trustConn = $null
     try {
-        $tcId = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier('MiSouleDC02.misoule02.local', 636, $false, $false)
+        $tcId = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier($rootDc.fqdn, 636, $false, $false)
         $trustConn = New-Object System.DirectoryServices.Protocols.LdapConnection($tcId)
         $trustConn.AuthType = [System.DirectoryServices.Protocols.AuthType]::Negotiate
         $trustConn.SessionOptions.ProtocolVersion = 3
@@ -444,7 +456,7 @@ if ($output.ForestTrusts.Count -eq 0) {
         $trustConn.Bind()
 
         $tSearch = New-Object System.DirectoryServices.Protocols.SearchRequest
-        $tSearch.DistinguishedName = 'CN=System,DC=misoule02,DC=local'
+        $tSearch.DistinguishedName = 'CN=System,DC=' + ($rootDc.domain -split '\.' -join ',DC=')
         $tSearch.Scope = [System.DirectoryServices.Protocols.SearchScope]::Subtree
         $tSearch.Filter = '(objectClass=trustedDomain)'
         [void]$tSearch.Attributes.Add('cn')
@@ -468,7 +480,7 @@ if ($output.ForestTrusts.Count -eq 0) {
 $output | ConvertTo-Json -Depth 10 -Compress
 '@
 
-$winRaw = Invoke-LabVmRunCommand -VmName 'MiSouleRunW' -CommandId 'RunPowerShellScript' -ScriptContent $windowsRunnerScript
+$winRaw = Invoke-LabVmRunCommand -VmName $winRunner.azureVmName -CommandId 'RunPowerShellScript' -ScriptContent $windowsRunnerScript
 try {
     $winData = $winRaw | ConvertFrom-Json
 } catch {
@@ -482,7 +494,7 @@ foreach ($dns in $winData.DnsResults) {
         -CheckId "DNS.Win.$($dns.Target)" `
         -Category 'DNS' `
         -Target $dns.Target `
-        -Runner 'MiSouleRunW' `
+        -Runner $winRunner.azureVmName `
         -RequestedTarget $dns.Target `
         -ResolvedTarget $dns.Resolved `
         -Expected 'Resolvable' `
@@ -496,8 +508,8 @@ foreach ($dns in $winData.DnsResults) {
 Add-PreflightCheck -List $results `
     -CheckId 'BannedModules.Win' `
     -Category 'BannedModules' `
-    -Target 'MiSouleRunW' `
-    -Runner 'MiSouleRunW' `
+    -Target $winRunner.azureVmName `
+    -Runner $winRunner.azureVmName `
     -Expected 0 `
     -Actual $winData.BannedModuleCount `
     -Success ($winData.BannedModuleCount -eq 0) `
@@ -508,11 +520,11 @@ Add-PreflightCheck -List $results `
 Add-PreflightCheck -List $results `
     -CheckId 'AuthState.Win.DomainJoined' `
     -Category 'AuthState' `
-    -Target 'MiSouleRunW' `
-    -Runner 'MiSouleRunW' `
-    -Expected 'misoule02.local' `
-    -Actual $winData.JoinedDomain `
-    -Success ($winData.IsDomainJoined -and $winData.JoinedDomain -eq 'misoule02.local') `
+    -Target $winRunner.azureVmName `
+    -Runner $winRunner.azureVmName `
+        -Expected $rootDc.domain `
+        -Actual $winData.JoinedDomain `
+        -Success ($winData.IsDomainJoined -and $winData.JoinedDomain -eq $rootDc.domain) `
     -Mandatory $true `
     -Details @{ IsDomainJoined = [bool]$winData.IsDomainJoined }
 
@@ -520,12 +532,12 @@ Add-PreflightCheck -List $results `
 foreach ($ldaps in $winData.LdapsResults) {
     $certTrusted = [bool]$ldaps.Success
     $hostnameValid = $(if ($ldaps.PSObject.Properties['NcMatch']) { [bool]$ldaps.NcMatch } else { $false })
-    $isSeparateForest = ($ldaps.Host -eq 'MiSouleDC04.misoule03.local')
+    $isSeparateForest = ($ldaps.Host -eq $forestDc.fqdn)
     Add-PreflightCheck -List $results `
         -CheckId "LDAPS.$($ldaps.Host)" `
         -Category 'LDAPS' `
         -Target $ldaps.Host `
-        -Runner 'MiSouleRunW' `
+        -Runner $winRunner.azureVmName `
         -RequestedTarget $ldaps.Host `
         -ResolvedTarget $(if ($certTrusted) { $ldaps.Host } else { $null }) `
         -Expected 'TlsSuccess+NcMatch' `
@@ -545,12 +557,12 @@ foreach ($ldaps in $winData.LdapsResults) {
 foreach ($stls in $winData.StartTlsResults) {
     $tlsOk = [bool]$stls.Success
     $ncOk = $(if ($stls.PSObject.Properties['NcMatch']) { [bool]$stls.NcMatch } else { $false })
-    $isSeparateForest = ($stls.Host -eq 'MiSouleDC04.misoule03.local')
+    $isSeparateForest = ($stls.Host -eq $forestDc.fqdn)
     Add-PreflightCheck -List $results `
         -CheckId "StartTLS.$($stls.Host)" `
         -Category 'StartTLS' `
         -Target $stls.Host `
-        -Runner 'MiSouleRunW' `
+        -Runner $winRunner.azureVmName `
         -RequestedTarget $stls.Host `
         -ResolvedTarget $(if ($tlsOk) { $stls.Host } else { $null }) `
         -Expected 'TlsSuccess+NcMatch' `
@@ -568,12 +580,12 @@ foreach ($stls in $winData.StartTlsResults) {
 
 # --- RootDSE identity checks ---
 foreach ($rd in $winData.RootDseResults) {
-    $isSeparateForest = ($rd.Host -eq 'MiSouleDC04.misoule03.local')
+    $isSeparateForest = ($rd.Host -eq $forestDc.fqdn)
     Add-PreflightCheck -List $results `
         -CheckId "RootDSE.$($rd.Host)" `
         -Category 'RootDSE' `
         -Target $rd.Host `
-        -Runner 'MiSouleRunW' `
+        -Runner $winRunner.azureVmName `
         -RequestedTarget $rd.Host `
         -ResolvedTarget $(if ($rd.PSObject.Properties['DnsHostName']) { $rd.DnsHostName } else { $null }) `
         -Expected $rd.ExpectedNC `
@@ -589,14 +601,14 @@ foreach ($rd in $winData.RootDseResults) {
 
 # --- Forest trust assertions ---
 $trustDomains = [string[]]@($winData.ForestTrusts | ForEach-Object { $_.Domain })
-$childTrustPresent = $trustDomains -contains 'child.misoule02.local'
-$separateForestTrustAbsent = -not ($trustDomains -contains 'misoule03.local')
+    $childTrustPresent = $trustDomains -contains $childDc.domain
+    $separateForestTrustAbsent = -not ($trustDomains -contains $forestDc.domain)
 
 Add-PreflightCheck -List $results `
     -CheckId 'ForestTrust.ChildPresent' `
     -Category 'ForestTrust' `
-    -Target 'misoule02.local -> child.misoule02.local' `
-    -Runner 'MiSouleRunW' `
+        -Target "$($rootDc.domain) -> $($childDc.domain)" `
+    -Runner $winRunner.azureVmName `
     -Expected 'Present' `
     -Actual $(if ($childTrustPresent) { 'Present' } else { 'Absent' }) `
     -Success $childTrustPresent `
@@ -606,7 +618,7 @@ Add-PreflightCheck -List $results `
 Add-PreflightCheck -List $results `
     -CheckId 'ForestTrust.SeparateAbsent' `
     -Category 'ForestTrust' `
-    -Target 'misoule02.local -> misoule03.local' `
+        -Target "$($rootDc.domain) -> $($forestDc.domain)" `
     -Expected 'Absent' `
     -Actual $(if ($separateForestTrustAbsent) { 'Absent' } else { 'Present' }) `
     -Success $separateForestTrustAbsent `
@@ -632,11 +644,9 @@ $output = [ordered]@{
 }
 
 # --- DNS resolution ---
-$dnsTargets = @(
-    [ordered]@{ Name = "MiSouleDC02.misoule02.local"; ExpectedDomain = "misoule02.local" }
-    [ordered]@{ Name = "MiSouleDC03.child.misoule02.local"; ExpectedDomain = "child.misoule02.local" }
-    [ordered]@{ Name = "MiSouleDC04.misoule03.local"; ExpectedDomain = "misoule03.local" }
-)
+$dnsTargets = @($labConfig.domainControllers | ForEach-Object {
+    [ordered]@{ Name = $_.fqdn; ExpectedDomain = $_.domain }
+})
 
 foreach ($dt in $dnsTargets) {
     try {
@@ -693,7 +703,7 @@ $output | ConvertTo-Json -Depth 10 -Compress
 '
 '@
 
-$linuxRaw = Invoke-LabVmRunCommand -VmName 'MiSouleRunnerLinux' -CommandId 'RunShellScript' -ScriptContent $linuxRunnerScript
+$linuxRaw = Invoke-LabVmRunCommand -VmName $linuxRunner.azureVmName -CommandId 'RunShellScript' -ScriptContent $linuxRunnerScript
 # Azure Run Command wraps output with [stdout] and [stderr] markers; extract JSON from stdout section
 $linuxJson = if ($linuxRaw -match '\[stdout\]\s*(\{.*\})\s*\[stderr\]') { $matches[1] } else { $linuxRaw }
 try {
@@ -709,7 +719,7 @@ foreach ($dns in $linuxData.DnsResults) {
         -CheckId "DNS.Linux.$($dns.Target)" `
         -Category 'DNS' `
         -Target $dns.Target `
-        -Runner 'MiSouleRunnerLinux' `
+        -Runner $linuxRunner.azureVmName `
         -RequestedTarget $dns.Target `
         -ResolvedTarget $dns.Resolved `
         -Expected 'Resolvable' `
@@ -723,8 +733,8 @@ foreach ($dns in $linuxData.DnsResults) {
 Add-PreflightCheck -List $results `
     -CheckId 'BannedModules.Linux' `
     -Category 'BannedModules' `
-    -Target 'MiSouleRunnerLinux' `
-    -Runner 'MiSouleRunnerLinux' `
+    -Target $linuxRunner.azureVmName `
+    -Runner $linuxRunner.azureVmName `
     -Expected 0 `
     -Actual $linuxData.BannedModuleCount `
     -Success ($linuxData.BannedModuleCount -eq 0) `
@@ -735,8 +745,8 @@ Add-PreflightCheck -List $results `
 Add-PreflightCheck -List $results `
     -CheckId 'AuthState.Linux.PSWSMan' `
     -Category 'AuthState' `
-    -Target 'MiSouleRunnerLinux' `
-    -Runner 'MiSouleRunnerLinux' `
+    -Target $linuxRunner.azureVmName `
+    -Runner $linuxRunner.azureVmName `
     -Expected $true `
     -Actual ([bool]$linuxData.PSWSManAvailable) `
     -Success ([bool]$linuxData.PSWSManAvailable) `
@@ -745,8 +755,8 @@ Add-PreflightCheck -List $results `
 Add-PreflightCheck -List $results `
     -CheckId 'AuthState.Linux.SmbClient' `
     -Category 'AuthState' `
-    -Target 'MiSouleRunnerLinux' `
-    -Runner 'MiSouleRunnerLinux' `
+    -Target $linuxRunner.azureVmName `
+    -Runner $linuxRunner.azureVmName `
     -Expected $true `
     -Actual ([bool]$linuxData.SmbClientAvailable) `
     -Success ([bool]$linuxData.SmbClientAvailable) `
@@ -755,11 +765,11 @@ Add-PreflightCheck -List $results `
 Add-PreflightCheck -List $results `
     -CheckId 'AuthState.Linux.Realmd' `
     -Category 'AuthState' `
-    -Target 'MiSouleRunnerLinux' `
-    -Runner 'MiSouleRunnerLinux' `
-    -Expected 'misoule02.local' `
+    -Target $linuxRunner.azureVmName `
+    -Runner $linuxRunner.azureVmName `
+    -Expected $rootDc.domain `
     -Actual $linuxData.EnrolledDomain `
-    -Success ([bool]$linuxData.RealmdEnrolled -and $linuxData.EnrolledDomain -eq 'misoule02.local') `
+    -Success ([bool]$linuxData.RealmdEnrolled -and $linuxData.EnrolledDomain -eq $rootDc.domain) `
     -Mandatory $false `
     -Details @{ RealmdEnrolled = [bool]$linuxData.RealmdEnrolled }
 
