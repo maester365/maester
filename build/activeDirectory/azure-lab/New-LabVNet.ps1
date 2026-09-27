@@ -45,26 +45,26 @@
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter()]
-    [string]$ResourceGroupName = 'RG_5100_MiSoule_2',
+    [Parameter(Mandatory)]
+    [string]$ResourceGroupName,
 
-    [Parameter()]
-    [string]$Location = 'eastus',
+    [Parameter(Mandatory)]
+    [string]$Location,
 
-    [Parameter()]
-    [string]$VNetName = 'MiSouleADTestVNet',
+    [Parameter(Mandatory)]
+    [string]$VNetName,
 
-    [Parameter()]
-    [string]$AddressPrefix = '10.20.0.0/24',
+    [Parameter(Mandatory)]
+    [string]$AddressPrefix,
 
-    [Parameter()]
-    [string]$SubnetName = 'LabSubnet',
+    [Parameter(Mandatory)]
+    [string]$SubnetName,
 
-    [Parameter()]
-    [string]$SubnetPrefix = '10.20.0.0/24',
+    [Parameter(Mandatory)]
+    [string]$SubnetPrefix,
 
-    [Parameter()]
-    [string]$NsgName = 'MiSouleADTestNsg',
+    [Parameter(Mandatory)]
+    [string]$NsgName,
 
     [Parameter(Mandatory)]
     [string]$ExecutorPublicIp,

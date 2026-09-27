@@ -20,8 +20,8 @@
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter()]
-    [string]$ResourceGroupName = 'RG_5100_MiSoule_2',
+    [Parameter(Mandatory)]
+    [string]$ResourceGroupName,
 
     [Parameter(Mandatory)]
     [string]$TagName,

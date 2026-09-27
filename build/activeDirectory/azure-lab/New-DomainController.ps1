@@ -27,9 +27,9 @@
     Password for the promotion credential.
 
 .EXAMPLE
-    ./New-DomainController.ps1 -VmName MiSouleDC02 -DomainRole RootForest -DomainName misoule02.local
+    ./New-DomainController.ps1 -VmName <vm-name> -DomainRole RootForest -DomainName <domain-name>
 
-    Creates the root forest controller for misoule02.local.
+    Creates the root forest controller for the specified domain.
 #>
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
     'PSAvoidUsingPlainTextForPassword',
@@ -58,14 +58,14 @@
 )]
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter()]
-    [string]$ResourceGroupName = 'RG_5100_MiSoule_2',
+    [Parameter(Mandatory)]
+    [string]$ResourceGroupName,
 
-    [Parameter()]
-    [string]$Location = 'eastus',
+    [Parameter(Mandatory)]
+    [string]$Location,
 
-    [Parameter()]
-    [string]$VNetName = 'MiSouleADTestVNet',
+    [Parameter(Mandatory)]
+    [string]$VNetName,
 
     [Parameter()]
     [string]$SubnetName = 'LabSubnet',

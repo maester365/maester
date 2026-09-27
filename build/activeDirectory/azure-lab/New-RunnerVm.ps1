@@ -25,7 +25,7 @@
     domain user has a Kerberos-backed implicit credential.
 
 .EXAMPLE
-    ./New-RunnerVm.ps1 -VmName MiSouleRunnerLinux -OsType Ubuntu -PrivateIpAddress 10.20.0.11
+    ./New-RunnerVm.ps1 -VmName <vm-name> -OsType Ubuntu -PrivateIpAddress <ip-address>
 
     Creates the Ubuntu runner and installs PSWSMan plus smbclient.
 #>
@@ -41,14 +41,14 @@
 )]
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter()]
-    [string]$ResourceGroupName = 'RG_5100_MiSoule_2',
+    [Parameter(Mandatory)]
+    [string]$ResourceGroupName,
 
-    [Parameter()]
-    [string]$Location = 'eastus',
+    [Parameter(Mandatory)]
+    [string]$Location,
 
-    [Parameter()]
-    [string]$VNetName = 'MiSouleADTestVNet',
+    [Parameter(Mandatory)]
+    [string]$VNetName,
 
     [Parameter()]
     [string]$SubnetName = 'LabSubnet',
