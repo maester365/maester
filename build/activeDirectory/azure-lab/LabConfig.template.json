@@ -1,98 +1,112 @@
 {
   "_comment": "Copy this file to LabConfig.json and fill in your deployment-specific values. LabConfig.json is gitignored.",
   "deployment": {
-    "resourceGroupName": "RG_5100_MiSoule_2",
-    "location": "eastus",
-    "subscriptionId": "91194fa5-109e-499e-a086-8e79b705b7ab"
+    "resourceGroupName": "<resource-group-name>",
+    "location": "<azure-region>",
+    "subscriptionId": "<subscription-id>",
+    "labPrefix": "<lab-prefix>",
+    "costCenterTag": "<cost-center-tag>"
   },
   "network": {
-    "vnetName": "MiSouleADTestVNet",
-    "vnetAddressSpace": "10.20.0.0/24",
-    "subnetName": "LabSubnet",
-    "subnetAddressSpace": "10.20.0.0/24",
-    "nsgName": "MiSouleADTestNsg"
+    "vnetName": "<vnet-name>",
+    "vnetAddressSpace": "<vnet-cidr>",
+    "subnetName": "<subnet-name>",
+    "subnetAddressSpace": "<subnet-cidr>",
+    "nsgName": "<nsg-name>"
   },
   "domainControllers": [
     {
-      "role": "Root DC",
-      "azureVmName": "MiSouleDC02",
-      "guestName": "MiSouleDC02",
-      "fqdn": "MiSouleDC02.misoule02.local",
-      "privateIp": "10.20.0.4",
-      "domain": "misoule02.local",
-      "forest": "misoule02.local"
+      "role": "RootForest",
+      "azureVmName": "<root-dc-vm-name>",
+      "guestName": "<root-dc-guest-name>",
+      "fqdn": "<root-dc-fqdn>",
+      "privateIp": "<root-dc-ip>",
+      "domain": "<root-domain>",
+      "forest": "<root-forest>",
+      "netBiosName": "<root-netbios>"
     },
     {
-      "role": "Child DC",
-      "azureVmName": "MiSouleDC03",
-      "guestName": "MiSouleDC03",
-      "fqdn": "MiSouleDC03.child.misoule02.local",
-      "privateIp": "10.20.0.5",
-      "domain": "child.misoule02.local",
-      "forest": "misoule02.local",
-      "parentDomain": "misoule02.local"
+      "role": "ChildDomain",
+      "azureVmName": "<child-dc-vm-name>",
+      "guestName": "<child-dc-guest-name>",
+      "fqdn": "<child-dc-fqdn>",
+      "privateIp": "<child-dc-ip>",
+      "domain": "<child-domain>",
+      "forest": "<root-forest>",
+      "parentDomain": "<root-domain>",
+      "parentDnsIp": "<root-dc-ip>",
+      "childName": "<child-name>",
+      "netBiosName": "<child-netbios>",
+      "promotionUser": "<root-domain>\\<admin-username>"
     },
     {
-      "role": "Separate-forest DC",
-      "azureVmName": "MiSouleDC04",
-      "guestName": "MiSouleDC04",
-      "fqdn": "MiSouleDC04.misoule03.local",
-      "privateIp": "10.20.0.6",
-      "domain": "misoule03.local",
-      "forest": "misoule03.local"
+      "role": "SeparateForest",
+      "azureVmName": "<forest-dc-vm-name>",
+      "guestName": "<forest-dc-guest-name>",
+      "fqdn": "<forest-dc-fqdn>",
+      "privateIp": "<forest-dc-ip>",
+      "domain": "<forest-domain>",
+      "forest": "<forest-domain>",
+      "netBiosName": "<forest-netbios>"
     }
   ],
   "runners": [
     {
-      "platform": "Windows",
-      "azureVmName": "MiSouleRunW",
-      "guestName": "MiSouleRunW",
-      "privateIp": "10.20.0.10",
-      "publicIp": "20.51.232.32",
-      "domain": "misoule02.local",
+      "osType": "Windows",
+      "azureVmName": "<windows-runner-vm-name>",
+      "computerName": "<windows-computer-name>",
+      "guestName": "<windows-runner-guest-name>",
+      "privateIp": "<windows-runner-ip>",
+      "publicIp": "<windows-runner-public-ip>",
+      "domain": "<root-domain>",
       "implicitCredentials": true,
-      "adminUsername": "labadmin",
+      "adminUsername": "<admin-username>",
+      "domainJoinUser": "<root-netbios>\\<domain-join-username>",
       "sshPort": 22
     },
     {
-      "platform": "Linux",
-      "azureVmName": "MiSouleRunnerLinux",
-      "guestName": "MiSouleRunnerLinux",
-      "privateIp": "10.20.0.11",
-      "publicIp": "74.235.186.76",
+      "osType": "Ubuntu",
+      "azureVmName": "<linux-runner-vm-name>",
+      "computerName": null,
+      "guestName": "<linux-runner-guest-name>",
+      "privateIp": "<linux-runner-ip>",
+      "publicIp": "<linux-runner-public-ip>",
+      "domain": "<root-domain>",
       "implicitCredentials": false,
-      "adminUsername": "labadmin",
+      "adminUsername": "<admin-username>",
+      "domainJoinUser": "<domain-join-username>@<root-domain>",
       "sshPort": 22
     }
   ],
   "credentials": {
-    "keyVaultName": "kvmisoule-lab-20260820",
-    "testUserName": "maesterreader",
-    "domainJoinUserName": "maesterjoin",
-    "localAdminUsername": "labadmin",
+    "keyVaultName": "<key-vault-name>",
+    "localAdminUsername": "<admin-username>",
+    "testUserName": "<test-username>",
+    "domainJoinUserName": "<domain-join-username>",
     "secretNames": {
-      "windowsLocalAdminPassword": "misoule-lab-20260820200638-windowslocaladminpassword",
-      "linuxLocalAdminPassword": "misoule-lab-20260820200638-linuxlocaladminpassword",
-      "rootDomainReaderPassword": "misoule-lab-20260820200638-rootdomainreaderpassword",
-      "childDomainReaderPassword": "misoule-lab-20260820200638-childdomainreaderpassword",
-      "forestDomainReaderPassword": "misoule-lab-20260820200638-forestdomainreaderpassword",
-      "rootDomainJoinPassword": "misoule-lab-20260820200638-rootdomainjoinpassword",
-      "misoule02SafeModePassword": "misoule-lab-20260820200638-misoule02safemodepassword",
-      "misoule03SafeModePassword": "misoule-lab-20260820200638-misoule03safemodepassword"
+      "windowsLocalAdminPassword": "<lab-id>-windowslocaladminpassword",
+      "windowsRunnerLocalAdminPassword": "<lab-id>-windowsrunnerlocaladminpassword",
+      "linuxLocalAdminPassword": "<lab-id>-linuxlocaladminpassword",
+      "rootDomainReaderPassword": "<lab-id>-rootdomainreaderpassword",
+      "childDomainReaderPassword": "<lab-id>-childdomainreaderpassword",
+      "forestDomainReaderPassword": "<lab-id>-forestdomainreaderpassword",
+      "rootDomainJoinPassword": "<lab-id>-rootdomainjoinpassword",
+      "rootSafeModePassword": "<lab-id>-rootsafemodepassword",
+      "forestSafeModePassword": "<lab-id>-forestsafemodepassword"
     }
   },
   "storage": {
-    "evidenceStorageAccount": "maesterev90368723",
-    "evidenceContainer": "evidence"
+    "evidenceStorageAccount": "<storage-account-name>",
+    "evidenceContainer": "<container-name>"
   },
   "trust": {
     "intraForestTrust": true,
     "separateForestTrust": false,
     "dnsForwarders": [
       {
-        "domain": "misoule03.local",
-        "targetDc": "MiSouleDC04",
-        "targetIp": "10.20.0.6"
+        "domain": "<forest-domain>",
+        "targetDc": "<forest-dc-vm-name>",
+        "targetIp": "<forest-dc-ip>"
       }
     ]
   }
