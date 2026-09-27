@@ -1,0 +1,99 @@
+{
+  "_comment": "Copy this file to LabConfig.json and fill in your deployment-specific values. LabConfig.json is gitignored.",
+  "deployment": {
+    "resourceGroupName": "RG_5100_MiSoule_2",
+    "location": "eastus",
+    "subscriptionId": "91194fa5-109e-499e-a086-8e79b705b7ab"
+  },
+  "network": {
+    "vnetName": "MiSouleADTestVNet",
+    "vnetAddressSpace": "10.20.0.0/24",
+    "subnetName": "LabSubnet",
+    "subnetAddressSpace": "10.20.0.0/24",
+    "nsgName": "MiSouleADTestNsg"
+  },
+  "domainControllers": [
+    {
+      "role": "Root DC",
+      "azureVmName": "MiSouleDC02",
+      "guestName": "MiSouleDC02",
+      "fqdn": "MiSouleDC02.misoule02.local",
+      "privateIp": "10.20.0.4",
+      "domain": "misoule02.local",
+      "forest": "misoule02.local"
+    },
+    {
+      "role": "Child DC",
+      "azureVmName": "MiSouleDC03",
+      "guestName": "MiSouleDC03",
+      "fqdn": "MiSouleDC03.child.misoule02.local",
+      "privateIp": "10.20.0.5",
+      "domain": "child.misoule02.local",
+      "forest": "misoule02.local",
+      "parentDomain": "misoule02.local"
+    },
+    {
+      "role": "Separate-forest DC",
+      "azureVmName": "MiSouleDC04",
+      "guestName": "MiSouleDC04",
+      "fqdn": "MiSouleDC04.misoule03.local",
+      "privateIp": "10.20.0.6",
+      "domain": "misoule03.local",
+      "forest": "misoule03.local"
+    }
+  ],
+  "runners": [
+    {
+      "platform": "Windows",
+      "azureVmName": "MiSouleRunW",
+      "guestName": "MiSouleRunW",
+      "privateIp": "10.20.0.10",
+      "publicIp": "20.51.232.32",
+      "domain": "misoule02.local",
+      "implicitCredentials": true,
+      "adminUsername": "labadmin",
+      "sshPort": 22
+    },
+    {
+      "platform": "Linux",
+      "azureVmName": "MiSouleRunnerLinux",
+      "guestName": "MiSouleRunnerLinux",
+      "privateIp": "10.20.0.11",
+      "publicIp": "74.235.186.76",
+      "implicitCredentials": false,
+      "adminUsername": "labadmin",
+      "sshPort": 22
+    }
+  ],
+  "credentials": {
+    "keyVaultName": "kvmisoule-lab-20260820",
+    "testUserName": "maesterreader",
+    "domainJoinUserName": "maesterjoin",
+    "localAdminUsername": "labadmin",
+    "secretNames": {
+      "windowsLocalAdminPassword": "misoule-lab-20260820200638-windowslocaladminpassword",
+      "linuxLocalAdminPassword": "misoule-lab-20260820200638-linuxlocaladminpassword",
+      "rootDomainReaderPassword": "misoule-lab-20260820200638-rootdomainreaderpassword",
+      "childDomainReaderPassword": "misoule-lab-20260820200638-childdomainreaderpassword",
+      "forestDomainReaderPassword": "misoule-lab-20260820200638-forestdomainreaderpassword",
+      "rootDomainJoinPassword": "misoule-lab-20260820200638-rootdomainjoinpassword",
+      "misoule02SafeModePassword": "misoule-lab-20260820200638-misoule02safemodepassword",
+      "misoule03SafeModePassword": "misoule-lab-20260820200638-misoule03safemodepassword"
+    }
+  },
+  "storage": {
+    "evidenceStorageAccount": "maesterev90368723",
+    "evidenceContainer": "evidence"
+  },
+  "trust": {
+    "intraForestTrust": true,
+    "separateForestTrust": false,
+    "dnsForwarders": [
+      {
+        "domain": "misoule03.local",
+        "targetDc": "MiSouleDC04",
+        "targetIp": "10.20.0.6"
+      }
+    ]
+  }
+}

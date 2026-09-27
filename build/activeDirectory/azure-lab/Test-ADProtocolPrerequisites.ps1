@@ -58,7 +58,7 @@ $manifestPath = Join-Path $MaesterModulePath 'Maester.psd1'
 if (-not (Test-Path $manifestPath)) {
     throw "Maester module manifest not found at: $manifestPath"
 }
-$maesterModule = Import-Module $manifestPath -Force -PassThru
+$maesterModule = Import-Module $manifestPath -Force -PassThru | Where-Object Name -eq 'Maester'
 
 Write-Host '=== Maester AD Protocol Prerequisites ===' -ForegroundColor Cyan
 Write-Host "TargetName: $TargetName" -ForegroundColor Gray

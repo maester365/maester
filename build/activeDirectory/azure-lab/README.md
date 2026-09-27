@@ -1,6 +1,6 @@
 # Azure multi-platform, multi-forest E2E lab automation
 
-> ⚠️ **Validation Process Update (Plan 9)**: Current AD E2E certification requires execution through the hard preflight gate (`Test-LabPrerequisites.ps1`), protocol probe matrix (`Invoke-ProtocolProbeMatrix.ps1`), and public E2E runner matrix (`Invoke-PublicE2EMatrix.ps1`). All validation must run FROM the runners (`MiSouleRunnerWin` / `MiSouleRunnerLinux`), not directly on the DCs. DC-local execution examples in this document are retained for troubleshooting only and are not accepted as certification evidence.
+> ⚠️ **Validation Process Update (Plan 9)**: Current AD E2E certification requires execution through the hard preflight gate (`Test-LabPrerequisites.ps1`), protocol probe matrix (`Invoke-ProtocolProbeMatrix.ps1`), and public E2E runner matrix (`Invoke-PublicE2EMatrix.ps1`). All validation must run FROM the runners (Windows and Linux), not directly on the DCs. DC-local execution examples in this document are retained for troubleshooting only and are not accepted as certification evidence.
 
 This folder contains the Azure deployment automation for the Maester end-to-end
 Active Directory lab described in Plan 04 Task 18. The scripts are written to
@@ -9,17 +9,17 @@ automation — it does **not** deploy any Azure resources during development.
 
 ## Lab topology
 
-- Resource group: `RG_5100_MiSoule_2`
-- Region: `eastus`
-- VNet: `MiSouleADTestVNet` / `10.20.0.0/24`
-- Subnet: `LabSubnet` / `10.20.0.0/24`
-| Role | Azure VM name | Guest name / FQDN | IP | Forest and authentication state |
-| --- | --- | --- | --- | --- |
-| Root DC | `MiSouleDC02` | `MiSouleDC02.misoule02.local` | `10.20.0.4` | Root of `misoule02.local` |
-| Child DC | `MiSouleDC03` | `MiSouleDC03.child.misoule02.local` | `10.20.0.5` | Child domain in the `misoule02.local` forest |
-| Separate-forest DC | `MiSouleDC04` | `MiSouleDC04.misoule03.local` | `10.20.0.6` | Root of separate forest `misoule03.local` |
-| Windows runner | `MiSouleRunW` | `MiSouleRunW.misoule02.local` | `10.20.0.10` | Joined to `misoule02.local` for implicit Windows credentials |
-| Linux runner | `MiSouleRunnerLinux` | `MiSouleRunnerLinux` | `10.20.0.11` | Kerberos-capable (manual `kinit`) but NOT fully enrolled via realmd/SSSD; explicit credentials only |
+> **Deployment-specific values** (resource group names, VM names, IP addresses, Key Vault names) are stored in `LabConfig.json`, which is excluded from git. See `LabConfig.template.json` for the required structure.
+
+The lab deploys a multi-forest Active Directory environment with three domain controllers and two test runners inside a single VNet. The exact resource names and IP addresses vary by deployment; the generic topology is:
+
+| Role | Count | Authentication state |
+| --- | --- | --- |
+| Root DC | 1 | Root of the primary forest |
+| Child DC | 1 | Child domain in the primary forest |
+| Separate-forest DC | 1 | Root of a separate, untrusted forest |
+| Windows runner | 1 | Domain-joined to the primary forest; supports implicit credentials |
+| Linux runner | 1 | Kerberos-capable but NOT fully enrolled via SSSD; explicit credentials only |
 
 The root and child domains have the automatic two-way transitive intra-forest
 trust. Child-domain rows can therefore use the logged-in root-forest identity or
@@ -34,25 +34,25 @@ WinRM HTTPS uses a separate server certificate whose name matches the endpoint.
 
 ## DNS, trust, and runner identity model
 
-- The VNet and both runner NICs use `MiSouleDC02` (`10.20.0.4`) as the canonical
-  resolver. Child promotion creates the authoritative
-  `child.misoule02.local` delegation, while forest-replicated conditional
-  forwarders route `misoule03.local` to `10.20.0.6` and route
-  `misoule02.local` back to `10.20.0.4` from the separate forest.
-- `MiSouleRunW` is joined to `misoule02.local`. Root rows use the logged-in
-  domain user's Windows token for implicit credentials. A dedicated low-privilege
-  `maesterjoin` account performs runner enrollment; runner local-admin and forest-
-  administrator passwords are separate. Child rows may use the logged-in identity
-  through intra-forest trust or an explicit `CHILD` credential.
-- `MiSouleRunnerLinux` has Kerberos authentication capability (via `kinit` and
+> All host names, IP addresses, and domain names referenced below are deployment-specific. Consult `LabConfig.json` for the actual values in your environment.
+
+- The VNet and both runner NICs use the root DC as the canonical DNS resolver.
+  Child promotion creates the authoritative child-domain delegation, while
+  forest-replicated conditional forwarders route the separate forest domain to
+  the separate-forest DC and back.
+- The Windows runner is domain-joined to the primary forest. Root rows use the
+  logged-in domain user's Windows token for implicit credentials. A dedicated
+  low-privilege account performs runner enrollment; runner local-admin and
+  forest-administrator passwords are separate. Child rows may use the logged-in
+  identity through intra-forest trust or an explicit child-domain credential.
+- The Linux runner has Kerberos authentication capability (via `kinit` and
   manual ticket cache) but is **not fully enrolled** via realmd/SSSD. The `sssd`
   service is inactive and domain users are not resolvable through standard Linux
   NSS (`id`, `getent passwd`). Use explicit credentials for all AD connections
   from the Linux runner.
-- There is intentionally no forest trust with `misoule03.local`. Separate-forest
-  rows use `MISOULE03\maesterreader` (or its UPN) as an explicit runtime
-  credential over LDAPS/StartTLS. No trust-aware separate-forest success row is
-  expected in this topology.
+- There is intentionally no forest trust with the separate forest. Separate-forest
+  rows use an explicit runtime credential over LDAPS/StartTLS. No trust-aware
+  separate-forest success row is expected in this topology.
 
 ## Files
 
@@ -71,30 +71,31 @@ WinRM HTTPS uses a separate server certificate whose name matches the endpoint.
 
 ## Deployment sequence
 
-`Deploy-Lab.ps1` follows this sequence:
+`Deploy-Lab.ps1` follows this sequence (resource names are read from `LabConfig.json`):
 
-1. Validate Azure CLI access and the fixed resource group/region.
+1. Validate Azure CLI access and the resource group/region defined in the config.
 2. Discover or accept the executor public IP and create tags for cost tracking,
    collision avoidance, and expiration.
 3. Create an ephemeral Key Vault unless `-SkipKeyVault` is used.
 4. Generate random runtime credentials.
-5. Create `MiSouleADTestVNet`, `LabSubnet`, and `MiSouleADTestNsg` with Azure DNS
-   retained for the root-DC bootstrap.
+5. Create the VNet, subnet, and NSG with Azure DNS retained for the root-DC bootstrap.
 6. Deploy and promote the domain controllers in DNS order:
-   1. `MiSouleDC02` for `misoule02.local` (root forest)
-   2. `MiSouleDC03` for `child.misoule02.local` (child domain — domain join first)
-   3. `MiSouleDC04` for `misoule03.local` (separate forest)
-7. After DC02 is ready, advertise it as VNet DNS. Configure and resolve-test the
-   child delegation and cross-forest conditional
-   forwarders, then require exactly one exported LDAPS/StartTLS trust anchor per
-   domain controller.
-8. Deploy `MiSouleRunnerWin` with guest computer name `MSRunnerWin`, join it to
-   `misoule02.local`, and enable WinRM HTTPS/Negotiate for implicit credentials.
+   1. Root DC for the primary forest
+   2. Child DC for the child domain (domain join first)
+   3. Separate-forest DC for the untrusted forest
+7. After the root DC is ready, advertise it as VNet DNS. Configure and resolve-test
+   the child delegation and cross-forest conditional forwarders, then require
+   exactly one exported LDAPS/StartTLS trust anchor per domain controller.
+8. Deploy the Windows runner, join it to the primary forest, and enable WinRM
+   HTTPS/Negotiate for implicit credentials.
 9. Deploy the Ubuntu runner with `pwsh`, `smbclient`, PSWSMan, realmd/SSSD, and
    root-forest enrollment for Kerberos-backed implicit credentials.
 10. Validate the lab unless `-SkipValidation` is supplied.
 
-> **Note on child domain deployment:** The child domain controller (`MiSouleDC03`) must be joined to the parent domain (`misoule02.local`) before it can be promoted to a child domain controller. This is because `Install-ADDSDomain` requires the computer to have a valid Kerberos identity in the parent domain. See "Known issues and remediations" below for the complete procedure.
+> **Note on child domain deployment:** The child domain controller must be joined
+> to the parent domain before it can be promoted. This is because `Install-ADDSDomain`
+> requires the computer to have a valid Kerberos identity in the parent domain.
+> See "Known issues and remediations" below for the complete procedure.
 
 ## Security and safety decisions
 
@@ -123,13 +124,13 @@ WinRM HTTPS uses a separate server certificate whose name matches the endpoint.
 - PowerShell 7 (`pwsh`)
 - Azure CLI (`az`)
 - Azure login already established
-- Existing resource group `RG_5100_MiSoule_2` in `eastus`
+- `LabConfig.json` created from `LabConfig.template.json` with your deployment values
 
 ## Known issues and remediations
 
 ### Azure VM Run Command stuck state (CRITICAL — SSH is now the preferred transport)
 
-> **Deprecation notice:** Azure VM Run Command is no longer the recommended management channel for the Windows runner (`MiSouleRunnerWin`). During the Plan 01 rerun under Plan 9, the Run Command extension on `MiSouleRunW` entered a permanent stuck state with error `Conflict: Run command extension execution is in progress`. All recovery attempts (reboot, extension redeploy, managed run commands, CustomScriptExtension) failed. SSH has been validated as a fully functional alternative.
+> **Deprecation notice:** Azure VM Run Command is no longer the recommended management channel for the Windows runner. During testing, the Run Command extension entered a permanent stuck state with error `Conflict: Run command extension execution is in progress`. All recovery attempts (reboot, extension redeploy, managed run commands, CustomScriptExtension) failed. SSH has been validated as a fully functional alternative.
 
 **Symptom:** `az vm run-command invoke` returns:
 ```
@@ -161,19 +162,20 @@ The extension remains stuck indefinitely (observed >24 hours).
    ```
 
 3. **From the Linux runner, execute tests via SSH:**
-   ```bash
-   # Install sshpass if not present
-   sudo apt-get update && sudo apt-get install -y sshpass
+```bash
+# Install sshpass if not present
+sudo apt-get update && sudo apt-get install -y sshpass
 
-   # Set password from Key Vault
-   export SSHPASS=$(az keyvault secret show --vault-name <vault-name> `
-     --name <windows-password-secret> --query value -o tsv)
+# Set password from Key Vault (values from LabConfig.json)
+export SSHPASS=$(az keyvault secret show --vault-name <keyVaultName> `
+  --name <windows-password-secret> --query value -o tsv)
 
-   # Execute as domain user (for explicit-credential rows)
-   sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
-     'MISOULE02\maesterreader'@10.20.0.10 `
-     'pwsh -Command "& { <maester-test-command> }"'
-   ```
+# Execute as domain user (for explicit-credential rows)
+# Replace <windows-runner-ip> and <domain> with values from LabConfig.json
+sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
+  '<domain>\<testUserName>'@<windows-runner-ip> `
+  'pwsh -Command "& { <maester-test-command> }"'
+```
 
 **Why SSH is preferred:**
 - No Azure Agent dependency — cannot get stuck in `Conflict` state
@@ -213,16 +215,16 @@ This approach has been validated successfully. See `DEPLOYMENT-ISSUES.md` Issue 
 **Alternative diagnostics and execution methods:**
 
 1. **Enhanced diagnostics with Invoke-LabVmRunCommand.ps1:**
-   ```powershell
-   $result = ./build/activeDirectory/azure-lab/Invoke-LabVmRunCommand.ps1 `
-     -ResourceGroupName 'RG_5100_MiSoule_2' `
-     -VmName 'MiSouleDC03' `
-     -ScriptString 'Get-ADRootDSE' `
-     -TimeoutInSeconds 3600
-   
-   # Inspect detailed results
-   $result | Select-Object ExecutionState, ExitCode, Output, Error
-   ```
+```powershell
+$result = ./build/activeDirectory/azure-lab/Invoke-LabVmRunCommand.ps1 `
+  -ResourceGroupName '<resourceGroupName>' `
+  -VmName '<vm-name>' `
+  -ScriptString 'Get-ADRootDSE' `
+  -TimeoutInSeconds 3600
+
+# Inspect detailed results
+$result | Select-Object ExecutionState, ExitCode, Output, Error
+```
 
 2. **SSH-based execution (requires OpenSSH Server):**
    Install OpenSSH Server on Windows VMs as an alternative management channel. SSH was successfully validated for running Maester AD tests (708 tests executed, 241 passed) and for executing promotion scripts on domain-joined computers.
@@ -236,7 +238,7 @@ When running with a managed identity, the identity must have the **Key Vault Sec
 **Remediation:** Grant the role before deployment:
 
 ```powershell
-$rgId = (az group show --name RG_5100_MiSoule_2 --query id -o tsv)
+$rgId = (az group show --name <resourceGroupName> --query id -o tsv)
 $identityPrincipalId = (az identity show --name <identity-name> --resource-group <identity-rg> --query principalId -o tsv)
 az role assignment create `
   --assignee-object-id $identityPrincipalId `
@@ -332,12 +334,15 @@ SSH is the preferred transport for E2E validation. It provides predictable Power
 
 ```powershell
 # From operator machine or Linux runner
-ssh labadmin@10.20.0.10
+# Replace <windows-runner-ip> with the value from LabConfig.json
+ssh <adminUsername>@<windows-runner-ip>
 # Then in the SSH session:
 pwsh
 Import-Module C:\MaesterProtocol\module\Maester.psd1 -Force
-$rootCred = New-Object PSCredential('MISOULE02\maesterreader', (ConvertTo-SecureString '...' -AsPlainText -Force))
-Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $rootCred -ActiveDirectoryServer 'MiSouleDC02.misoule02.local' -ActiveDirectoryDomain 'misoule02.local' -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
+$rootCred = New-Object PSCredential('<domain>\<testUserName>', (ConvertTo-SecureString '...' -AsPlainText -Force))
+Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $rootCred `
+  -ActiveDirectoryServer '<root-dc-fqdn>' -ActiveDirectoryDomain '<root-domain>' `
+  -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
 Invoke-Maester -Path C:\MaesterTests\ad -Tag AD -NonInteractive -SkipGraphConnect
 ```
 
@@ -350,8 +355,9 @@ sudo apt-get update && sudo apt-get install -y sshpass
 # Set password from Key Vault
 export SSHPASS=$(az keyvault secret show --vault-name <vault-name> --name <secret-name> --query value -o tsv)
 
-# Execute Maester tests on DC02 via SSH
-sshpass -e ssh -o StrictHostKeyChecking=no labadmin@10.20.0.4 \
+# Execute Maester tests on a DC via SSH
+# Replace <dc-ip> and <adminUsername> with values from LabConfig.json
+sshpass -e ssh -o StrictHostKeyChecking=no <adminUsername>@<dc-ip> \
   'pwsh -Command "& { Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect }"'
 ```
 
@@ -360,10 +366,11 @@ sshpass -e ssh -o StrictHostKeyChecking=no labadmin@10.20.0.4 \
 > ⚠️ **Not for E2E certification.** Use this only for troubleshooting or initial bootstrap.
 
 ```powershell
-# Test misoule02.local (DC02) - TROUBLESHOOTING ONLY
+# Test root domain - TROUBLESHOOTING ONLY
+# Replace <resourceGroupName> and <root-dc-name> with values from LabConfig.json
 az vm run-command invoke `
-  --resource-group RG_5100_MiSoule_2 `
-  --name MiSouleDC02 `
+  --resource-group <resourceGroupName> `
+  --name <root-dc-name> `
   --command-id RunPowerShellScript `
   --scripts "Import-Module Maester -Force; Connect-Maester -Service ActiveDirectory; Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect"
 ```
@@ -405,7 +412,7 @@ After executing Maester tests, you **must** retrieve the generated reports from 
 Run Maester tests with explicit output options to generate all report formats:
 
 ```powershell
-# On each DC (MiSouleDC02, MiSouleDC03, MiSouleDC04)
+# On each DC (root, child, separate-forest)
 Import-Module Maester -Force
 Connect-Maester -Service ActiveDirectory
 Set-Location C:\MaesterTests
@@ -427,7 +434,7 @@ This generates 4 files per DC:
 
 > **Requirement:** All 4 report files from each DC must be copied back to this system for review.
 
-The recommended approach uses the Linux runner (`MiSouleRunnerLinux`) as an SSH bridge:
+The recommended approach uses the Linux runner as an SSH bridge:
 
 ```bash
 # On the Linux runner (or from this system via az vm run-command)
@@ -435,19 +442,20 @@ The recommended approach uses the Linux runner (`MiSouleRunnerLinux`) as an SSH 
 # 1. Install prerequisites
 sudo apt-get update && sudo apt-get install -y sshpass
 
-# 2. Set credentials from Key Vault
+# 2. Set credentials from Key Vault (values from LabConfig.json)
 export SSHPASS=$(az keyvault secret show \
-  --vault-name <vault-name> \
-  --name <windows-password-secret> \
+  --vault-name <keyVaultName> \
+  --name <secret-name> \
   --query value -o tsv)
 
 # 3. Create local reports directory
 mkdir -p /tmp/maester-reports
 
 # 4. Copy reports from each DC via SSH
-for dc_ip in 10.20.0.4 10.20.0.5 10.20.0.6; do
+# Replace <dc-ips> with the private IPs from LabConfig.json
+for dc_ip in <dc1-ip> <dc2-ip> <dc3-ip>; do
   sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-    "labadmin@${dc_ip}:/MaesterReports/*" /tmp/maester-reports/
+    "<adminUsername>@${dc_ip}:/MaesterReports/*" /tmp/maester-reports/
 done
 
 # 5. Compress for transfer
@@ -466,20 +474,20 @@ Due to Azure VM Run Command output size limitations (~4KB), large files must be 
 STORAGE_NAME="maesterreports$(date +%s)"
 az storage account create \
   --name $STORAGE_NAME \
-  --resource-group RG_5100_MiSoule_2 \
-  --location eastus \
+  --resource-group <resourceGroupName> \
+  --location <location> \
   --sku Standard_LRS
 
 # Get connection string
 CONN_STR=$(az storage account show-connection-string \
   --name $STORAGE_NAME \
-  --resource-group RG_5100_MiSoule_2 \
+  --resource-group <resourceGroupName> \
   --query connectionString -o tsv)
 
 # Upload from Linux runner
 az vm run-command invoke \
-  --resource-group RG_5100_MiSoule_2 \
-  --name MiSouleRunnerLinux \
+  --resource-group <resourceGroupName> \
+  --name <linux-runner-vm-name> \
   --command-id RunShellScript \
   --scripts "
 export AZURE_STORAGE_CONNECTION_STRING='$CONN_STR'
@@ -502,7 +510,7 @@ tar -xzf ./maester-reports.tar.gz -C ./evidence/reports-full/
 # Clean up storage account
 az storage account delete \
   --name $STORAGE_NAME \
-  --resource-group RG_5100_MiSoule_2 \
+  --resource-group <resourceGroupName> \
   --yes
 ```
 
@@ -531,9 +539,9 @@ ls -lh evidence/reports-full/
 
 | DC | Domain | Report Location on DC | Local Location After Transfer |
 |----|--------|----------------------|------------------------------|
-| MiSouleDC02 | misoule02.local | `C:\MaesterReports\DC02-misoule02\` | `evidence/reports-full/DC02-misoule02-testresults.*` |
-| MiSouleDC03 | child.misoule02.local | `C:\MaesterReports\DC03-child\` | `evidence/reports-full/DC03-child-testresults.*` |
-| MiSouleDC04 | misoule03.local | `C:\MaesterReports\DC04-misoule03\` | `evidence/reports-full/DC04-misoule03-testresults.*` |
+| Root DC | Primary forest | `C:\MaesterReports\DC01-primary\` | `evidence/reports-full/DC01-primary-testresults.*` |
+| Child DC | Child domain | `C:\MaesterReports\DC02-child\` | `evidence/reports-full/DC02-child-testresults.*` |
+| Separate-forest DC | Separate forest | `C:\MaesterReports\DC03-forest\` | `evidence/reports-full/DC03-forest-testresults.*` |
 
 ## E2E Certification Checklist
 
@@ -596,6 +604,7 @@ Before declaring E2E validation complete, the following hard requirements **must
 ### Full deployment
 
 ```powershell
+# Values are read from LabConfig.json automatically
 ./build/activeDirectory/azure-lab/Deploy-Lab.ps1 `
   -ExecutorPublicIp '203.0.113.10'
 ```
@@ -618,17 +627,15 @@ Before declaring E2E validation complete, the following hard requirements **must
 
 ## Notes for operators
 
-- `MiSouleRunW` and `MiSouleRunnerLinux` are the only public ingress points.
-  The domain controllers are private-only.
-- The Windows runner is joined to `misoule02.local` and can use implicit root-
-  forest credentials for RDP/WinRM-based execution. Its Azure VM name is
-  `MiSouleRunW`; its computer name is also `MiSouleRunW`.
+- The runners are the only public ingress points. The domain controllers are private-only.
+- The Windows runner is domain-joined to the primary forest and can use implicit
+  root-forest credentials for RDP/WinRM-based execution.
 - The Ubuntu runner has Kerberos authentication capability (via `kinit` and
   manual ticket cache) but is **not fully enrolled** via realmd/SSSD. The `sssd`
   service is inactive and domain users are not resolvable through standard Linux
   NSS. Use explicit credentials for all separate-forest rows.
 - **SSH-based management** is the canonical transport for E2E validation. Two modes are supported:
-  - **GSSAPI (Kerberos) SSH:** Required for implicit-credential rows. The Linux runner acquires a TGT via `kinit` and connects to the Windows runner using Kerberos authentication. All 11 public E2E matrix rows pass via GSSAPI SSH.
+  - **GSSAPI (Kerberos) SSH:** Required for implicit-credential rows. The Linux runner acquires a TGT via `kinit` and connects to the Windows runner using Kerberos authentication.
   - **Password-based SSH:** Works for explicit-credential rows only. Use `sshpass` with the Windows runner local admin password. Implicit-credential rows will fail because password auth does not provide a domain identity.
 - **Note on SSH implicit credentials:** GSSAPI (Kerberos) SSH sessions **CAN** obtain ambient Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. Password-based SSH cannot validate implicit credentials.
 - **Note on SSH explicit credentials:** The `Connect-Maester -ActiveDirectoryCredential` path is fully validated over both password-based and GSSAPI SSH. All explicit-credential rows pass.
