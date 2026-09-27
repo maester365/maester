@@ -40,7 +40,7 @@
 
     if ($null -eq $krbtgt) {
         Add-MtTestResultDetail -Result "KRBTGT account not found in Active Directory."
-        return $false
+        return $null
     }
 
     $passwordLastSet = $krbtgt.PasswordLastSet
