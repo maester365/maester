@@ -11,8 +11,6 @@
 *.sln.docstates
 .test
 
-# Lab-specific configuration files (contain deployment-specific values)
-build/activeDirectory/azure-lab/LabConfig.json
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -544,3 +542,5 @@ build/activeDirectory/azure-lab/evidence/
 build/activeDirectory/AD-TEST-RESULTS*
 build/activeDirectory/AD-TestResults-*
 build/activeDirectory/**/*.bak
+# Lab-specific configuration files (contain deployment-specific values)
+build/activeDirectory/azure-lab/LabConfig.json
