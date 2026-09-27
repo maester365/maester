@@ -30,11 +30,6 @@ function Test-MtAdDaclUnresolvedSidDetails {
         return $null
     }
 
-    if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
-        return $false
-    }
-
     $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })
     $unresolvedEntries = @(
         $daclEntries | Where-Object {

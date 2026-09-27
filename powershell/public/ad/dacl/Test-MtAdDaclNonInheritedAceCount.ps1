@@ -29,11 +29,6 @@ function Test-MtAdDaclNonInheritedAceCount {
     }
     Write-Verbose "Filtering/counting dacl non inherited ace count"
 
-    if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
-        return $false
-    }
-
     $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })
     $nonInheritedEntries = @(
         $daclEntries | Where-Object {

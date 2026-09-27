@@ -30,11 +30,6 @@ function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     }
     Write-Verbose "Filtering/counting dacl privileged extended right identity"
 
-    if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result "Unable to retrieve Active Directory DACL entries from Get-MtADDomainState -Categories @('DaclEntries')."
-        return $false
-    }
-
     $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })
 
     $privilegedExtendedRights = @{
