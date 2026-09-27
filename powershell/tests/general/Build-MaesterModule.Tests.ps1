@@ -54,6 +54,12 @@ function Get-TestThing {
 # Fixture module preamble
 $__MtSession = @{
     FixtureValue = 'fixture'
+    SpoCache     = @{}
+    GitHubCache  = @{}
+    ADCache      = @{}
+    ADConnection = $null
+    ADCredential = $null
+    ADCollectionTime = $null
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

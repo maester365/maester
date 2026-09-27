@@ -29,7 +29,7 @@ Describe 'Active Directory Protocol Contracts' {
         BeforeEach {
             InModuleScope Maester {
                 $script:testLogonServer = $env:LOGONSERVER
-                $env:LOGONSERVER = '\\dc02.misoule02.local'
+                $env:LOGONSERVER = '\\dc01.contoso.com'
                 $__MtSession.ADConnection = $null
             }
 
@@ -49,13 +49,13 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Get-MtLdapRootDse -ModuleName Maester {
                 return [PSCustomObject]@{
                     DistinguishedName          = ''
-                    DefaultNamingContext       = 'DC=misoule02,DC=local'
-                    ConfigurationNamingContext = 'CN=Configuration,DC=misoule02,DC=local'
-                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=misoule02,DC=local'
-                    DnsHostName                = 'dc02.misoule02.local'
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
                     ForestFunctionality        = 7
                     DomainFunctionality        = 7
-                    NamingContexts             = @('DC=misoule02,DC=local', 'CN=Configuration,DC=misoule02,DC=local', 'CN=Schema,CN=Configuration,DC=misoule02,DC=local')
+                    NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
                     SupportedLdapVersion       = @(3)
                     SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
                 }
@@ -63,8 +63,8 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Invoke-MtLdapSearch -ModuleName Maester {
                 return @(
                     [PSCustomObject]@{
-                        dnsRoot     = 'misoule02.local'
-                        nCName      = 'DC=misoule02,DC=local'
+                        dnsRoot     = 'contoso.com'
+                        nCName      = 'DC=contoso,DC=com'
                         trustParent = $null
                     }
                 )
@@ -81,9 +81,9 @@ Describe 'Active Directory Protocol Contracts' {
         It 'On Windows, ambient discovery should resolve to the joined domain controller' {
             InModuleScope Maester {
                 Connect-MtAdTarget
-                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc02.misoule02.local'
-                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'misoule02.local'
-                $__MtSession.ADConnection.ResolvedForest | Should -Be 'misoule02.local'
+                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc01.contoso.com'
+                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'contoso.com'
+                $__MtSession.ADConnection.ResolvedForest | Should -Be 'contoso.com'
                 $__MtSession.ADConnection.AuthenticationMode | Should -Be 'Negotiate'
                 $__MtSession.ADConnection.RequestedTlsMode | Should -Be 'Auto'
                 $__MtSession.ADConnection.TlsMode | Should -Be 'Ldaps'
@@ -112,9 +112,9 @@ Describe 'Active Directory Protocol Contracts' {
             }
             Mock Resolve-DnsName -ModuleName Maester {
                 param($Name, $Type)
-                if ($Name -eq '_ldap._tcp.dc._msdcs.child.misoule02.local' -and $Type -eq 'SRV') {
+                if ($Name -eq '_ldap._tcp.dc._msdcs.child.contoso.com' -and $Type -eq 'SRV') {
                     return [PSCustomObject]@{
-                        NameTarget = 'dc03.child.misoule02.local.'
+                        NameTarget = 'dc02.child.contoso.com.'
                         Priority   = 0
                         Weight     = 100
                         DomainName = $null
@@ -130,13 +130,14 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Get-MtLdapRootDse -ModuleName Maester {
                 return [PSCustomObject]@{
                     DistinguishedName          = ''
-                    DefaultNamingContext       = 'DC=child,DC=misoule02,DC=local'
-                    ConfigurationNamingContext = 'CN=Configuration,DC=child,DC=misoule02,DC=local'
-                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=child,DC=misoule02,DC=local'
-                    DnsHostName                = 'dc03.child.misoule02.local'
+                    DefaultNamingContext       = 'DC=child,DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    RootDomainNamingContext    = 'DC=contoso,DC=com'
+                    DnsHostName                = 'dc02.child.contoso.com'
                     ForestFunctionality        = 7
                     DomainFunctionality        = 7
-                    NamingContexts             = @('DC=child,DC=misoule02,DC=local', 'CN=Configuration,DC=child,DC=misoule02,DC=local', 'CN=Schema,CN=Configuration,DC=child,DC=misoule02,DC=local')
+                    NamingContexts             = @('DC=child,DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
                     SupportedLdapVersion       = @(3)
                     SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
                 }
@@ -144,13 +145,13 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Invoke-MtLdapSearch -ModuleName Maester {
                 return @(
                     [PSCustomObject]@{
-                        dnsRoot     = 'child.misoule02.local'
-                        nCName      = 'DC=child,DC=misoule02,DC=local'
-                        trustParent = 'DC=misoule02,DC=local'
+                        dnsRoot     = 'child.contoso.com'
+                        nCName      = 'DC=child,DC=contoso,DC=com'
+                        trustParent = 'DC=contoso,DC=com'
                     },
                     [PSCustomObject]@{
-                        dnsRoot     = 'misoule02.local'
-                        nCName      = 'DC=misoule02,DC=local'
+                        dnsRoot     = 'contoso.com'
+                        nCName      = 'DC=contoso,DC=com'
                         trustParent = $null
                     }
                 )
@@ -163,12 +164,12 @@ Describe 'Active Directory Protocol Contracts' {
             }
         }
 
-        It "Passing -ActiveDirectoryDomain 'child.misoule02.local' should resolve to DC03" {
+        It "Passing -ActiveDirectoryDomain 'child.contoso.com' should resolve to DC03" {
             InModuleScope Maester {
-                Connect-MtAdTarget -ActiveDirectoryDomain 'child.misoule02.local'
-                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc03.child.misoule02.local'
-                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'child.misoule02.local'
-                $__MtSession.ADConnection.ResolvedForest | Should -Be 'misoule02.local'
+                Connect-MtAdTarget -ActiveDirectoryDomain 'child.contoso.com'
+                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc02.child.contoso.com'
+                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'child.contoso.com'
+                $__MtSession.ADConnection.ResolvedForest | Should -Be 'contoso.com'
             }
         }
     }
@@ -190,9 +191,9 @@ Describe 'Active Directory Protocol Contracts' {
             }
             Mock Resolve-DnsName -ModuleName Maester {
                 param($Name, $Type)
-                if ($Name -eq '_ldap._tcp.dc._msdcs.misoule03.local' -and $Type -eq 'SRV') {
+                if ($Name -eq '_ldap._tcp.dc._msdcs.fabrikam.com' -and $Type -eq 'SRV') {
                     return [PSCustomObject]@{
-                        NameTarget = 'dc04.misoule03.local.'
+                        NameTarget = 'dc01.fabrikam.com.'
                         Priority   = 0
                         Weight     = 100
                         DomainName = $null
@@ -208,13 +209,13 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Get-MtLdapRootDse -ModuleName Maester {
                 return [PSCustomObject]@{
                     DistinguishedName          = ''
-                    DefaultNamingContext       = 'DC=misoule03,DC=local'
-                    ConfigurationNamingContext = 'CN=Configuration,DC=misoule03,DC=local'
-                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=misoule03,DC=local'
-                    DnsHostName                = 'dc04.misoule03.local'
+                    DefaultNamingContext       = 'DC=fabrikam,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=fabrikam,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=fabrikam,DC=com'
+                    DnsHostName                = 'dc01.fabrikam.com'
                     ForestFunctionality        = 7
                     DomainFunctionality        = 7
-                    NamingContexts             = @('DC=misoule03,DC=local', 'CN=Configuration,DC=misoule03,DC=local', 'CN=Schema,CN=Configuration,DC=misoule03,DC=local')
+                    NamingContexts             = @('DC=fabrikam,DC=com', 'CN=Configuration,DC=fabrikam,DC=com', 'CN=Schema,CN=Configuration,DC=fabrikam,DC=com')
                     SupportedLdapVersion       = @(3)
                     SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
                 }
@@ -222,8 +223,8 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Invoke-MtLdapSearch -ModuleName Maester {
                 return @(
                     [PSCustomObject]@{
-                        dnsRoot     = 'misoule03.local'
-                        nCName      = 'DC=misoule03,DC=local'
+                        dnsRoot     = 'fabrikam.com'
+                        nCName      = 'DC=fabrikam,DC=com'
                         trustParent = $null
                     }
                 )
@@ -236,12 +237,12 @@ Describe 'Active Directory Protocol Contracts' {
             }
         }
 
-        It "Passing -ActiveDirectoryForest 'misoule03.local' should resolve to DC04" {
+        It "Passing -ActiveDirectoryForest 'fabrikam.com' should resolve to DC04" {
             InModuleScope Maester {
-                Connect-MtAdTarget -ActiveDirectoryForest 'misoule03.local'
-                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc04.misoule03.local'
-                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'misoule03.local'
-                $__MtSession.ADConnection.ResolvedForest | Should -Be 'misoule03.local'
+                Connect-MtAdTarget -ActiveDirectoryForest 'fabrikam.com'
+                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc01.fabrikam.com'
+                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'fabrikam.com'
+                $__MtSession.ADConnection.ResolvedForest | Should -Be 'fabrikam.com'
             }
         }
     }
@@ -373,9 +374,9 @@ Describe 'Active Directory Protocol Contracts' {
             }
             Mock Resolve-DnsName -ModuleName Maester {
                 param($Name, $Type)
-                if ($Name -eq '_ldap._tcp.dc._msdcs.misoule02.local' -and $Type -eq 'SRV') {
+                if ($Name -eq '_ldap._tcp.dc._msdcs.contoso.com' -and $Type -eq 'SRV') {
                     return [PSCustomObject]@{
-                        NameTarget = 'dc02.misoule02.local.'
+                        NameTarget = 'dc01.contoso.com.'
                         Priority   = 0
                         Weight     = 100
                     }
@@ -398,13 +399,13 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Get-MtLdapRootDse -ModuleName Maester {
                 return [PSCustomObject]@{
                     DistinguishedName          = ''
-                    DefaultNamingContext       = 'DC=misoule02,DC=local'
-                    ConfigurationNamingContext = 'CN=Configuration,DC=misoule02,DC=local'
-                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=misoule02,DC=local'
-                    DnsHostName                = 'dc02.misoule02.local'
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
                     ForestFunctionality        = 7
                     DomainFunctionality        = 7
-                    NamingContexts             = @('DC=misoule02,DC=local', 'CN=Configuration,DC=misoule02,DC=local', 'CN=Schema,CN=Configuration,DC=misoule02,DC=local')
+                    NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
                     SupportedLdapVersion       = @(3)
                     SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
                 }
@@ -412,8 +413,8 @@ Describe 'Active Directory Protocol Contracts' {
             Mock Invoke-MtLdapSearch -ModuleName Maester {
                 return @(
                     [PSCustomObject]@{
-                        dnsRoot     = 'misoule02.local'
-                        nCName      = 'DC=misoule02,DC=local'
+                        dnsRoot     = 'contoso.com'
+                        nCName      = 'DC=contoso,DC=com'
                         trustParent = $null
                     }
                 )
@@ -428,7 +429,7 @@ Describe 'Active Directory Protocol Contracts' {
 
         It 'Connect-MtAdTarget should try LDAPS (636) first, then StartTLS (389)' {
             InModuleScope Maester {
-                Connect-MtAdTarget -ActiveDirectoryDomain 'misoule02.local' -TlsMode Auto
+                Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto
                 $__MtSession.ADConnection.TlsMode | Should -Be 'StartTls'
             }
             $script:connectionCalls.Count | Should -Be 2

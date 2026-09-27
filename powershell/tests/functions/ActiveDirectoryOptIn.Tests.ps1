@@ -257,7 +257,7 @@ Describe 'Active Directory test source safety' {
     It 'Includes the explicit AD connection in every documented AD invocation block' {
         $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
         $documentationPaths = @(
-            (Join-Path $repositoryRoot 'build/activeDirectory/README-ADTestRunner.md')
+            (Join-Path $repositoryRoot 'build/activeDirectory/azure-lab/CONTRIBUTING-E2E.md')
             (Join-Path $repositoryRoot 'website/blog/2026-04-25-active-directory-security-testing/index.md')
         )
         $issues = @()
