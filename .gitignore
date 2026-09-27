@@ -11,8 +11,6 @@
 *.sln.docstates
 .test
 
-# Live AD lab rerun evidence may contain environment and account metadata.
-build/activeDirectory/azure-lab/evidence/plan1-rerun-*
 # Lab-specific configuration files (contain deployment-specific values)
 build/activeDirectory/azure-lab/LabConfig.json
 # User-specific files (MonoDevelop/Xamarin Studio)
