@@ -209,7 +209,7 @@ function Wait-RunCommandCompletion {
                 # Fallback to provisioning state if instanceView not yet available
                 Write-Verbose "Run Command '$RunCommandName' provisioning state: $($instanceView.provisioningState)"
                 if ($instanceView.provisioningState -ne 'Succeeded') {
-                    return @{
+                    return [PSCustomObject]@{
                         executionState = $instanceView.provisioningState
                         exitCode = 1
                         output = $null

@@ -318,7 +318,7 @@ if ($Worker.IsPresent) {
 
         Write-MatrixJson -InputObject $evidence -Path $workerInput.EvidenceFile
         [PSCustomObject]$evidence | Export-Clixml -LiteralPath $ResultPath
-        if (-not $IsWindows) {
+        if ('System.IO.UnixFileMode' -as [type]) {
             [System.IO.File]::SetUnixFileMode(
                 $ResultPath,
                 [System.IO.UnixFileMode]::UserRead -bor [System.IO.UnixFileMode]::UserWrite
@@ -400,7 +400,7 @@ $matrix = @(
     Get-PublicMatrixRow -Id 'N5-win-dc02-selector-mismatch-explicit-basic-ldaps' -Runner Win -RunnerVm $winRunnerVm @dc02 -TargetingMode Explicit -CredentialKind Explicit -AuthMode Basic -TlsMode Ldaps -ExpectedOutcome FAIL -ExpectedErrorPattern 'Explicit selector values must resolve to the same forest/domain/server' -FailureCondition SelectorMismatch
 )
 
-$actualRunner = if ($IsWindows) { 'Win' } else { 'Linux' }
+$actualRunner = if ($env:OS -eq 'Windows_NT') { 'Win' } else { 'Linux' }
 if ($Runner -ne $actualRunner) {
     throw "Runner '$Runner' does not match the current PowerShell platform '$actualRunner'."
 }
@@ -442,7 +442,7 @@ foreach ($row in $selectedRows) {
 
     $tempDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "maester-public-matrix-$sessionId"
     New-Item -Path $tempDirectory -ItemType Directory -Force | Out-Null
-    if (-not $IsWindows) {
+    if ('System.IO.UnixFileMode' -as [type]) {
         [System.IO.File]::SetUnixFileMode(
             $tempDirectory,
             [System.IO.UnixFileMode]::UserRead -bor [System.IO.UnixFileMode]::UserWrite -bor [System.IO.UnixFileMode]::UserExecute
@@ -530,7 +530,12 @@ foreach ($row in $selectedRows) {
     }
     finally {
         if ($null -ne $process -and -not $process.HasExited) {
-            $process.Kill($true)
+            if ($PSVersionTable.PSVersion.Major -ge 6) {
+                $process.Kill($true)
+            }
+            else {
+                $process.Kill()
+            }
             $process.WaitForExit()
         }
         if ($null -ne $pipeServer) {

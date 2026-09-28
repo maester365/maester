@@ -67,7 +67,7 @@ $maesterModule = Import-Module $manifestPath -Force -PassThru | Where-Object Nam
 
 Write-Host '=== Maester AD Protocol Prerequisites ===' -ForegroundColor Cyan
 Write-Host "TargetName: $TargetName" -ForegroundColor Gray
-Write-Host "Platform:   $($PSVersionTable.Platform ?? 'Win32NT')" -ForegroundColor Gray
+Write-Host "Platform:   $(if ($PSVersionTable.Platform) { $PSVersionTable.Platform } else { 'Win32NT' })" -ForegroundColor Gray
 Write-Host ''
 
 $missingPrerequisites = [System.Collections.Generic.List[string]]::new()
