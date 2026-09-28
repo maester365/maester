@@ -1,7 +1,3 @@
-# System.DirectoryServices.Protocols is a separate assembly on .NET Framework (PS 5.1);
-# ensure it is loaded before any type references are parsed.
-Add-Type -AssemblyName System.DirectoryServices.Protocols -ErrorAction SilentlyContinue
-
 function New-MtLdapConnection {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Internal connection factory that only creates an in-memory LDAP client object.')]
     [CmdletBinding()]
