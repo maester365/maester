@@ -304,8 +304,16 @@ Describe 'Active Directory Protocol Contracts' {
             InModuleScope Maester {
                 $cred = [PSCredential]::new('contoso.com\Maester', (ConvertTo-SecureString 'not-a-real-password' -AsPlainText -Force))
                 $connection = New-MtLdapConnection -Server 'dc01.contoso.com' -Port 636 -AuthType Basic -Credential $cred
-                $connection.Credential.UserName | Should -Be 'Maester@contoso.com'
-                $connection.Credential.Domain | Should -BeNullOrEmpty
+                # .NET Framework (PS 5.1) parses UPN into UserName + Domain; .NET Core keeps the full UPN in UserName.
+                # Both are valid for Basic auth, so accept either representation.
+                $validUserNameFormats = @('Maester@contoso.com', 'Maester')
+                $connection.Credential.UserName | Should -BeIn $validUserNameFormats
+                if ($connection.Credential.UserName -eq 'Maester') {
+                    $connection.Credential.Domain | Should -Be 'contoso.com'
+                }
+                else {
+                    $connection.Credential.Domain | Should -BeNullOrEmpty
+                }
             }
         }
     }
