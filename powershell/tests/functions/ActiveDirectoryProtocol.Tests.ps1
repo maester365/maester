@@ -23,7 +23,13 @@ AfterAll {
     }
 }
 
-Describe 'Active Directory Protocol Contracts' {
+BeforeDiscovery {
+    # System.DirectoryServices.Protocols is not available on all Windows PowerShell 5.1 environments
+    # (e.g. GitHub Actions windows-latest runners). Skip these tests when the assembly is missing.
+    $script:HasDirectoryServicesProtocols = 'System.DirectoryServices.Protocols.LdapConnection' -as [type]
+}
+
+Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryServicesProtocols) {
 
     Describe 'Root-forest implicit credentials' {
         BeforeEach {
