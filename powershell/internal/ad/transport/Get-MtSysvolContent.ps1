@@ -15,7 +15,7 @@ function Test-MtSysvolWindowsPlatform {
     [OutputType([bool])]
     param()
 
-    return $PSVersionTable.PSEdition -eq 'Desktop' -or $IsWindows
+    return $PSVersionTable.PSEdition -eq 'Desktop' -or ($env:OS -eq 'Windows_NT')
 }
 
 function Resolve-MtSysvolRelativePath {

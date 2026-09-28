@@ -17,7 +17,7 @@ function Test-MtAdProtocolPrerequisites {
             return [string]$PSVersionTable.Platform
         }
 
-        if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
+        if ($env:OS -eq 'Windows_NT' -or $PSVersionTable.PSEdition -eq 'Desktop') {
             return 'Win32NT'
         }
 
@@ -98,9 +98,15 @@ function Test-MtAdProtocolPrerequisites {
     $runtimePSEdition = [string](Get-RuntimeValue -Name 'PSEdition' -DefaultValue $PSVersionTable.PSEdition)
     $runtimePSVersion = [version](Get-RuntimeValue -Name 'PSVersion' -DefaultValue $PSVersionTable.PSVersion)
     $runtimePlatform = [string](Get-RuntimeValue -Name 'Platform' -DefaultValue (Get-DefaultPlatformValue))
-    $runtimeIsWindows = [bool](Get-RuntimeValue -Name 'IsWindows' -DefaultValue ($IsWindows -or $runtimePSEdition -eq 'Desktop'))
-    $runtimeIsLinux = [bool](Get-RuntimeValue -Name 'IsLinux' -DefaultValue $IsLinux)
-    $runtimeIsMacOS = [bool](Get-RuntimeValue -Name 'IsMacOS' -DefaultValue $IsMacOS)
+    $isWindowsValue = (Get-Variable -Name IsWindows -ValueOnly -ErrorAction SilentlyContinue)
+    if ($null -eq $isWindowsValue) { $isWindowsValue = $false }
+    $isLinuxValue = (Get-Variable -Name IsLinux -ValueOnly -ErrorAction SilentlyContinue)
+    if ($null -eq $isLinuxValue) { $isLinuxValue = $false }
+    $isMacOSValue = (Get-Variable -Name IsMacOS -ValueOnly -ErrorAction SilentlyContinue)
+    if ($null -eq $isMacOSValue) { $isMacOSValue = $false }
+    $runtimeIsWindows = [bool](Get-RuntimeValue -Name 'IsWindows' -DefaultValue ($isWindowsValue -or $runtimePSEdition -eq 'Desktop'))
+    $runtimeIsLinux = [bool](Get-RuntimeValue -Name 'IsLinux' -DefaultValue $isLinuxValue)
+    $runtimeIsMacOS = [bool](Get-RuntimeValue -Name 'IsMacOS' -DefaultValue $isMacOSValue)
 
     $runtimeProfileName = if ($runtimeIsWindows -and $runtimePSEdition -eq 'Desktop') {
         'WindowsPS51'
