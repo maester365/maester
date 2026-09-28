@@ -180,6 +180,7 @@ function Get-RunCommandInstanceView {
 
 function Wait-RunCommandCompletion {
     [CmdletBinding()]
+    [OutputType([psobject])]
     param(
         [Parameter(Mandatory)][string]$ResourceGroupName,
         [Parameter(Mandatory)][string]$VmName,

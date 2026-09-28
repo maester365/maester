@@ -106,6 +106,7 @@ $forestDc = $labConfig.domainControllers | Where-Object role -eq 'SeparateForest
 
 function ConvertTo-RedactedMatrixError {
     [CmdletBinding()]
+    [OutputType([string])]
     param(
         [Parameter(Mandatory)]
         [System.Exception]$Exception,

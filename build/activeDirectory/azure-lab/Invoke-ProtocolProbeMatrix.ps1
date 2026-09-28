@@ -123,6 +123,7 @@ $labConfig = Get-Content -LiteralPath $LabConfigPath -Raw | ConvertFrom-Json
 
 function Get-RedactedProbeError {
     [CmdletBinding()]
+    [OutputType([string])]
     param(
         [Parameter(Mandatory)]
         [System.Exception]$Exception,
@@ -201,6 +202,7 @@ function Write-ProbeJson {
 
 function Test-ProbeTcpPort {
     [CmdletBinding()]
+    [OutputType([bool])]
     param(
         [Parameter(Mandatory)]
         [string]$HostName,

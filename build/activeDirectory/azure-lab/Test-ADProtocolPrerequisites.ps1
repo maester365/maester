@@ -88,6 +88,7 @@ if (-not $platformCheck.IsReady) {
 # ---------------------------------------------------------------------------
 function Test-TcpPort {
     [CmdletBinding()]
+    [OutputType([bool])]
     param(
         [Parameter(Mandatory)]
         [string]$HostName,
