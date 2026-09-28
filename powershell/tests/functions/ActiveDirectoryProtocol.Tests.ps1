@@ -271,7 +271,10 @@ Describe 'Active Directory Protocol Contracts' {
                             ProtocolVersion   = 3
                             ReferralChasing   = 'All'
                             SecureSocketLayer = $false
-                        } | Add-Member -MemberType ScriptMethod -Name 'StartTransportLayerSecurity' -Value { param($controls) } -PassThru
+                        } | Add-Member -MemberType ScriptMethod -Name 'StartTransportLayerSecurity' -Value {
+                            param($controls)
+                            [void]$controls
+                        } -PassThru
 
                         $conn = [PSCustomObject]@{
                             AuthType       = 'Negotiate'
@@ -324,6 +327,7 @@ Describe 'Active Directory Protocol Contracts' {
                             SecureSocketLayer = $false
                         } | Add-Member -MemberType ScriptMethod -Name 'StartTransportLayerSecurity' -Value {
                             param($controls)
+                            [void]$controls
                             $script:startTlsCalled = $true
                         } -PassThru
 

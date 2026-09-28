@@ -35,6 +35,11 @@
     '',
     Justification = 'Runner script provides status output.'
 )]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSReviewUnusedParameter',
+    '',
+    Justification = 'Credential is reserved for future authentication-aware prerequisite checks.'
+)]
 param(
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
@@ -114,7 +119,7 @@ function Test-TcpPort {
     }
     finally {
         if ($null -ne $client) {
-            try { $client.Dispose() } catch { }
+            try { $client.Dispose() } catch { [void]0 }
         }
     }
 }
@@ -158,6 +163,21 @@ Write-Host ''
 # ---------------------------------------------------------------------------
 function Test-TlsCertificate {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSAvoidUsingEmptyCatchBlock',
+        '',
+        Justification = 'Dispose guards intentionally swallow cleanup failures.'
+    )]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSReviewUnusedParameter',
+        '',
+        Justification = 'Callback parameters follow the RemoteCertificateValidationCallback signature; only sslPolicyErrors is evaluated.'
+    )]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSAvoidAssignmentToAutomaticVariable',
+        '',
+        Justification = 'Callback parameter renamed to avoid automatic variable collision.'
+    )]
     param(
         [Parameter(Mandatory)]
         [string]$HostName,
@@ -177,7 +197,7 @@ function Test-TlsCertificate {
         $sslStream = New-Object System.Net.Security.SslStream(
             $tcpClient.GetStream(),
             $false,
-            { param($sender, $certificate, $chain, $sslPolicyErrors)
+            { param($s, $certificate, $chain, $sslPolicyErrors)
                 if ($SkipCertificateCheck) {
                     return $true
                 }
@@ -218,8 +238,8 @@ function Test-TlsCertificate {
         }
     }
     finally {
-        if ($null -ne $sslStream) { try { $sslStream.Dispose() } catch { } }
-        if ($null -ne $tcpClient) { try { $tcpClient.Dispose() } catch { } }
+        if ($null -ne $sslStream) { try { $sslStream.Dispose() } catch { [void]0 } }
+        if ($null -ne $tcpClient) { try { $tcpClient.Dispose() } catch { [void]0 } }
     }
 }
 
