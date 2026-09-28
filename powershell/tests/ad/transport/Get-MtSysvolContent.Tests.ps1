@@ -228,7 +228,7 @@ Describe 'SYSVOL credential and temporary resource cleanup' {
         Should -Invoke Remove-PSDrive -ModuleName Maester -Times 1 -Exactly
     }
 
-    It 'uses a mode-600 auth file, excludes the password from arguments, and deletes the file after success' {
+    It 'uses a mode-600 auth file, excludes the password from arguments, and deletes the file after success' -Skip:($env:OS -eq 'Windows_NT') {
         $global:MtSysvolCapturedArguments = $null
         $global:MtSysvolCapturedAuthPath = $null
         $global:MtSysvolAuthExistedDuringCall = $null
@@ -253,7 +253,7 @@ Describe 'SYSVOL credential and temporary resource cleanup' {
         Remove-Variable -Name MtSysvolCapturedArguments, MtSysvolCapturedAuthPath, MtSysvolAuthExistedDuringCall, MtSysvolAuthModeDuringCall -Scope Global -ErrorAction SilentlyContinue
     }
 
-    It 'deletes the Unix auth file when smbclient fails' {
+    It 'deletes the Unix auth file when smbclient fails' -Skip:($env:OS -eq 'Windows_NT') {
         Mock Invoke-MtSysvolProcess -ModuleName Maester {
             $authArgument = $Arguments | Where-Object { $_ -like '--authentication-file=*' }
             $script:failedAuthPath = $authArgument.Substring('--authentication-file='.Length)

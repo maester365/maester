@@ -191,8 +191,9 @@ Describe 'Invoke-MtADManagementCommand' {
             }
         }
 
-        $result = InModuleScope Maester {
-            Invoke-MtADManagementCommand -Operation SmbConfiguration -ComputerName 'dc02.contoso.com'
+        $testComputerName = 'dc02.contoso.com'
+        $result = InModuleScope Maester -Parameters @{ ComputerName = $testComputerName } {
+            Invoke-MtADManagementCommand -Operation SmbConfiguration -ComputerName $ComputerName
         }
 
         $result.DCName | Should -Be 'dc02.contoso.com'

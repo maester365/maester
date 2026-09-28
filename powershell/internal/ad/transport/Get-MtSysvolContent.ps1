@@ -327,8 +327,15 @@ function Invoke-MtSysvolProcess {
         $startInfo.UseShellExecute = $false
         $startInfo.RedirectStandardOutput = $true
         $startInfo.RedirectStandardError = $true
-        foreach ($argument in $Arguments) {
-            $startInfo.ArgumentList.Add($argument)
+        if ($PSVersionTable.PSVersion.Major -ge 6) {
+            foreach ($argument in $Arguments) {
+                $startInfo.ArgumentList.Add($argument)
+            }
+        }
+        else {
+            $startInfo.Arguments = ($Arguments | ForEach-Object {
+                if ($_ -match '\s') { '"{0}"' -f $_ } else { $_ }
+            }) -join ' '
         }
         $process = [Diagnostics.Process]::new()
         $process.StartInfo = $startInfo
@@ -338,7 +345,12 @@ function Invoke-MtSysvolProcess {
         $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
         $standardErrorTask = $process.StandardError.ReadToEndAsync()
         if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
-            $process.Kill($true)
+            if ($PSVersionTable.PSVersion.Major -ge 6) {
+                $process.Kill($true)
+            }
+            else {
+                $process.Kill()
+            }
             throw "smbclient exceeded the $TimeoutSeconds second timeout."
         }
         $standardOutput = $standardOutputTask.GetAwaiter().GetResult()

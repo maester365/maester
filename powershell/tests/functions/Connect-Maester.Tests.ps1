@@ -122,7 +122,7 @@ Describe 'Connect-Maester' {
     }
 
     It 'Forwards Active Directory target, credential, authentication, and TLS options' {
-        $credential = [PSCredential]::new('CONTOSO\Maester', (ConvertTo-SecureString 'not-a-real-password' -AsPlainText -Force))
+        $credential = [PSCredential]::new('CONTOSO\Maester', ([System.Security.SecureString]::new()))
         Mock Connect-MtAdTarget -ModuleName Maester {
             InModuleScope Maester {
                 $__MtSession.ADConnection = [PSCustomObject]@{

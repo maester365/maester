@@ -108,7 +108,7 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
                 Connected        = $true
                 DomainController = 'dc01.contoso.com'
             }
-            $__MtSession.ADCredential = [PSCredential]::new('CONTOSO\Maester', (ConvertTo-SecureString 'not-a-real-password' -AsPlainText -Force))
+            $__MtSession.ADCredential = [PSCredential]::new('CONTOSO\Maester', ([System.Security.SecureString]::new()))
             $__MtSession.ADCache = @{ DomainState = [PSCustomObject]@{ Domain = 'contoso.com' } }
         }
     }
