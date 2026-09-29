@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import ResultInfo from "./ResultInfo";
+import { useModalFocus } from "./ui/report";
 
 interface ResultInfoSheetProps {
   Item: {
@@ -28,6 +29,9 @@ function ResultInfoSheet({
   currentIndex,
   totalCount,
 }: ResultInfoSheetProps) {
+  const sheetRef = useRef<HTMLElement>(null);
+  useModalFocus(isOpen, sheetRef);
+
   // Memoize the keyboard handler to prevent recreating it on every render
   const handleKeyboard = useCallback(
     (event: KeyboardEvent) => {
@@ -70,10 +74,12 @@ function ResultInfoSheet({
     isOpen && (
       <div className="report-sheet-overlay fixed inset-0 z-50 bg-black/80" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <aside
+        ref={sheetRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={Item.Title || Item.Name}
-        className="report-sheet fixed inset-y-0 right-0 w-full overflow-y-auto border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
+        className="report-sheet fixed inset-y-0 right-0 w-full overflow-y-auto outline-none border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
       >
         <button onClick={onClose} className="absolute left-4 top-4 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-orange-500" aria-label="Close">
           <XMarkIcon className="h-4 w-4" />

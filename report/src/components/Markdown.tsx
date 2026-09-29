@@ -23,11 +23,11 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
   }
 })
 
-export function Markdown({ children, ...props }: { children: string } & Omit<HTMLAttributes<HTMLDivElement>, "children">) {
+export function Markdown({ children, ...props }: { children?: string | null } & Omit<HTMLAttributes<HTMLDivElement>, "children">) {
   const html = useMemo(
     () => {
       const rendered = markdown
-        .parse(children, { async: false })
+        .parse(children ?? "", { async: false })
         .replace(/<(th|td) align="(left|center|right)"/g, '<$1 style="text-align: $2;"')
       return DOMPurify.sanitize(rendered)
     },

@@ -5,12 +5,20 @@ import App from './App'
 import './index.css'
 import { loadReportData } from './lib/reportData'
 
-loadReportData().then((testResults) => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <HashRouter>
-        <App testResults={testResults} />
-      </HashRouter>
-    </React.StrictMode>,
-  )
-})
+const root = document.getElementById('root')!
+
+loadReportData().then(
+  (testResults) => {
+    ReactDOM.createRoot(root).render(
+      <React.StrictMode>
+        <HashRouter>
+          <App testResults={testResults} />
+        </HashRouter>
+      </React.StrictMode>,
+    )
+  },
+  (error: unknown) => {
+    console.error(error)
+    root.textContent = 'The report data could not be loaded. Try generating the report again.'
+  },
+)

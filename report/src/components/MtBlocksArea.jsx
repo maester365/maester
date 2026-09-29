@@ -79,10 +79,14 @@ function CategoryChart({ data, showLegend = false, className = "" }) {
                 {data.map((item, index) => (
                     <div
                         key={item.Name}
-                        className="absolute top-0 bottom-0 -translate-x-1/2"
+                        className="absolute top-0 bottom-0 -translate-x-1/2 outline-none focus-visible:bg-gray-500/10"
                         style={{ left: `${data.length < 2 ? 50 : index * 100 / (data.length - 1)}%`, width: `${100 / Math.max(1, data.length - 1)}%` }}
+                        tabIndex={0}
+                        aria-label={`${item.Name}: ${series.map(({ key }) => `${item[key] || 0} ${key.toLowerCase()}`).join(", ")}`}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
+                        onFocus={() => setHoveredIndex(index)}
+                        onBlur={() => setHoveredIndex(null)}
                     >
                         {(index % labelStep === 0) && <span className="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 whitespace-nowrap text-gray-500 dark:text-gray-500">{item.Name}</span>}
                         {hoveredIndex === index && (

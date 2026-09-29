@@ -5,6 +5,7 @@ import {
   type InputHTMLAttributes,
   type ReactElement,
   type ReactNode,
+  type RefObject,
   useEffect,
   useRef,
   useState,
@@ -305,7 +306,46 @@ export function Switch({ checked, onChange, color }: { checked: boolean; onChang
   )
 }
 
+const focusableSelector = 'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+
+// Moves focus into a modal while it is open, keeps Tab inside it and returns focus afterwards,
+// as the Radix and Headless UI dialogs did.
+export function useModalFocus(open: boolean, containerRef: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const container = containerRef.current
+    if (!open || !container) return
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    container.focus()
+
+    const keepFocusInside = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return
+      const focusable = [...container.querySelectorAll<HTMLElement>(focusableSelector)]
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      const active = document.activeElement
+      if (!first || !last) {
+        event.preventDefault()
+      } else if (event.shiftKey && (active === first || active === container || !container.contains(active))) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && (active === last || !container.contains(active))) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener("keydown", keepFocusInside)
+    return () => {
+      document.removeEventListener("keydown", keepFocusInside)
+      previouslyFocused?.focus()
+    }
+  }, [open, containerRef])
+}
+
 export function Dialog({ open, onClose, children }: { open: boolean; onClose: () => void; static?: boolean; children: ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  useModalFocus(open, containerRef)
+
   useEffect(() => {
     if (!open) return
     const handleKeyDown = (event: KeyboardEvent) => event.key === "Escape" && onClose()
@@ -315,7 +355,7 @@ export function Dialog({ open, onClose, children }: { open: boolean; onClose: ()
 
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div ref={containerRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 outline-none" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       {children}
     </div>
   )

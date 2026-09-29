@@ -24,7 +24,8 @@ export default function MtDonutChart(props) {
             <Title>Test status</Title>
                 <div className="p-4 flex items-center space-x-6">
                 <div className="flex w-2/3 items-center justify-center" aria-label={`Test status: ${props.Result}`}>
-                    <div className="relative aspect-square w-full max-w-40 rounded-full" style={{ background: chartBackground }}>
+                    {/* Without any results there is nothing to split, so show an empty ring instead of a purple one. */}
+                    <div className={`relative aspect-square w-full max-w-40 rounded-full ${total ? "" : "bg-gray-200 dark:bg-zinc-800"}`} style={total ? { background: chartBackground } : undefined}>
                         <div className="absolute inset-[12.5%] flex items-center justify-center rounded-full bg-white text-base text-gray-700 dark:bg-zinc-900 dark:text-gray-200">
                             {props.Result}
                         </div>

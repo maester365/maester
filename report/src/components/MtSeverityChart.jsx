@@ -57,8 +57,8 @@ export default function MtSeverityChart(props) {
         return aIndex - bIndex;
     });
 
-    const maxValue = Math.max(...filteredData.map(item => Math.max(item.Passed, item.Failed)));
-    const tickValues = [0, Math.round(maxValue / 3), maxValue];
+    const maxValue = Math.max(0, ...filteredData.map(item => Math.max(item.Passed, item.Failed)));
+    const tickValues = [...new Set([0, Math.round(maxValue / 3), maxValue])];
 
     return (
         <Card>
@@ -83,9 +83,13 @@ export default function MtSeverityChart(props) {
                         {filteredData.map((item, index) => (
                             <div
                                 key={item.name}
-                                className="relative flex min-w-0 flex-1 items-end justify-center gap-1"
+                                className="relative flex min-w-0 flex-1 items-end justify-center gap-1 outline-none focus-visible:bg-gray-500/10"
+                                tabIndex={0}
+                                aria-label={`${item.name}: ${item.Passed} passed, ${item.Failed} failed`}
                                 onMouseEnter={() => setHoveredIndex(index)}
                                 onMouseLeave={() => setHoveredIndex(null)}
+                                onFocus={() => setHoveredIndex(index)}
+                                onBlur={() => setHoveredIndex(null)}
                             >
                                 {showPassed && <div className="w-7 bg-emerald-500 transition-[height] duration-300" style={{ height: `${maxValue ? item.Passed / maxValue * 100 : 0}%` }} />}
                                 {showFailed && <div className="w-7 bg-rose-500 transition-[height] duration-300" style={{ height: `${maxValue ? item.Failed / maxValue * 100 : 0}%` }} />}
