@@ -41,6 +41,30 @@ Running `Connect-Maester` is the same as running the following:
 Connect-MgGraph -Scopes (Get-MtGraphScope)
 ```
 
+#### Approval required when connecting
+
+Global Reader and other non-admin accounts can't consent to the Microsoft Graph permissions that Maester requests. When they run `Connect-Maester`, they see an **Approval required** prompt for **Microsoft Graph Command Line Tools**, and the connection then fails with `User canceled authentication`.
+
+Approving this request from **Admin consent requests** in the Entra admin center can fail with `AADSTS70011: ... openid scope is required`. Instead, ask a Global Administrator or Privileged Role Administrator to grant consent in one of these ways.
+
+**Option 1: Grant consent for the organization (recommended)**
+
+The admin runs the following command, signs in, and selects **Consent on behalf of your organization** before selecting **Accept**.
+
+```powershell
+Connect-MgGraph -Scopes (Get-MtGraphScope)
+```
+
+Add the same switches you use with `Connect-Maester`, such as `-SendMail` or `-Privileged`, to `Get-MtGraphScope`. Afterwards, run `Connect-Maester` again with your own account.
+
+**Option 2: Use a custom app registration**
+
+Create an app registration with the Maester delegated permissions and grant admin consent. Then connect with its client ID. See [Connect using a custom application](#connect-using-a-custom-application).
+
+```powershell
+Connect-Maester -GraphClientId '<application-client-id>'
+```
+
 #### Send Mail and Teams message
 
 Connects to Microsoft Graph with the Mail.Send scope in addition to the default Maester scopes. This allows you to use the required permission to send email when using the `Send-MtMail` command or when using `Invoke-Maester -MailRecipient john@contoso.com`

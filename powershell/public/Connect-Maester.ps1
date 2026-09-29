@@ -381,7 +381,13 @@
 
                Write-Verbose "🦒 Connecting to Microsoft Graph with parameters:"
                Write-Verbose ($connectParams | ConvertTo-Json -Depth 5)
-               Connect-MgGraph @connectParams
+               Connect-MgGraph @connectParams -ErrorVariable graphConnectError
+
+               # Connect-MgGraph writes non-terminating errors, so check them for missing consent.
+               if ($graphConnectError) {
+                  $null = Write-MtGraphConsentHelp -ErrorRecord $graphConnectError -GraphClientId $GraphClientId `
+                     -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged -IncludePreview:$IncludePreview
+               }
 
                #ensure TenantId
                if (-not $TenantId) {

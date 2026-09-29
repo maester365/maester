@@ -73,6 +73,26 @@ Describe 'Connect-Maester' {
         Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly -ParameterFilter { -not $PSBoundParameters.ContainsKey('ClientTimeout') }
     }
 
+    It 'Shows consent guidance when Connect-MgGraph fails with an approval error' {
+        Mock Connect-MgGraph -ModuleName Maester {
+            Write-Error 'InteractiveBrowserCredential authentication failed: User canceled authentication.'
+        }
+        Mock Write-MtGraphConsentHelp -ModuleName Maester { $true }
+
+        Connect-Maester 2>$null
+
+        Should -Invoke Write-MtGraphConsentHelp -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Does not show consent guidance when Connect-MgGraph succeeds' {
+        Mock Connect-MgGraph -ModuleName Maester {}
+        Mock Write-MtGraphConsentHelp -ModuleName Maester { $true }
+
+        Connect-Maester
+
+        Should -Invoke Write-MtGraphConsentHelp -ModuleName Maester -Times 0 -Exactly
+    }
+
     It 'Does not connect to Graph when ClientTimeout is used with a non-Graph service' {
         Mock Connect-MgGraph -ModuleName Maester {}
         Mock Connect-MtGitHub -ModuleName Maester {}
