@@ -527,6 +527,9 @@ tests/Custom/*.ps1
 
 # Build outputs and staging artifacts should not be checked in.
 website/build/
+# Generated at build time by website/scripts/community-tests.mjs from
+# website/community-tests/community-tests.yml - not the source of truth.
+website/src/data/community-tests.json
 # ORCA Staging
 build/orca/orca/
 

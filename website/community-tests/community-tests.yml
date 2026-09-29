@@ -1,0 +1,32 @@
+# Maester community tests registry
+#
+# Lists community-maintained GitHub repositories that ship custom Maester
+# tests, installable with:
+#
+#   Install-MtCustomTests -Repository '<owner>/<repo>'
+#
+# See https://maester.dev/docs/writing-tests/creating-custom-tests-repos for
+# what a repository needs (a top-level .maester folder) to work with
+# Install-MtCustomTests.
+#
+# Maester does not vet, endorse, or guarantee the security of listed
+# repositories. Review the source yourself before installing, the same way
+# you would before running any third-party script.
+#
+# Add your repository via pull request:
+#
+#   your-repo-key:                 # unique short id, e.g. your repo name in kebab-case
+#     name: Display Name           # shown as the card title
+#     repository: owner/repo       # GitHub owner/repo - must have a top-level .maester folder
+#     description: One or two sentences describing what the tests check.
+#     author: Your Name            # (optional) credited on the card
+#     authorUrl: https://...       # (optional) links the author name
+#     tags: [entra, exchange]      # (optional) short lowercase tags for scanning
+
+least-privileged-msgraph:
+  name: Least Privileged MSGraph
+  repository: Mynster9361/Least_Privileged_MSGraph
+  description: Verifies every service principal in your tenant follows the principle of least privilege, backed by real Graph API activity captured in Log Analytics.
+  author: Morten Mynster
+  authorUrl: https://mynster-it.dk
+  tags: [entra, service-principals, least-privilege, security, msgraph]
