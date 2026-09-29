@@ -4,7 +4,9 @@
     Checks state of DKIM for all EXO domains
 
     .DESCRIPTION
-    DKIM SHOULD be enabled for all domains.
+    DKIM SHOULD be enabled for all domains. Coexistence domains (e.g. contoso.mail.onmicrosoft.com)
+    related to the Hybrid Configuration Wizard are skipped, as their DKIM configuration is not
+    directly manageable by the tenant.
 
     .EXAMPLE
     Test-MtCisaDkim
@@ -37,6 +39,17 @@
 
         $dkimRecords = @()
         foreach ($domain in $acceptedDomains) {
+            if ($domain.IsCoexistenceDomain -eq $true) {
+                $dkimRecord = [PSCustomObject]@{
+                    domain     = $domain.DomainName
+                    pass       = 'Skipped'
+                    reason     = 'coexistence domain'
+                    dkimRecord = $null
+                }
+                $dkimRecords += $dkimRecord
+                continue
+            }
+
             $dkimSigningConfig = $dkimSigningConfigs | Where-Object {`
                     $_.domain -eq $domain.domainname
             }

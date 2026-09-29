@@ -41,10 +41,10 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.1.2.2](./CIS.M365.1.2.2) | (L1) Ensure sign-in to shared mailboxes is blocked | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.1.3.1](./CIS.M365.1.3.1) | (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)' | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.1.3.3](./CIS.M365.1.3.3) | (L2) Ensure 'External sharing' of calendars is not available | CIS | Medium | CIS E3 Level 2 |
-| [CIS.M365.1.3.4](./CIS.M365.1.3.4) | Ensure | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.1.3.5](./CIS.M365.1.3.5) | Ensure internal phishing protection for Forms is enabled | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.1.3.4](./CIS.M365.1.3.4) | (L1) Ensure 'User owned apps and services' is restricted | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.1.3.5](./CIS.M365.1.3.5) | (L1) Ensure internal phishing protection for Forms is enabled | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.1.3.6](./CIS.M365.1.3.6) | (L2) Ensure the customer lockbox feature is enabled | CIS | High | CIS E5 Level 2 |
-| [CIS.M365.1.3.7](./CIS.M365.1.3.7) | Ensure | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.1.3.7](./CIS.M365.1.3.7) | (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.2.1.1](./CIS.M365.2.1.1) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy) | CIS | Medium | CIS E5 Level 2 |
 | [CIS.M365.2.1.11](./CIS.M365.2.1.11) | (L2) Ensure comprehensive attachment filtering is applied | CIS | High | CIS E3 Level 2 |
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | CIS | Medium | CIS E3 Level 1 |
@@ -58,24 +58,24 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | CIS | Medium | CIS E5 Level 1 |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | CIS | High | CIS E3 Level 1 |
-| [CIS.M365.4.1](./CIS.M365.4.1) | Ensure devices without a compliance policy are marked | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure users cannot register applications | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | Ensure | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | Ensure users are restricted from recovering BitLocker keys | CIS | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | Ensure the admin consent workflow is enabled | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | Ensure that guest user access is restricted | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5) | Ensure weak authentication methods are disabled | CIS | Unknown | CIS E3 Level 1 |
-| [CIS.M365.6.5.3](./CIS.M365.6.5.3) | Ensure additional storage providers are restricted in Outlook on the web | CIS | Unknown | CIS E3 Level 2 |
-| [CIS.M365.7.2.11](./CIS.M365.7.2.11) | Ensure the SharePoint default sharing link permission is set | CIS | Unknown | SharePoint Online |
-| [CIS.M365.7.2.2](./CIS.M365.7.2.2) | Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Unknown | SharePoint Online |
-| [CIS.M365.7.2.5](./CIS.M365.7.2.5) | Ensure that SharePoint guest users cannot share items they don | CIS | Unknown | SharePoint Online |
-| [CIS.M365.7.2.7](./CIS.M365.7.2.7) | Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Unknown | SharePoint Online |
-| [CIS.M365.7.2.9](./CIS.M365.7.2.9) | Ensure guest access to a site or OneDrive will expire automatically | CIS | Unknown | SharePoint Online |
-| [CIS.M365.7.3.1](./CIS.M365.7.3.1) | Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Unknown | SharePoint Online |
+| [CIS.M365.4.1](./CIS.M365.4.1) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | (L1) Ensure users cannot register applications | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | (L2) Ensure users are restricted from recovering BitLocker keys | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | (L1) Ensure the admin consent workflow is enabled | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | (L1) Ensure that guest user access is restricted | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5) | (L1) Ensure weak authentication methods are disabled | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.6.5.3](./CIS.M365.6.5.3) | (L2) Ensure additional storage providers are restricted in Outlook on the web | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.7.2.11](./CIS.M365.7.2.11) | (L1) Ensure the SharePoint default sharing link permission is set | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.2](./CIS.M365.7.2.2) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.5](./CIS.M365.7.2.5) | (L2) Ensure that SharePoint guest users cannot share items they don't own | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.7](./CIS.M365.7.2.7) | (L1) Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.9](./CIS.M365.7.2.9) | (L1) Ensure guest access to a site or OneDrive will expire automatically | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.3.1](./CIS.M365.7.3.1) | (L2) Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Unknown | SharePoint Online |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS E3 Level 2 |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS E3 Level 1 |
-| [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.8.2.3](./CIS.M365.8.2.3) | (L1) Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure app permission policies are configured | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3) | (L1) Ensure only people in my org can bypass the lobby | CIS | Medium | CIS E3 Level 1 |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | CIS E5 Level 1 |
@@ -225,7 +225,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1021](./MT.1021) | Security Defaults are enabled. | Maester | High | CA |
 | [MT.1022](./MT.1022) | All users utilizing a P1 license should be licensed. | Maester | Medium | CA |
 | [MT.1023](./MT.1023) | All users utilizing a P2 license should be licensed. | Maester | Medium | CA |
-| [MT.1024](./MT.1024) | MT.1024.$($RecommendationId -replace | Maester | Unknown | Entra |
+| [MT.1024](./MT.1024) | MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName) | Maester | Unknown | Entra |
 | [MT.1025](./MT.1025) | No external user with permanent role assignment on Control Plane. | Maester | High | Privileged |
 | [MT.1026](./MT.1026) | No hybrid user with permanent role assignment on Control Plane. | Maester | High | Privileged |
 | [MT.1027](./MT.1027) | No Service Principal with Client Secret and permanent role assignment on Control Plane. | Maester | High | Privileged |
