@@ -17,10 +17,10 @@
 
     switch ($Blade) {
         'Overview' {
-            $link = "[$($ServicePrincipal.DisplayName)]($($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($ServicePrincipal.id)/appId/$($ServicePrincipal.appId))"
+            $link = "[$(Get-MtSafeMarkdown $ServicePrincipal.DisplayName)]($($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($ServicePrincipal.id)/appId/$($ServicePrincipal.appId))"
         }
         'Permissions' {
-            $link = "[$($ServicePrincipal.DisplayName)]($($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Permissions/objectId/$($ServicePrincipal.id)/appId/$($ServicePrincipal.appId))"
+            $link = "[$(Get-MtSafeMarkdown $ServicePrincipal.DisplayName)]($($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Permissions/objectId/$($ServicePrincipal.id)/appId/$($ServicePrincipal.appId))"
         }
     }
     return $link

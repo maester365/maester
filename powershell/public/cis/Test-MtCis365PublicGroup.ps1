@@ -48,7 +48,7 @@
             $itemResult = '❌ Fail'
             # We are restricting the table output to 50 below as it could be extremely large
             if ($itemCount -lt 51) {
-                $resultMd += "| $($item.displayName) | $($itemResult) |`n"
+                $resultMd += "| $(Get-MtSafeMarkdown $item.displayName) | $($itemResult) |`n"
             }
         }
         # Add a limited results message if more than 6 results are returned

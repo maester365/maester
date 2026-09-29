@@ -87,7 +87,7 @@
                 }
 
                 foreach ($config in $impactedConfigs) {
-                    $authMethodIssues.Add("| $($config.id) | $($config.displayName) | $($invalidGroupId) |")
+                    $authMethodIssues.Add("| $($config.id) | $(Get-MtSafeMarkdown $config.displayName) | $($invalidGroupId) |")
                 }
             }
 

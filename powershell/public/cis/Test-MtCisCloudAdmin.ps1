@@ -70,7 +70,7 @@
             if ($item.id -notin $result.id) {
                 $itemResult = '✅ Pass'
             }
-            $resultMd += "| $($item.displayName) | $($itemResult) |`n"
+            $resultMd += "| $(Get-MtSafeMarkdown $item.displayName) | $($itemResult) |`n"
         }
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 

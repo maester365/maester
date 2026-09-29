@@ -464,7 +464,7 @@
             $result = "| ApplicationName | ApplicationId | PermissionName | PermissionType | AttackPath |`n"
             $result += "| --- | --- | --- | --- | --- |`n"
             foreach ($assignedCriticalPermission in $allAssignedCriticalPermissions) {
-                $appMdLink = "[$($assignedCriticalPermission.ApplicationName)]($($assignedCriticalPermission.ApplicationUrl))"
+                $appMdLink = "[$(Get-MtSafeMarkdown $assignedCriticalPermission.ApplicationName)]($($assignedCriticalPermission.ApplicationUrl))"
                 $result += "| $($appMdLink) | $($assignedCriticalPermission.ApplicationId) | $($assignedCriticalPermission.PermissionName) | $($assignedCriticalPermission.PermissionType) | $($assignedCriticalPermission.AttackPath) |`n"
             }
             $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result

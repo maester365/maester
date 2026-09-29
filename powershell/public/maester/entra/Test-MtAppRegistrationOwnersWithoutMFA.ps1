@@ -168,10 +168,10 @@
                     $testResultMarkdown += "`n`n**Skipped Owners:**`n`n| Application | Owner | Type | Reason |`n| --- | --- | --- | --- |`n"
 
                     foreach ($skippedOwner in $skippedOwners) {
-                        $appLink = "[$($skippedOwner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
+                        $appLink = "[$(Get-MtSafeMarkdown $skippedOwner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
 
                         $ownerDisplay = if ($skippedOwner.OwnerType -like "*User*") {
-                            "[$($skippedOwner.OwnerName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
+                            "[$(Get-MtSafeMarkdown $skippedOwner.OwnerName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
                         } else {
                             $skippedOwner.OwnerName
                         }
@@ -189,8 +189,8 @@
 
             foreach ($owner in $ownersWithoutMFA) {
                 # Generate portal links for quick access to fix issues
-                $appLink = "[$($owner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($owner.AppId))"
-                $userLink = "[$($owner.OwnerUPN)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($owner.OwnerID))"
+                $appLink = "[$(Get-MtSafeMarkdown $owner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($owner.AppId))"
+                $userLink = "[$(Get-MtSafeMarkdown $owner.OwnerUPN)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($owner.OwnerID))"
                 $testResultMarkdown += "| $appLink | $($owner.OwnerName) | $userLink | $($owner.MFAMethods) |`n"
             }
 
@@ -199,11 +199,11 @@
                 $testResultMarkdown += "`n`n**Skipped Owners (Could Not Check MFA):**`n`n| Application | Owner | Type | Reason |`n| --- | --- | --- | --- |`n"
 
                 foreach ($skippedOwner in $skippedOwners) {
-                    $appLink = "[$($skippedOwner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
+                    $appLink = "[$(Get-MtSafeMarkdown $skippedOwner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
 
                     # Create user links for actual users only
                     $ownerDisplay = if ($skippedOwner.OwnerType -like "*User*") {
-                        "[$($skippedOwner.OwnerName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
+                        "[$(Get-MtSafeMarkdown $skippedOwner.OwnerName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
                     } else {
                         $skippedOwner.OwnerName
                     }

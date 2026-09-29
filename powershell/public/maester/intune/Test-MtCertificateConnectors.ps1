@@ -46,7 +46,7 @@
         $testResultMarkdown += "| Name | State | LastConnectionDateTime | Version |`n"
         $testResultMarkdown += "| --- | --- | --- | --- |`n"
         foreach ($connector in $certificateConnectors) {
-            $testResultMarkdown += "| $($connector.displayName) | $($connector.state) | $($connector.lastConnectionDateTime) | $($connector.connectorVersion) |`n"
+            $testResultMarkdown += "| $(Get-MtSafeMarkdown $connector.displayName) | $($connector.state) | $($connector.lastConnectionDateTime) | $($connector.connectorVersion) |`n"
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown

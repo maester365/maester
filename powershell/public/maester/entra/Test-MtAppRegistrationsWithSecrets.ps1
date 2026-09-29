@@ -41,7 +41,7 @@
             $result = "| ApplicationName | ApplicationId |`n"
             $result += "| --- | --- |`n"
             foreach ($app in $apps) {
-                $appMdLink = "[$($app.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($app.appId)/isMSAApp~/false)"
+                $appMdLink = "[$(Get-MtSafeMarkdown $app.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($app.appId)/isMSAApp~/false)"
                 $result += "| $($appMdLink) | $($app.appId) |`n"
                 Write-Verbose "Adding app registration $($app.displayName) with id $($app.appId) to markdown table."
             }

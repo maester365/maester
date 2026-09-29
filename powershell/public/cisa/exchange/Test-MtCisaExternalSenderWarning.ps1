@@ -59,7 +59,7 @@
             if ($resultRules.Guid -contains $item.Guid) {
                 $itemResult = "✅ Pass"
             }
-            $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
+            $result += "| [$(Get-MtSafeMarkdown $item.Name)]($portalLink) | $($itemResult) |`n"
         }
     }
 

@@ -35,7 +35,7 @@
             $testResultMarkdown += "| Name | Type |`n"
             $testResultMarkdown += "| --- | --- |`n"
             foreach ($policy in $approvalPolicies) {
-                $testResultMarkdown += "| $($policy.displayName) | $($policy.policyType) |`n"
+                $testResultMarkdown += "| $(Get-MtSafeMarkdown $policy.displayName) | $($policy.policyType) |`n"
             }
         } else {
             $testResultMarkdown += 'No Intune Multi Admin Approval Policy is configured.'

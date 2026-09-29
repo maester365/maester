@@ -67,8 +67,8 @@
                 $Severity = "High"
             }
 
-            $PrivilegedUserLink = "[$($EnabledPrivUsersToDisabledAccount.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnabledPrivUsersToDisabledAccount.AccountObjectId))"
-            $PrimaryIdentityLink = "[$($EnabledPrivUsersToDisabledAccount.AssociatedPrimaryAccount.AccountUpn)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnabledPrivUsersToDisabledAccount.AssociatedPrimaryAccount.AccountObjectId))"
+            $PrivilegedUserLink = "[$(Get-MtSafeMarkdown $EnabledPrivUsersToDisabledAccount.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnabledPrivUsersToDisabledAccount.AccountObjectId))"
+            $PrimaryIdentityLink = "[$(Get-MtSafeMarkdown $EnabledPrivUsersToDisabledAccount.AssociatedPrimaryAccount.AccountUpn)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnabledPrivUsersToDisabledAccount.AssociatedPrimaryAccount.AccountObjectId))"
             $result += "| $($AdminTierLevelIcon) $($PrivilegedUserLink) | $($EnabledPrivUsersToDisabledAccount.Classification) | $($EnabledPrivUsersToDisabledAccount.CriticalityLevel) | $($PrimaryIdentityLink) |`n"
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

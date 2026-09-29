@@ -83,7 +83,7 @@ function Test-AzdoProjectCollectionAdministrator {
         $markdown = "| DisplayName | Alias | E-mail |`n"
         $markdown += "| --- | --- | --- |`n"
     } -Process {
-        $markdown += "| $($_.displayName) | $($_.directoryAlias) | $($_.mailAddress) |`n"
+        $markdown += "| $(Get-MtSafeMarkdown $_.displayName) | $($_.directoryAlias) | $($_.mailAddress) |`n"
     } -end {
         $resultMarkdown = $resultMarkdown -replace '%TestResult%', $markdown
     }

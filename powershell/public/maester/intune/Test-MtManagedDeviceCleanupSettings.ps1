@@ -35,7 +35,7 @@
             $testResultMarkdown += "| Name | Platform | Days to retire |`n"
             $testResultMarkdown += "| --- | --- | --- |`n"
             foreach ($setting in $deviceCleanupSettings) {
-                $testResultMarkdown += "| $($setting.displayName) | $($setting.deviceCleanupRulePlatformType) | $($setting.deviceInactivityBeforeRetirementInDays) |`n"
+                $testResultMarkdown += "| $(Get-MtSafeMarkdown $setting.displayName) | $($setting.deviceCleanupRulePlatformType) | $($setting.deviceInactivityBeforeRetirementInDays) |`n"
             }
             $return = $true
         }

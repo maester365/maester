@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import { markdownUrlTransform } from "@/lib/markdownUrl"
 import { Button } from "@/components/Button"
 import { Dialog, DialogPanel, Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react"
 import { RiClipboardLine, RiEyeLine, RiCodeLine, RiCheckLine } from "@remixicon/react"
@@ -133,7 +134,7 @@ export default function MarkdownPage() {
           </TabPanel>
           <TabPanel>
             <div className="prose mt-4 max-w-none rounded-md border border-gray-200 bg-white p-4 dark:prose-invert dark:border-gray-700 dark:bg-gray-900">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={markdownUrlTransform}>
                 {markdown}
               </ReactMarkdown>
             </div>
