@@ -21,7 +21,7 @@ $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it
 
 # Exclude internal script filenames as well as any helper function names declared inside
 # internal script files so multi-function files do not leak private helpers into docs.
-$internalCommandFiles = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Recurse -Filter *.ps1
+$internalCommandFiles = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Filter *.ps1
 $internalCommands = $internalCommandFiles | ForEach-Object { $_.BaseName }
 $internalFunctionNames = foreach ($file in $internalCommandFiles) {
     foreach ($match in [regex]::Matches((Get-Content $file.FullName -Raw), '(?m)^\s*function\s+([A-Za-z0-9-]+)\s*\{')) {
