@@ -41,7 +41,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1021](./MT.1021.md) | Security Defaults are enabled. | High | CA |
 | [MT.1022](./MT.1022.md) | All users utilizing a P1 license should be licensed. | Medium | CA |
 | [MT.1023](./MT.1023.md) | All users utilizing a P2 license should be licensed. | Medium | CA |
-| [MT.1024](./MT.1024.md) | MT.1024.$($RecommendationId -replace | Unknown | Entra |
+| [MT.1024](./MT.1024.md) | MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName) | Unknown | Entra |
 | [MT.1025](./MT.1025.md) | No external user with permanent role assignment on Control Plane. | High | Privileged |
 | [MT.1026](./MT.1026.md) | No hybrid user with permanent role assignment on Control Plane. | High | Privileged |
 | [MT.1027](./MT.1027.md) | No Service Principal with Client Secret and permanent role assignment on Control Plane. | High | Privileged |
