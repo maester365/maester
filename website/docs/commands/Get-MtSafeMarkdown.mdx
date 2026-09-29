@@ -22,6 +22,15 @@ Get-MtSafeMarkdown [[-Text] <String>] [-ProgressAction <ActionPreference>] [<Com
 
 Escapes text to be safe to use in markdown.
 
+Use this for any value that comes from the tenant (display names, app names, policy names, etc.)
+before inserting it into test result markdown.
+Without it, a value such as an app registration
+named '![x](https://attacker.example/pixel.png)' or '[Sign in again](https://phish.example)' would be
+rendered by the report as a remote image or a clickable link, and a '|' would break table layout.
+
+Characters with meaning in markdown are backslash-escaped and line breaks are replaced with spaces,
+so the value is displayed exactly as entered.
+
 ## EXAMPLES
 
 ### EXAMPLE 1
@@ -31,6 +40,14 @@ Get-MtSafeMarkdown -Text $tenantName
 ```
 
 Converts the content of $tenantName into something safe to use in markdown.
+
+### EXAMPLE 2
+
+```powershell
+"| [$(Get-MtSafeMarkdown $app.displayName)]($portalLink) |"
+```
+
+Uses a tenant-controlled app name as link text in a markdown table row.
 
 ## PARAMETERS
 
@@ -73,6 +90,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
+
+### System.String
 
 ## NOTES
 
