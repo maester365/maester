@@ -286,9 +286,10 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
             <XCircleIcon className="size-4" aria-hidden />
           </button>
         )}
-        <button type="button" onClick={toggleOpen} aria-label={`Toggle ${placeholder}`} className="mr-2 text-gray-400">
-          <ChevronDown className="size-4" aria-hidden />
-        </button>
+        {/* Decorative: the field itself is the toggle that announces the open state. */}
+        <span onClick={toggleOpen} className="mr-2 cursor-pointer text-gray-400" aria-hidden>
+          <ChevronDown className="size-4" />
+        </span>
       </div>
       {isOpen && (
         <div role="listbox" aria-multiselectable="true" className={cn("absolute z-40 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900", opensUp ? "bottom-full mb-1" : "mt-1")}>

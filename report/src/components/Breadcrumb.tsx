@@ -35,7 +35,9 @@ export function Breadcrumb() {
   const { isCollapsed, setIsCollapsed } = useSidebar()
   const breadcrumbs = getBreadcrumbs(pathname)
   const { selectedTenant } = useTenant()
-  const bannerLogo = selectedTenant?.TenantLogos?.Banner
+  // Maester embeds tenant logos as data URIs. Ignore anything else so the report never loads a remote image.
+  const tenantBanner: unknown = selectedTenant?.TenantLogos?.Banner
+  const bannerLogo = typeof tenantBanner === "string" && /^data:image\/[\w.+*-]+;base64,/i.test(tenantBanner) ? tenantBanner : undefined
 
   return (
     <div className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-black">
