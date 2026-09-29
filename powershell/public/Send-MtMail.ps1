@@ -39,7 +39,7 @@
         # The subject of the email. Defaults to 'Maester Test Results'.
         [string] $Subject,
 
-        # Uri to the detailed test results page.
+        # Absolute HTTP or HTTPS URI to the detailed test results page.
         [string] $TestResultsUri,
 
         # Does not send the email, but outputs the body to use elsewhere
@@ -105,19 +105,24 @@
     $investigateCount = $MaesterResults.investigateCount
     if ([string]::IsNullOrEmpty($MaesterResults.investigateCount)) { $investigateCount = "-" }
 
-    $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
-    $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
-    $emailTemplate = $emailTemplate -replace "%ModuleVersion%", $ModuleVersion
-    $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
-    $emailTemplate = $emailTemplate -replace "%PassedCount%", $MaesterResults.PassedCount
-    $emailTemplate = $emailTemplate -replace "%FailedCount%", $MaesterResults.FailedCount
-    $emailTemplate = $emailTemplate -replace "%InvestigateCount%", $investigateCount
-    $emailTemplate = $emailTemplate -replace "%SkippedCount%", $skippedCount
-    $emailTemplate = $emailTemplate -replace "%NotRunCount%", $notRunCount
+    # Encode result values for HTML text, including the message preview.
+    $templateValues = @{
+        TenantName       = [System.Net.WebUtility]::HtmlEncode([string]$MaesterResults.TenantName)
+        TenantId         = [System.Net.WebUtility]::HtmlEncode([string]$MaesterResults.TenantId)
+        ModuleVersion    = [System.Net.WebUtility]::HtmlEncode([string]$ModuleVersion)
+        TotalCount       = [System.Net.WebUtility]::HtmlEncode([string]$MaesterResults.TotalCount)
+        PassedCount      = [System.Net.WebUtility]::HtmlEncode([string]$MaesterResults.PassedCount)
+        FailedCount      = [System.Net.WebUtility]::HtmlEncode([string]$MaesterResults.FailedCount)
+        InvestigateCount = [System.Net.WebUtility]::HtmlEncode([string]$investigateCount)
+        SkippedCount     = [System.Net.WebUtility]::HtmlEncode([string]$skippedCount)
+        NotRunCount      = [System.Net.WebUtility]::HtmlEncode([string]$notRunCount)
+    }
 
     # Add a hidden div that will show in the preview line of the message.
-    $bodyElement = '<body lang="EN-US" link="#467886" vlink="#96607D" style="word-wrap:break-word">'
-    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $($investigateCount), ⏭️ Skipped: $($skippedCount), ⬇️ Not Run: $($notRunCount)</div>")
+    $bodyElement = [regex]::Match($emailTemplate, '<body\b[^>]*>', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Value
+    if ($bodyElement) {
+        $emailTemplate = $emailTemplate.Replace($bodyElement,($bodyElement + "<div style='display:none;'>🔥 Total: %TotalCount%, ✅ Passed: %PassedCount%, ❌ Failed: %FailedCount%, 🔍 Investigate: %InvestigateCount%, ⏭️ Skipped: %SkippedCount%, ⬇️ Not Run: %NotRunCount%</div>"))
+    }
     $StatusIcon = @{
         Passed      = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed      = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
@@ -131,18 +136,34 @@
     foreach ($test in $MaesterResults.Tests) {
         $rowColor = ""
         if ($counter % 2 -eq 0) { $rowColor = "style='background-color: #f6f8fa'" }
-        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Result)</td></tr>"
+        $testName = [System.Net.WebUtility]::HtmlEncode([string]$test.Name)
+        $testResult = [System.Net.WebUtility]::HtmlEncode([string]$test.Result)
+        $table += "<tr $rowColor><td>$testName</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $testResult</td></tr>"
         $counter++
     }
     $table += "</table>"
 
-    $emailTemplate = $emailTemplate -replace "%TestSummary%", $table
+    $templateValues.TestSummary = $table
 
     $testResultsLink = ""
     if ($TestResultsUri) {
-        $testResultsLink = "<a href='$TestResultsUri'>View detailed test results</a>"
+        $resultsUri = $null
+        if ([Uri]::TryCreate($TestResultsUri, [UriKind]::Absolute, [ref]$resultsUri) -and
+            $resultsUri.Scheme -in @('http', 'https')) {
+            $encodedUri = [System.Net.WebUtility]::HtmlEncode($resultsUri.AbsoluteUri)
+            $testResultsLink = "<a href='$encodedUri'>View detailed test results</a>"
+        } else {
+            # Don't fail the whole run (e.g. at the end of Invoke-Maester) over a bad link; send without it.
+            Write-Warning 'TestResultsUri must be an absolute HTTP or HTTPS URI. The link to the detailed test results was omitted from the email.'
+        }
     }
-    $emailTemplate = $emailTemplate -replace "%TestResultsLink%", $testResultsLink
+    $templateValues.TestResultsLink = $testResultsLink
+
+    # Replace placeholders once, preserving literal dollar signs and placeholder-like result text.
+    $emailTemplate = [regex]::Replace($emailTemplate, '%(TenantName|TenantId|ModuleVersion|TotalCount|PassedCount|FailedCount|InvestigateCount|SkippedCount|NotRunCount|TestSummary|TestResultsLink)%', {
+        param($match)
+        $templateValues[$match.Groups[1].Value]
+    }, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
 
     $mailRequestBody = @{
         message         = @{
