@@ -60,7 +60,7 @@
                             $displayName = if ($user.displayName) { $user.displayName } else { $user.userPrincipalName }
                             $allowedObjects += [PSCustomObject]@{
                                 Type = 'User'
-                                DisplayName = "[$displayName]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$userId)"
+                                DisplayName = "[$(Get-MtSafeMarkdown $displayName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$userId)"
                                 ID = $userId
                             }
                         } catch {
@@ -80,7 +80,7 @@
                             $displayName = if ($group.displayName) { $group.displayName } else { $groupId }
                             $allowedObjects += [PSCustomObject]@{
                                 Type = 'Group'
-                                DisplayName = "[$displayName]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/$groupId)"
+                                DisplayName = "[$(Get-MtSafeMarkdown $displayName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/$groupId)"
                                 ID = $groupId
                             }
                         } catch {
@@ -144,7 +144,7 @@
             if ($allowedObjects.Count -gt 0) {
                 $testResultMarkdown += "`n`n**Allowed Users and Groups:**`n`n| Type | Name |`n| --- | --- |`n"
                 foreach ($obj in $allowedObjects) {
-                    $testResultMarkdown += "| $($obj.Type) | $(Get-MtSafeMarkdown $obj.DisplayName) |`n"
+                    $testResultMarkdown += "| $($obj.Type) | $($obj.DisplayName) |`n"
                 }
             }
 
