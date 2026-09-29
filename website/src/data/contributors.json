@@ -3313,7 +3313,10 @@
         "MT.1055"
       ],
       "testsContributed": [
+        "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.2.1",
+        "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
         "CIS.M365.1.3.3",
         "CIS.M365.1.3.5",
@@ -3349,6 +3352,7 @@
         "CISA.MS.EXO.3.1",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
+        "CISA.MS.EXO.6.2",
         "CISA.MS.EXO.7.1",
         "CISA.MS.EXO.8.1",
         "CISA.MS.EXO.8.2",
@@ -3421,6 +3425,10 @@
         "MT.1022",
         "MT.1023",
         "MT.1024",
+        "MT.1025",
+        "MT.1026",
+        "MT.1027",
+        "MT.1028",
         "MT.1029",
         "MT.1030",
         "MT.1031",
@@ -3441,13 +3449,28 @@
         "MT.1056",
         "MT.1057",
         "MT.1058",
+        "MT.1063",
+        "MT.1067",
+        "MT.1070",
+        "MT.1075",
+        "MT.1077",
+        "MT.1078",
+        "MT.1079",
+        "MT.1080",
+        "MT.1081",
         "MT.1084",
+        "MT.1094",
+        "MT.1096",
+        "MT.1097",
         "MT.1106",
         "MT.1107",
         "MT.1108",
         "MT.1109",
         "MT.1110",
+        "MT.1111",
+        "MT.1112",
         "MT.1181",
+        "MT.1186",
         "MT.1187",
         "MT.1188",
         "MT.1189",
@@ -3457,6 +3480,8 @@
         "MT.1193",
         "MT.1194",
         "MT.1195",
+        "MT.1198",
+        "MT.1199",
         "ORCA.100",
         "ORCA.101",
         "ORCA.102",
@@ -3526,7 +3551,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 16
+      "recentCommits": 17
     }
   ],
   "attributions": {
@@ -3556,7 +3581,8 @@
         "NZLostboy",
         "SamErde",
         "Mynster9361",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "CIS.M365.1.1.3": {
@@ -3576,7 +3602,8 @@
         "thomas-s-schmidt",
         "SamErde",
         "Mynster9361",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "CIS.M365.1.2.2": {
@@ -3587,7 +3614,8 @@
         "SamErde",
         "ricmestre",
         "Mynster9361",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "CIS.M365.1.3.1": {
@@ -4376,7 +4404,8 @@
         "NZLostboy",
         "weyCC81",
         "mattcave",
-        "SamErde"
+        "SamErde",
+        "merill"
       ]
     },
     "CISA.MS.EXO.7.1": {
@@ -5388,7 +5417,8 @@
         "JeanPhilippeGeorge",
         "kij",
         "BuckeyeGuyJFlo",
-        "nathanmcnulty"
+        "nathanmcnulty",
+        "merill"
       ]
     },
     "MT.1026": {
@@ -5402,7 +5432,8 @@
         "JeanPhilippeGeorge",
         "kij",
         "BuckeyeGuyJFlo",
-        "nathanmcnulty"
+        "nathanmcnulty",
+        "merill"
       ]
     },
     "MT.1027": {
@@ -5416,7 +5447,8 @@
         "JeanPhilippeGeorge",
         "kij",
         "BuckeyeGuyJFlo",
-        "nathanmcnulty"
+        "nathanmcnulty",
+        "merill"
       ]
     },
     "MT.1028": {
@@ -5430,7 +5462,8 @@
         "JeanPhilippeGeorge",
         "kij",
         "BuckeyeGuyJFlo",
-        "nathanmcnulty"
+        "nathanmcnulty",
+        "merill"
       ]
     },
     "MT.1029": {
@@ -5744,7 +5777,8 @@
       "author": "marcel-ngn",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1064": {
@@ -5773,7 +5807,9 @@
     },
     "MT.1067": {
       "author": "SamErde",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1068": {
       "author": "marcel-ngn",
@@ -5793,7 +5829,8 @@
       "author": "marcel-ngn",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1071": {
@@ -5830,7 +5867,8 @@
     "MT.1075": {
       "author": "jflieben",
       "contributors": [
-        "SamErde"
+        "SamErde",
+        "merill"
       ]
     },
     "MT.1076": {
@@ -5844,35 +5882,40 @@
       "author": "Cloud-Architekt",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1078": {
       "author": "Cloud-Architekt",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1079": {
       "author": "Cloud-Architekt",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1080": {
       "author": "Cloud-Architekt",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1081": {
       "author": "Cloud-Architekt",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1083": {
@@ -5957,7 +6000,8 @@
       "author": "nicolonsky",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1095": {
@@ -5971,14 +6015,16 @@
       "author": "nicolonsky",
       "contributors": [
         "DanielBradley1",
-        "SamErde"
+        "SamErde",
+        "merill"
       ]
     },
     "MT.1097": {
       "author": "nicolonsky",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1098": {
@@ -6074,13 +6120,15 @@
       "author": "Cloud-Architekt",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1112": {
       "author": "Cloud-Architekt",
       "contributors": [
-        "SamErde"
+        "SamErde",
+        "merill"
       ]
     },
     "MT.1113": {
@@ -6333,7 +6381,8 @@
     "MT.1186": {
       "author": "BakkerJan",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1187": {
@@ -6405,11 +6454,15 @@
     },
     "MT.1198": {
       "author": "simon-vedder",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1199": {
       "author": "simon-vedder",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1200": {
       "author": "agnivesh",
