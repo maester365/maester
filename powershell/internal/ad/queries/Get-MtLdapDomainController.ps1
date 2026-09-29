@@ -25,7 +25,7 @@
                 }
             }
 
-            $server = Invoke-MtLdapSearch -Connection $Connection -SearchBase $serverDn -Scope Base -Filter '(objectClass=server)' -Attributes @('dNSHostName', 'serverReference') -PageSize 0 | Select-Object -First 1
+            $server = Invoke-MtLdapSearch -Connection $Connection -SearchBase $serverDn -Scope Base -Filter '(objectClass=server)' -Attributes @('name', 'dNSHostName', 'serverReference') -PageSize 0 | Select-Object -First 1
 
             # Query computer object for operatingSystem
             $operatingSystem = $null
@@ -35,7 +35,7 @@
             }
 
             [PSCustomObject]@{
-                Name = [string]$_.name
+                Name = [string]$server.name
                 DistinguishedName = [string]$_.DistinguishedName
                 DnsHostName = [string]$server.dNSHostName
                 ServerReference = [string]$server.serverReference
