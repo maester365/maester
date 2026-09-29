@@ -210,7 +210,7 @@ export function TextInput({ icon: IconComponent, className, ...props }: InputHTM
   return (
     <label className={cn("relative block min-w-40", className)}>
       {IconComponent && <IconComponent className="pointer-events-none absolute left-3 top-2.5 size-4 text-gray-400" aria-hidden />}
-      <input className={cn("h-[38px] w-full rounded-lg border border-gray-200 bg-white pr-3 text-sm text-gray-700 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] outline-none transition duration-100 placeholder:text-gray-500 hover:bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:hover:bg-zinc-800", IconComponent ? "pl-10" : "pl-3")} {...props} />
+      <input className={cn("h-[38px] w-full rounded-lg border border-gray-200 bg-white pr-3 text-sm text-gray-700 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] outline-none transition duration-100 placeholder:text-gray-500 hover:bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:hover:bg-[#09090b]", IconComponent ? "pl-10" : "pl-3")} {...props} />
     </label>
   )
 }
@@ -230,6 +230,7 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState("")
+  const [opensUp, setOpensUp] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const items = Children.toArray(children).filter(Boolean) as ReactElement<MultiSelectItemProps>[]
   const visibleItems = items.filter(({ props }) => String(props.children).toLowerCase().includes(query.toLowerCase()))
@@ -251,10 +252,21 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
     }
   }, [isOpen])
 
+  // Open upwards when the list doesn't fit below but fits better above, as Tremor's floating list did.
+  const toggleOpen = () => {
+    const rect = rootRef.current?.getBoundingClientRect()
+    if (!isOpen && rect) {
+      const listHeight = Math.min(288, 36 + items.length * 41) + 4
+      const spaceBelow = window.innerHeight - rect.bottom
+      setOpensUp(spaceBelow < listHeight && rect.top > spaceBelow)
+    }
+    setIsOpen(!isOpen)
+  }
+
   return (
     <div ref={rootRef} className={cn("relative min-w-40 text-sm", className)}>
-      <div className="flex h-[38px] items-center rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] transition duration-100 hover:bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-zinc-800">
-        <button type="button" onClick={() => setIsOpen((open) => !open)} aria-haspopup="listbox" aria-expanded={isOpen} className={cn("flex h-full min-w-0 flex-1 items-center gap-1 overflow-hidden text-left", value.length === 0 ? "px-3" : "pl-1.5 pr-3")}>
+      <div className="flex h-[38px] items-center rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] transition duration-100 hover:bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-[#09090b]">
+        <button type="button" onClick={toggleOpen} aria-haspopup="listbox" aria-expanded={isOpen} className={cn("flex h-full min-w-0 flex-1 items-center gap-1 overflow-hidden text-left", value.length === 0 ? "px-3" : "pl-1.5 pr-3")}>
           {value.length === 0 ? <span>{placeholder}</span> : value.map((selected) => (
             <span key={selected} className="flex max-w-[100px] shrink-0 items-center rounded-md bg-gray-100 py-1 pl-2 pr-1.5 font-medium text-gray-700 lg:max-w-[200px] dark:bg-zinc-800 dark:text-zinc-200">
               <span className="truncate text-xs">{selected}</span>
@@ -274,19 +286,19 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
             <XCircleIcon className="size-4" aria-hidden />
           </button>
         )}
-        <button type="button" onClick={() => setIsOpen((open) => !open)} aria-label={`Toggle ${placeholder}`} className="mr-2 text-gray-400">
-          <ChevronDown className={cn("size-4 transition-transform", isOpen && "rotate-180")} aria-hidden />
+        <button type="button" onClick={toggleOpen} aria-label={`Toggle ${placeholder}`} className="mr-2 text-gray-400">
+          <ChevronDown className="size-4" aria-hidden />
         </button>
       </div>
       {isOpen && (
-        <div role="listbox" aria-multiselectable="true" className="absolute z-40 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900">
-          <label className="relative block border-b border-gray-200 dark:border-zinc-800">
+        <div role="listbox" aria-multiselectable="true" className={cn("absolute z-40 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900", opensUp ? "bottom-full mb-1" : "mt-1")}>
+          <label className="relative block border-b border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-[#09090b]">
             <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-gray-400" aria-hidden />
             <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" className="h-[35px] w-full bg-transparent pl-9 pr-3 text-sm outline-none placeholder:text-gray-400" />
           </label>
           {visibleItems.map(({ props }) => (
-            <label key={props.value} className="flex h-[41px] cursor-pointer items-center gap-2 border-b border-gray-200 px-3 text-sm text-gray-700 last:border-b-0 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800">
-              <input type="checkbox" checked={value.includes(props.value)} onChange={() => toggle(props.value)} className="size-3 accent-blue-500" />
+            <label key={props.value} className="flex h-[41px] cursor-pointer items-center gap-2.5 border-b border-gray-200 px-2.5 text-sm text-gray-700 last:border-b-0 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-[#09090b]">
+              <input type="checkbox" checked={value.includes(props.value)} onChange={() => toggle(props.value)} className="accent-blue-500" />
               {props.children}
             </label>
           ))}

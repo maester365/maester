@@ -11,6 +11,8 @@ const series = [
 
 function CategoryChart({ data, showLegend = false, className = "" }) {
     const chartRef = useRef(null);
+    const gridRef = useRef(null);
+    const plotRef = useRef(null);
     const [chartWidth, setChartWidth] = useState(315);
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const largestValue = Math.max(1, ...data.flatMap(item => series.map(({ key }) => item[key] || 0)));
@@ -28,14 +30,26 @@ function CategoryChart({ data, showLegend = false, className = "" }) {
         return () => observer.disconnect();
     }, []);
 
+    // Like recharts, anywhere over the plot shows the nearest category, including the edges.
+    function handleMouseMove(event) {
+        const grid = gridRef.current.getBoundingClientRect();
+        const plot = plotRef.current.getBoundingClientRect();
+        if (event.clientX < grid.left || event.clientX > grid.right || event.clientY < grid.top || event.clientY > grid.bottom) {
+            setHoveredIndex(null);
+            return;
+        }
+        const nearest = data.length < 2 ? 0 : Math.round((event.clientX - plot.left) / plot.width * (data.length - 1));
+        setHoveredIndex(Math.min(data.length - 1, Math.max(0, nearest)));
+    }
+
     return (
-        <div ref={chartRef} className={`relative text-xs text-gray-500 dark:text-gray-500 ${className}`} aria-label="Test results by category">
+        <div ref={chartRef} className={`relative text-xs text-gray-500 dark:text-gray-500 ${className}`} aria-label="Test results by category" onMouseMove={handleMouseMove} onMouseLeave={() => setHoveredIndex(null)}>
             {showLegend && (
                 <div className="absolute top-[10px] right-0 flex justify-center gap-5 text-xs text-gray-500 dark:text-gray-500">
                     {series.map(item => <span key={item.key} className="flex items-center gap-1.5"><i className="size-2.5 rounded-sm" style={{ backgroundColor: item.color }} />{item.key}</span>)}
                 </div>
             )}
-            <div className={`absolute right-0 bottom-[30px] left-[65px] ${showLegend ? "top-[49px]" : "top-[5px]"}`}>
+            <div ref={gridRef} className={`absolute right-0 bottom-[30px] left-[65px] ${showLegend ? "top-[49px]" : "top-[5px]"}`}>
                 {ticks.map((tick, index) => (
                     <React.Fragment key={tick}>
                         <span className="absolute right-[calc(100%+8px)] w-14 translate-y-1/2 text-right" style={{ bottom: `${tick / maxValue * 100}%` }}>{tick}</span>
@@ -43,7 +57,7 @@ function CategoryChart({ data, showLegend = false, className = "" }) {
                     </React.Fragment>
                 ))}
             </div>
-            <div className={`absolute right-5 bottom-[30px] left-[85px] ${showLegend ? "top-[49px]" : "top-[5px]"}`}>
+            <div ref={plotRef} className={`absolute right-5 bottom-[30px] left-[85px] ${showLegend ? "top-[49px]" : "top-[5px]"}`}>
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible" role="img">
                     <defs>
                         {series.map(({ key, color }) => (
@@ -68,7 +82,7 @@ function CategoryChart({ data, showLegend = false, className = "" }) {
                 {hoveredIndex !== null && data[hoveredIndex] && series.map(({ key, color }) => (
                     <i
                         key={key}
-                        className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
+                        className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white dark:border-zinc-900"
                         style={{
                             left: `${data.length < 2 ? 50 : hoveredIndex * 100 / (data.length - 1)}%`,
                             top: `${100 - (data[hoveredIndex][key] || 0) / maxValue * 100}%`,
@@ -83,8 +97,6 @@ function CategoryChart({ data, showLegend = false, className = "" }) {
                         style={{ left: `${data.length < 2 ? 50 : index * 100 / (data.length - 1)}%`, width: `${100 / Math.max(1, data.length - 1)}%` }}
                         tabIndex={0}
                         aria-label={`${item.Name}: ${series.map(({ key }) => `${item[key] || 0} ${key.toLowerCase()}`).join(", ")}`}
-                        onMouseEnter={() => setHoveredIndex(index)}
-                        onMouseLeave={() => setHoveredIndex(null)}
                         onFocus={() => setHoveredIndex(index)}
                         onBlur={() => setHoveredIndex(null)}
                     >

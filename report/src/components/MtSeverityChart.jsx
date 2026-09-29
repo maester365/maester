@@ -83,7 +83,7 @@ export default function MtSeverityChart(props) {
                         {filteredData.map((item, index) => (
                             <div
                                 key={item.name}
-                                className="relative flex min-w-0 flex-1 items-end justify-center gap-1 outline-none focus-visible:bg-gray-500/10"
+                                className={`relative flex min-w-0 flex-1 items-end justify-center gap-1 outline-none ${hoveredIndex === index ? "bg-gray-300/15" : ""}`}
                                 tabIndex={0}
                                 aria-label={`${item.name}: ${item.Passed} passed, ${item.Failed} failed`}
                                 onMouseEnter={() => setHoveredIndex(index)}
