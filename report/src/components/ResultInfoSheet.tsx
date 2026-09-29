@@ -1,13 +1,6 @@
 "use client";
 import React, { useEffect, useCallback } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import ResultInfo from "./ResultInfo";
 
 interface ResultInfoSheetProps {
@@ -50,9 +43,12 @@ function ResultInfoSheet({
         if (onNavigatePrevious) {
           onNavigatePrevious();
         }
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
       }
     },
-    [isOpen, onNavigateNext, onNavigatePrevious]
+    [isOpen, onClose, onNavigateNext, onNavigatePrevious]
   );
 
   // Add and remove the event listener
@@ -71,11 +67,17 @@ function ResultInfoSheet({
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent
-        side="right"
-        className="w-full sm:max-w-2xl lg:max-w-4xl overflow-y-auto"
+    isOpen && (
+      <div className="report-sheet-overlay fixed inset-0 z-50 bg-black/80" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label={Item.Title || Item.Name}
+        className="report-sheet fixed inset-y-0 right-0 w-full overflow-y-auto border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
       >
+        <button onClick={onClose} className="absolute left-4 top-4 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-orange-500" aria-label="Close">
+          <XMarkIcon className="h-4 w-4" />
+        </button>
         {/* Navigation buttons in the header area, positioned to the right of the close button */}
         <div className="absolute left-10 top-4 flex items-center gap-1">
           <button
@@ -88,7 +90,7 @@ function ResultInfoSheet({
             <span className="sr-only">Previous</span>
           </button>
           {currentIndex !== undefined && totalCount !== undefined && (
-            <span className="text-xs text-muted-foreground tabular-nums px-1">
+            <span className="px-1 text-xs tabular-nums text-gray-500 dark:text-gray-400">
               {currentIndex}/{totalCount}
             </span>
           )}
@@ -103,16 +105,12 @@ function ResultInfoSheet({
           </button>
         </div>
 
-        <SheetHeader className="sr-only">
-          <SheetTitle>{Item.Title || Item.Name}</SheetTitle>
-          <SheetDescription>Test result details</SheetDescription>
-        </SheetHeader>
-
         <div className="mt-2">
           <ResultInfo Item={Item} isPrintView={false} />
         </div>
-      </SheetContent>
-    </Sheet>
+      </aside>
+      </div>
+    )
   );
 }
 

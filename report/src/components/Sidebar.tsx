@@ -18,9 +18,9 @@ import {
   Building2,
 } from "lucide-react"
 import { RiGithubFill } from "@remixicon/react"
-import { Link, useLocation } from "react-router"
+import { Link, useLocation } from "@/lib/router"
 import React, { useState, createContext, useContext, useRef, useEffect } from "react"
-import maesterLogo from "@/assets/maester.png"
+import maesterLogo from "@/assets/maester-64.png"
 import { useTenant } from "@/context/TenantContext"
 import { scrollReportToTop } from "@/lib/reportLinks"
 

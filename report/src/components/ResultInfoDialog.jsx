@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useCallback } from "react";
-import { Button, Dialog, DialogPanel, Flex } from "@tremor/react";
+import { Button, Dialog, DialogPanel, Flex } from "@/components/ui/report";
 import { WindowIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import ResultInfo from "./ResultInfo";
 
@@ -58,12 +58,12 @@ function ResultInfoDialog(props) {
     <>
       {props.Title &&
         <button onClick={handleOpenDialog} className="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate">
-          <span className="truncate whitespace-normal tremor-Button-text text-tremor-default">{props.Item.Name}</span>
+          <span className="truncate whitespace-normal text-sm">{props.Item.Name}</span>
         </button>
       }
       {props.DisplayText !== undefined &&
         <button onClick={handleOpenDialog} className="text-left tremor-Button-root font-medium outline-none text-sm bg-transparent hover:text-blue-600 transition-colors">
-          <span className="whitespace-normal tremor-Button-text text-tremor-default">{props.DisplayText}</span>
+          <span className="whitespace-normal text-sm">{props.DisplayText}</span>
         </button>
       }
       {props.Button &&

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/Button"
-import { Dialog, DialogPanel } from "@tremor/react"
+import { Dialog, DialogPanel } from "@/components/ui/report"
 import { RiClipboardLine, RiCheckLine } from "@remixicon/react"
 import { useTenant } from "@/context/TenantContext"
 

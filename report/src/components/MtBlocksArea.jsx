@@ -1,7 +1,106 @@
 
-import React, { useState, useEffect, useCallback } from "react";
-import { AreaChart, Card, Title } from "@tremor/react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Card, Title } from "@/components/ui/report";
 import { Maximize2, X } from "lucide-react";
+
+const series = [
+    { key: "Passed", color: "#10b981" },
+    { key: "Failed", color: "#f43f5e" },
+    { key: "Investigate", color: "#a855f7" },
+];
+
+function CategoryChart({ data, showLegend = false, className = "" }) {
+    const chartRef = useRef(null);
+    const [chartWidth, setChartWidth] = useState(315);
+    const [hoveredIndex, setHoveredIndex] = useState(null);
+    const largestValue = Math.max(1, ...data.flatMap(item => series.map(({ key }) => item[key] || 0)));
+    const tickStep = Math.max(1, Math.ceil(largestValue / 4));
+    const maxValue = tickStep * 4;
+    const ticks = [0, tickStep, tickStep * 2, tickStep * 3, maxValue];
+    const points = key => data.map((item, index) => `${data.length < 2 ? 50 : index * 100 / (data.length - 1)},${100 - (item[key] || 0) / maxValue * 100}`).join(" ");
+    const labelSlots = Math.max(2, Math.floor((chartWidth - 65) / 80));
+    const labelStep = data.length <= labelSlots ? 1 : Math.max(1, Math.floor((data.length - 1) / (labelSlots - 1)));
+
+    useEffect(() => {
+        if (!chartRef.current) return;
+        const observer = new ResizeObserver(([entry]) => setChartWidth(entry.contentRect.width));
+        observer.observe(chartRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div ref={chartRef} className={`relative text-xs text-gray-500 dark:text-gray-500 ${className}`} aria-label="Test results by category">
+            {showLegend && (
+                <div className="absolute top-[10px] right-0 flex justify-center gap-5 text-xs text-gray-500 dark:text-gray-500">
+                    {series.map(item => <span key={item.key} className="flex items-center gap-1.5"><i className="size-2.5 rounded-sm" style={{ backgroundColor: item.color }} />{item.key}</span>)}
+                </div>
+            )}
+            <div className={`absolute right-0 bottom-[30px] left-[65px] ${showLegend ? "top-[49px]" : "top-[5px]"}`}>
+                {ticks.map((tick, index) => (
+                    <React.Fragment key={tick}>
+                        <span className="absolute right-[calc(100%+8px)] w-14 translate-y-1/2 text-right" style={{ bottom: `${tick / maxValue * 100}%` }}>{tick}</span>
+                        {index !== ticks.length - 2 && <span className="absolute right-0 left-0 border-t border-gray-200 dark:border-zinc-800" style={{ bottom: `${tick / maxValue * 100}%` }} />}
+                    </React.Fragment>
+                ))}
+            </div>
+            <div className={`absolute right-5 bottom-[30px] left-[85px] ${showLegend ? "top-[49px]" : "top-[5px]"}`}>
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible" role="img">
+                    <defs>
+                        {series.map(({ key, color }) => (
+                            <linearGradient key={key} id={`category-${key}`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stopColor={color} stopOpacity="0.2" />
+                                <stop offset="1" stopColor={color} stopOpacity="0.01" />
+                            </linearGradient>
+                        ))}
+                    </defs>
+                    {series.map(({ key, color }) => (
+                        <g key={key}>
+                            <polygon points={`0,100 ${points(key)} 100,100`} fill={`url(#category-${key})`} />
+                            <polyline points={points(key)} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                        </g>
+                    ))}
+                    {hoveredIndex !== null && data[hoveredIndex] && (
+                        <g>
+                            <line x1={data.length < 2 ? 50 : hoveredIndex * 100 / (data.length - 1)} y1="0" x2={data.length < 2 ? 50 : hoveredIndex * 100 / (data.length - 1)} y2="100" stroke="#9ca3af" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+                        </g>
+                    )}
+                </svg>
+                {hoveredIndex !== null && data[hoveredIndex] && series.map(({ key, color }) => (
+                    <i
+                        key={key}
+                        className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white"
+                        style={{
+                            left: `${data.length < 2 ? 50 : hoveredIndex * 100 / (data.length - 1)}%`,
+                            top: `${100 - (data[hoveredIndex][key] || 0) / maxValue * 100}%`,
+                            backgroundColor: color,
+                        }}
+                    />
+                ))}
+                {data.map((item, index) => (
+                    <div
+                        key={item.Name}
+                        className="absolute top-0 bottom-0 -translate-x-1/2"
+                        style={{ left: `${data.length < 2 ? 50 : index * 100 / (data.length - 1)}%`, width: `${100 / Math.max(1, data.length - 1)}%` }}
+                        onMouseEnter={() => setHoveredIndex(index)}
+                        onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                        {(index % labelStep === 0) && <span className="absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 whitespace-nowrap text-gray-500 dark:text-gray-500">{item.Name}</span>}
+                        {hoveredIndex === index && (
+                            <div className={`absolute z-20 w-[174px] rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 ${showLegend ? "top-[-49px]" : "top-[-5px]"} ${index === data.length - 1 ? "right-[calc(50%+10px)]" : "left-1/2 ml-[18px] -translate-x-1/2"}`}>
+                                <p className="border-b border-gray-200 px-4 py-2 font-medium text-gray-700 dark:border-zinc-800 dark:text-zinc-300">{item.Name}</p>
+                                <div className="space-y-1 px-4 py-2">
+                                    {series.map(({ key, color }) => (
+                                        <p key={key} className="flex justify-between gap-4"><span className="flex items-center gap-2"><i className="size-2.5 rounded-full" style={{ backgroundColor: color }} />{key}</span><span className="text-gray-700 dark:text-zinc-300">{item[key] || 0}</span></p>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default function MtBlocksArea(props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,18 +138,6 @@ export default function MtBlocksArea(props) {
         return shortNameMap[cleanName] || cleanName;
     }
 
-    function getPercentage(count, totalCount) {
-        return Math.round((count / totalCount) * 100);
-    }
-
-    function getPercentages(item) {
-        return [
-            getPercentage(item.PassedCount, item.TotalCount),
-            getPercentage(item.FailedCount, item.TotalCount),
-            getPercentage(item.InvestigateCount, item.TotalCount)]
-            ;
-    }
-
     // Process blocks to use formatted names and rename count fields
     const formattedBlocks = props.Blocks?.map(block => ({
         ...block,
@@ -73,16 +160,7 @@ export default function MtBlocksArea(props) {
                         <Maximize2 className="h-4 w-4" />
                     </button>
                 </div>
-                <AreaChart
-                    className="mt-4 h-40"
-                    data={formattedBlocks}
-                    index="Name"
-                    yAxisWidth={65}
-                    categories={["Passed", "Failed", "Investigate"]}
-                    colors={["emerald", "rose", "purple"]}
-                    showAnimation={true}
-                    showLegend={false}
-                />
+                <CategoryChart className="mt-4 h-40" data={formattedBlocks} />
             </Card>
 
             {/* Full-screen Modal */}
@@ -105,16 +183,7 @@ export default function MtBlocksArea(props) {
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
-                        <AreaChart
-                            className="h-[calc(90vh-100px)]"
-                            data={formattedBlocks}
-                            index="Name"
-                            yAxisWidth={65}
-                            categories={["Passed", "Failed", "Investigate"]}
-                            colors={["emerald", "rose", "purple"]}
-                            showAnimation={true}
-                            showLegend={true}
-                        />
+                        <CategoryChart className="h-[calc(90vh-100px)]" data={formattedBlocks} showLegend />
                     </div>
                 </div>
             )}

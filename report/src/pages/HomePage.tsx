@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid } from "@tremor/react"
+import { Grid } from "@/components/ui/report"
 import { useTenant } from "@/context/TenantContext"
 import MtTestSummary from "@/components/MtTestSummary"
 import MtDonutChart from "@/components/MtDonutChart"

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback, lazy, Suspense, useMemo } from "react";
-import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput } from "@tremor/react";
+import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput } from "@/components/ui/report";
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "@/lib/router";
 import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
 import { compareDefaultTestResults } from "@/lib/testSort";
 import { allSelectableStatus, defaultSelectedStatus } from "@/lib/testStatus";
@@ -359,19 +359,19 @@ export default function TestResultsTable(props) {
               <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
                 {props.isPrintView ? (
                   <a href={`#${item.Id}`} className="text-left font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full block">
-                    <span className="truncate text-tremor-default">{item.Id || item.Name}</span>
+                    <span className="truncate text-sm">{item.Id || item.Name}</span>
                   </a>
                 ) : (
-                  <span className="truncate text-tremor-default">{item.Id || item.Name}</span>
+                  <span className="truncate text-sm">{item.Id || item.Name}</span>
                 )}
               </TableCell>
               <TableCell className="whitespace-normal">
                 {props.isPrintView ? (
                   <a href={`#${item.Id}`} className="text-left font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors block">
-                    <span className="whitespace-normal text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                    <span className="whitespace-normal text-sm">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
                   </a>
                 ) : (
-                  <span className="whitespace-normal text-tremor-default text-zinc-700 dark:text-zinc-200">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                  <span className="whitespace-normal text-sm text-zinc-700 dark:text-zinc-200">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
                 )}
               </TableCell>
               <TableCell className="text-center">

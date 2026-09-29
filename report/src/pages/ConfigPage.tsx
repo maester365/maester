@@ -1,7 +1,6 @@
-import { useState, useMemo, useEffect } from "react"
-import { Card } from "@tremor/react"
+import { useState, useMemo, useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from "react"
+import { Card } from "@/components/ui/report"
 import { Download, FileJson, Settings2, AlertTriangle, AlertCircle, Info, CircleAlert, ShieldAlert, ChevronDown, Check, Plus, Trash2, User, Users, Mail, Hash } from "lucide-react"
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { useSidebar } from "@/components/Sidebar"
 import { useTenant } from "@/context/TenantContext"
 
@@ -76,16 +75,151 @@ const getSeverityOption = (value: string): SeverityOption => {
 }
 
 const ACCOUNT_TYPE_OPTIONS = [
-  { value: "User" as const, label: "User", icon: User },
-  { value: "Group" as const, label: "Group", icon: Users },
+  { value: "User" as const, label: "User", icon: User, iconColor: "text-blue-500" },
+  { value: "Group" as const, label: "Group", icon: Users, iconColor: "text-green-500" },
 ]
 
 const IDENTIFIER_TYPE_OPTIONS = [
-  { value: "upn" as const, label: "UPN / Email", icon: Mail, placeholder: "BreakGlass@contoso.com" },
-  { value: "id" as const, label: "Object ID", icon: Hash, placeholder: "00000000-0000-0000-0000-000000000000" },
+  { value: "upn" as const, label: "UPN / Email", icon: Mail, iconColor: "text-gray-500", placeholder: "BreakGlass@contoso.com" },
+  { value: "id" as const, label: "Object ID", icon: Hash, iconColor: "text-gray-500", placeholder: "00000000-0000-0000-0000-000000000000" },
 ]
 
 type IdentifierType = "upn" | "id"
+
+interface ConfigSelectOption<T extends string> {
+  value: T
+  label: string
+  icon: React.ElementType
+  iconColor: string
+  textColor?: string
+}
+
+function ConfigSelect<T extends string>({
+  value,
+  options,
+  onChange,
+  buttonClassName,
+  menuClassName = "w-full",
+}: {
+  value: T
+  options: readonly ConfigSelectOption<T>[]
+  onChange: (value: T) => void
+  buttonClassName: string
+  menuClassName?: string
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const selected = options.find(option => option.value === value) || options[0]
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setIsOpen(false)
+    }
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false)
+        buttonRef.current?.focus()
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown)
+    document.addEventListener("keydown", handleEscape)
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown)
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [isOpen])
+
+  const openAndFocus = (index: number) => {
+    setIsOpen(true)
+    requestAnimationFrame(() => optionRefs.current[index]?.focus())
+  }
+
+  const handleButtonKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return
+    event.preventDefault()
+    const selectedIndex = Math.max(0, options.findIndex(option => option.value === value))
+    openAndFocus(event.key === "ArrowDown" ? selectedIndex : Math.max(0, selectedIndex - 1))
+  }
+
+  const handleOptionKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return
+    event.preventDefault()
+    const next = event.key === "ArrowDown"
+      ? Math.min(options.length - 1, index + 1)
+      : Math.max(0, index - 1)
+    optionRefs.current[next]?.focus()
+  }
+
+  const SelectedIcon = selected.icon
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => {
+          if (isOpen) {
+            setIsOpen(false)
+          } else {
+            const selectedIndex = Math.max(0, options.findIndex(option => option.value === value))
+            openAndFocus(selectedIndex)
+          }
+        }}
+        onKeyDown={handleButtonKeyDown}
+        className={buttonClassName}
+      >
+        <span className="flex items-center gap-2">
+          <SelectedIcon className={`h-4 w-4 ${selected.iconColor}`} />
+          <span className={`block truncate ${selected.textColor || "text-gray-900 dark:text-gray-100"}`}>{selected.label}</span>
+        </span>
+        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+          <ChevronDown className={`h-4 w-4 ${selected.iconColor === "text-gray-500" ? "text-gray-400" : selected.iconColor}`} aria-hidden="true" />
+        </span>
+      </button>
+      {isOpen && (
+        <div role="listbox" className={`absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-gray-800 dark:ring-white/10 ${menuClassName}`}>
+          {options.map((option, index) => {
+            const OptionIcon = option.icon
+            const isSelected = option.value === value
+            return (
+              <button
+                key={option.value}
+                ref={element => { optionRefs.current[index] = element }}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(option.value)
+                  setIsOpen(false)
+                  buttonRef.current?.focus()
+                }}
+                onKeyDown={event => handleOptionKeyDown(event, index)}
+                className={`relative block w-full cursor-pointer select-none py-2 pl-3 pr-9 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:hover:bg-gray-700 dark:focus:bg-gray-700 ${isSelected ? "font-semibold" : ""}`}
+              >
+                <span className="flex items-center gap-2">
+                  <OptionIcon className={`h-4 w-4 ${option.iconColor}`} />
+                  <span className={`block truncate ${option.textColor || "text-gray-900 dark:text-gray-100"}`}>{option.label}</span>
+                </span>
+                {isSelected && (
+                  <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <Check className="h-4 w-4 text-orange-500" aria-hidden="true" />
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
 
 // Helper to determine initial identifier type based on existing data
 const getInitialIdentifierType = (account: EmergencyAccessAccount): IdentifierType => {
@@ -341,107 +475,23 @@ export default function ConfigPage() {
                   {/* Type Selector */}
                   <div className="flex flex-col gap-1 min-w-[140px]">
                     <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Type</label>
-                    <Listbox value={account.Type} onChange={(value) => handleEmergencyAccountTypeChange(index, value)}>
-                      <div className="relative">
-                        <ListboxButton className="relative w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 pl-3 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
-                          <span className="flex items-center gap-2">
-                            {account.Type === "User" ? (
-                              <User className="h-4 w-4 text-blue-500" />
-                            ) : (
-                              <Users className="h-4 w-4 text-green-500" />
-                            )}
-                            <span className="block truncate text-gray-900 dark:text-gray-100">{account.Type}</span>
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <ChevronDown className="h-4 w-4 text-gray-400" aria-hidden="true" />
-                          </span>
-                        </ListboxButton>
-                        <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-sm shadow-lg ring-1 ring-black/5 dark:ring-white/10 focus:outline-none">
-                          {ACCOUNT_TYPE_OPTIONS.map((option) => {
-                            const Icon = option.icon
-                            return (
-                              <ListboxOption
-                                key={option.value}
-                                value={option.value}
-                                className={({ focus, selected }) =>
-                                  `relative cursor-pointer select-none py-2 pl-3 pr-9 ${
-                                    focus ? 'bg-gray-100 dark:bg-gray-700' : ''
-                                  } ${selected ? 'font-semibold' : ''}`
-                                }
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span className="flex items-center gap-2">
-                                      <Icon className={`h-4 w-4 ${option.value === "User" ? "text-blue-500" : "text-green-500"}`} />
-                                      <span className="block truncate text-gray-900 dark:text-gray-100">{option.label}</span>
-                                    </span>
-                                    {selected && (
-                                      <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                        <Check className="h-4 w-4 text-orange-500" aria-hidden="true" />
-                                      </span>
-                                    )}
-                                  </>
-                                )}
-                              </ListboxOption>
-                            )
-                          })}
-                        </ListboxOptions>
-                      </div>
-                    </Listbox>
+                    <ConfigSelect
+                      value={account.Type}
+                      options={ACCOUNT_TYPE_OPTIONS}
+                      onChange={value => handleEmergencyAccountTypeChange(index, value)}
+                      buttonClassName="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800"
+                    />
                   </div>
 
                   {/* Identifier Type Selector */}
                   <div className="flex flex-col gap-1 min-w-[160px]">
                     <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Identifier</label>
-                    <Listbox value={identifierTypes[index] || "upn"} onChange={(value) => handleIdentifierTypeChange(index, value)}>
-                      <div className="relative">
-                        <ListboxButton className="relative w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 pl-3 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
-                          <span className="flex items-center gap-2">
-                            {(() => {
-                              const opt = IDENTIFIER_TYPE_OPTIONS.find(o => o.value === (identifierTypes[index] || "upn"))!
-                              const Icon = opt.icon
-                              return <Icon className="h-4 w-4 text-gray-500" />
-                            })()}
-                            <span className="block truncate text-gray-900 dark:text-gray-100">
-                              {IDENTIFIER_TYPE_OPTIONS.find(o => o.value === (identifierTypes[index] || "upn"))?.label}
-                            </span>
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <ChevronDown className="h-4 w-4 text-gray-400" aria-hidden="true" />
-                          </span>
-                        </ListboxButton>
-                        <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-sm shadow-lg ring-1 ring-black/5 dark:ring-white/10 focus:outline-none">
-                          {IDENTIFIER_TYPE_OPTIONS.map((option) => {
-                            const Icon = option.icon
-                            return (
-                              <ListboxOption
-                                key={option.value}
-                                value={option.value}
-                                className={({ focus, selected }) =>
-                                  `relative cursor-pointer select-none py-2 pl-3 pr-9 ${
-                                    focus ? 'bg-gray-100 dark:bg-gray-700' : ''
-                                  } ${selected ? 'font-semibold' : ''}`
-                                }
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span className="flex items-center gap-2">
-                                      <Icon className="h-4 w-4 text-gray-500" />
-                                      <span className="block truncate text-gray-900 dark:text-gray-100">{option.label}</span>
-                                    </span>
-                                    {selected && (
-                                      <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                        <Check className="h-4 w-4 text-orange-500" aria-hidden="true" />
-                                      </span>
-                                    )}
-                                  </>
-                                )}
-                              </ListboxOption>
-                            )
-                          })}
-                        </ListboxOptions>
-                      </div>
-                    </Listbox>
+                    <ConfigSelect
+                      value={identifierTypes[index] || "upn"}
+                      options={IDENTIFIER_TYPE_OPTIONS}
+                      onChange={value => handleIdentifierTypeChange(index, value)}
+                      buttonClassName="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800"
+                    />
                   </div>
 
                   {/* Identifier Value Field */}
@@ -528,53 +578,13 @@ export default function ConfigPage() {
                   {/* Severity - Dropdown */}
                   <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Severity</label>
-                    <Listbox value={setting.Severity} onChange={(value) => handleSeverityChange(setting.Id, value)}>
-                      <div className="relative">
-                        <ListboxButton className={`relative w-fit min-w-[140px] cursor-pointer rounded-md py-2 pl-3 pr-10 text-left text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 ${getSeverityOption(setting.Severity).bgColor} ${getSeverityOption(setting.Severity).textColor}`}>
-                          <span className="flex items-center gap-2">
-                            {(() => {
-                              const opt = getSeverityOption(setting.Severity)
-                              const Icon = opt.icon
-                              return <Icon className={`h-4 w-4 ${opt.iconColor}`} />
-                            })()}
-                            <span className="block truncate">{setting.Severity}</span>
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <ChevronDown className={`h-4 w-4 ${getSeverityOption(setting.Severity).iconColor}`} aria-hidden="true" />
-                          </span>
-                        </ListboxButton>
-                        <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-fit min-w-[180px] overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-sm shadow-lg ring-1 ring-black/5 dark:ring-white/10 focus:outline-none">
-                          {SEVERITY_OPTIONS.map((option) => {
-                            const Icon = option.icon
-                            return (
-                              <ListboxOption
-                                key={option.value}
-                                value={option.value}
-                                className={({ focus, selected }) =>
-                                  `relative cursor-pointer select-none py-2 pl-3 pr-9 ${
-                                    focus ? 'bg-gray-100 dark:bg-gray-700' : ''
-                                  } ${selected ? 'font-semibold' : ''}`
-                                }
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span className="flex items-center gap-2">
-                                      <Icon className={`h-4 w-4 ${option.iconColor}`} />
-                                      <span className={`block truncate ${option.textColor}`}>{option.label}</span>
-                                    </span>
-                                    {selected && (
-                                      <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                        <Check className="h-4 w-4 text-orange-500" aria-hidden="true" />
-                                      </span>
-                                    )}
-                                  </>
-                                )}
-                              </ListboxOption>
-                            )
-                          })}
-                        </ListboxOptions>
-                      </div>
-                    </Listbox>
+                    <ConfigSelect
+                      value={setting.Severity}
+                      options={SEVERITY_OPTIONS}
+                      onChange={value => handleSeverityChange(setting.Id, value)}
+                      buttonClassName={`relative w-fit min-w-[140px] cursor-pointer rounded-md py-2 pl-3 pr-10 text-left text-sm font-medium shadow-xs focus:outline-none focus:ring-2 focus:ring-orange-500 ${getSeverityOption(setting.Severity).bgColor} ${getSeverityOption(setting.Severity).textColor}`}
+                      menuClassName="w-fit min-w-[180px]"
+                    />
                   </div>
                 </div>
               </Card>
