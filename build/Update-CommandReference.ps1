@@ -21,7 +21,7 @@ $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it
 
 # Exclude internal script filenames as well as any helper function names declared inside
 # internal script files so multi-function files do not leak private helpers into docs.
-$internalCommandFiles = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Filter *.ps1
+$internalCommandFiles = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Recurse -Filter *.ps1
 $internalCommands = $internalCommandFiles | ForEach-Object { $_.BaseName }
 $internalFunctionNames = foreach ($file in $internalCommandFiles) {
     foreach ($match in [regex]::Matches((Get-Content $file.FullName -Raw), '(?m)^\s*function\s+([A-Za-z0-9-]+)\s*\{')) {
@@ -93,10 +93,15 @@ foreach ($file in $cmdMarkdownFiles) {
     $content = Get-Content $file
     $synopsis = $content[($content.IndexOf("## SYNOPSIS") + 2)] # Get the synopsis
     if (![string]::IsNullOrWhiteSpace($synopsis)) {
-        # Escape embedded double quotes and wrap value in double quotes so YAML front matter
-        # remains valid even when the synopsis contains characters like ':' that have YAML meaning.
-        $escapedSynopsis = $synopsis -replace '"', '\"'
-        $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: `"$escapedSynopsis`"`nid:")
+        # Skip PlatyPS placeholder synopses so we don't emit invalid/empty descriptions.
+        if ($synopsis -match '^\s*\\?\{\{\s*Fill in the Synopsis\s*\\?\}\}\s*$') {
+            $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`nid:")
+        } else {
+            # Escape backslashes and embedded double quotes so the value stays valid
+            # inside YAML double quotes.
+            $escapedSynopsis = $synopsis.Replace('\', '\\').Replace('"', '\"')
+            $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: `"$escapedSynopsis`"`nid:")
+        }
         Set-Content $file $updatedContent
     }
 }
