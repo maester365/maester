@@ -14,6 +14,8 @@ function Get-MtLdapRootDse {
         'dnsHostName',
         'forestFunctionality',
         'domainFunctionality',
+        'domainControllerFunctionality',
+        'isSynchronized',
         'namingContexts',
         'supportedLDAPVersion',
         'supportedSASLMechanisms'
@@ -27,17 +29,19 @@ function Get-MtLdapRootDse {
 
         $entry = @($result)[0]
         return [PSCustomObject]@{
-            DistinguishedName          = [string]$entry.DistinguishedName
-            DefaultNamingContext       = [string]$entry.defaultNamingContext
-            RootDomainNamingContext    = [string]$entry.rootDomainNamingContext
-            ConfigurationNamingContext = [string]$entry.configurationNamingContext
-            SchemaNamingContext        = [string]$entry.schemaNamingContext
-            DnsHostName                = [string]$entry.dnsHostName
-            ForestFunctionality        = $entry.forestFunctionality
-            DomainFunctionality        = $entry.domainFunctionality
-            NamingContexts             = [string[]]@($entry.namingContexts)
-            SupportedLdapVersion       = @($entry.supportedLDAPVersion)
-            SupportedSaslMechanisms    = [string[]]@($entry.supportedSASLMechanisms)
+            DistinguishedName             = [string]$entry.DistinguishedName
+            DefaultNamingContext          = [string]$entry.defaultNamingContext
+            RootDomainNamingContext       = [string]$entry.rootDomainNamingContext
+            ConfigurationNamingContext    = [string]$entry.configurationNamingContext
+            SchemaNamingContext           = [string]$entry.schemaNamingContext
+            DnsHostName                   = [string]$entry.dnsHostName
+            ForestFunctionality           = $entry.forestFunctionality
+            DomainFunctionality           = $entry.domainFunctionality
+            DomainControllerFunctionality = $entry.domainControllerFunctionality
+            IsSynchronized                = [string]$entry.isSynchronized
+            NamingContexts                = [string[]]@($entry.namingContexts)
+            SupportedLdapVersion          = @($entry.supportedLDAPVersion)
+            SupportedSaslMechanisms       = [string[]]@($entry.supportedSASLMechanisms)
         }
     }
     catch {

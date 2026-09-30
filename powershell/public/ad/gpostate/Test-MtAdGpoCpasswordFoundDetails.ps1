@@ -48,7 +48,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
 
     foreach ($report in ($found | Sort-Object -Property Name)) {
         $name = [string]$report.Name
-        $name = $name -replace '\\|', '\\&#124;'
+        $name = $name -replace '\|', '&#124;'
 
         $cpasswordFound = [bool]$report.CpasswordFound
         $defaultPasswordFound = [bool]$report.DefaultPasswordFound

@@ -524,8 +524,15 @@ function Invoke-MtSysvolWindowsAdapter {
             return $true
         }
         if ($Operation -eq 'List') {
+            $gpoRootUnc = "\\$Server\SYSVOL\$Domain\Policies\$GpoGuid"
             return @(Get-ChildItem -LiteralPath $gpoRoot -File -Recurse -Force -ErrorAction Stop | ForEach-Object {
-                    $relative = $_.FullName.Substring($gpoRoot.Length).TrimStart('\', '/').Replace('\', '/')
+                    $relative = $_.FullName
+                    if ($relative.StartsWith($gpoRootUnc, [StringComparison]::OrdinalIgnoreCase)) {
+                        $relative = $relative.Substring($gpoRootUnc.Length)
+                    } elseif ($relative.StartsWith($gpoRoot, [StringComparison]::OrdinalIgnoreCase)) {
+                        $relative = $relative.Substring($gpoRoot.Length)
+                    }
+                    $relative = $relative.TrimStart('\', '/').Replace('\', '/')
                     [PSCustomObject][ordered]@{ RelativePath = $relative; Name = $_.Name; Length = [long]$_.Length }
                 })
         }

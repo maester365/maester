@@ -47,7 +47,7 @@
         $result += "| --- | --- |" + "`n"
         $result += "| WellKnownSecurityPrincipals Count | $wellKnownPrincipalsCount |" + "`n"
         $result += "| Expected Count | $expectedCount |" + "`n"
-        $result += "| Matches Expected Count | $meetsExpectedCount |`n\n"
+        $result += "| Matches Expected Count | $meetsExpectedCount |" + "`n"
 
         $testResultMarkdown = "Active Directory well-known security principals have been counted. $wellKnownPrincipalsCount well-known security principal(s) were found (expected: $expectedCount).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

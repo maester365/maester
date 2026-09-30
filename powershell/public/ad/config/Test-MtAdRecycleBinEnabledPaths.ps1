@@ -33,11 +33,11 @@
 
     $optionalFeatures = $adState.OptionalFeatures
     $recycleBinFeatures = @($optionalFeatures | Where-Object {
-            $_.Name -like "*Recycle Bin*" -and (($_.EnabledScopes | Measure-Object).Count -gt 0)
+            $_.Name -like "*Recycle Bin*" -and $_.IsEnabled
         })
 
     $enabledScopes = @(
-        $recycleBinFeatures | ForEach-Object { @($_.EnabledScopes) }
+        $recycleBinFeatures | ForEach-Object { $_.DistinguishedName }
     ) | Where-Object { $null -ne $_ }
 
     $enabledPathCount = ($enabledScopes | Measure-Object).Count
