@@ -167,9 +167,11 @@ function normalizeWhitespace(value) {
 }
 
 function trimDescription(value, max = 300) {
-  const prose = String(value ?? "")
-    // Leading headings (e.g. "#### Why This Test Matters") are labels, not summary text.
-    .replace(/^(?:\s*#{1,6}\s+[^\n]*\n)+/, "")
+  // Leading headings (e.g. "# Policy name" or "## Description") are labels, not summary text.
+  const lines = String(value ?? "").split("\n");
+  while (lines.length > 0 && /^\s*(?:#{1,6}\s|$)/.test(lines[0])) lines.shift();
+  const prose = lines
+    .join("\n")
     // Markdown hard line breaks ("text\" at end of line) and escapes ("\*") are not plain text.
     .replace(/\\(?=\r?$)/gm, "")
     .replace(/\\([!-/:-@[-`{-~])/g, "$1");
@@ -325,7 +327,7 @@ function findFunctionName(block) {
 }
 
 function findTestId(testName, tags) {
-  const idPattern = /^(MT\.\d+|CIS\.[A-Za-z0-9.]+|CISA\.[A-Za-z0-9.]+|EIDSCA\.[A-Z0-9]+|ORCA\.\d+(?:\.\d+)?|AD-[A-Z]+-\d+)/i;
+  const idPattern = /^(MT\.\d+|CIS\.[A-Za-z0-9.]+|CISA\.[A-Za-z0-9.]+|EIDSCA\.[A-Z0-9]+|ORCA\.[\d.]+|AD-[A-Z]+-\d+)/i;
   const idFromName = testName.match(new RegExp(`${idPattern.source}:`, "i"))?.[1];
   const idFromTag = tags.find((tag) => idPattern.test(tag));
   return idFromName ?? idFromTag;
