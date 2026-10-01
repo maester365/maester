@@ -20,7 +20,7 @@ Test-MtAdDaclDistinctObjectCount [-ProgressAction <ActionPreference>] [<CommonPa
 
 ## DESCRIPTION
 
-This informational test reviews DACL data collected by Get-MtADDomainState and counts the
+This informational test reviews DACL data collected by Get-MtADDomainState -Categories @('DaclEntries') and counts the
 number of unique Active Directory objects represented in the DACL dataset.
 This helps confirm
 the breadth of DACL coverage across collected objects and provides baseline visibility into how
