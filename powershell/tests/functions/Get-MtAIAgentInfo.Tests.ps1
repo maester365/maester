@@ -21,7 +21,6 @@ Describe 'Get-MtAIAgentInfo failure reasons' {
     BeforeEach {
         InModuleScope Maester {
             $__MtSession.AIAgentInfo = $null
-            $__MtSession.AIAgentInfoError = $null
             $__MtSession.DataverseApiBase = 'https://org123.api.crm.dynamics.com/api/data/v9.2'
             $__MtSession.DataverseResourceUrl = 'https://org123.crm.dynamics.com'
             $__MtSession.DataverseEnvironmentId = 'org123.crm.dynamics.com'
@@ -32,7 +31,6 @@ Describe 'Get-MtAIAgentInfo failure reasons' {
     AfterAll {
         InModuleScope Maester {
             $__MtSession.AIAgentInfo = $null
-            $__MtSession.AIAgentInfoError = $null
             $__MtSession.DataverseApiBase = $null
             $__MtSession.DataverseResourceUrl = $null
             $__MtSession.DataverseEnvironmentId = $null
@@ -66,6 +64,37 @@ Describe 'Get-MtAIAgentInfo failure reasons' {
         InModuleScope Maester { Get-MtAIAgentInfo } | Should -BeNullOrEmpty
 
         InModuleScope Maester { Get-MtAIAgentSkippedReason -TestId 'MT.1117' } | Should -Match 'No Copilot Studio agents were found'
+    }
+
+    It 'Keeps the reason for later calls that are served from the cache without querying again' {
+        Mock -ModuleName Maester Invoke-RestMethod { throw 'Response status code does not indicate success: 500 (Internal Server Error).' }
+
+        InModuleScope Maester { Get-MtAIAgentInfo } | Should -BeNullOrEmpty
+        InModuleScope Maester { Get-MtAIAgentInfo } | Should -BeNullOrEmpty
+
+        Should -Invoke Invoke-RestMethod -ModuleName Maester -Exactly -Times 1
+        InModuleScope Maester { Get-MtAIAgentSkippedReason -TestId 'MT.1113' } | Should -Match 'query to the Dataverse environment `org123.crm.dynamics.com` failed'
+    }
+
+    It 'Caches the agents with no error in a single record when the query succeeds' {
+        Mock -ModuleName Maester Invoke-RestMethod {
+            if ($Uri -match '/bots\?') {
+                [pscustomobject]@{ value = @([pscustomobject]@{ botid = 'b1'; name = 'Agent 1'; accesscontrolpolicy = 0; authenticationmode = 2; authenticationtrigger = 1; statecode = 0 }) }
+            } else {
+                [pscustomobject]@{ value = @() }
+            }
+        }
+
+        $agents = InModuleScope Maester { Get-MtAIAgentInfo }
+        @($agents).Count | Should -Be 1
+        $agents[0].AIAgentName | Should -Be 'Agent 1'
+
+        $cache = InModuleScope Maester { $__MtSession.AIAgentInfo }
+        @($cache.Agents).Count | Should -Be 1
+        $cache.Error | Should -BeNullOrEmpty
+
+        @(InModuleScope Maester { Get-MtAIAgentInfo }).Count | Should -Be 1
+        Should -Invoke Invoke-RestMethod -ModuleName Maester -ParameterFilter { $Uri -match '/bots\?' } -Exactly -Times 1
     }
 
     It 'Falls back to the generic prerequisites message when no reason was recorded' {

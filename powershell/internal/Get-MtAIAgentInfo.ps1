@@ -13,8 +13,9 @@
     pre-resolved connection details from the module session.
 
     Results are cached in the module session for reuse by multiple test functions.
-    When no agent data can be returned, the reason is stored in $__MtSession.AIAgentInfoError
-    so the Copilot Studio tests can report it in their skipped result.
+    The cache is a single record (Agents and Error) written in one assignment, so the agents and
+    the reason no agent data is available can never be read out of step. Error is reported in the
+    Copilot Studio skipped results by Get-MtAIAgentSkippedReason.
 
 .EXAMPLE
     Get-MtAIAgentInfo
@@ -30,13 +31,14 @@ function Get-MtAIAgentInfo {
     [OutputType([psobject[]])]
     param()
 
-    if ($null -ne $__MtSession.AIAgentInfo) {
-        if ($__MtSession.AIAgentInfo.Count -eq 0) {
+    $cached = $__MtSession.AIAgentInfo
+    if ($null -ne $cached) {
+        if (@($cached.Agents).Count -eq 0) {
             Write-Verbose "Previous Copilot Studio query failed or returned no results. Skipping."
             return $null
         }
         Write-Verbose "Returning cached AI agent info."
-        return $__MtSession.AIAgentInfo
+        return $cached.Agents
     }
 
     # Read pre-resolved Dataverse connection details from session (set by Connect-Maester)
@@ -45,9 +47,8 @@ function Get-MtAIAgentInfo {
     $environmentId = $__MtSession.DataverseEnvironmentId
 
     if ([string]::IsNullOrEmpty($apiBase) -or [string]::IsNullOrEmpty($resourceUrl)) {
-        $__MtSession.AIAgentInfoError = "The Dataverse connection was not established. Ensure DataverseEnvironmentUrl is configured in maester-config.json (or can be auto-discovered) and run ``Connect-Maester -Service Dataverse``."
-        Write-Verbose $__MtSession.AIAgentInfoError
-        $__MtSession.AIAgentInfo = @()
+        $__MtSession.AIAgentInfo = [pscustomobject]@{ Agents = @(); Error = "The Dataverse connection was not established. Ensure DataverseEnvironmentUrl is configured in maester-config.json (or can be auto-discovered) and run ``Connect-Maester -Service Dataverse``." }
+        Write-Verbose $__MtSession.AIAgentInfo.Error
         return $null
     }
 
@@ -62,9 +63,8 @@ function Get-MtAIAgentInfo {
             $token = $tokenResult.Token
         }
     } catch {
-        $__MtSession.AIAgentInfoError = "Could not get a Dataverse access token. Ensure you are connected via ``Connect-Maester -Service Dataverse``. Error: $($_.Exception.Message)"
-        Write-Verbose $__MtSession.AIAgentInfoError
-        $__MtSession.AIAgentInfo = @()
+        $__MtSession.AIAgentInfo = [pscustomobject]@{ Agents = @(); Error = "Could not get a Dataverse access token. Ensure you are connected via ``Connect-Maester -Service Dataverse``. Error: $($_.Exception.Message)" }
+        Write-Verbose $__MtSession.AIAgentInfo.Error
         return $null
     }
 
@@ -122,16 +122,14 @@ function Get-MtAIAgentInfo {
         } else {
             "The Copilot Studio agent query to the Dataverse environment ``$environmentId`` failed."
         }
-        $__MtSession.AIAgentInfoError = "$reason Error: $errorMessage"
-        Write-Verbose $__MtSession.AIAgentInfoError
-        $__MtSession.AIAgentInfo = @()
+        $__MtSession.AIAgentInfo = [pscustomobject]@{ Agents = @(); Error = "$reason Error: $errorMessage" }
+        Write-Verbose $__MtSession.AIAgentInfo.Error
         return $null
     }
 
     if ($null -eq $botsResponse.value -or $botsResponse.value.Count -eq 0) {
-        $__MtSession.AIAgentInfoError = "No Copilot Studio agents were found in the Dataverse environment ``$environmentId``."
-        Write-Verbose $__MtSession.AIAgentInfoError
-        $__MtSession.AIAgentInfo = @()
+        $__MtSession.AIAgentInfo = [pscustomobject]@{ Agents = @(); Error = "No Copilot Studio agents were found in the Dataverse environment ``$environmentId``." }
+        Write-Verbose $__MtSession.AIAgentInfo.Error
         return $null
     }
 
@@ -261,7 +259,6 @@ function Get-MtAIAgentInfo {
         }
     }
 
-    $__MtSession.AIAgentInfoError = $null
-    $__MtSession.AIAgentInfo = $agents
+    $__MtSession.AIAgentInfo = [pscustomobject]@{ Agents = $agents; Error = $null }
     return $agents
 }

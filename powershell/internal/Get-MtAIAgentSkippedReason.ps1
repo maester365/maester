@@ -5,8 +5,8 @@
 
     .DESCRIPTION
         Get-MtAIAgentInfo records why it could not return agent data (no Dataverse connection, no access
-        token, missing permission to read agents, or no agents in the environment) in
-        $__MtSession.AIAgentInfoError. This function turns that into the skipped reason shown in the
+        token, missing permission to read agents, or no agents in the environment) in the Error field
+        of its cached $__MtSession.AIAgentInfo record. This function turns that into the skipped reason shown in the
         report, followed by a link to the test's prerequisites.
 
     .EXAMPLE
@@ -22,7 +22,7 @@
         [string] $TestId
     )
 
-    $reason = $__MtSession.AIAgentInfoError
+    $reason = if ($__MtSession.AIAgentInfo) { $__MtSession.AIAgentInfo.Error }
     if ([string]::IsNullOrEmpty($reason)) {
         $reason = 'No Copilot Studio agent data available. Ensure DataverseEnvironmentUrl is configured in maester-config.json and Connect-Maester -Service Dataverse has been run.'
     }
