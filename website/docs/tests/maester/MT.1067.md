@@ -1,6 +1,6 @@
 ---
 title: "MT.1067 - Authentication methods policies should not reference deleted groups."
-description: "# Authentication method policies should not reference non-existent groups This test checks if all groups referenced in authentication method policies still exist in the tenant. Authentication method policies can reference groups in their includeTargets configuration. If a group is deleted but still…"
+description: "This test checks if all groups referenced in authentication method policies still exist in the tenant. Authentication method policies can reference groups in their includeTargets configuration. If a group is deleted but still referenced in an authentication method policy, it may cause the policy to…"
 slug: /tests/MT.1067
 className: generated-test-doc
 sidebar_class_name: hidden

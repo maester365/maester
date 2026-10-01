@@ -1,6 +1,6 @@
 ---
 title: "MT.1084 - Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
-description: "Description Executes KQL function over IdentityLogonEvents data to retrieve information about domains with Seamless SSO usage. It enriches the data with device insights. Why This Matters Seamless Single Sign-On in Entra ID Connect should be disabled because: - **Lateral movement**: Allows for later…"
+description: "Executes KQL function over IdentityLogonEvents data to retrieve information about domains with Seamless SSO usage. It enriches the data with device insights. Why This Matters Seamless Single Sign-On in Entra ID Connect should be disabled because: - **Lateral movement**: Allows for lateral movement…"
 slug: /tests/MT.1084
 className: generated-test-doc
 sidebar_class_name: hidden
