@@ -598,7 +598,13 @@ function Get-MtADDomainState {
     $resolvedCategories = ResolveCategoryDependency -InputCategories $requestedCategories
 
     $computerSuffix = if ($ComputerName) { ":$ComputerName" } else { '' }
-    $metadataCacheKey = "DomainState:Metadata$computerSuffix"
+    # Build a target suffix based on resolved identity (domain and server) if available
+    $targetSuffix = if ($__MtSession.ADConnection.ResolvedDomain -and $__MtSession.ADConnection.ResolvedServer) {
+        ":$($__MtSession.ADConnection.ResolvedDomain):$($__MtSession.ADConnection.ResolvedServer)"
+    } elseif ($__MtSession.ADConnection.ResolvedDomain) {
+        ":$($__MtSession.ADConnection.ResolvedDomain)"
+    } else { '' }
+    $metadataCacheKey = "DomainState:Metadata$targetSuffix$computerSuffix"
 
     # Initialize domain state with safe defaults for all properties
     $domainState = [ordered]@{
@@ -643,7 +649,7 @@ function Get-MtADDomainState {
         }
 
         foreach ($cat in $resolvedCategories) {
-            $catCacheKey = "DomainState:$cat$computerSuffix"
+    $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
             if ($__MtSession.ADCache.ContainsKey($catCacheKey)) {
                 $cachedBag = $__MtSession.ADCache[$catCacheKey]
                 foreach ($prop in $categoryDescriptors[$cat].Properties) {

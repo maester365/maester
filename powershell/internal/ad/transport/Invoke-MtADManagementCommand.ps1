@@ -212,7 +212,7 @@ function Invoke-MtADManagementCommand {
             SkipCertificateChecks = $false
         })
 
-    if ($AllowNegotiateFallback.IsPresent) {
+    if ($AllowNegotiateFallback.IsPresent -or $null -ne $credential) {
         $connectionAttempts.Add([PSCustomObject][ordered]@{
                 Name                  = 'HTTP'
                 UseSSL                = $false

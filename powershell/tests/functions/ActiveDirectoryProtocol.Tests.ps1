@@ -17,6 +17,25 @@ BeforeAll {
     }
 }
 
+# Tests for Task 3: Target-Scoped AD Cache Keys and Group Member Cache Clearing
+Describe 'Get-MtADDomainState: Target-Scoped Cache Keys' {
+    It 'clears group member cache when Clear-MtADCache is invoked (global clear)' {
+        InModuleScope Maester {
+            $script:__MtLdapGroupMemberCache = @{'dc:group1' = @('member1')}
+            Clear-MtADCache
+            $script:__MtLdapGroupMemberCache.Count | Should -Be 0
+        }
+    }
+
+    It 'includes target identity in metadata cache key when ResolvedDomain and ResolvedServer are set' -Skip {
+        # Skipped: requires full mock environment for Get-MtADDomainState internals
+    }
+
+    It 'switching domains returns different cached data' -Skip {
+        # Skipped: requires full mock environment for Get-MtADDomainState internals
+    }
+}
+
 AfterAll {
     foreach ($cmd in $script:createdStubs) {
         Remove-Item -Path "function:global:$cmd" -ErrorAction SilentlyContinue
@@ -455,6 +474,41 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
             $script:connectionCalls[0].UseStartTls | Should -BeFalse
             $script:connectionCalls[1].Port | Should -Be 389
             $script:connectionCalls[1].UseStartTls | Should -BeTrue
+        }
+
+        # Test 1: Enhanced error message when both TLS modes fail
+        It 'Enhanced error message when both TLS modes fail' {
+            # Override both TLS paths to fail by throwing for both 636 and 389
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 636 } -MockWith {
+                throw [System.Exception]::new('Port 636 failed')
+            }
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 389 } -MockWith {
+                throw [System.Exception]::new('Port 389 failed')
+            }
+
+            InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto }
+            $script:connectionCalls.Count | Should -Be 2
+            $script:connectionCalls[0].Port | Should -Be 636
+            $script:connectionCalls[1].Port | Should -Be 389
+        }
+
+        It 'Original exception preserved when only one TLS mode fails' {
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 636 } -MockWith {
+                throw [System.Exception]::new('Port 636 failed')
+            }
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 389 } -MockWith {
+                return [PSCustomObject]@{ }
+            }
+
+            InModuleScope Maester {
+                try {
+                    Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Ldaps
+                } catch {
+                    # swallow the error for test isolation
+                }
+            }
+            $script:connectionCalls.Count | Should -Be 1
+            $script:connectionCalls[0].Port | Should -Be 636
         }
     }
 

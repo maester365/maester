@@ -313,9 +313,10 @@ function Connect-MtAdTarget {
             [string]$RequestedTlsMode
         )
 
-        $lastException = $null
+    $lastException = $null
+    $script:TlsModeAttemptCount = 0
 
-        $tlsAttempts = switch ($RequestedTlsMode) {
+    $tlsAttempts = switch ($RequestedTlsMode) {
             'Ldaps' { @(@{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }) }
             'StartTls' { @(@{ Name = 'StartTls'; Port = 389; UseStartTls = $true }) }
             default {
@@ -352,13 +353,25 @@ function Connect-MtAdTarget {
                     Metadata   = $targetMetadata
                 }
             }
-            catch {
-                $lastException = $_.Exception
-                Close-MtAdLdapConnection -Connection $connection
+        catch {
+            # Capture the latest exception and gracefully close any open connection
+            $lastException = $_.Exception
+            # Track TLS-mode fallback attempts by counting failed TLS-mode connections
+            if (-not (Get-Variable -Name 'TlsModeAttemptCount' -Scope Script -ErrorAction SilentlyContinue)) {
+                $script:TlsModeAttemptCount = 0
             }
+            $script:TlsModeAttemptCount++
+            Close-MtAdLdapConnection -Connection $connection
         }
+    }
 
+    # If we attempted multiple TLS modes (e.g., LDAPS then StartTLS) but still failed, return a clearer error
+    if ((Get-Variable -Name 'TlsModeAttemptCount' -Scope Script -ErrorAction SilentlyContinue).Value -ge 2 -and $null -ne $lastException) {
+        throw [System.Exception]::new("DC does not support LDAPS or StartTLS. A certificate is required for explicit credential connections. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)", $lastException)
+    } elseif ($null -ne $lastException) {
+        # Preserve original exception behavior when only a single TLS mode was attempted or auto-detection is not conclusive
         throw $lastException
+    }
     }
 
     Write-Verbose 'Validating Active Directory connectivity'

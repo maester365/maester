@@ -59,6 +59,8 @@ function Clear-MtADCache {
 
         $__MtSession.ADCache = @{}
         $__MtSession.ADCollectionTime = $null
+        # Clear the group member cache as part of a full AD cache reset
+        $script:__MtLdapGroupMemberCache = @{}
         return
     }
 
