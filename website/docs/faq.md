@@ -46,3 +46,9 @@ Invoke-Maester -SkipGraphConnect -IncludeLongRunning
 ```
 
 When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is used. The timeout applies to the Graph connection rather than to an individual test or request.
+
+## Connect-Maester fails with "User canceled authentication" after an "Approval required" prompt
+
+Global Reader and other non-admin accounts can't consent to the Microsoft Graph permissions that Maester requests. An admin needs to grant consent first. Approving the request from **Admin consent requests** in the Entra admin center can fail with `AADSTS70011: ... openid scope is required`.
+
+See [Approval required when connecting](connect-maester/readme.md#approval-required-when-connecting) for how an admin can grant consent from PowerShell or set up a custom app registration.
