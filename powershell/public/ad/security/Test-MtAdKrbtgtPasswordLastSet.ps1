@@ -26,7 +26,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdKrbtgtPasswordLastSet"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Users')
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
@@ -40,7 +40,7 @@
 
     if ($null -eq $krbtgt) {
         Add-MtTestResultDetail -Result "KRBTGT account not found in Active Directory."
-        return $false
+        return $null
     }
 
     $passwordLastSet = $krbtgt.PasswordLastSet

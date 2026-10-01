@@ -21,8 +21,10 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdRidsRemaining"
+
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -32,15 +34,8 @@
 
     $domain = $adState.Domain
 
-    # Try to get RID available pool from the domain object
-    $ridsRemaining = $null
-    try {
-        $domainObject = Get-ADObject -Identity $domain.DistinguishedName -Properties RIDAvailablePool
-        $ridsRemaining = $domainObject.RIDAvailablePool
-    }
-    catch {
-        Write-Verbose "Could not retrieve RID pool: $($_.Exception.Message)"
-    }
+    # Get RID available pool from the collected domain object
+    $ridsRemaining = $domain.RIDAvailablePool
 
     # RID pool is a 64-bit value where high 32 bits are total and low 32 bits are used
     # Calculate remaining RIDs

@@ -28,7 +28,7 @@
 
     Write-Verbose "Starting Test-MtAdOptionalFeatureEnabledDetails"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('OptionalFeatures')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -36,7 +36,7 @@
     }
 
     $optionalFeatures = $adState.OptionalFeatures
-    $enabledFeatures = $optionalFeatures | Where-Object { $_.EnabledScopes.Count -gt 0 }
+    $enabledFeatures = $optionalFeatures | Where-Object { $_.IsEnabled }
     $enabledCount = ($enabledFeatures | Measure-Object).Count
 
     $testResult = $true
@@ -48,11 +48,10 @@
 
     if ($enabledCount -gt 0) {
         $result += "`n**Enabled Feature Details:**" + "`n" + "`n"
-        $result += "| Feature Name | Enabled Scopes |" + "`n"
+        $result += "| Feature Name | IsEnabled |" + "`n"
         $result += "| --- | --- |" + "`n"
         foreach ($feature in $enabledFeatures) {
-            $scopeCount = $feature.EnabledScopes.Count
-            $result += "| $($feature.Name) | $scopeCount scope(s) |" + "`n"
+            $result += "| $($feature.Name) | $($feature.IsEnabled) |" + "`n"
         }
     }
 

@@ -28,7 +28,7 @@
 
     Write-Verbose "Starting Test-MtAdGroupChangeAveragePerYear"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Groups')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
@@ -98,48 +98,44 @@
 
     $testResult = $true
 
-    if ($testResult) {
-        $result = "### Group Membership Change Analysis" + "`n" + "`n"
+    $result = "### Group Membership Change Analysis" + "`n" + "`n"
 
-        $result += "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Groups | $totalGroups |" + "`n"
-        $result += "| Years Active | $yearsActive |" + "`n"
-        $result += "| Oldest Group Created | $($oldestDate.ToString('yyyy-MM-dd')) |" + "`n"
-        $result += "| Total Modifications | $totalModifications |" + "`n"
-        $result += "| Average Changes Per Year | $averageChangesPerYear |" + "`n"
-        $result += "| Recently Modified (90 days) | $($recentlyModified.Count) |" + "`n"
+    $result += "| Metric | Value |" + "`n"
+    $result += "| --- | --- |" + "`n"
+    $result += "| Total Groups | $totalGroups |" + "`n"
+    $result += "| Years Active | $yearsActive |" + "`n"
+    $result += "| Oldest Group Created | $($oldestDate.ToString('yyyy-MM-dd')) |" + "`n"
+    $result += "| Total Modifications | $totalModifications |" + "`n"
+    $result += "| Average Changes Per Year | $averageChangesPerYear |" + "`n"
+    $result += "| Recently Modified (90 days) | $($recentlyModified.Count) |" + "`n"
 
-        $result += "`n### Changes by Year" + "`n" + "`n"
-        $result += "| Year | Groups Created | Groups Modified |" + "`n"
+    $result += "`n### Changes by Year" + "`n" + "`n"
+    $result += "| Year | Groups Created | Groups Modified |" + "`n"
+    $result += "| --- | --- | --- |" + "`n"
+
+    $sortedYears = $modificationsByYear.Keys | Sort-Object
+    foreach ($year in $sortedYears) {
+        $created = $creationsByYear[$year]
+        $modified = $modificationsByYear[$year]
+        $result += "| $year | $created | $modified |" + "`n"
+    }
+
+    if ($recentlyModified.Count -gt 0) {
+        $result += "`n### Recently Modified Groups (Last 90 Days)" + "`n" + "`n"
+        $result += "| Group Name | Last Modified | Days Ago |" + "`n"
         $result += "| --- | --- | --- |" + "`n"
 
-        $sortedYears = $modificationsByYear.Keys | Sort-Object
-        foreach ($year in $sortedYears) {
-            $created = $creationsByYear[$year]
-            $modified = $modificationsByYear[$year]
-            $result += "| $year | $created | $modified |" + "`n"
+        $sortedRecent = $recentlyModified | Sort-Object DaysAgo
+        foreach ($group in ($sortedRecent | Select-Object -First 20)) {
+            $result += "| $($group.Name) | $($group.LastModified.ToString('yyyy-MM-dd')) | $($group.DaysAgo) |" + "`n"
         }
 
-        if ($recentlyModified.Count -gt 0) {
-            $result += "`n### Recently Modified Groups (Last 90 Days)" + "`n" + "`n"
-            $result += "| Group Name | Last Modified | Days Ago |" + "`n"
-            $result += "| --- | --- | --- |" + "`n"
-
-            $sortedRecent = $recentlyModified | Sort-Object DaysAgo
-            foreach ($group in ($sortedRecent | Select-Object -First 20)) {
-                $result += "| $($group.Name) | $($group.LastModified.ToString('yyyy-MM-dd')) | $($group.DaysAgo) |" + "`n"
-            }
-
-            if ($recentlyModified.Count -gt 20) {
-                $result += "`n> *... and $($recentlyModified.Count - 20) more groups*" + "`n"
-            }
+        if ($recentlyModified.Count -gt 20) {
+            $result += "`n> *... and $($recentlyModified.Count - 20) more groups*" + "`n"
         }
-
-        $testResultMarkdown = $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve group change data."
     }
+
+    $testResultMarkdown = $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

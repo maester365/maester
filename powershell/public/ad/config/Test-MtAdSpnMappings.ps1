@@ -22,7 +22,7 @@
 
     Write-Verbose "Starting Test-MtAdSpnMappings"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Configuration')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

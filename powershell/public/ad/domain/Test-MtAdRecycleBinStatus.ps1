@@ -25,7 +25,7 @@
     Write-Verbose "Starting Test-MtAdRecycleBinStatus"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Forest', 'OptionalFeatures')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -39,11 +39,9 @@
     # Check if Recycle Bin optional feature is enabled
     $recycleBinFeature = $optionalFeatures | Where-Object { $_.Name -eq "Recycle Bin Feature" }
     $isEnabled = $false
-    $enabledScopes = @()
 
     if ($recycleBinFeature) {
-        $isEnabled = $recycleBinFeature.EnabledScopes.Count -gt 0
-        $enabledScopes = $recycleBinFeature.EnabledScopes
+        $isEnabled = $recycleBinFeature.IsEnabled
     }
 
     # Test passes if we successfully retrieved Recycle Bin status
@@ -56,10 +54,6 @@
         $result += "| Recycle Bin Enabled | $isEnabled |" + "`n"
         $result += "| Forest Name | $($forest.Name) |" + "`n"
         $result += "| Forest Functional Level | $($forest.ForestMode) |" + "`n"
-
-        if ($isEnabled -and $enabledScopes.Count -gt 0) {
-            $result += "| Enabled Scopes | $($enabledScopes -join ', ') |" + "`n"
-        }
 
         $statusMessage = if ($isEnabled) { "✅ Enabled - Deleted objects can be recovered from the Recycle Bin" } else { "⚠️ Disabled - Deleted objects can only be recovered through tombstone reanimation or backup restore" }
         $result += "| Status | $statusMessage |" + "`n"

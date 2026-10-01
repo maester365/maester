@@ -22,7 +22,7 @@
     param()
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Groups')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -33,6 +33,8 @@
     $groups = $adState.Groups
     $totalGroupCount = ($groups | Measure-Object).Count
 
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
+
     # Query members for each group to find groups with members
     # Limit to first 100 groups for performance if there are many
     $groupsToCheck = $groups | Select-Object -First 100
@@ -40,7 +42,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             if ($members -and ($members | Measure-Object).Count -gt 0) {
                 $groupsWithMembers += $group
             }
@@ -49,6 +51,8 @@
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $groupsWithMembersCount = $groupsWithMembers.Count
     $emptyGroupsCount = $totalGroupCount - $groupsWithMembersCount

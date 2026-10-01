@@ -30,7 +30,7 @@
 
     Write-Verbose "Starting Test-MtAdNonAutoReplicationConnectionCount"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('ReplicationConnections')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

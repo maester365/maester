@@ -44,6 +44,18 @@ Describe 'Active Directory collectors require an explicit connection' {
         Should -Invoke Get-ADDomain -ModuleName Maester -Times 0 -Exactly
     }
 
+    It 'Does not collect domain state from a legacy-only connection marker' {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected         = $true
+                ProtocolValidated = $false
+            }
+        }
+
+        Get-MtADDomainState | Should -BeNullOrEmpty
+        Should -Invoke Get-ADDomain -ModuleName Maester -Times 0 -Exactly
+    }
+
     It 'Does not collect or return cached ACLs' {
         Get-MtADDacls | Should -BeNullOrEmpty
         Should -Invoke Get-ADDomain -ModuleName Maester -Times 0 -Exactly
@@ -187,18 +199,38 @@ Describe 'Active Directory test source safety' {
 
             if ($null -eq $collector) {
                 $issues += "$($file.FullName): does not call a guarded Active Directory collector."
-                continue
             }
 
-            $earlierAdOperation = $commands |
+            $bannedOperation = $commands |
                 Where-Object {
-                    $_.Extent.StartOffset -lt $collector.Extent.StartOffset -and
                     ($_.GetCommandName() -match '^(Get-AD|Get-GPO|Get-DnsServer)' -or $_.GetCommandName() -eq 'Invoke-Command')
                 } |
                 Select-Object -First 1
 
-            if ($null -ne $earlierAdOperation) {
-                $issues += "$($file.FullName): calls $($earlierAdOperation.GetCommandName()) before checking the explicit AD connection."
+            if ($null -ne $bannedOperation) {
+                $issues += "$($file.FullName): calls banned command $($bannedOperation.GetCommandName())."
+            }
+
+            $bannedType = $ast.FindAll({
+                    param($node)
+                    ($node -is [System.Management.Automation.Language.TypeExpressionAst] -or
+                        $node -is [System.Management.Automation.Language.TypeConstraintAst]) -and
+                    $node.TypeName.FullName -match '(^|\.)(ADSI|DirectoryEntry|DirectorySearcher)$'
+                }, $true) | Select-Object -First 1
+
+            if ($null -ne $bannedType) {
+                $issues += "$($file.FullName): uses banned type $($bannedType.TypeName.FullName)."
+            }
+
+            $bannedTypeCommand = $commands |
+                Where-Object {
+                    $_.GetCommandName() -eq 'New-Object' -and
+                    $_.Extent.Text -match '(?i)(^|\.)(DirectoryEntry|DirectorySearcher)\b'
+                } |
+                Select-Object -First 1
+
+            if ($null -ne $bannedTypeCommand) {
+                $issues += "$($file.FullName): constructs a banned DirectoryEntry or DirectorySearcher type."
             }
         }
 
@@ -225,7 +257,7 @@ Describe 'Active Directory test source safety' {
     It 'Includes the explicit AD connection in every documented AD invocation block' {
         $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
         $documentationPaths = @(
-            (Join-Path $repositoryRoot 'build/activeDirectory/README-ADTestRunner.md')
+            (Join-Path $repositoryRoot 'build/activeDirectory/azure-lab/CONTRIBUTING-E2E.md')
             (Join-Path $repositoryRoot 'website/blog/2026-04-25-active-directory-security-testing/index.md')
         )
         $issues = @()

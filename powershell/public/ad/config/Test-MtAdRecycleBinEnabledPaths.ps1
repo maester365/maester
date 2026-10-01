@@ -23,7 +23,7 @@
     Write-Verbose "Starting Test-MtAdRecycleBinEnabledPaths"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('OptionalFeatures')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -33,11 +33,11 @@
 
     $optionalFeatures = $adState.OptionalFeatures
     $recycleBinFeatures = @($optionalFeatures | Where-Object {
-            $_.Name -like "*Recycle Bin*" -and (($_.EnabledScopes | Measure-Object).Count -gt 0)
+            $_.Name -like "*Recycle Bin*" -and $_.IsEnabled
         })
 
     $enabledScopes = @(
-        $recycleBinFeatures | ForEach-Object { @($_.EnabledScopes) }
+        $recycleBinFeatures | ForEach-Object { $_.DistinguishedName }
     ) | Where-Object { $null -ne $_ }
 
     $enabledPathCount = ($enabledScopes | Measure-Object).Count

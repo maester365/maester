@@ -32,7 +32,7 @@
 
     Write-Verbose "Starting Test-MtAdSupportedSaslMechanismCount"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

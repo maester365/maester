@@ -31,7 +31,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdKrbtgtNonStandardUacCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Users')
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {

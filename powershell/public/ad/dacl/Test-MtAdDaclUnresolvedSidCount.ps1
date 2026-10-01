@@ -4,7 +4,7 @@
     Counts unresolved SID references in Active Directory DACL entries.
 
     .DESCRIPTION
-    This test reviews DACL entries from Get-MtADDomainState and identifies ACEs whose
+    This test reviews DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and identifies ACEs whose
     IdentityReference still appears as a raw domain SID. These orphaned SID references
     can indicate deleted accounts, stale delegations, or incomplete cleanup after
     migrations and privilege changes.
@@ -23,15 +23,10 @@
 
     Write-Verbose "Starting Test-MtAdDaclUnresolvedSidCount"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
-    }
-
-    if (-not ($adState.ContainsKey('DaclEntries'))) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
-        return $false
     }
 
     $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })

@@ -1,0 +1,113 @@
+{
+  "_comment": "Copy this file to LabConfig.json and fill in your deployment-specific values. LabConfig.json is gitignored.",
+  "deployment": {
+    "resourceGroupName": "<resource-group-name>",
+    "location": "<azure-region>",
+    "subscriptionId": "<subscription-id>",
+    "labPrefix": "<lab-prefix>",
+    "costCenterTag": "<cost-center-tag>"
+  },
+  "network": {
+    "vnetName": "<vnet-name>",
+    "vnetAddressSpace": "<vnet-cidr>",
+    "subnetName": "<subnet-name>",
+    "subnetAddressSpace": "<subnet-cidr>",
+    "nsgName": "<nsg-name>"
+  },
+  "domainControllers": [
+    {
+      "role": "RootForest",
+      "azureVmName": "<root-dc-vm-name>",
+      "guestName": "<root-dc-guest-name>",
+      "fqdn": "<root-dc-fqdn>",
+      "privateIp": "<root-dc-ip>",
+      "domain": "<root-domain>",
+      "forest": "<root-forest>",
+      "netBiosName": "<root-netbios>"
+    },
+    {
+      "role": "ChildDomain",
+      "azureVmName": "<child-dc-vm-name>",
+      "guestName": "<child-dc-guest-name>",
+      "fqdn": "<child-dc-fqdn>",
+      "privateIp": "<child-dc-ip>",
+      "domain": "<child-domain>",
+      "forest": "<root-forest>",
+      "parentDomain": "<root-domain>",
+      "parentDnsIp": "<root-dc-ip>",
+      "childName": "<child-name>",
+      "netBiosName": "<child-netbios>",
+      "promotionUser": "<root-domain>\\<admin-username>"
+    },
+    {
+      "role": "SeparateForest",
+      "azureVmName": "<forest-dc-vm-name>",
+      "guestName": "<forest-dc-guest-name>",
+      "fqdn": "<forest-dc-fqdn>",
+      "privateIp": "<forest-dc-ip>",
+      "domain": "<forest-domain>",
+      "forest": "<forest-domain>",
+      "netBiosName": "<forest-netbios>"
+    }
+  ],
+  "runners": [
+    {
+      "osType": "Windows",
+      "azureVmName": "<windows-runner-vm-name>",
+      "computerName": "<windows-computer-name>",
+      "guestName": "<windows-runner-guest-name>",
+      "privateIp": "<windows-runner-ip>",
+      "publicIp": "<windows-runner-public-ip>",
+      "domain": "<root-domain>",
+      "implicitCredentials": true,
+      "adminUsername": "<admin-username>",
+      "domainJoinUser": "<root-netbios>\\<domain-join-username>",
+      "sshPort": 22
+    },
+    {
+      "osType": "Ubuntu",
+      "azureVmName": "<linux-runner-vm-name>",
+      "computerName": null,
+      "guestName": "<linux-runner-guest-name>",
+      "privateIp": "<linux-runner-ip>",
+      "publicIp": "<linux-runner-public-ip>",
+      "domain": "<root-domain>",
+      "implicitCredentials": false,
+      "adminUsername": "<admin-username>",
+      "domainJoinUser": "<domain-join-username>@<root-domain>",
+      "sshPort": 22
+    }
+  ],
+  "credentials": {
+    "keyVaultName": "<key-vault-name>",
+    "localAdminUsername": "<admin-username>",
+    "testUserName": "<test-username>",
+    "domainJoinUserName": "<domain-join-username>",
+    "secretNames": {
+      "windowsLocalAdminPassword": "<lab-id>-windowslocaladminpassword",
+      "windowsRunnerLocalAdminPassword": "<lab-id>-windowsrunnerlocaladminpassword",
+      "linuxLocalAdminPassword": "<lab-id>-linuxlocaladminpassword",
+      "rootDomainReaderPassword": "<lab-id>-rootdomainreaderpassword",
+      "childDomainReaderPassword": "<lab-id>-childdomainreaderpassword",
+      "forestDomainReaderPassword": "<lab-id>-forestdomainreaderpassword",
+      "rootDomainJoinPassword": "<lab-id>-rootdomainjoinpassword",
+      "rootSafeModePassword": "<lab-id>-rootsafemodepassword",
+      "forestSafeModePassword": "<lab-id>-forestsafemodepassword"
+    }
+  },
+  "storage": {
+    "evidenceStorageAccount": "<storage-account-name>",
+    "evidenceContainer": "<container-name>"
+  },
+  "trust": {
+    "intraForestTrust": true,
+    "separateForestTrust": false,
+    "dnsForwarders": [
+      {
+        "domain": "<forest-domain>",
+        "targetDc": "<forest-dc-vm-name>",
+        "targetIp": "<forest-dc-ip>"
+      }
+    ]
+  }
+}

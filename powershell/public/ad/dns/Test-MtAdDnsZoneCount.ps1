@@ -24,7 +24,7 @@
     Write-Verbose "Starting Test-MtAdDnsZoneCount"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DNS')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -37,7 +37,7 @@
 
     # If DNS data is not available, skip the test
     if ($null -eq $dnsZones -or $dnsZones.Count -eq 0) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory -Result "DNS data is not available. Ensure the DnsServer module is installed and you have appropriate permissions."
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectoryDNS -Result "Active Directory DNS data could not be retrieved. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
         return $null
     }
 
@@ -60,7 +60,7 @@
         $testResultMarkdown = "Active Directory DNS zones have been analyzed. $zonesWithRecordsCount out of $totalZoneCount zones contain resource records.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory DNS zone data. Ensure you have appropriate permissions and the DnsServer module is installed."
+        $testResultMarkdown = "Unable to retrieve Active Directory DNS zone data. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown

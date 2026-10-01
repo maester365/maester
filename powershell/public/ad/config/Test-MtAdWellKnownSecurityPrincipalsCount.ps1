@@ -21,7 +21,7 @@
     Write-Verbose "Starting Test-MtAdWellKnownSecurityPrincipalsCount"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Configuration')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -47,7 +47,7 @@
         $result += "| --- | --- |" + "`n"
         $result += "| WellKnownSecurityPrincipals Count | $wellKnownPrincipalsCount |" + "`n"
         $result += "| Expected Count | $expectedCount |" + "`n"
-        $result += "| Matches Expected Count | $meetsExpectedCount |`n\n"
+        $result += "| Matches Expected Count | $meetsExpectedCount |" + "`n"
 
         $testResultMarkdown = "Active Directory well-known security principals have been counted. $wellKnownPrincipalsCount well-known security principal(s) were found (expected: $expectedCount).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

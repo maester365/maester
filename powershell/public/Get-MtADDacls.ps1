@@ -44,52 +44,69 @@
         return $null
     }
 
+    if (-not $__MtSession.ADConnection.ProtocolValidated) {
+        Write-Verbose 'Active Directory ACL enrichment requires a protocol-validated Connect-Maester session.'
+        return $null
+    }
+
     $cacheKey = 'Dacls'
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
         Write-Verbose 'Collecting AD ACLs from Active Directory'
 
+        $protocolConnection = $null
         try {
+            $protocolTargetParameters = @{
+                AuthMode = $__MtSession.ADConnection.RequestedAuthMode
+                TlsMode  = $__MtSession.ADConnection.RequestedTlsMode
+                PassThru = $true
+            }
+            if ($__MtSession.ADConnection.RequestedServer) {
+                $protocolTargetParameters['ActiveDirectoryServer'] = $__MtSession.ADConnection.RequestedServer
+            }
+            elseif ($__MtSession.ADConnection.RequestedDomain) {
+                $protocolTargetParameters['ActiveDirectoryDomain'] = $__MtSession.ADConnection.RequestedDomain
+            }
+            elseif ($__MtSession.ADConnection.RequestedForest) {
+                $protocolTargetParameters['ActiveDirectoryForest'] = $__MtSession.ADConnection.RequestedForest
+            }
+            if ($null -ne $__MtSession.ADCredential) {
+                $protocolTargetParameters['ActiveDirectoryCredential'] = $__MtSession.ADCredential
+            }
+
+            $protocolConnectionState = Connect-MtAdTarget @protocolTargetParameters
+            $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $protocolConnectionState
+            $protocolRootDse = Get-MtLdapRootDse -Connection $protocolConnection
+
             if (-not $DnBase) {
-                $DnBase = (Get-ADDomain).DistinguishedName
+                $DnBase = @($protocolRootDse.DefaultNamingContext)
             }
 
             $dacls = @()
 
             foreach ($base in $DnBase) {
                 Write-Verbose "Searching DN base: $base"
-
-                $objSearcher = New-Object System.DirectoryServices.DirectorySearcher ([ADSI]"LDAP://$base")
-                $objSearcher.PageSize = 200
-                $objSearcher.Filter = "(|(objectClass=domain)(objectCategory=organizationalUnit)(objectCategory=groupPolicyContainer)(samAccountType=805306368)(samAccountType=805306369)(samaccounttype=268435456)(samaccounttype=268435457)(samaccounttype=536870912)(samaccounttype=536870913))"
-                $objSearcher.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl -bor [System.DirectoryServices.SecurityMasks]::Group -bor [System.DirectoryServices.SecurityMasks]::Owner -bor [System.DirectoryServices.SecurityMasks]::Sacl
-                [void]$objSearcher.PropertiesToLoad.AddRange(('displayname', 'distinguishedname', 'name', 'ntsecuritydescriptor', 'objectclass', 'objectsid'))
-                $objSearcher.SearchScope = 'Subtree'
-
-                $results = $objSearcher.FindAll()
-                Write-Verbose "Found $($results.Count) objects in $base"
-
-                foreach ($obj in $results) {
-                    $aces = ([adsi]$obj.Path).ObjectSecurity.Access
-                    $aces | Add-Member -MemberType NoteProperty -Name Object -Value $obj.Path -PassThru | ForEach-Object {
-                        $dacls += $_
-                    }
-                }
-                $objSearcher.Dispose()
+                $baseDacls = @(Get-MtLdapDacl -Connection $protocolConnection -SearchBase $base)
+                Write-Verbose "Found $($baseDacls.Count) ACL entries in $base"
+                $dacls += $baseDacls
             }
 
             $__MtSession.ADCache[$cacheKey] = $dacls
             $__MtSession.ADCollectionTime = Get-Date
 
             Write-Verbose "Successfully collected $($dacls.Count) ACL entries"
-        } catch [Management.Automation.CommandNotFoundException] {
-            Write-Error "The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine."
-            return $null
-        } catch {
+        }
+        catch {
             Write-Error "Failed to collect AD ACLs: $($_.Exception.Message)"
             return $null
         }
-    } else {
+        finally {
+            if ($null -ne $protocolConnection) {
+                $protocolConnection.Dispose()
+            }
+        }
+    }
+    else {
         Write-Verbose 'Using cached AD ACL data'
     }
 

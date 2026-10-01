@@ -4,7 +4,7 @@
     Counts distinct Active Directory objects that have DACL entries.
 
     .DESCRIPTION
-    This informational test reviews DACL data collected by Get-MtADDomainState and counts the
+    This informational test reviews DACL data collected by Get-MtADDomainState -Categories @('DaclEntries') and counts the
     number of unique Active Directory objects represented in the DACL dataset. This helps confirm
     the breadth of DACL coverage across collected objects and provides baseline visibility into how
     many objects have explicit or inherited access control entries available for analysis.
@@ -22,7 +22,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclDistinctObjectCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'

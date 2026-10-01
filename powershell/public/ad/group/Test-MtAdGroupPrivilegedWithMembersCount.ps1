@@ -29,13 +29,15 @@
     [OutputType([bool])]
     param()
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Groups')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
 
     $groups = $adState.Groups
+
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Well-known privileged group RIDs
     $privilegedRIDs = @{
@@ -66,7 +68,7 @@
             $totalPrivileged++
 
             try {
-                $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+                $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
                 $memberCount = ($members | Measure-Object).Count
 
                 if ($memberCount -gt 0) {
@@ -90,6 +92,8 @@
             }
         }
     }
+
+    $protocolConnection.Dispose()
 
     $testResult = $true
 

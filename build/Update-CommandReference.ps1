@@ -93,10 +93,15 @@ foreach ($file in $cmdMarkdownFiles) {
     $content = Get-Content $file
     $synopsis = $content[($content.IndexOf("## SYNOPSIS") + 2)] # Get the synopsis
     if (![string]::IsNullOrWhiteSpace($synopsis)) {
-        # Escape embedded double quotes and wrap value in double quotes so YAML front matter
-        # remains valid even when the synopsis contains characters like ':' that have YAML meaning.
-        $escapedSynopsis = $synopsis -replace '"', '\"'
-        $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: `"$escapedSynopsis`"`nid:")
+        # Skip PlatyPS placeholder synopses so we don't emit invalid/empty descriptions.
+        if ($synopsis -match '^\s*\\?\{\{\s*Fill in the Synopsis\s*\\?\}\}\s*$') {
+            $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`nid:")
+        } else {
+            # Escape backslashes and embedded double quotes so the value stays valid
+            # inside YAML double quotes.
+            $escapedSynopsis = $synopsis.Replace('\', '\\').Replace('"', '\"')
+            $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: `"$escapedSynopsis`"`nid:")
+        }
         Set-Content $file $updatedContent
     }
 }

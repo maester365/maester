@@ -1,49 +1,27 @@
-﻿#Requires -RunAsAdministrator
-<#
-.SYNOPSIS
-    Runs all Active Directory tests using Invoke-Maester on a domain controller and copies report files to build/activeDirectory folder.
-
-.DESCRIPTION
-    This script:
-    1. Imports the Maester PowerShell module
-    2. Requires explicit authorization to connect to Active Directory
-    3. Runs all AD tests using Invoke-Maester
-    4. Copies the generated report files (HTML, Markdown, JSON) to the build/activeDirectory folder
-
-.PARAMETER ConnectActiveDirectory
-    Explicitly authorizes the script to validate an Active Directory connection. This switch is required; without it, the script exits before connecting to AD or running AD tests.
-
-.PARAMETER MaesterModulePath
-    Path to the Maester PowerShell module. Defaults to the local powershell folder.
-
-.PARAMETER TestPath
-    Path to the AD tests. Defaults to tests/Maester/ad and tests/ad.
-
-.PARAMETER OutputFolder
-    Temporary output folder for test results. Defaults to ./test-results.
-
-.PARAMETER TargetFolder
-    Target folder where reports will be copied. Defaults to build/activeDirectory.
-
-.EXAMPLE
-    .\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory
-
-    Runs all AD tests and copies reports to build/activeDirectory.
-
-.EXAMPLE
-    .\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -MaesterModulePath "C:\Maester\powershell" -Verbose
-
-    Runs tests using a specific Maester module path with verbose output.
-#>
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
     'PSAvoidUsingWriteHost',
     '',
-    Justification = 'This interactive validation runner uses colored console status output.'
+    Justification = 'Runner script provides status output.'
 )]
 [CmdletBinding()]
-param (
+param(
     [Parameter()]
     [switch]$ConnectActiveDirectory,
+
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]$TargetName,
+
+    [Parameter()]
+    [System.Management.Automation.PSCredential]$Credential,
+
+    [Parameter()]
+    [ValidateSet('Negotiate', 'Kerberos', 'Ntlm', 'Basic')]
+    [string]$AuthMode = 'Negotiate',
+
+    [Parameter()]
+    [ValidateSet('Auto', 'Ldaps', 'StartTls')]
+    [string]$TlsMode = 'Auto',
 
     [Parameter()]
     [string]$MaesterModulePath = (Join-Path $PSScriptRoot "..\..\powershell"),
@@ -55,226 +33,181 @@ param (
     [string]$OutputFolder = (Join-Path $PSScriptRoot "..\..\test-results"),
 
     [Parameter()]
-    [string]$TargetFolder = $PSScriptRoot
+    [string]$TargetFolder = $PSScriptRoot,
+
+    [Parameter()]
+    [switch]$ExportCsv,
+
+    [Parameter()]
+    [switch]$ExportExcel
 )
 
 if (-not $ConnectActiveDirectory.IsPresent) {
-    Write-Error "Active Directory testing is opt-in. Re-run this script with -ConnectActiveDirectory to explicitly connect to AD and run its tests."
-    exit 1
+    throw 'Active Directory testing is opt-in. Re-run with -ConnectActiveDirectory to explicitly connect to Active Directory and run AD tests.'
 }
 
-#region Initialization
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 $startTime = Get-Date
 
-Write-Host "=== Maester Active Directory Test Runner ===" -ForegroundColor Cyan
+Write-Host '=== Maester Active Directory Test Runner (Single Target) ===' -ForegroundColor Cyan
 Write-Host "Start Time: $startTime" -ForegroundColor Gray
-Write-Host "Computer: $env:COMPUTERNAME" -ForegroundColor Gray
-Write-Host "Domain: $env:USERDOMAIN" -ForegroundColor Gray
-Write-Host ""
+Write-Host "TargetName: $TargetName" -ForegroundColor Gray
+Write-Host "Requested authentication mode: $AuthMode" -ForegroundColor Gray
+Write-Host "Requested TLS mode: $TlsMode" -ForegroundColor Gray
+Write-Host "Credential mode: $(if ($null -eq $Credential) { 'Implicit' } else { 'Explicit' })" -ForegroundColor Gray
+Write-Host ''
 
-# Resolve absolute paths
+# Invoke the canonical prerequisite check before any tests run.
+$prereqScript = Join-Path (Join-Path $PSScriptRoot 'azure-lab') 'Test-ADProtocolPrerequisites.ps1'
+if (-not (Test-Path $prereqScript)) {
+    throw "Prerequisite script not found at: $prereqScript"
+}
+
+Write-Host 'Running protocol prerequisite check...' -ForegroundColor Yellow
+$prereqParams = @{
+    TargetName         = $TargetName
+    MaesterModulePath  = $MaesterModulePath
+}
+$prereqResult = & $prereqScript @prereqParams
+
+if (-not $prereqResult.IsReady) {
+    throw "Prerequisite check failed for '$TargetName'. Run '$prereqScript -TargetName $TargetName' for details."
+}
+
+Write-Host 'Prerequisite check passed.' -ForegroundColor Green
+Write-Host ''
+
+Write-Host 'Single-target rule:' -ForegroundColor Yellow
+Write-Host '  This script runs one isolated endpoint per Connect-Maester / Invoke-Maester cycle.' -ForegroundColor Yellow
+Write-Host ''
+
+# Resolve paths
 $MaesterModulePath = Resolve-Path $MaesterModulePath -ErrorAction Stop
 $TestPath = Resolve-Path $TestPath -ErrorAction Stop
-$OutputFolder = Resolve-Path $OutputFolder -ErrorAction SilentlyContinue
-if (-not $OutputFolder) {
-    $OutputFolder = (Join-Path $PSScriptRoot "..\..\test-results")
+
+if (-not (Test-Path $OutputFolder)) {
     New-Item -Path $OutputFolder -ItemType Directory -Force | Out-Null
-    $OutputFolder = Resolve-Path $OutputFolder
+}
+$OutputFolder = Resolve-Path $OutputFolder -ErrorAction Stop
+
+if (-not (Test-Path $TargetFolder)) {
+    New-Item -Path $TargetFolder -ItemType Directory -Force | Out-Null
 }
 $TargetFolder = Resolve-Path $TargetFolder -ErrorAction Stop
 
-Write-Verbose "Maester Module Path: $MaesterModulePath"
-Write-Verbose "Test Path: $TestPath"
-Write-Verbose "Output Folder: $OutputFolder"
-Write-Verbose "Target Folder: $TargetFolder"
-#endregion
-
-#region Module Import
-Write-Host "[Step 1] Importing Maester module..." -ForegroundColor Yellow
-try {
-    $manifestPath = Join-Path $MaesterModulePath "Maester.psd1"
-    if (-not (Test-Path $manifestPath)) {
-        throw "Maester module manifest not found at: $manifestPath"
-    }
-
-    Import-Module $manifestPath -Force -Verbose:$VerbosePreference
-    $module = Get-Module Maester
-    Write-Host "  ✓ Maester module v$($module.Version) imported successfully" -ForegroundColor Green
-} catch {
-    Write-Error "Failed to import Maester module: $_"
-    exit 1
-}
-#endregion
-
-#region Pre-requisites Check
-Write-Host "`n[Step 2] Checking pre-requisites..." -ForegroundColor Yellow
-
-# Check if running on a domain-joined machine or DC
-$computerInfo = Get-CimInstance -ClassName Win32_ComputerSystem
-if (-not $computerInfo.PartOfDomain) {
-    Write-Warning "This computer is not domain-joined. AD tests may fail."
+# Import Maester module
+$manifestPath = Join-Path $MaesterModulePath 'Maester.psd1'
+if (-not (Test-Path $manifestPath)) {
+    throw "Maester module manifest not found at: $manifestPath"
 }
 
-# Check for required Windows modules
-$requiredModules = @("ActiveDirectory", "GroupPolicy")
-foreach ($moduleName in $requiredModules) {
-    if (Get-Module -ListAvailable -Name $moduleName) {
-        Write-Host "  ✓ $moduleName module available" -ForegroundColor Green
-        try {
-            Import-Module $moduleName -ErrorAction Stop
-            Write-Host "    - $moduleName module imported" -ForegroundColor Gray
-        } catch {
-            Write-Warning "    - Failed to import $moduleName`: $_"
-        }
-    } else {
-        Write-Warning "  ✗ $moduleName module not available"
-    }
-}
+Import-Module $manifestPath -Force
 
 # Validate the explicit Active Directory connection before any tests run.
-try {
-    Connect-Maester -Service ActiveDirectory
-    if (-not (Test-MtConnection -Service ActiveDirectory)) {
-        throw "Connect-Maester did not establish an Active Directory connection."
-    }
-    Write-Host "  ✓ Active Directory connection validated" -ForegroundColor Green
-} catch {
-    Write-Error "Failed to connect to Active Directory: $_"
-    exit 1
+Write-Host 'Validating Active Directory connection...' -ForegroundColor Yellow
+Connect-Maester -Service ActiveDirectory -ActiveDirectoryServer $TargetName -ActiveDirectoryCredential $Credential -ActiveDirectoryAuthMode $AuthMode -ActiveDirectoryTlsMode $TlsMode | Out-Null
+
+$connectionDetails = Test-MtConnection -Service ActiveDirectory -Details
+$adConnection = $connectionDetails.ActiveDirectory
+if (-not $connectionDetails.AllConnected -or -not $adConnection.ProtocolValidated) {
+    throw 'The certified Active Directory protocol path did not complete successfully.'
 }
 
-# Verify AD test paths
+$timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
+$publicPathEvidence = [ordered]@{
+    SchemaVersion       = 1
+    RecordedAt          = (Get-Date).ToUniversalTime().ToString('o')
+    ProtocolValidated   = [bool]$adConnection.ProtocolValidated
+    ProtocolPath        = $adConnection.ProtocolPath
+    Targeting           = [ordered]@{
+        RequestedTarget = $TargetName
+        ResolvedServer  = $adConnection.ResolvedServer
+        ResolvedDomain  = $adConnection.ResolvedDomain
+        ResolvedForest  = $adConnection.ResolvedForest
+    }
+    Authentication      = [ordered]@{
+        RequestedMode   = $AuthMode
+        SelectedMode    = $adConnection.AuthenticationMode
+        CredentialMode  = if ($null -eq $Credential) { 'Implicit' } else { 'Explicit' }
+        CredentialUser  = if ($null -eq $Credential) { $null } else { $Credential.UserName }
+    }
+    Transport           = [ordered]@{
+        RequestedTlsMode = $TlsMode
+        SelectedTlsMode  = $adConnection.TlsMode
+    }
+}
+$evidenceFile = Join-Path $TargetFolder "AD-PublicPath-$TargetName-$timestamp.json"
+$publicPathEvidence | ConvertTo-Json -Depth 6 | Set-Content -Path $evidenceFile -Encoding utf8
+Write-Host "Protocol evidence: $evidenceFile" -ForegroundColor Green
+
+# Verify AD tests paths
 $adTestPaths = @(
-    (Join-Path $TestPath "Maester\ad"),
-    (Join-Path $TestPath "ad")
+    (Join-Path $TestPath 'Maester\ad'),
+    (Join-Path $TestPath 'ad')
+)
+$validTestPaths = @($adTestPaths | Where-Object { Test-Path $_ })
+if (-not $validTestPaths -or $validTestPaths.Count -eq 0) {
+    throw "No AD test paths found under: $TestPath"
+}
+
+Write-Host 'Running Maester AD tests (Tag: AD) and generating reports...' -ForegroundColor Yellow
+$outputPrefix = "AD-TestResults-$TargetName-$timestamp"
+
+$invokeParams = @{
+    Path = $validTestPaths[0]
+    Tag = 'AD'
+    OutputFolder = $OutputFolder
+    OutputFolderFileName = $outputPrefix
+    NonInteractive = $true
+    SkipGraphConnect = $true
+    PassThru = $true
+}
+
+if ($ExportCsv.IsPresent) {
+    $invokeParams.ExportCsv = $true
+}
+
+if ($ExportExcel.IsPresent) {
+    $invokeParams.ExportExcel = $true
+}
+
+$results = Invoke-Maester @invokeParams
+
+# Copy reports
+Write-Host "Copying generated reports to: $TargetFolder" -ForegroundColor Yellow
+
+$patterns = @(
+    "$outputPrefix*.html",
+    "$outputPrefix*.md",
+    "$outputPrefix*.json"
 )
 
-$validTestPaths = @()
-foreach ($path in $adTestPaths) {
-    if (Test-Path $path) {
-        Write-Host "  ✓ Found AD tests at: $path" -ForegroundColor Green
-        $validTestPaths += $path
-    } else {
-        Write-Verbose "  AD test path not found: $path"
+if ($ExportCsv.IsPresent) {
+    $patterns += "$outputPrefix*.csv"
+}
+
+if ($ExportExcel.IsPresent) {
+    $patterns += "$outputPrefix*.xlsx"
+}
+
+$copiedFiles = @()
+foreach ($pattern in $patterns) {
+    $files = Get-ChildItem -Path $OutputFolder -Filter $pattern -ErrorAction SilentlyContinue
+    foreach ($file in $files) {
+        Copy-Item -Path $file.FullName -Destination (Join-Path $TargetFolder $file.Name) -Force
+        $copiedFiles += (Join-Path $TargetFolder $file.Name)
+        Write-Host "  Copied: $($file.Name)" -ForegroundColor Green
     }
 }
 
-if ($validTestPaths.Count -eq 0) {
-    Write-Error "No AD test paths found!"
-    exit 1
+if ($copiedFiles.Count -eq 0) {
+    Write-Warning "No reports were copied. Ensure Invoke-Maester generated output files with prefix '$outputPrefix'."
 }
 
-Write-Host "  Found $($validTestPaths.Count) AD test location(s)" -ForegroundColor Gray
-#endregion
-
-#region Run AD Tests
-Write-Host "`n[Step 3] Running Active Directory tests..." -ForegroundColor Yellow
-Write-Host "  This may take several minutes depending on domain size..." -ForegroundColor Gray
-Write-Host ""
-
-try {
-    # Create output folder if it doesn't exist
-    if (-not (Test-Path $OutputFolder)) {
-        New-Item -Path $OutputFolder -ItemType Directory -Force | Out-Null
-    }
-
-    # Generate timestamped filename
-    $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
-    $fileName = "AD-TestResults-$timestamp"
-
-    # Run Invoke-Maester for AD tests
-    $invokeParams = @{
-        Path = $validTestPaths[0]
-        Tag = 'AD'
-        OutputFolder = $OutputFolder
-        OutputFolderFileName = $fileName
-        NonInteractive = $true
-        SkipGraphConnect = $true  # AD tests don't need Graph connection
-        Verbosity = 'Normal'
-    }
-
-    Write-Host "  Running: Invoke-Maester with parameters:" -ForegroundColor Gray
-    $invokeParams.GetEnumerator() | ForEach-Object {
-        Write-Host "    - $($_.Key): $($_.Value)" -ForegroundColor Gray
-    }
-    Write-Host ""
-
-    $results = Invoke-Maester @invokeParams -PassThru
-
-    if ($results) {
-        Write-Host "`n  ✓ Tests completed" -ForegroundColor Green
-        Write-Host "    - Total Tests: $($results.TotalCount)" -ForegroundColor Gray
-        Write-Host "    - Passed: $($results.PassedCount)" -ForegroundColor Green
-        Write-Host "    - Failed: $($results.FailedCount)" -ForegroundColor $(if($results.FailedCount -gt 0){'Red'}else{'Gray'})
-        Write-Host "    - Skipped: $($results.SkippedCount)" -ForegroundColor Gray
-
-        # Get the generated files
-        $generatedFiles = @(
-            (Join-Path $OutputFolder "$fileName.html"),
-            (Join-Path $OutputFolder "$fileName.md"),
-            (Join-Path $OutputFolder "$fileName.json")
-        ) | Where-Object { Test-Path $_ }
-
-        Write-Host "`n  Generated files:" -ForegroundColor Gray
-        $generatedFiles | ForEach-Object {
-            $size = (Get-Item $_).Length
-            Write-Host "    - $(Split-Path $_ -Leaf) ($([math]::Round($size/1KB, 2)) KB)" -ForegroundColor Gray
-        }
-    } else {
-        Write-Warning "No test results returned"
-    }
-} catch {
-    Write-Error "Failed to run AD tests: $_"
-    exit 1
-}
-#endregion
-
-#region Copy Reports
-Write-Host "`n[Step 4] Copying report files to target folder..." -ForegroundColor Yellow
-
-try {
-    $copiedFiles = @()
-    $fileTypes = @("*.html", "*.md", "*.json", "*.csv", "*.xlsx")
-
-    foreach ($fileType in $fileTypes) {
-        $files = Get-ChildItem -Path $OutputFolder -Filter "$fileName$fileType" -ErrorAction SilentlyContinue
-        foreach ($file in $files) {
-            $targetPath = Join-Path $TargetFolder $file.Name
-            Copy-Item -Path $file.FullName -Destination $targetPath -Force
-            $copiedFiles += $targetPath
-            Write-Host "  ✓ Copied: $($file.Name)" -ForegroundColor Green
-        }
-    }
-
-    if ($copiedFiles.Count -eq 0) {
-        Write-Warning "No files were copied. Check if tests generated output files."
-    } else {
-        Write-Host "`n  Successfully copied $($copiedFiles.Count) file(s) to:" -ForegroundColor Green
-        Write-Host "  $TargetFolder" -ForegroundColor Gray
-    }
-} catch {
-    Write-Error "Failed to copy report files: $_"
-    exit 1
-}
-#endregion
-
-#region Summary
 $endTime = Get-Date
-$duration = $endTime - $startTime
-
-Write-Host "`n=== Execution Summary ===" -ForegroundColor Cyan
-Write-Host "Start Time: $startTime" -ForegroundColor Gray
-Write-Host "End Time: $endTime" -ForegroundColor Gray
-Write-Host "Duration: $($duration.ToString('hh\:mm\:ss'))" -ForegroundColor Gray
-Write-Host ""
-Write-Host "Reports saved to:" -ForegroundColor Yellow
-Write-Host "  $TargetFolder" -ForegroundColor Gray
-Write-Host ""
-Write-Host "Files generated:" -ForegroundColor Yellow
-Get-ChildItem -Path $TargetFolder -Filter "AD-TestResults-*" | ForEach-Object {
-    Write-Host "  - $($_.Name)" -ForegroundColor Gray
-}
-Write-Host ""
-Write-Host "✓ AD Test execution completed successfully!" -ForegroundColor Green
-#endregion
+Write-Host ''
+Write-Host '=== Execution Summary ===' -ForegroundColor Cyan
+Write-Host "Duration: $($endTime - $startTime)" -ForegroundColor Gray
+Write-Host "Reports saved to: $TargetFolder" -ForegroundColor Gray
+Write-Host "Report prefix: $outputPrefix" -ForegroundColor Gray
+Write-Host "Results returned: $(@($results).Count)" -ForegroundColor Gray

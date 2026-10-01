@@ -24,7 +24,7 @@
     param()
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain', 'Groups')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -36,6 +36,8 @@
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
 
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
+
     # Collect trust members
     # Limit to first 50 groups for performance
     $groupsToCheck = $groups | Select-Object -First 50
@@ -44,7 +46,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
                 # Check if this is a trust member (foreignSecurityPrincipal or SID doesn't match domain)
                 $isTrustMember = $false
@@ -73,6 +75,8 @@
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $trustMemberCount = $trustMembers.Count
 

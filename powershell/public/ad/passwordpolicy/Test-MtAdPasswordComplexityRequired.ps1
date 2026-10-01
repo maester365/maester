@@ -25,7 +25,7 @@
     Write-Verbose "Starting Test-MtAdPasswordComplexityRequired"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -34,13 +34,8 @@
     }
 
     # Get the default domain password policy
-    try {
-        $passwordPolicy = Get-ADDefaultDomainPasswordPolicy -ErrorAction Stop
-        $complexityEnabled = $passwordPolicy.ComplexityEnabled
-    } catch {
-        Write-Error "Failed to retrieve password policy: $($_.Exception.Message)"
-        return $null
-    }
+    $passwordPolicy = $adState.Domain
+    $complexityEnabled = ($passwordPolicy.PwdProperties -band 1) -ne 0
 
     # Test passes if we successfully retrieved the password policy
     $testResult = $null -ne $complexityEnabled

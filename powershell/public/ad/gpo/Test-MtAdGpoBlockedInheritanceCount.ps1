@@ -27,10 +27,12 @@
     [OutputType([bool])]
     param()
 
-    # Get AD domain state data (uses cached data if available)
-    $adState = $null
+    Write-Verbose "Starting Test-MtAdGpoBlockedInheritanceCount"
+
+    # Get AD GPO state data (uses cached data if available)
+    $gpoState = $null
     try {
-        $adState = Get-MtADDomainState
+        $gpoState = Get-MtADGpoState
     }
     catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -38,38 +40,29 @@
     }
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
+    if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError "Active Directory data is not available."
         return $null
     }
 
-    $ous = $null
-    try {
-        $ous = Get-ADOrganizationalUnit -Filter * -Properties gpOptions -ErrorAction Stop
-    }
-    catch {
-        Write-Verbose "Unable to retrieve Organizational Units for blocked inheritance check: $($_.Exception.Message)"
-        $ous = $null
-    }
+    $ous = @($gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'organizationalUnit' })
 
-    $ouCount = if ($null -ne $ous) { ($ous | Measure-Object).Count } else { 0 }
+    $ouCount = ($ous | Measure-Object).Count
 
     $blockedOus = @()
-    if ($null -ne $ous) {
-        $blockedOus = @(
-            foreach ($ou in $ous) {
-                $gpOptionsValue = $ou.gpOptions
-                if ($null -eq $gpOptionsValue) {
-                    continue
-                }
-
-                # gpOptions: 1 = blocked inheritance
-                if ([int]$gpOptionsValue -eq 1) {
-                    $ou
-                }
+    $blockedOus = @(
+        foreach ($ou in $ous) {
+            $gpOptionsValue = $ou.gpOptions
+            if ($null -eq $gpOptionsValue) {
+                continue
             }
-        )
-    }
+
+            # gpOptions: 1 = blocked inheritance
+            if ([int]$gpOptionsValue -eq 1) {
+                $ou
+            }
+        }
+    )
 
     $blockedCount = ($blockedOus | Measure-Object).Count
     $blockedPercentage = if ($ouCount -gt 0) { [math]::Round(($blockedCount / $ouCount) * 100, 2) } else { 0 }

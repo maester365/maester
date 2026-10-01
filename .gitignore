@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 .test
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -531,3 +532,15 @@ website/build/
 build/orca/orca/
 
 powershell/maester-tests
+PowerShellEditorServices.json
+
+# AD development planning artifacts (preserved on archive branch)
+.sisyphus/
+
+# AD E2E lab artifacts (evidence, results, backups)
+build/activeDirectory/azure-lab/evidence/
+build/activeDirectory/AD-TEST-RESULTS*
+build/activeDirectory/AD-TestResults-*
+build/activeDirectory/**/*.bak
+# Lab-specific configuration files (contain deployment-specific values)
+build/activeDirectory/azure-lab/LabConfig.json

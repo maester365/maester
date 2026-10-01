@@ -46,13 +46,15 @@ Describe 'Validating the module manifest' -ForEach @{ moduleRoot = $moduleRoot; 
         }
 
         Context 'Testing format files' -Skip:$(-not $manifest.ContainsKey('FormatsToProcess')) {
-            It 'The file <_> should exist' -ForEach $manifest.FormatsToProcess {
+            $formatFiles = if ($manifest.ContainsKey('FormatsToProcess') -and ($manifest.FormatsToProcess | Measure-Object).Count -gt 0) { $manifest.FormatsToProcess } else { @('dummy') }
+            It 'The file <_> should exist' -ForEach $formatFiles {
                 Join-Path -Path $moduleRoot -ChildPath $_ | Should -Exist
             }
         }
 
         Context 'Testing types files' -Skip:$(-not $manifest.ContainsKey('TypesToProcess')) {
-            It 'The file <_> should exist' -ForEach $manifest.TypesToProcess {
+            $typesFiles = if ($manifest.ContainsKey('TypesToProcess') -and ($manifest.TypesToProcess | Measure-Object).Count -gt 0) { $manifest.TypesToProcess } else { @('dummy') }
+            It 'The file <_> should exist' -ForEach $typesFiles {
                 Join-Path -Path $moduleRoot -ChildPath $_ | Should -Exist
             }
         }

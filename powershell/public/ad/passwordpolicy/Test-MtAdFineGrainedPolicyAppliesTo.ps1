@@ -24,7 +24,7 @@
     Write-Verbose "Starting Test-MtAdFineGrainedPolicyAppliesTo"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Computers', 'FineGrainedPasswordPolicies', 'Groups', 'Users')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -33,13 +33,8 @@
     }
 
     # Get fine-grained password policies
-    try {
-        $fgppPolicies = Get-ADFineGrainedPasswordPolicy -Filter * -Properties AppliesTo -ErrorAction Stop
-        $policyCount = ($fgppPolicies | Measure-Object).Count
-    } catch {
-        Write-Error "Failed to retrieve fine-grained password policies: $($_.Exception.Message)"
-        return $null
-    }
+    $fgppPolicies = $adState.FineGrainedPasswordPolicies
+    $policyCount = ($fgppPolicies | Measure-Object).Count
 
     # Test passes if we successfully retrieved the policies
     $testResult = $null -ne $fgppPolicies
@@ -51,7 +46,7 @@
 
             foreach ($policy in $fgppPolicies) {
                 $policyName = $policy.Name
-                $appliesTo = $policy.AppliesTo
+                $appliesTo = $policy.MsDsPsoAppliesTo
 
                 $result += "**Policy: $policyName**" + "`n" + "`n"
 
@@ -60,17 +55,20 @@
                     $result += "| --- | --- |" + "`n"
 
                     foreach ($target in $appliesTo) {
-                        try {
-                            # Try to resolve the DN to a friendly name
-                            $object = Get-ADObject -Identity $target -Properties ObjectClass -ErrorAction SilentlyContinue
-                            if ($object) {
-                                $objectClass = $object.ObjectClass
-                                $objectName = $object.Name
-                                $result += "| $objectName | $objectClass |" + "`n"
-                            } else {
-                                $result += "| $target | Unknown |" + "`n"
-                            }
-                        } catch {
+                        $object = $adState.Users | Where-Object { $_.DistinguishedName -eq $target } | Select-Object -First 1
+                        $objectClass = 'user'
+                        if ($null -eq $object) {
+                            $object = $adState.Groups | Where-Object { $_.DistinguishedName -eq $target } | Select-Object -First 1
+                            $objectClass = 'group'
+                        }
+                        if ($null -eq $object) {
+                            $object = $adState.Computers | Where-Object { $_.DistinguishedName -eq $target } | Select-Object -First 1
+                            $objectClass = 'computer'
+                        }
+                        if ($object) {
+                            $objectName = $object.Name
+                            $result += "| $objectName | $objectClass |" + "`n"
+                        } else {
                             $result += "| $target | Unknown |" + "`n"
                         }
                     }

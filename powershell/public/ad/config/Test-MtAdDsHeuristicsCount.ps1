@@ -22,7 +22,7 @@
 
     Write-Verbose "Starting Test-MtAdDsHeuristicsCount"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Configuration')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

@@ -25,7 +25,7 @@
     param()
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Groups')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
@@ -35,6 +35,8 @@
 
     $groups = $adState.Groups
 
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
+
     # Collect all members and their types
     # Limit to first 50 groups for performance
     $groupsToCheck = $groups | Select-Object -First 50
@@ -43,7 +45,7 @@
 
     foreach ($group in $groupsToCheck) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
                 # Avoid duplicates by SID
                 if (-not $processedSids.ContainsKey($member.SID.Value)) {
@@ -55,6 +57,8 @@
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     # Group by object class and get counts
     $typeBreakdown = $allMembers | Group-Object -Property objectClass | Sort-Object Count -Descending

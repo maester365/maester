@@ -21,7 +21,7 @@
     [OutputType([bool])]
     param()
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain', 'Groups')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
@@ -31,6 +31,8 @@
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
 
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
+
     # Collect all foreign SIDs from group members
     $foreignSidsByDomain = @{}
     $totalForeignSids = 0
@@ -38,7 +40,7 @@
     foreach ($group in $groups) {
         try {
             # Get group members
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
 
             foreach ($member in $members) {
                 if ($member.SID -and $member.SID.Value) {
@@ -71,6 +73,8 @@
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $testResult = $true
 

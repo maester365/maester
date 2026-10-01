@@ -25,7 +25,7 @@
     Write-Verbose "Starting Test-MtAdDcReadOnlyCount"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DomainControllers')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {

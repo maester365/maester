@@ -29,7 +29,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdManagedServiceAccountCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('ServiceAccounts')
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {

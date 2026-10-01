@@ -24,7 +24,7 @@
     Write-Verbose "Starting Test-MtAdDcFsmoRoleHolderDetails"
 
     # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Domain', 'DomainControllers', 'Forest')
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {

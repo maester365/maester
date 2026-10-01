@@ -20,7 +20,7 @@
     [OutputType([bool])]
     param()
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Groups')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
@@ -29,6 +29,8 @@
     $groups = $adState.Groups
     $totalGroups = ($groups | Measure-Object).Count
 
+    $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
+
     # Count empty non-privileged groups
     $emptyNonPrivilegedGroups = 0
     $emptyPrivilegedGroups = 0
@@ -36,7 +38,7 @@
 
     foreach ($group in $groups) {
         try {
-            $members = Get-ADGroupMember -Identity $group.DistinguishedName -ErrorAction SilentlyContinue
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             $memberCount = ($members | Measure-Object).Count
 
             if ($memberCount -eq 0) {
@@ -54,6 +56,8 @@
             Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
         }
     }
+
+    $protocolConnection.Dispose()
 
     $testResult = $true
 

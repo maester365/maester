@@ -33,7 +33,7 @@
 
     Write-Verbose "Starting Test-MtAdDfsrSubscriptionCount"
 
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('DfsrSubscriptions', 'DomainControllers')
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory

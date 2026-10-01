@@ -27,7 +27,7 @@
     param()
 
     Write-Verbose "Starting Test-MtAdComputerUnconstrainedDelegationCount"
-    $adState = Get-MtADDomainState
+    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers')
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
