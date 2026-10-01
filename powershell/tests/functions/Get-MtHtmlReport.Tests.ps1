@@ -249,7 +249,8 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Omits ErrorRecord from multi-tenant results passed as a hashtable' {
-            $results = @{
+            # Ordered so EndOfJson stays last; a plain hashtable's key order changes between processes.
+            $results = [ordered]@{
                 Tenants   = @(
                     @{
                         TenantName = 'Tenant One'
