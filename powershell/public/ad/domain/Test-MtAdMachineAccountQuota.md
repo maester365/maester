@@ -33,4 +33,5 @@ This test retrieves the current machine account quota value from Active Director
 
 #### Related links
 
+- [Microsoft Defender for Identity: Resolve unsecure domain configurations](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/identity-infrastructure#resolve-unsecure-domain-configurations)
 - [ANSSI Active Directory checkpoints: Unrestricted domain join](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_machineaccountquota)

@@ -41,4 +41,5 @@ This test retrieves the OperatingSystem attribute from all domain controllers an
 
 #### Related links
 
+- [Microsoft Learn: Windows Server release information](https://learn.microsoft.com/en-us/windows-server/get-started/windows-server-release-info)
 - [ANSSI Active Directory checkpoints: DC/RODC with an obsolete operating system](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dc_obsolete)

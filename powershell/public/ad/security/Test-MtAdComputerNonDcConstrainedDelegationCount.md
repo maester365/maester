@@ -41,5 +41,6 @@ This test counts non-DC computers with the `TrustedToAuthForDelegation` flag ena
 
 #### Related links
 
+- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
 - [ANSSI Active Directory checkpoints: Constrained authentication delegation to privileged service](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_a2d2)
 - [ANSSI Active Directory checkpoints: Constrained delegation with protocol transition to a privileged service](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t2a4d)

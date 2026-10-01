@@ -41,4 +41,5 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 
 #### Related links
 
+- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
 - [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)

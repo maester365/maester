@@ -33,4 +33,5 @@ This test identifies domain administrator accounts and provides detailed informa
 
 #### Related links
 
+- [Microsoft Defender for Identity: Unsecure account attributes](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-account-attributes)
 - [ANSSI Active Directory checkpoints: Privileged accounts with SPN](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_spn_priv)

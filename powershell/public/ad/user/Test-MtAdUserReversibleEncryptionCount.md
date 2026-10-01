@@ -20,4 +20,5 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 
 #### Related links
 
+- [Microsoft Defender for Identity: Unsecure account attributes](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-account-attributes)
 - [ANSSI Active Directory checkpoints: Privileged accounts with passwords stored using reversible encryption](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_reversible_password_priv_uac)

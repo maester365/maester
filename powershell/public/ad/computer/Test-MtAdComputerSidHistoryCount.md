@@ -27,4 +27,5 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 
 #### Related links
 
+- [Microsoft Defender for Identity: Unsecure SID History attributes](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-sid-history-attributes)
 - [ANSSI Active Directory checkpoints: Accounts or groups with SID history set](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_sidhistory_present)
