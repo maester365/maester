@@ -1,6 +1,6 @@
 ---
 title: "MT.1066 - Conditional Access policies should not include or exclude deleted users, groups, or roles."
-description: "# Conditional Access policies should not reference non-existent users, groups, or roles This test checks if there are any Conditional Access policies that reference non-existent users, groups, or roles. This usually happens when a user, group, or role is deleted but is still referenced in a Conditi…"
+description: "This test checks if there are any Conditional Access policies that reference non-existent users, groups, or roles. This usually happens when a user, group, or role is deleted but is still referenced in a Conditional Access policy. Non-existent objects in your policy can lead to unexpected gaps or b…"
 slug: /tests/MT.1066
 className: generated-test-doc
 sidebar_class_name: hidden

@@ -16,6 +16,276 @@
       "avatar": "https://github.com/soulemike.png",
       "firstContribution": "2024-04-11",
       "testsAuthored": [
+        "AD-CFG-01",
+        "AD-CFG-02",
+        "AD-CFG-03",
+        "AD-CFG-04",
+        "AD-CFG-05",
+        "AD-CFG-06",
+        "AD-CFG-07",
+        "AD-CFG-08",
+        "AD-CFG-09",
+        "AD-CFG-10",
+        "AD-CFG-11",
+        "AD-CFG-12",
+        "AD-CFG-13",
+        "AD-CFG-14",
+        "AD-CFG-15",
+        "AD-CFG-16",
+        "AD-CFG-17",
+        "AD-CFG-18",
+        "AD-CFG-19",
+        "AD-CFG-20",
+        "AD-CFG-21",
+        "AD-CFG-22",
+        "AD-CFG-23",
+        "AD-CFG-24",
+        "AD-COMP-01",
+        "AD-COMP-02",
+        "AD-COMP-03",
+        "AD-COMP-04",
+        "AD-COMP-05",
+        "AD-COMP-06",
+        "AD-COMP-07",
+        "AD-COMP-08",
+        "AD-COMP-09",
+        "AD-COMP-10",
+        "AD-DACL-01",
+        "AD-DACL-02",
+        "AD-DACL-03",
+        "AD-DACL-04",
+        "AD-DACL-05",
+        "AD-DACL-06",
+        "AD-DACL-07",
+        "AD-DACL-08",
+        "AD-DACL-09",
+        "AD-DACL-10",
+        "AD-DACL-11",
+        "AD-DACL-12",
+        "AD-DACL-13",
+        "AD-DACL-14",
+        "AD-DACL-15",
+        "AD-DACL-16",
+        "AD-DACL-17",
+        "AD-DACL-18",
+        "AD-DC-01",
+        "AD-DC-02",
+        "AD-DC-03",
+        "AD-DC-04",
+        "AD-DC-05",
+        "AD-DC-06",
+        "AD-DC-07",
+        "AD-DC-08",
+        "AD-DCD-01",
+        "AD-DCD-02",
+        "AD-DCD-03",
+        "AD-DCD-04",
+        "AD-DCOMP-01",
+        "AD-DCOMP-02",
+        "AD-DCOMP-03",
+        "AD-DCOMP-04",
+        "AD-DCOMP-05",
+        "AD-DCOMP-06",
+        "AD-DCOMP-07",
+        "AD-DCOMP-08",
+        "AD-DCOMP-09",
+        "AD-DFSR-01",
+        "AD-DNS-01",
+        "AD-DNS-02",
+        "AD-DNS-03",
+        "AD-DNS-04",
+        "AD-DNS-05",
+        "AD-DNS-06",
+        "AD-DNS-07",
+        "AD-DNS-08",
+        "AD-DNS-09",
+        "AD-DNS-10",
+        "AD-DNS-11",
+        "AD-DNS-12",
+        "AD-DNS-13",
+        "AD-DNS-14",
+        "AD-DNS-15",
+        "AD-DNS-16",
+        "AD-DNS-17",
+        "AD-DNS-18",
+        "AD-DNS-19",
+        "AD-DOM-01",
+        "AD-DOM-02",
+        "AD-DOM-03",
+        "AD-DOM-04",
+        "AD-DOM-05",
+        "AD-DOM-06",
+        "AD-DOM-07",
+        "AD-DOM-08",
+        "AD-DOMS-01",
+        "AD-FEAT-01",
+        "AD-FEAT-02",
+        "AD-FGPP-01",
+        "AD-FGPP-02",
+        "AD-FGPP-03",
+        "AD-FGPP-04",
+        "AD-FOR-01",
+        "AD-FOR-02",
+        "AD-FOR-03",
+        "AD-FOR-04",
+        "AD-FORS-01",
+        "AD-FORS-02",
+        "AD-FORS-03",
+        "AD-FORS-04",
+        "AD-GCHG-01",
+        "AD-GMC-01",
+        "AD-GMC-02",
+        "AD-GMC-03",
+        "AD-GMC-04",
+        "AD-GMC-05",
+        "AD-GMC-06",
+        "AD-GMC-07",
+        "AD-GMC-08",
+        "AD-GMC-09",
+        "AD-GMC-10",
+        "AD-GMC-11",
+        "AD-GPO-01",
+        "AD-GPO-02",
+        "AD-GPO-03",
+        "AD-GPO-04",
+        "AD-GPO-05",
+        "AD-GPOL-01",
+        "AD-GPOL-02",
+        "AD-GPOL-03",
+        "AD-GPOL-04",
+        "AD-GPOL-05",
+        "AD-GPOL-06",
+        "AD-GPOREP-01",
+        "AD-GPOREP-02",
+        "AD-GPOREP-03",
+        "AD-GPOREP-04",
+        "AD-GPOREP-05",
+        "AD-GPOREP-06",
+        "AD-GPOREP-07",
+        "AD-GPOREP-08",
+        "AD-GPOREP-09",
+        "AD-GPOREP-10",
+        "AD-GPOREP-11",
+        "AD-GPOREP-12",
+        "AD-GPOREP-13",
+        "AD-GPOREP-14",
+        "AD-GPOREP-15",
+        "AD-GPOREP-16",
+        "AD-GPOREP-17",
+        "AD-GPOREP-18",
+        "AD-GPOREP-19",
+        "AD-GPOREP-20",
+        "AD-GPOS-01",
+        "AD-GPOS-02",
+        "AD-GPOS-03",
+        "AD-GPOS-04",
+        "AD-GPOS-05",
+        "AD-GPOS-06",
+        "AD-GPOS-07",
+        "AD-GPOS-08",
+        "AD-GPOS-09",
+        "AD-GRP-01",
+        "AD-GRP-02",
+        "AD-GRP-03",
+        "AD-GRP-04",
+        "AD-GRP-05",
+        "AD-GRP-06",
+        "AD-GRP-07",
+        "AD-GRP-08",
+        "AD-GRP-09",
+        "AD-GRP-10",
+        "AD-KRBTGT-01",
+        "AD-KRBTGT-02",
+        "AD-KRBTGT-03",
+        "AD-MSA-01",
+        "AD-OU-01",
+        "AD-OU-02",
+        "AD-OU-03",
+        "AD-OU-04",
+        "AD-OU-05",
+        "AD-PRINT-01",
+        "AD-PWDPOL-01",
+        "AD-PWDPOL-02",
+        "AD-PWDPOL-03",
+        "AD-PWDPOL-04",
+        "AD-PWDPOL-05",
+        "AD-PWDPOL-06",
+        "AD-PWDPOL-07",
+        "AD-REPL-01",
+        "AD-REPL-02",
+        "AD-ROOTDSE-01",
+        "AD-ROOTDSE-02",
+        "AD-ROOTDSE-03",
+        "AD-SCH-01",
+        "AD-SCH-02",
+        "AD-SCH-03",
+        "AD-SCH-04",
+        "AD-SCH-05",
+        "AD-SITE-01",
+        "AD-SITE-02",
+        "AD-SITE-03",
+        "AD-SITE-04",
+        "AD-SITE-05",
+        "AD-SPN-01",
+        "AD-SPN-02",
+        "AD-SPN-03",
+        "AD-SPN-04",
+        "AD-SPN-05",
+        "AD-SPN-06",
+        "AD-SPN-07",
+        "AD-SPN-08",
+        "AD-SPN-09",
+        "AD-SPN-10",
+        "AD-SPN-11",
+        "AD-SPN-12",
+        "AD-SPN-13",
+        "AD-SUB-01",
+        "AD-SUB-02",
+        "AD-SUB-03",
+        "AD-SUB-04",
+        "AD-SUB-05",
+        "AD-SUB-06",
+        "AD-SUB-07",
+        "AD-SUB-08",
+        "AD-SUB-09",
+        "AD-SUB-10",
+        "AD-SUB-11",
+        "AD-TRUST-01",
+        "AD-TRUST-02",
+        "AD-TRUST-03",
+        "AD-TRUST-04",
+        "AD-TRUST-05",
+        "AD-TRUST-06",
+        "AD-TRUST-07",
+        "AD-USER-01",
+        "AD-USER-02",
+        "AD-USER-03",
+        "AD-USER-04",
+        "AD-USER-05",
+        "AD-USER-06",
+        "AD-USER-07",
+        "AD-USER-08",
+        "AD-USER-09",
+        "AD-USER-10",
+        "AD-USER-11",
+        "AD-USER-12",
+        "AD-USER-13",
+        "AD-USER-14",
+        "AD-USER-15",
+        "AD-USER-16",
+        "AD-USER-17",
+        "AD-USER-18",
+        "AD-USER-19",
+        "AD-USER-20",
+        "AD-USER-21",
+        "AD-USER-22",
+        "AD-USER-23",
+        "AD-USER-24",
+        "AD-USER-25",
+        "AD-USER-26",
+        "AD-USER-27",
+        "AD-USER-28",
+        "AD-USER-29",
         "CIS.M365.1.1.1",
         "CIS.M365.1.3.3",
         "CISA.MS.AAD.1.1",
@@ -1440,6 +1710,8 @@
       "firstContribution": "2026-07-28",
       "testsAuthored": [],
       "testsContributed": [
+        "AD-GMC-09",
+        "AD-MSA-01",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
         "CIS.M365.1.2.1",
@@ -3314,6 +3586,248 @@
         "MT.1055"
       ],
       "testsContributed": [
+        "AD-CFG-01",
+        "AD-CFG-02",
+        "AD-CFG-03",
+        "AD-CFG-04",
+        "AD-CFG-05",
+        "AD-CFG-06",
+        "AD-CFG-07",
+        "AD-CFG-08",
+        "AD-CFG-09",
+        "AD-CFG-10",
+        "AD-CFG-11",
+        "AD-CFG-12",
+        "AD-CFG-13",
+        "AD-CFG-14",
+        "AD-CFG-15",
+        "AD-CFG-16",
+        "AD-CFG-17",
+        "AD-CFG-18",
+        "AD-CFG-19",
+        "AD-CFG-20",
+        "AD-CFG-21",
+        "AD-CFG-22",
+        "AD-CFG-23",
+        "AD-CFG-24",
+        "AD-COMP-01",
+        "AD-COMP-02",
+        "AD-COMP-03",
+        "AD-COMP-04",
+        "AD-COMP-05",
+        "AD-COMP-06",
+        "AD-COMP-07",
+        "AD-COMP-08",
+        "AD-COMP-09",
+        "AD-COMP-10",
+        "AD-DACL-01",
+        "AD-DACL-02",
+        "AD-DACL-03",
+        "AD-DACL-04",
+        "AD-DACL-05",
+        "AD-DACL-06",
+        "AD-DACL-07",
+        "AD-DACL-08",
+        "AD-DACL-09",
+        "AD-DACL-10",
+        "AD-DACL-11",
+        "AD-DACL-12",
+        "AD-DACL-13",
+        "AD-DACL-14",
+        "AD-DACL-15",
+        "AD-DACL-16",
+        "AD-DACL-17",
+        "AD-DACL-18",
+        "AD-DC-01",
+        "AD-DC-02",
+        "AD-DC-03",
+        "AD-DC-04",
+        "AD-DC-05",
+        "AD-DC-06",
+        "AD-DC-07",
+        "AD-DC-08",
+        "AD-DCD-01",
+        "AD-DCD-02",
+        "AD-DCD-03",
+        "AD-DCD-04",
+        "AD-DCOMP-01",
+        "AD-DCOMP-02",
+        "AD-DCOMP-03",
+        "AD-DCOMP-04",
+        "AD-DCOMP-05",
+        "AD-DCOMP-06",
+        "AD-DCOMP-07",
+        "AD-DCOMP-08",
+        "AD-DCOMP-09",
+        "AD-DFSR-01",
+        "AD-DNS-01",
+        "AD-DNS-02",
+        "AD-DNS-03",
+        "AD-DNS-04",
+        "AD-DNS-05",
+        "AD-DNS-06",
+        "AD-DNS-07",
+        "AD-DNS-08",
+        "AD-DNS-09",
+        "AD-DNS-10",
+        "AD-DNS-11",
+        "AD-DNS-12",
+        "AD-DNS-13",
+        "AD-DNS-14",
+        "AD-DNS-15",
+        "AD-DNS-16",
+        "AD-DNS-17",
+        "AD-DNS-18",
+        "AD-DNS-19",
+        "AD-DOM-01",
+        "AD-DOM-02",
+        "AD-DOM-03",
+        "AD-DOM-04",
+        "AD-DOM-05",
+        "AD-DOM-06",
+        "AD-DOM-07",
+        "AD-DOM-08",
+        "AD-DOMS-01",
+        "AD-FEAT-01",
+        "AD-FEAT-02",
+        "AD-FGPP-01",
+        "AD-FGPP-02",
+        "AD-FGPP-03",
+        "AD-FGPP-04",
+        "AD-FOR-01",
+        "AD-FOR-02",
+        "AD-FOR-03",
+        "AD-FOR-04",
+        "AD-FORS-01",
+        "AD-FORS-02",
+        "AD-FORS-03",
+        "AD-FORS-04",
+        "AD-GCHG-01",
+        "AD-GMC-01",
+        "AD-GMC-02",
+        "AD-GMC-03",
+        "AD-GMC-04",
+        "AD-GMC-05",
+        "AD-GMC-06",
+        "AD-GMC-07",
+        "AD-GMC-08",
+        "AD-GMC-09",
+        "AD-GMC-10",
+        "AD-GMC-11",
+        "AD-GPO-01",
+        "AD-GPO-02",
+        "AD-GPO-03",
+        "AD-GPO-04",
+        "AD-GPO-05",
+        "AD-GPOL-01",
+        "AD-GPOL-02",
+        "AD-GPOL-03",
+        "AD-GPOL-04",
+        "AD-GPOL-05",
+        "AD-GPOL-06",
+        "AD-GPOREP-12",
+        "AD-GRP-01",
+        "AD-GRP-02",
+        "AD-GRP-03",
+        "AD-GRP-04",
+        "AD-GRP-05",
+        "AD-GRP-06",
+        "AD-GRP-07",
+        "AD-GRP-08",
+        "AD-GRP-09",
+        "AD-GRP-10",
+        "AD-KRBTGT-01",
+        "AD-KRBTGT-02",
+        "AD-KRBTGT-03",
+        "AD-MSA-01",
+        "AD-OU-01",
+        "AD-OU-02",
+        "AD-OU-03",
+        "AD-OU-04",
+        "AD-OU-05",
+        "AD-PRINT-01",
+        "AD-PWDPOL-01",
+        "AD-PWDPOL-02",
+        "AD-PWDPOL-03",
+        "AD-PWDPOL-04",
+        "AD-PWDPOL-05",
+        "AD-PWDPOL-06",
+        "AD-PWDPOL-07",
+        "AD-REPL-01",
+        "AD-REPL-02",
+        "AD-ROOTDSE-01",
+        "AD-ROOTDSE-02",
+        "AD-ROOTDSE-03",
+        "AD-SCH-01",
+        "AD-SCH-02",
+        "AD-SCH-03",
+        "AD-SCH-04",
+        "AD-SCH-05",
+        "AD-SITE-01",
+        "AD-SITE-02",
+        "AD-SITE-03",
+        "AD-SITE-04",
+        "AD-SITE-05",
+        "AD-SPN-01",
+        "AD-SPN-02",
+        "AD-SPN-03",
+        "AD-SPN-04",
+        "AD-SPN-05",
+        "AD-SPN-06",
+        "AD-SPN-07",
+        "AD-SPN-08",
+        "AD-SPN-09",
+        "AD-SPN-10",
+        "AD-SPN-11",
+        "AD-SPN-12",
+        "AD-SPN-13",
+        "AD-SUB-01",
+        "AD-SUB-02",
+        "AD-SUB-03",
+        "AD-SUB-04",
+        "AD-SUB-05",
+        "AD-SUB-06",
+        "AD-SUB-07",
+        "AD-SUB-08",
+        "AD-SUB-09",
+        "AD-SUB-10",
+        "AD-SUB-11",
+        "AD-TRUST-01",
+        "AD-TRUST-02",
+        "AD-TRUST-03",
+        "AD-TRUST-04",
+        "AD-TRUST-05",
+        "AD-TRUST-06",
+        "AD-TRUST-07",
+        "AD-USER-01",
+        "AD-USER-02",
+        "AD-USER-03",
+        "AD-USER-04",
+        "AD-USER-05",
+        "AD-USER-06",
+        "AD-USER-07",
+        "AD-USER-08",
+        "AD-USER-09",
+        "AD-USER-10",
+        "AD-USER-11",
+        "AD-USER-12",
+        "AD-USER-13",
+        "AD-USER-14",
+        "AD-USER-15",
+        "AD-USER-16",
+        "AD-USER-17",
+        "AD-USER-18",
+        "AD-USER-19",
+        "AD-USER-20",
+        "AD-USER-21",
+        "AD-USER-22",
+        "AD-USER-23",
+        "AD-USER-24",
+        "AD-USER-25",
+        "AD-USER-26",
+        "AD-USER-27",
+        "AD-USER-28",
+        "AD-USER-29",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
         "CIS.M365.1.2.1",
@@ -3329,6 +3843,7 @@
         "CIS.M365.5.1.5.2",
         "CIS.M365.5.1.6.2",
         "CIS.M365.5.2.3.5",
+        "CIS.M365.6.5.3",
         "CIS.M365.8.1.1",
         "CIS.M365.8.2.2",
         "CIS.M365.8.2.3",
@@ -3470,6 +3985,16 @@
         "MT.1110",
         "MT.1111",
         "MT.1112",
+        "MT.1113",
+        "MT.1114",
+        "MT.1115",
+        "MT.1116",
+        "MT.1117",
+        "MT.1118",
+        "MT.1119",
+        "MT.1120",
+        "MT.1121",
+        "MT.1122",
         "MT.1181",
         "MT.1186",
         "MT.1187",
@@ -3552,10 +4077,1576 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 19
+      "recentCommits": 21
     }
   ],
   "attributions": {
+    "AD-CFG-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-12": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-13": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-14": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-15": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-16": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-17": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-18": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-19": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-20": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-21": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-22": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-23": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-CFG-24": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-COMP-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-12": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-13": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-14": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-15": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-16": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-17": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DACL-18": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DC-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCD-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCD-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCD-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCD-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DCOMP-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DFSR-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-12": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-13": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-14": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-15": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-16": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-17": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-18": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DNS-19": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOM-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-DOMS-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FEAT-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FEAT-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FGPP-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FGPP-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FGPP-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FGPP-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FOR-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FOR-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FOR-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FOR-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FORS-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FORS-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FORS-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-FORS-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GCHG-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-09": {
+      "author": "soulemike",
+      "contributors": [
+        "BuckeyeGuyJFlo",
+        "merill"
+      ]
+    },
+    "AD-GMC-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GMC-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPO-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPO-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPO-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPO-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPO-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOL-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOL-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOL-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOL-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOL-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOL-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOREP-01": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-02": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-03": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-04": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-05": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-06": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-07": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-08": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-09": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-10": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-11": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-12": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GPOREP-13": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-14": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-15": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-16": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-17": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-18": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-19": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOREP-20": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-01": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-02": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-03": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-04": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-05": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-06": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-07": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-08": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GPOS-09": {
+      "author": "soulemike",
+      "contributors": []
+    },
+    "AD-GRP-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-GRP-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-KRBTGT-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-KRBTGT-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-KRBTGT-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-MSA-01": {
+      "author": "soulemike",
+      "contributors": [
+        "BuckeyeGuyJFlo",
+        "merill"
+      ]
+    },
+    "AD-OU-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-OU-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-OU-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-OU-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-OU-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PRINT-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-PWDPOL-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-REPL-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-REPL-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-ROOTDSE-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-ROOTDSE-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-ROOTDSE-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SCH-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SCH-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SCH-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SCH-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SCH-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SITE-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SITE-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SITE-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SITE-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SITE-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-12": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SPN-13": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-SUB-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-TRUST-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-01": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-02": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-03": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-04": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-05": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-06": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-07": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-08": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-09": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-10": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-11": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-12": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-13": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-14": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-15": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-16": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-17": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-18": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-19": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-20": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-21": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-22": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-23": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-24": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-25": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-26": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-27": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-28": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
+    "AD-USER-29": {
+      "author": "soulemike",
+      "contributors": [
+        "merill"
+      ]
+    },
     "CIS.GH.1.2.2": {
       "author": "thetechgy",
       "contributors": []
@@ -3884,7 +5975,8 @@
         "bastienperez",
         "SamErde",
         "Mynster9361",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "CIS.M365.7.2.2": {
@@ -6135,54 +8227,70 @@
     },
     "MT.1113": {
       "author": "lnfernux",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1114": {
       "author": "lnfernux",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1115": {
       "author": "lnfernux",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1116": {
       "author": "lnfernux",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1117": {
       "author": "lnfernux",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1118": {
       "author": "lnfernux",
       "contributors": [
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1119": {
       "author": "lnfernux",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1120": {
       "author": "lnfernux",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1121": {
       "author": "lnfernux",
       "contributors": [
         "SamErde",
-        "BuckeyeGuyJFlo"
+        "BuckeyeGuyJFlo",
+        "merill"
       ]
     },
     "MT.1122": {
       "author": "lnfernux",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1123": {
       "author": "OfirGavish",
@@ -7149,6 +9257,1086 @@
     }
   },
   "tests": {
+    "AD-CFG-01": {
+      "title": "Tombstone lifetime configuration should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-01"
+    },
+    "AD-CFG-02": {
+      "title": "dSHeuristics count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-02"
+    },
+    "AD-CFG-03": {
+      "title": "SPN mappings should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-03"
+    },
+    "AD-CFG-04": {
+      "title": "Optional features count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-04"
+    },
+    "AD-CFG-05": {
+      "title": "Recycle bin enabled paths should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-05"
+    },
+    "AD-CFG-06": {
+      "title": "LDAP query policy count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-06"
+    },
+    "AD-CFG-07": {
+      "title": "Default query policy should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-07"
+    },
+    "AD-CFG-08": {
+      "title": "AuthN policy container count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-08"
+    },
+    "AD-CFG-09": {
+      "title": "AD activation objects count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-09"
+    },
+    "AD-CFG-10": {
+      "title": "Well-known security principals count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-10"
+    },
+    "AD-CFG-11": {
+      "title": "Registered DHCP servers count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-11"
+    },
+    "AD-CFG-12": {
+      "title": "Enterprise CA count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-12"
+    },
+    "AD-CFG-13": {
+      "title": "Certificate templates count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-13"
+    },
+    "AD-CFG-14": {
+      "title": "Enrollment templates count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-14"
+    },
+    "AD-CFG-15": {
+      "title": "Enrollment CA certificate details should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-15"
+    },
+    "AD-CFG-16": {
+      "title": "Trusted root CA count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-16"
+    },
+    "AD-CFG-17": {
+      "title": "Trusted root CA details should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-17"
+    },
+    "AD-CFG-18": {
+      "title": "Intermediate CA count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-18"
+    },
+    "AD-CFG-19": {
+      "title": "Intermediate CA details should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-19"
+    },
+    "AD-CFG-20": {
+      "title": "CRL distribution points count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-20"
+    },
+    "AD-CFG-21": {
+      "title": "NTAuth certificates count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-21"
+    },
+    "AD-CFG-22": {
+      "title": "KDS root keys count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-22"
+    },
+    "AD-CFG-23": {
+      "title": "SMTP site links count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-23"
+    },
+    "AD-CFG-24": {
+      "title": "IP site links count should be retrievable",
+      "path": "/docs/next/tests/AD-CFG-24"
+    },
+    "AD-COMP-01": {
+      "title": "Computer disabled count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-01"
+    },
+    "AD-COMP-02": {
+      "title": "Computer dormant count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-02"
+    },
+    "AD-COMP-03": {
+      "title": "Computer CreatorSid count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-03"
+    },
+    "AD-COMP-04": {
+      "title": "Computer non-standard primary group count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-04"
+    },
+    "AD-COMP-05": {
+      "title": "Computer SID History count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-05"
+    },
+    "AD-COMP-06": {
+      "title": "Computer default container count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-06"
+    },
+    "AD-COMP-07": {
+      "title": "Computer OU count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-07"
+    },
+    "AD-COMP-08": {
+      "title": "Computer per OU average should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-08"
+    },
+    "AD-COMP-09": {
+      "title": "Computer delegation count should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-09"
+    },
+    "AD-COMP-10": {
+      "title": "Computer delegation details should be retrievable",
+      "path": "/docs/next/tests/AD-COMP-10"
+    },
+    "AD-DACL-01": {
+      "title": "Distinct DACL object count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-01"
+    },
+    "AD-DACL-02": {
+      "title": "OU DACL entry count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-02"
+    },
+    "AD-DACL-03": {
+      "title": "Conflict object count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-03"
+    },
+    "AD-DACL-04": {
+      "title": "Conflict object details should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-04"
+    },
+    "AD-DACL-05": {
+      "title": "Deny ACE count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-05"
+    },
+    "AD-DACL-06": {
+      "title": "Deny ACE details should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-06"
+    },
+    "AD-DACL-07": {
+      "title": "Distinct DACL identity count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-07"
+    },
+    "AD-DACL-08": {
+      "title": "DACL ACE distribution per identity should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-08"
+    },
+    "AD-DACL-09": {
+      "title": "Privileged allow ACE count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-09"
+    },
+    "AD-DACL-10": {
+      "title": "Privileged allow ACE details should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-10"
+    },
+    "AD-DACL-11": {
+      "title": "Privileged extended right count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-11"
+    },
+    "AD-DACL-12": {
+      "title": "Privileged extended right details should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-12"
+    },
+    "AD-DACL-13": {
+      "title": "Privileged extended right identities should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-13"
+    },
+    "AD-DACL-14": {
+      "title": "Non-inherited ACE count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-14"
+    },
+    "AD-DACL-15": {
+      "title": "Unresolved SID count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-15"
+    },
+    "AD-DACL-16": {
+      "title": "Unresolved SID details should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-16"
+    },
+    "AD-DACL-17": {
+      "title": "Inherited object type count should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-17"
+    },
+    "AD-DACL-18": {
+      "title": "Inherited object type details should be retrievable",
+      "path": "/docs/next/tests/AD-DACL-18"
+    },
+    "AD-DC-01": {
+      "title": "DC site coverage count should be retrievable",
+      "path": "/docs/next/tests/AD-DC-01"
+    },
+    "AD-DC-02": {
+      "title": "SMBv1 should be disabled on all domain controllers",
+      "path": "/docs/next/tests/AD-DC-02"
+    },
+    "AD-DC-03": {
+      "title": "SMBv3.1.1 enabled count should be retrievable",
+      "path": "/docs/next/tests/AD-DC-03"
+    },
+    "AD-DC-04": {
+      "title": "SMB signing should be enabled on all domain controllers",
+      "path": "/docs/next/tests/AD-DC-04"
+    },
+    "AD-DC-05": {
+      "title": "DCs with all FSMO roles count should be retrievable",
+      "path": "/docs/next/tests/AD-DC-05"
+    },
+    "AD-DC-06": {
+      "title": "FSMO role holder details should be retrievable",
+      "path": "/docs/next/tests/AD-DC-06"
+    },
+    "AD-DC-07": {
+      "title": "DC operating system count should be retrievable",
+      "path": "/docs/next/tests/AD-DC-07"
+    },
+    "AD-DC-08": {
+      "title": "DC operating system details should be retrievable",
+      "path": "/docs/next/tests/AD-DC-08"
+    },
+    "AD-DCD-01": {
+      "title": "DC non-standard LDAP port count should be retrievable",
+      "path": "/docs/next/tests/AD-DCD-01"
+    },
+    "AD-DCD-02": {
+      "title": "DC non-standard LDAPS port count should be retrievable",
+      "path": "/docs/next/tests/AD-DCD-02"
+    },
+    "AD-DCD-03": {
+      "title": "Read-only domain controller count should be retrievable",
+      "path": "/docs/next/tests/AD-DCD-03"
+    },
+    "AD-DCD-04": {
+      "title": "Non-Global Catalog DC count should be retrievable",
+      "path": "/docs/next/tests/AD-DCD-04"
+    },
+    "AD-DCOMP-01": {
+      "title": "Computers with unconstrained delegation count should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-01"
+    },
+    "AD-DCOMP-02": {
+      "title": "Non-DC computers should not have unconstrained delegation",
+      "path": "/docs/next/tests/AD-DCOMP-02"
+    },
+    "AD-DCOMP-03": {
+      "title": "Non-DC computers with constrained delegation count should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-03"
+    },
+    "AD-DCOMP-04": {
+      "title": "Computer operating system count should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-04"
+    },
+    "AD-DCOMP-05": {
+      "title": "Computer operating system details should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-05"
+    },
+    "AD-DCOMP-06": {
+      "title": "Stale enabled computer count should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-06"
+    },
+    "AD-DCOMP-07": {
+      "title": "Computer DNS host name count should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-07"
+    },
+    "AD-DCOMP-08": {
+      "title": "Computer DNS zone count should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-08"
+    },
+    "AD-DCOMP-09": {
+      "title": "Computer DNS zone details should be retrievable",
+      "path": "/docs/next/tests/AD-DCOMP-09"
+    },
+    "AD-DFSR-01": {
+      "title": "DFS-R subscription count should be retrievable",
+      "path": "/docs/next/tests/AD-DFSR-01"
+    },
+    "AD-DNS-01": {
+      "title": "DNS zone count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-01"
+    },
+    "AD-DNS-02": {
+      "title": "Zones with only SOA/NS records should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-02"
+    },
+    "AD-DNS-03": {
+      "title": "Root servers with incorrect IPs should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-03"
+    },
+    "AD-DNS-04": {
+      "title": "Root server incorrect IP details should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-04"
+    },
+    "AD-DNS-05": {
+      "title": "Dynamic DNS record count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-05"
+    },
+    "AD-DNS-06": {
+      "title": "Zones with non-default records should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-06"
+    },
+    "AD-DNS-07": {
+      "title": "Zone record count details should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-07"
+    },
+    "AD-DNS-08": {
+      "title": "Zone delegation count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-08"
+    },
+    "AD-DNS-09": {
+      "title": "Zone delegation details should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-09"
+    },
+    "AD-DNS-10": {
+      "title": "SOA record details should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-10"
+    },
+    "AD-DNS-11": {
+      "title": "AD DS SRV record count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-11"
+    },
+    "AD-DNS-12": {
+      "title": "AD DS SRV record details should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-12"
+    },
+    "AD-DNS-13": {
+      "title": "DNSSEC record count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-13"
+    },
+    "AD-DNS-14": {
+      "title": "Empty zone count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-14"
+    },
+    "AD-DNS-15": {
+      "title": "Duplicate zone count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-15"
+    },
+    "AD-DNS-16": {
+      "title": "Reverse lookup zone count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-16"
+    },
+    "AD-DNS-17": {
+      "title": "Non-standard zone count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-17"
+    },
+    "AD-DNS-18": {
+      "title": "Reverse zone network count should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-18"
+    },
+    "AD-DNS-19": {
+      "title": "Reverse zone network details should be retrievable",
+      "path": "/docs/next/tests/AD-DNS-19"
+    },
+    "AD-DOM-01": {
+      "title": "Domain functional level should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-01"
+    },
+    "AD-DOM-02": {
+      "title": "Machine account quota should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-02"
+    },
+    "AD-DOM-03": {
+      "title": "Domain controller count should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-03"
+    },
+    "AD-DOM-04": {
+      "title": "RIDs remaining should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-04"
+    },
+    "AD-DOM-05": {
+      "title": "Domain name standard compliance should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-05"
+    },
+    "AD-DOM-06": {
+      "title": "Domain name non-standard details should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-06"
+    },
+    "AD-DOM-07": {
+      "title": "NetBIOS name standard compliance should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-07"
+    },
+    "AD-DOM-08": {
+      "title": "NetBIOS name non-standard details should be retrievable",
+      "path": "/docs/next/tests/AD-DOM-08"
+    },
+    "AD-DOMS-01": {
+      "title": "Allowed DNS suffixes count should be retrievable",
+      "path": "/docs/next/tests/AD-DOMS-01"
+    },
+    "AD-FEAT-01": {
+      "title": "Optional feature count should be retrievable",
+      "path": "/docs/next/tests/AD-FEAT-01"
+    },
+    "AD-FEAT-02": {
+      "title": "Optional feature enabled details should be retrievable",
+      "path": "/docs/next/tests/AD-FEAT-02"
+    },
+    "AD-FGPP-01": {
+      "title": "Fine-grained password policy count should be retrievable",
+      "path": "/docs/next/tests/AD-FGPP-01"
+    },
+    "AD-FGPP-02": {
+      "title": "Fine-grained password policy value count should be retrievable",
+      "path": "/docs/next/tests/AD-FGPP-02"
+    },
+    "AD-FGPP-03": {
+      "title": "Fine-grained password policy setting counts should be retrievable",
+      "path": "/docs/next/tests/AD-FGPP-03"
+    },
+    "AD-FGPP-04": {
+      "title": "Fine-grained password policy application targets should be retrievable",
+      "path": "/docs/next/tests/AD-FGPP-04"
+    },
+    "AD-FOR-01": {
+      "title": "Forest functional level should be retrievable",
+      "path": "/docs/next/tests/AD-FOR-01"
+    },
+    "AD-FOR-02": {
+      "title": "Forest domain count should be retrievable",
+      "path": "/docs/next/tests/AD-FOR-02"
+    },
+    "AD-FOR-03": {
+      "title": "Tombstone lifetime should be retrievable",
+      "path": "/docs/next/tests/AD-FOR-03"
+    },
+    "AD-FOR-04": {
+      "title": "Recycle Bin status should be retrievable",
+      "path": "/docs/next/tests/AD-FOR-04"
+    },
+    "AD-FORS-01": {
+      "title": "UPN suffixes count should be retrievable",
+      "path": "/docs/next/tests/AD-FORS-01"
+    },
+    "AD-FORS-02": {
+      "title": "UPN suffixes details should be retrievable",
+      "path": "/docs/next/tests/AD-FORS-02"
+    },
+    "AD-FORS-03": {
+      "title": "SPN suffixes count should be retrievable",
+      "path": "/docs/next/tests/AD-FORS-03"
+    },
+    "AD-FORS-04": {
+      "title": "Cross-forest references count should be retrievable",
+      "path": "/docs/next/tests/AD-FORS-04"
+    },
+    "AD-GCHG-01": {
+      "title": "Average group membership changes per year should be retrievable",
+      "path": "/docs/next/tests/AD-GCHG-01"
+    },
+    "AD-GMC-01": {
+      "title": "Distinct groups with members count should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-01"
+    },
+    "AD-GMC-02": {
+      "title": "Distinct account types of members count should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-02"
+    },
+    "AD-GMC-03": {
+      "title": "Member account types breakdown should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-03"
+    },
+    "AD-GMC-04": {
+      "title": "Trust members count should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-04"
+    },
+    "AD-GMC-05": {
+      "title": "Trust members details by group should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-05"
+    },
+    "AD-GMC-06": {
+      "title": "Foreign SID principals count should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-06"
+    },
+    "AD-GMC-07": {
+      "title": "Foreign SID details by domain should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-07"
+    },
+    "AD-GMC-08": {
+      "title": "Empty non-privileged group count should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-08"
+    },
+    "AD-GMC-09": {
+      "title": "Empty non-privileged group details should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-09"
+    },
+    "AD-GMC-10": {
+      "title": "Privileged groups with members count should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-10"
+    },
+    "AD-GMC-11": {
+      "title": "Privileged groups with members details should be retrievable",
+      "path": "/docs/next/tests/AD-GMC-11"
+    },
+    "AD-GPO-01": {
+      "title": "GPO total count should be retrievable",
+      "path": "/docs/next/tests/AD-GPO-01"
+    },
+    "AD-GPO-02": {
+      "title": "GPO created before 2020 count should be retrievable",
+      "path": "/docs/next/tests/AD-GPO-02"
+    },
+    "AD-GPO-03": {
+      "title": "GPO stale-before-2020 count should be retrievable",
+      "path": "/docs/next/tests/AD-GPO-03"
+    },
+    "AD-GPO-04": {
+      "title": "Unlinked GPO count should be compliant",
+      "path": "/docs/next/tests/AD-GPO-04"
+    },
+    "AD-GPO-05": {
+      "title": "GPO unlinked details should be compliant",
+      "path": "/docs/next/tests/AD-GPO-05"
+    },
+    "AD-GPOL-01": {
+      "title": "GPO linked count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOL-01"
+    },
+    "AD-GPOL-02": {
+      "title": "Disabled GPO link count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOL-02"
+    },
+    "AD-GPOL-03": {
+      "title": "GPO unlinked target count should be compliant",
+      "path": "/docs/next/tests/AD-GPOL-03"
+    },
+    "AD-GPOL-04": {
+      "title": "Enforced GPO link count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOL-04"
+    },
+    "AD-GPOL-05": {
+      "title": "GPO blocked inheritance count should be compliant",
+      "path": "/docs/next/tests/AD-GPOL-05"
+    },
+    "AD-GPOL-06": {
+      "title": "GPO linked OU count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOL-06"
+    },
+    "AD-GPOREP-01": {
+      "title": "GPOs without permissions count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-01"
+    },
+    "AD-GPOREP-02": {
+      "title": "GPOs without permissions details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-02"
+    },
+    "AD-GPOREP-03": {
+      "title": "GPOs without authenticated users count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-03"
+    },
+    "AD-GPOREP-04": {
+      "title": "GPOs without authenticated users details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-04"
+    },
+    "AD-GPOREP-05": {
+      "title": "GPOs without enterprise domain controllers count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-05"
+    },
+    "AD-GPOREP-06": {
+      "title": "GPOs without domain computers count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-06"
+    },
+    "AD-GPOREP-07": {
+      "title": "GPOs with deny ACE count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-07"
+    },
+    "AD-GPOREP-08": {
+      "title": "GPOs with deny ACE details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-08"
+    },
+    "AD-GPOREP-09": {
+      "title": "GPO inherited permissions count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-09"
+    },
+    "AD-GPOREP-10": {
+      "title": "GPO no-apply Group Policy ACE count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-10"
+    },
+    "AD-GPOREP-11": {
+      "title": "GPO no-apply Group Policy ACE details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-11"
+    },
+    "AD-GPOREP-12": {
+      "title": "GPO disabled link count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-12"
+    },
+    "AD-GPOREP-13": {
+      "title": "GPO disabled link details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-13"
+    },
+    "AD-GPOREP-14": {
+      "title": "GPO enforcement count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-14"
+    },
+    "AD-GPOREP-15": {
+      "title": "GPO version mismatch count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-15"
+    },
+    "AD-GPOREP-16": {
+      "title": "GPO version mismatch details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-16"
+    },
+    "AD-GPOREP-17": {
+      "title": "GPO Cpassword found count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-17"
+    },
+    "AD-GPOREP-18": {
+      "title": "GPO Cpassword found details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-18"
+    },
+    "AD-GPOREP-19": {
+      "title": "GPO default password found count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-19"
+    },
+    "AD-GPOREP-20": {
+      "title": "GPO default password found details should be retrievable",
+      "path": "/docs/next/tests/AD-GPOREP-20"
+    },
+    "AD-GPOS-01": {
+      "title": "GPO state total count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOS-01"
+    },
+    "AD-GPOS-02": {
+      "title": "WMI filter count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOS-02"
+    },
+    "AD-GPOS-03": {
+      "title": "WMI filter details should be compliant",
+      "path": "/docs/next/tests/AD-GPOS-03"
+    },
+    "AD-GPOS-04": {
+      "title": "Disabled GPO settings count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOS-04"
+    },
+    "AD-GPOS-05": {
+      "title": "Computer disabled GPO settings details should be compliant",
+      "path": "/docs/next/tests/AD-GPOS-05"
+    },
+    "AD-GPOS-06": {
+      "title": "User disabled GPO settings details should be compliant",
+      "path": "/docs/next/tests/AD-GPOS-06"
+    },
+    "AD-GPOS-07": {
+      "title": "All disabled GPO settings details should be compliant",
+      "path": "/docs/next/tests/AD-GPOS-07"
+    },
+    "AD-GPOS-08": {
+      "title": "GPO owner distinct count should be retrievable",
+      "path": "/docs/next/tests/AD-GPOS-08"
+    },
+    "AD-GPOS-09": {
+      "title": "GPO owner details should be accessible",
+      "path": "/docs/next/tests/AD-GPOS-09"
+    },
+    "AD-GRP-01": {
+      "title": "Group AdminCount should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-01"
+    },
+    "AD-GRP-02": {
+      "title": "Groups in container objects count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-02"
+    },
+    "AD-GRP-03": {
+      "title": "Stale groups count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-03"
+    },
+    "AD-GRP-04": {
+      "title": "Groups with manager count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-04"
+    },
+    "AD-GRP-05": {
+      "title": "Group SID History count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-05"
+    },
+    "AD-GRP-06": {
+      "title": "Distribution group count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-06"
+    },
+    "AD-GRP-07": {
+      "title": "Security group count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-07"
+    },
+    "AD-GRP-08": {
+      "title": "Domain local group count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-08"
+    },
+    "AD-GRP-09": {
+      "title": "Global group count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-09"
+    },
+    "AD-GRP-10": {
+      "title": "Universal group count should be retrievable",
+      "path": "/docs/next/tests/AD-GRP-10"
+    },
+    "AD-KRBTGT-01": {
+      "title": "KRBTGT password last set should be retrievable",
+      "path": "/docs/next/tests/AD-KRBTGT-01"
+    },
+    "AD-KRBTGT-02": {
+      "title": "KRBTGT last logon should be retrievable",
+      "path": "/docs/next/tests/AD-KRBTGT-02"
+    },
+    "AD-KRBTGT-03": {
+      "title": "KRBTGT should have standard UAC settings (disabled account)",
+      "path": "/docs/next/tests/AD-KRBTGT-03"
+    },
+    "AD-MSA-01": {
+      "title": "Managed service account count should be retrievable",
+      "path": "/docs/next/tests/AD-MSA-01"
+    },
+    "AD-OU-01": {
+      "title": "OU overlapping name count should be retrievable",
+      "path": "/docs/next/tests/AD-OU-01"
+    },
+    "AD-OU-02": {
+      "title": "OU at domain root count should be retrievable",
+      "path": "/docs/next/tests/AD-OU-02"
+    },
+    "AD-OU-03": {
+      "title": "OU stale count should be retrievable",
+      "path": "/docs/next/tests/AD-OU-03"
+    },
+    "AD-OU-04": {
+      "title": "OU empty count should be retrievable",
+      "path": "/docs/next/tests/AD-OU-04"
+    },
+    "AD-OU-05": {
+      "title": "OU empty details should be retrievable",
+      "path": "/docs/next/tests/AD-OU-05"
+    },
+    "AD-PRINT-01": {
+      "title": "Printer total count should be retrievable",
+      "path": "/docs/next/tests/AD-PRINT-01"
+    },
+    "AD-PWDPOL-01": {
+      "title": "Password history count should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-01"
+    },
+    "AD-PWDPOL-02": {
+      "title": "Password maximum age should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-02"
+    },
+    "AD-PWDPOL-03": {
+      "title": "Password minimum length should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-03"
+    },
+    "AD-PWDPOL-04": {
+      "title": "Password complexity requirement should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-04"
+    },
+    "AD-PWDPOL-05": {
+      "title": "Password reversible encryption status should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-05"
+    },
+    "AD-PWDPOL-06": {
+      "title": "Account lockout duration should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-06"
+    },
+    "AD-PWDPOL-07": {
+      "title": "Account lockout threshold should be retrievable",
+      "path": "/docs/next/tests/AD-PWDPOL-07"
+    },
+    "AD-REPL-01": {
+      "title": "Disabled replication connection count should be retrievable",
+      "path": "/docs/next/tests/AD-REPL-01"
+    },
+    "AD-REPL-02": {
+      "title": "Non-auto replication connection count should be retrievable",
+      "path": "/docs/next/tests/AD-REPL-02"
+    },
+    "AD-ROOTDSE-01": {
+      "title": "Supported SASL mechanism count should be retrievable",
+      "path": "/docs/next/tests/AD-ROOTDSE-01"
+    },
+    "AD-ROOTDSE-02": {
+      "title": "Supported SASL mechanism details should be retrievable",
+      "path": "/docs/next/tests/AD-ROOTDSE-02"
+    },
+    "AD-ROOTDSE-03": {
+      "title": "Root DSE synchronized status should be retrievable",
+      "path": "/docs/next/tests/AD-ROOTDSE-03"
+    },
+    "AD-SCH-01": {
+      "title": "Schema modification year count should be retrievable",
+      "path": "/docs/next/tests/AD-SCH-01"
+    },
+    "AD-SCH-02": {
+      "title": "Schema modification year details should be retrievable",
+      "path": "/docs/next/tests/AD-SCH-02"
+    },
+    "AD-SCH-03": {
+      "title": "Schema version entry count should be retrievable",
+      "path": "/docs/next/tests/AD-SCH-03"
+    },
+    "AD-SCH-04": {
+      "title": "Schema version details should be retrievable",
+      "path": "/docs/next/tests/AD-SCH-04"
+    },
+    "AD-SCH-05": {
+      "title": "LAPS installation status should be retrievable",
+      "path": "/docs/next/tests/AD-SCH-05"
+    },
+    "AD-SITE-01": {
+      "title": "Site total count should be retrievable",
+      "path": "/docs/next/tests/AD-SITE-01"
+    },
+    "AD-SITE-02": {
+      "title": "Sites without domain controllers count should be retrievable",
+      "path": "/docs/next/tests/AD-SITE-02"
+    },
+    "AD-SITE-03": {
+      "title": "Sites without domain controllers details should be retrievable",
+      "path": "/docs/next/tests/AD-SITE-03"
+    },
+    "AD-SITE-04": {
+      "title": "Sites without subnet associations count should be retrievable",
+      "path": "/docs/next/tests/AD-SITE-04"
+    },
+    "AD-SITE-05": {
+      "title": "Sites without subnet associations details should be retrievable",
+      "path": "/docs/next/tests/AD-SITE-05"
+    },
+    "AD-SPN-01": {
+      "title": "Computer SPN service class count should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-01"
+    },
+    "AD-SPN-02": {
+      "title": "Computer SPN service class usage should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-02"
+    },
+    "AD-SPN-03": {
+      "title": "Computer SPN unknown service class count should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-03"
+    },
+    "AD-SPN-04": {
+      "title": "Computer SPN unknown service class details should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-04"
+    },
+    "AD-SPN-05": {
+      "title": "Computer SPN non-FQDN hosts should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-05"
+    },
+    "AD-SPN-06": {
+      "title": "User SPN total count should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-06"
+    },
+    "AD-SPN-07": {
+      "title": "User SPN service class count should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-07"
+    },
+    "AD-SPN-08": {
+      "title": "User SPN service class usage should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-08"
+    },
+    "AD-SPN-09": {
+      "title": "User SPN unknown service class count should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-09"
+    },
+    "AD-SPN-10": {
+      "title": "User SPN unknown service class details should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-10"
+    },
+    "AD-SPN-11": {
+      "title": "User SPN non-FQDN hosts should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-11"
+    },
+    "AD-SPN-12": {
+      "title": "User SPN domain admin count should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-12"
+    },
+    "AD-SPN-13": {
+      "title": "User SPN domain admin details should be retrievable",
+      "path": "/docs/next/tests/AD-SPN-13"
+    },
+    "AD-SUB-01": {
+      "title": "Subnet total count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-01"
+    },
+    "AD-SUB-02": {
+      "title": "Sites with subnet associations count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-02"
+    },
+    "AD-SUB-03": {
+      "title": "Catch-all subnets count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-03"
+    },
+    "AD-SUB-04": {
+      "title": "IPv6 subnets count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-04"
+    },
+    "AD-SUB-05": {
+      "title": "IPv6 catch-all subnets count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-05"
+    },
+    "AD-SUB-06": {
+      "title": "Non-RFC1918 (public IP) subnets count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-06"
+    },
+    "AD-SUB-07": {
+      "title": "Non-RFC1918 (public IP) subnets details should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-07"
+    },
+    "AD-SUB-08": {
+      "title": "Distinct first octets count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-08"
+    },
+    "AD-SUB-09": {
+      "title": "Distinct first two octets (/16 networks) count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-09"
+    },
+    "AD-SUB-10": {
+      "title": "Distinct first three octets (/24 networks) count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-10"
+    },
+    "AD-SUB-11": {
+      "title": "Subnets without site associations count should be retrievable",
+      "path": "/docs/next/tests/AD-SUB-11"
+    },
+    "AD-TRUST-01": {
+      "title": "Trust total count should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-01"
+    },
+    "AD-TRUST-02": {
+      "title": "Trust inter-forest count should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-02"
+    },
+    "AD-TRUST-03": {
+      "title": "Trust quarantined count should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-03"
+    },
+    "AD-TRUST-04": {
+      "title": "Trust non-quarantined details should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-04"
+    },
+    "AD-TRUST-05": {
+      "title": "Trust configuration details should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-05"
+    },
+    "AD-TRUST-06": {
+      "title": "Trust stale count should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-06"
+    },
+    "AD-TRUST-07": {
+      "title": "Trust stale details should be retrievable",
+      "path": "/docs/next/tests/AD-TRUST-07"
+    },
+    "AD-USER-01": {
+      "title": "Disabled user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-01"
+    },
+    "AD-USER-02": {
+      "title": "Dormant enabled user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-02"
+    },
+    "AD-USER-03": {
+      "title": "Non-expiring password user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-03"
+    },
+    "AD-USER-04": {
+      "title": "Reversible encryption user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-04"
+    },
+    "AD-USER-05": {
+      "title": "Delegation-enabled user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-05"
+    },
+    "AD-USER-06": {
+      "title": "DES-only Kerberos user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-06"
+    },
+    "AD-USER-07": {
+      "title": "No pre-authentication user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-07"
+    },
+    "AD-USER-08": {
+      "title": "Never-logged-in enabled user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-08"
+    },
+    "AD-USER-09": {
+      "title": "Password-not-required user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-09"
+    },
+    "AD-USER-10": {
+      "title": "Workstation-restricted user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-10"
+    },
+    "AD-USER-11": {
+      "title": "User AdminCount count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-11"
+    },
+    "AD-USER-12": {
+      "title": "User non-standard primary group count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-12"
+    },
+    "AD-USER-13": {
+      "title": "User SID History count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-13"
+    },
+    "AD-USER-14": {
+      "title": "User SPN count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-14"
+    },
+    "AD-USER-15": {
+      "title": "User manager count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-15"
+    },
+    "AD-USER-16": {
+      "title": "User home directory count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-16"
+    },
+    "AD-USER-17": {
+      "title": "User profile path count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-17"
+    },
+    "AD-USER-18": {
+      "title": "User script path count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-18"
+    },
+    "AD-USER-19": {
+      "title": "User in container count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-19"
+    },
+    "AD-USER-20": {
+      "title": "Known service account count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-20"
+    },
+    "AD-USER-21": {
+      "title": "Known service account details should be retrievable",
+      "path": "/docs/next/tests/AD-USER-21"
+    },
+    "AD-USER-22": {
+      "title": "Built-in administrator account count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-22"
+    },
+    "AD-USER-23": {
+      "title": "Enabled built-in administrator details should be retrievable",
+      "path": "/docs/next/tests/AD-USER-23"
+    },
+    "AD-USER-24": {
+      "title": "Built-in administrator last logon details should be retrievable",
+      "path": "/docs/next/tests/AD-USER-24"
+    },
+    "AD-USER-25": {
+      "title": "Built-in administrator password age details should be retrievable",
+      "path": "/docs/next/tests/AD-USER-25"
+    },
+    "AD-USER-26": {
+      "title": "Honey pot user count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-26"
+    },
+    "AD-USER-27": {
+      "title": "Honey pot user details should be retrievable",
+      "path": "/docs/next/tests/AD-USER-27"
+    },
+    "AD-USER-28": {
+      "title": "User delegation configured count should be retrievable",
+      "path": "/docs/next/tests/AD-USER-28"
+    },
+    "AD-USER-29": {
+      "title": "User delegation details should be retrievable",
+      "path": "/docs/next/tests/AD-USER-29"
+    },
     "CIS.GH.1.2.2": {
       "title": "(L1) Ensure repository creation is limited to specific members",
       "path": "/docs/tests/CIS.GH.1.2.2"

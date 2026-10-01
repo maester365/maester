@@ -1,6 +1,6 @@
 ---
 title: "MT.1070 - Restrict device join to selected users/groups or none."
-description: "Description Verifies that device join to Entra ID is restricted to selected users/groups or disabled entirely. Why This Matters Device join should be restricted because: - **Unauthorized Access**: Unrestricted device join allows any user to connect personal or unmanaged devices to corporate resourc…"
+description: "Verifies that device join to Entra ID is restricted to selected users/groups or disabled entirely. Why This Matters Device join should be restricted because: - **Unauthorized Access**: Unrestricted device join allows any user to connect personal or unmanaged devices to corporate resources. - **Data…"
 slug: /tests/MT.1070
 className: generated-test-doc
 sidebar_class_name: hidden
