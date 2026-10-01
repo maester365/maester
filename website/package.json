@@ -7,6 +7,7 @@
     "generate-test-docs": "node scripts/generate-test-docs.mjs",
     "check-test-docs": "node scripts/generate-test-docs.mjs --check",
     "prebuild": "npm run generate-test-docs",
+    "prestart": "npm run generate-test-docs",
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
