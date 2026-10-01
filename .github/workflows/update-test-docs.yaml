@@ -13,6 +13,13 @@ on:
       - "website/scripts/contributors.mjs"
       - "website/scripts/generate-test-docs.mjs"
       - ".github/workflows/update-test-docs.yaml"
+      # Generated outputs (keep in sync with add-paths below). Merging a bot PR
+      # while another run is in flight leaves that run's PR based on a stale
+      # commit and conflicting with main; rerunning on the merge commit
+      # regenerates the open PR on top of it, or closes it if nothing is left.
+      - "website/contributors/email-aliases.json"
+      - "website/docs/tests/**"
+      - "website/src/data/contributors.json"
 
 permissions: {}
 
