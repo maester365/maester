@@ -194,7 +194,7 @@ Describe 'Get-MtHtmlReport' {
                 $Html.Substring($start.Index + $start.Length, $end - $start.Index - $start.Length) | ConvertFrom-Json
             }
 
-            function New-ResultWithErrorRecord([string] $TenantName) {
+            function Get-SampleResultWithErrorRecord([string] $TenantName) {
                 [PSCustomObject]@{
                     TenantName = $TenantName
                     Tests      = @(
@@ -218,7 +218,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Omits ErrorRecord and keeps the other test fields (single-tenant)' {
-            $results = New-ResultWithErrorRecord -TenantName 'Single Tenant'
+            $results = Get-SampleResultWithErrorRecord -TenantName 'Single Tenant'
 
             $html = Get-MtHtmlReport -MaesterResults $results
             $embedded = Get-EmbeddedResult $html
@@ -233,8 +233,8 @@ Describe 'Get-MtHtmlReport' {
 
         It 'Omits ErrorRecord from every tenant (multi-tenant)' {
             $merged = Merge-MtMaesterResult -MaesterResults @(
-                (New-ResultWithErrorRecord -TenantName 'Tenant One'),
-                (New-ResultWithErrorRecord -TenantName 'Tenant Two')
+                (Get-SampleResultWithErrorRecord -TenantName 'Tenant One'),
+                (Get-SampleResultWithErrorRecord -TenantName 'Tenant Two')
             )
 
             $html = Get-MtHtmlReport -MaesterResults $merged
@@ -248,9 +248,34 @@ Describe 'Get-MtHtmlReport' {
             }
         }
 
+        It 'Omits ErrorRecord from multi-tenant results passed as a hashtable' {
+            $results = @{
+                Tenants   = @(
+                    @{
+                        TenantName = 'Tenant One'
+                        Tests      = @(
+                            @{
+                                Id           = 'MT.1001'
+                                ErrorRecord  = @(@{ ScriptStackTrace = 'at <ScriptBlock>, /Users/someone/maester-tests/Example.Tests.ps1: line 1' })
+                                ResultDetail = @{ TestResult = 'Example result' }
+                            }
+                        )
+                    }
+                )
+                EndOfJson = 'EndOfJson'
+            }
+
+            $html = Get-MtHtmlReport -MaesterResults $results
+            $embedded = Get-EmbeddedResult $html
+
+            $html | Should -Not -BeLike '*/Users/someone/*'
+            $embedded.Tenants[0].Tests[0].PSObject.Properties.Name | Should -Not -Contain 'ErrorRecord'
+            $embedded.Tenants[0].Tests[0].ResultDetail.TestResult | Should -BeExactly 'Example result'
+        }
+
         It 'Leaves the MaesterResults passed in unchanged' {
-            $results = New-ResultWithErrorRecord -TenantName 'Single Tenant'
-            $merged = Merge-MtMaesterResult -MaesterResults @((New-ResultWithErrorRecord -TenantName 'Tenant One'))
+            $results = Get-SampleResultWithErrorRecord -TenantName 'Single Tenant'
+            $merged = Merge-MtMaesterResult -MaesterResults @((Get-SampleResultWithErrorRecord -TenantName 'Tenant One'))
 
             $null = Get-MtHtmlReport -MaesterResults $results
             $null = Get-MtHtmlReport -MaesterResults $merged

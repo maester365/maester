@@ -49,13 +49,6 @@
     )
 
     process {
-        # Use depth 7 for multi-tenant to handle: Tenants > Tests > ResultDetail > nested objects
-        $isMultiTenant = $MaesterResults.PSObject.Properties.Name -contains 'Tenants'
-        $depth = if ($isMultiTenant) { 7 } else { 5 }
-
-        # The report doesn't display ErrorRecord, and its stack traces can make up most of the file
-        # and include local file paths. Copy the results without it so the caller's object and the
-        # JSON output keep the full record.
         # Shallow copy of a results or test object, which may be a PSCustomObject or a hashtable.
         $copyWithout = {
             param($Object, [string] $ExcludeProperty)
@@ -71,6 +64,10 @@
             }
             $copy
         }
+
+        # The report doesn't display ErrorRecord, and its stack traces can make up most of the file
+        # and include local file paths. Copy the results without it so the caller's object and the
+        # JSON output keep the full record.
         $removeErrorRecord = {
             param($Results)
             $copy = & $copyWithout $Results ''
@@ -82,6 +79,11 @@
         }
 
         $reportResults = & $removeErrorRecord $MaesterResults
+
+        # Check the copy rather than the input so hashtable results are detected too.
+        # Use depth 7 for multi-tenant to handle: Tenants > Tests > ResultDetail > nested objects
+        $isMultiTenant = $reportResults.PSObject.Properties.Name -contains 'Tenants'
+        $depth = if ($isMultiTenant) { 7 } else { 5 }
         if ($isMultiTenant -and $null -ne $reportResults.Tenants) {
             $reportResults.Tenants = @($reportResults.Tenants | ForEach-Object { & $removeErrorRecord $_ })
         }
