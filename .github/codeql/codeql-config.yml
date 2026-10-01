@@ -1,0 +1,6 @@
+name: "Maester CodeQL config"
+
+paths-ignore:
+  # Generated single-file build of report/ (minified React + third-party libraries).
+  # The report source in report/src is still analyzed.
+  - powershell/assets/ReportTemplate.html
