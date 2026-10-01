@@ -3,7 +3,10 @@
 
     # Az.Accounts is optional; provide a stub so Get-AzAccessToken can be mocked when it is not installed.
     if (-not (Get-Command Get-AzAccessToken -ErrorAction SilentlyContinue)) {
-        function global:Get-AzAccessToken { param($ResourceUrl) }
+        function global:Get-AzAccessToken {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'ResourceUrl', Justification = 'Stub signature only; Mock binds -ResourceUrl from it.')]
+            param($ResourceUrl)
+        }
         $script:removeAzStub = $true
     }
 }
