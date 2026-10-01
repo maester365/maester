@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Icon } from "@tremor/react";
+import { Icon } from "@/components/ui/report";
 import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 
 export default function StatusLabelSm(props) {

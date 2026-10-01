@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import { markdownUrlTransform } from "@/lib/markdownUrl"
+import { Markdown } from "@/components/Markdown"
 import { Button } from "@/components/Button"
-import { Dialog, DialogPanel, Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react"
+import { Dialog, DialogPanel } from "@/components/ui/report"
 import { RiClipboardLine, RiEyeLine, RiCodeLine, RiCheckLine } from "@remixicon/react"
 import { useTenant } from "@/context/TenantContext"
 
@@ -74,6 +72,7 @@ export default function MarkdownPage() {
   const { selectedTenant: testResults } = useTenant()
   const [markdown, setMarkdown] = useState(generateMarkdown(testResults))
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<"markdown" | "preview">("preview")
 
   // Regenerate markdown when tenant changes
   useEffect(() => {
@@ -117,13 +116,12 @@ export default function MarkdownPage() {
         </Button>
       </div>
 
-      <TabGroup defaultIndex={1}>
-        <TabList className="mt-8">
-          <Tab icon={RiCodeLine}>Markdown</Tab>
-          <Tab icon={RiEyeLine}>Preview</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
+      <div className="mt-8">
+        <div className="flex h-[38px] gap-4 border-b border-gray-200 dark:border-zinc-800" role="tablist">
+          <button type="button" role="tab" aria-selected={activeTab === "markdown"} onClick={() => setActiveTab("markdown")} className={`flex h-[38px] gap-2 px-2 py-2 text-sm transition duration-100 ${activeTab === "markdown" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-500 hover:border-b-2 hover:border-gray-500 hover:text-gray-700 dark:text-zinc-500 dark:hover:border-zinc-200 dark:hover:text-zinc-200"}`}><RiCodeLine className="size-5" />Markdown</button>
+          <button type="button" role="tab" aria-selected={activeTab === "preview"} onClick={() => setActiveTab("preview")} className={`flex h-[38px] gap-2 px-2 py-2 text-sm transition duration-100 ${activeTab === "preview" ? "border-b-2 border-blue-500 text-blue-500" : "text-gray-500 hover:border-b-2 hover:border-gray-500 hover:text-gray-700 dark:text-zinc-500 dark:hover:border-zinc-200 dark:hover:text-zinc-200"}`}><RiEyeLine className="size-5" />Preview</button>
+        </div>
+          {activeTab === "markdown" ? (
             <div className="mt-4">
               <textarea
                 className="h-[80vh] w-full rounded-md border border-gray-200 bg-white p-4 font-mono text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
@@ -131,16 +129,10 @@ export default function MarkdownPage() {
                 onChange={(e) => setMarkdown(e.target.value)}
               />
             </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="prose mt-4 max-w-none rounded-md border border-gray-200 bg-white p-4 dark:prose-invert dark:border-gray-700 dark:bg-gray-900">
-              <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={markdownUrlTransform}>
-                {markdown}
-              </ReactMarkdown>
-            </div>
-          </TabPanel>
-        </TabPanels>
-      </TabGroup>
+          ) : (
+            <Markdown className="prose mt-4 max-w-none rounded-md border border-gray-200 bg-white p-4 dark:prose-invert dark:border-gray-700 dark:bg-gray-900">{markdown}</Markdown>
+          )}
+      </div>
     </div>
   )
 }

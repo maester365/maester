@@ -10,7 +10,9 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
     <div
       ref={forwardedRef}
       className={cx(
-        "mx-auto my-6 flex w-full items-center justify-between gap-3 text-sm",
+        // my-8 keeps the gap Tailwind 3's space-y-8 used to force on it; v4's space-y no longer
+        // overrides child margins.
+        "mx-auto my-8 flex w-full items-center justify-between gap-3 text-sm",
         "text-gray-500 dark:text-gray-400",
         className,
       )}

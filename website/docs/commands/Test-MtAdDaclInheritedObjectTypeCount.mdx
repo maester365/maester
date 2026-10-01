@@ -20,7 +20,7 @@ Test-MtAdDaclInheritedObjectTypeCount [-ProgressAction <ActionPreference>] [<Com
 
 ## DESCRIPTION
 
-This test analyzes DACL entries from Get-MtADDomainState and counts distinct
+This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and counts distinct
 inherited object type GUIDs that are explicitly targeted by ACE inheritance.
 Reviewing inherited object type scope helps identify how broadly delegated access
 applies to descendant object classes.

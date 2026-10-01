@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@tremor/react";
+import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@/components/ui/report";
 import { CheckCircleIcon, ExclamationTriangleIcon, ExclamationCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 import { defaultSelectedStatus } from "@/lib/testStatus";
 

@@ -10,6 +10,9 @@
     Supports both single-tenant results (from ConvertTo-MtMaesterResult) and multi-tenant
     results (from Merge-MtMaesterResult).
 
+    The report omits each test's ErrorRecord, which the report doesn't display. The
+    MaesterResults object passed in and the JSON results file keep it.
+
     .Example
     $pesterResults = Invoke-Pester -PassThru
     $maesterResults = ConvertTo-MtMaesterResult $pesterResults
@@ -46,12 +49,47 @@
     )
 
     process {
-        # Use depth 7 for multi-tenant to handle: Tenants > Tests > ErrorRecord > nested objects
-        $isMultiTenant = $MaesterResults.PSObject.Properties.Name -contains 'Tenants'
+        # Shallow copy of a results or test object, which may be a PSCustomObject or a hashtable.
+        $copyWithout = {
+            param($Object, [string] $ExcludeProperty)
+            $copy = [ordered]@{}
+            if ($Object -is [System.Collections.IDictionary]) {
+                foreach ($key in $Object.Keys) {
+                    if ($key -ne $ExcludeProperty) { $copy[$key] = $Object[$key] }
+                }
+            } else {
+                foreach ($property in $Object.PSObject.Properties) {
+                    if ($property.Name -ne $ExcludeProperty) { $copy[$property.Name] = $property.Value }
+                }
+            }
+            $copy
+        }
+
+        # The report doesn't display ErrorRecord, and its stack traces can make up most of the file
+        # and include local file paths. Copy the results without it so the caller's object and the
+        # JSON output keep the full record.
+        $removeErrorRecord = {
+            param($Results)
+            $copy = & $copyWithout $Results ''
+            if ($null -ne $copy.Tests) {
+                # Assign directly so a single test or no tests still serializes as an array.
+                $copy.Tests = @($copy.Tests | ForEach-Object { [PSCustomObject](& $copyWithout $_ 'ErrorRecord') })
+            }
+            [PSCustomObject]$copy
+        }
+
+        $reportResults = & $removeErrorRecord $MaesterResults
+
+        # Check the copy rather than the input so hashtable results are detected too.
+        # Use depth 7 for multi-tenant to handle: Tenants > Tests > ResultDetail > nested objects
+        $isMultiTenant = $reportResults.PSObject.Properties.Name -contains 'Tenants'
         $depth = if ($isMultiTenant) { 7 } else { 5 }
+        if ($isMultiTenant -and $null -ne $reportResults.Tenants) {
+            $reportResults.Tenants = @($reportResults.Tenants | ForEach-Object { & $removeErrorRecord $_ })
+        }
 
         Write-Verbose "Generating HTML report."
-        $json = $MaesterResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
+        $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
 
         # Prevent values from terminating the script element while preserving them when JavaScript parses the JSON.
         $json = $json.Replace('&', '\u0026').Replace('<', '\u003c').Replace('>', '\u003e')

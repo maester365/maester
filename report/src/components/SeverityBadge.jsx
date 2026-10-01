@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Badge } from "@tremor/react";
+import { Badge } from "@/components/ui/report";
 import {
   ExclamationCircleIcon,
   ShieldExclamationIcon,

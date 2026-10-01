@@ -1,7 +1,7 @@
 import { cx } from "@/lib/utils"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { PanelLeft } from "lucide-react"
-import { Link, useLocation } from "react-router"
+import { Link, useLocation } from "@/lib/router"
 import { useSidebar } from "./Sidebar"
 import { ThemeToggle } from "./ThemeToggle"
 import { useTenant } from "@/context/TenantContext"
@@ -35,7 +35,9 @@ export function Breadcrumb() {
   const { isCollapsed, setIsCollapsed } = useSidebar()
   const breadcrumbs = getBreadcrumbs(pathname)
   const { selectedTenant } = useTenant()
-  const bannerLogo = selectedTenant?.TenantLogos?.Banner
+  // Maester embeds tenant logos as data URIs. Ignore anything else so the report never loads a remote image.
+  const tenantBanner: unknown = selectedTenant?.TenantLogos?.Banner
+  const bannerLogo = typeof tenantBanner === "string" && /^data:image\/[\w.+*-]+;base64,/i.test(tenantBanner) ? tenantBanner : undefined
 
   return (
     <div className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-black">
@@ -44,7 +46,7 @@ export function Breadcrumb() {
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={cx(
-            "flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-500 shadow-xs transition-colors hover:bg-gray-50 hover:text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+            "flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           )}
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >

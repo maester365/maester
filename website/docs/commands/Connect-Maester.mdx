@@ -20,7 +20,9 @@ Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-IncludePreview] 
  [[-TeamsEnvironmentName] <String>] [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>]
  [[-ClientTimeout] <Double>] [[-SharePointClientId] <String>] [[-SharePointAdminUrl] <String>]
  [[-SharePointCertificateThumbprint] <String>] [[-GitHubOrganization] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-ActiveDirectoryForest] <Object>] [[-ActiveDirectoryDomain] <Object>] [[-ActiveDirectoryServer] <Object>]
+ [[-ActiveDirectoryCredential] <PSCredential>] [[-ActiveDirectoryAuthMode] <String>]
+ [[-ActiveDirectoryTlsMode] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -484,6 +486,103 @@ Aliases:
 Required: False
 Position: 12
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectoryForest
+
+The Active Directory forest DNS name to discover when Service includes ActiveDirectory.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 13
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectoryDomain
+
+The Active Directory domain DNS name to discover when Service includes ActiveDirectory.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 14
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectoryServer
+
+The Active Directory domain controller to connect to when Service includes ActiveDirectory.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 15
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectoryCredential
+
+The credential used for the Active Directory LDAP connection.
+
+```yaml
+Type: PSCredential
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 16
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectoryAuthMode
+
+The authentication mode used for the Active Directory LDAP connection.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: AuthMode
+
+Required: False
+Position: 17
+Default value: Negotiate
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectoryTlsMode
+
+The TLS mode used for the Active Directory LDAP connection.
+Auto tries LDAPS before StartTLS.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: TlsMode
+
+Required: False
+Position: 18
+Default value: Auto
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
