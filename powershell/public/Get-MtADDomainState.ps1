@@ -697,7 +697,7 @@ function Get-MtADDomainState {
     try {
         $protocolTargetParameters = @{
             AuthMode = $__MtSession.ADConnection.RequestedAuthMode
-            TlsMode  = $__MtSession.ADConnection.RequestedTlsMode
+            TlsMode  = $__MtSession.ADConnection.TlsMode
             PassThru = $true
         }
         if ($ComputerName) {

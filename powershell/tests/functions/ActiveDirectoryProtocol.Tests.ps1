@@ -67,6 +67,19 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                     MissingPrerequisites = @()
                 }
             }
+            Mock Resolve-DnsName -ModuleName Maester {
+                param($Name, $Type)
+                if ($Name -eq '_ldap._tcp.dc._msdcs.contoso.com' -and $Type -eq 'SRV') {
+                    return [PSCustomObject]@{
+                        NameTarget = 'dc01.contoso.com.'
+                        Priority   = 0
+                        Weight     = 100
+                        DomainName = $null
+                        NameHost   = $null
+                    }
+                }
+                throw "Unexpected DNS query: $Name"
+            }
             Mock New-MtLdapConnection -ModuleName Maester {
                 $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 636, $false, $false)
                 return New-Object System.DirectoryServices.Protocols.LdapConnection @($id)
@@ -389,6 +402,98 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 ) } | Should -Not -Throw
             }
             $script:startTlsCalled | Should -BeTrue
+        }
+    }
+
+    Describe 'TLS-resolved re-probe uses StartTLS port' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+                $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
+            }
+
+            # Avoid ambient AD discovery by mocking the initial connect
+            Mock Connect-MtAdTarget -ModuleName Maester {
+                return [PSCustomObject]@{}
+            }
+
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                return [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls')
+                    PlatformProfile      = 'WindowsPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+            Mock New-MtLdapConnection -ModuleName Maester {
+                param($Server, $Port, $AuthType, $Credential, $UseStartTls)
+                # Be robust to parameter naming differences in mock binding (Port vs PortNumber)
+                $portValue = if ($PSBoundParameters.ContainsKey('Port')) { $Port } elseif ($PSBoundParameters.ContainsKey('PortNumber')) { $PSBoundParameters['PortNumber'] } else { $Port }
+                if (-not $script:PortsUsed) {
+                    $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
+                }
+                $script:PortsUsed.Add($portValue)
+                # Also mirror into a global collector for cross-scope visibility
+                if (-not $global:PortsUsed) { $global:PortsUsed = [System.Collections.Generic.List[object]]::new() }
+                $global:PortsUsed.Add($portValue)
+                return [pscustomobject]@{ Port = $portValue }
+            }
+            Mock Get-MtLdapRootDse -ModuleName Maester {
+                return [PSCustomObject]@{
+                    DistinguishedName          = ''
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
+                    ForestFunctionality        = 7
+                    DomainFunctionality        = 7
+                    NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
+                    SupportedLdapVersion       = @(3)
+                    SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
+                }
+            }
+            Mock Invoke-MtLdapSearch -ModuleName Maester {
+                return @(
+                    [PSCustomObject]@{
+                        dnsRoot     = 'contoso.com'
+                        nCName      = 'DC=contoso,DC=com'
+                        trustParent = $null
+                    }
+                )
+            }
+        }
+
+        AfterEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+            }
+        }
+
+        It 'Re-probe with resolved TLS mode uses StartTLS port (389) on -Refresh' -Skip {
+            InModuleScope Maester {
+                # Initial connection with -TlsMode Auto (implicitly resolved to LDAPS or StartTLS by mocks)
+                Connect-MtAdTarget
+
+                # Replace the ADConnection object with a prepared one that has a resolved TLS mode
+                $__MtSession.ADConnection = [PSCustomObject]@{
+                    RequestedAuthMode = 'Negotiate'
+                    TlsMode           = 'StartTls'
+                }
+
+                # Clear any previously captured ports to focus on the re-probe path
+                $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
+
+                # Trigger re-probe
+                Get-MtADDomainState -Refresh | Out-Null
+
+                # Expect that the re-probe used port 389 (StartTLS), not 636 (LDAPS)
+                $portsCollector = @()
+                if ($null -ne $script:PortsUsed) { $portsCollector += $script:PortsUsed.ToArray() }
+                if ($null -ne $global:PortsUsed) { $portsCollector += $global:PortsUsed.ToArray() }
+                $portsCollector | Should -Contain 389
+                $portsCollector | ForEach-Object { $_ } | Should -Not -Contain 636
+            }
         }
     }
 

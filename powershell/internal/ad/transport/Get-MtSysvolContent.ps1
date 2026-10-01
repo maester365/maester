@@ -429,9 +429,14 @@ function Invoke-MtSysvolSmbClient {
             $authDomain = if ($networkCredential.Domain) { $networkCredential.Domain } else { $Domain }
             $authContent = "username = $($networkCredential.UserName)`npassword = $($networkCredential.Password)`ndomain = $authDomain`n"
             [IO.File]::WriteAllText($authFile, $authContent, [Text.UTF8Encoding]::new($false))
-            if ([Enum]::GetNames([IO.FileMode]).Count -ge 0 -and $PSVersionTable.PSVersion.Major -ge 7) {
+            # Robustly determine if we can call SetUnixFileMode. In PS 7.3+ (.NET 7+)
+            # this static method exists on [IO.File]. In PS 7.2/.NET 6 it does not.
+            # Use a direct existence check instead of an always-true heuristic.
+            $hasSetUnixFileMode = $null -ne ([IO.File] | Get-Member -Static -Name SetUnixFileMode -ErrorAction SilentlyContinue)
+            if ($hasSetUnixFileMode -and $PSVersionTable.PSVersion.Major -ge 7) {
                 [IO.File]::SetUnixFileMode($authFile, [IO.UnixFileMode]::UserRead -bor [IO.UnixFileMode]::UserWrite)
             }
+            # end of guard
             else {
                 & chmod 600 -- $authFile
                 if ($LASTEXITCODE -ne 0) {
