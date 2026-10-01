@@ -488,7 +488,7 @@ function Connect-MtAdTarget {
             $__MtSession.ADCredential = $null
             $__MtSession.ADConnection = Get-MtAdSessionState -Connected $false -ErrorMessage $sanitizedError
         }
-        throw "Failed to connect to Active Directory: $sanitizedError"
+        throw [System.Exception]::new("Failed to connect to Active Directory: $sanitizedError", $_.Exception)
     }
     finally {
         if ($null -ne $resolvedConnection) {
