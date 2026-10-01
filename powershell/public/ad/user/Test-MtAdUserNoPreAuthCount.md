@@ -17,3 +17,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserDelegationAllowedCount`
 - `Test-MtAdUserKerberosDesOnlyCount`
 - `Test-MtAdUserPasswordNotRequiredCount`
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Kerberos preauthentication disabled](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_kerberos_properties_preauth)

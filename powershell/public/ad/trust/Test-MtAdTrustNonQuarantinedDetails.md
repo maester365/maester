@@ -43,3 +43,7 @@ This test filters trust objects where `Quarantined` is `$false` and displays:
 - `Test-MtAdTrustQuarantinedCount` - Count of quarantined vs non-quarantined trusts
 - `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined
 - `Test-MtAdTrustDetails` - Complete trust configuration details
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Unfiltered outbound domain trust relationship](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_trusts_domain_notfiltered)

@@ -17,3 +17,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserDelegationAllowedCount`
 - `Test-MtAdUserReversibleEncryptionCount`
 - `Test-MtAdUserNoPreAuthCount`
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Use of Kerberos with weak encryption](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_kerberos_properties_deskey)

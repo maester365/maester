@@ -38,3 +38,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 - `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Focuses on non-DC computers (critical risk)
 - `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation
 - `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)

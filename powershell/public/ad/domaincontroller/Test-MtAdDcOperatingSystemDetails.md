@@ -38,3 +38,7 @@ This test retrieves the OperatingSystem attribute from all domain controllers an
 
 - `Test-MtAdDcOperatingSystemCount` - Count of unique OS versions
 - `Test-MtAdDomainControllerCount` - Total DC count
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: DC/RODC with an obsolete operating system](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dc_obsolete)

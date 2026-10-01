@@ -43,3 +43,7 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation count
 - `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation on non-DCs
 - `Test-MtAdComputerDelegationCount` - General delegation overview
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)

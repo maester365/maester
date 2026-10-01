@@ -17,3 +17,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 - `Test-MtAdUserDisabledCount`
 - `Test-MtAdUserNeverLoggedInCount`
 - `Test-MtAdUserPasswordNeverExpiresCount`
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Dormant accounts](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_dormant)

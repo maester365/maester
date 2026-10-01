@@ -17,3 +17,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserKerberosDesOnlyCount`
 - `Test-MtAdUserPasswordNotRequiredCount`
 - `Test-MtAdUserNoPreAuthCount`
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Privileged accounts with passwords stored using reversible encryption](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_reversible_password_priv_uac)

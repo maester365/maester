@@ -17,3 +17,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserNoPreAuthCount`
 - `Test-MtAdUserKerberosDesOnlyCount`
 - `Test-MtAdUserPasswordNeverExpiresCount`
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)

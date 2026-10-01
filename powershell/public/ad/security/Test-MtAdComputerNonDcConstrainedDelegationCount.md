@@ -38,3 +38,8 @@ This test counts non-DC computers with the `TrustedToAuthForDelegation` flag ena
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation
 - `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Critical non-DC unconstrained delegation
 - `Test-MtAdUserDelegationConfiguredCount` - User account delegation settings
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Constrained authentication delegation to privileged service](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_a2d2)
+- [ANSSI Active Directory checkpoints: Constrained delegation with protocol transition to a privileged service](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t2a4d)

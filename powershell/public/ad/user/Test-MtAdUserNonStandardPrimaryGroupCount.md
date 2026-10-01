@@ -22,3 +22,7 @@ This test counts user objects where `primaryGroupId` is populated and not equal 
 
 - `Test-MtAdUserAdminCountCount` - Highlights protected or privileged accounts
 - `Test-MtAdUserSidHistoryCount` - Identifies migration-related account artifacts
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Accounts with modified PrimaryGroupID](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_primary_group_id_nochange)

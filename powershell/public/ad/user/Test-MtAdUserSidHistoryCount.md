@@ -22,3 +22,7 @@ This test counts user objects where the `SIDHistory` attribute contains one or m
 
 - `Test-MtAdUserNonStandardPrimaryGroupCount` - Finds other migration or provisioning anomalies
 - `Test-MtAdUserAdminCountCount` - Helps prioritize review of privileged accounts
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Accounts or groups with SID history set](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_sidhistory_present)

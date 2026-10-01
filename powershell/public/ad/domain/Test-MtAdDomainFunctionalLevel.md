@@ -25,3 +25,7 @@ This test retrieves the current domain functional level from Active Directory an
 
 - `Test-MtAdForestFunctionalLevel` - Retrieves the forest functional level
 - `Test-MtAdDomainControllerCount` - Counts domain controllers in the domain
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Insufficient forest and domains functional levels](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_functional_level)

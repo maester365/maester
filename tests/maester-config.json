@@ -10,6 +10,1241 @@
   },
   "TestSettings": [
     {
+      "Id": "AD-CFG-01",
+      "Severity": "Info",
+      "Title": "Tombstone lifetime configuration should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-02",
+      "Severity": "High",
+      "Title": "dSHeuristics count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-03",
+      "Severity": "Info",
+      "Title": "SPN mappings should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-04",
+      "Severity": "Info",
+      "Title": "Optional features count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-05",
+      "Severity": "Info",
+      "Title": "Recycle bin enabled paths should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-06",
+      "Severity": "Info",
+      "Title": "LDAP query policy count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-07",
+      "Severity": "Info",
+      "Title": "Default query policy should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-08",
+      "Severity": "Info",
+      "Title": "AuthN policy container count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-09",
+      "Severity": "Info",
+      "Title": "AD activation objects count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-10",
+      "Severity": "Info",
+      "Title": "Well-known security principals count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-11",
+      "Severity": "Info",
+      "Title": "Registered DHCP servers count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-12",
+      "Severity": "Info",
+      "Title": "Enterprise CA count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-13",
+      "Severity": "Info",
+      "Title": "Certificate templates count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-14",
+      "Severity": "Info",
+      "Title": "Enrollment templates count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-15",
+      "Severity": "Info",
+      "Title": "Enrollment CA certificate details should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-16",
+      "Severity": "Info",
+      "Title": "Trusted root CA count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-17",
+      "Severity": "Info",
+      "Title": "Trusted root CA details should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-18",
+      "Severity": "Info",
+      "Title": "Intermediate CA count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-19",
+      "Severity": "Info",
+      "Title": "Intermediate CA details should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-20",
+      "Severity": "Info",
+      "Title": "CRL distribution points count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-21",
+      "Severity": "Info",
+      "Title": "NTAuth certificates count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-22",
+      "Severity": "Info",
+      "Title": "KDS root keys count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-23",
+      "Severity": "Info",
+      "Title": "SMTP site links count should be retrievable"
+    },
+    {
+      "Id": "AD-CFG-24",
+      "Severity": "Info",
+      "Title": "IP site links count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-01",
+      "Severity": "Info",
+      "Title": "Computer disabled count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-02",
+      "Severity": "Info",
+      "Title": "Computer dormant count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-03",
+      "Severity": "Info",
+      "Title": "Computer CreatorSid count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-04",
+      "Severity": "Info",
+      "Title": "Computer non-standard primary group count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-05",
+      "Severity": "Medium",
+      "Title": "Computer SID History count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-06",
+      "Severity": "Info",
+      "Title": "Computer default container count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-07",
+      "Severity": "Info",
+      "Title": "Computer OU count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-08",
+      "Severity": "Info",
+      "Title": "Computer per OU average should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-09",
+      "Severity": "Info",
+      "Title": "Computer delegation count should be retrievable"
+    },
+    {
+      "Id": "AD-COMP-10",
+      "Severity": "Info",
+      "Title": "Computer delegation details should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-01",
+      "Severity": "Info",
+      "Title": "Distinct DACL object count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-02",
+      "Severity": "Info",
+      "Title": "OU DACL entry count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-03",
+      "Severity": "Info",
+      "Title": "Conflict object count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-04",
+      "Severity": "Info",
+      "Title": "Conflict object details should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-05",
+      "Severity": "Info",
+      "Title": "Deny ACE count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-06",
+      "Severity": "Info",
+      "Title": "Deny ACE details should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-07",
+      "Severity": "Info",
+      "Title": "Distinct DACL identity count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-08",
+      "Severity": "Info",
+      "Title": "DACL ACE distribution per identity should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-09",
+      "Severity": "Info",
+      "Title": "Privileged allow ACE count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-10",
+      "Severity": "Info",
+      "Title": "Privileged allow ACE details should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-11",
+      "Severity": "Info",
+      "Title": "Privileged extended right count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-12",
+      "Severity": "Info",
+      "Title": "Privileged extended right details should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-13",
+      "Severity": "Info",
+      "Title": "Privileged extended right identities should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-14",
+      "Severity": "Info",
+      "Title": "Non-inherited ACE count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-15",
+      "Severity": "Info",
+      "Title": "Unresolved SID count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-16",
+      "Severity": "Info",
+      "Title": "Unresolved SID details should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-17",
+      "Severity": "Info",
+      "Title": "Inherited object type count should be retrievable"
+    },
+    {
+      "Id": "AD-DACL-18",
+      "Severity": "Info",
+      "Title": "Inherited object type details should be retrievable"
+    },
+    {
+      "Id": "AD-DC-01",
+      "Severity": "Info",
+      "Title": "DC site coverage count should be retrievable"
+    },
+    {
+      "Id": "AD-DC-03",
+      "Severity": "Info",
+      "Title": "SMBv3.1.1 enabled count should be retrievable"
+    },
+    {
+      "Id": "AD-DC-05",
+      "Severity": "Info",
+      "Title": "DCs with all FSMO roles count should be retrievable"
+    },
+    {
+      "Id": "AD-DC-06",
+      "Severity": "Info",
+      "Title": "FSMO role holder details should be retrievable"
+    },
+    {
+      "Id": "AD-DC-07",
+      "Severity": "High",
+      "Title": "DC operating system count should be retrievable"
+    },
+    {
+      "Id": "AD-DC-08",
+      "Severity": "High",
+      "Title": "DC operating system details should be retrievable"
+    },
+    {
+      "Id": "AD-DCD-01",
+      "Severity": "Info",
+      "Title": "DC non-standard LDAP port count should be retrievable"
+    },
+    {
+      "Id": "AD-DCD-02",
+      "Severity": "Info",
+      "Title": "DC non-standard LDAPS port count should be retrievable"
+    },
+    {
+      "Id": "AD-DCD-03",
+      "Severity": "Info",
+      "Title": "Read-only domain controller count should be retrievable"
+    },
+    {
+      "Id": "AD-DCD-04",
+      "Severity": "Info",
+      "Title": "Non-Global Catalog DC count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-01",
+      "Severity": "Critical",
+      "Title": "Computers with unconstrained delegation count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-02",
+      "Severity": "Critical",
+      "Title": "Non-DC computers should not have unconstrained delegation"
+    },
+    {
+      "Id": "AD-DCOMP-03",
+      "Severity": "High",
+      "Title": "Non-DC computers with constrained delegation count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-04",
+      "Severity": "Info",
+      "Title": "Computer operating system count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-05",
+      "Severity": "Info",
+      "Title": "Computer operating system details should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-06",
+      "Severity": "Medium",
+      "Title": "Stale enabled computer count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-07",
+      "Severity": "Info",
+      "Title": "Computer DNS host name count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-08",
+      "Severity": "Info",
+      "Title": "Computer DNS zone count should be retrievable"
+    },
+    {
+      "Id": "AD-DCOMP-09",
+      "Severity": "Info",
+      "Title": "Computer DNS zone details should be retrievable"
+    },
+    {
+      "Id": "AD-DFSR-01",
+      "Severity": "Info",
+      "Title": "DFS-R subscription count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-01",
+      "Severity": "Info",
+      "Title": "DNS zone count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-02",
+      "Severity": "Info",
+      "Title": "Zones with only SOA/NS records should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-03",
+      "Severity": "Info",
+      "Title": "Root servers with incorrect IPs should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-04",
+      "Severity": "Info",
+      "Title": "Root server incorrect IP details should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-05",
+      "Severity": "Info",
+      "Title": "Dynamic DNS record count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-06",
+      "Severity": "Info",
+      "Title": "Zones with non-default records should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-07",
+      "Severity": "Info",
+      "Title": "Zone record count details should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-08",
+      "Severity": "Info",
+      "Title": "Zone delegation count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-09",
+      "Severity": "Info",
+      "Title": "Zone delegation details should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-10",
+      "Severity": "Info",
+      "Title": "SOA record details should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-11",
+      "Severity": "Info",
+      "Title": "AD DS SRV record count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-12",
+      "Severity": "Info",
+      "Title": "AD DS SRV record details should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-13",
+      "Severity": "Info",
+      "Title": "DNSSEC record count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-14",
+      "Severity": "Info",
+      "Title": "Empty zone count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-15",
+      "Severity": "Info",
+      "Title": "Duplicate zone count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-16",
+      "Severity": "Info",
+      "Title": "Reverse lookup zone count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-17",
+      "Severity": "Info",
+      "Title": "Non-standard zone count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-18",
+      "Severity": "Info",
+      "Title": "Reverse zone network count should be retrievable"
+    },
+    {
+      "Id": "AD-DNS-19",
+      "Severity": "Info",
+      "Title": "Reverse zone network details should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-01",
+      "Severity": "Medium",
+      "Title": "Domain functional level should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-02",
+      "Severity": "Low",
+      "Title": "Machine account quota should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-03",
+      "Severity": "Info",
+      "Title": "Domain controller count should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-04",
+      "Severity": "Info",
+      "Title": "RIDs remaining should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-05",
+      "Severity": "Info",
+      "Title": "Domain name standard compliance should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-06",
+      "Severity": "Info",
+      "Title": "Domain name non-standard details should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-07",
+      "Severity": "Info",
+      "Title": "NetBIOS name standard compliance should be retrievable"
+    },
+    {
+      "Id": "AD-DOM-08",
+      "Severity": "Info",
+      "Title": "NetBIOS name non-standard details should be retrievable"
+    },
+    {
+      "Id": "AD-DOMS-01",
+      "Severity": "Info",
+      "Title": "Allowed DNS suffixes count should be retrievable"
+    },
+    {
+      "Id": "AD-FEAT-01",
+      "Severity": "Info",
+      "Title": "Optional feature count should be retrievable"
+    },
+    {
+      "Id": "AD-FEAT-02",
+      "Severity": "Info",
+      "Title": "Optional feature enabled details should be retrievable"
+    },
+    {
+      "Id": "AD-FGPP-01",
+      "Severity": "Info",
+      "Title": "Fine-grained password policy count should be retrievable"
+    },
+    {
+      "Id": "AD-FGPP-02",
+      "Severity": "Info",
+      "Title": "Fine-grained password policy value count should be retrievable"
+    },
+    {
+      "Id": "AD-FGPP-03",
+      "Severity": "Info",
+      "Title": "Fine-grained password policy setting counts should be retrievable"
+    },
+    {
+      "Id": "AD-FGPP-04",
+      "Severity": "Info",
+      "Title": "Fine-grained password policy application targets should be retrievable"
+    },
+    {
+      "Id": "AD-FOR-01",
+      "Severity": "Medium",
+      "Title": "Forest functional level should be retrievable"
+    },
+    {
+      "Id": "AD-FOR-02",
+      "Severity": "Info",
+      "Title": "Forest domain count should be retrievable"
+    },
+    {
+      "Id": "AD-FOR-03",
+      "Severity": "Info",
+      "Title": "Tombstone lifetime should be retrievable"
+    },
+    {
+      "Id": "AD-FOR-04",
+      "Severity": "Info",
+      "Title": "Recycle Bin status should be retrievable"
+    },
+    {
+      "Id": "AD-FORS-01",
+      "Severity": "Info",
+      "Title": "UPN suffixes count should be retrievable"
+    },
+    {
+      "Id": "AD-FORS-02",
+      "Severity": "Info",
+      "Title": "UPN suffixes details should be retrievable"
+    },
+    {
+      "Id": "AD-FORS-03",
+      "Severity": "Info",
+      "Title": "SPN suffixes count should be retrievable"
+    },
+    {
+      "Id": "AD-FORS-04",
+      "Severity": "Info",
+      "Title": "Cross-forest references count should be retrievable"
+    },
+    {
+      "Id": "AD-GCHG-01",
+      "Severity": "Info",
+      "Title": "Average group membership changes per year should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-01",
+      "Severity": "Info",
+      "Title": "Distinct groups with members count should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-02",
+      "Severity": "Info",
+      "Title": "Distinct account types of members count should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-03",
+      "Severity": "Info",
+      "Title": "Member account types breakdown should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-04",
+      "Severity": "Info",
+      "Title": "Trust members count should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-05",
+      "Severity": "Info",
+      "Title": "Trust members details by group should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-06",
+      "Severity": "Info",
+      "Title": "Foreign SID principals count should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-07",
+      "Severity": "Info",
+      "Title": "Foreign SID details by domain should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-08",
+      "Severity": "Info",
+      "Title": "Empty non-privileged group count should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-09",
+      "Severity": "Info",
+      "Title": "Empty non-privileged group details should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-10",
+      "Severity": "Info",
+      "Title": "Privileged groups with members count should be retrievable"
+    },
+    {
+      "Id": "AD-GMC-11",
+      "Severity": "Info",
+      "Title": "Privileged groups with members details should be retrievable"
+    },
+    {
+      "Id": "AD-GPO-01",
+      "Severity": "Info",
+      "Title": "GPO total count should be retrievable"
+    },
+    {
+      "Id": "AD-GPO-02",
+      "Severity": "Info",
+      "Title": "GPO created before 2020 count should be retrievable"
+    },
+    {
+      "Id": "AD-GPO-03",
+      "Severity": "Info",
+      "Title": "GPO stale-before-2020 count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOL-01",
+      "Severity": "Info",
+      "Title": "GPO linked count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOL-02",
+      "Severity": "Info",
+      "Title": "Disabled GPO link count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOL-06",
+      "Severity": "Info",
+      "Title": "GPO linked OU count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-10",
+      "Severity": "Info",
+      "Title": "GPO no-apply Group Policy ACE count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-11",
+      "Severity": "Info",
+      "Title": "GPO no-apply Group Policy ACE details should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-12",
+      "Severity": "Info",
+      "Title": "GPO disabled link count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-13",
+      "Severity": "Info",
+      "Title": "GPO disabled link details should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-14",
+      "Severity": "Info",
+      "Title": "GPO enforcement count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-15",
+      "Severity": "Info",
+      "Title": "GPO version mismatch count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOREP-16",
+      "Severity": "Info",
+      "Title": "GPO version mismatch details should be retrievable"
+    },
+    {
+      "Id": "AD-GPOS-01",
+      "Severity": "Info",
+      "Title": "GPO state total count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOS-02",
+      "Severity": "Info",
+      "Title": "WMI filter count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOS-03",
+      "Severity": "Info",
+      "Title": "WMI filter details should be compliant"
+    },
+    {
+      "Id": "AD-GPOS-04",
+      "Severity": "Info",
+      "Title": "Disabled GPO settings count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOS-05",
+      "Severity": "Info",
+      "Title": "Computer disabled GPO settings details should be compliant"
+    },
+    {
+      "Id": "AD-GPOS-06",
+      "Severity": "Info",
+      "Title": "User disabled GPO settings details should be compliant"
+    },
+    {
+      "Id": "AD-GPOS-07",
+      "Severity": "Info",
+      "Title": "All disabled GPO settings details should be compliant"
+    },
+    {
+      "Id": "AD-GPOS-08",
+      "Severity": "Info",
+      "Title": "GPO owner distinct count should be retrievable"
+    },
+    {
+      "Id": "AD-GPOS-09",
+      "Severity": "Info",
+      "Title": "GPO owner details should be accessible"
+    },
+    {
+      "Id": "AD-GRP-01",
+      "Severity": "Info",
+      "Title": "Group AdminCount should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-02",
+      "Severity": "Info",
+      "Title": "Groups in container objects count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-03",
+      "Severity": "Info",
+      "Title": "Stale groups count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-04",
+      "Severity": "Info",
+      "Title": "Groups with manager count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-05",
+      "Severity": "Medium",
+      "Title": "Group SID History count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-06",
+      "Severity": "Info",
+      "Title": "Distribution group count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-07",
+      "Severity": "Info",
+      "Title": "Security group count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-08",
+      "Severity": "Info",
+      "Title": "Domain local group count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-09",
+      "Severity": "Info",
+      "Title": "Global group count should be retrievable"
+    },
+    {
+      "Id": "AD-GRP-10",
+      "Severity": "Info",
+      "Title": "Universal group count should be retrievable"
+    },
+    {
+      "Id": "AD-KRBTGT-01",
+      "Severity": "High",
+      "Title": "KRBTGT password last set should be retrievable"
+    },
+    {
+      "Id": "AD-KRBTGT-02",
+      "Severity": "Info",
+      "Title": "KRBTGT last logon should be retrievable"
+    },
+    {
+      "Id": "AD-MSA-01",
+      "Severity": "Info",
+      "Title": "Managed service account count should be retrievable"
+    },
+    {
+      "Id": "AD-OU-01",
+      "Severity": "Info",
+      "Title": "OU overlapping name count should be retrievable"
+    },
+    {
+      "Id": "AD-OU-02",
+      "Severity": "Info",
+      "Title": "OU at domain root count should be retrievable"
+    },
+    {
+      "Id": "AD-OU-03",
+      "Severity": "Info",
+      "Title": "OU stale count should be retrievable"
+    },
+    {
+      "Id": "AD-OU-04",
+      "Severity": "Info",
+      "Title": "OU empty count should be retrievable"
+    },
+    {
+      "Id": "AD-OU-05",
+      "Severity": "Info",
+      "Title": "OU empty details should be retrievable"
+    },
+    {
+      "Id": "AD-PRINT-01",
+      "Severity": "Info",
+      "Title": "Printer total count should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-01",
+      "Severity": "Info",
+      "Title": "Password history count should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-02",
+      "Severity": "Info",
+      "Title": "Password maximum age should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-03",
+      "Severity": "Info",
+      "Title": "Password minimum length should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-04",
+      "Severity": "Info",
+      "Title": "Password complexity requirement should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-05",
+      "Severity": "Info",
+      "Title": "Password reversible encryption status should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-06",
+      "Severity": "Info",
+      "Title": "Account lockout duration should be retrievable"
+    },
+    {
+      "Id": "AD-PWDPOL-07",
+      "Severity": "Info",
+      "Title": "Account lockout threshold should be retrievable"
+    },
+    {
+      "Id": "AD-REPL-01",
+      "Severity": "Info",
+      "Title": "Disabled replication connection count should be retrievable"
+    },
+    {
+      "Id": "AD-REPL-02",
+      "Severity": "Info",
+      "Title": "Non-auto replication connection count should be retrievable"
+    },
+    {
+      "Id": "AD-ROOTDSE-01",
+      "Severity": "Info",
+      "Title": "Supported SASL mechanism count should be retrievable"
+    },
+    {
+      "Id": "AD-ROOTDSE-02",
+      "Severity": "Info",
+      "Title": "Supported SASL mechanism details should be retrievable"
+    },
+    {
+      "Id": "AD-SCH-01",
+      "Severity": "Info",
+      "Title": "Schema modification year count should be retrievable"
+    },
+    {
+      "Id": "AD-SCH-02",
+      "Severity": "Info",
+      "Title": "Schema modification year details should be retrievable"
+    },
+    {
+      "Id": "AD-SCH-03",
+      "Severity": "Info",
+      "Title": "Schema version entry count should be retrievable"
+    },
+    {
+      "Id": "AD-SCH-04",
+      "Severity": "Info",
+      "Title": "Schema version details should be retrievable"
+    },
+    {
+      "Id": "AD-SITE-01",
+      "Severity": "Info",
+      "Title": "Site total count should be retrievable"
+    },
+    {
+      "Id": "AD-SITE-02",
+      "Severity": "Info",
+      "Title": "Sites without domain controllers count should be retrievable"
+    },
+    {
+      "Id": "AD-SITE-03",
+      "Severity": "Info",
+      "Title": "Sites without domain controllers details should be retrievable"
+    },
+    {
+      "Id": "AD-SITE-04",
+      "Severity": "Info",
+      "Title": "Sites without subnet associations count should be retrievable"
+    },
+    {
+      "Id": "AD-SITE-05",
+      "Severity": "Info",
+      "Title": "Sites without subnet associations details should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-01",
+      "Severity": "Info",
+      "Title": "Computer SPN service class count should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-02",
+      "Severity": "Info",
+      "Title": "Computer SPN service class usage should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-03",
+      "Severity": "Info",
+      "Title": "Computer SPN unknown service class count should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-04",
+      "Severity": "Info",
+      "Title": "Computer SPN unknown service class details should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-05",
+      "Severity": "Info",
+      "Title": "Computer SPN non-FQDN hosts should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-06",
+      "Severity": "Info",
+      "Title": "User SPN total count should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-07",
+      "Severity": "Info",
+      "Title": "User SPN service class count should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-08",
+      "Severity": "Info",
+      "Title": "User SPN service class usage should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-09",
+      "Severity": "Info",
+      "Title": "User SPN unknown service class count should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-10",
+      "Severity": "Info",
+      "Title": "User SPN unknown service class details should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-11",
+      "Severity": "Info",
+      "Title": "User SPN non-FQDN hosts should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-12",
+      "Severity": "Critical",
+      "Title": "User SPN domain admin count should be retrievable"
+    },
+    {
+      "Id": "AD-SPN-13",
+      "Severity": "Critical",
+      "Title": "User SPN domain admin details should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-01",
+      "Severity": "Info",
+      "Title": "Subnet total count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-02",
+      "Severity": "Info",
+      "Title": "Sites with subnet associations count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-03",
+      "Severity": "Info",
+      "Title": "Catch-all subnets count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-04",
+      "Severity": "Info",
+      "Title": "IPv6 subnets count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-05",
+      "Severity": "Info",
+      "Title": "IPv6 catch-all subnets count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-06",
+      "Severity": "Info",
+      "Title": "Non-RFC1918 (public IP) subnets count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-07",
+      "Severity": "Info",
+      "Title": "Non-RFC1918 (public IP) subnets details should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-08",
+      "Severity": "Info",
+      "Title": "Distinct first octets count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-09",
+      "Severity": "Info",
+      "Title": "Distinct first two octets (/16 networks) count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-10",
+      "Severity": "Info",
+      "Title": "Distinct first three octets (/24 networks) count should be retrievable"
+    },
+    {
+      "Id": "AD-SUB-11",
+      "Severity": "Info",
+      "Title": "Subnets without site associations count should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-01",
+      "Severity": "Info",
+      "Title": "Trust total count should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-02",
+      "Severity": "Info",
+      "Title": "Trust inter-forest count should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-03",
+      "Severity": "High",
+      "Title": "Trust quarantined count should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-04",
+      "Severity": "High",
+      "Title": "Trust non-quarantined details should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-05",
+      "Severity": "Info",
+      "Title": "Trust configuration details should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-06",
+      "Severity": "Info",
+      "Title": "Trust stale count should be retrievable"
+    },
+    {
+      "Id": "AD-TRUST-07",
+      "Severity": "Info",
+      "Title": "Trust stale details should be retrievable"
+    },
+    {
+      "Id": "AD-USER-01",
+      "Severity": "Info",
+      "Title": "Disabled user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-02",
+      "Severity": "High",
+      "Title": "Dormant enabled user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-03",
+      "Severity": "High",
+      "Title": "Non-expiring password user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-04",
+      "Severity": "Medium",
+      "Title": "Reversible encryption user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-05",
+      "Severity": "High",
+      "Title": "Delegation-enabled user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-06",
+      "Severity": "High",
+      "Title": "DES-only Kerberos user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-07",
+      "Severity": "High",
+      "Title": "No pre-authentication user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-08",
+      "Severity": "Info",
+      "Title": "Never-logged-in enabled user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-09",
+      "Severity": "Info",
+      "Title": "Password-not-required user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-10",
+      "Severity": "Info",
+      "Title": "Workstation-restricted user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-11",
+      "Severity": "Info",
+      "Title": "User AdminCount count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-12",
+      "Severity": "Medium",
+      "Title": "User non-standard primary group count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-13",
+      "Severity": "Medium",
+      "Title": "User SID History count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-14",
+      "Severity": "Info",
+      "Title": "User SPN count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-15",
+      "Severity": "Info",
+      "Title": "User manager count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-16",
+      "Severity": "Info",
+      "Title": "User home directory count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-17",
+      "Severity": "Info",
+      "Title": "User profile path count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-18",
+      "Severity": "Info",
+      "Title": "User script path count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-19",
+      "Severity": "Info",
+      "Title": "User in container count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-20",
+      "Severity": "Info",
+      "Title": "Known service account count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-21",
+      "Severity": "Info",
+      "Title": "Known service account details should be retrievable"
+    },
+    {
+      "Id": "AD-USER-22",
+      "Severity": "Info",
+      "Title": "Built-in administrator account count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-23",
+      "Severity": "Info",
+      "Title": "Enabled built-in administrator details should be retrievable"
+    },
+    {
+      "Id": "AD-USER-24",
+      "Severity": "Info",
+      "Title": "Built-in administrator last logon details should be retrievable"
+    },
+    {
+      "Id": "AD-USER-25",
+      "Severity": "Info",
+      "Title": "Built-in administrator password age details should be retrievable"
+    },
+    {
+      "Id": "AD-USER-26",
+      "Severity": "Info",
+      "Title": "Honey pot user count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-27",
+      "Severity": "Info",
+      "Title": "Honey pot user details should be retrievable"
+    },
+    {
+      "Id": "AD-USER-28",
+      "Severity": "Info",
+      "Title": "User delegation configured count should be retrievable"
+    },
+    {
+      "Id": "AD-USER-29",
+      "Severity": "Info",
+      "Title": "User delegation details should be retrievable"
+    },
+    {
       "Id": "CIS.GH.1.2.2",
       "Severity": "Medium",
       "Title": "(L1) Ensure repository creation is limited to specific members"

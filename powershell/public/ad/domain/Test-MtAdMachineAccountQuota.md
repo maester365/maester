@@ -30,3 +30,7 @@ This test retrieves the current machine account quota value from Active Director
 
 - `Test-MtAdDomainFunctionalLevel` - Retrieves the domain functional level
 - `Test-MtAdDomainControllerCount` - Counts domain controllers
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Unrestricted domain join](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_machineaccountquota)

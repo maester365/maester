@@ -17,3 +17,7 @@ This test queries AD configuration for the dSHeuristics setting(s) and reports a
 
 #### Related Tests
 - `Test-MtAdLdapQueryPolicyCount` - Helps ensure LDAP is protected by sane query limits.
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Dangerous dsHeuristics settings](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dsheuristics_bad)
