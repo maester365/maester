@@ -58,4 +58,51 @@ Describe 'Write-MtGraphConsentHelp' {
             $Object -match [regex]::Escape('Connect-MgGraph -Scopes (Get-MtGraphScope)') -and $Object -notmatch 'ClientId'
         }
     }
+
+    It 'Includes the tenant and cloud in both commands' {
+        InModuleScope Maester {
+            $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('AADSTS65001: consent required'), 'AuthFailed', 'AuthenticationError', $null)
+            $null = Write-MtGraphConsentHelp -ErrorRecord $errorRecord -TenantId 'contoso.onmicrosoft.com' -Environment USGov -SendMail
+        }
+
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Object -match [regex]::Escape("Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail) -TenantId 'contoso.onmicrosoft.com' -Environment USGov")
+        }
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Object -match [regex]::Escape("Connect-Maester -GraphClientId '<application-client-id>' -TenantId 'contoso.onmicrosoft.com' -Environment USGov -SendMail")
+        }
+    }
+
+    It 'Does not add -Environment for the Global cloud' {
+        InModuleScope Maester {
+            $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('AADSTS65001: consent required'), 'AuthFailed', 'AuthenticationError', $null)
+            $null = Write-MtGraphConsentHelp -ErrorRecord $errorRecord -Environment Global
+        }
+
+        Should -Invoke Write-Host -ModuleName Maester -Times 0 -Exactly -ParameterFilter { $Object -match '-Environment' }
+    }
+
+    It 'Makes the guidance conditional when the user only canceled sign-in' {
+        InModuleScope Maester {
+            $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('User canceled authentication'), 'AuthFailed', 'AuthenticationError', $null)
+            $null = Write-MtGraphConsentHelp -ErrorRecord $errorRecord
+        }
+
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Object -match 'If you closed the sign-in window' }
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Object -match '^In that case, ask' }
+    }
+
+    It 'States the consent problem directly for AADSTS approval errors' {
+        InModuleScope Maester {
+            $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('AADSTS90094: The grant requires admin permission.'), 'AuthFailed', 'AuthenticationError', $null)
+            $null = Write-MtGraphConsentHelp -ErrorRecord $errorRecord
+        }
+
+        Should -Invoke Write-Host -ModuleName Maester -Times 0 -Exactly -ParameterFilter { $Object -match 'If you closed the sign-in window' }
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Object -match '^Ask a Global Administrator' }
+    }
 }

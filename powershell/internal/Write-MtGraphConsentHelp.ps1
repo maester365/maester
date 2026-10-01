@@ -25,6 +25,12 @@
         # The custom client ID passed to Connect-Maester, if any.
         [string] $GraphClientId,
 
+        # The tenant passed to Connect-Maester, if any.
+        [string] $TenantId,
+
+        # The Microsoft Graph cloud passed to Connect-Maester.
+        [string] $Environment = 'Global',
+
         [switch] $SendMail,
 
         [switch] $SendTeamsMessage,
@@ -35,11 +41,14 @@
     )
 
     # AADSTS65001: consent not granted. AADSTS90094/AADSTS90095: admin approval required.
-    # 'User canceled authentication' is what Connect-MgGraph reports after an 'Approval required' prompt.
-    $consentErrorPattern = 'AADSTS65001|AADSTS90094|AADSTS90095|User canceled authentication'
+    $approvalErrorPattern = 'AADSTS65001|AADSTS90094|AADSTS90095'
+    # Connect-MgGraph reports this after an 'Approval required' prompt, but also when the user just closes the sign-in window.
+    $canceledErrorPattern = 'User canceled authentication'
 
-    $consentError = $ErrorRecord | Where-Object { $_ -and "$($_.Exception.Message) $($_.ErrorDetails.Message)" -match $consentErrorPattern }
-    if (-not $consentError) {
+    $errorMessages = @($ErrorRecord | Where-Object { $_ } | ForEach-Object { "$($_.Exception.Message) $($_.ErrorDetails.Message)" })
+    $isApprovalError = [bool]($errorMessages -match $approvalErrorPattern)
+    $isCanceled = [bool]($errorMessages -match $canceledErrorPattern)
+    if (-not $isApprovalError -and -not $isCanceled) {
         return $false
     }
 
@@ -50,17 +59,33 @@
         if ($IncludePreview) { '-IncludePreview' }
     ) -join ' '
     $scopeCommand = "(Get-MtGraphScope $scopeSwitches)".Replace(' )', ')')
-    $consentCommand = "Connect-MgGraph -Scopes $scopeCommand"
+
+    # Keep the tenant and cloud from the failed connection so consent lands in the right place.
+    $connectionArgs = @(
+        if ($TenantId) { "-TenantId '$TenantId'" }
+        if ($Environment -and $Environment -ne 'Global') { "-Environment $Environment" }
+    ) -join ' '
+
+    $consentCommand = (@("Connect-MgGraph -Scopes $scopeCommand", $connectionArgs) | Where-Object { $_ }) -join ' '
     if ($GraphClientId) {
         $consentCommand += " -ClientId '$GraphClientId'"
     }
+    $customAppCommand = (@("Connect-Maester -GraphClientId '<application-client-id>'", $connectionArgs, $scopeSwitches) | Where-Object { $_ }) -join ' '
 
     Write-Host ''
     Write-Host '⚠️  Microsoft Graph sign-in did not complete.' -ForegroundColor Yellow
-    Write-Host "If you saw an 'Approval required' or 'Need admin approval' prompt, your account cannot consent to the" -ForegroundColor Yellow
-    Write-Host 'Microsoft Graph permissions Maester needs. This is expected for Global Reader and other non-admin accounts.' -ForegroundColor Yellow
-    Write-Host ''
-    Write-Host 'Ask a Global Administrator or Privileged Role Administrator to do one of the following:' -ForegroundColor White
+    if ($isApprovalError) {
+        Write-Host 'Your account cannot consent to the Microsoft Graph permissions Maester needs.' -ForegroundColor Yellow
+        Write-Host 'This is expected for Global Reader and other non-admin accounts.' -ForegroundColor Yellow
+        Write-Host ''
+        Write-Host 'Ask a Global Administrator or Privileged Role Administrator to do one of the following:' -ForegroundColor White
+    } else {
+        Write-Host "If you closed the sign-in window, run Connect-Maester again." -ForegroundColor Yellow
+        Write-Host ''
+        Write-Host "If you saw an 'Approval required' or 'Need admin approval' prompt, your account cannot consent to the" -ForegroundColor Yellow
+        Write-Host 'Microsoft Graph permissions Maester needs. This is expected for Global Reader and other non-admin accounts.' -ForegroundColor Yellow
+        Write-Host 'In that case, ask a Global Administrator or Privileged Role Administrator to do one of the following:' -ForegroundColor White
+    }
     Write-Host ''
     Write-Host " 1. Grant consent for the organization (recommended)" -ForegroundColor Cyan
     Write-Host "    Run this command, sign in as the admin, and select 'Consent on behalf of your organization' before Accept:" -ForegroundColor Cyan
@@ -74,7 +99,7 @@
     Write-Host ' 2. Use a custom app registration' -ForegroundColor Cyan
     Write-Host '    Create an app registration with the Maester delegated permissions, grant admin consent, then run:' -ForegroundColor Cyan
     Write-Host ''
-    Write-Host "      Connect-Maester -GraphClientId '<application-client-id>'" -ForegroundColor Green
+    Write-Host "      $customAppCommand" -ForegroundColor Green
     Write-Host ''
     Write-Host '    See https://learn.microsoft.com/powershell/microsoftgraph/authentication-commands#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell' -ForegroundColor Cyan
     Write-Host ''

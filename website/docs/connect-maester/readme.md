@@ -55,7 +55,13 @@ The admin runs the following command, signs in, and selects **Consent on behalf 
 Connect-MgGraph -Scopes (Get-MtGraphScope)
 ```
 
-Add the same switches you use with `Connect-Maester`, such as `-SendMail` or `-Privileged`, to `Get-MtGraphScope`. Afterwards, run `Connect-Maester` again with your own account.
+Add the same switches you use with `Connect-Maester`, such as `-SendMail` or `-Privileged`, to `Get-MtGraphScope`. If you connect with `-TenantId` or `-Environment`, add those to `Connect-MgGraph` too, for example:
+
+```powershell
+Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail) -TenantId '<tenant-id>' -Environment USGov
+```
+
+Afterwards, run `Connect-Maester` again with your own account. If the connection fails after an approval prompt, `Connect-Maester` prints these commands with your switches already filled in.
 
 **Option 2: Use a custom app registration**
 
@@ -64,6 +70,8 @@ Create an app registration with the Maester delegated permissions and grant admi
 ```powershell
 Connect-Maester -GraphClientId '<application-client-id>'
 ```
+
+Keep any other parameters you normally use, such as `-TenantId`, `-Environment`, `-SendMail` or `-Privileged`.
 
 #### Send Mail and Teams message
 
