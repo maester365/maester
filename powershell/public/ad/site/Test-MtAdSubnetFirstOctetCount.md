@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetFirstOctetCount
-
-#### Why This Test Matters
-
 Analyzing subnet distribution by first octet provides:
 
 - **Addressing scheme visibility**: Understanding IP allocation patterns

@@ -1,7 +1,3 @@
-#### Test-MtAdOuEmptyCount
-
-#### Why This Test Matters
-
 - Empty Organizational Units (OUs that contain no users, groups, or computers) represent directory clutter that can:
   - Create confusion: Administrators may wonder if the OU has a purpose or if it can be deleted
   - Complicate navigation: Empty OUs make the directory structure harder to browse and understand

@@ -1,6 +1,3 @@
-#### Test-MtAdIntermediateCaCount
-
-#### Why This Test Matters
 Intermediate Certification Authorities (CAs) sit between root CAs and end-entity certificates. They influence which certificate chains can be built for authentication and other PKI-backed operations.
 
 A sudden change in the number of intermediate CAs can indicate:

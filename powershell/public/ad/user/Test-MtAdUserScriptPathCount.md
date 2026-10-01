@@ -1,7 +1,3 @@
-#### Test-MtAdUserScriptPathCount
-
-#### Why This Test Matters
-
 The `ScriptPath` attribute can launch scripts automatically during user sign-in. These scripts may map drives, alter environment settings, or execute legacy administrative logic.
 
 - **Execution surface**: Logon scripts can introduce code execution paths during authentication

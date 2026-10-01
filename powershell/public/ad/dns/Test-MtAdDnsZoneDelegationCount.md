@@ -1,7 +1,3 @@
-#### Test-MtAdDnsZoneDelegationCount
-
-#### Why This Test Matters
-
 DNS zone delegations transfer authority for a subdomain to different name servers. Monitoring delegations is important because:
 
 - **Security boundaries**: Delegations may cross administrative or security boundaries

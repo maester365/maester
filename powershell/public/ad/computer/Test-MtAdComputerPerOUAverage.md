@@ -1,7 +1,3 @@
-#### Test-MtAdComputerPerOUAverage
-
-#### Why This Test Matters
-
 Understanding the distribution density of computers across OUs helps identify:
 
 - **Overloaded OUs**: OUs with too many computers may indicate poor structure or policy bottlenecks

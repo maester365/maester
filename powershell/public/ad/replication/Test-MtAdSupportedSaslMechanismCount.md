@@ -1,7 +1,3 @@
-#### Test-MtAdSupportedSaslMechanismCount
-
-#### Why This Test Matters
-
 SASL (Simple Authentication and Security Layer) mechanisms define the authentication protocols that Active Directory supports. Understanding these mechanisms is important for:
 
 - **Authentication Security**: Different mechanisms provide different security levels

@@ -1,6 +1,3 @@
-#### Test-MtAdIpSiteLinksCount
-
-#### Why This Test Matters
 IP site links are the standard replication transport for Active Directory. They typically use direct network communication (e.g., RPC over IP) that can be secured with conventional network controls, firewall rules, and monitoring.
 
 Monitoring the IP site link *count* helps ensure your replication topology is using the intended, more controllable transport mechanism and highlights drift where legacy or less secure transports might be taking precedence.

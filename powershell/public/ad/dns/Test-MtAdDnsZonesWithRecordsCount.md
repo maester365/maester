@@ -1,7 +1,3 @@
-#### Test-MtAdDnsZonesWithRecordsCount
-
-#### Why This Test Matters
-
 Zones with non-default records (beyond SOA and NS) are actively used for DNS resolution. Understanding which zones contain actual service records helps:
 
 - **Identify active services**: Zones with records indicate active DNS services

@@ -1,7 +1,3 @@
-#### Test-MtAdDcNonGlobalCatalogCount
-
-#### Why This Test Matters
-
 Global Catalogs (GCs) maintain a partial replica of all objects in the Active Directory forest, enabling:
 
 - **Forest-wide searches**: Users can search for objects across all domains in the forest

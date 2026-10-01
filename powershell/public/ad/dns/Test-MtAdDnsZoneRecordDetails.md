@@ -1,7 +1,3 @@
-#### Test-MtAdDnsZoneRecordDetails
-
-#### Why This Test Matters
-
 Detailed record distribution across zones helps identify:
 
 - **High-traffic zones**: Zones with many records may be critical infrastructure

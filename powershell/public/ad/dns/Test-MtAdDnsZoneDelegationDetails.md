@@ -1,7 +1,3 @@
-#### Test-MtAdDnsZoneDelegationDetails
-
-#### Why This Test Matters
-
 Detailed information about DNS delegations is essential for:
 
 - **Security auditing**: Understanding what subdomains are delegated and to whom

@@ -1,7 +1,3 @@
-#### Test-MtAdManagedServiceAccountCount
-
-#### Why This Test Matters
-
 - Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provide significant security improvements over traditional service accounts by automating password management and simplifying service principal name (SPN) management.
 
 **Security Benefits:**

@@ -1,7 +1,3 @@
-#### Test-MtAdDcNonStandardLdapsPortCount
-
-#### Why This Test Matters
-
 Domain controllers typically use the standard LDAPS port (636) for secure directory services communication. Non-standard LDAPS ports may indicate:
 
 - **Custom SSL/TLS configurations** that could affect secure LDAP client connectivity

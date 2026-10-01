@@ -1,7 +1,3 @@
-#### Test-MtAdUserSpnTotalCount
-
-#### Why This Test Matters
-
 User accounts with Service Principal Names (SPNs) are high-value targets for attackers because:
 
 - **Kerberoasting**: Attackers can request service tickets for these SPNs and attempt to crack them offline

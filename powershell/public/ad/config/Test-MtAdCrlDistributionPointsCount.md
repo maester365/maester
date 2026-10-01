@@ -1,6 +1,3 @@
-#### Test-MtAdCrlDistributionPointsCount
-
-#### Why This Test Matters
 Certificate Revocation Lists (CRLs) are published at specific locations called *CRL distribution points*. These endpoints enable relying parties (including AD-integrated components) to check whether certificates have been revoked.
 
 If CRL distribution points are missing, misconfigured, or reduced unexpectedly, revocation checking can fail. That can allow previously revoked certificates to remain effectively trusted longer than intended.

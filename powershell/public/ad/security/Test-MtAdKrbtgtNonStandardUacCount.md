@@ -1,7 +1,3 @@
-#### Test-MtAdKrbtgtNonStandardUacCount
-
-#### Why This Test Matters
-
 - The KRBTGT account must have specific User Account Control (UAC) settings to maintain security. The standard UAC value for KRBTGT is 514, which represents:
 
 - **NORMAL_ACCOUNT (0x0200 = 512)**: Standard user account

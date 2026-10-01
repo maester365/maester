@@ -1,7 +1,3 @@
-#### Test-MtAdGroupMemberTrustDetails
-
-#### Why This Test Matters
-
 Understanding which specific groups contain trust members is critical for security management:
 
 - **Privileged Access**: Trust members in privileged groups (Administrators, Domain Admins) represent significant risk

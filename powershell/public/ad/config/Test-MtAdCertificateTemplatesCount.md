@@ -1,6 +1,3 @@
-#### Test-MtAdCertificateTemplatesCount
-
-#### Why This Test Matters
 Certificate templates define which certificate types can be issued and under what conditions. Overly permissive or unexpected templates can allow broader enrollment than intended, enabling privilege escalation through misconfigured enrollment permissions, risky EKUs, or unintended autoenrollment.
 
 #### Security Recommendation

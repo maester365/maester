@@ -1,7 +1,3 @@
-#### Test-MtAdFineGrainedPolicyAppliesTo
-
-#### Why This Test Matters
-
 Understanding which users and groups each fine-grained password policy applies to is essential for:
 
 - **Verifying coverage**: Ensure all privileged accounts are covered by stronger policies

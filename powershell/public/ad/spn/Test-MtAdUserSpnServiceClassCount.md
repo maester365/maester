@@ -1,7 +1,3 @@
-#### Test-MtAdUserSpnServiceClassCount
-
-#### Why This Test Matters
-
 Understanding the service classes of SPNs on user accounts helps security teams:
 
 - **Identify service types**: Know what services are running under user credentials

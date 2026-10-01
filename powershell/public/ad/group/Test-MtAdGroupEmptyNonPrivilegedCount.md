@@ -1,7 +1,3 @@
-#### Test-MtAdGroupEmptyNonPrivilegedCount
-
-#### Why This Test Matters
-
 Empty groups that are not privileged (no adminCount) represent directory clutter that should be addressed:
 
 - **Directory hygiene**: Unused groups create noise and confusion in access management

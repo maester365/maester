@@ -1,7 +1,3 @@
-#### Test-MtAdComputerNonStandardGroup
-
-#### Why This Test Matters
-
 Computer accounts should use standard primary group IDs. Non-standard primary groups may indicate:
 
 - **Misconfiguration**: Computers accidentally assigned to incorrect groups
