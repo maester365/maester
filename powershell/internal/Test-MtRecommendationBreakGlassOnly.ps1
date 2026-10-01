@@ -36,11 +36,15 @@
         [Parameter(Mandatory)]
         [AllowNull()]
         [AllowEmptyCollection()]
+        [AllowEmptyString()]
         [string[]] $BreakGlassObjectId
     )
 
+    # Ignore blank entries (e.g. @($null) from member access on an empty result) so they are never matched.
+    $BreakGlassObjectId = @($BreakGlassObjectId | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+
     # Nothing configured to exclude - the recommendation must be evaluated as-is.
-    if (-not $BreakGlassObjectId) { return $false }
+    if ($BreakGlassObjectId.Count -eq 0) { return $false }
 
     # Only resources the system has not already resolved still count against the recommendation.
     $openResources = @($ImpactedResources | Where-Object { $_.status -ne 'completedBySystem' })

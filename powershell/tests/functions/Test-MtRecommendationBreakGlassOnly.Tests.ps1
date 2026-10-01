@@ -90,4 +90,25 @@ Describe 'Test-MtRecommendationBreakGlassOnly' {
             Test-MtRecommendationBreakGlassOnly -ImpactedResources $null -BreakGlassObjectId $Bg
         } | Should -BeFalse
     }
+
+    It 'Returns $false without throwing when no break-glass accounts are configured (@($null))' {
+        # @((Get-MtEmergencyAccessAccount).ObjectId) yields @($null) when nothing is configured. See #2289.
+        $impacted = @(
+            [pscustomobject]@{ subjectId = $regularUser; id = 'r1'; status = 'active'; displayName = 'Regular User' }
+        )
+        InModuleScope Maester -Parameters @{ Impacted = $impacted } {
+            param($Impacted)
+            Test-MtRecommendationBreakGlassOnly -ImpactedResources $Impacted -BreakGlassObjectId @($null)
+        } | Should -BeFalse
+    }
+
+    It 'Ignores blank entries alongside configured break-glass IDs' {
+        $impacted = @(
+            [pscustomobject]@{ subjectId = $breakGlassA; id = 'r1'; status = 'active'; displayName = 'Break Glass 1' }
+        )
+        InModuleScope Maester -Parameters @{ Impacted = $impacted; Bg = @($null, '', $breakGlassA) } {
+            param($Impacted, $Bg)
+            Test-MtRecommendationBreakGlassOnly -ImpactedResources $Impacted -BreakGlassObjectId $Bg
+        } | Should -BeTrue
+    }
 }

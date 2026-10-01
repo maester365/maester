@@ -38,7 +38,7 @@
         Write-Verbose "Filtered $(@($owaMailboxPolicyDefault).Count) Default Web mailbox policy"
 
         if ($null -eq $owaMailboxPolicyDefault) {
-            Add-MtTestResultDetail -SkippedBecause "No default OWA mailbox policy was found."
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No default OWA mailbox policy was found."
             return $null
         }
 
