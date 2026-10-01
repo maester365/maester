@@ -1,3 +1,7 @@
+#### Test-MtAdDaclPrivilegedExtendedRightCount
+
+#### Why This Test Matters
+
 Extended rights control specific privileged operations in Active Directory, such as sensitive control-access permissions tied to object classes or administrative workflows. Understanding how often they are delegated helps surface potentially risky permission models.
 
 - **Sensitive Operations**: Some extended rights can enable password resets, replication access, or other administrative actions.

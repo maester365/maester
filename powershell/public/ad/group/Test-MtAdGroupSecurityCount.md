@@ -1,3 +1,7 @@
+#### Test-MtAdGroupSecurityCount
+
+#### Why This Test Matters
+
 Security groups are the foundation of access control in Active Directory. Understanding their count and distribution is critical for:
 
 - **Access management assessment**: High numbers of security groups may indicate complex or poorly managed permissions

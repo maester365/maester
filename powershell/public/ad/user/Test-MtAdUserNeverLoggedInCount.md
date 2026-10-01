@@ -1,3 +1,7 @@
+#### Test-MtAdUserNeverLoggedInCount
+
+#### Why This Test Matters
+
 Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose.
 
 #### Security Recommendation

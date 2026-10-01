@@ -1,3 +1,7 @@
+#### Test-MtAdGroupMemberDistinctGroupCount
+
+#### Why This Test Matters
+
 Understanding which groups have members versus empty groups provides valuable insights into Active Directory utilization:
 
 - **Group Hygiene**: Empty groups may represent unused or forgotten groups that could be cleaned up

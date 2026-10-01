@@ -1,3 +1,7 @@
+#### Test-MtAdTrustQuarantinedCount
+
+#### Why This Test Matters
+
 SID filtering (quarantined trusts) is a critical security control for inter-forest trusts:
 
 - **Prevents Privilege Escalation**: Blocks malicious SID history from being honored across trust boundaries

@@ -1,3 +1,7 @@
+#### Test-MtAdDnsZonesWithOnlySoaNs
+
+#### Why This Test Matters
+
 DNS zones that contain only SOA (Start of Authority) and NS (Name Server) records are essentially placeholder zones. These zones:
 
 - **May indicate incomplete configuration**: Zones created but never populated with actual records

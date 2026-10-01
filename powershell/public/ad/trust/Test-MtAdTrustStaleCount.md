@@ -1,3 +1,7 @@
+#### Test-MtAdTrustStaleCount
+
+#### Why This Test Matters
+
 Stale trusts (those not validated for extended periods) indicate potential issues:
 
 - **Decommissioned Domains**: The target domain may no longer exist

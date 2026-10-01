@@ -1,3 +1,7 @@
+#### Test-MtAdDnsSoaDetails
+
+#### Why This Test Matters
+
 SOA (Start of Authority) records contain critical zone management parameters:
 
 - **Primary server**: The authoritative source for zone data

@@ -1,3 +1,7 @@
+#### Test-MtAdUserSpnDomainAdminCount
+
+#### Why This Test Matters
+
 Domain administrator accounts with SPNs represent the **highest possible Kerberoasting risk**:
 
 - **Maximum privileges**: Domain admins have unrestricted access to the entire domain

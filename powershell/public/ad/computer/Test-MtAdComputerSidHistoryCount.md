@@ -1,3 +1,7 @@
+#### Test-MtAdComputerSidHistoryCount
+
+#### Why This Test Matters
+
 SID History is an attribute used during domain migrations to maintain access to resources in the source domain. While necessary during migrations, persistent SID History on computer accounts can indicate:
 
 - **Incomplete migrations**: Computers that were migrated but never fully transitioned

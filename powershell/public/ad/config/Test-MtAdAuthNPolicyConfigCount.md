@@ -1,3 +1,6 @@
+#### Test-MtAdAuthNPolicyConfigCount
+
+#### Why This Test Matters
 **Authentication policies** control how clients can authenticate to and interact with domain controllers for certain operations (depending on configuration and policy scope). Inadequate or unexpected authentication policy configuration can:
 
 - Increase exposure of DC authentication endpoints

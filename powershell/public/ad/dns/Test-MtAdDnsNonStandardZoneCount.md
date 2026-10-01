@@ -1,3 +1,7 @@
+#### Test-MtAdDnsNonStandardZoneCount
+
+#### Why This Test Matters
+
 Non-standard DNS zone names (not compliant with RFCs 952, 1035, and 1123) may cause:
 
 - **Compatibility issues**: Some DNS clients and applications may fail

@@ -1,3 +1,7 @@
+#### Test-MtAdGroupUniversalCount
+
+#### Why This Test Matters
+
 Universal groups play a specific role in multi-domain Active Directory environments:
 
 - **Cross-domain flexibility**: Can contain users and groups from any domain in the forest

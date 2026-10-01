@@ -1,3 +1,7 @@
+#### Test-MtAdUserKnownServiceAccountDetails
+
+#### Why This Test Matters
+
 Service accounts often run business-critical workloads and commonly receive exceptions such as long-lived credentials, SPNs, or privileged access. Naming-pattern reviews help defenders quickly identify accounts that deserve deeper validation.
 
 - **Exposure reduction**: Find accounts likely used by services before attackers do.

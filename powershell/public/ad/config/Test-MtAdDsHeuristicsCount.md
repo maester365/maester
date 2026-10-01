@@ -1,3 +1,6 @@
+#### Test-MtAdDsHeuristicsCount
+
+#### Why This Test Matters
 **dSHeuristics** is an AD configuration setting that controls behavior for advanced directory features and legacy compatibility. Because it influences protocol-level behavior (including areas such as LDAP security expectations and feature gating), an incorrect or unexpected dSHeuristics value can:
 
 - Leave AD behaving in a more **legacy/less secure** mode

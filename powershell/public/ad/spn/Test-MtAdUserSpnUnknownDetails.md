@@ -1,3 +1,7 @@
+#### Test-MtAdUserSpnUnknownDetails
+
+#### Why This Test Matters
+
 Detailed information about unknown user SPNs is critical for security:
 
 - **Immediate action required**: User SPNs are prime Kerberoasting targets

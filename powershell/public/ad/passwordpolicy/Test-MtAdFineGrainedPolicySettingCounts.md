@@ -1,3 +1,7 @@
+#### Test-MtAdFineGrainedPolicySettingCounts
+
+#### Why This Test Matters
+
 Having a detailed breakdown of fine-grained password policy settings allows you to:
 
 - **Audit security levels**: Verify that privileged accounts have stronger policies

@@ -1,3 +1,7 @@
+#### Test-MtAdGroupStaleCount
+
+#### Why This Test Matters
+
 Groups that have not been modified for an extended period (in this case, before 2020) may represent:
 
 - **Abandoned groups**: Created for projects or purposes that no longer exist

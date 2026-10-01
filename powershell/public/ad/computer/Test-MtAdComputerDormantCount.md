@@ -1,3 +1,7 @@
+#### Test-MtAdComputerDormantCount
+
+#### Why This Test Matters
+
 Dormant (stale) computer accounts—enabled accounts that haven't authenticated in 90+ days—pose significant security risks:
 
 - **Attack vector**: Attackers can exploit dormant accounts that may have weak or unchanged passwords

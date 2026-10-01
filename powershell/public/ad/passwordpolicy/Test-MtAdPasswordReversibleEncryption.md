@@ -1,3 +1,7 @@
+#### Test-MtAdPasswordReversibleEncryption
+
+#### Why This Test Matters
+
 Reversible encryption for passwords is one of the most dangerous settings in Active Directory:
 
 - **Complete password exposure**: Unlike one-way hashes, reversible encryption allows passwords to be decrypted by anyone with access to the encryption key

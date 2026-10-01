@@ -1,3 +1,7 @@
+#### Test-MtAdSchemaVersionDetails
+
+#### Why This Test Matters
+
 Comprehensive schema information provides the foundation for understanding your Active Directory infrastructure. The schema defines:
 
 - **Object classes**: What types of objects can exist (users, computers, groups)

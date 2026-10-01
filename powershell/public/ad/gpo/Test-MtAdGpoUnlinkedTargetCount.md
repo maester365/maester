@@ -1,3 +1,7 @@
+#### Test-MtAdGpoUnlinkedTargetCount
+
+#### Why This Test Matters
+
 Active Directory targets (OUs, the domain root, and sites) without any Group Policy links may indicate incomplete security policy coverage.
 
 When a target has no GPO links, security and configuration baselines may not be applied consistently—creating gaps that attackers or misconfigurations can exploit.

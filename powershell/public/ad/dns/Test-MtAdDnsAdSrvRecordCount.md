@@ -1,3 +1,7 @@
+#### Test-MtAdDnsAdSrvRecordCount
+
+#### Why This Test Matters
+
 SRV records are essential for Active Directory service location. They enable clients to find:
 
 - **Domain controllers** (_ldap records)

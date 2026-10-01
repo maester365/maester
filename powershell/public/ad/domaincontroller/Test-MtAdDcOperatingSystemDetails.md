@@ -1,3 +1,7 @@
+#### Test-MtAdDcOperatingSystemDetails
+
+#### Why This Test Matters
+
 Understanding the operating system distribution across your domain controllers helps with:
 
 - **Security compliance**: Identifying DCs on unsupported OS versions

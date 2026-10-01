@@ -1,3 +1,7 @@
+#### Test-MtAdGroupPrivilegedWithMembersCount
+
+#### Why This Test Matters
+
 Privileged groups with members require continuous monitoring as they provide administrative access:
 
 - **Privileged access**: Members have elevated permissions in the domain

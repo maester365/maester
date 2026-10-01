@@ -1,3 +1,7 @@
+#### Test-MtAdSiteWithoutDcDetails
+
+#### Why This Test Matters
+
 Understanding which specific sites lack domain controllers is essential for:
 
 - **Capacity planning**: Identifying locations that may need DC deployment

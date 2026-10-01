@@ -1,3 +1,7 @@
+#### Test-MtAdSiteWithoutDcCount
+
+#### Why This Test Matters
+
 Sites without domain controllers may indicate:
 
 - **Authentication delays**: Clients in these sites must authenticate across the WAN to another site

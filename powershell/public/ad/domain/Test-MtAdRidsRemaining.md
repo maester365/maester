@@ -1,3 +1,7 @@
+#### Test-MtAdRidsRemaining
+
+#### Why This Test Matters
+
 RIDs (Relative Identifiers) are essential for creating unique Security Identifiers (SIDs) for every user, group, and computer in Active Directory. Each domain has a finite pool of approximately 1 billion RIDs:
 
  * **SID Exhaustion**: Running out of RIDs would prevent creation of any new security principals

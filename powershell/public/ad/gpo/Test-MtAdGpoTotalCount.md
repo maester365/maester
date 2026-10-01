@@ -1,3 +1,7 @@
+#### Test-MtAdGpoTotalCount
+
+#### Why This Test Matters
+
 Understanding the total number of Group Policy Objects (GPOs) in your Active Directory environment is crucial for several security and operational reasons:
 
 - **Policy Sprawl**: A large number of GPOs can indicate policy sprawl, making it difficult to manage and troubleshoot policy conflicts

@@ -1,3 +1,7 @@
+#### Test-MtAdSiteWithoutSubnetCount
+
+#### Why This Test Matters
+
 Sites without subnet associations cannot be used for client site assignment:
 
 - **Authentication inefficiency**: Clients may authenticate to distant DCs

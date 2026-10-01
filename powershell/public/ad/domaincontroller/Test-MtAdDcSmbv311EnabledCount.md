@@ -1,3 +1,7 @@
+#### Test-MtAdDcSmbv311EnabledCount
+
+#### Why This Test Matters
+
 SMBv3.1.1 is the latest version of the Server Message Block protocol and includes important security enhancements:
 
 - **Pre-authentication integrity**: Prevents man-in-the-middle attacks

@@ -1,3 +1,7 @@
+#### Test-MtAdFineGrainedPolicyValueCount
+
+#### Why This Test Matters
+
 Understanding the variation in fine-grained password policy settings helps you:
 
 - **Identify inconsistencies**: Spot policies that may be too lenient or too strict

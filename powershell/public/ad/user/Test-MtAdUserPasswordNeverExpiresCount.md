@@ -1,3 +1,7 @@
+#### Test-MtAdUserPasswordNeverExpiresCount
+
+#### Why This Test Matters
+
 Passwords that never expire reduce credential hygiene and increase the blast radius of password theft. While some service accounts may require non-expiring credentials, they should be rare, controlled, and closely monitored.
 
 #### Security Recommendation

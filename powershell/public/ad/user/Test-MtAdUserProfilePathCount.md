@@ -1,3 +1,7 @@
+#### Test-MtAdUserProfilePathCount
+
+#### Why This Test Matters
+
 The `ProfilePath` attribute is commonly associated with roaming profiles and centralized workstation state. It often points to legacy file server infrastructure that should be reviewed for resilience and access control.
 
 - **Legacy profile management**: Identifies users depending on roaming profiles

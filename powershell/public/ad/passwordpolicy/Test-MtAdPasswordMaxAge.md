@@ -1,3 +1,7 @@
+#### Test-MtAdPasswordMaxAge
+
+#### Why This Test Matters
+
 Maximum password age is a critical security control that forces users to change their passwords periodically. This control is important because:
 
 - **Limits exposure window**: If a password is compromised, the attacker has a limited time to use it before the password expires

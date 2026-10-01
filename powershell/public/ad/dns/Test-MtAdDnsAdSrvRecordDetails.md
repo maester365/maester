@@ -1,3 +1,7 @@
+#### Test-MtAdDnsAdSrvRecordDetails
+
+#### Why This Test Matters
+
 Detailed SRV record information is critical for:
 
 - **Troubleshooting**: Understanding which servers provide which services

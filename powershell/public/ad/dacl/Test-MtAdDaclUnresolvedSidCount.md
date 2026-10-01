@@ -1,3 +1,7 @@
+#### Test-MtAdDaclUnresolvedSidCount
+
+#### Why This Test Matters
+
 Unresolved SIDs in DACLs often indicate deleted users or groups, stale migration artifacts, or incomplete cleanup.
 
 - **Stale delegation detection**: Old ACEs can remain after identities are removed

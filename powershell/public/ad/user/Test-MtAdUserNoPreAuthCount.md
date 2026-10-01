@@ -1,3 +1,7 @@
+#### Test-MtAdUserNoPreAuthCount
+
+#### Why This Test Matters
+
 Accounts that do not require Kerberos pre-authentication are directly exposed to AS-REP roasting. Attackers can request offline-crackable material without first proving knowledge of the password.
 
 #### Security Recommendation

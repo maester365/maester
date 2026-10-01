@@ -1,3 +1,7 @@
+#### Test-MtAdDaclUnresolvedSidDetails
+
+#### Why This Test Matters
+
 Knowing which directory objects contain orphaned SID ACEs helps target cleanup work where it matters most.
 
 - **Object-focused remediation**: Grouping unresolved SIDs by object shows exactly where stale ACEs exist

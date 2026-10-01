@@ -1,3 +1,7 @@
+#### Test-MtAdUserHomeDirectoryCount
+
+#### Why This Test Matters
+
 The `HomeDirectory` attribute points users to network-based storage locations. While useful in legacy environments, it can reveal older provisioning patterns and dependencies on file servers.
 
 - **Legacy infrastructure visibility**: Identifies users tied to mapped-drive style home folders

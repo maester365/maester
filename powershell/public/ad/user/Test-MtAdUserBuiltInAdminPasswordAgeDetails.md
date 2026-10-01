@@ -1,3 +1,7 @@
+#### Test-MtAdUserBuiltInAdminPasswordAgeDetails
+
+#### Why This Test Matters
+
 Highly privileged accounts with old passwords are prime targets for password spraying, credential theft, and persistence. Reviewing password age for built-in administrator style accounts helps validate that sensitive credentials are rotated appropriately.
 
 - **Credential risk reduction**: Long-lived privileged passwords increase exposure.

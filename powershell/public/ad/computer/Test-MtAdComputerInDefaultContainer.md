@@ -1,3 +1,7 @@
+#### Test-MtAdComputerInDefaultContainer
+
+#### Why This Test Matters
+
 Computers located in the default `CN=Computers` container represent a security and management concern:
 
 - **No Group Policy inheritance**: The Computers container is not an OU, so it doesn't support Group Policy inheritance

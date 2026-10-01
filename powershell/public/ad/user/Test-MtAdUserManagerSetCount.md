@@ -1,3 +1,7 @@
+#### Test-MtAdUserManagerSetCount
+
+#### Why This Test Matters
+
 The `Manager` attribute is frequently used in governance workflows, approval chains, and identity lifecycle processes. Missing or inconsistent manager data can weaken access review quality.
 
 - **Governance readiness**: Supports manager-based approval and review processes

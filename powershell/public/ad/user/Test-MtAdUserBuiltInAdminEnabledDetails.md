@@ -1,3 +1,7 @@
+#### Test-MtAdUserBuiltInAdminEnabledDetails
+
+#### Why This Test Matters
+
 Enabled built-in administrator style accounts provide immediate opportunities for misuse if their credentials are exposed. A simple inventory of active accounts in this category helps confirm whether emergency or legacy access remains enabled unnecessarily.
 
 - **Exposure review**: Enabled privileged accounts increase attack surface.

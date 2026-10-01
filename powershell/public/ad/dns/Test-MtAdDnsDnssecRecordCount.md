@@ -1,3 +1,7 @@
+#### Test-MtAdDnsDnssecRecordCount
+
+#### Why This Test Matters
+
 DNSSEC (DNS Security Extensions) provides authentication of DNS data through digital signatures. Trust anchors are the starting points for DNSSEC validation:
 
 - **Data integrity**: DNSSEC prevents DNS spoofing and cache poisoning

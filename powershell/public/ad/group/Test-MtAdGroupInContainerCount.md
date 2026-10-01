@@ -1,3 +1,7 @@
+#### Test-MtAdGroupInContainerCount
+
+#### Why This Test Matters
+
 - Active Directory supports two primary types of directory objects for storing other objects: Organizational Units (OUs) and Containers (CNs). While both can hold groups, they serve different purposes:
 - **OUs (OU=)**: Designed for delegation, Group Policy application, and logical organization
 - **Containers (CN=)**: System containers with limited flexibility (like CN=Users, CN=Computers)

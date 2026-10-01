@@ -1,3 +1,7 @@
+#### Test-MtAdDaclDenyAceDetails
+
+#### Why This Test Matters
+
 When deny ACEs exist, administrators need to know exactly which identities are denied on which objects. Grouping deny ACEs by object and identity makes it easier to review intent and spot concentrated or unusual deny patterns.
 
 - **Maps denied principals to specific objects**

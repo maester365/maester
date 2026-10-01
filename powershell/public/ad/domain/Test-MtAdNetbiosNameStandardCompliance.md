@@ -1,3 +1,7 @@
+#### Test-MtAdNetbiosNameStandardCompliance
+
+#### Why This Test Matters
+
 NetBIOS names are still used in many Windows networking scenarios, even though DNS is the primary name resolution method. Non-compliant NetBIOS names can cause:
 
 - **Legacy Application Issues**: Older applications may not handle non-standard characters

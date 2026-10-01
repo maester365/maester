@@ -1,3 +1,7 @@
+#### Test-MtAdGpoLinkedCount
+
+#### Why This Test Matters
+
 Linked Group Policy Objects (GPOs) are actively applying settings to users and/or computers across your Active Directory environment.
 
 For security assessments, it is important to understand the scope of actively linked (and therefore applying) policies. This test helps you:

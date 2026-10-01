@@ -1,3 +1,7 @@
+#### Test-MtAdCrossForestReferencesCount
+
+#### Why This Test Matters
+
 Cross-forest references represent security principals (users, groups, computers) from trusted external forests that have been granted access to resources in the local forest. Understanding cross-forest references is critical for:
 
  * **Trust Management**: Cross-forest references indicate active trust relationships that must be monitored and maintained

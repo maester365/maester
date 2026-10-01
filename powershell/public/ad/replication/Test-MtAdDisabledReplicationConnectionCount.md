@@ -1,3 +1,7 @@
+#### Test-MtAdDisabledReplicationConnectionCount
+
+#### Why This Test Matters
+
 Disabled replication connections in Active Directory can indicate several security and operational concerns:
 
 - **Replication Failures**: Disabled connections may indicate failed or problematic replication between domain controllers

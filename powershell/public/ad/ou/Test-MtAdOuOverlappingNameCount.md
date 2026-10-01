@@ -1,3 +1,6 @@
+#### Test-MtAdOuOverlappingNameCount
+
+#### Why This Test Matters
 - Organizational Units with overlapping (duplicate) names can create administrative confusion and operational risks in Active Directory:
 - Administrative errors: Administrators may inadvertently apply Group Policies, permissions, or settings to the wrong OU when multiple OUs share the same name
 - Scripting complications: Automation scripts that reference OUs by name may target incorrect containers

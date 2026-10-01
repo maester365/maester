@@ -1,3 +1,7 @@
+#### Test-MtAdUserSpnDomainAdminDetails
+
+#### Why This Test Matters
+
 Detailed visibility into domain admin SPNs is critical for security incident response:
 
 - **Immediate remediation**: Know exactly which SPNs to remove

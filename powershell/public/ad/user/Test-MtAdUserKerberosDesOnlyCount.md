@@ -1,3 +1,7 @@
+#### Test-MtAdUserKerberosDesOnlyCount
+
+#### Why This Test Matters
+
 DES is an obsolete Kerberos encryption type with known cryptographic weakness. Accounts limited to DES-only support should be considered legacy debt and prioritized for cleanup.
 
 #### Security Recommendation

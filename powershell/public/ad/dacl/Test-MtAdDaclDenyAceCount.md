@@ -1,3 +1,7 @@
+#### Test-MtAdDaclDenyAceCount
+
+#### Why This Test Matters
+
 Deny ACEs are powerful because they can override allow permissions and create access outcomes that are difficult to troubleshoot. Counting them provides a quick baseline for how much explicit denial logic exists in the collected AD permission set.
 
 - **Highlights explicit deny usage** in AD DACLs

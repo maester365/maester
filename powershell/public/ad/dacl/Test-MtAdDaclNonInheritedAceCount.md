@@ -1,3 +1,7 @@
+#### Test-MtAdDaclNonInheritedAceCount
+
+#### Why This Test Matters
+
 Non-inherited ACEs represent explicit access assignments applied directly to directory objects.
 
 - **Custom delegation visibility**: Explicit ACEs often reveal manual delegations and exceptions

@@ -1,3 +1,7 @@
+#### Test-MtAdGroupDistributionCount
+
+#### Why This Test Matters
+
 Distribution groups are email-only groups used for Exchange and email distribution lists. Understanding their count and proportion helps:
 
 - **Email infrastructure assessment**: Provides visibility into the email distribution infrastructure

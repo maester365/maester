@@ -1,3 +1,7 @@
+#### Test-MtAdFineGrainedPolicyCount
+
+#### Why This Test Matters
+
 Fine-grained password policies (FGPP) provide critical flexibility for security-conscious organizations:
 
 * **Privileged account protection**: Apply stricter password policies to administrators and service accounts

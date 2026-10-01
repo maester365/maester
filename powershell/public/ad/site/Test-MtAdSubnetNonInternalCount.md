@@ -1,3 +1,7 @@
+#### Test-MtAdSubnetNonInternalCount
+
+#### Why This Test Matters
+
 Using public IP addresses internally can cause:
 
 - **Routing conflicts**: If public IPs are also used on the internet

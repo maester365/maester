@@ -1,3 +1,7 @@
+#### Test-MtAdUserSidHistoryCount
+
+#### Why This Test Matters
+
 `SIDHistory` is commonly used during migrations so users can retain access to resources secured with legacy SIDs. Long-term SID history can create unnecessary complexity and unintended access paths.
 
 - **Migration artifact detection**: Identifies users that may still carry legacy identities

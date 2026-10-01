@@ -1,3 +1,7 @@
+#### Test-MtAdComputerOUCount
+
+#### Why This Test Matters
+
 The organizational structure of computer accounts reflects your Active Directory management maturity:
 
 - **Management efficiency**: Well-structured OUs enable targeted Group Policy and administrative delegation

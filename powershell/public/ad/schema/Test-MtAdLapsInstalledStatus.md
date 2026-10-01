@@ -1,3 +1,7 @@
+#### Test-MtAdLapsInstalledStatus
+
+#### Why This Test Matters
+
 The Local Administrator Password Solution (LAPS) is a critical security tool that:
 
 - **Manages local admin passwords**: Automatically rotates passwords on domain-joined computers

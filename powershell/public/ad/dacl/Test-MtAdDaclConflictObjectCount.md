@@ -1,3 +1,7 @@
+#### Test-MtAdDaclConflictObjectCount
+
+#### Why This Test Matters
+
 Conflict objects with `CNF` markers typically originate from replication or naming conflicts. Even when old, they can indicate historical AD hygiene issues and should be understood before being ignored.
 
 - **Surfaces replication-conflict remnants** in DACL analysis

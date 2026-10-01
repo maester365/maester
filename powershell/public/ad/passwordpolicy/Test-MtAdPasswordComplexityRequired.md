@@ -1,3 +1,7 @@
+#### Test-MtAdPasswordComplexityRequired
+
+#### Why This Test Matters
+
 Password complexity requirements are a fundamental security control that helps prevent weak passwords:
 
 * **Prevents common passwords**: Complexity requirements block easily guessable passwords like "password123" or "companyname2024"

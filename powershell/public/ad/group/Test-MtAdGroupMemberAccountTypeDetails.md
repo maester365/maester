@@ -1,3 +1,7 @@
+#### Test-MtAdGroupMemberAccountTypeDetails
+
+#### Why This Test Matters
+
 A detailed breakdown of account types across group membership provides comprehensive visibility:
 
 - **User Accounts**: Most common members - represent individual access

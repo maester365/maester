@@ -1,3 +1,7 @@
+#### Test-MtAdDcOperatingSystemCount
+
+#### Why This Test Matters
+
 Knowing the operating systems running on your domain controllers is important for:
 
 - **Lifecycle management**: Identifying DCs running end-of-life operating systems

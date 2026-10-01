@@ -1,3 +1,7 @@
+#### Test-MtAdUpnSuffixesCount
+
+#### Why This Test Matters
+
 UPN (User Principal Name) suffixes are a critical component of Active Directory authentication infrastructure. They allow users to log on using an email-style username format (user@suffix) rather than the traditional domain\username format. Understanding the UPN suffix configuration is important for:
 
 - **Authentication Experience**: UPN suffixes enable a consistent logon experience across multiple domains and forests

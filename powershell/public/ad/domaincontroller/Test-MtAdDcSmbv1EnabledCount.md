@@ -1,3 +1,7 @@
+#### Test-MtAdDcSmbv1EnabledCount
+
+#### Why This Test Matters
+
 SMBv1 (Server Message Block version 1) is an outdated protocol with significant security vulnerabilities:
 
 - **EternalBlue exploit**: Used in WannaCry and NotPetya ransomware attacks

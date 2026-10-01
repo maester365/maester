@@ -1,3 +1,7 @@
+#### Test-MtAdGroupMemberForeignSidCount
+
+#### Why This Test Matters
+
 Foreign SIDs represent security identifiers from domains other than the current domain:
 
 - **SID History**: Migrated accounts may retain original SIDs for access continuity

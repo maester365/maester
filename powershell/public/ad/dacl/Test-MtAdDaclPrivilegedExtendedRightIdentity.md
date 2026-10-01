@@ -1,3 +1,7 @@
+#### Test-MtAdDaclPrivilegedExtendedRightIdentity
+
+#### Why This Test Matters
+
 Privileged extended rights in Active Directory can authorize sensitive operations that go beyond standard read or write permissions.
 
 - **Privilege escalation risk**: Rights such as password reset or replication access can enable takeover paths

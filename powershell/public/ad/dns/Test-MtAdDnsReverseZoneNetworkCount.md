@@ -1,3 +1,7 @@
+#### Test-MtAdDnsReverseZoneNetworkCount
+
+#### Why This Test Matters
+
 Understanding how many distinct networks have reverse lookup zones helps:
 
 - **Network coverage assessment**: Ensure all internal networks have reverse DNS

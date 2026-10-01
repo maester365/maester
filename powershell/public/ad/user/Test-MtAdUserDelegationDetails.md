@@ -1,3 +1,7 @@
+#### Test-MtAdUserDelegationDetails
+
+#### Why This Test Matters
+
 Delegation details on user accounts help defenders quickly identify high-risk service identities and prioritize cleanup.
 
 - **Risk prioritization**: Unconstrained delegation is usually more dangerous than protocol transition alone.

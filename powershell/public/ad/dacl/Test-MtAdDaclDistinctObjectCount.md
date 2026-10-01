@@ -1,3 +1,7 @@
+#### Test-MtAdDaclDistinctObjectCount
+
+#### Why This Test Matters
+
 Knowing how many distinct Active Directory objects are represented in the collected DACL dataset helps establish the scope of permission analysis.
 
 - **Measures DACL coverage** across collected directory objects

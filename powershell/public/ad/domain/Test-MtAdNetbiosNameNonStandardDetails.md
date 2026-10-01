@@ -1,3 +1,7 @@
+#### Test-MtAdNetbiosNameNonStandardDetails
+
+#### Why This Test Matters
+
 This test provides detailed information about NetBIOS naming violations, helping you:
 
 - **Identify Specific Issues**: See exactly which characters or length issues exist

@@ -1,3 +1,7 @@
+#### Test-MtAdRootDseSynchronizedStatus
+
+#### Why This Test Matters
+
 The Root DSE (Directory Service Agent) synchronization status indicates whether a domain controller has completed its initial replication with replication partners:
 
 - **Directory Consistency**: Unsynchronized DCs may have stale data

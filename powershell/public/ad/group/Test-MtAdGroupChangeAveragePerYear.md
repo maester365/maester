@@ -1,3 +1,7 @@
+#### Test-MtAdGroupChangeAveragePerYear
+
+#### Why This Test Matters
+
 Understanding the rate of group membership changes provides insights into:
 
 - **Operational tempo**: How frequently group memberships change

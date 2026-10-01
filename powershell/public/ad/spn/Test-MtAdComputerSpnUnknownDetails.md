@@ -1,3 +1,7 @@
+#### Test-MtAdComputerSpnUnknownDetails
+
+#### Why This Test Matters
+
 Detailed information about unknown SPNs enables security teams to:
 
 - **Investigate effectively**: Know exactly which computers have unknown SPNs

@@ -1,3 +1,6 @@
+#### Test-MtAdSpnMappings
+
+#### Why This Test Matters
 **SPN mappings** are used to support legacy or non-FQDN client behavior by mapping service principal names to the correct Kerberos realm/host context. While this can improve compatibility, misconfigured SPN mappings can create security and reliability issues, such as:
 
 - **Authentication inconsistencies** (Kerberos vs. fallback behaviors)

@@ -1,3 +1,7 @@
+#### Test-MtAdSubnetTotalCount
+
+#### Why This Test Matters
+
 Subnets are the foundation of Active Directory site assignment:
 
 - **Client location**: Subnets determine which site a client belongs to

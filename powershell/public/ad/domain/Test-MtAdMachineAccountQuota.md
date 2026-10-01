@@ -1,3 +1,7 @@
+#### Test-MtAdMachineAccountQuota
+
+#### Why This Test Matters
+
 The machine account quota (ms-DS-MachineAccountQuota) attribute controls how many computer accounts a standard (non-administrative) user can join to the domain. The default value of 10 can create security risks:
 
 - **Rogue Computer Joins**: Attackers with valid user credentials can join unauthorized computers to the domain

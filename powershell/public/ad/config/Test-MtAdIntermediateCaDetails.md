@@ -1,3 +1,6 @@
+#### Test-MtAdIntermediateCaDetails
+
+#### Why This Test Matters
 Intermediate CA certificates define the intermediate links used to build trust chains from trusted roots to issued certificates. If intermediate CA certificates expire, misconfigured, or unauthorized certificates are added, certificate chain validation can fail and authentication may break.
 
 This test concentrates on *intermediate CA details* (including certificate validity) to help detect:

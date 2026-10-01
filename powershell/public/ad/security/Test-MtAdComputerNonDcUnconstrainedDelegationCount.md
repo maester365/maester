@@ -1,3 +1,7 @@
+#### Test-MtAdComputerNonDcUnconstrainedDelegationCount
+
+#### Why This Test Matters
+
 - Non-domain controller computers with unconstrained delegation represent a **CRITICAL** security vulnerability. While domain controllers may have legitimate reasons for unconstrained delegation in certain legacy scenarios, regular computers should **NEVER** have this configuration.
 
 **Critical Security Risks:**

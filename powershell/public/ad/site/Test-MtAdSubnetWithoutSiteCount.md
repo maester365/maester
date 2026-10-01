@@ -1,3 +1,7 @@
+#### Test-MtAdSubnetWithoutSiteCount
+
+#### Why This Test Matters
+
 Subnets without site associations (orphaned subnets) can cause:
 
 - **Client mislocation**: Computers with these IPs cannot determine their site

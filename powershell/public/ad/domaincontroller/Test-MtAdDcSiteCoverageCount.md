@@ -1,3 +1,7 @@
+#### Test-MtAdDcSiteCoverageCount
+
+#### Why This Test Matters
+
 Active Directory sites are used to define the physical topology of your network and optimize authentication traffic. Understanding site coverage helps ensure:
 
 - **Geographic redundancy**: Authentication services are available in all locations

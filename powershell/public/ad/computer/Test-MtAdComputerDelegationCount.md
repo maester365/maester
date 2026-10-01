@@ -1,3 +1,7 @@
+#### Test-MtAdComputerDelegationCount
+
+#### Why This Test Matters
+
 Kerberos delegation allows a service to impersonate users when accessing other resources. While necessary for some applications, delegation—especially unconstrained delegation—creates significant security risks:
 
 - **Unconstrained delegation**: The service can impersonate users to ANY service on ANY system (highest risk)

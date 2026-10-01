@@ -1,3 +1,6 @@
+#### Test-MtAdLdapQueryPolicyCount
+
+#### Why This Test Matters
 **LDAP query policies** define resource limits for directory queries (for example, controlling maximum result sizes and query behaviors). Weak or missing limits can enable **resource exhaustion** against AD through:
 
 - Expensive or unbounded queries

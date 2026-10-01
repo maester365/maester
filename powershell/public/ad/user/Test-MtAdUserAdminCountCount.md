@@ -1,3 +1,7 @@
+#### Test-MtAdUserAdminCountCount
+
+#### Why This Test Matters
+
 The `AdminCount` attribute is commonly set on protected and privileged accounts. These users often inherit AdminSDHolder protections and may retain elevated access or restricted ACL inheritance.
 
 - **Privilege visibility**: Highlights accounts that may be administrative or formerly administrative

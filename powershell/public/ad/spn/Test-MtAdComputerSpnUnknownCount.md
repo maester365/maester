@@ -1,3 +1,7 @@
+#### Test-MtAdComputerSpnUnknownCount
+
+#### Why This Test Matters
+
 Unidentified SPN service classes can represent security risks:
 
 - **Shadow IT**: Unknown services may be running without IT's knowledge or approval

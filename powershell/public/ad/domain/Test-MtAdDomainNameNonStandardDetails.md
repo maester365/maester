@@ -1,3 +1,7 @@
+#### Test-MtAdDomainNameNonStandardDetails
+
+#### Why This Test Matters
+
 This test provides detailed information about non-compliant domain names, helping you:
 
 - **Identify Problem Domains**: Pinpoint exactly which domains have naming issues

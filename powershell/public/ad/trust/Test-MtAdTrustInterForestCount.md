@@ -1,3 +1,7 @@
+#### Test-MtAdTrustInterForestCount
+
+#### Why This Test Matters
+
 Inter-forest trusts (external trusts) connect different Active Directory forests and pose unique security risks:
 
 - **SID History Attacks**: External trusts may be vulnerable to SID history attacks where attackers inject privileged SIDs from the external domain

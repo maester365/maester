@@ -1,3 +1,7 @@
+#### Test-MtAdGroupMemberForeignSidDetails
+
+#### Why This Test Matters
+
 Foreign security principals (FSPs) represent security principals from trusted external domains or forests. Understanding their distribution is important because:
 
 - **Trust visibility**: Identifies external trusts that may have been forgotten or are no longer needed

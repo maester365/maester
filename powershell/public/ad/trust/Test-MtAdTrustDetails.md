@@ -1,3 +1,7 @@
+#### Test-MtAdTrustDetails
+
+#### Why This Test Matters
+
 Comprehensive trust documentation is essential for security operations:
 
 - **Security Audits**: Auditors require detailed trust configuration information

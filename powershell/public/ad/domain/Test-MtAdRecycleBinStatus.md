@@ -1,3 +1,7 @@
+#### Test-MtAdRecycleBinStatus
+
+#### Why This Test Matters
+
 The Active Directory Recycle Bin provides significant advantages over traditional tombstone reanimation:
 
 - **Complete Object Recovery**: Restores all object attributes, group memberships, and links
