@@ -14,6 +14,8 @@ Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $En
     $RecommendationId = $_.id
     It "MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName). See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", "$($_.recommendationType)" {
         $RecommendationId = $_.id
+        # Keep a reference to the recommendation: inside an It block $_ is reset to $null once a catch block has run.
+        $recommendation = $_
 
         $EntraPremiumRecommendations = @(
             "insiderRiskPolicy",
@@ -76,9 +78,10 @@ Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $En
         # remediated. When the configured break-glass accounts are the only accounts still flagged, they
         # are the sole reason the recommendation is not complete and must not fail the test. See #2103.
         $breakGlassAwareRecommendationTypes = @('userRiskPolicy', 'signinRiskPolicy')
-        if ( $_.status -ne 'completedBySystem' -and $_.recommendationType -in $breakGlassAwareRecommendationTypes ) {
+        if ( $recommendation.status -ne 'completedBySystem' -and $recommendation.recommendationType -in $breakGlassAwareRecommendationTypes ) {
             try {
-                $breakGlassObjectId = @((Get-MtEmergencyAccessAccount).ObjectId)
+                # Pipe instead of using member access so that no configured accounts yields an empty list, not @($null).
+                $breakGlassObjectId = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId } | Where-Object { $_ })
             } catch {
                 # A break-glass account that cannot be resolved must not become a false pass. Leave the
                 # list empty so the exclusion does not apply and the recommendation is evaluated as-is.
@@ -86,9 +89,9 @@ Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $En
                 Write-Verbose "MT.1024: could not resolve emergency access accounts, evaluating recommendation without break-glass exclusion. $($_.Exception.Message)"
             }
 
-            $onlyBreakGlassImpacted = Test-MtRecommendationBreakGlassOnly -ImpactedResources $_.impactedResources -BreakGlassObjectId $breakGlassObjectId
+            $onlyBreakGlassImpacted = Test-MtRecommendationBreakGlassOnly -ImpactedResources $recommendation.impactedResources -BreakGlassObjectId $breakGlassObjectId
             if ( $onlyBreakGlassImpacted ) {
-                $breakGlassNames = @($_.impactedResources | Where-Object { $_.status -ne 'completedBySystem' } | ForEach-Object { $_.displayName }) -join ', '
+                $breakGlassNames = @($recommendation.impactedResources | Where-Object { $_.status -ne 'completedBySystem' } | ForEach-Object { $_.displayName }) -join ', '
                 $breakGlassNote = "`n`n> ℹ️ The only impacted resources are configured emergency access (break-glass) accounts, which are intentionally excluded from risk-based policies and are reported here for information only: $breakGlassNames."
                 Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result ($resultMd + $breakGlassNote)
                 $onlyBreakGlassImpacted | Should -BeTrue -Because "the only impacted resources are the configured emergency access (break-glass) accounts, which are intentionally excluded from risk-based policies"
@@ -99,6 +102,6 @@ Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $En
         Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result $resultMd
 
         # Actual test
-        $_.status | Should -Be "completedBySystem" -Because $_.benefits
+        $recommendation.status | Should -Be "completedBySystem" -Because $recommendation.benefits
     }
 }

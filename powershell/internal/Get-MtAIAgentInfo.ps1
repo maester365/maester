@@ -13,6 +13,8 @@
     pre-resolved connection details from the module session.
 
     Results are cached in the module session for reuse by multiple test functions.
+    When no agent data can be returned, the reason is stored in $__MtSession.AIAgentInfoError
+    so the Copilot Studio tests can report it in their skipped result.
 
 .EXAMPLE
     Get-MtAIAgentInfo
@@ -43,7 +45,8 @@ function Get-MtAIAgentInfo {
     $environmentId = $__MtSession.DataverseEnvironmentId
 
     if ([string]::IsNullOrEmpty($apiBase) -or [string]::IsNullOrEmpty($resourceUrl)) {
-        Write-Warning "Dataverse connection not established. Ensure you are connected via 'Connect-Maester -Service Dataverse'."
+        $__MtSession.AIAgentInfoError = "The Dataverse connection was not established. Ensure DataverseEnvironmentUrl is configured in maester-config.json (or can be auto-discovered) and run ``Connect-Maester -Service Dataverse``."
+        Write-Verbose $__MtSession.AIAgentInfoError
         $__MtSession.AIAgentInfo = @()
         return $null
     }
@@ -59,7 +62,8 @@ function Get-MtAIAgentInfo {
             $token = $tokenResult.Token
         }
     } catch {
-        Write-Warning "Failed to get Dataverse access token for Copilot Studio. Ensure you are connected via 'Connect-Maester -Service Dataverse'. Error: $_"
+        $__MtSession.AIAgentInfoError = "Could not get a Dataverse access token. Ensure you are connected via ``Connect-Maester -Service Dataverse``. Error: $($_.Exception.Message)"
+        Write-Verbose $__MtSession.AIAgentInfoError
         $__MtSession.AIAgentInfo = @()
         return $null
     }
@@ -97,13 +101,36 @@ function Get-MtAIAgentInfo {
         $selectFields = 'botid,name,accesscontrolpolicy,authenticationmode,authenticationtrigger,authorizedsecuritygroupids,statecode,statuscode,modifiedon,publishedon,configuration,schemaname,_ownerid_value,_createdby_value'
         $botsResponse = Invoke-RestMethod -Uri "$apiBase/bots?`$filter=ismanaged eq false&`$select=$selectFields" -Headers $headers -ErrorAction Stop
     } catch {
-        Write-Warning "Failed to query Copilot Studio agents from Dataverse: $_"
+        $queryError = $_
+        # Dataverse returns a JSON error body; surface its message rather than the raw payload.
+        $errorMessage = $queryError.Exception.Message
+        if ($queryError.ErrorDetails.Message) {
+            try {
+                $errorMessage = ($queryError.ErrorDetails.Message | ConvertFrom-Json -ErrorAction Stop).error.message
+            } catch {
+                $errorMessage = $queryError.ErrorDetails.Message
+            }
+        }
+        $statusCode = $null
+        if ($queryError.Exception.Response) {
+            $statusCode = [int]$queryError.Exception.Response.StatusCode
+        }
+        $reason = if ($statusCode -in @(401, 403)) {
+            "The connected account does not have permission to read Copilot Studio agents in the Dataverse environment ``$environmentId`` (HTTP $statusCode)."
+        } elseif ($statusCode) {
+            "The Copilot Studio agent query to the Dataverse environment ``$environmentId`` failed (HTTP $statusCode)."
+        } else {
+            "The Copilot Studio agent query to the Dataverse environment ``$environmentId`` failed."
+        }
+        $__MtSession.AIAgentInfoError = "$reason Error: $errorMessage"
+        Write-Verbose $__MtSession.AIAgentInfoError
         $__MtSession.AIAgentInfo = @()
         return $null
     }
 
     if ($null -eq $botsResponse.value -or $botsResponse.value.Count -eq 0) {
-        Write-Verbose "No Copilot Studio agents found in the Dataverse environment."
+        $__MtSession.AIAgentInfoError = "No Copilot Studio agents were found in the Dataverse environment ``$environmentId``."
+        Write-Verbose $__MtSession.AIAgentInfoError
         $__MtSession.AIAgentInfo = @()
         return $null
     }
@@ -234,6 +261,7 @@ function Get-MtAIAgentInfo {
         }
     }
 
+    $__MtSession.AIAgentInfoError = $null
     $__MtSession.AIAgentInfo = $agents
     return $agents
 }
