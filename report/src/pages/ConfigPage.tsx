@@ -126,11 +126,21 @@ function ConfigSelect<T extends string>({
       }
     }
 
+    // Close when keyboard focus moves to something outside the menu. Focus moving to nothing
+    // (Safari doesn't focus a clicked button) is left to the pointer handler, so clicks still land.
+    const handleFocusOut = (event: FocusEvent) => {
+      const next = event.relatedTarget as Node | null
+      if (next && !rootRef.current?.contains(next)) setIsOpen(false)
+    }
+
+    const root = rootRef.current
     document.addEventListener("pointerdown", handlePointerDown)
     document.addEventListener("keydown", handleEscape)
+    root?.addEventListener("focusout", handleFocusOut)
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown)
       document.removeEventListener("keydown", handleEscape)
+      root?.removeEventListener("focusout", handleFocusOut)
     }
   }, [isOpen])
 
@@ -195,6 +205,8 @@ function ConfigSelect<T extends string>({
                 type="button"
                 role="option"
                 aria-selected={isSelected}
+                // Arrow keys move between options, so Tab leaves the menu instead of stepping through it.
+                tabIndex={-1}
                 onClick={() => {
                   onChange(option.value)
                   setIsOpen(false)

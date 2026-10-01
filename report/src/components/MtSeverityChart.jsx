@@ -66,8 +66,8 @@ export default function MtSeverityChart(props) {
                 <Title className="whitespace-nowrap">By severity</Title>
                 {!props.hideControls && (
                     <Flex justifyContent="end" className="space-x-4">
-                        <Switch checked={showPassed} onChange={setShowPassed} color="emerald" />
-                        <Switch checked={showFailed} onChange={setShowFailed} color="rose" />
+                        <Switch checked={showPassed} onChange={setShowPassed} color="emerald" label="Show passed tests" />
+                        <Switch checked={showFailed} onChange={setShowFailed} color="rose" label="Show failed tests" />
                     </Flex>
                 )}
             </Flex>

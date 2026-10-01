@@ -310,7 +310,7 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
         <div id={listId} role="group" aria-label={placeholder} className={cn("absolute z-40 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900", opensUp ? "bottom-full mb-1" : "mt-1")}>
           <label className="relative block border-b border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-[#09090b]">
             <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-gray-400" aria-hidden />
-            <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label={`Search ${placeholder}`} className="h-[35px] w-full bg-transparent pl-9 pr-3 text-sm outline-hidden placeholder:text-gray-400" />
+            <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label={`Search ${placeholder}`} className="h-[35px] w-full bg-transparent pl-9 pr-3 text-sm outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 placeholder:text-gray-400" />
           </label>
           {visibleItems.map(({ props }) => (
             <label key={props.value} className="flex h-[41px] cursor-pointer items-center gap-2.5 border-b border-gray-200 px-2.5 text-sm text-gray-700 last:border-b-0 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-[#09090b]">
@@ -324,10 +324,10 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
   )
 }
 
-export function Switch({ checked, onChange, color }: { checked: boolean; onChange: (checked: boolean) => void; color: "emerald" | "rose" }) {
+export function Switch({ checked, onChange, color, label }: { checked: boolean; onChange: (checked: boolean) => void; color: "emerald" | "rose"; label: string }) {
   const fill = checked ? color === "emerald" ? "bg-emerald-500" : "bg-rose-500" : "bg-gray-200 dark:bg-zinc-800"
   return (
-    <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className="group relative inline-flex h-5 w-10 shrink-0 items-center justify-center rounded-full focus:outline-hidden">
+    <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)} className="group relative inline-flex h-5 w-10 shrink-0 items-center justify-center rounded-full focus:outline-hidden">
       <span aria-hidden className={cn("pointer-events-none absolute mx-auto h-3 w-9 rounded-full transition-colors duration-100 ease-in-out", fill)} />
       <span aria-hidden className={cn("pointer-events-none absolute left-0 inline-block size-5 rounded-full border-2 border-white shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] transition duration-100 ease-in-out group-focus-visible:ring-2 dark:border-zinc-900", fill, checked ? "translate-x-5" : "translate-x-0", color === "emerald" ? "ring-emerald-300" : "ring-rose-300")} />
     </button>
@@ -405,7 +405,7 @@ export function Button({ icon: IconComponent, iconPosition, tooltip, variant = "
   const isLight = variant === "light"
   const iconClassName = isLight ? "-ml-1 mr-1.5 size-5 shrink-0" : "size-4"
   return (
-    <button title={tooltip} className={cn(isLight ? "inline-flex shrink-0 items-center justify-center bg-transparent text-sm font-medium text-blue-500 outline-hidden hover:text-blue-700 dark:hover:text-blue-400" : "inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-40", variant === "primary" && "border-orange-500 bg-orange-500 text-white hover:bg-orange-600", variant === "secondary" && "border-gray-300 bg-white text-gray-900 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100", size === "xs" && "p-1.5", className)} {...props}>
+    <button title={tooltip} className={cn(isLight ? "inline-flex shrink-0 items-center justify-center rounded-sm bg-transparent text-sm font-medium text-blue-500 outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 hover:text-blue-700 dark:hover:text-blue-400" : "inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-40", variant === "primary" && "border-orange-500 bg-orange-500 text-white hover:bg-orange-600", variant === "secondary" && "border-gray-300 bg-white text-gray-900 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100", size === "xs" && "p-1.5", className)} {...props}>
       {IconComponent && iconPosition !== "right" && <IconComponent className={iconClassName} aria-hidden />}
       {children}
       {IconComponent && iconPosition === "right" && <IconComponent className={iconClassName} aria-hidden />}
