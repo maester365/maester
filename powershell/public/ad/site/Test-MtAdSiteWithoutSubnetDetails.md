@@ -1,7 +1,3 @@
-#### Test-MtAdSiteWithoutSubnetDetails
-
-#### Why This Test Matters
-
 Sites without subnets represent incomplete configuration that can lead to:
 
 - **Client mislocation**: Computers may authenticate to incorrect DCs

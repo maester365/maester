@@ -1,7 +1,3 @@
-#### Test-MtAdDomainNameStandardCompliance
-
-#### Why This Test Matters
-
 Domain names that don't comply with RFC 1123 and RFC 952 standards can cause various problems:
 
 - **DNS Resolution Issues**: Non-compliant names may not resolve correctly in some DNS implementations

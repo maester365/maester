@@ -1,7 +1,3 @@
-#### Test-MtAdDomainFunctionalLevel
-
-#### Why This Test Matters
-
 The domain functional level determines which Active Directory features are available in your domain. Higher functional levels unlock important security capabilities:
 
 - **Windows Server 2016+**: Enables features like privileged access management (PAM), temporary group membership, and enhanced authentication policies

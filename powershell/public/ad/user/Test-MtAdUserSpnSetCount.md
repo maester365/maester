@@ -1,7 +1,3 @@
-#### Test-MtAdUserSpnSetCount
-
-#### Why This Test Matters
-
 User accounts with `ServicePrincipalName` values are typically used as service accounts. These accounts are important because they may be susceptible to Kerberoasting and often have broad or persistent access.
 
 - **Kerberoasting exposure**: User SPNs are a common attack target

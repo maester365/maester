@@ -1,6 +1,3 @@
-#### Test-MtAdWellKnownSecurityPrincipalsCount
-
-#### Why This Test Matters
 Well-known security principals are built-in identities with special meaning in Active Directory (for example, principals that Windows and AD components rely on for system behavior). Unexpected changes to these principals can indicate tampering, malicious SID/object replacement, or unauthorized directory modification.
 
 #### Security Recommendation

@@ -1,7 +1,3 @@
-#### Test-MtAdOuStaleCount
-
-#### Why This Test Matters
-
 - Organizational Units that haven't been modified since before 2020 may represent:
 - Abandoned projects: OUs created for initiatives that were never completed or were abandoned
 - Outdated structure: Organizational units that no longer reflect current business structure

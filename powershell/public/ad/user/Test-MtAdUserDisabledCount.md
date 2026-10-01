@@ -1,7 +1,3 @@
-#### Test-MtAdUserDisabledCount
-
-#### Why This Test Matters
-
 Disabled user accounts are expected during offboarding, investigations, and staged deprovisioning. Tracking their volume helps identify stale objects that should be deleted, reduces directory clutter, and supports lifecycle governance.
 
 #### Security Recommendation

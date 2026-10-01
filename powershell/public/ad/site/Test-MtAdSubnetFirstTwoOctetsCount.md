@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetFirstTwoOctetsCount
-
-#### Why This Test Matters
-
 Understanding /16 network distribution helps:
 
 - **Network planning**: Identify how many major network blocks are in use

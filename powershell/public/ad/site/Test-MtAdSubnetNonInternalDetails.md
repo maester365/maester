@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetNonInternalDetails
-
-#### Why This Test Matters
-
 Detailed information about public IP subnet usage helps:
 
 - **Identify misconfigurations**: Find subnets that should use private ranges

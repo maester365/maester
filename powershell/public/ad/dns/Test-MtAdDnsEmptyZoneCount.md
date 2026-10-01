@@ -1,7 +1,3 @@
-#### Test-MtAdDnsEmptyZoneCount
-
-#### Why This Test Matters
-
 Empty DNS zones (zones with no resource records) may indicate:
 
 - **Incomplete configuration**: Zones created but never populated

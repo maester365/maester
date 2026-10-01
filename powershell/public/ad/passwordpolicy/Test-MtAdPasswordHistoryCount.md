@@ -1,7 +1,3 @@
-#### Test-MtAdPasswordHistoryCount
-
-#### Why This Test Matters
-
 Password history is a critical security control that prevents users from reusing their recent passwords. Without adequate password history:
 
 * **Password cycling**: Users can quickly cycle through passwords to return to their favorite (often compromised) password

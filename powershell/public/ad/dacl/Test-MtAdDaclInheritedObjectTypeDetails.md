@@ -1,7 +1,3 @@
-#### Test-MtAdDaclInheritedObjectTypeDetails
-
-#### Why This Test Matters
-
 Inherited object type detail helps explain where inheritable ACEs are intended to apply.
 
 - **Scoping transparency**: Reveals which descendant object classes are targeted most often

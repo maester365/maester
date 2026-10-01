@@ -1,7 +1,3 @@
-#### Test-MtAdUserKnownServiceAccountCount
-
-#### Why This Test Matters
-
 Many environments use recognizable naming conventions for service accounts such as `svc_`, `service_`, or `_svc`. These patterns make service accounts easier to inventory and harden.
 
 - **Service account inventory**: Helps locate likely service identities quickly

@@ -1,7 +1,3 @@
-#### Test-MtAdTrustNonQuarantinedDetails
-
-#### Why This Test Matters
-
 Non-quarantined trusts (those without SID filtering) are a significant security risk:
 
 - **SID History Vulnerability**: Attackers can exploit SID history to elevate privileges across trust boundaries

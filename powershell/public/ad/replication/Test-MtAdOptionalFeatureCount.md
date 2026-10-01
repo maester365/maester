@@ -1,7 +1,3 @@
-#### Test-MtAdOptionalFeatureCount
-
-#### Why This Test Matters
-
 Active Directory optional features extend the base functionality of AD and can significantly impact security capabilities:
 
 - **Recycle Bin**: Critical for recovering accidentally or maliciously deleted objects

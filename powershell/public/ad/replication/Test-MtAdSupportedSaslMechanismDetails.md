@@ -1,7 +1,3 @@
-#### Test-MtAdSupportedSaslMechanismDetails
-
-#### Why This Test Matters
-
 Understanding the SASL (Simple Authentication and Security Layer) mechanisms supported by Active Directory is crucial for authentication security:
 
 - **Security Levels**: Different mechanisms offer varying levels of security

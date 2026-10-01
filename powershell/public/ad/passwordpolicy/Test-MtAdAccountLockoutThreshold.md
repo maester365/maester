@@ -1,7 +1,3 @@
-#### Test-MtAdAccountLockoutThreshold
-
-#### Why This Test Matters
-
 Account lockout threshold is one of the most important defenses against brute-force attacks:
 
 * **Prevents automated attacks**: Limits the number of passwords an attacker can try
