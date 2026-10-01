@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-21"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -44,7 +44,7 @@ The test queries the AD NTAuth certificate container, counts the number of confi
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-21 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdNtAuthCertificatesCount](/docs/commands/Test-MtAdNtAuthCertificatesCount) |

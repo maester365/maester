@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOS-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ Disabled GPO settings count should be retrievable
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOS-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoSettingsDisabledCount](/docs/commands/Test-MtAdGpoSettingsDisabledCount) |

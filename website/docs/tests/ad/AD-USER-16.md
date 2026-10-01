@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-16"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects where the `HomeDirectory` attribute contains a non
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-16 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserHomeDirectoryCount](/docs/commands/Test-MtAdUserHomeDirectoryCount) |

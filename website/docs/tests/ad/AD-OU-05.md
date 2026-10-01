@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-OU-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.OU"
   - "AD"
@@ -62,7 +62,7 @@ This test retrieves all Organizational Units from Active Directory and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-OU-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.OU |
 | PowerShell test | [Test-MtAdOuEmptyDetails](/docs/commands/Test-MtAdOuEmptyDetails) |

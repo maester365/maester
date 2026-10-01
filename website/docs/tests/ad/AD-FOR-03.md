@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FOR-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -61,7 +61,7 @@ This test retrieves the tombstone lifetime from the Directory Service configurat
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FOR-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdTombstoneLifetime](/docs/commands/Test-MtAdTombstoneLifetime) |

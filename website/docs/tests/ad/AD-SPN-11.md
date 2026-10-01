@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-11"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -54,7 +54,7 @@ This test parses all user SPNs and checks if the host portion contains a dot (in
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-11 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdUserSpnNonFqdnHosts](/docs/commands/Test-MtAdUserSpnNonFqdnHosts) |

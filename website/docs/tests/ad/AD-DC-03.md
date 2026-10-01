@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -55,7 +55,7 @@ This test queries the SMB server configuration on each domain controller to chec
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcSmbv311EnabledCount](/docs/commands/Test-MtAdDcSmbv311EnabledCount) |

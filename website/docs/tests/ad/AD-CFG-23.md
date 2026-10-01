@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-23"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -44,7 +44,7 @@ The test queries AD site link configuration entries that use SMTP as the replica
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-23 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdSmtpSiteLinksCount](/docs/commands/Test-MtAdSmtpSiteLinksCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCD-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -63,7 +63,7 @@ This test retrieves all domain controllers and identifies which are configured a
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCD-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcReadOnlyCount](/docs/commands/Test-MtAdDcReadOnlyCount) |

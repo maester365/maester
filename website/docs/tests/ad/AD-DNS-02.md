@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -51,7 +51,7 @@ This test identifies DNS zones that contain only SOA and NS records, with no A, 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsZonesWithOnlySoaNs](/docs/commands/Test-MtAdDnsZonesWithOnlySoaNs) |

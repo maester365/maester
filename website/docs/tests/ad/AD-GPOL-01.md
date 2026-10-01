@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOL-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPO"
   - "AD"
@@ -59,7 +59,7 @@ It then:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOL-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPO |
 | PowerShell test | [Test-MtAdGpoLinkedCount](/docs/commands/Test-MtAdGpoLinkedCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -60,7 +60,7 @@ This test provides a detailed breakdown of:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerDelegationDetails](/docs/commands/Test-MtAdComputerDelegationDetails) |

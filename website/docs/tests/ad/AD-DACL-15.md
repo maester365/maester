@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-15"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -50,7 +50,7 @@ This test reads `$adState.DaclEntries` and looks for entries whose `IdentityRefe
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-15 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclUnresolvedSidCount](/docs/commands/Test-MtAdDaclUnresolvedSidCount) |

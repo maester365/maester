@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-MSA-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -77,7 +77,7 @@ This test counts managed service accounts in Active Directory and categorizes th
 | Field | Value |
 | --- | --- |
 | Test ID | AD-MSA-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdManagedServiceAccountCount](/docs/commands/Test-MtAdManagedServiceAccountCount) |

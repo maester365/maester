@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -73,7 +73,7 @@ This test counts computers with and without the `dNSHostName` attribute populate
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerDnsHostNameCount](/docs/commands/Test-MtAdComputerDnsHostNameCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOREP-14"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ GPO enforcement count should be retrievable
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOREP-14 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoEnforcementCount](/docs/commands/Test-MtAdGpoEnforcementCount) |

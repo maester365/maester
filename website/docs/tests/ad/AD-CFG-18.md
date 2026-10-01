@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-18"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -48,7 +48,7 @@ The test queries AD configuration for intermediate CA entries and returns the nu
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-18 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdIntermediateCaCount](/docs/commands/Test-MtAdIntermediateCaCount) |

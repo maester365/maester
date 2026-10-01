@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -52,7 +52,7 @@ This test counts DNS records that have timestamps (dynamic) versus those without
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsDynamicRecordCount](/docs/commands/Test-MtAdDnsDynamicRecordCount) |

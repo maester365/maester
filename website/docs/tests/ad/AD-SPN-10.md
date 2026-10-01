@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -56,7 +56,7 @@ This test analyzes all user SPNs, identifies unknown service classes, and provid
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdUserSpnUnknownDetails](/docs/commands/Test-MtAdUserSpnUnknownDetails) |

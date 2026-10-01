@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOS-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ Computer disabled GPO settings details should be compliant
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOS-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoComputerSettingsDisabledDetails](/docs/commands/Test-MtAdGpoComputerSettingsDisabledDetails) |

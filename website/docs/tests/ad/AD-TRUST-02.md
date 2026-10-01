@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-TRUST-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Trust"
   - "AD"
@@ -61,7 +61,7 @@ This test analyzes all trust objects and identifies those where `IntraForest` is
 | Field | Value |
 | --- | --- |
 | Test ID | AD-TRUST-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Trust |
 | PowerShell test | [Test-MtAdTrustInterForestCount](/docs/commands/Test-MtAdTrustInterForestCount) |

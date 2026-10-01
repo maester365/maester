@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-14"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -50,7 +50,7 @@ This test reads `$adState.DaclEntries` and counts entries where `IsInherited` is
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-14 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclNonInheritedAceCount](/docs/commands/Test-MtAdDaclNonInheritedAceCount) |

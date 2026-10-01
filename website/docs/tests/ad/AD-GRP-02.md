@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -58,7 +58,7 @@ keywords:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupInContainerCount](/docs/commands/Test-MtAdGroupInContainerCount) |

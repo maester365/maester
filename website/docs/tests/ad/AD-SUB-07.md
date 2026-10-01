@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -56,7 +56,7 @@ This test retrieves all subnets, identifies those using public IP ranges, and li
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetNonInternalDetails](/docs/commands/Test-MtAdSubnetNonInternalDetails) |

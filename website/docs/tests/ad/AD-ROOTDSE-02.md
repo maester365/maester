@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-ROOTDSE-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Replication"
   - "AD"
@@ -60,7 +60,7 @@ This test retrieves detailed information about each supported SASL mechanism:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-ROOTDSE-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Replication |
 | PowerShell test | [Test-MtAdSupportedSaslMechanismDetails](/docs/commands/Test-MtAdSupportedSaslMechanismDetails) |

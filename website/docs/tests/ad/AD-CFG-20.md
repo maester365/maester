@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-20"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -44,7 +44,7 @@ The test inspects AD configuration for CRL distribution point entries, counts th
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-20 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdCrlDistributionPointsCount](/docs/commands/Test-MtAdCrlDistributionPointsCount) |

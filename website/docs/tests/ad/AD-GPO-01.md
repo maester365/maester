@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPO-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPO"
   - "AD"
@@ -54,7 +54,7 @@ This test retrieves all Group Policy Objects from Active Directory and counts th
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPO-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPO |
 | PowerShell test | [Test-MtAdGpoTotalCount](/docs/commands/Test-MtAdGpoTotalCount) |

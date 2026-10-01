@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -61,7 +61,7 @@ The test provides counts and percentages to understand the proportion of securit
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupSecurityCount](/docs/commands/Test-MtAdGroupSecurityCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-06"
-  - "Unknown"
+  - "Medium"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-DCOMP-06 - Stale enabled computer count should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -69,12 +69,16 @@ Provides counts and lists affected computers.
 - `Test-MtAdComputerDisabledCount` - Disabled computer analysis
 - `Test-MtAdUserDormantEnabledCount` - Stale user account check
 
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Inactive servers](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_password_change_inactive_servers)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-06 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerStaleEnabledCount](/docs/commands/Test-MtAdComputerStaleEnabledCount) |

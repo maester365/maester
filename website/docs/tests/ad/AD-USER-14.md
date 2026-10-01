@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-14"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects where the `ServicePrincipalName` attribute contain
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-14 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserSpnSetCount](/docs/commands/Test-MtAdUserSpnSetCount) |

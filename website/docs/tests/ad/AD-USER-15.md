@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-15"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects where the `Manager` attribute contains a non-empty
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-15 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserManagerSetCount](/docs/commands/Test-MtAdUserManagerSetCount) |

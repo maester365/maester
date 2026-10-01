@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ Well-known security principals are built-in identities with special meaning in A
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdWellKnownSecurityPrincipalsCount](/docs/commands/Test-MtAdWellKnownSecurityPrincipalsCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FEAT-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Replication"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves all Active Directory optional features and counts:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FEAT-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Replication |
 | PowerShell test | [Test-MtAdOptionalFeatureCount](/docs/commands/Test-MtAdOptionalFeatureCount) |

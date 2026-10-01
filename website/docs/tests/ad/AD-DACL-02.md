@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test retrieves `$adState.DaclEntries`, filters entries where `ObjectClass` 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclOuObjectCount](/docs/commands/Test-MtAdDaclOuObjectCount) |

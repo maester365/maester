@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOS-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ GPO owner distinct count should be retrievable
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOS-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoOwnerDistinctCount](/docs/commands/Test-MtAdGpoOwnerDistinctCount) |

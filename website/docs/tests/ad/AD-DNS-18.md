@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-18"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -53,7 +53,7 @@ This test analyzes reverse lookup zone names to extract and count unique network
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-18 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsReverseZoneNetworkCount](/docs/commands/Test-MtAdDnsReverseZoneNetworkCount) |

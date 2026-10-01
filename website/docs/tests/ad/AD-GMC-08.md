@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -59,7 +59,7 @@ The test categorizes groups by their status (empty privileged, empty non-privile
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupEmptyNonPrivilegedCount](/docs/commands/Test-MtAdGroupEmptyNonPrivilegedCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -48,7 +48,7 @@ This test identifies DNS zones that contain records beyond the default SOA and N
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsZonesWithRecordsCount](/docs/commands/Test-MtAdDnsZonesWithRecordsCount) |

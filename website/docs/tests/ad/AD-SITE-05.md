@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SITE-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -56,7 +56,7 @@ This test retrieves all sites and subnets, identifies sites with no subnet assoc
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SITE-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSiteWithoutSubnetDetails](/docs/commands/Test-MtAdSiteWithoutSubnetDetails) |

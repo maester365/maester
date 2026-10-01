@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -54,7 +54,7 @@ This test examines all group memberships in Active Directory and identifies secu
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupMemberForeignSidDetails](/docs/commands/Test-MtAdGroupMemberForeignSidDetails) |

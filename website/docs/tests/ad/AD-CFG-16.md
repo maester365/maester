@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-16"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ Trusted root CAs act as the trust anchors for an entire PKI trust chain. If an a
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-16 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdTrustedRootCaCount](/docs/commands/Test-MtAdTrustedRootCaCount) |

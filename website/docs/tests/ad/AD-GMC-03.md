@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -56,7 +56,7 @@ For performance reasons, the test analyzes members from the first 50 groups and 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupMemberAccountTypeDetails](/docs/commands/Test-MtAdGroupMemberAccountTypeDetails) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-11"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test identifies subnets that have no site association (SiteObject is null).
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-11 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetWithoutSiteCount](/docs/commands/Test-MtAdSubnetWithoutSiteCount) |

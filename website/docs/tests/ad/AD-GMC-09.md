@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -65,7 +65,7 @@ It then lists these groups with their:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupEmptyNonPrivilegedDetails](/docs/commands/Test-MtAdGroupEmptyNonPrivilegedDetails) |

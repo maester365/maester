@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test retrieves `$adState.DaclEntries`, extracts the `ObjectDN` value from e
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclDistinctObjectCount](/docs/commands/Test-MtAdDaclDistinctObjectCount) |

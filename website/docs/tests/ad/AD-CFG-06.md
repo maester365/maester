@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -47,7 +47,7 @@ This test reads LDAP query policy configuration from AD and produces a count/vis
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdLdapQueryPolicyCount](/docs/commands/Test-MtAdLdapQueryPolicyCount) |

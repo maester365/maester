@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOREP-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ GPO no-apply Group Policy ACE count should be retrievable
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOREP-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoNoApplyGroupPolicyAceCount](/docs/commands/Test-MtAdGpoNoApplyGroupPolicyAceCount) |

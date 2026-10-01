@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-05"
-  - "Unknown"
+  - "Medium"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-GRP-05 - Group SID History count should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,12 +52,17 @@ keywords:
 - `Test-MtAdGroupStaleCount` - Groups with SID History may also be stale if migration was long ago
 - `Test-MtAdGroupAdminCount` - Privileged groups with SID History require special attention
 
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure SID History attributes](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-sid-history-attributes)
+- [ANSSI Active Directory checkpoints: Accounts or groups with SID history set](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_sidhistory_present)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-05 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupSidHistoryCount](/docs/commands/Test-MtAdGroupSidHistoryCount) |

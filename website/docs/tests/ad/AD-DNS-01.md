@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -51,7 +51,7 @@ This test retrieves all DNS zones and counts those that contain resource records
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsZoneCount](/docs/commands/Test-MtAdDnsZoneCount) |

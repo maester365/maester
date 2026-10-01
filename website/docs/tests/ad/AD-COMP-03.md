@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -56,7 +56,7 @@ Note: Not all computer accounts will have this attribute, depending on how they 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerCreatorSidCount](/docs/commands/Test-MtAdComputerCreatorSidCount) |

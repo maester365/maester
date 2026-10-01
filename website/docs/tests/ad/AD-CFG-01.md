@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -47,7 +47,7 @@ This test retrieves the environment’s configured tombstone lifetime value from
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdTombstoneLifetimeConfig](/docs/commands/Test-MtAdTombstoneLifetimeConfig) |

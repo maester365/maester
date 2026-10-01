@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-REPL-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Replication"
   - "AD"
@@ -54,7 +54,7 @@ This test retrieves all Active Directory replication connections and identifies:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-REPL-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Replication |
 | PowerShell test | [Test-MtAdNonAutoReplicationConnectionCount](/docs/commands/Test-MtAdNonAutoReplicationConnectionCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-18"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects where the `ScriptPath` attribute contains a non-em
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-18 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserScriptPathCount](/docs/commands/Test-MtAdUserScriptPathCount) |

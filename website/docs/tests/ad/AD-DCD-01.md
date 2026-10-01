@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCD-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -62,7 +62,7 @@ This test retrieves all domain controllers and checks their configured LDAP port
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCD-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcNonStandardLdapPortCount](/docs/commands/Test-MtAdDcNonStandardLdapPortCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -56,7 +56,7 @@ This test validates NetBIOS names against standard naming conventions, checking 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdNetbiosNameStandardCompliance](/docs/commands/Test-MtAdNetbiosNameStandardCompliance) |

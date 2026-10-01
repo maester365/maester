@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-PWDPOL-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.PasswordPolicy"
   - "AD"
@@ -60,7 +60,7 @@ To configure this setting:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-PWDPOL-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.PasswordPolicy |
 | PowerShell test | [Test-MtAdAccountLockoutThreshold](/docs/commands/Test-MtAdAccountLockoutThreshold) |

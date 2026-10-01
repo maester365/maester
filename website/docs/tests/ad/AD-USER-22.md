@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-22"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -51,7 +51,7 @@ This test counts user objects whose SID ends in `-500` or are marked as `isCriti
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-22 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserBuiltInAdminCount](/docs/commands/Test-MtAdUserBuiltInAdminCount) |

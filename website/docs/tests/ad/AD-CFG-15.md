@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-15"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ Enrollment-capable CA certificates include validity periods and other critical p
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-15 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdEnrollmentCaCertificateDetails](/docs/commands/Test-MtAdEnrollmentCaCertificateDetails) |

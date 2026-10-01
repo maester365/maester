@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-PWDPOL-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.PasswordPolicy"
   - "AD"
@@ -63,7 +63,7 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | Field | Value |
 | --- | --- |
 | Test ID | AD-PWDPOL-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.PasswordPolicy |
 | PowerShell test | [Test-MtAdPasswordComplexityRequired](/docs/commands/Test-MtAdPasswordComplexityRequired) |

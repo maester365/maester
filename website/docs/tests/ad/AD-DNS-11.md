@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-11"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -56,7 +56,7 @@ This test counts SRV records used by Active Directory Domain Services, including
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-11 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsAdSrvRecordCount](/docs/commands/Test-MtAdDnsAdSrvRecordCount) |

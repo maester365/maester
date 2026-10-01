@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test retrieves `$adState.DaclEntries`, searches for `CNF` within `ObjectDN`
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclConflictObjectCount](/docs/commands/Test-MtAdDaclConflictObjectCount) |

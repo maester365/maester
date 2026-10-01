@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -57,7 +57,7 @@ This test checks all domain names in the forest against RFC 1123 naming standard
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdDomainNameStandardCompliance](/docs/commands/Test-MtAdDomainNameStandardCompliance) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -51,7 +51,7 @@ This test retrieves all domain controllers from Active Directory and counts them
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdDomainControllerCount](/docs/commands/Test-MtAdDomainControllerCount) |

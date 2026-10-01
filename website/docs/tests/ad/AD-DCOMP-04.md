@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -71,7 +71,7 @@ This test analyzes computer objects in Active Directory and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerOperatingSystemCount](/docs/commands/Test-MtAdComputerOperatingSystemCount) |

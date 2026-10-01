@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test extracts the first octet from all IPv4 subnets and counts the distinct
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetFirstOctetCount](/docs/commands/Test-MtAdSubnetFirstOctetCount) |

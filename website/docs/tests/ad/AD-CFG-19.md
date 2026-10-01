@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-19"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -46,7 +46,7 @@ The test enumerates intermediate CA certificates in the AD configuration context
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-19 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdIntermediateCaDetails](/docs/commands/Test-MtAdIntermediateCaDetails) |

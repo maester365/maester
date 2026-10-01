@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FOR-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -62,7 +62,7 @@ This test checks the optional features in Active Directory to determine if the R
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FOR-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdRecycleBinStatus](/docs/commands/Test-MtAdRecycleBinStatus) |

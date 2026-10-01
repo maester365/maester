@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -54,7 +54,7 @@ This test provides detailed information about each root server that has an incor
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsRootServerIncorrectDetails](/docs/commands/Test-MtAdDnsRootServerIncorrectDetails) |

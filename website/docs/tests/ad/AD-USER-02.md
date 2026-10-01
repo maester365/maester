@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-02"
-  - "Unknown"
+  - "High"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-USER-02 - Dormant enabled user count should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -39,12 +39,17 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 - `Test-MtAdUserNeverLoggedInCount`
 - `Test-MtAdUserPasswordNeverExpiresCount`
 
+#### Related links
+
+- [Microsoft Defender for Identity: Remove stale Active Directory accounts](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#remove-stale-active-directory-accounts)
+- [ANSSI Active Directory checkpoints: Dormant accounts](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_dormant)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-02 |
-| Severity | Unknown |
+| Severity | High |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserDormantEnabledCount](/docs/commands/Test-MtAdUserDormantEnabledCount) |

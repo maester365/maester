@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FOR-01"
-  - "Unknown"
+  - "Medium"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-FOR-01 - Forest functional level should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -48,12 +48,17 @@ This test retrieves the current forest functional level from Active Directory al
 - `Test-MtAdDomainFunctionalLevel` - Retrieves the domain functional level
 - `Test-MtAdForestDomainCount` - Counts domains in the forest
 
+#### Related links
+
+- [Microsoft Learn: Active Directory Domain Services functional levels](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/active-directory-functional-levels)
+- [ANSSI Active Directory checkpoints: Insufficient forest and domains functional levels](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_functional_level)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FOR-01 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdForestFunctionalLevel](/docs/commands/Test-MtAdForestFunctionalLevel) |

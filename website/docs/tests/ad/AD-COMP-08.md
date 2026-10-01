@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -60,7 +60,7 @@ This test groups all enabled computers by their parent container and calculates:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerPerOUAverage](/docs/commands/Test-MtAdComputerPerOUAverage) |

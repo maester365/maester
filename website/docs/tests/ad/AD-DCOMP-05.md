@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -72,7 +72,7 @@ This test provides detailed analysis including:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerOperatingSystemDetails](/docs/commands/Test-MtAdComputerOperatingSystemDetails) |

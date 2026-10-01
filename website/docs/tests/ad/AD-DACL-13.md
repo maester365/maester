@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-13"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -50,7 +50,7 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-13 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightIdentity](/docs/commands/Test-MtAdDaclPrivilegedExtendedRightIdentity) |

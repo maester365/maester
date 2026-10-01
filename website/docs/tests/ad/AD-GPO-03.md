@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPO-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPO"
   - "AD"
@@ -52,7 +52,7 @@ It filters GPOs where `ModificationTime` is earlier than `2020-01-01` and calcul
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPO-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPO |
 | PowerShell test | [Test-MtAdGpoChangedBefore2020Count](/docs/commands/Test-MtAdGpoChangedBefore2020Count) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ This test inspects the SPN mapping configuration exposed by AD, extracts the con
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdSpnMappings](/docs/commands/Test-MtAdSpnMappings) |

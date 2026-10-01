@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOL-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPO"
   - "AD"
@@ -59,7 +59,7 @@ The gPLink attribute is checked to determine if any GPOs are linked to each OU.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOL-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPO |
 | PowerShell test | [Test-MtAdGpoLinkedOUCount](/docs/commands/Test-MtAdGpoLinkedOUCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-OU-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.OU"
   - "AD"
@@ -53,7 +53,7 @@ keywords:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-OU-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.OU |
 | PowerShell test | [Test-MtAdOuOverlappingNameCount](/docs/commands/Test-MtAdOuOverlappingNameCount) |

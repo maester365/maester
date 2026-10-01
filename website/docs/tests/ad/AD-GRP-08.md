@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -61,7 +61,7 @@ The test provides counts and percentages to understand the distribution of group
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupDomainLocalCount](/docs/commands/Test-MtAdGroupDomainLocalCount) |

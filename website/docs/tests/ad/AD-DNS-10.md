@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -56,7 +56,7 @@ This test retrieves SOA record details for each zone, including primary server, 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsSoaDetails](/docs/commands/Test-MtAdDnsSoaDetails) |

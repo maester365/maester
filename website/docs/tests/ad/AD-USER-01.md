@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -44,7 +44,7 @@ This test retrieves cached Active Directory user data from `Get-MtADDomainState`
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserDisabledCount](/docs/commands/Test-MtAdUserDisabledCount) |

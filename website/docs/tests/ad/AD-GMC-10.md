@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -69,7 +69,7 @@ This test identifies privileged groups (those with adminCount = 1 or well-known 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupPrivilegedWithMembersCount](/docs/commands/Test-MtAdGroupPrivilegedWithMembersCount) |

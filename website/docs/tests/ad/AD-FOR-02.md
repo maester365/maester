@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FOR-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -52,7 +52,7 @@ This test retrieves all domains from the Active Directory forest and counts them
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FOR-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdForestDomainCount](/docs/commands/Test-MtAdForestDomainCount) |

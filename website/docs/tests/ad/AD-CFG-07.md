@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -47,7 +47,7 @@ This test retrieves the default LDAP query policy values and reports them as an 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdDefaultQueryPolicy](/docs/commands/Test-MtAdDefaultQueryPolicy) |

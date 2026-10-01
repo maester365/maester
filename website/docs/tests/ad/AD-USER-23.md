@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-23"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test returns enabled user accounts that match the built-in administrator RI
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-23 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserBuiltInAdminEnabledDetails](/docs/commands/Test-MtAdUserBuiltInAdminEnabledDetails) |

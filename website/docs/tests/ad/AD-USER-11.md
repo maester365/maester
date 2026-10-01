@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-11"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects where the `AdminCount` attribute equals `1`.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-11 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserAdminCountCount](/docs/commands/Test-MtAdUserAdminCountCount) |

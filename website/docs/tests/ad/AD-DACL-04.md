@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test retrieves `$adState.DaclEntries`, filters for entries whose `ObjectDN`
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclConflictObjectDetails](/docs/commands/Test-MtAdDaclConflictObjectDetails) |

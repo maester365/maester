@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-13"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -50,7 +50,7 @@ This test counts DNSSEC trust anchor records configured in the TrustAnchors zone
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-13 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsDnssecRecordCount](/docs/commands/Test-MtAdDnsDnssecRecordCount) |

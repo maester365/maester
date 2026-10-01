@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FGPP-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.PasswordPolicy"
   - "AD"
@@ -69,7 +69,7 @@ This test retrieves all fine-grained password policies using `Get-ADFineGrainedP
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FGPP-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.PasswordPolicy |
 | PowerShell test | [Test-MtAdFineGrainedPolicySettingCounts](/docs/commands/Test-MtAdFineGrainedPolicySettingCounts) |

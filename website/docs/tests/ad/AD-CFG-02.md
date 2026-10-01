@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-02"
-  - "Unknown"
+  - "High"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-CFG-02 - dSHeuristics count should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -40,12 +40,17 @@ This test queries AD configuration for the dSHeuristics setting(s) and reports a
 #### Related Tests
 - `Test-MtAdLdapQueryPolicyCount` - Helps ensure LDAP is protected by sane query limits.
 
+#### Related links
+
+- [Microsoft Learn: dSHeuristics attribute (MS-ADTS)](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/e5899be4-862e-496f-9a38-33950617d2c5)
+- [ANSSI Active Directory checkpoints: Dangerous dsHeuristics settings](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dsheuristics_bad)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-02 |
-| Severity | Unknown |
+| Severity | High |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdDsHeuristicsCount](/docs/commands/Test-MtAdDsHeuristicsCount) |

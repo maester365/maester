@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-18"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -50,7 +50,7 @@ This test reads `$adState.DaclEntries`, filters out the all-zero `InheritedObjec
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-18 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclInheritedObjectTypeDetails](/docs/commands/Test-MtAdDaclInheritedObjectTypeDetails) |

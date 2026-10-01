@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-TRUST-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Trust"
   - "AD"
@@ -79,7 +79,7 @@ The test returns:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-TRUST-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Trust |
 | PowerShell test | [Test-MtAdTrustStaleCount](/docs/commands/Test-MtAdTrustStaleCount) |

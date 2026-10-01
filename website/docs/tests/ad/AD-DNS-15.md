@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-15"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -52,7 +52,7 @@ This test identifies zones with names containing " CNF:" or "..InProgress-" pref
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-15 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsDuplicateZoneCount](/docs/commands/Test-MtAdDnsDuplicateZoneCount) |

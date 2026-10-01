@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test identifies subnets that use public IP address ranges outside of RFC191
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetNonInternalCount](/docs/commands/Test-MtAdSubnetNonInternalCount) |

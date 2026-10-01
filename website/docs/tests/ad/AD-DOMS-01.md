@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOMS-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves the allowed DNS suffixes configuration from the domain using
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOMS-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdAllowedDnsSuffixesCount](/docs/commands/Test-MtAdAllowedDnsSuffixesCount) |

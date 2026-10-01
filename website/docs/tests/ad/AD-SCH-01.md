@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SCH-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Schema"
   - "AD"
@@ -61,7 +61,7 @@ This test retrieves all schema objects and analyzes their creation dates to iden
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SCH-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Schema |
 | PowerShell test | [Test-MtAdSchemaModificationYearCount](/docs/commands/Test-MtAdSchemaModificationYearCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -56,7 +56,7 @@ The 90-day threshold is a common security baseline, though your organization may
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerDormantCount](/docs/commands/Test-MtAdComputerDormantCount) |

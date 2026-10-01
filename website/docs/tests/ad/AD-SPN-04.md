@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -56,7 +56,7 @@ This test analyzes all computer SPNs, compares service classes against a known d
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdComputerSpnUnknownDetails](/docs/commands/Test-MtAdComputerSpnUnknownDetails) |

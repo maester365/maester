@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -62,7 +62,7 @@ This test retrieves the current FSMO role holders from the domain and forest obj
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcFsmoRoleHolderDetails](/docs/commands/Test-MtAdDcFsmoRoleHolderDetails) |

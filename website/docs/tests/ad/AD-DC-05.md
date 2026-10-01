@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -63,7 +63,7 @@ This test identifies which domain controllers hold FSMO roles and counts how man
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcAllFsmoRolesCount](/docs/commands/Test-MtAdDcAllFsmoRolesCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-17"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -52,7 +52,7 @@ This test identifies zones with names that do not comply with RFC standards for 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-17 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsNonStandardZoneCount](/docs/commands/Test-MtAdDnsNonStandardZoneCount) |

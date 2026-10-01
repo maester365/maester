@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -72,7 +72,7 @@ This test extracts DNS zones from computer `dNSHostName` attributes and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerDnsZoneCount](/docs/commands/Test-MtAdComputerDnsZoneCount) |

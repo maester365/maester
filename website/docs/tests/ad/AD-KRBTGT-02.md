@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-KRBTGT-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -66,7 +66,7 @@ This test retrieves the KRBTGT account and checks:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-KRBTGT-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdKrbtgtLastLogon](/docs/commands/Test-MtAdKrbtgtLastLogon) |
