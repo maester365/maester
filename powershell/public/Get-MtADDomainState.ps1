@@ -649,7 +649,7 @@ function Get-MtADDomainState {
         }
 
         foreach ($cat in $resolvedCategories) {
-    $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
+            $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
             if ($__MtSession.ADCache.ContainsKey($catCacheKey)) {
                 $cachedBag = $__MtSession.ADCache[$catCacheKey]
                 foreach ($prop in $categoryDescriptors[$cat].Properties) {
@@ -674,7 +674,7 @@ function Get-MtADDomainState {
             $__MtSession.ADCache.Remove($metadataCacheKey)
         }
         foreach ($cat in $resolvedCategories) {
-            $catCacheKey = "DomainState:$cat$computerSuffix"
+            $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
             if ($__MtSession.ADCache.ContainsKey($catCacheKey)) {
                 $__MtSession.ADCache.Remove($catCacheKey)
             }
@@ -770,7 +770,7 @@ function Get-MtADDomainState {
                 }
 
                 # Cache the property bag
-                $catCacheKey = "DomainState:$cat$computerSuffix"
+                $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
                 $__MtSession.ADCache[$catCacheKey] = $bag
                 $anyCollectionOccurred = $true
             }

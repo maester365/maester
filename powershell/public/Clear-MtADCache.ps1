@@ -84,14 +84,18 @@ function Clear-MtADCache {
     if ($Categories) {
         foreach ($cat in $Categories) {
             if ($ComputerName) {
-                # Per-cat, per-computer key only
-                Remove-CacheKeyIfPresent -Key "DomainState:$($cat):$ComputerName"
+                # Per-cat, per-computer keys (with target suffix)
+                foreach ($key in @($__MtSession.ADCache.Keys)) {
+                    if ($key -like "DomainState:$($cat):*:$ComputerName") {
+                        Remove-CacheKeyIfPresent -Key $key
+                    }
+                }
             }
             else {
                 # Global per-category key and all per-computer variants for this category
                 Remove-CacheKeyIfPresent -Key "DomainState:$cat"
                 foreach ($key in @($__MtSession.ADCache.Keys)) {
-                    if ($key -like "DomainState:$($cat):*") {
+                    if ($key -like "DomainState:$($cat):*" ) {
                         Remove-CacheKeyIfPresent -Key $key
                     }
                 }
@@ -101,6 +105,7 @@ function Clear-MtADCache {
         # Always remove legacy aggregate keys when a scoped clear occurs
         Remove-CacheKeyIfPresent -Key 'DomainState'
         if ($ComputerName) {
+            # Remove any legacy aggregate key for the specific computer name to ensure clean state
             Remove-CacheKeyIfPresent -Key "DomainState:$ComputerName"
         }
 
