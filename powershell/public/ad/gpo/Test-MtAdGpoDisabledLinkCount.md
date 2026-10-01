@@ -1,7 +1,3 @@
-#### Test-MtAdGpoDisabledLinkCount
-
-#### Why This Test Matters
-
 Disabled GPO links represent a potential security and operational concern in Active Directory environments:
 
 - **Policy Gaps**: Disabled links mean GPOs that are configured but not applied, potentially leaving systems without intended security controls

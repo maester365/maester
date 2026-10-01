@@ -1,7 +1,3 @@
-#### Test-MtAdGroupGlobalCount
-
-#### Why This Test Matters
-
 Global groups are the most commonly used group type for organizing users in Active Directory:
 
 - **User organization**: Used to organize users by role, department, or function

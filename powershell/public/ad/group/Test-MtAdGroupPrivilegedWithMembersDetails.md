@@ -1,7 +1,3 @@
-#### Test-MtAdGroupPrivilegedWithMembersDetails
-
-#### Why This Test Matters
-
 Understanding which privileged accounts have access is fundamental to Active Directory security:
 
 - **Identity management**: Know who has administrative access

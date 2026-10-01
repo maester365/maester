@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetIpv6CatchAllCount
-
-#### Why This Test Matters
-
 Overly broad IPv6 subnets can cause similar issues to IPv4 catch-all subnets:
 
 - **Authentication inefficiency**: Clients may authenticate to distant DCs

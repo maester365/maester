@@ -1,7 +1,3 @@
-#### Test-MtAdNonAutoReplicationConnectionCount
-
-#### Why This Test Matters
-
 Non-auto-generated (manual) replication connections bypass the Knowledge Consistency Checker (KCC) automatic topology generation. While sometimes necessary for specific scenarios, manual connections require careful management:
 
 - **Topology Bypass**: Manual connections don't benefit from automatic optimization and failover

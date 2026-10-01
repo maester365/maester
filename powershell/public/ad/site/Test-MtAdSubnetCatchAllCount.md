@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetCatchAllCount
-
-#### Why This Test Matters
-
 Catch-all subnets (overly broad IP ranges) can cause:
 
 - **Authentication inefficiency**: Clients may authenticate to distant DCs

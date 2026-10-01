@@ -1,7 +1,3 @@
-#### Test-MtAdComputerOperatingSystemDetails
-
-#### Why This Test Matters
-
 - Detailed knowledge of operating system versions and service pack levels is essential for effective vulnerability management and security compliance. This information helps identify:
 
 **Security Risks:**

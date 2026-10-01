@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetFirstThreeOctetsCount
-
-#### Why This Test Matters
-
 Analyzing /24 network distribution provides:
 
 - **Subnet granularity**: Understanding the typical subnet size in use

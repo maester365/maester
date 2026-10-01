@@ -1,7 +1,3 @@
-#### Test-MtAdDcNonStandardLdapPortCount
-
-#### Why This Test Matters
-
 Domain controllers typically use the standard LDAP port (389) for directory services communication. Non-standard LDAP ports may indicate:
 
 - **Custom configurations** that could affect compatibility with standard LDAP clients and tools

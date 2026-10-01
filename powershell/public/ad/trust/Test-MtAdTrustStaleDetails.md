@@ -1,7 +1,3 @@
-#### Test-MtAdTrustStaleDetails
-
-#### Why This Test Matters
-
 Identifying specific stale trusts enables targeted remediation:
 
 - **Prioritization**: Focus cleanup efforts on the oldest, most likely unused trusts

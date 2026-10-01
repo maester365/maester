@@ -1,7 +1,3 @@
-#### Test-MtAdUserSpnUnknownCount
-
-#### Why This Test Matters
-
 Unknown SPN service classes on user accounts require immediate attention because:
 
 - **High risk**: User accounts with SPNs are Kerberoasting targets

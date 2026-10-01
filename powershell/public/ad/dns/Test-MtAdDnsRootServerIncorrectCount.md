@@ -1,7 +1,3 @@
-#### Test-MtAdDnsRootServerIncorrectCount
-
-#### Why This Test Matters
-
 Root DNS server hints are essential for external DNS resolution. Incorrect root server IP addresses can:
 
 - **Prevent external DNS resolution**: Clients cannot resolve internet domain names

@@ -1,7 +1,3 @@
-#### Test-MtAdDfsrSubscriptionCount
-
-#### Why This Test Matters
-
 DFS-R (Distributed File System Replication) is the modern, recommended technology for replicating SYSVOL content between domain controllers:
 
 - **Reliability**: DFS-R is more reliable than the legacy FRS (File Replication Service)

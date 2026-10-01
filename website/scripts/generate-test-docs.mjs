@@ -255,11 +255,7 @@ function loadFunctionDocs() {
     const content = readFileSync(file, "utf8");
     const help = parseCommentHelp(content);
     const markdownPath = file.replace(/\.ps1$/i, ".md");
-    const markdown = existsSync(markdownPath)
-      ? normalizeMarkdown(stripGeneratedResultPlaceholder(readFileSync(markdownPath, "utf8")))
-          // Some help files open with a heading that just repeats the function name.
-          .replace(new RegExp(`^#{1,6}\\s+${functionName}\\s*\\n+`, "i"), "")
-      : "";
+    const markdown = existsSync(markdownPath) ? normalizeMarkdown(stripGeneratedResultPlaceholder(readFileSync(markdownPath, "utf8"))) : "";
     docs.set(functionName.toLowerCase(), {
       functionName,
       functionPath: file,

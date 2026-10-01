@@ -1,7 +1,3 @@
-#### Test-MtAdComputerStaleEnabledCount
-
-#### Why This Test Matters
-
 Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for an extended period (typically 180 days or more).
 
 **Security Risks:**

@@ -1,7 +1,3 @@
-#### Test-MtAdSpnSuffixesCount
-
-#### Why This Test Matters
-
 SPN (Service Principal Name) suffixes simplify Service Principal Name management in complex Active Directory environments. They are important for:
 
 - **Service Authentication**: SPNs are used by Kerberos to authenticate services; suffixes provide flexibility in how services are registered

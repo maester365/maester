@@ -1,7 +1,3 @@
-#### Test-MtAdUserPasswordNotRequiredCount
-
-#### Why This Test Matters
-
 Accounts that do not require passwords are a severe security weakness. Even if rarely used, they represent a misconfiguration that can undermine core authentication protections.
 
 #### Security Recommendation
