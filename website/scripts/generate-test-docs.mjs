@@ -85,9 +85,11 @@ function walkFiles(dir, predicate = () => true) {
 }
 
 function yamlQuote(value) {
-  // The MDX frontmatter loader writes strings into JavaScript without escaping backslashes,
-  // so a single "\\" followed by "u" or "x" is an invalid escape and fails the build.
-  return JSON.stringify(String(value ?? "").replaceAll("\\", "\\\\"));
+  // The MDX loader writes frontmatter strings into JavaScript without escaping backslashes, so
+  // "domain\username" becomes an invalid "\u" escape and fails the build. Doubling the backslash
+  // would fix that but shows "\\" in the page metadata, which Docusaurus parses separately, so
+  // swap in a look-alike (U+2216 SET MINUS) instead.
+  return JSON.stringify(String(value ?? "").replaceAll("\\", "\u2216"));
 }
 
 // Source paths are embedded in generated docs and used as contributors.mjs
@@ -165,7 +167,13 @@ function normalizeWhitespace(value) {
 }
 
 function trimDescription(value, max = 300) {
-  const text = normalizeWhitespace(value)
+  const prose = String(value ?? "")
+    // Leading headings (e.g. "#### Why This Test Matters") are labels, not summary text.
+    .replace(/^(?:\s*#{1,6}\s+[^\n]*\n)+/, "")
+    // Markdown hard line breaks ("text\" at end of line) and escapes ("\*") are not plain text.
+    .replace(/\\(?=\r?$)/gm, "")
+    .replace(/\\([!-/:-@[-`{-~])/g, "$1");
+  const text = normalizeWhitespace(prose)
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
     .replace(/#{2,6}\s+/g, "")
     .replace(/<br\s*\/?\s*>/gi, " ");
@@ -247,7 +255,11 @@ function loadFunctionDocs() {
     const content = readFileSync(file, "utf8");
     const help = parseCommentHelp(content);
     const markdownPath = file.replace(/\.ps1$/i, ".md");
-    const markdown = existsSync(markdownPath) ? normalizeMarkdown(stripGeneratedResultPlaceholder(readFileSync(markdownPath, "utf8"))) : "";
+    const markdown = existsSync(markdownPath)
+      ? normalizeMarkdown(stripGeneratedResultPlaceholder(readFileSync(markdownPath, "utf8")))
+          // Some help files open with a heading that just repeats the function name.
+          .replace(new RegExp(`^#{1,6}\\s+${functionName}\\s*\\n+`, "i"), "")
+      : "";
     docs.set(functionName.toLowerCase(), {
       functionName,
       functionPath: file,
