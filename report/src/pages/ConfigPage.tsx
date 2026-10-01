@@ -184,7 +184,7 @@ function ConfigSelect<T extends string>({
         </span>
       </button>
       {isOpen && (
-        <div role="listbox" className={`absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-gray-800 dark:ring-white/10 ${menuClassName}`}>
+        <div role="listbox" className={`absolute z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800 dark:ring-white/10 ${menuClassName}`}>
           {options.map((option, index) => {
             const OptionIcon = option.icon
             const isSelected = option.value === value
@@ -201,7 +201,7 @@ function ConfigSelect<T extends string>({
                   buttonRef.current?.focus()
                 }}
                 onKeyDown={event => handleOptionKeyDown(event, index)}
-                className={`relative block w-full cursor-pointer select-none py-2 pl-3 pr-9 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:hover:bg-gray-700 dark:focus:bg-gray-700 ${isSelected ? "font-semibold" : ""}`}
+                className={`relative block w-full cursor-pointer select-none py-2 pl-3 pr-9 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-hidden dark:hover:bg-gray-700 dark:focus:bg-gray-700 ${isSelected ? "font-semibold" : ""}`}
               >
                 <span className="flex items-center gap-2">
                   <OptionIcon className={`h-4 w-4 ${option.iconColor}`} />
@@ -479,7 +479,7 @@ export default function ConfigPage() {
                       value={account.Type}
                       options={ACCOUNT_TYPE_OPTIONS}
                       onChange={value => handleEmergencyAccountTypeChange(index, value)}
-                      buttonClassName="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800"
+                      buttonClassName="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left text-sm focus:outline-hidden focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800"
                     />
                   </div>
 
@@ -490,7 +490,7 @@ export default function ConfigPage() {
                       value={identifierTypes[index] || "upn"}
                       options={IDENTIFIER_TYPE_OPTIONS}
                       onChange={value => handleIdentifierTypeChange(index, value)}
-                      buttonClassName="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800"
+                      buttonClassName="relative w-full cursor-pointer rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left text-sm focus:outline-hidden focus:ring-2 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-800"
                     />
                   </div>
 
@@ -504,7 +504,7 @@ export default function ConfigPage() {
                       value={(identifierTypes[index] || "upn") === "upn" ? (account.UserPrincipalName || "") : (account.Id || "")}
                       onChange={(e) => handleIdentifierValueChange(index, e.target.value)}
                       placeholder={IDENTIFIER_TYPE_OPTIONS.find(o => o.value === (identifierTypes[index] || "upn"))?.placeholder}
-                      className={`w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${(identifierTypes[index] || "upn") === "id" ? "font-mono" : ""}`}
+                      className={`w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:border-transparent ${(identifierTypes[index] || "upn") === "id" ? "font-mono" : ""}`}
                     />
                   </div>
 
@@ -571,7 +571,7 @@ export default function ConfigPage() {
                       value={setting.Title}
                       onChange={(e) => handleTitleChange(setting.Id, e.target.value)}
                       placeholder="Enter test title"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-hidden focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
 
@@ -582,7 +582,7 @@ export default function ConfigPage() {
                       value={setting.Severity}
                       options={SEVERITY_OPTIONS}
                       onChange={value => handleSeverityChange(setting.Id, value)}
-                      buttonClassName={`relative w-fit min-w-[140px] cursor-pointer rounded-md py-2 pl-3 pr-10 text-left text-sm font-medium shadow-xs focus:outline-none focus:ring-2 focus:ring-orange-500 ${getSeverityOption(setting.Severity).bgColor} ${getSeverityOption(setting.Severity).textColor}`}
+                      buttonClassName={`relative w-fit min-w-[140px] cursor-pointer rounded-md py-2 pl-3 pr-10 text-left text-sm font-medium shadow-xs focus:outline-hidden focus:ring-2 focus:ring-orange-500 ${getSeverityOption(setting.Severity).bgColor} ${getSeverityOption(setting.Severity).textColor}`}
                       menuClassName="w-fit min-w-[180px]"
                     />
                   </div>

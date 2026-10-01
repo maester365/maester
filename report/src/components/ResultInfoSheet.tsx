@@ -79,9 +79,9 @@ function ResultInfoSheet({
         role="dialog"
         aria-modal="true"
         aria-label={Item.Title || Item.Name}
-        className="report-sheet fixed inset-y-0 right-0 w-full overflow-y-auto outline-none border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
+        className="report-sheet fixed inset-y-0 right-0 w-full overflow-y-auto outline-hidden border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
       >
-        <button onClick={onClose} className="absolute left-4 top-4 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-orange-500" aria-label="Close">
+        <button onClick={onClose} className="absolute left-4 top-4 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-orange-500" aria-label="Close">
           <XMarkIcon className="h-4 w-4" />
         </button>
         {/* Navigation buttons in the header area, positioned to the right of the close button */}
@@ -89,7 +89,7 @@ function ResultInfoSheet({
           <button
             onClick={onNavigatePrevious}
             disabled={!onNavigatePrevious}
-            className="rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-30"
+            className="rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-30"
             title="Previous result (Left arrow key)"
           >
             <ChevronLeftIcon className="h-4 w-4" />
@@ -103,7 +103,7 @@ function ResultInfoSheet({
           <button
             onClick={onNavigateNext}
             disabled={!onNavigateNext}
-            className="rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-30"
+            className="rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-30"
             title="Next result (Right arrow key)"
           >
             <ChevronRightIcon className="h-4 w-4" />

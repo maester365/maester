@@ -7,6 +7,7 @@ import {
   type ReactNode,
   type RefObject,
   useEffect,
+  useId,
   useRef,
   useState,
 } from "react"
@@ -210,7 +211,7 @@ export function TextInput({ icon: IconComponent, className, ...props }: InputHTM
   return (
     <label className={cn("relative block min-w-40", className)}>
       {IconComponent && <IconComponent className="pointer-events-none absolute left-3 top-2.5 size-4 text-gray-400" aria-hidden />}
-      <input className={cn("h-[38px] w-full rounded-lg border border-gray-200 bg-white pr-3 text-sm text-gray-700 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] outline-none transition duration-100 placeholder:text-gray-500 hover:bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:hover:bg-[#09090b]", IconComponent ? "pl-10" : "pl-3")} {...props} />
+      <input className={cn("h-[38px] w-full rounded-lg border border-gray-200 bg-white pr-3 text-sm text-gray-700 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] outline-hidden transition duration-100 placeholder:text-gray-500 hover:bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:hover:bg-[#09090b]", IconComponent ? "pl-10" : "pl-3")} {...props} />
     </label>
   )
 }
@@ -232,6 +233,8 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
   const [query, setQuery] = useState("")
   const [opensUp, setOpensUp] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const listId = useId()
   const items = Children.toArray(children).filter(Boolean) as ReactElement<MultiSelectItemProps>[]
   const visibleItems = items.filter(({ props }) => String(props.children).toLowerCase().includes(query.toLowerCase()))
   const toggle = (selected: string) => onValueChange(value.includes(selected) ? value.filter((item) => item !== selected) : [...value, selected])
@@ -242,7 +245,10 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
       if (!rootRef.current?.contains(event.target as Node)) setIsOpen(false)
     }
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false)
+      if (event.key === "Escape") {
+        setIsOpen(false)
+        buttonRef.current?.focus()
+      }
     }
     document.addEventListener("pointerdown", closeOnOutsideClick)
     document.addEventListener("keydown", closeOnEscape)
@@ -266,10 +272,19 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
   return (
     <div ref={rootRef} className={cn("relative min-w-40 text-sm", className)}>
       <div className="flex h-[38px] items-center rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] transition duration-100 hover:bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500 dark:hover:bg-[#09090b]">
-        <button type="button" onClick={toggleOpen} aria-haspopup="listbox" aria-expanded={isOpen} className={cn("flex h-full min-w-0 flex-1 items-center gap-1 overflow-hidden text-left", value.length === 0 ? "px-3" : "pl-1.5 pr-3")}>
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={toggleOpen}
+          aria-expanded={isOpen}
+          aria-controls={isOpen ? listId : undefined}
+          aria-label={value.length === 0 ? placeholder : `${placeholder}: ${value.join(", ")}`}
+          className={cn("flex h-full min-w-0 flex-1 items-center gap-1 overflow-hidden text-left", value.length === 0 ? "px-3" : "pl-1.5 pr-3")}
+        >
           {value.length === 0 ? <span>{placeholder}</span> : value.map((selected) => (
             <span key={selected} className="flex max-w-[100px] shrink-0 items-center rounded-md bg-gray-100 py-1 pl-2 pr-1.5 font-medium text-gray-700 lg:max-w-[200px] dark:bg-zinc-800 dark:text-zinc-200">
               <span className="truncate text-xs">{selected}</span>
+              {/* Mouse shortcut only: keyboard users uncheck the value in the open list instead. */}
               <X
                 className="ml-2 size-3.5 shrink-0 rounded-full text-gray-400 hover:text-gray-500 dark:text-zinc-600 dark:hover:text-zinc-500"
                 aria-hidden
@@ -292,10 +307,10 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
         </span>
       </div>
       {isOpen && (
-        <div role="listbox" aria-multiselectable="true" className={cn("absolute z-40 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900", opensUp ? "bottom-full mb-1" : "mt-1")}>
+        <div id={listId} role="group" aria-label={placeholder} className={cn("absolute z-40 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-md dark:border-zinc-800 dark:bg-zinc-900", opensUp ? "bottom-full mb-1" : "mt-1")}>
           <label className="relative block border-b border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-[#09090b]">
             <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-gray-400" aria-hidden />
-            <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" className="h-[35px] w-full bg-transparent pl-9 pr-3 text-sm outline-none placeholder:text-gray-400" />
+            <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search" aria-label={`Search ${placeholder}`} className="h-[35px] w-full bg-transparent pl-9 pr-3 text-sm outline-hidden placeholder:text-gray-400" />
           </label>
           {visibleItems.map(({ props }) => (
             <label key={props.value} className="flex h-[41px] cursor-pointer items-center gap-2.5 border-b border-gray-200 px-2.5 text-sm text-gray-700 last:border-b-0 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-[#09090b]">
@@ -312,7 +327,7 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
 export function Switch({ checked, onChange, color }: { checked: boolean; onChange: (checked: boolean) => void; color: "emerald" | "rose" }) {
   const fill = checked ? color === "emerald" ? "bg-emerald-500" : "bg-rose-500" : "bg-gray-200 dark:bg-zinc-800"
   return (
-    <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className="group relative inline-flex h-5 w-10 shrink-0 items-center justify-center rounded-full focus:outline-none">
+    <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className="group relative inline-flex h-5 w-10 shrink-0 items-center justify-center rounded-full focus:outline-hidden">
       <span aria-hidden className={cn("pointer-events-none absolute mx-auto h-3 w-9 rounded-full transition-colors duration-100 ease-in-out", fill)} />
       <span aria-hidden className={cn("pointer-events-none absolute left-0 inline-block size-5 rounded-full border-2 border-white shadow-[0_1px_2px_0_rgb(0_0_0/0.05)] transition duration-100 ease-in-out group-focus-visible:ring-2 dark:border-zinc-900", fill, checked ? "translate-x-5" : "translate-x-0", color === "emerald" ? "ring-emerald-300" : "ring-rose-300")} />
     </button>
@@ -368,7 +383,7 @@ export function Dialog({ open, onClose, children }: { open: boolean; onClose: ()
 
   if (!open) return null
   return (
-    <div ref={containerRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 outline-none" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <div ref={containerRef} tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 outline-hidden" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       {children}
     </div>
   )
@@ -390,7 +405,7 @@ export function Button({ icon: IconComponent, iconPosition, tooltip, variant = "
   const isLight = variant === "light"
   const iconClassName = isLight ? "-ml-1 mr-1.5 size-5 shrink-0" : "size-4"
   return (
-    <button title={tooltip} className={cn(isLight ? "inline-flex shrink-0 items-center justify-center bg-transparent text-sm font-medium text-blue-500 outline-none hover:text-blue-700 dark:hover:text-blue-400" : "inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-40", variant === "primary" && "border-orange-500 bg-orange-500 text-white hover:bg-orange-600", variant === "secondary" && "border-gray-300 bg-white text-gray-900 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100", size === "xs" && "p-1.5", className)} {...props}>
+    <button title={tooltip} className={cn(isLight ? "inline-flex shrink-0 items-center justify-center bg-transparent text-sm font-medium text-blue-500 outline-hidden hover:text-blue-700 dark:hover:text-blue-400" : "inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-40", variant === "primary" && "border-orange-500 bg-orange-500 text-white hover:bg-orange-600", variant === "secondary" && "border-gray-300 bg-white text-gray-900 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100", size === "xs" && "p-1.5", className)} {...props}>
       {IconComponent && iconPosition !== "right" && <IconComponent className={iconClassName} aria-hidden />}
       {children}
       {IconComponent && iconPosition === "right" && <IconComponent className={iconClassName} aria-hidden />}

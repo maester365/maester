@@ -93,7 +93,7 @@ function CategoryChart({ data, showLegend = false, className = "" }) {
                 {data.map((item, index) => (
                     <div
                         key={item.Name}
-                        className="absolute top-0 bottom-0 -translate-x-1/2 outline-none focus-visible:bg-gray-500/10"
+                        className="absolute top-0 bottom-0 -translate-x-1/2 outline-hidden focus-visible:bg-gray-500/10"
                         style={{ left: `${data.length < 2 ? 50 : index * 100 / (data.length - 1)}%`, width: `${100 / Math.max(1, data.length - 1)}%` }}
                         tabIndex={0}
                         role="group"

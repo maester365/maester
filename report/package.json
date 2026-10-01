@@ -16,8 +16,8 @@
     "lucide-react": "^1.48.0",
     "marked": "^18.0.11",
     "preact": "^10.29.8",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "npm:@preact/compat@^18.3.2",
+    "react-dom": "npm:@preact/compat@^18.3.2",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {

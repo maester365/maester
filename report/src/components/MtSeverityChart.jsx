@@ -83,7 +83,7 @@ export default function MtSeverityChart(props) {
                         {filteredData.map((item, index) => (
                             <div
                                 key={item.name}
-                                className={`relative flex min-w-0 flex-1 items-end justify-center gap-1 outline-none ${hoveredIndex === index ? "bg-gray-300/15" : ""}`}
+                                className={`relative flex min-w-0 flex-1 items-end justify-center gap-1 outline-hidden ${hoveredIndex === index ? "bg-gray-300/15" : ""}`}
                                 tabIndex={0}
                                 role="group"
                                 aria-label={`${item.name}: ${item.Passed} passed, ${item.Failed} failed`}
