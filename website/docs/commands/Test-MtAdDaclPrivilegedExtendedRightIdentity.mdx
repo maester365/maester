@@ -20,7 +20,7 @@ Test-MtAdDaclPrivilegedExtendedRightIdentity [-ProgressAction <ActionPreference>
 
 ## DESCRIPTION
 
-This test analyzes DACL entries collected by Get-MtADDomainState and identifies
+This test analyzes DACL entries collected by Get-MtADDomainState -Categories @('DaclEntries') and identifies
 identities that are granted privileged extended rights through allow ACEs.
 Extended rights such as password reset and replication-related permissions can
 enable sensitive directory operations and should be tightly controlled.

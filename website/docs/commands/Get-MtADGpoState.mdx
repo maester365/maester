@@ -20,7 +20,7 @@ Get-MtADGpoState [-Refresh] [-ProgressAction <ActionPreference>] [<CommonParamet
 
 ## DESCRIPTION
 
-Collects GPO data including GPO objects, reports, permissions, and SYSVOL data.
+Collects GPO metadata, links, and permissions from Active Directory over LDAP.
 Results are cached for the session to avoid repeated queries.
 Connect-Maester -Service ActiveDirectory must complete successfully before this command can collect or return data.
 

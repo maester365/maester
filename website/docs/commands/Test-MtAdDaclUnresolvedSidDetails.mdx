@@ -20,7 +20,7 @@ Test-MtAdDaclUnresolvedSidDetails [-ProgressAction <ActionPreference>] [<CommonP
 
 ## DESCRIPTION
 
-This test analyzes DACL entries from Get-MtADDomainState and groups orphaned SID
+This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and groups orphaned SID
 references by directory object.
 Reviewing unresolved SIDs by object helps identify
 where stale ACEs remain after account deletions, migrations, or delegated access

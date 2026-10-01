@@ -20,7 +20,7 @@ Test-MtAdDaclNonInheritedAceCount [-ProgressAction <ActionPreference>] [<CommonP
 
 ## DESCRIPTION
 
-This test analyzes DACL entries from Get-MtADDomainState and counts ACEs that are
+This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and counts ACEs that are
 explicitly assigned rather than inherited.
 Non-inherited ACEs are often where
 custom delegations, exceptions, and potentially risky access grants are introduced.

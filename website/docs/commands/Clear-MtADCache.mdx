@@ -16,7 +16,8 @@ Use this if you need to force a refresh of the cache in the current session.
 ## SYNTAX
 
 ```powershell
-Clear-MtADCache [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Clear-MtADCache [[-Categories] <String[]>] [[-ComputerName] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -35,7 +36,57 @@ Clear-MtADCache
 
 This example clears the cache of all Active Directory data.
 
+### EXAMPLE 2
+
+```powershell
+Clear-MtADCache -Categories Domain
+```
+
+Clears only the Domain category cache entries for all computers.
+
+### EXAMPLE 3
+
+```powershell
+Clear-MtADCache -ComputerName DC01
+```
+
+Clears only DomainState entries associated with ComputerName DC01 for all categories.
+
 ## PARAMETERS
+
+### -Categories
+
+An array of cache categories to clear.
+Valid values are: Domain, FineGrainedPasswordPolicies, Forest, Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites, Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts, OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers, DaclEntries.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ComputerName
+
+The name of the computer whose DomainState entries should be cleared for the specified categories.
+If omitted, all computers are affected for the selected categories.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 

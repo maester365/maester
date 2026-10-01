@@ -15,8 +15,9 @@ Collects Active Directory domain state information.
 ## SYNTAX
 
 ```powershell
-Get-MtADDomainState [-Refresh] [[-ComputerName] <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Get-MtADDomainState [-Refresh] [[-ComputerName] <String>] [[-DnsTimeoutSeconds] <Int32>]
+ [[-MaxZoneCount] <Int32>] [[-MaxRecordCount] <Int32>] [[-Categories] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -53,6 +54,14 @@ Get-MtADDomainState -ComputerName dc01.contoso.com
 
 Collects domain state data by targeting dc01.contoso.com for supported Active Directory and DNS queries.
 
+### EXAMPLE 4
+
+```powershell
+Get-MtADDomainState -Categories Domain,Users
+```
+
+Collects only the Domain and Users categories (plus any dependencies).
+
 ## PARAMETERS
 
 ### -Refresh
@@ -75,13 +84,9 @@ Accept wildcard characters: False
 
 Specifies an Active Directory domain controller or AD DS server to target for
 data collection.
-When provided, Active Directory queries and the LDAP searcher
-are directed to this server.
-DNS collection also targets this host when it
-supports the required DNS management access.
-If not specified, commands use
-the implicit serverless behavior of the Active Directory module and the DNS
-root from the collected domain object is used for DNS queries.
+When provided, LDAP and DNS queries are directed to this
+server.
+If not specified, the target selected by Connect-Maester is used.
 
 ```yaml
 Type: String
@@ -90,6 +95,83 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DnsTimeoutSeconds
+
+Specifies the timeout, in seconds, for remote DNS inventory collection.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: 60
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MaxZoneCount
+
+Specifies the maximum number of DNS zones that may be normalized.
+Collection
+fails explicitly if the remote inventory exceeds this value.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: 500
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MaxRecordCount
+
+Specifies the maximum number of DNS records that may be normalized.
+Collection
+fails explicitly if the remote inventory exceeds this value.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: 10000
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Categories
+
+Specifies one or more category names to collect.
+When omitted, all categories
+are collected (legacy behavior).
+Dependencies are automatically resolved and
+collected first.
+Valid values: Domain, FineGrainedPasswordPolicies, Forest,
+Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites,
+Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts,
+OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers,
+DaclEntries.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -118,6 +200,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
+
+### System.Collections.Specialized.OrderedDictionary
 
 ## NOTES
 

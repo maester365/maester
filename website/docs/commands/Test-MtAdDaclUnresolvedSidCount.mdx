@@ -20,7 +20,7 @@ Test-MtAdDaclUnresolvedSidCount [-ProgressAction <ActionPreference>] [<CommonPar
 
 ## DESCRIPTION
 
-This test reviews DACL entries from Get-MtADDomainState and identifies ACEs whose
+This test reviews DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and identifies ACEs whose
 IdentityReference still appears as a raw domain SID.
 These orphaned SID references
 can indicate deleted accounts, stale delegations, or incomplete cleanup after
