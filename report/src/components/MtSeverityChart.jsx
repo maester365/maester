@@ -1,11 +1,12 @@
 
 import React, { useState } from "react";
-import { Card, Title, BarChart, Switch, Flex, Text } from "@tremor/react";
+import { Card, Title, Switch, Flex } from "@/components/ui/report";
 
 export default function MtSeverityChart(props) {
     const tests = props.Tests || [];
     const [showPassed, setShowPassed] = useState(true);
     const [showFailed, setShowFailed] = useState(true);
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
     // Initialize counts
     const severityCounts = {
@@ -56,18 +57,8 @@ export default function MtSeverityChart(props) {
         return aIndex - bIndex;
     });
 
-    const categories = [];
-    const colors = [];
-    if (showPassed) {
-        categories.push("Passed");
-        colors.push("emerald");
-    }
-    if (showFailed) {
-        categories.push("Failed");
-        colors.push("rose");
-    }
-
-    const maxValue = Math.max(...filteredData.map(item => Math.max(item.Passed, item.Failed)));
+    const maxValue = Math.max(0, ...filteredData.map(item => Math.max(item.Passed, item.Failed)));
+    const tickValues = [...new Set([0, Math.round(maxValue / 3), maxValue])];
 
     return (
         <Card>
@@ -75,23 +66,49 @@ export default function MtSeverityChart(props) {
                 <Title className="whitespace-nowrap">By severity</Title>
                 {!props.hideControls && (
                     <Flex justifyContent="end" className="space-x-4">
-                        <Switch checked={showPassed} onChange={setShowPassed} color="emerald" />
-                        <Switch checked={showFailed} onChange={setShowFailed} color="rose" />
+                        <Switch checked={showPassed} onChange={setShowPassed} color="emerald" label="Show passed tests" />
+                        <Switch checked={showFailed} onChange={setShowFailed} color="rose" label="Show failed tests" />
                     </Flex>
                 )}
             </Flex>
-            <BarChart
-                className="mt-4 h-40"
-                data={filteredData}
-                index="name"
-                categories={categories}
-                colors={colors}
-                yAxisWidth={48}
-                stack={false}
-                showAnimation={true}
-                showLegend={false}
-                maxValue={maxValue}
-            />
+            <div className="relative mt-4 h-40 text-xs text-gray-500 dark:text-gray-500" aria-label="Test results by severity">
+                <div className="absolute inset-x-0 top-[5px] bottom-[30px]">
+                    {tickValues.map((tick) => (
+                        <React.Fragment key={tick}>
+                            <span className="absolute left-0 w-10 translate-y-1/2 text-right" style={{ bottom: `${maxValue ? tick / maxValue * 100 : 0}%` }}>{tick}</span>
+                            <span className="absolute right-0 left-12 border-t border-gray-200 dark:border-zinc-800" style={{ bottom: `${maxValue ? tick / maxValue * 100 : 0}%` }} />
+                        </React.Fragment>
+                    ))}
+                    <div className="absolute inset-y-0 right-5 left-[68px] flex">
+                        {filteredData.map((item, index) => (
+                            <div
+                                key={item.name}
+                                className={`relative flex min-w-0 flex-1 items-end justify-center gap-1 outline-hidden ${hoveredIndex === index ? "bg-gray-300/15" : ""}`}
+                                tabIndex={0}
+                                role="group"
+                                aria-label={`${item.name}: ${item.Passed} passed, ${item.Failed} failed`}
+                                onMouseEnter={() => setHoveredIndex(index)}
+                                onMouseLeave={() => setHoveredIndex(null)}
+                                onFocus={() => setHoveredIndex(index)}
+                                onBlur={() => setHoveredIndex(null)}
+                            >
+                                {showPassed && <div className="w-7 bg-emerald-500 transition-[height] duration-300" style={{ height: `${maxValue ? item.Passed / maxValue * 100 : 0}%` }} />}
+                                {showFailed && <div className="w-7 bg-rose-500 transition-[height] duration-300" style={{ height: `${maxValue ? item.Failed / maxValue * 100 : 0}%` }} />}
+                                <span className="absolute top-[135px] left-1/2 -translate-x-1/2 whitespace-nowrap text-gray-500 dark:text-gray-500">{item.name}</span>
+                                {hoveredIndex === index && (
+                                    <div className={index === filteredData.length - 1 ? "absolute top-[-5px] right-0 z-20 w-[152px] rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500" : "absolute top-[-5px] left-1/2 z-20 ml-3 w-[152px] rounded-lg border border-gray-200 bg-white text-sm text-gray-500 shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-500"}>
+                                        <p className="border-b border-gray-200 px-4 py-2 font-medium text-gray-700 dark:border-zinc-800 dark:text-zinc-300">{item.name}</p>
+                                        <div className="space-y-1 px-4 py-2">
+                                            {showPassed && <p className="flex justify-between gap-4"><span className="flex items-center gap-2"><i className="size-2.5 rounded-full bg-emerald-500" />Passed</span><span className="text-gray-700 dark:text-zinc-300">{item.Passed}</span></p>}
+                                            {showFailed && <p className="flex justify-between gap-4"><span className="flex items-center gap-2"><i className="size-2.5 rounded-full bg-rose-500" />Failed</span><span className="text-gray-700 dark:text-zinc-300">{item.Failed}</span></p>}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </Card>
     );
 }

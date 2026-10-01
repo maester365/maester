@@ -5,7 +5,7 @@ import { RiPrinterLine } from "@remixicon/react"
 import StatusLabel from "@/components/StatusLabel"
 import SeverityBadge from "@/components/SeverityBadge"
 import ResultInfo from "@/components/ResultInfo"
-import maesterLogo from "@/assets/maester.png"
+import maesterLogo from "@/assets/maester-64.png"
 
 export default function PrintPage() {
   const { selectedTenant: testResults } = useTenant()

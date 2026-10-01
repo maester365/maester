@@ -1,14 +1,14 @@
 import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
+import preact from "@preact/preset-vite"
 import path from "path"
 import { viteSingleFile } from "vite-plugin-singlefile"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), viteSingleFile()],
+  plugins: [preact(), viteSingleFile()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   build: {

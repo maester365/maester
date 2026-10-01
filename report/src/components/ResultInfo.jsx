@@ -1,12 +1,10 @@
 import React, { useCallback } from "react";
-import { Card, Button, Title, Text, Flex, Divider } from "@tremor/react";
+import { Card, Button, Title, Text, Flex, Divider } from "@/components/ui/report";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import StatusLabel from "./StatusLabel";
 import StatusLabelSm from "./StatusLabelSm";
 import SeverityBadge from "./SeverityBadge";
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import { markdownUrlTransform } from "@/lib/markdownUrl";
+import { Markdown } from '@/components/Markdown'
 
 export default function ResultInfo({ Item, isPrintView }) {
   const openInNewTab = useCallback((url) => {
@@ -53,16 +51,16 @@ export default function ResultInfo({ Item, isPrintView }) {
   //Set bgcolor based on result
   function getBgColor(result) {
     if (result === "Passed") {
-      return "bg-green-100 dark:bg-green-900 dark:bg-opacity-40";
+      return "bg-green-100 dark:bg-green-900/40";
     }
     if (result === "Failed") {
-      return "bg-red-100 dark:bg-red-900 dark:bg-opacity-30";
+      return "bg-red-100 dark:bg-red-900/30";
     }
     if (result === "Skipped") {
       return "bg-yellow-100";
     }
     if (result === "Investigate") {
-      return "bg-purple-100 dark:bg-purple-900 dark:bg-opacity-30";
+      return "bg-purple-100 dark:bg-purple-900/30";
     }
     return "bg-gray-100";
   }
@@ -91,15 +89,11 @@ export default function ResultInfo({ Item, isPrintView }) {
         <div className="flex flex-row items-center">
           <Title>Test result</Title><StatusLabelSm Result={Item.Result} />
         </div>
-        <div className="prose max-w-fit dark:prose-invert">
-          <Markdown remarkPlugins={[remarkGfm]} urlTransform={markdownUrlTransform}>{getTestResult()}</Markdown>
-        </div>
+        <Markdown className="prose max-w-fit dark:prose-invert">{getTestResult()}</Markdown>
       </Card>
       <Card className="mt-4 bg-slate-50">
         <Title>Test details</Title>
-        <div className="prose max-w-fit dark:prose-invert">
-          <Markdown remarkPlugins={[remarkGfm]} urlTransform={markdownUrlTransform}>{getTestDetails()}</Markdown>
-        </div>
+        <Markdown className="prose max-w-fit dark:prose-invert">{getTestDetails()}</Markdown>
       </Card>
 
       {isPrintView ? (
