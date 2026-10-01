@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test extracts the first two octets from all IPv4 subnets and counts the dis
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetFirstTwoOctetsCount](/docs/commands/Test-MtAdSubnetFirstTwoOctetsCount) |

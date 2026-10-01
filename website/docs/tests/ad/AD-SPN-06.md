@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -56,7 +56,7 @@ This test retrieves all user objects from Active Directory, extracts their SPNs,
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdUserSpnTotalCount](/docs/commands/Test-MtAdUserSpnTotalCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -56,7 +56,7 @@ This test examines the `primaryGroupId` attribute of all enabled computer accoun
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerNonStandardGroup](/docs/commands/Test-MtAdComputerNonStandardGroup) |

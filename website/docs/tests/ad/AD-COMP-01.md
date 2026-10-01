@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -53,7 +53,7 @@ The test returns informational results to help you assess the scope of disabled 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerDisabledCount](/docs/commands/Test-MtAdComputerDisabledCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-20"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects whose `SamAccountName` or `Name` matches common se
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-20 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserKnownServiceAccountCount](/docs/commands/Test-MtAdUserKnownServiceAccountCount) |

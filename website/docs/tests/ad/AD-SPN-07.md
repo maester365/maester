@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves all user objects with SPNs, extracts the service class from 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdUserSpnServiceClassCount](/docs/commands/Test-MtAdUserSpnServiceClassCount) |

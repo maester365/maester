@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-17"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts user objects where the `ProfilePath` attribute contains a non-e
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-17 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserProfilePathCount](/docs/commands/Test-MtAdUserProfilePathCount) |

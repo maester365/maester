@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SCH-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Schema"
   - "AD"
@@ -64,7 +64,7 @@ This test retrieves the objectVersion attribute from the schema container to det
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SCH-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Schema |
 | PowerShell test | [Test-MtAdSchemaVersionEntryCount](/docs/commands/Test-MtAdSchemaVersionEntryCount) |

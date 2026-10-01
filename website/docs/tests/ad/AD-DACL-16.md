@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-16"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -50,7 +50,7 @@ This test reads `$adState.DaclEntries`, filters unresolved `IdentityReference` v
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-16 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclUnresolvedSidDetails](/docs/commands/Test-MtAdDaclUnresolvedSidDetails) |

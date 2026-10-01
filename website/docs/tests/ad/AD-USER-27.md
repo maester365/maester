@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-27"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test returns non-system users whose names match attacker-attractive terms a
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-27 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserHoneyPotDetails](/docs/commands/Test-MtAdUserHoneyPotDetails) |

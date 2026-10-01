@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOS-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ GPO owner details should be accessible
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOS-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoOwnerDetails](/docs/commands/Test-MtAdGpoOwnerDetails) |

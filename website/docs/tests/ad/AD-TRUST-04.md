@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-TRUST-04"
-  - "Unknown"
+  - "High"
   - "Active Directory"
   - "AD.Trust"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-TRUST-04 - Trust non-quarantined details should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -65,12 +65,17 @@ This test filters trust objects where `Quarantined` is `$false` and displays:
 - `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined
 - `Test-MtAdTrustDetails` - Complete trust configuration details
 
+#### Related links
+
+- [Microsoft Learn: Security considerations for trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc755321%28v=ws.10%29)
+- [ANSSI Active Directory checkpoints: Unfiltered outbound domain trust relationship](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_trusts_domain_notfiltered)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-TRUST-04 |
-| Severity | Unknown |
+| Severity | High |
 | Suite | Active Directory |
 | Category | AD.Trust |
 | PowerShell test | [Test-MtAdTrustNonQuarantinedDetails](/docs/commands/Test-MtAdTrustNonQuarantinedDetails) |

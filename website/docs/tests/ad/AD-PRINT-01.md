@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-PRINT-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Printer"
   - "AD"
@@ -60,7 +60,7 @@ This test queries Active Directory for printQueue objects to count published pri
 | Field | Value |
 | --- | --- |
 | Test ID | AD-PRINT-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Printer |
 | PowerShell test | [Test-MtAdPrinterTotalCount](/docs/commands/Test-MtAdPrinterTotalCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-19"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -58,7 +58,7 @@ This test provides detailed information about each network with a reverse lookup
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-19 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsReverseZoneNetworkDetails](/docs/commands/Test-MtAdDnsReverseZoneNetworkDetails) |

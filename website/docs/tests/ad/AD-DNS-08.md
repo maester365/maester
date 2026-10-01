@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -50,7 +50,7 @@ This test counts NS records that represent delegations (where the record name is
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsZoneDelegationCount](/docs/commands/Test-MtAdDnsZoneDelegationCount) |

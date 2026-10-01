@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -47,7 +47,7 @@ This test enumerates AD partitions/paths and reports which ones have Recycle Bin
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdRecycleBinEnabledPaths](/docs/commands/Test-MtAdRecycleBinEnabledPaths) |

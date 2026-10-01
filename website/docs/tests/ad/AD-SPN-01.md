@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves all computer objects from Active Directory, extracts their S
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdComputerSpnServiceClassCount](/docs/commands/Test-MtAdComputerSpnServiceClassCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -55,7 +55,7 @@ This test analyzes all user SPNs, groups them by service class, and provides a c
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdUserSpnServiceClassUsage](/docs/commands/Test-MtAdUserSpnServiceClassUsage) |

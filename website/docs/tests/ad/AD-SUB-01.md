@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test retrieves all Active Directory subnets using `Get-ADReplicationSubnet`
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetTotalCount](/docs/commands/Test-MtAdSubnetTotalCount) |

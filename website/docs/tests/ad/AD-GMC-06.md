@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -58,7 +58,7 @@ For performance reasons, the test analyzes the first 50 groups.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupMemberForeignSidCount](/docs/commands/Test-MtAdGroupMemberForeignSidCount) |

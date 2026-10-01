@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-11"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ DHCP servers registered in Active Directory are authorized to provide IP address
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-11 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdRegisteredDhcpServersCount](/docs/commands/Test-MtAdRegisteredDhcpServersCount) |

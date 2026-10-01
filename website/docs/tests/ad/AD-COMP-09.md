@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -55,7 +55,7 @@ This test counts computers with different delegation configurations:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerDelegationCount](/docs/commands/Test-MtAdComputerDelegationCount) |

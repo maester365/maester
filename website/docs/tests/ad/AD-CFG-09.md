@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ AD-based activation objects are used by Windows for volume activation and relate
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdAdActivationObjectsCount](/docs/commands/Test-MtAdAdActivationObjectsCount) |

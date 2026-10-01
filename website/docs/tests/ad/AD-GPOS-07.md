@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOS-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ All disabled GPO settings details should be compliant
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOS-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoAllSettingsDisabledDetails](/docs/commands/Test-MtAdGpoAllSettingsDisabledDetails) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs,
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclPrivilegedAllowAceCount](/docs/commands/Test-MtAdDaclPrivilegedAllowAceCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FGPP-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.PasswordPolicy"
   - "AD"
@@ -67,7 +67,7 @@ The test reports the variety of settings across all policies.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FGPP-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.PasswordPolicy |
 | PowerShell test | [Test-MtAdFineGrainedPolicyValueCount](/docs/commands/Test-MtAdFineGrainedPolicyValueCount) |

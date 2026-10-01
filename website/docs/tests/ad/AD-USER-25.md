@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-25"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test lists built-in administrator style accounts and reports `PasswordLastS
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-25 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserBuiltInAdminPasswordAgeDetails](/docs/commands/Test-MtAdUserBuiltInAdminPasswordAgeDetails) |

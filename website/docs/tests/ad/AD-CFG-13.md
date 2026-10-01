@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-13"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ Certificate templates define which certificate types can be issued and under wha
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-13 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdCertificateTemplatesCount](/docs/commands/Test-MtAdCertificateTemplatesCount) |

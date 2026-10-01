@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SITE-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -55,7 +55,7 @@ This test compares the list of sites with domain controllers against all sites i
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SITE-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSiteWithoutDcCount](/docs/commands/Test-MtAdSiteWithoutDcCount) |

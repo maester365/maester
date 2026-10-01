@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GCHG-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -63,7 +63,7 @@ The analysis helps identify trends and patterns in group management activity.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GCHG-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupChangeAveragePerYear](/docs/commands/Test-MtAdGroupChangeAveragePerYear) |

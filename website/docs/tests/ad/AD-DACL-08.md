@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, groups entries by `Ide
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclIdentityAceDistribution](/docs/commands/Test-MtAdDaclIdentityAceDistribution) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DFSR-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Replication"
   - "AD"
@@ -57,7 +57,7 @@ This test counts DFS-R subscription objects and reports:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DFSR-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Replication |
 | PowerShell test | [Test-MtAdDfsrSubscriptionCount](/docs/commands/Test-MtAdDfsrSubscriptionCount) |

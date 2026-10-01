@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test analyzes subnet-to-site associations to count how many sites have at l
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetSiteAssociationCount](/docs/commands/Test-MtAdSubnetSiteAssociationCount) |

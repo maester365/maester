@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-16"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -53,7 +53,7 @@ This test counts reverse lookup zones (zones ending in .in-addr.arpa for IPv4 an
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-16 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsReverseZoneCount](/docs/commands/Test-MtAdDnsReverseZoneCount) |

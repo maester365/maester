@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-12"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -46,7 +46,7 @@ Enterprise Certification Authorities (CAs) issue certificates for domain authent
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-12 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdEnterpriseCaCount](/docs/commands/Test-MtAdEnterpriseCaCount) |

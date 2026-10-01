@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -51,7 +51,7 @@ This test provides a detailed breakdown of record counts per zone, including the
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsZoneRecordDetails](/docs/commands/Test-MtAdDnsZoneRecordDetails) |

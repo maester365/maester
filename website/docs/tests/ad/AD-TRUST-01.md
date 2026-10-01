@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-TRUST-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Trust"
   - "AD"
@@ -59,7 +59,7 @@ This test retrieves all trust objects from Active Directory using `Get-ADTrust` 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-TRUST-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Trust |
 | PowerShell test | [Test-MtAdTrustTotalCount](/docs/commands/Test-MtAdTrustTotalCount) |

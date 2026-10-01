@@ -747,6 +747,71 @@
       "recentCommits": 0
     },
     {
+      "id": "agnivesh",
+      "github": "agnivesh",
+      "name": "Agnivesh S.",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "United Kingdom",
+      "locationFlag": "🇬🇧",
+      "url": "",
+      "socials": {
+        "linkedin": "agniveshs"
+      },
+      "avatar": "https://github.com/agnivesh.png",
+      "firstContribution": "2026-08-16",
+      "testsAuthored": [
+        "MT.1196",
+        "MT.1197",
+        "MT.1200",
+        "MT.1201",
+        "MT.1203",
+        "MT.1204",
+        "MT.1205",
+        "MT.1206",
+        "MT.1207",
+        "MT.1208",
+        "MT.1209",
+        "MT.1210",
+        "MT.1211",
+        "MT.1212",
+        "MT.1213",
+        "MT.1223"
+      ],
+      "testsContributed": [
+        "AD-CFG-02",
+        "AD-COMP-05",
+        "AD-DC-07",
+        "AD-DC-08",
+        "AD-DCOMP-01",
+        "AD-DCOMP-02",
+        "AD-DCOMP-03",
+        "AD-DCOMP-06",
+        "AD-DOM-01",
+        "AD-DOM-02",
+        "AD-FOR-01",
+        "AD-GRP-05",
+        "AD-KRBTGT-01",
+        "AD-SPN-12",
+        "AD-SPN-13",
+        "AD-TRUST-03",
+        "AD-TRUST-04",
+        "AD-USER-02",
+        "AD-USER-03",
+        "AD-USER-04",
+        "AD-USER-05",
+        "AD-USER-06",
+        "AD-USER-07",
+        "AD-USER-12",
+        "AD-USER-13"
+      ],
+      "initials": "AS",
+      "recentCommits": 4
+    },
+    {
       "id": "thomas-s-schmidt",
       "github": "thomas-s-schmidt",
       "name": "Thomas Schmidt",
@@ -1104,45 +1169,6 @@
       ],
       "initials": "SW",
       "recentCommits": 1
-    },
-    {
-      "id": "agnivesh",
-      "github": "agnivesh",
-      "name": "Agnivesh S.",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "United Kingdom",
-      "locationFlag": "🇬🇧",
-      "url": "",
-      "socials": {
-        "linkedin": "agniveshs"
-      },
-      "avatar": "https://github.com/agnivesh.png",
-      "firstContribution": "2026-08-16",
-      "testsAuthored": [
-        "MT.1196",
-        "MT.1197",
-        "MT.1200",
-        "MT.1201",
-        "MT.1203",
-        "MT.1204",
-        "MT.1205",
-        "MT.1206",
-        "MT.1207",
-        "MT.1208",
-        "MT.1209",
-        "MT.1210",
-        "MT.1211",
-        "MT.1212",
-        "MT.1213",
-        "MT.1223"
-      ],
-      "testsContributed": [],
-      "initials": "AS",
-      "recentCommits": 3
     },
     {
       "id": "nicolonsky",
@@ -4090,6 +4116,7 @@
     "AD-CFG-02": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -4252,6 +4279,7 @@
     "AD-COMP-05": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -4432,12 +4460,14 @@
     "AD-DC-07": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-DC-08": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -4468,18 +4498,21 @@
     "AD-DCOMP-01": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-DCOMP-02": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-DCOMP-03": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -4498,6 +4531,7 @@
     "AD-DCOMP-06": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -4642,12 +4676,14 @@
     "AD-DOM-01": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-DOM-02": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -4732,6 +4768,7 @@
     "AD-FOR-01": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -5061,6 +5098,7 @@
     "AD-GRP-05": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -5097,6 +5135,7 @@
     "AD-KRBTGT-01": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -5356,12 +5395,14 @@
     "AD-SPN-12": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-SPN-13": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -5446,12 +5487,14 @@
     "AD-TRUST-03": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-TRUST-04": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -5482,36 +5525,42 @@
     "AD-USER-02": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-USER-03": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-USER-04": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-USER-05": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-USER-06": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-USER-07": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
@@ -5542,12 +5591,14 @@
     "AD-USER-12": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },
     "AD-USER-13": {
       "author": "soulemike",
       "contributors": [
+        "agnivesh",
         "merill"
       ]
     },

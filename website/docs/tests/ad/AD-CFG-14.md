@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-14"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -45,7 +45,7 @@ Enrollment templates represent which certificate templates are available for use
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-14 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdEnrollmentTemplatesCount](/docs/commands/Test-MtAdEnrollmentTemplatesCount) |

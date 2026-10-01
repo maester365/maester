@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-29"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -50,7 +50,7 @@ This test lists each user with `TrustedForDelegation` or `TrustedToAuthForDelega
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-29 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserDelegationDetails](/docs/commands/Test-MtAdUserDelegationDetails) |

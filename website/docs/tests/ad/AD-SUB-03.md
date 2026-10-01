@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test identifies subnets with overly broad CIDR notation that could encompas
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetCatchAllCount](/docs/commands/Test-MtAdSubnetCatchAllCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -57,7 +57,7 @@ For performance reasons, the test analyzes the first 50 groups and limits displa
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupMemberTrustDetails](/docs/commands/Test-MtAdGroupMemberTrustDetails) |

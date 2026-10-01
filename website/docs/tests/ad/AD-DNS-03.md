@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -52,7 +52,7 @@ This test compares configured root server IP addresses against the official IANA
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsRootServerIncorrectCount](/docs/commands/Test-MtAdDnsRootServerIncorrectCount) |

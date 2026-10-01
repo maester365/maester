@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SCH-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Schema"
   - "AD"
@@ -62,7 +62,7 @@ This test analyzes schema objects and groups them by creation year, providing:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SCH-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Schema |
 | PowerShell test | [Test-MtAdSchemaModificationYearDetails](/docs/commands/Test-MtAdSchemaModificationYearDetails) |

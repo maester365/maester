@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-24"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test lists built-in administrator style accounts and returns their `LastLog
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-24 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserBuiltInAdminLastLogonDetails](/docs/commands/Test-MtAdUserBuiltInAdminLastLogonDetails) |

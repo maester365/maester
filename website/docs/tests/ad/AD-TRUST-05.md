@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-TRUST-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Trust"
   - "AD"
@@ -76,7 +76,7 @@ This test retrieves all trust properties and displays:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-TRUST-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Trust |
 | PowerShell test | [Test-MtAdTrustDetails](/docs/commands/Test-MtAdTrustDetails) |

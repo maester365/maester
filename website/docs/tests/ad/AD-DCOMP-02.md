@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-02"
-  - "Unknown"
+  - "Critical"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-DCOMP-02 - Non-DC computers should not have unconstrained delegation
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -65,12 +65,17 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 - `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation on non-DCs
 - `Test-MtAdComputerDelegationCount` - General delegation overview
 
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
+- [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-02 |
-| Severity | Unknown |
+| Severity | Critical |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerNonDcUnconstrainedDelegationCount](/docs/commands/Test-MtAdComputerNonDcUnconstrainedDelegationCount) |

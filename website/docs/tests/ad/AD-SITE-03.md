@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SITE-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves all sites and domain controllers, then identifies and lists 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SITE-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSiteWithoutDcDetails](/docs/commands/Test-MtAdSiteWithoutDcDetails) |

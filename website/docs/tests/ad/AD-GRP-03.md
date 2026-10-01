@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -61,7 +61,7 @@ This test retrieves all group objects from Active Directory and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupStaleCount](/docs/commands/Test-MtAdGroupStaleCount) |

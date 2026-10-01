@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -48,7 +48,7 @@ This test retrieves the set of enabled AD optional feature flags and reports the
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdOptionalFeaturesCount](/docs/commands/Test-MtAdOptionalFeaturesCount) |

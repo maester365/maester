@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-22"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -44,7 +44,7 @@ The test enumerates KDS root keys present in AD (or the module’s KDS configura
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-22 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdKdsRootKeysCount](/docs/commands/Test-MtAdKdsRootKeysCount) |

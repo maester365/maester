@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -59,7 +59,7 @@ This test retrieves the RID available pool from Active Directory and calculates 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdRidsRemaining](/docs/commands/Test-MtAdRidsRemaining) |

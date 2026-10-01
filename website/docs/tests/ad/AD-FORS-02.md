@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FORS-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -53,7 +53,7 @@ This test retrieves the complete list of UPN suffixes configured at the forest l
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FORS-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdUpnSuffixesDetails](/docs/commands/Test-MtAdUpnSuffixesDetails) |

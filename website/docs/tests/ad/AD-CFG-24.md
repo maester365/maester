@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-24"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -47,7 +47,7 @@ The test queries AD site link configuration entries using IP as the replication 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-24 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdIpSiteLinksCount](/docs/commands/Test-MtAdIpSiteLinksCount) |

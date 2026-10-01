@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOS-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ WMI filter details should be compliant
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOS-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoWmiFilterDetails](/docs/commands/Test-MtAdGpoWmiFilterDetails) |

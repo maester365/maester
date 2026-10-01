@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -53,7 +53,7 @@ This test checks each domain name label against RFC 1123 standards and provides 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdDomainNameNonStandardDetails](/docs/commands/Test-MtAdDomainNameNonStandardDetails) |

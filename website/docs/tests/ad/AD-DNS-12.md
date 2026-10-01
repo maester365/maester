@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-12"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -56,7 +56,7 @@ This test provides detailed information about each AD DS SRV record, including:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-12 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsAdSrvRecordDetails](/docs/commands/Test-MtAdDnsAdSrvRecordDetails) |

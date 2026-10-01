@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-TRUST-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Trust"
   - "AD"
@@ -88,7 +88,7 @@ Results are sorted by last validation date (oldest first).
 | Field | Value |
 | --- | --- |
 | Test ID | AD-TRUST-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Trust |
 | PowerShell test | [Test-MtAdTrustStaleDetails](/docs/commands/Test-MtAdTrustStaleDetails) |

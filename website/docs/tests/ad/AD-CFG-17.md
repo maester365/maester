@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-17"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -46,7 +46,7 @@ The test enumerates trusted root CA certificates configured for AD (or in the mo
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-17 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdTrustedRootCaDetails](/docs/commands/Test-MtAdTrustedRootCaDetails) |

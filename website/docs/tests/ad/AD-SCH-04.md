@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SCH-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Schema"
   - "AD"
@@ -64,7 +64,7 @@ This test retrieves detailed information from the schema container including:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SCH-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Schema |
 | PowerShell test | [Test-MtAdSchemaVersionDetails](/docs/commands/Test-MtAdSchemaVersionDetails) |

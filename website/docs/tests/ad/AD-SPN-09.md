@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SPN-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.SPN"
   - "AD"
@@ -56,7 +56,7 @@ This test compares discovered user SPN service classes against a database of kno
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SPN-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.SPN |
 | PowerShell test | [Test-MtAdUserSpnUnknownCount](/docs/commands/Test-MtAdUserSpnUnknownCount) |

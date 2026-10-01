@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-ROOTDSE-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Replication"
   - "AD"
@@ -54,7 +54,7 @@ This test retrieves the Root DSE and counts:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-ROOTDSE-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Replication |
 | PowerShell test | [Test-MtAdSupportedSaslMechanismCount](/docs/commands/Test-MtAdSupportedSaslMechanismCount) |

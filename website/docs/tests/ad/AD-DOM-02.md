@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-02"
-  - "Unknown"
+  - "Low"
   - "Active Directory"
   - "AD.Domain"
   - "AD"
@@ -19,7 +19,7 @@ keywords:
 
 # AD-DOM-02 - Machine account quota should be retrievable
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/agnivesh" title="Agnivesh S. · Co-contributor"><img src="https://github.com/agnivesh.png" alt="Agnivesh S." /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,12 +52,17 @@ This test retrieves the current machine account quota value from Active Director
 - `Test-MtAdDomainFunctionalLevel` - Retrieves the domain functional level
 - `Test-MtAdDomainControllerCount` - Counts domain controllers
 
+#### Related links
+
+- [Microsoft Defender for Identity: Resolve unsecure domain configurations](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/identity-infrastructure#resolve-unsecure-domain-configurations)
+- [ANSSI Active Directory checkpoints: Unrestricted domain join](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_machineaccountquota)
+
 ## Test Metadata
 
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-02 |
-| Severity | Unknown |
+| Severity | Low |
 | Suite | Active Directory |
 | Category | AD.Domain |
 | PowerShell test | [Test-MtAdMachineAccountQuota](/docs/commands/Test-MtAdMachineAccountQuota) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-OU-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.OU"
   - "AD"
@@ -55,7 +55,7 @@ keywords:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-OU-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.OU |
 | PowerShell test | [Test-MtAdOuStaleCount](/docs/commands/Test-MtAdOuStaleCount) |

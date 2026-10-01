@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-26"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -49,7 +49,7 @@ This test counts non-system user accounts whose names match attractive terms suc
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-26 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserHoneyPotCount](/docs/commands/Test-MtAdUserHoneyPotCount) |

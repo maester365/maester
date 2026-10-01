@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-28"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -50,7 +50,7 @@ This test counts user accounts with either `TrustedForDelegation` or `TrustedToA
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-28 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserDelegationConfiguredCount](/docs/commands/Test-MtAdUserDelegationConfiguredCount) |

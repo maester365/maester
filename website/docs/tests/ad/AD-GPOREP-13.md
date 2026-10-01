@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOREP-13"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPOState"
   - "AD"
@@ -30,7 +30,7 @@ GPO disabled link details should be retrievable
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOREP-13 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPOState |
 | PowerShell test | [Test-MtAdGpoDisabledLinkDetails](/docs/commands/Test-MtAdGpoDisabledLinkDetails) |

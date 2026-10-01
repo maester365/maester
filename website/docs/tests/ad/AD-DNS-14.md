@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DNS-14"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DNS"
   - "AD"
@@ -53,7 +53,7 @@ This test identifies DNS zones that contain zero resource records of any type.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DNS-14 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DNS |
 | PowerShell test | [Test-MtAdDnsEmptyZoneCount](/docs/commands/Test-MtAdDnsEmptyZoneCount) |

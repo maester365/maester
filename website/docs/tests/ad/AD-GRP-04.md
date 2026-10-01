@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -58,7 +58,7 @@ This test retrieves all group objects from Active Directory and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupWithManagerCount](/docs/commands/Test-MtAdGroupWithManagerCount) |

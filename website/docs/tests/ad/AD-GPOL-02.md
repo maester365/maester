@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOL-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPO"
   - "AD"
@@ -60,7 +60,7 @@ The gPLink attribute is parsed to determine the state of each link.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOL-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPO |
 | PowerShell test | [Test-MtAdGpoDisabledLinkCount](/docs/commands/Test-MtAdGpoDisabledLinkCount) |

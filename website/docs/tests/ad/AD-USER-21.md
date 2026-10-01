@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-21"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -51,7 +51,7 @@ This test reviews AD user objects and flags accounts whose `SamAccountName` or `
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-21 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserKnownServiceAccountDetails](/docs/commands/Test-MtAdUserKnownServiceAccountDetails) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DACL-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DACL"
   - "AD"
@@ -48,7 +48,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, extracts unique `Ident
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DACL-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DACL |
 | PowerShell test | [Test-MtAdDaclDistinctIdentityCount](/docs/commands/Test-MtAdDaclDistinctIdentityCount) |

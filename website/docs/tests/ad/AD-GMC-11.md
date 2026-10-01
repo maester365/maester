@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-11"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -70,7 +70,7 @@ This test lists all privileged groups (those with adminCount = 1 or well-known R
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-11 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupPrivilegedWithMembersDetails](/docs/commands/Test-MtAdGroupPrivilegedWithMembersDetails) |

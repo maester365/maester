@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SITE-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves all Active Directory sites using `Get-ADReplicationSite` and
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SITE-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSiteTotalCount](/docs/commands/Test-MtAdSiteTotalCount) |

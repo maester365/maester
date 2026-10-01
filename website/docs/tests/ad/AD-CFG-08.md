@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-CFG-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Config"
   - "AD"
@@ -47,7 +47,7 @@ This test inspects AD authentication policy configuration and reports a count/vi
 | Field | Value |
 | --- | --- |
 | Test ID | AD-CFG-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Config |
 | PowerShell test | [Test-MtAdAuthNPolicyConfigCount](/docs/commands/Test-MtAdAuthNPolicyConfigCount) |

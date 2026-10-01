@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-06"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -54,7 +54,7 @@ This test identifies enabled computer accounts where the Distinguished Name cont
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-06 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerInDefaultContainer](/docs/commands/Test-MtAdComputerInDefaultContainer) |

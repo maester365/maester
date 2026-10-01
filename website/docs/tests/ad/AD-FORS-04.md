@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FORS-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves cross-forest reference information from the forest configura
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FORS-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdCrossForestReferencesCount](/docs/commands/Test-MtAdCrossForestReferencesCount) |

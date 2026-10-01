@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -44,7 +44,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserWorkstationRestrictionCount](/docs/commands/Test-MtAdUserWorkstationRestrictionCount) |

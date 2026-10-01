@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FEAT-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Replication"
   - "AD"
@@ -57,7 +57,7 @@ This test retrieves detailed information about enabled optional features:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FEAT-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Replication |
 | PowerShell test | [Test-MtAdOptionalFeatureEnabledDetails](/docs/commands/Test-MtAdOptionalFeatureEnabledDetails) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPO-02"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.GPO"
   - "AD"
@@ -50,7 +50,7 @@ It then filters all GPOs where the `CreationTime` is earlier than **January 1st,
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPO-02 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.GPO |
 | PowerShell test | [Test-MtAdGpoCreatedBefore2020Count](/docs/commands/Test-MtAdGpoCreatedBefore2020Count) |

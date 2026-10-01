@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FORS-03"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Forest"
   - "AD"
@@ -52,7 +52,7 @@ This test retrieves the SPN suffixes configured at the forest level using the `G
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FORS-03 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Forest |
 | PowerShell test | [Test-MtAdSpnSuffixesCount](/docs/commands/Test-MtAdSpnSuffixesCount) |

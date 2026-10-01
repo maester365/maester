@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-07"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Computer"
   - "AD"
@@ -56,7 +56,7 @@ This test analyzes all enabled computer accounts and counts the distinct organiz
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-07 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Computer |
 | PowerShell test | [Test-MtAdComputerOUCount](/docs/commands/Test-MtAdComputerOUCount) |

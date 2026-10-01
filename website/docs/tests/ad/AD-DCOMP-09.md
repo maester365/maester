@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-09"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Security"
   - "AD"
@@ -73,7 +73,7 @@ This test provides detailed analysis:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-09 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Security |
 | PowerShell test | [Test-MtAdComputerDnsZoneDetails](/docs/commands/Test-MtAdComputerDnsZoneDetails) |

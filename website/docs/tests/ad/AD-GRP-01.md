@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -55,7 +55,7 @@ This test retrieves all group objects from Active Directory and counts:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupAdminCount](/docs/commands/Test-MtAdGroupAdminCount) |

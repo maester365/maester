@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -53,7 +53,7 @@ This test retrieves all domain controllers and counts the unique sites that cont
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcSiteCoverageCount](/docs/commands/Test-MtAdDcSiteCoverageCount) |

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-08"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.User"
   - "AD"
@@ -44,7 +44,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-08 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.User |
 | PowerShell test | [Test-MtAdUserNeverLoggedInCount](/docs/commands/Test-MtAdUserNeverLoggedInCount) |

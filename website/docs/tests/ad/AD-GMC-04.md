@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -56,7 +56,7 @@ For performance reasons, the test analyzes the first 50 groups.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupMemberTrustCount](/docs/commands/Test-MtAdGroupMemberTrustCount) |

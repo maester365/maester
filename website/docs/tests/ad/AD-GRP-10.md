@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-10"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -64,7 +64,7 @@ The test provides counts and percentages to understand the distribution of group
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-10 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupUniversalCount](/docs/commands/Test-MtAdGroupUniversalCount) |

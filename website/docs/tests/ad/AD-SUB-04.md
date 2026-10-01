@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test counts subnets that use IPv6 address format (containing colons).
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetIpv6Count](/docs/commands/Test-MtAdSubnetIpv6Count) |

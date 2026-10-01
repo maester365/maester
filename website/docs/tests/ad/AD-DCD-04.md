@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCD-04"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.DomainController"
   - "AD"
@@ -67,7 +67,7 @@ The test provides different guidance based on whether the forest is single-domai
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCD-04 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.DomainController |
 | PowerShell test | [Test-MtAdDcNonGlobalCatalogCount](/docs/commands/Test-MtAdDcNonGlobalCatalogCount) |

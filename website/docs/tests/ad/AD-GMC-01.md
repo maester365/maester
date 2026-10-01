@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GMC-01"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Group"
   - "AD"
@@ -57,7 +57,7 @@ For performance reasons, the test analyzes the first 100 groups if there are man
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GMC-01 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Group |
 | PowerShell test | [Test-MtAdGroupMemberDistinctGroupCount](/docs/commands/Test-MtAdGroupMemberDistinctGroupCount) |

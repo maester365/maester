@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-SUB-05"
-  - "Unknown"
+  - "Info"
   - "Active Directory"
   - "AD.Site"
   - "AD"
@@ -54,7 +54,7 @@ This test identifies IPv6 subnets with overly broad prefixes (/48 or smaller).
 | Field | Value |
 | --- | --- |
 | Test ID | AD-SUB-05 |
-| Severity | Unknown |
+| Severity | Info |
 | Suite | Active Directory |
 | Category | AD.Site |
 | PowerShell test | [Test-MtAdSubnetIpv6CatchAllCount](/docs/commands/Test-MtAdSubnetIpv6CatchAllCount) |
