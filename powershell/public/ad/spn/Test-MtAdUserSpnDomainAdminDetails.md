@@ -26,3 +26,8 @@ This test identifies domain administrator accounts and provides detailed informa
 - `Test-MtAdUserSpnDomainAdminCount` - Counts SPNs on domain admins
 - `Test-MtAdUserSpnTotalCount` - Overall user SPN analysis
 - `Test-MtAdUserSpnUnknownDetails` - Unknown SPN details on all users
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure account attributes](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-account-attributes)
+- [ANSSI Active Directory checkpoints: Privileged accounts with SPN](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_spn_priv)

@@ -32,3 +32,8 @@ This test retrieves the KRBTGT account from Active Directory and checks:
 
 - `Test-MtAdKrbtgtLastLogon` - Verifies KRBTGT has no interactive logons
 - `Test-MtAdKrbtgtNonStandardUacCount` - Validates KRBTGT has standard UAC settings
+
+#### Related links
+
+- [Microsoft Defender for Identity: Change password for krbtgt account](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#change-password-for-krbtgt-account)
+- [ANSSI Active Directory checkpoints: Krbtgt account password unchanged for more than a year](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_krbtgt)

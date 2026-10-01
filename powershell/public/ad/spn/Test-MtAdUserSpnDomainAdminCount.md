@@ -25,3 +25,8 @@ This test identifies domain administrator accounts (using the well-known RID 500
 - `Test-MtAdUserSpnDomainAdminDetails` - Detailed SPN information for domain admins
 - `Test-MtAdUserSpnTotalCount` - Overall user SPN count
 - `Test-MtAdUserSpnServiceClassCount` - Service classes on user accounts
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure account attributes](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-account-attributes)
+- [ANSSI Active Directory checkpoints: Privileged accounts with SPN](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_spn_priv)

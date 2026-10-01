@@ -43,3 +43,7 @@ Provides counts and lists affected computers.
 - `Test-MtAdComputerDormantCount` - Dormant computer identification
 - `Test-MtAdComputerDisabledCount` - Disabled computer analysis
 - `Test-MtAdUserDormantEnabledCount` - Stale user account check
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Inactive servers](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_password_change_inactive_servers)
