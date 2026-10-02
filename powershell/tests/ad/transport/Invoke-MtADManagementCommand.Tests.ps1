@@ -339,7 +339,7 @@ Describe 'Invoke-MtADManagementCommand' {
         }
         # HTTP fallback does not use TLS, so SkipCACheck/SkipCNCheck are not applicable.
         # Verify message encryption is still enabled (NoEncryption is not set).
-        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 1 -ParameterFilter {
+        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 2 -ParameterFilter {
             -not $NoEncryption
         }
         Should -Invoke Remove-PSSession -ModuleName Maester -Times 1
@@ -376,7 +376,7 @@ Describe 'Invoke-MtADManagementCommand' {
         }
         # HTTP fallback does not use TLS, so SkipCACheck/SkipCNCheck are not applicable.
         # Verify message encryption is still enabled (NoEncryption is not set).
-        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 1 -ParameterFilter {
+        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 2 -ParameterFilter {
             -not $NoEncryption
         }
         Should -Invoke Remove-PSSession -ModuleName Maester -Times 1

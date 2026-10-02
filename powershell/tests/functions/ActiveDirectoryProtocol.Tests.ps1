@@ -427,7 +427,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 }
             }
             Mock New-MtLdapConnection -ModuleName Maester {
-                param($Server, $Port, $AuthType, $Credential, $UseStartTls)
+                param($Server, $Port, $AuthType, [PSCredential]$Credential, $UseStartTls)
                 # Be robust to parameter naming differences in mock binding (Port vs PortNumber)
                 $portValue = if ($PSBoundParameters.ContainsKey('Port')) { $Port } elseif ($PSBoundParameters.ContainsKey('PortNumber')) { $PSBoundParameters['PortNumber'] } else { $Port }
                 if (-not $script:PortsUsed) {
@@ -579,7 +579,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
         It 'Enhanced error message when both TLS modes fail' {
             # Override the base mock so both TLS paths fail
             Mock -ModuleName Maester -CommandName New-MtLdapConnection -MockWith {
-                param($Server, $Port, $UseStartTls)
+                param($Port)
                 $script:connectionCalls.Add([PSCustomObject]@{ Port = $Port })
                 throw [System.Exception]::new("Port $Port failed")
             }
@@ -598,13 +598,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 return [PSCustomObject]@{ }
             }
 
-            InModuleScope Maester {
-                try {
-                    Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Ldaps
-                } catch {
-                    # swallow the error for test isolation
-                }
-            }
+            { InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Ldaps } } | Should -Throw
             $script:connectionCalls.Count | Should -Be 1
             $script:connectionCalls[0].Port | Should -Be 636
         }
