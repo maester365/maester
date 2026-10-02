@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-03" 
         $result = Test-MtAdSpnMappings
         if ($null -ne $result) {
             $result | Should -Be $true -Because "SPN mapping configuration should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

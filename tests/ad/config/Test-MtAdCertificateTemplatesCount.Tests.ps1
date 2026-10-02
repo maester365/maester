@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-13" 
         $result = Test-MtAdCertificateTemplatesCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "certificate template data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

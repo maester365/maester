@@ -5,6 +5,8 @@ Describe "Active Directory - Domain" -Tag "AD", "AD.Domain", "AD-DOM-05" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "domain name compliance data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

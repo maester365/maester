@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-09" 
         $result = Test-MtAdAdActivationObjectsCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "AD activation object data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

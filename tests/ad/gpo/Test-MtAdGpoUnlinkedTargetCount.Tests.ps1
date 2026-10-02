@@ -5,6 +5,8 @@ Describe "Active Directory - Group Policy" -Tag "AD", "AD.GPO", "AD-GPOL-03" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Targets without any GPO links should not exist"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

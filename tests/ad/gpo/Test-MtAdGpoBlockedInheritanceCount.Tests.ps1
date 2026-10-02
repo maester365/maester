@@ -4,6 +4,8 @@ Describe "Active Directory - Group Policy" -Tag "AD", "AD.GPO", "AD-GPOL-05" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Blocked inheritance should not be configured on any OU"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

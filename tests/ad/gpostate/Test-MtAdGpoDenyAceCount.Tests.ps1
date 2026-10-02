@@ -3,6 +3,8 @@ Describe "Active Directory - GPO State" -Tag "AD", "AD.GPOState", "AD-GPOREP-07"
         $result = Test-MtAdGpoDenyAceCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "GPO permissions data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }
