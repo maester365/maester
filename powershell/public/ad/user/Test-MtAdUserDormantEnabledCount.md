@@ -16,5 +16,5 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 
 #### Related links
 
-- [Microsoft Defender for Identity: Remove stale Active Directory accounts](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#remove-stale-active-directory-accounts)
+- [Microsoft Defender for Identity: Remove stale Active Directory accounts](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#remove-stale-active-directory-accounts)
 - [ANSSI Active Directory checkpoints: Dormant accounts](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_dormant)

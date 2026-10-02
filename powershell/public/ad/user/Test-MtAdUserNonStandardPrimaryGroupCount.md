@@ -21,5 +21,5 @@ This test counts user objects where `primaryGroupId` is populated and not equal 
 
 #### Related links
 
-- [Microsoft Defender for Identity: Accounts with non-default Primary Group ID](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#accounts-with-non-default-primary-group-id)
+- [Microsoft Defender for Identity: Accounts with non-default Primary Group ID](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#accounts-with-non-default-primary-group-id)
 - [ANSSI Active Directory checkpoints: Accounts with modified PrimaryGroupID](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_primary_group_id_nochange)
