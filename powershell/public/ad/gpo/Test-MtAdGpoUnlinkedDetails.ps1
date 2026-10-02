@@ -121,8 +121,13 @@
         "⚠️ Unlinked/orphaned GPOs were found ($unlinkedGpoCount). Review these policies for removal to reduce GPO sprawl and lower risk from unused (and potentially misconfigured) policies."
     }
 
-    $testResultMarkdown = "$recommendation`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
+    if ($unlinkedGpoCount -gt 0) {
+        $testResultMarkdown = "$recommendation`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
+    } else {
+        $testResultMarkdown = "$recommendation`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', ""
+    }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

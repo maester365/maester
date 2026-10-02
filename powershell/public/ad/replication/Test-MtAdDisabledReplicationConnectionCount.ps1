@@ -40,7 +40,7 @@
     $disabledConnections = $replicationConnections | Where-Object { $_.Enabled -eq $false }
     $disabledCount = ($disabledConnections | Measure-Object).Count
 
-    $testResult = $true
+    $testResult = $disabledCount -eq 0
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

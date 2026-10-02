@@ -40,7 +40,7 @@ function Test-MtAdGpoDefaultPasswordFoundCount {
     $totalCount = $gpoReportsArray.Count
     $defaultPasswordCount = @($gpoReportsArray | Where-Object { [bool]$_.DefaultPasswordFound }).Count
 
-    $testResult = $true
+    $testResult = $defaultPasswordCount -eq 0
     $defaultPasswordPercentage = if ($totalCount -gt 0) { [Math]::Round(($defaultPasswordCount / $totalCount) * 100, 2) } else { 0 }
 
     $result = "| Metric | Value |" + "`n"

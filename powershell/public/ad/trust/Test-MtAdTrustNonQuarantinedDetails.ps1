@@ -41,8 +41,8 @@
     $nonQuarantinedCount = ($nonQuarantinedTrusts | Measure-Object).Count
     $totalCount = ($trusts | Measure-Object).Count
 
-    # Test passes if we successfully retrieved trust data
-    $testResult = $true
+    # Test passes if there are no non-quarantined trusts
+    $testResult = $nonQuarantinedCount -eq 0
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"
@@ -77,7 +77,11 @@
         $testResultMarkdown = "Found $nonQuarantinedCount non-quarantined trust(s). These trusts may be vulnerable to SID history attacks. Consider enabling SID filtering for inter-forest trusts.`n`n%TestResult%"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($totalCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

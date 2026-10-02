@@ -67,8 +67,13 @@
             $result += "`n✅ All sites have domain controllers deployed." + "`n"
         }
 
-        $testResultMarkdown = "Active Directory sites without domain controllers have been analyzed.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($sitesWithoutDcCount -gt 0) {
+            $testResultMarkdown = "Active Directory sites without domain controllers have been analyzed.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = "Active Directory sites without domain controllers have been analyzed.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory site information. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

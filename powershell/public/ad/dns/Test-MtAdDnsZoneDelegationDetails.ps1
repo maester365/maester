@@ -74,8 +74,13 @@
             }
         }
 
-        $testResultMarkdown = "Active Directory DNS zone delegation details have been analyzed. $delegationCount zone delegations were found.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($delegationCount -gt 0) {
+            $testResultMarkdown = "Active Directory DNS zone delegation details have been analyzed. $delegationCount zone delegations were found.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = "Active Directory DNS zone delegation details have been analyzed. $delegationCount zone delegations were found.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve DNS delegation data. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
     }

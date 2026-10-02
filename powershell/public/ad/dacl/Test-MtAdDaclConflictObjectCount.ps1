@@ -51,7 +51,7 @@
     $testResultMarkdown = "Active Directory DACL data has been reviewed for conflict objects. $conflictObjectCount conflict object(s) with CNF markers were identified in the DACL dataset.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclConflictObjectCount"
     return $testResult
 }

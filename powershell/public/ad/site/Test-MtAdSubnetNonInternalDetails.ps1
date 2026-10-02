@@ -99,8 +99,13 @@
             $result += "`n✅ All subnets use RFC1918 private IP ranges." + "`n"
         }
 
+    if ($nonInternalCount -gt 0) {
         $testResultMarkdown = "Active Directory non-internal subnet analysis has been performed.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Active Directory non-internal subnet analysis has been performed.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory subnet information. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

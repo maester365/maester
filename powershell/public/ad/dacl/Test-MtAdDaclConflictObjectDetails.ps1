@@ -58,10 +58,15 @@
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Active Directory DACL conflict-object details have been compiled. $conflictObjectCount conflict object(s) were identified in the dataset.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($conflictObjectCount -gt 0) {
+        $testResultMarkdown = "Active Directory DACL conflict-object details have been compiled. $conflictObjectCount conflict object(s) were identified in the dataset.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Active Directory DACL conflict-object details have been compiled. $conflictObjectCount conflict object(s) were identified in the dataset.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclConflictObjectDetails"
     return $testResult
 }

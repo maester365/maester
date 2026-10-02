@@ -55,10 +55,15 @@
         }
     }
 
-    $testResultMarkdown = "Active Directory optional feature details have been retrieved. Enabled features extend AD functionality.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($enabledCount -gt 0) {
+        $testResultMarkdown = "Active Directory optional feature details have been retrieved. Enabled features extend AD functionality.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Active Directory optional feature details have been retrieved. Enabled features extend AD functionality.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }
