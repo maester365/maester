@@ -275,9 +275,19 @@
       "Title": "DC site coverage count should be retrievable"
     },
     {
+      "Id": "AD-DC-02",
+      "Severity": "Critical",
+      "Title": "SMBv1 should be disabled on all domain controllers"
+    },
+    {
       "Id": "AD-DC-03",
       "Severity": "Info",
       "Title": "SMBv3.1.1 enabled count should be retrievable"
+    },
+    {
+      "Id": "AD-DC-04",
+      "Severity": "High",
+      "Title": "SMB signing should be enabled on all domain controllers"
     },
     {
       "Id": "AD-DC-05",
@@ -321,8 +331,8 @@
     },
     {
       "Id": "AD-DCOMP-01",
-      "Severity": "Critical",
-      "Title": "Computers with unconstrained delegation count should be retrievable"
+      "Severity": "Info",
+      "Title": "Computers with unconstrained delegation count should be investigated"
     },
     {
       "Id": "AD-DCOMP-02",
@@ -331,8 +341,8 @@
     },
     {
       "Id": "AD-DCOMP-03",
-      "Severity": "High",
-      "Title": "Non-DC computers with constrained delegation count should be retrievable"
+      "Severity": "Info",
+      "Title": "Non-DC computers with constrained delegation count should be investigated"
     },
     {
       "Id": "AD-DCOMP-04",
@@ -366,8 +376,8 @@
     },
     {
       "Id": "AD-DFSR-01",
-      "Severity": "Info",
-      "Title": "DFS-R subscription count should be retrievable"
+      "Severity": "High",
+      "Title": "All domain controllers should have DFS-R subscriptions"
     },
     {
       "Id": "AD-DNS-01",
@@ -670,6 +680,16 @@
       "Title": "GPO linked OU count should be retrievable"
     },
     {
+      "Id": "AD-GPOREP-01",
+      "Severity": "Medium",
+      "Title": "No GPOs should be missing permissions"
+    },
+    {
+      "Id": "AD-GPOREP-02",
+      "Severity": "Medium",
+      "Title": "No GPOs should be missing permissions"
+    },
+    {
       "Id": "AD-GPOREP-10",
       "Severity": "Info",
       "Title": "GPO no-apply Group Policy ACE count should be retrievable"
@@ -696,13 +716,33 @@
     },
     {
       "Id": "AD-GPOREP-15",
-      "Severity": "Info",
-      "Title": "GPO version mismatch count should be retrievable"
+      "Severity": "High",
+      "Title": "No GPOs should have version mismatches"
     },
     {
       "Id": "AD-GPOREP-16",
-      "Severity": "Info",
-      "Title": "GPO version mismatch details should be retrievable"
+      "Severity": "High",
+      "Title": "No GPOs should have version mismatches"
+    },
+    {
+      "Id": "AD-GPOREP-17",
+      "Severity": "Critical",
+      "Title": "No GPOs should contain a cpassword"
+    },
+    {
+      "Id": "AD-GPOREP-18",
+      "Severity": "Critical",
+      "Title": "No GPOs should contain a cpassword"
+    },
+    {
+      "Id": "AD-GPOREP-19",
+      "Severity": "High",
+      "Title": "No GPOs should contain a default password"
+    },
+    {
+      "Id": "AD-GPOREP-20",
+      "Severity": "High",
+      "Title": "No GPOs should contain a default password"
     },
     {
       "Id": "AD-GPOS-01",
@@ -810,6 +850,11 @@
       "Title": "KRBTGT last logon should be retrievable"
     },
     {
+      "Id": "AD-KRBTGT-03",
+      "Severity": "High",
+      "Title": "KRBTGT should have standard UAC settings (disabled account)"
+    },
+    {
       "Id": "AD-MSA-01",
       "Severity": "Info",
       "Title": "Managed service account count should be retrievable"
@@ -881,8 +926,8 @@
     },
     {
       "Id": "AD-REPL-01",
-      "Severity": "Info",
-      "Title": "Disabled replication connection count should be retrievable"
+      "Severity": "High",
+      "Title": "No replication connections should be disabled"
     },
     {
       "Id": "AD-REPL-02",
@@ -898,6 +943,11 @@
       "Id": "AD-ROOTDSE-02",
       "Severity": "Info",
       "Title": "Supported SASL mechanism details should be retrievable"
+    },
+    {
+      "Id": "AD-ROOTDSE-03",
+      "Severity": "High",
+      "Title": "Root DSE should be synchronized"
     },
     {
       "Id": "AD-SCH-01",
@@ -918,6 +968,11 @@
       "Id": "AD-SCH-04",
       "Severity": "Info",
       "Title": "Schema version details should be retrievable"
+    },
+    {
+      "Id": "AD-SCH-05",
+      "Severity": "Medium",
+      "Title": "LAPS should be installed in Active Directory"
     },
     {
       "Id": "AD-SITE-01",
@@ -1076,8 +1131,8 @@
     },
     {
       "Id": "AD-TRUST-03",
-      "Severity": "High",
-      "Title": "Trust quarantined count should be retrievable"
+      "Severity": "Info",
+      "Title": "Trust quarantined count should be investigated"
     },
     {
       "Id": "AD-TRUST-04",
@@ -1241,8 +1296,8 @@
     },
     {
       "Id": "AD-USER-29",
-      "Severity": "Info",
-      "Title": "User delegation details should be retrievable"
+      "Severity": "High",
+      "Title": "No users should be configured for unconstrained delegation"
     },
     {
       "Id": "CIS.GH.1.2.2",
