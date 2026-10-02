@@ -16,5 +16,5 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 
 #### Related links
 
-- [Microsoft Defender for Identity: Ensure privileged accounts are not delegated](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#ensure-privileged-accounts-are-not-delegated)
+- [Microsoft Defender for Identity: Ensure privileged accounts are not delegated](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#ensure-privileged-accounts-are-not-delegated)
 - [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)
