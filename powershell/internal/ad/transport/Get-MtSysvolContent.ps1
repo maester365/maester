@@ -441,7 +441,7 @@ function Invoke-MtSysvolSmbClient {
                 # path injection if GetTempFileName() were ever compromised.
                 $tempPath = [IO.Path]::GetTempPath()
                 $authFileName = Split-Path -Path $authFile -Leaf
-                if (-not $authFile.StartsWith($tempPath) -or $authFileName -notmatch '^tmp[A-Za-z0-9]{6}$') {
+                if (-not $authFile.StartsWith($tempPath) -or $authFileName -notmatch '^tmp[A-Za-z0-9]{6}\.tmp$') {
                     throw 'Invalid temporary file path for smbclient authentication file.'
                 }
                 $chmodProcess = Start-Process -FilePath 'chmod' -ArgumentList @('600', $authFile) -Wait -NoNewWindow -PassThru
