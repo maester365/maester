@@ -68,9 +68,12 @@ function New-MtLdapConnection {
                     }
 
                     $chain = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Chain
-                    $result = $chain.Build($certificate)
-                    $chain.Dispose()
-                    return $result
+                    try {
+                        return $chain.Build($certificate)
+                    }
+                    finally {
+                        $chain.Dispose()
+                    }
                 }.GetNewClosure()
             }
             catch {
