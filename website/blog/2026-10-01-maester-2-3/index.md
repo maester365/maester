@@ -173,7 +173,7 @@ SharePoint Online      Skipped    -SharePointClientId was not provided
 - **The full details** are still available with `-Verbose`
 - **Admin consent**: Global Readers and other non-admins who hit "Approval required" now get clear steps to get consent, instead of a cryptic `User canceled authentication`
 
-Special thanks to [Rafał Fitt](/contributors/rafalfitt) for the admin consent guidance.
+Special thanks to [Morten Mynster](/contributors/mynster9361) for the idea and proposal behind the connection summary, and [Rafał Fitt](/contributors/rafalfitt) for the admin consent guidance.
 
 ## More reliable runs
 
@@ -217,7 +217,7 @@ Maester 2.3 includes contributions from 24 people:
 - [Merill Fernando](/contributors/merill) for security hardening, the `Connect-Maester` summary, and report, release, and automation improvements.
 - [Michael Morten Sonne](/contributors/michaelmsonne) for documenting the risks of client secret authentication.
 - [Mike Soule](/contributors/soulemike) for multi-forest, cross-platform Active Directory support and AD connection fixes.
-- [Morten Mynster](/contributors/mynster9361) for updating the CIS checks to v7.0.0.
+- [Morten Mynster](/contributors/mynster9361) for updating the CIS checks to v7.0.0 and proposing the `Connect-Maester` connection summary.
 - [Nathan McNulty](/contributors/nathanmcnulty) for Graph retries, the PIM fallback, the embedded role classification, and XSPM data sources.
 - [Rafał Fitt](/contributors/rafalfitt) for admin consent guidance in `Connect-Maester` and fixing the XSPM identity queries.
 - [Roy Klooster](/contributors/royklo) for Settings catalog support in the BitLocker and ASR checks.
