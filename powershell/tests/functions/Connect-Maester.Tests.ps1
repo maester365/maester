@@ -18,6 +18,20 @@ AfterAll {
 }
 
 Describe 'Connect-Maester' {
+    BeforeAll {
+        # Capture the summary rows instead of printing the table.
+        Mock Write-MtConnectionSummary -ModuleName Maester { $script:summaryRows = $Connection }
+
+        function Get-SummaryRow {
+            param([string] $ServiceName)
+            $script:summaryRows | Where-Object Service -eq $ServiceName
+        }
+    }
+
+    BeforeEach {
+        $script:summaryRows = $null
+    }
+
     It 'Offers GitHub as a -Service option' {
         $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
         $validateSet = $serviceParameter.Attributes |
@@ -144,6 +158,8 @@ Describe 'Connect-Maester' {
             $AuthMode -eq 'Negotiate' -and $TlsMode -eq 'Auto'
         }
         $verboseOutput -join "`n" | Should -Match "resolved target 'dc01.contoso.com'.*auth 'Negotiate'.*TLS 'Ldaps'"
+        (Get-SummaryRow ActiveDirectory).Status | Should -Be 'Connected'
+        (Get-SummaryRow ActiveDirectory).Details | Should -Be 'dc01.contoso.com (Ldaps)'
     }
 
     It 'Forwards Active Directory target, credential, authentication, and TLS options' {
@@ -189,5 +205,115 @@ Describe 'Connect-Maester' {
 
         Should -Invoke Connect-MtGitHub -ModuleName Maester -Times 0 -Exactly
         Should -Invoke Connect-MtAdTarget -ModuleName Maester -Times 0 -Exactly
+    }
+
+    Context 'Connection summary' {
+        BeforeEach {
+            Mock Get-AzContext -ModuleName Maester { [PSCustomObject]@{ Account = [PSCustomObject]@{ Id = 'admin@contoso.com' } } }
+            Mock Get-MtMaesterConfigGlobalSetting -ModuleName Maester { $null }
+            Mock Get-MtDataverseEnvironmentUrl -ModuleName Maester { $null }
+            Mock Connect-ExchangeOnline -ModuleName Maester {}
+            Mock Connect-IPPSSession -ModuleName Maester {}
+            Mock Get-ConnectionInformation -ModuleName Maester {
+                [PSCustomObject]@{ IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com' }
+            }
+            Mock Connect-MgGraph -ModuleName Maester {}
+            Mock Get-MgContext -ModuleName Maester { [PSCustomObject]@{ Account = 'admin@contoso.com'; TenantId = '00000000-0000-0000-0000-000000000000' } }
+            Mock Connect-MicrosoftTeams -ModuleName Maester { [PSCustomObject]@{ Account = 'admin@contoso.com' } }
+        }
+
+        It 'Reports every service for -Service All without printing anything else' {
+            $otherOutput = Connect-Maester -Service All 3>&1 6>&1
+
+            $otherOutput | Should -BeNullOrEmpty
+            (Get-SummaryRow Graph).Status | Should -Be 'Connected'
+            (Get-SummaryRow Graph).Details | Should -Be 'admin@contoso.com'
+            (Get-SummaryRow Azure).Details | Should -Be 'admin@contoso.com (existing session)'
+            (Get-SummaryRow ExchangeOnline).Details | Should -Be 'admin@contoso.com'
+            (Get-SummaryRow SecurityCompliance).Status | Should -Be 'Connected'
+            (Get-SummaryRow Teams).Details | Should -Be 'admin@contoso.com'
+            (Get-SummaryRow Dataverse).Status | Should -Be 'Skipped'
+            (Get-SummaryRow Dataverse).Details | Should -Match 'DataverseEnvironmentUrl'
+            (Get-SummaryRow SharePointOnline).Status | Should -Be 'Skipped'
+            (Get-SummaryRow SharePointOnline).Details | Should -Be '-SharePointClientId was not provided'
+            $script:summaryRows.Service | Should -Not -Contain 'GitHub'
+            $script:summaryRows.Service | Should -Not -Contain 'ActiveDirectory'
+        }
+
+        It 'Reports a module that is not installed and keeps connecting the other services' {
+            Mock Connect-ExchangeOnline -ModuleName Maester { throw [System.Management.Automation.CommandNotFoundException]::new('Connect-ExchangeOnline') }
+            Mock Connect-IPPSSession -ModuleName Maester { throw [System.Management.Automation.CommandNotFoundException]::new('Connect-IPPSSession') }
+
+            Connect-Maester -Service ExchangeOnline, SecurityCompliance, Graph
+
+            (Get-SummaryRow ExchangeOnline).Status | Should -Be 'Not installed'
+            (Get-SummaryRow ExchangeOnline).Details | Should -Be 'Install-Module ExchangeOnlineManagement -Scope CurrentUser'
+            (Get-SummaryRow SecurityCompliance).Status | Should -Be 'Not installed'
+            (Get-SummaryRow Graph).Status | Should -Be 'Connected'
+            Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly
+        }
+
+        It 'Reports a failed sign-in as an error and keeps connecting the other services' {
+            $ErrorActionPreference = 'Continue'
+            Mock Connect-ExchangeOnline -ModuleName Maester { throw 'User canceled authentication.' }
+
+            Connect-Maester -Service ExchangeOnline, Teams -ErrorAction SilentlyContinue -ErrorVariable connectErrors
+
+            (Get-SummaryRow ExchangeOnline).Status | Should -Be 'Failed'
+            (Get-SummaryRow ExchangeOnline).Details | Should -Be 'User canceled authentication.'
+            (Get-SummaryRow Teams).Status | Should -Be 'Connected'
+            $connectErrors.Exception.Message | Should -Contain 'Failed to connect to Exchange Online: User canceled authentication.'
+        }
+
+        It 'Reports Security & Compliance connected through the Exchange Online UPN fallback' {
+            $script:ippsCalls = 0
+            Mock Connect-IPPSSession -ModuleName Maester {
+                $script:ippsCalls++
+                if ($script:ippsCalls -eq 1) { throw 'Operation did not start in the allotted time.' }
+            }
+            Mock Get-MtExo -ModuleName Maester { [PSCustomObject]@{ UserPrincipalName = 'admin@contoso.com' } }
+
+            Connect-Maester -Service ExchangeOnline, SecurityCompliance 6>&1 | Should -BeNullOrEmpty
+
+            (Get-SummaryRow SecurityCompliance).Status | Should -Be 'Connected'
+            (Get-SummaryRow SecurityCompliance).Details | Should -Be 'admin@contoso.com (UPN from Exchange Online)'
+            Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 2 -Exactly
+        }
+
+        It 'Reports a Microsoft Graph sign-in error as failed' {
+            $ErrorActionPreference = 'Continue'
+            Mock Connect-MgGraph -ModuleName Maester { Write-Error 'AADSTS50076: Multi-factor authentication is required.' }
+            Mock Write-MtGraphConsentHelp -ModuleName Maester { $false }
+
+            Connect-Maester -ErrorAction Continue 2>$null
+
+            (Get-SummaryRow Graph).Status | Should -Be 'Failed'
+            (Get-SummaryRow Graph).Details | Should -Match 'AADSTS50076'
+        }
+
+        It 'Skips Dataverse when Azure does not connect' {
+            Mock Get-AzContext -ModuleName Maester { $null }
+            Mock Connect-AzAccount -ModuleName Maester { throw 'User canceled authentication.' }
+
+            Connect-Maester -Service Dataverse -ErrorAction SilentlyContinue
+
+            (Get-SummaryRow Azure).Status | Should -Be 'Failed'
+            (Get-SummaryRow Dataverse).Status | Should -Be 'Skipped'
+            (Get-SummaryRow Dataverse).Details | Should -Be 'Needs a working Azure connection'
+            Should -Invoke Get-MtDataverseEnvironmentUrl -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reports the GitHub failure reason' {
+            Mock Connect-MtGitHub -ModuleName Maester {
+                InModuleScope Maester {
+                    $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'NoToken' }
+                }
+            }
+
+            Connect-Maester -Service GitHub
+
+            (Get-SummaryRow GitHub).Status | Should -Be 'Failed'
+            (Get-SummaryRow GitHub).Details | Should -Be 'NoToken'
+        }
     }
 }

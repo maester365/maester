@@ -30,7 +30,7 @@ function Get-MtDataverseEnvironmentUrl {
     # Determine the Azure environment from the current Az context
     $azContext = Get-AzContext -ErrorAction SilentlyContinue
     if (-not $azContext) {
-        Write-Warning "No active Azure context. Ensure you are connected via 'Connect-Maester -Service Dataverse'."
+        Write-Verbose "No active Azure context. Ensure you are connected via 'Connect-Maester -Service Dataverse'."
         return $null
     }
 
@@ -62,7 +62,7 @@ function Get-MtDataverseEnvironmentUrl {
             $gdsToken = $gdsTokenResult.Token
         }
     } catch {
-        Write-Warning "Failed to get Global Discovery Service token. Ensure you are connected via 'Connect-Maester -Service Dataverse'. Error: $_"
+        Write-Verbose "Failed to get Global Discovery Service token. Ensure you are connected via 'Connect-Maester -Service Dataverse'. Error: $_"
         return $null
     }
 
@@ -75,12 +75,12 @@ function Get-MtDataverseEnvironmentUrl {
     try {
         $gdsResponse = Invoke-RestMethod -Uri "$gdsBaseUrl/api/discovery/v2.0/Instances?`$select=ApiUrl,FriendlyName,State&`$filter=State eq 0" -Headers $gdsHeaders -ErrorAction Stop
     } catch {
-        Write-Warning "Failed to query Global Discovery Service for Dataverse environments: $_"
+        Write-Verbose "Failed to query Global Discovery Service for Dataverse environments: $_"
         return $null
     }
 
     if (-not $gdsResponse.value -or $gdsResponse.value.Count -eq 0) {
-        Write-Warning "No Dataverse environments found via Global Discovery Service. If you have a GCC environment or a specific environment URL, configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings."
+        Write-Verbose "No Dataverse environments found via Global Discovery Service. If you have a GCC environment or a specific environment URL, configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings."
         return $null
     }
 
