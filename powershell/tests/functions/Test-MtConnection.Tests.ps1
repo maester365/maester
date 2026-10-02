@@ -617,12 +617,12 @@ Describe 'Test-MtConnection AzureDevOps cache' {
 
     It 'caches a successful Azure DevOps probe under a cache-specific key' {
         $result = InModuleScope Maester {
-            $script:adoProbeUri = $null
+            $script:adoProbeRequest = $null
             New-Item -Path function:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } } -Force | Out-Null
             New-Item -Path function:Invoke-ADOPSRestMethod -Value {
                 [CmdletBinding()]
                 param($Uri, $Method)
-                $script:adoProbeUri = $Uri
+                $script:adoProbeRequest = "$Method $Uri"
                 @{ authenticatedUser = @{ id = 'user-id' } }
             } -Force | Out-Null
             Test-MtConnection -Service AzureDevOps -Details
@@ -631,7 +631,7 @@ Describe 'Test-MtConnection AzureDevOps cache' {
         $result.AllConnected | Should -BeTrue
         $result.AzureDevOps['Organization'] | Should -Be 'ado-org'
         InModuleScope Maester {
-            $script:adoProbeUri | Should -Be 'https://dev.azure.com/ado-org/_apis/connectionData'
+            $script:adoProbeRequest | Should -Be 'Get https://dev.azure.com/ado-org/_apis/connectionData'
             $__MtSession.AzureDevOpsConnectionCache['Organization'] | Should -Be 'ado-org'
             $__MtSession.ContainsKey('AzureDevOpsConnection') | Should -BeFalse
         }
@@ -642,8 +642,6 @@ Describe 'Test-MtConnection AzureDevOps cache' {
         $result = InModuleScope Maester {
             New-Item -Path function:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } } -Force | Out-Null
             New-Item -Path function:Invoke-ADOPSRestMethod -Value {
-                [CmdletBinding()]
-                param($Uri, $Method)
                 throw 'Failed to get token. Could not find existing token, please run the command Connect-ADOPS!'
             } -Force | Out-Null
             Test-MtConnection -Service AzureDevOps -Details
