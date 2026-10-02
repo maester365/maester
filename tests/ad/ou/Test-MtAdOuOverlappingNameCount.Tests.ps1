@@ -5,6 +5,8 @@ Describe "Active Directory - Organizational Units" -Tag "AD", "AD.OU", "AD-OU-01
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "OU data should be accessible to analyze for duplicate names"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

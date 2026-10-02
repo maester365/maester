@@ -5,6 +5,8 @@ Describe "Active Directory - Group Members" -Tag "AD", "AD.Group", "AD-GMC-01" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "group member data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

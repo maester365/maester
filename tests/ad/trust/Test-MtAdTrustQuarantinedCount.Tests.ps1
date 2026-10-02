@@ -1,5 +1,5 @@
 Describe "Active Directory - Trusts" -Tag "AD", "AD.Trust", "AD-TRUST-03" {
-    It "AD-TRUST-03: Trust quarantined count should be retrievable" {
+    It "AD-TRUST-03: Trust quarantined count should be investigated" {
 
         $result = Test-MtAdTrustQuarantinedCount
 

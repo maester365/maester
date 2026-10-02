@@ -5,6 +5,8 @@ Describe "Active Directory - Domain Controllers" -Tag "AD", "AD.DomainController
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "FSMO role holder data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

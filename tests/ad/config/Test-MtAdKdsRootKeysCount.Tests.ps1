@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-22" 
         $result = Test-MtAdKdsRootKeysCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "KDS root key data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

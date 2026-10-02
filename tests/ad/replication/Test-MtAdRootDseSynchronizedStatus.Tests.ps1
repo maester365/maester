@@ -1,10 +1,12 @@
 Describe "Active Directory - Replication" -Tag "AD", "AD.Replication", "AD-ROOTDSE-03" {
-    It "AD-ROOTDSE-03: Root DSE synchronized status should be retrievable" {
+    It "AD-ROOTDSE-03: Root DSE should be synchronized" {
 
         $result = Test-MtAdRootDseSynchronizedStatus
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "Root DSE data should be accessible and DC should be synchronized"
+            $result | Should -Be $true -Because "unsynchronized DCs can fail to receive security policy changes promptly"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

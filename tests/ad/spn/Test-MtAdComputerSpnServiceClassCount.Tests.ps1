@@ -5,6 +5,8 @@ Describe "Active Directory - SPN Analysis" -Tag "AD", "AD.SPN", "AD-SPN-01" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "computer SPN data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

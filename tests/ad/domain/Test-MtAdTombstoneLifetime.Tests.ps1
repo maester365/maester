@@ -5,6 +5,8 @@ Describe "Active Directory - Forest" -Tag "AD", "AD.Forest", "AD-FOR-03" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "tombstone lifetime data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

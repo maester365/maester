@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-08" 
         $result = Test-MtAdAuthNPolicyConfigCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "authentication policy configuration should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

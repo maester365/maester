@@ -1,5 +1,5 @@
 Describe "Active Directory - SPN Analysis" -Tag "AD", "AD.SPN", "AD-SPN-04" {
-    It "AD-SPN-04: Computer SPN unknown service class details should be retrievable" {
+    It "AD-SPN-04: Computer SPN unknown service class details should be investigated" {
 
         $result = Test-MtAdComputerSpnUnknownDetails
 

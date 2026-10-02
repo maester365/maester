@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-14" 
         $result = Test-MtAdEnrollmentTemplatesCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "enrollment template data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

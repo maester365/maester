@@ -5,6 +5,8 @@ Describe "Active Directory - Schema" -Tag "AD", "AD.Schema", "AD-SCH-04" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "schema version details should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

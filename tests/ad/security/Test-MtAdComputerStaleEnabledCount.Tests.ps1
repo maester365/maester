@@ -1,10 +1,10 @@
 Describe "Active Directory - Security Accounts" -Tag "AD", "AD.Security", "AD-DCOMP-06" {
-    It "AD-DCOMP-06: Stale enabled computer count should be retrievable" {
+    It "AD-DCOMP-06: No enabled computers should be stale for 180 days or more" {
 
         $result = Test-MtAdComputerStaleEnabledCount
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "stale enabled computer information should be accessible"
+            $result | Should -Be $true -Because "stale enabled computers retain attackable directory credentials"
         }
     }
 }

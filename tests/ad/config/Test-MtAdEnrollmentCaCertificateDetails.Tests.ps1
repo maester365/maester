@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-15" 
         $result = Test-MtAdEnrollmentCaCertificateDetails
         if ($null -ne $result) {
             $result | Should -Be $true -Because "enrollment CA certificate data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }
