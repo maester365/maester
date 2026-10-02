@@ -326,7 +326,7 @@ if ($Worker.IsPresent) {
                 )
             }
             catch {
-                # Unix file modes are not supported on this platform (e.g., Windows)
+                Write-Error "Failed to set Unix file mode on '$ResultPath': $_."
             }
         }
     }
@@ -455,7 +455,7 @@ foreach ($row in $selectedRows) {
             )
         }
         catch {
-            # Unix file modes are not supported on this platform (e.g., Windows)
+            Write-Error "Failed to set Unix file mode on '$tempDirectory': $_."
         }
     }
     $resultFile = Join-Path $tempDirectory 'result.clixml'
