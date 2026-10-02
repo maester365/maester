@@ -21,10 +21,11 @@ Maester 2.3 is here.
 - **4 new Entra ID checks** for dynamic group rules and app registration credentials
 - **4 macOS checks** for Intune compliance and enrollment
 - **7 Azure DevOps checks** for GitHub Advanced Security Secret Protection, Code Security, and Copilot code review
-- **Multi-forest Active Directory**, plus Kerberos (GSSAPI) over SSH for testing AD from Linux and macOS
+- **Multi-forest Active Directory**, Kerberos (GSSAPI) over SSH for testing AD from Linux and macOS, and severity ratings for the AD checks
 - **A rebuilt HTML report** that's about 85% smaller and opens without a single network request
 - **Security hardening** for the report, email, and pipeline output. Please update.
-- **More reliable runs**: Graph retries, sovereign cloud fixes, PIM license fallback, and clearer admin consent guidance
+- **A clearer `Connect-Maester`** that ends with a per-service summary and keeps going when one service fails
+- **More reliable runs**: Graph retries, sovereign cloud fixes, PIM license fallback, and skips that are no longer reported as errors
 
 ## Security checks for Microsoft Entra Agent ID
 
@@ -116,8 +117,15 @@ The Active Directory checks we shipped in 2.2 got a lot of real-world feedback, 
 - **Richer forest data**: FSMO role holders, UPN and SPN suffixes, and cross-forest references
 - **More resilient LDAP**: individual queries recover from missing attributes instead of failing the whole collection, and AD libraries only load when you actually test AD
 - **Computer name targeting** when collecting domain state
+- **Connection fixes**: WinRM falls back to HTTP with Negotiate encryption when HTTPS fails and you've supplied credentials, and a domain controller without LDAPS or StartTLS now gives a clear error
+- **Cache scoped to the target**: switching between domains no longer returns cached data from the previous one
+- **SYSVOL on PowerShell 7.2**: SYSVOL content collection now works on PowerShell 7.2
 
-Special thanks to [Mike Soule](/contributors/soulemike) for the refactor, and to everyone who ran the preview against their own domains and told us what broke.
+The AD checks also have **severity ratings** now. Checks that match a checkpoint in the [CERT-FR (ANSSI) Active Directory checklist](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html) take their severity from it and link to it in their docs. Inventory-only checks are rated `Info`. A small number that need a closer look are still unrated. The AD checks also have their own pages in the Tests section of maester.dev, so you can browse them like any other suite.
+
+The AD checks are still in preview and we're still working through feedback, so keep it coming.
+
+Special thanks to [Mike Soule](/contributors/soulemike) for the refactor and connection fixes, [Agnivesh](/contributors/agnivesh) for the severity ratings and AD test pages, and everyone who ran the preview against their own domains and told us what broke.
 
 ## A smaller, faster report
 
@@ -144,6 +152,29 @@ A Maester report is built from data in your tenant, and some of that data is con
 
 Special thanks to [Fabian Bader](/contributors/f-bader) for the email hardening and [Travis McDade](/contributors/thetechgy) for the GitHub Actions hardening.
 
+## A clearer `Connect-Maester`
+
+`Connect-Maester -Service All` used to print a stream of warnings, even for services you never meant to use. Now it finishes with a single table that shows what happened to each service:
+
+```text
+Service                Status     Details
+-------                ------     -------
+Microsoft Graph        Connected  admin@contoso.com
+Azure                  Connected  admin@contoso.com
+Dataverse              Skipped    No environment found, set DataverseEnvironmentUrl in maester-config.json
+Exchange Online        Connected  admin@contoso.com
+Security & Compliance  Connected  admin@contoso.com
+Microsoft Teams        Connected  admin@contoso.com
+SharePoint Online      Skipped    -SharePointClientId was not provided
+```
+
+- **One failure no longer stops the rest.** Previously, a sign-in error from one service stopped `Connect-Maester`, and every service after it was never tried. Now that service is marked `Failed` with the first line of the error, and the rest still connect
+- **Missing modules** show the `Install-Module` command you need
+- **The full details** are still available with `-Verbose`
+- **Admin consent**: Global Readers and other non-admins who hit "Approval required" now get clear steps to get consent, instead of a cryptic `User canceled authentication`
+
+Special thanks to [Rafał Fitt](/contributors/rafalfitt) for the admin consent guidance.
+
 ## More reliable runs
 
 A lot of this release is about Maester behaving well in tenants that aren't quite like ours:
@@ -152,9 +183,11 @@ A lot of this release is about Maester behaving well in tenants that aren't quit
 - **PIM licensing**: when the PIM API rejects a tenant's license, role lookups fall back to role assignments instead of erroring out the CIS checks that depend on them
 - **Sovereign clouds**: requests that were hard-coded to the global Graph endpoint now use the cloud you connected to
 - **Long runs**: `Connect-Maester -ClientTimeout` passes a longer HTTP timeout through to Microsoft Graph
-- **Admin consent**: Global Readers and other non-admins who hit "Approval required" now get clear steps to get consent, instead of a cryptic `User canceled authentication`
+- **Skips stay skips**: a check that skipped from inside its own error handling was reported as **Error**. That affected 17 checks, and it's now fixed centrally, so your custom tests benefit too
+- **Azure DevOps**: a saved ADOPS sign-in with an expired token no longer turns every Azure DevOps test into an error. The tests now skip with "Not connected to Azure DevOps"
+- **Copilot Studio**: when the agent query fails, the `MT.1113` to `MT.1122` skips now say why (for example, a missing Dataverse permission) instead of dumping raw JSON to the console
 - **No runtime downloads for role tiers**: the privileged-role classification used by the permanent role and PIM alert checks now ships with the module instead of being downloaded from GitHub at runtime. It's refreshed automatically through a reviewed pull request each month
-- **Exposure Management**: the external data sources used by the XSPM checks can be pointed at your own mirrors
+- **Exposure Management**: the XSPM identity queries use the correct Advanced Hunting schema, and the external data sources they use can be pointed at your own mirrors
 - **Fewer false positives**: the MFA checks ignore risk-scoped Conditional Access policies, break-glass accounts are excluded from risk recommendations, `MT.1011` explains why browser-scoped policies don't match, and checks that can't be verified now skip with a reason instead of failing silently
 
 Special thanks to [Nathan McNulty](/contributors/nathanmcnulty), [Sebastian Claesson](/contributors/sebastianclaesson), [Matthias](/contributors/blindzero), [Rafał Fitt](/contributors/rafalfitt), [eduardarbona](/contributors/earbona23), [Sam Erde](/contributors/samerde), and [Massimo Mazzariol](/contributors/massimomazzariol).
@@ -170,7 +203,7 @@ Special thanks to [Nathan McNulty](/contributors/nathanmcnulty), [Sebastian Clae
 
 Maester 2.3 includes contributions from 24 people:
 
-- [Agnivesh](/contributors/agnivesh) for the Agent ID and dynamic group checks, and generated docs fixes.
+- [Agnivesh](/contributors/agnivesh) for the Agent ID and dynamic group checks, Active Directory severity ratings, and generated docs fixes.
 - [Beerd Veldman](/contributors/brianveldman) for fixing typos across the docs.
 - [Daniel Lystad](/contributors/daniellystad) for the four macOS checks.
 - [eduardarbona](/contributors/earbona23) for fixing false positives and silent failures in several Entra and Global Secure Access checks.
@@ -181,12 +214,12 @@ Maester 2.3 includes contributions from 24 people:
 - [John Flores](/contributors/buckeyeguyjflo) for branding and accessibility fixes across the docs.
 - [Massimo Mazzariol](/contributors/massimomazzariol) for fixes to BitLocker, Azure DevOps, Entra recommendation links, and unit tests.
 - [Matthias](/contributors/blindzero) for the Graph client timeout, the CISA DKIM coexistence fix, and clearer Entra Connect guidance.
-- [Merill Fernando](/contributors/merill) for security hardening, report, release, and automation improvements.
+- [Merill Fernando](/contributors/merill) for security hardening, the `Connect-Maester` summary, and report, release, and automation improvements.
 - [Michael Morten Sonne](/contributors/michaelmsonne) for documenting the risks of client secret authentication.
-- [Mike Soule](/contributors/soulemike) for multi-forest, cross-platform Active Directory support.
+- [Mike Soule](/contributors/soulemike) for multi-forest, cross-platform Active Directory support and AD connection fixes.
 - [Morten Mynster](/contributors/mynster9361) for updating the CIS checks to v7.0.0.
 - [Nathan McNulty](/contributors/nathanmcnulty) for Graph retries, the PIM fallback, the embedded role classification, and XSPM data sources.
-- [Rafał Fitt](/contributors/rafalfitt) for admin consent guidance in `Connect-Maester`.
+- [Rafał Fitt](/contributors/rafalfitt) for admin consent guidance in `Connect-Maester` and fixing the XSPM identity queries.
 - [Roy Klooster](/contributors/royklo) for Settings catalog support in the BitLocker and ASR checks.
 - [Sam Erde](/contributors/samerde) for MFA check fixes, telemetry timeouts, and agent instructions for contributors.
 - [Sebastian Claesson](/contributors/sebastianclaesson) for the Azure DevOps Advanced Security checks and sovereign cloud fixes.
