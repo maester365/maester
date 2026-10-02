@@ -373,9 +373,9 @@ function Connect-MtAdTarget {
             ($lastException.Message -match 'certificate|cert|TLS|SSL|handshake|trust') -or
             ($null -ne $lastException.InnerException -and $lastException.InnerException.Message -match 'certificate|cert|TLS|SSL|handshake|trust')
         if ($isCertificateError) {
-            throw [System.Exception]::new("DC does not support LDAPS or StartTLS. A certificate is required for explicit credential connections. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)", $lastException)
+            throw [System.Exception]::new("DC does not support LDAPS or StartTLS. A certificate is required for explicit credential connections. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)")
         } else {
-            throw [System.Exception]::new("Could not establish an LDAP connection to the DC over LDAPS or StartTLS. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)", $lastException)
+            throw [System.Exception]::new("Could not establish an LDAP connection to the DC over LDAPS or StartTLS. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)")
         }
     } elseif ($null -ne $lastException) {
         # Preserve original exception behavior when only a single TLS mode was attempted or auto-detection is not conclusive
@@ -497,7 +497,7 @@ function Connect-MtAdTarget {
             $__MtSession.ADCredential = $null
             $__MtSession.ADConnection = Get-MtAdSessionState -Connected $false -ErrorMessage $sanitizedError
         }
-        throw [System.Exception]::new("Failed to connect to Active Directory: $sanitizedError", $_.Exception)
+        throw [System.Exception]::new("Failed to connect to Active Directory: $sanitizedError")
     }
     finally {
         if ($null -ne $resolvedConnection) {

@@ -7,7 +7,8 @@ function Invoke-MtADManagementCommand {
     Creates a short-lived credentialed PSSession to the server resolved by the
     current Maester Active Directory connection. HTTPS with normal certificate
     validation is attempted first. An HTTP Negotiate fallback, which retains
-    WSMan message encryption, is available only when explicitly enabled.
+    WSMan message encryption, is attempted automatically when credentials are
+    present.
 
     On non-Windows hosts, the optional PSWSMan module must be installed. The
     function invokes only fixed DNS inventory and SMB configuration
@@ -31,8 +32,9 @@ function Invoke-MtADManagementCommand {
     invocation, and after the remote operation returns.
 
     .PARAMETER AllowNegotiateFallback
-    Allows fallback from validated HTTPS to HTTP with Negotiate authentication
-    and WSMan message encryption. This function never changes TrustedHosts.
+    Deprecated. Fallback from validated HTTPS to HTTP with Negotiate
+    authentication and WSMan message encryption is now automatic when
+    credentials are present. This switch is retained for backward compatibility.
 
     .EXAMPLE
     Invoke-MtADManagementCommand -Operation SmbConfiguration
@@ -47,6 +49,7 @@ function Invoke-MtADManagementCommand {
     fallback if the validated HTTPS connection cannot be established.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'CancellationToken', Justification = 'The token is consumed by the nested cancellation guard.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'AllowNegotiateFallback', Justification = 'Retained for backward compatibility; fallback is now automatic when credentials are present.')]
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(
@@ -212,13 +215,13 @@ function Invoke-MtADManagementCommand {
             SkipCertificateChecks = $false
         })
 
-    if ($AllowNegotiateFallback.IsPresent -or $null -ne $credential) {
-        $connectionAttempts.Add([PSCustomObject][ordered]@{
-                Name                  = 'HTTP'
-                UseSSL                = $false
-                SkipCertificateChecks = $true
-            })
-    }
+    # HTTP Negotiate fallback is automatic when credentials are present.
+    # Credentials are validated earlier in the function; by this point they are always available.
+    $connectionAttempts.Add([PSCustomObject][ordered]@{
+            Name                  = 'HTTP'
+            UseSSL                = $false
+            SkipCertificateChecks = $true
+        })
 
     $lastError = $null
     foreach ($connectionAttempt in $connectionAttempts) {
@@ -315,6 +318,9 @@ function Invoke-MtADManagementCommand {
         catch {
             $lastError = $_
             Write-Verbose "The $($connectionAttempt.Name) management operation failed with a redacted error."
+            # Do not retry invocation or validation failures over a different transport.
+            # Only session-establishment failures (caught above) are eligible for fallback.
+            break
         }
         finally {
             if ($null -ne $session) {
