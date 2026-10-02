@@ -319,10 +319,15 @@ if ($Worker.IsPresent) {
         Write-MatrixJson -InputObject $evidence -Path $workerInput.EvidenceFile
         [PSCustomObject]$evidence | Export-Clixml -LiteralPath $ResultPath
         if ('System.IO.UnixFileMode' -as [type]) {
-            [System.IO.File]::SetUnixFileMode(
-                $ResultPath,
-                [System.IO.UnixFileMode]::UserRead -bor [System.IO.UnixFileMode]::UserWrite
-            )
+            try {
+                [System.IO.File]::SetUnixFileMode(
+                    $ResultPath,
+                    [System.IO.UnixFileMode]::UserRead -bor [System.IO.UnixFileMode]::UserWrite
+                )
+            }
+            catch {
+                # Unix file modes are not supported on this platform (e.g., Windows)
+            }
         }
     }
 
@@ -443,10 +448,15 @@ foreach ($row in $selectedRows) {
     $tempDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "maester-public-matrix-$sessionId"
     New-Item -Path $tempDirectory -ItemType Directory -Force | Out-Null
     if ('System.IO.UnixFileMode' -as [type]) {
-        [System.IO.File]::SetUnixFileMode(
-            $tempDirectory,
-            [System.IO.UnixFileMode]::UserRead -bor [System.IO.UnixFileMode]::UserWrite -bor [System.IO.UnixFileMode]::UserExecute
-        )
+        try {
+            [System.IO.File]::SetUnixFileMode(
+                $tempDirectory,
+                [System.IO.UnixFileMode]::UserRead -bor [System.IO.UnixFileMode]::UserWrite -bor [System.IO.UnixFileMode]::UserExecute
+            )
+        }
+        catch {
+            # Unix file modes are not supported on this platform (e.g., Windows)
+        }
     }
     $resultFile = Join-Path $tempDirectory 'result.clixml'
     $pipeName = "maester-public-matrix-$sessionId"
