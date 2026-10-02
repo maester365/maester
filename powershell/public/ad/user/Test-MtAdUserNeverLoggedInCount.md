@@ -1,5 +1,9 @@
 Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Investigate enabled accounts with no recorded logon activity. Disable or remove unused accounts and make sure future provisioning workflows include validation and cleanup steps.

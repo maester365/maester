@@ -1,5 +1,9 @@
 Enabled user accounts that have not logged on for more than 90 days are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Investigate dormant enabled accounts and disable or remove those that are no longer needed. For exceptions such as break-glass or low-use service accounts, apply stronger controls and document ownership.

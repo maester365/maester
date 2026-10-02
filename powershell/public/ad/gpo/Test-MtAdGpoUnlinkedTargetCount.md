@@ -2,6 +2,10 @@ Active Directory targets (OUs, the domain root, and sites) without any Group Pol
 
 When a target has no GPO links, security and configuration baselines may not be applied consistently—creating gaps that attackers or misconfigurations can exploit.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Investigate any unlinked targets and remediate the policy coverage gap:

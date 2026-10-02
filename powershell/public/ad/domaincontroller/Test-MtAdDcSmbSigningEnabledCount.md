@@ -6,6 +6,10 @@ SMB signing (also known as security signatures) is a security feature that helps
 
 Without SMB signing, an attacker on the network could intercept and modify SMB traffic between clients and domain controllers.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Enable SMB signing on all domain controllers.**

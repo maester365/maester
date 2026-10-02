@@ -7,6 +7,10 @@ Understanding how many distinct networks have reverse lookup zones helps:
 
 Each reverse zone represents a network segment that can be resolved from IP to hostname.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Maintain reverse zones for all production networks
