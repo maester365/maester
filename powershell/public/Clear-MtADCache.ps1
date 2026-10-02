@@ -75,6 +75,12 @@ function Clear-MtADCache {
         Remove-CacheKeyIfPresent -Key "DomainState:$ComputerName"
         # Also clear the global legacy aggregate key to ensure a clean state when scoped by computer
         Remove-CacheKeyIfPresent -Key 'DomainState'
+        # Clear target-scoped Dacls keys for this computer
+        foreach ($key in @($__MtSession.ADCache.Keys)) {
+            if ($key -like "Dacls:*:$ComputerName") {
+                Remove-CacheKeyIfPresent -Key $key
+            }
+        }
         return
     }
 
@@ -111,8 +117,23 @@ function Clear-MtADCache {
             Remove-CacheKeyIfPresent -Key "DomainState:$ComputerName"
         }
 
-        # Preserve non-affected caches
-        # Dacls and GpoState are never touched by scoped clearing
+        # If DaclEntries is among the categories, clear target-scoped Dacls caches
+        if ($Categories -contains 'DaclEntries') {
+            if ($ComputerName) {
+                foreach ($key in @($__MtSession.ADCache.Keys)) {
+                    if ($key -like "Dacls:*:$ComputerName") {
+                        Remove-CacheKeyIfPresent -Key $key
+                    }
+                }
+            }
+            else {
+                foreach ($key in @($__MtSession.ADCache.Keys)) {
+                    if ($key -like 'Dacls:*') {
+                        Remove-CacheKeyIfPresent -Key $key
+                    }
+                }
+            }
+        }
     }
     # If we reach here, we have performed the scoped clearing (or none was required).
     # Do not overwrite non-scoped caches here.

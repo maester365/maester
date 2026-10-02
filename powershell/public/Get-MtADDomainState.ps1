@@ -698,8 +698,11 @@ function Get-MtADDomainState {
         # When probing a different -ComputerName target, do not reuse the resolved TLS mode
         # from the session's primary connection. Use the requested mode so the probe can
         # negotiate a supported TLS mode for that specific target.
+        # Also use RequestedTlsMode when doing DNS-based lookup (no explicit server pinned)
+        # so that Auto fallback is preserved if the resolved DC changes.
         $isDifferentComputer = $ComputerName -and ($ComputerName -ne $__MtSession.ADConnection.ResolvedServer)
-        $effectiveTlsMode = if ($isDifferentComputer) {
+        $isDnsBasedLookup = -not $ComputerName -and -not $__MtSession.ADConnection.RequestedServer
+        $effectiveTlsMode = if ($isDifferentComputer -or $isDnsBasedLookup) {
             $__MtSession.ADConnection.RequestedTlsMode
         } else {
             $__MtSession.ADConnection.TlsMode
