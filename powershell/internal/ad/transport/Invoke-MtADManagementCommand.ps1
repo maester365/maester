@@ -230,7 +230,9 @@ function Invoke-MtADManagementCommand {
             $sessionOptionParameters = [ordered]@{
                 OperationTimeout = $TimeoutSeconds * 1000
             }
-            if ($connectionAttempt.SkipCertificateChecks) {
+            # Only skip CA/CN checks for HTTPS connections that need certificate handling.
+            # HTTP connections do not use TLS, so certificate checks are not applicable.
+            if ($connectionAttempt.UseSSL -and $connectionAttempt.SkipCertificateChecks) {
                 $sessionOptionParameters['SkipCACheck'] = $true
                 $sessionOptionParameters['SkipCNCheck'] = $true
             }
@@ -253,6 +255,14 @@ function Invoke-MtADManagementCommand {
             }
 
             $session = New-PSSession @sessionParameters
+        }
+        catch {
+            $lastError = $_
+            Write-Verbose "The $($connectionAttempt.Name) management session could not be established."
+            continue
+        }
+
+        try {
             Assert-MtManagementNotCancelled
 
             $rawResult = switch ($Operation) {
@@ -304,7 +314,7 @@ function Invoke-MtADManagementCommand {
         }
         catch {
             $lastError = $_
-            Write-Verbose "The $($connectionAttempt.Name) management attempt failed with a redacted error."
+            Write-Verbose "The $($connectionAttempt.Name) management operation failed with a redacted error."
         }
         finally {
             if ($null -ne $session) {

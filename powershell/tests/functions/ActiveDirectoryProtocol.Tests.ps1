@@ -434,9 +434,6 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                     $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
                 }
                 $script:PortsUsed.Add($portValue)
-                # Also mirror into a global collector for cross-scope visibility
-                if (-not $global:PortsUsed) { $global:PortsUsed = [System.Collections.Generic.List[object]]::new() }
-                $global:PortsUsed.Add($portValue)
                 return [pscustomobject]@{ Port = $portValue }
             }
             Mock Get-MtLdapRootDse -ModuleName Maester {
@@ -488,11 +485,8 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 Get-MtADDomainState -Refresh | Out-Null
 
                 # Expect that the re-probe used port 389 (StartTLS), not 636 (LDAPS)
-                $portsCollector = @()
-                if ($null -ne $script:PortsUsed) { $portsCollector += $script:PortsUsed.ToArray() }
-                if ($null -ne $global:PortsUsed) { $portsCollector += $global:PortsUsed.ToArray() }
-                $portsCollector | Should -Contain 389
-                $portsCollector | ForEach-Object { $_ } | Should -Not -Contain 636
+                $script:PortsUsed | Should -Contain 389
+                $script:PortsUsed | Should -Not -Contain 636
             }
         }
     }
@@ -583,15 +577,14 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
 
         # Test 1: Enhanced error message when both TLS modes fail
         It 'Enhanced error message when both TLS modes fail' {
-            # Override both TLS paths to fail by throwing for both 636 and 389
-            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 636 } -MockWith {
-                throw [System.Exception]::new('Port 636 failed')
-            }
-            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 389 } -MockWith {
-                throw [System.Exception]::new('Port 389 failed')
+            # Override the base mock so both TLS paths fail
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -MockWith {
+                param($Server, $Port, $UseStartTls)
+                $script:connectionCalls.Add([PSCustomObject]@{ Port = $Port })
+                throw [System.Exception]::new("Port $Port failed")
             }
 
-            InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto }
+            { InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto } } | Should -Throw '*LDAPS or StartTLS*'
             $script:connectionCalls.Count | Should -Be 2
             $script:connectionCalls[0].Port | Should -Be 636
             $script:connectionCalls[1].Port | Should -Be 389

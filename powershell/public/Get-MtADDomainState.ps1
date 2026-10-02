@@ -695,9 +695,19 @@ function Get-MtADDomainState {
 
     $protocolConnection = $null
     try {
+        # When probing a different -ComputerName target, do not reuse the resolved TLS mode
+        # from the session's primary connection. Use the requested mode so the probe can
+        # negotiate a supported TLS mode for that specific target.
+        $isDifferentComputer = $ComputerName -and ($ComputerName -ne $__MtSession.ADConnection.ResolvedServer)
+        $effectiveTlsMode = if ($isDifferentComputer) {
+            $__MtSession.ADConnection.RequestedTlsMode
+        } else {
+            $__MtSession.ADConnection.TlsMode
+        }
+
         $protocolTargetParameters = @{
             AuthMode = $__MtSession.ADConnection.RequestedAuthMode
-            TlsMode  = $__MtSession.ADConnection.TlsMode
+            TlsMode  = $effectiveTlsMode
             PassThru = $true
         }
         if ($ComputerName) {

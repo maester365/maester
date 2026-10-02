@@ -90,6 +90,8 @@ function Clear-MtADCache {
                         Remove-CacheKeyIfPresent -Key $key
                     }
                 }
+                # Also remove the legacy key when ResolvedDomain is absent
+                Remove-CacheKeyIfPresent -Key "DomainState:$($cat):$ComputerName"
             }
             else {
                 # Global per-category key and all per-computer variants for this category

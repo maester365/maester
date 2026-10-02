@@ -367,7 +367,16 @@ function Connect-MtAdTarget {
 
     # If we attempted multiple TLS modes (e.g., LDAPS then StartTLS) but still failed, return a clearer error
     if ((Get-Variable -Name 'TlsModeAttemptCount' -Scope Script -ErrorAction SilentlyContinue).Value -ge 2 -and $null -ne $lastException) {
-        throw [System.Exception]::new("DC does not support LDAPS or StartTLS. A certificate is required for explicit credential connections. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)", $lastException)
+        # Only diagnose as a certificate problem when the exception indicates a TLS/certificate issue.
+        # Bind failures, RootDSE read errors, and metadata search failures should not claim the DC lacks TLS support.
+        $isCertificateError = $lastException -is [System.Security.Authentication.AuthenticationException] -or
+            ($lastException.Message -match 'certificate|cert|TLS|SSL|handshake|trust') -or
+            ($null -ne $lastException.InnerException -and $lastException.InnerException.Message -match 'certificate|cert|TLS|SSL|handshake|trust')
+        if ($isCertificateError) {
+            throw [System.Exception]::new("DC does not support LDAPS or StartTLS. A certificate is required for explicit credential connections. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)", $lastException)
+        } else {
+            throw [System.Exception]::new("Could not establish an LDAP connection to the DC over LDAPS or StartTLS. Original error: $(Get-MtAdSanitizedErrorMessage -Exception $lastException)", $lastException)
+        }
     } elseif ($null -ne $lastException) {
         # Preserve original exception behavior when only a single TLS mode was attempted or auto-detection is not conclusive
         throw $lastException
