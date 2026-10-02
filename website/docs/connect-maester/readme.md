@@ -142,11 +142,29 @@ If the PnP PowerShell module is not installed or there is no active connection, 
 
 The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance, Microsoft Teams, and SharePoint Online.
 
-If `-SharePointClientId` is not provided, the SharePoint Online connection is skipped with a warning.
+If `-SharePointClientId` is not provided, the SharePoint Online connection is skipped.
 
 ```powershell
 Connect-Maester -Service All
 ```
+
+When it finishes, `Connect-Maester` shows a summary of each service it tried. A service is **Connected**, **Skipped** (for example, no Dataverse environment or no `-SharePointClientId`), **Failed** (with the first line of the error), or **Not installed** (with the command to install the module).
+
+```text
+Service                Status     Details
+-------                ------     -------
+Microsoft Graph        Connected  user@contoso.com
+Azure                  Connected  user@contoso.com
+Dataverse              Skipped    No environment found, set DataverseEnvironmentUrl in maester-config.json
+Exchange Online        Connected  user@contoso.com
+Security & Compliance  Connected  user@contoso.com
+Microsoft Teams        Connected  user@contoso.com
+SharePoint Online      Skipped    -SharePointClientId was not provided
+
+For more details on each connection, run Connect-Maester with -Verbose.
+```
+
+Run `Connect-Maester -Verbose` to see the step-by-step messages for each connection, including the full error when a service fails.
 
 If you need to connect to just a subset of the services you can specifiy them using the `-Service` parameter.
 

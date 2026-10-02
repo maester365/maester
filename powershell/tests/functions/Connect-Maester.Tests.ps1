@@ -1,9 +1,9 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 
     # Keep -Service All tests isolated from optional service modules that may not be installed.
     $script:createdStubs = @()
-    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams') {
+    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Get-AzAccessToken','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams') {
         if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
             New-Item -Path "function:global:$cmd" -Value { } | Out-Null
             $script:createdStubs += $cmd
@@ -18,6 +18,11 @@ AfterAll {
 }
 
 Describe 'Connect-Maester' {
+    BeforeEach {
+        # Keep the test output free of the connection summary table.
+        Mock Write-MtConnectionSummary -ModuleName Maester {}
+    }
+
     It 'Offers GitHub as a -Service option' {
         $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
         $validateSet = $serviceParameter.Attributes |
@@ -189,5 +194,122 @@ Describe 'Connect-Maester' {
 
         Should -Invoke Connect-MtGitHub -ModuleName Maester -Times 0 -Exactly
         Should -Invoke Connect-MtAdTarget -ModuleName Maester -Times 0 -Exactly
+    }
+}
+
+Describe 'Connect-Maester connection summary' {
+    BeforeEach {
+        # Capture the rows Connect-Maester hands to the summary table instead of printing them.
+        $global:MtTestConnectionSummary = $null
+        Mock Write-MtConnectionSummary -ModuleName Maester { $global:MtTestConnectionSummary = @($Summary) }
+
+        Mock Get-AzContext -ModuleName Maester { [pscustomobject]@{ Account = [pscustomobject]@{ Id = 'admin@contoso.com' } } }
+        Mock Get-MtMaesterConfigGlobalSetting -ModuleName Maester { $null } -ParameterFilter { $SettingName -eq 'DataverseEnvironmentUrl' }
+        Mock Get-MtDataverseEnvironmentUrl -ModuleName Maester { $null }
+        Mock Connect-ExchangeOnline -ModuleName Maester {}
+        Mock Get-ConnectionInformation -ModuleName Maester {
+            [pscustomobject]@{ IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com'; ModuleName = 'tmpEXO' }
+            [pscustomobject]@{ IsEopSession = $true; State = 'Connected'; UserPrincipalName = 'compliance@contoso.com'; ModuleName = 'tmpEOP' }
+        }
+        Mock Connect-IPPSSession -ModuleName Maester {}
+        # The Get-AdminAuditLogConfig repair re-imports the temporary EXO module after Connect-IPPSSession.
+        Mock Import-Module -ModuleName Maester {} -ParameterFilter { $Function -eq 'Get-AdminAuditLogConfig' }
+        Mock Connect-MgGraph -ModuleName Maester {}
+        Mock Get-MgContext -ModuleName Maester { [pscustomobject]@{ Account = 'admin@contoso.com'; TenantId = '00000000-0000-0000-0000-000000000001' } }
+        Mock Connect-MicrosoftTeams -ModuleName Maester { [pscustomobject]@{ Account = [pscustomobject]@{ Id = 'admin@contoso.com' } } }
+    }
+
+    AfterEach {
+        Remove-Variable -Name MtTestConnectionSummary -Scope Global -ErrorAction SilentlyContinue
+    }
+
+    It 'Reports every service tried by -Service All without extra warnings or host messages (#2302)' {
+        $otherOutput = Connect-Maester -Service All -WarningVariable connectWarnings 6>&1 3>$null
+
+        $connectWarnings | Should -BeNullOrEmpty
+        $otherOutput | Should -BeNullOrEmpty
+
+        $rows = $global:MtTestConnectionSummary
+        ($rows | ForEach-Object { '{0}={1}' -f $_.Service, $_.Status }) | Should -Be @(
+            'Azure=Connected'
+            'Dataverse=Skipped'
+            'Exchange Online=Connected'
+            'Security & Compliance=Connected'
+            'Microsoft Graph=Connected'
+            'Microsoft Teams=Connected'
+            'SharePoint Online=Skipped'
+        )
+        ($rows | Where-Object Service -eq 'Dataverse').Details | Should -Be 'No environment found, set DataverseEnvironmentUrl in maester-config.json'
+        ($rows | Where-Object Service -eq 'SharePoint Online').Details | Should -Be '-SharePointClientId was not provided'
+        ($rows | Where-Object Service -eq 'Microsoft Graph').Details | Should -Be 'admin@contoso.com'
+        ($rows | Where-Object Service -eq 'Exchange Online').Details | Should -Be 'admin@contoso.com'
+        ($rows | Where-Object Service -eq 'Security & Compliance').Details | Should -Be 'compliance@contoso.com'
+    }
+
+    It 'Records an Exchange Online failure and still connects the remaining services' {
+        Mock Connect-ExchangeOnline -ModuleName Maester { throw [System.PlatformNotSupportedException]::new('macOS 27.0.1') }
+
+        Connect-Maester -Service ExchangeOnline, Graph, Teams 6>$null
+
+        $exchange = $global:MtTestConnectionSummary | Where-Object Service -eq 'Exchange Online'
+        $exchange.Status | Should -Be 'Failed'
+        $exchange.Details | Should -Be 'macOS 27.0.1'
+        Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly
+        Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Shows only the first line of a Teams sign-in error' {
+        Mock Connect-MicrosoftTeams -ModuleName Maester {
+            throw [System.DllNotFoundException]::new("Unable to load shared library 'kernel32.dll' or one of its dependencies.`ndlopen(kernel32.dll.dylib, 0x0001): tried: ...")
+        }
+
+        Connect-Maester -Service Teams 6>$null
+
+        $teams = $global:MtTestConnectionSummary | Where-Object Service -eq 'Microsoft Teams'
+        $teams.Status | Should -Be 'Failed'
+        $teams.Details | Should -Be "Unable to load shared library 'kernel32.dll' or one of its dependencies."
+    }
+
+    It 'Reports a missing module with its install command' {
+        Mock Connect-MicrosoftTeams -ModuleName Maester { throw [System.Management.Automation.CommandNotFoundException]::new('Connect-MicrosoftTeams') }
+
+        Connect-Maester -Service Teams 6>$null
+
+        $teams = $global:MtTestConnectionSummary | Where-Object Service -eq 'Microsoft Teams'
+        $teams.Status | Should -Be 'Not installed'
+        $teams.Details | Should -Be 'Run: Install-Module MicrosoftTeams -Scope CurrentUser'
+    }
+
+    It 'Notes the Exchange Online UPN when Security & Compliance connects on the retry' {
+        Mock Connect-IPPSSession -ModuleName Maester { throw 'Operation did not start in the allotted time.' } -ParameterFilter { -not $UserPrincipalName }
+        Mock Connect-IPPSSession -ModuleName Maester {} -ParameterFilter { $UserPrincipalName -eq 'admin@contoso.com' }
+        Mock Get-MtExo -ModuleName Maester { [pscustomobject]@{ UserPrincipalName = 'admin@contoso.com' } } -ParameterFilter { $Request -eq 'ConnectionInformation' }
+
+        Connect-Maester -Service ExchangeOnline, SecurityCompliance 6>$null
+
+        $scc = $global:MtTestConnectionSummary | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Connected'
+        $scc.Details | Should -Be 'Using UPN admin@contoso.com from Exchange Online'
+    }
+
+    It 'Separates a failed Dataverse discovery from a tenant without environments' {
+        Mock Get-MtDataverseEnvironmentUrl -ModuleName Maester { throw 'Could not get a Global Discovery Service token: AADSTS50076' }
+
+        Connect-Maester -Service Dataverse 6>$null
+
+        $dataverse = $global:MtTestConnectionSummary | Where-Object Service -eq 'Dataverse'
+        $dataverse.Status | Should -Be 'Failed'
+        $dataverse.Details | Should -Be 'Could not get a Global Discovery Service token: AADSTS50076'
+    }
+
+    It 'Records the Dataverse environment when the access token is issued' {
+        Mock Get-MtMaesterConfigGlobalSetting -ModuleName Maester { 'https://org123.crm.dynamics.com' } -ParameterFilter { $SettingName -eq 'DataverseEnvironmentUrl' }
+        Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = 'token' } }
+
+        Connect-Maester -Service Dataverse 6>$null
+
+        $dataverse = $global:MtTestConnectionSummary | Where-Object Service -eq 'Dataverse'
+        $dataverse.Status | Should -Be 'Connected'
+        $dataverse.Details | Should -Be 'org123.crm.dynamics.com'
     }
 }
