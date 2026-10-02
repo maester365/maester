@@ -33,6 +33,9 @@ Use -Service All to connect to Microsoft 365 services, including Microsoft Graph
 
 Non-Microsoft 365 services such as Active Directory and GitHub are not included in -Service All and must be explicitly specified.
 
+When it finishes, Connect-Maester shows a summary table with the status of each service it tried (Connected, Skipped, Failed or Not installed) and a short detail.
+Use -Verbose to see the step-by-step messages for each connection.
+
 This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
 ```
