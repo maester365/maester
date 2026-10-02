@@ -67,7 +67,7 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 
 #### Related links
 
-- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/en-us/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
+- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
 - [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)
 
 ## Test Metadata
