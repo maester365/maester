@@ -584,7 +584,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 throw [System.Exception]::new("Port $Port failed")
             }
 
-            { InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto } } | Should -Throw '*LDAPS or StartTLS*'
+            { InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto } } | Should -Throw '*Could not establish an LDAP connection*'
             $script:connectionCalls.Count | Should -Be 2
             $script:connectionCalls[0].Port | Should -Be 636
             $script:connectionCalls[1].Port | Should -Be 389
