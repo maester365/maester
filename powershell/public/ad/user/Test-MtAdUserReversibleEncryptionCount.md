@@ -1,7 +1,3 @@
-#### Test-MtAdUserReversibleEncryptionCount
-
-#### Why This Test Matters
-
 Reversible password encryption is effectively equivalent to storing passwords in a decryptable form. Accounts configured this way create serious exposure if the directory or credential material is compromised.
 
 #### Security Recommendation
@@ -17,3 +13,8 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserKerberosDesOnlyCount`
 - `Test-MtAdUserPasswordNotRequiredCount`
 - `Test-MtAdUserNoPreAuthCount`
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure account attributes](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-account-attributes)
+- [ANSSI Active Directory checkpoints: Privileged accounts with passwords stored using reversible encryption](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_reversible_password_priv_uac)

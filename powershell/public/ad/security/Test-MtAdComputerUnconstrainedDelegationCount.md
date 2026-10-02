@@ -1,7 +1,3 @@
-#### Test-MtAdComputerUnconstrainedDelegationCount
-
-#### Why This Test Matters
-
 - Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
 
 **Security Risks:**
@@ -38,3 +34,8 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 - `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Focuses on non-DC computers (critical risk)
 - `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation
 - `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
+- [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)

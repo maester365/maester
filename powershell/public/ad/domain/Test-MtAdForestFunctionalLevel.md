@@ -1,7 +1,3 @@
-#### Test-MtAdForestFunctionalLevel
-
-#### Why This Test Matters
-
 The forest functional level determines which Active Directory features are available across all domains in the forest. Higher functional levels unlock important forest-wide security capabilities:
 
 - **Windows Server 2016+**: Enables features like privileged access management (PAM) across the forest
@@ -26,3 +22,8 @@ This test retrieves the current forest functional level from Active Directory al
 
 - `Test-MtAdDomainFunctionalLevel` - Retrieves the domain functional level
 - `Test-MtAdForestDomainCount` - Counts domains in the forest
+
+#### Related links
+
+- [Microsoft Learn: Active Directory Domain Services functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-functional-levels)
+- [ANSSI Active Directory checkpoints: Insufficient forest and domains functional levels](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_functional_level)

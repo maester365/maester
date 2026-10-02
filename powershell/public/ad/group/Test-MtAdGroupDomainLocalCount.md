@@ -1,7 +1,3 @@
-#### Test-MtAdGroupDomainLocalCount
-
-#### Why This Test Matters
-
 Domain local groups have specific characteristics that affect your security architecture:
 
 - **Domain boundary restriction**: Can only be used to assign permissions to resources within the same domain

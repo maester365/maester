@@ -1,7 +1,3 @@
-#### Test-MtAdDcOperatingSystemCount
-
-#### Why This Test Matters
-
 Knowing the operating systems running on your domain controllers is important for:
 
 - **Lifecycle management**: Identifying DCs running end-of-life operating systems
@@ -35,3 +31,8 @@ This test retrieves the OperatingSystem attribute from all domain controllers an
 
 - `Test-MtAdDcOperatingSystemDetails` - Detailed OS distribution breakdown
 - `Test-MtAdDomainControllerCount` - Total DC count
+
+#### Related links
+
+- [Microsoft Learn: Windows Server release information](https://learn.microsoft.com/windows-server/get-started/windows-server-release-info)
+- [ANSSI Active Directory checkpoints: DC/RODC with an obsolete operating system](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dc_obsolete)

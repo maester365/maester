@@ -1,7 +1,3 @@
-#### Test-MtAdSchemaVersionEntryCount
-
-#### Why This Test Matters
-
 The Active Directory schema version indicates the functional level and capabilities of your directory. Different schema versions correspond to different Windows Server releases:
 
 | Schema Version | Windows Server Version |

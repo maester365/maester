@@ -1,7 +1,3 @@
-#### Test-MtAdComputerSidHistoryCount
-
-#### Why This Test Matters
-
 SID History is an attribute used during domain migrations to maintain access to resources in the source domain. While necessary during migrations, persistent SID History on computer accounts can indicate:
 
 - **Incomplete migrations**: Computers that were migrated but never fully transitioned
@@ -24,3 +20,8 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 
 - `Test-MtAdComputerNonStandardGroup` - Identifies other migration or configuration anomalies
 - `Test-MtAdComputerDormantCount` - Finds stale accounts that may be migration remnants
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure SID History attributes](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-sid-history-attributes)
+- [ANSSI Active Directory checkpoints: Accounts or groups with SID history set](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_sidhistory_present)

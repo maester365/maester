@@ -1,7 +1,3 @@
-#### Test-MtAdUpnSuffixesDetails
-
-#### Why This Test Matters
-
 Detailed visibility into UPN (User Principal Name) suffix configuration is essential for maintaining a secure and well-managed Active Directory environment. UPN suffixes directly impact:
 
  * **User Authentication**: Users log on with UPN format (user@domain.com), making suffix configuration critical for daily operations

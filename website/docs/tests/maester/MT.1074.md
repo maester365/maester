@@ -1,6 +1,6 @@
 ---
 title: "MT.1074 - Mailboxes should not send outbound mails using the .onmicrosoft.com domain."
-description: "Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain. Limitations of free 'onmicrosoft' shared domains:\\ The \"default\" onmicrosoft domains are useful for testing mail flow but are not suitable for regular messaging. They do not reflect a customer's brand identit…"
+description: "Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain. Limitations of free 'onmicrosoft' shared domains: The \"default\" onmicrosoft domains are useful for testing mail flow but are not suitable for regular messaging. They do not reflect a customer's brand identity…"
 slug: /tests/MT.1074
 className: generated-test-doc
 sidebar_class_name: hidden

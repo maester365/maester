@@ -1,7 +1,3 @@
-#### Test-MtAdDaclDistinctIdentityCount
-
-#### Why This Test Matters
-
 Every DACL ACE references a security principal. Tracking the number of distinct identities appearing in delegated permissions helps you understand how widely access has been spread across the directory.
 
 - **Delegation Visibility**: A large number of distinct identities can indicate broad or inconsistent delegation.

@@ -1,7 +1,3 @@
-#### Test-MtAdKrbtgtLastLogon
-
-#### Why This Test Matters
-
 The KRBTGT account is a service account that should never have interactive logons. It exists solely for the KDC service to use internally for Kerberos ticket operations. Any logon activity for this account may indicate:
 
 **Security Concerns:**

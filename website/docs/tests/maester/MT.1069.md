@@ -1,6 +1,6 @@
 ---
 title: "MT.1069 - Restrict non-admin users from creating security groups."
-description: "Description Verifies that security group creation is restricted to admin users only in the Entra ID tenant. Why This Matters Restricting security group creation to administrators ensures proper governance, maintains the principle of least privilege, and supports regulatory compliance requirements.…"
+description: "Verifies that security group creation is restricted to admin users only in the Entra ID tenant. Why This Matters Restricting security group creation to administrators ensures proper governance, maintains the principle of least privilege, and supports regulatory compliance requirements. Remediation…"
 slug: /tests/MT.1069
 className: generated-test-doc
 sidebar_class_name: hidden

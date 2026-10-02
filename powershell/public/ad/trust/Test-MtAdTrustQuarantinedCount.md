@@ -1,7 +1,3 @@
-#### Test-MtAdTrustQuarantinedCount
-
-#### Why This Test Matters
-
 SID filtering (quarantined trusts) is a critical security control for inter-forest trusts:
 
 - **Prevents Privilege Escalation**: Blocks malicious SID history from being honored across trust boundaries
@@ -32,3 +28,8 @@ This test checks the `Quarantined` property of each trust object. When `Quaranti
 - `Test-MtAdTrustNonQuarantinedDetails` - Lists specific trusts without SID filtering
 - `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined
 - `Test-MtAdTrustDetails` - Shows quarantine status for all trusts
+
+#### Related links
+
+- [Microsoft Learn: Security considerations for trusts](https://learn.microsoft.com/previous-versions/windows/it-pro/windows-server-2003/cc755321%28v=ws.10%29)
+- [ANSSI Active Directory checkpoints: Unfiltered outbound domain trust relationship](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_trusts_domain_notfiltered)

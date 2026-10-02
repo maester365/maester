@@ -1,7 +1,3 @@
-#### Test-MtAdUserPasswordNeverExpiresCount
-
-#### Why This Test Matters
-
 Passwords that never expire reduce credential hygiene and increase the blast radius of password theft. While some service accounts may require non-expiring credentials, they should be rare, controlled, and closely monitored.
 
 #### Security Recommendation
@@ -17,3 +13,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 - `Test-MtAdUserDormantEnabledCount`
 - `Test-MtAdUserPasswordNotRequiredCount`
 - `Test-MtAdUserNeverLoggedInCount`
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Accounts with never-expiring passwords](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dont_expire)

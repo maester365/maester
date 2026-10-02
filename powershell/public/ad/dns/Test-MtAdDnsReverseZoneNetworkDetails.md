@@ -1,7 +1,3 @@
-#### Test-MtAdDnsReverseZoneNetworkDetails
-
-#### Why This Test Matters
-
 Detailed information about networks with reverse lookup zones enables:
 
 - **Network inventory**: Complete list of networks with reverse DNS

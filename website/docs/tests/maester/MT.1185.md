@@ -1,6 +1,6 @@
 ---
 title: "MT.1185 - Block legacy MSOnline (MSOL) PowerShell module"
-description: "Description Checks if the legacy MSOnline (MSOL) PowerShell module is blocked from authenticating to the tenant. Why This Matters The MSOnline (MSOL) and Azure AD PowerShell modules were retired by Microsoft and no longer receive security updates. Because they predate modern authentication controls…"
+description: "Checks if the legacy MSOnline (MSOL) PowerShell module is blocked from authenticating to the tenant. Why This Matters The MSOnline (MSOL) and Azure AD PowerShell modules were retired by Microsoft and no longer receive security updates. Because they predate modern authentication controls, requests m…"
 slug: /tests/MT.1185
 className: generated-test-doc
 sidebar_class_name: hidden

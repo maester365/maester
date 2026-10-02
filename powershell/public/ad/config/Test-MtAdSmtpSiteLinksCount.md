@@ -1,6 +1,3 @@
-#### Test-MtAdSmtpSiteLinksCount
-
-#### Why This Test Matters
 SMTP site links are a replication transport mechanism used in AD. They’re considered rare and mostly legacy/compatibility-oriented; many modern environments rely on RPC over IP (or other supported transports) rather than SMTP.
 
 Using SMTP replication can be less secure and more difficult to harden than standard transports, depending on network controls, email path hardening, and endpoint exposure.

@@ -1,7 +1,3 @@
-#### Test-MtAdKrbtgtPasswordLastSet
-
-#### Why This Test Matters
-
 - The KRBTGT account is the most critical service account in Active Directory. It is used by the Key Distribution Center (KDC) service to encrypt and sign all Kerberos tickets within the domain. If this account is compromised, an attacker can forge Kerberos tickets (Golden Tickets) that grant unlimited access to any resource in the domain.
 
 **Security Risks:**
@@ -36,3 +32,8 @@ This test retrieves the KRBTGT account from Active Directory and checks:
 
 - `Test-MtAdKrbtgtLastLogon` - Verifies KRBTGT has no interactive logons
 - `Test-MtAdKrbtgtNonStandardUacCount` - Validates KRBTGT has standard UAC settings
+
+#### Related links
+
+- [Microsoft Defender for Identity: Change password for krbtgt account](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#change-password-for-krbtgt-account)
+- [ANSSI Active Directory checkpoints: Krbtgt account password unchanged for more than a year](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_krbtgt)

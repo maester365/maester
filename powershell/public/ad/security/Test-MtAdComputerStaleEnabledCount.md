@@ -1,7 +1,3 @@
-#### Test-MtAdComputerStaleEnabledCount
-
-#### Why This Test Matters
-
 Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for an extended period (typically 180 days or more).
 
 **Security Risks:**
@@ -47,3 +43,7 @@ Provides counts and lists affected computers.
 - `Test-MtAdComputerDormantCount` - Dormant computer identification
 - `Test-MtAdComputerDisabledCount` - Disabled computer analysis
 - `Test-MtAdUserDormantEnabledCount` - Stale user account check
+
+#### Related links
+
+- [ANSSI Active Directory checkpoints: Inactive servers](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_password_change_inactive_servers)

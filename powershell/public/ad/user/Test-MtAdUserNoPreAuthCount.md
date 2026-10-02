@@ -1,7 +1,3 @@
-#### Test-MtAdUserNoPreAuthCount
-
-#### Why This Test Matters
-
 Accounts that do not require Kerberos pre-authentication are directly exposed to AS-REP roasting. Attackers can request offline-crackable material without first proving knowledge of the password.
 
 #### Security Recommendation
@@ -17,3 +13,8 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserDelegationAllowedCount`
 - `Test-MtAdUserKerberosDesOnlyCount`
 - `Test-MtAdUserPasswordNotRequiredCount`
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure account attributes](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-account-attributes)
+- [ANSSI Active Directory checkpoints: Kerberos preauthentication disabled](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_kerberos_properties_preauth)

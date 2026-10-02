@@ -1,7 +1,3 @@
-#### Test-MtAdSchemaModificationYearCount
-
-#### Why This Test Matters
-
 Understanding when your Active Directory schema has been modified provides important visibility into the evolution of your directory infrastructure. Schema modifications typically occur during:
 
 - **Domain upgrades**: When upgrading to newer Windows Server versions

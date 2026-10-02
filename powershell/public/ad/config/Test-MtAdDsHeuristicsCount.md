@@ -1,6 +1,3 @@
-#### Test-MtAdDsHeuristicsCount
-
-#### Why This Test Matters
 **dSHeuristics** is an AD configuration setting that controls behavior for advanced directory features and legacy compatibility. Because it influences protocol-level behavior (including areas such as LDAP security expectations and feature gating), an incorrect or unexpected dSHeuristics value can:
 
 - Leave AD behaving in a more **legacy/less secure** mode
@@ -17,3 +14,8 @@ This test queries AD configuration for the dSHeuristics setting(s) and reports a
 
 #### Related Tests
 - `Test-MtAdLdapQueryPolicyCount` - Helps ensure LDAP is protected by sane query limits.
+
+#### Related links
+
+- [Microsoft Learn: dSHeuristics attribute (MS-ADTS)](https://learn.microsoft.com/openspecs/windows_protocols/ms-adts/e5899be4-862e-496f-9a38-33950617d2c5)
+- [ANSSI Active Directory checkpoints: Dangerous dsHeuristics settings](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dsheuristics_bad)

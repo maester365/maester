@@ -26,7 +26,7 @@ function Test-MtAIAgentMcpTools {
 
     $agents = Get-MtAIAgentInfo
     if ($null -eq $agents) {
-        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'No Copilot Studio agent data available. Ensure DataverseEnvironmentUrl is configured in maester-config.json and Connect-Maester -Service Dataverse has been run. See https://maester.dev/docs/tests/MT.1120 for prerequisites.'
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason (Get-MtAIAgentSkippedReason -TestId 'MT.1120')
         return $null
     }
 

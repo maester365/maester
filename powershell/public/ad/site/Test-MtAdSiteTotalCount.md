@@ -1,7 +1,3 @@
-#### Test-MtAdSiteTotalCount
-
-#### Why This Test Matters
-
 Active Directory sites represent the physical topology of your network and are fundamental to:
 
 - **Authentication efficiency**: Clients authenticate to domain controllers in their local site

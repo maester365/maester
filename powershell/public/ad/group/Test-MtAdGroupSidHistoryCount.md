@@ -1,7 +1,3 @@
-#### Test-MtAdGroupSidHistoryCount
-
-#### Why This Test Matters
-
 - SID History is an attribute used during Active Directory domain migrations to maintain access to resources in the source domain:
 - Groups with SID History are important to monitor because persistent SID History on groups can indicate:
 - **Incomplete migrations**: Groups that were migrated but never fully transitioned
@@ -30,3 +26,8 @@
 
 - `Test-MtAdGroupStaleCount` - Groups with SID History may also be stale if migration was long ago
 - `Test-MtAdGroupAdminCount` - Privileged groups with SID History require special attention
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure SID History attributes](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-sid-history-attributes)
+- [ANSSI Active Directory checkpoints: Accounts or groups with SID history set](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_sidhistory_present)

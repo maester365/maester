@@ -1,7 +1,3 @@
-#### Test-MtAdDcFsmoRoleHolderDetails
-
-#### Why This Test Matters
-
 Understanding FSMO (Flexible Single Master Operations) role distribution is critical for:
 
 - **Operational awareness**: Knowing which DCs perform critical directory operations

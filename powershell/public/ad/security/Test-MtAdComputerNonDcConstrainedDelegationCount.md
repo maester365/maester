@@ -1,7 +1,3 @@
-#### Test-MtAdComputerNonDcConstrainedDelegationCount
-
-#### Why This Test Matters
-
 - Constrained delegation (also known as "protocol transition" or S4U2Proxy) is safer than unconstrained delegation but still carries security risks. It allows a service to impersonate a user to specific services only, rather than any service in the domain.
 
 **Security Considerations:**
@@ -38,3 +34,9 @@ This test counts non-DC computers with the `TrustedToAuthForDelegation` flag ena
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation
 - `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Critical non-DC unconstrained delegation
 - `Test-MtAdUserDelegationConfiguredCount` - User account delegation settings
+
+#### Related links
+
+- [Microsoft Defender for Identity: Unsecure Kerberos delegation](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#unsecure-kerberos-delegation)
+- [ANSSI Active Directory checkpoints: Constrained authentication delegation to privileged service](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_a2d2)
+- [ANSSI Active Directory checkpoints: Constrained delegation with protocol transition to a privileged service](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t2a4d)

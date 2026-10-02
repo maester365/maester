@@ -1,7 +1,3 @@
-#### Test-MtAdComputerSpnServiceClassCount
-
-#### Why This Test Matters
-
 Service Principal Names (SPNs) are critical for Kerberos authentication in Active Directory. Understanding the distribution of SPN service classes helps security teams:
 
 - **Identify service exposure**: Know what services are exposed for Kerberos authentication

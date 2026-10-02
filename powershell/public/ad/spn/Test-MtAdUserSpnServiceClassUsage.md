@@ -1,7 +1,3 @@
-#### Test-MtAdUserSpnServiceClassUsage
-
-#### Why This Test Matters
-
 A detailed breakdown of SPN service classes on user accounts enables:
 
 - **Risk prioritization**: Identify high-value targets like database services

@@ -1,6 +1,3 @@
-#### Test-MtAdEnrollmentCaCertificateDetails
-
-#### Why This Test Matters
 Enrollment-capable CA certificates include validity periods and other critical properties. Expired or invalid CA certificates can break certificate issuance and domain authentication flows. In addition, unexpected certificate replacements (e.g., unknown thumbprints) can indicate PKI tampering.
 
 #### Security Recommendation

@@ -1,7 +1,3 @@
-#### Test-MtAdDnsRootServerIncorrectDetails
-
-#### Why This Test Matters
-
 Detailed information about incorrect root server configurations is essential for:
 
 - **Rapid remediation**: Knowing exactly which servers are misconfigured enables quick fixes

@@ -1,7 +1,3 @@
-#### Test-MtAdComputerSpnServiceClassUsage
-
-#### Why This Test Matters
-
 Understanding the distribution of SPN service classes across your computer infrastructure provides valuable security insights:
 
 - **Service inventory**: See what services are deployed across your environment

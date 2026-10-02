@@ -1,7 +1,3 @@
-#### Test-MtAdDaclPrivilegedExtendedRightDetails
-
-#### Why This Test Matters
-
 Extended rights are most useful when you can see which specific `ObjectType` values are being delegated. Grouping ACEs by GUID reveals whether permissions are narrowly targeted or broadly applied.
 
 - **GUID-Level Visibility**: Highlights which extended-right object types occur most often.

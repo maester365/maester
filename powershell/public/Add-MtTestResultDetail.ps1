@@ -100,6 +100,14 @@
         [string] $Severity
     )
 
+    # Skipping a test throws (Set-ItResult -Skipped). When a test function skips from inside a try block,
+    # its own catch intercepts that throw and reports it here as an error. The original skip detail is
+    # already recorded, so re-raise the skip instead of overwriting it with an error result.
+    if ($SkippedBecause -eq 'Error' -and $SkippedError -is [System.Management.Automation.ErrorRecord] -and
+        $SkippedError.FullyQualifiedErrorId -in @('PesterTestSkipped', 'PesterTestInconclusive', 'PesterTestPending')) {
+        throw $SkippedError
+    }
+
     $hasGraphResults = $GraphObjects -and $GraphObjectType
 
     if ($SkippedBecause) {

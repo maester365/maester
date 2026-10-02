@@ -1,7 +1,3 @@
-#### Test-MtAdComputerDelegationDetails
-
-#### Why This Test Matters
-
 Detailed visibility into Kerberos delegation configurations is essential for security because:
 
 - **Risk prioritization**: Unconstrained delegation poses significantly higher risk than constrained delegation

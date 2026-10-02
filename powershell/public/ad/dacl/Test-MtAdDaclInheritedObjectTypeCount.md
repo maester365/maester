@@ -1,7 +1,3 @@
-#### Test-MtAdDaclInheritedObjectTypeCount
-
-#### Why This Test Matters
-
 Inherited object type GUIDs define which descendant object classes an inheritable ACE targets.
 
 - **Delegation scope visibility**: Helps show how precisely ACE inheritance is scoped

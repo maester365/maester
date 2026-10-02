@@ -1,7 +1,3 @@
-#### Test-MtAdDcOperatingSystemDetails
-
-#### Why This Test Matters
-
 Understanding the operating system distribution across your domain controllers helps with:
 
 - **Security compliance**: Identifying DCs on unsupported OS versions
@@ -38,3 +34,8 @@ This test retrieves the OperatingSystem attribute from all domain controllers an
 
 - `Test-MtAdDcOperatingSystemCount` - Count of unique OS versions
 - `Test-MtAdDomainControllerCount` - Total DC count
+
+#### Related links
+
+- [Microsoft Learn: Windows Server release information](https://learn.microsoft.com/windows-server/get-started/windows-server-release-info)
+- [ANSSI Active Directory checkpoints: DC/RODC with an obsolete operating system](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_dc_obsolete)

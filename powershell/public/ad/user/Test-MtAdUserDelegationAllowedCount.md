@@ -1,7 +1,3 @@
-#### Test-MtAdUserDelegationAllowedCount
-
-#### Why This Test Matters
-
 Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement.
 
 #### Security Recommendation
@@ -17,3 +13,8 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 - `Test-MtAdUserNoPreAuthCount`
 - `Test-MtAdUserKerberosDesOnlyCount`
 - `Test-MtAdUserPasswordNeverExpiresCount`
+
+#### Related links
+
+- [Microsoft Defender for Identity: Ensure privileged accounts are not delegated](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#ensure-privileged-accounts-are-not-delegated)
+- [ANSSI Active Directory checkpoints: Unconstrained authentication delegation](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_delegation_t4d)

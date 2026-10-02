@@ -1,7 +1,3 @@
-#### Test-MtAdDaclIdentityAceDistribution
-
-#### Why This Test Matters
-
 Knowing which identities appear most frequently in DACLs helps identify central delegation patterns, inherited administrative groups, and accounts that may have accumulated permissions over time.
 
 - **Hotspot Detection**: Frequently occurring identities can represent broad administrative reach.

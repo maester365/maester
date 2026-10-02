@@ -1,7 +1,3 @@
-#### Test-MtAdUserBuiltInAdminCount
-
-#### Why This Test Matters
-
 Built-in and critical administrator-related accounts are among the most sensitive identities in Active Directory. Attackers frequently target these accounts because they provide durable, high-impact access.
 
 - **High-value targets**: RID 500 accounts are especially attractive to attackers.

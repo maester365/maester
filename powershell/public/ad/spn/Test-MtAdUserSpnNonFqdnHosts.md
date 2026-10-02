@@ -1,7 +1,3 @@
-#### Test-MtAdUserSpnNonFqdnHosts
-
-#### Why This Test Matters
-
 User account SPNs with non-FQDN hosts can cause:
 
 - **Authentication failures**: Kerberos may fail to resolve short names

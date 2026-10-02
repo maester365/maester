@@ -1,7 +1,3 @@
-#### Test-MtAdSubnetIpv6Count
-
-#### Why This Test Matters
-
 IPv6 subnet configuration is important for:
 
 - **Future-proofing**: IPv6 adoption continues to grow

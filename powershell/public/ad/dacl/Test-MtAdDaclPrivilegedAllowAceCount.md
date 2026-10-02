@@ -1,7 +1,3 @@
-#### Test-MtAdDaclPrivilegedAllowAceCount
-
-#### Why This Test Matters
-
 Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight` can enable high-impact control over Active Directory objects. These permissions are commonly involved in privilege escalation and persistence paths.
 
 - **GenericAll**: Grants broad control over the object.
