@@ -57,7 +57,7 @@ function New-MtLdapConnection {
             # Wrap in try/catch because test mocks may not expose this property.
             try {
                 $skipCertCheck = $SkipCertificateCheck.IsPresent
-                $connection.SessionOptions.VerifyServerCertificate = {
+                $callback = {
                     param($ldapConnection, $certificate)
 
                     [void]$ldapConnection
@@ -75,6 +75,15 @@ function New-MtLdapConnection {
                         $chain.Dispose()
                     }
                 }.GetNewClosure()
+
+                # Bind the callback to the Maester module so internal functions like
+                # Get-MtLdapCertificateDetail are resolvable when .NET invokes it.
+                $maesterModule = Get-Module Maester
+                if ($null -ne $maesterModule) {
+                    $callback = $maesterModule.NewBoundScriptBlock($callback)
+                }
+
+                $connection.SessionOptions.VerifyServerCertificate = $callback
             }
             catch {
                 Write-Verbose "Unable to set VerifyServerCertificate callback: $_."
