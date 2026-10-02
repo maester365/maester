@@ -436,10 +436,16 @@ function Invoke-MtSysvolSmbClient {
             if ($hasSetUnixFileMode -and $PSVersionTable.PSVersion.Major -ge 7) {
                 [IO.File]::SetUnixFileMode($authFile, [IO.UnixFileMode]::UserRead -bor [IO.UnixFileMode]::UserWrite)
             }
-            # end of guard
             else {
-                & chmod 600 -- $authFile
-                if ($LASTEXITCODE -ne 0) {
+                # Validate the temp file path before invoking chmod to guard against
+                # path injection if GetTempFileName() were ever compromised.
+                $tempPath = [IO.Path]::GetTempPath()
+                $authFileName = Split-Path -Path $authFile -Leaf
+                if (-not $authFile.StartsWith($tempPath) -or $authFileName -notmatch '^tmp[A-Za-z0-9]{6}$') {
+                    throw 'Invalid temporary file path for smbclient authentication file.'
+                }
+                $chmodProcess = Start-Process -FilePath 'chmod' -ArgumentList @('600', $authFile) -Wait -NoNewWindow -PassThru
+                if ($chmodProcess.ExitCode -ne 0) {
                     throw 'Failed to protect the temporary smbclient authentication file.'
                 }
             }
