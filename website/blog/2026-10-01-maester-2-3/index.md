@@ -214,7 +214,6 @@ Maester 2.3 includes contributions from 24 people:
 - [John Flores](/contributors/buckeyeguyjflo) for branding and accessibility fixes across the docs.
 - [Massimo Mazzariol](/contributors/massimomazzariol) for fixes to BitLocker, Azure DevOps, Entra recommendation links, and unit tests.
 - [Matthias](/contributors/blindzero) for the Graph client timeout, the CISA DKIM coexistence fix, and clearer Entra Connect guidance.
-- [Merill Fernando](/contributors/merill) for security hardening, the `Connect-Maester` summary, and report, release, and automation improvements.
 - [Michael Morten Sonne](/contributors/michaelmsonne) for documenting the risks of client secret authentication.
 - [Mike Soule](/contributors/soulemike) for multi-forest, cross-platform Active Directory support and AD connection fixes.
 - [Morten Mynster](/contributors/mynster9361) for updating the CIS checks to v7.0.0 and proposing the `Connect-Maester` connection summary.
@@ -227,6 +226,7 @@ Maester 2.3 includes contributions from 24 people:
 - [Stefan Wey](/contributors/weycc81) for EIDSCA remediation docs and fixing "Edit this page".
 - [Thomas S. Schmidt](/contributors/thomas-s-schmidt) for centralizing the module preamble.
 - [Travis McDade](/contributors/thetechgy) for hardening our GitHub Actions workflows.
+- [Merill Fernando](/contributors/merill) for security hardening, the `Connect-Maester` summary, and report, release, and automation improvements.
 
 Thank you as well to everyone who reviewed a pull request, reported an issue, tested a preview build, or ran the AD checks against a domain we'll never see. Your feedback shaped this release.
 
@@ -257,5 +257,11 @@ Invoke-Maester -Tag "CIS"
 ```
 
 Maester now tests the agents you're deploying, the Macs and repositories they run on, and itself. Go check the agent identities in your tenant before someone else does.
+
+## Thank you to our Maester Cloud supporters
+
+A big thank you to everyone who supports [Maester Cloud](https://maester.cloud). Your support is what lets Merill Fernando spend more time on open-source Maester, and much of what's in this release comes from that time.
+
+If you'd like to help too, take a look at the [Maester Cloud supporters page](https://maester.cloud/supporters).
 
 Happy testing! 🎉
