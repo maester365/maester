@@ -27,7 +27,8 @@ current Maester Active Directory connection.
 HTTPS with normal certificate
 validation is attempted first.
 An HTTP Negotiate fallback, which retains
-WSMan message encryption, is available only when explicitly enabled.
+WSMan message encryption, is attempted automatically when credentials are
+present.
 
 On non-Windows hosts, the optional PSWSMan module must be installed.
 The
@@ -130,9 +131,11 @@ Accept wildcard characters: False
 
 ### -AllowNegotiateFallback
 
-Allows fallback from validated HTTPS to HTTP with Negotiate authentication
-and WSMan message encryption.
-This function never changes TrustedHosts.
+Deprecated.
+Fallback from validated HTTPS to HTTP with Negotiate
+authentication and WSMan message encryption is now automatic when
+credentials are present.
+This switch is retained for backward compatibility.
 
 ```yaml
 Type: SwitchParameter
