@@ -7,6 +7,10 @@ The Root DSE (Directory Service Agent) synchronization status indicates whether 
 
 A synchronized status (isSynchronized = TRUE) indicates the DC is ready to serve directory requests with current data.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Monitor synchronization status after DC promotion or recovery

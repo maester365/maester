@@ -4,6 +4,10 @@ Delegation details on user accounts help defenders quickly identify high-risk se
 - **Account review**: User-based service accounts with SPNs and delegation need strong justification.
 - **Incident response**: Detailed visibility speeds triage during suspected Kerberos abuse.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 - Review each delegation-enabled user for business need, owner, and scope.

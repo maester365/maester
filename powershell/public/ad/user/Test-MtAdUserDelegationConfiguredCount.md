@@ -4,6 +4,10 @@ Delegation on user accounts can be especially risky because user identities are 
 - **Privilege abuse**: User-based services with delegation deserve special scrutiny.
 - **Exposure tracking**: Supports routine review of delegation-enabled identities.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Minimize delegation on user accounts.

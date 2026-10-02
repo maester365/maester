@@ -7,6 +7,10 @@ SID filtering (quarantined trusts) is a critical security control for inter-fore
 
 Without SID filtering, an attacker who compromises a domain in a trusting forest could inject SIDs from the trusted forest's privileged groups (like Domain Admins or Enterprise Admins) into their own account, effectively gaining privileged access across the trust boundary.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - **Enable SID Filtering**: Enable SID filtering (quarantine) on ALL inter-forest trusts

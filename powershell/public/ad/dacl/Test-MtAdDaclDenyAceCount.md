@@ -4,6 +4,10 @@ Deny ACEs are powerful because they can override allow permissions and create ac
 - **Supports troubleshooting** for delegation and access issues
 - **Helps prioritize deeper review** when deny ACE volume is high
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review deny ACE usage carefully. Ensure each deny entry is intentional, documented, and still required. Excessive or poorly understood deny entries can create administrative confusion and mask broader permission issues.

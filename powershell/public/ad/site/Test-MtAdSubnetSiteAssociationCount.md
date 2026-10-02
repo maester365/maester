@@ -7,6 +7,10 @@ Sites with subnet associations are essential for:
 
 Sites without subnets cannot participate in site-aware operations.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Ensure all production sites have appropriate subnets assigned

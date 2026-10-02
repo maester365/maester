@@ -2,6 +2,10 @@ Group Policy Objects (GPOs) that have not been modified for a long time can beco
 Stale GPOs may contain outdated security configurations, which can create security gaps
 if they no longer match your current security baselines.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review GPOs that have not changed recently. Consider:

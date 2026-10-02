@@ -5,6 +5,10 @@ The `ms-ds-CreatorSid` attribute identifies which security principal created a c
 - **Security monitoring**: Detecting unusual computer creation patterns that may indicate compromise
 - **Compliance**: Meeting requirements for tracking resource creation in the directory
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Computer account creation should be tightly controlled:

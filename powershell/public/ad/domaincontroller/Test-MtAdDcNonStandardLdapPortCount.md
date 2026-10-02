@@ -11,6 +11,10 @@ While non-standard ports may be intentional for specific scenarios, they can cau
 - Authentication protocols expecting standard ports
 - Network security monitoring and firewall rules
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 1. **Document intentional deviations**: If non-standard ports are required, ensure they are well-documented with business justification

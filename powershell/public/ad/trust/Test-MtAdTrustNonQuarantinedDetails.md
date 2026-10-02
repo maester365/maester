@@ -7,6 +7,10 @@ Non-quarantined trusts (those without SID filtering) are a significant security 
 
 This test specifically identifies which trusts lack SID filtering, enabling targeted remediation.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Immediate Actions:**

@@ -7,6 +7,10 @@ Analyzing /24 network distribution provides:
 
 /24 networks (254 hosts) are the most common subnet size for client networks.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Document the purpose of each /24 network
