@@ -17,7 +17,7 @@ BeforeAll {
     }
 }
 
-# Tests for Task 3: Target-Scoped AD Cache Keys and Group Member Cache Clearing
+# Target-Scoped AD Cache Keys and Group Member Cache Clearing
 Describe 'Get-MtADDomainState: Target-Scoped Cache Keys' {
     It 'clears group member cache when Clear-MtADCache is invoked (global clear)' {
         InModuleScope Maester {
@@ -575,7 +575,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
             $script:connectionCalls[1].UseStartTls | Should -BeTrue
         }
 
-        # Test 1: Enhanced error message when both TLS modes fail
+        # Enhanced error message when both TLS modes fail
         It 'Enhanced error message when both TLS modes fail' {
             # Override the base mock so both TLS paths fail
             Mock -ModuleName Maester -CommandName New-MtLdapConnection -MockWith {

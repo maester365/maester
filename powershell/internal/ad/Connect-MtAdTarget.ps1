@@ -314,7 +314,6 @@ function Connect-MtAdTarget {
         )
 
     $lastException = $null
-    $script:TlsModeAttemptCount = 0
 
     $tlsAttempts = switch ($RequestedTlsMode) {
             'Ldaps' { @(@{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }) }
@@ -356,17 +355,12 @@ function Connect-MtAdTarget {
         catch {
             # Capture the latest exception and gracefully close any open connection
             $lastException = $_.Exception
-            # Track TLS-mode fallback attempts by counting failed TLS-mode connections
-            if (-not (Get-Variable -Name 'TlsModeAttemptCount' -Scope Script -ErrorAction SilentlyContinue)) {
-                $script:TlsModeAttemptCount = 0
-            }
-            $script:TlsModeAttemptCount++
             Close-MtAdLdapConnection -Connection $connection
         }
     }
 
     # If we attempted multiple TLS modes (e.g., LDAPS then StartTLS) but still failed, return a clearer error
-    if ((Get-Variable -Name 'TlsModeAttemptCount' -Scope Script -ErrorAction SilentlyContinue).Value -ge 2 -and $null -ne $lastException) {
+    if ($tlsAttempts.Count -ge 2 -and $null -ne $lastException) {
         # Only diagnose as a certificate problem when the exception indicates a TLS/certificate issue.
         # Bind failures, RootDSE read errors, and metadata search failures should not claim the DC lacks TLS support.
         $isCertificateError = $lastException -is [System.Security.Authentication.AuthenticationException] -or
