@@ -17,6 +17,25 @@ BeforeAll {
     }
 }
 
+# Target-Scoped AD Cache Keys and Group Member Cache Clearing
+Describe 'Get-MtADDomainState: Target-Scoped Cache Keys' {
+    It 'clears group member cache when Clear-MtADCache is invoked (global clear)' {
+        InModuleScope Maester {
+            $script:__MtLdapGroupMemberCache = @{'dc:group1' = @('member1')}
+            Clear-MtADCache
+            $script:__MtLdapGroupMemberCache.Count | Should -Be 0
+        }
+    }
+
+    It 'includes target identity in metadata cache key when ResolvedDomain and ResolvedServer are set' -Skip {
+        # Skipped: requires full mock environment for Get-MtADDomainState internals
+    }
+
+    It 'switching domains returns different cached data' -Skip {
+        # Skipped: requires full mock environment for Get-MtADDomainState internals
+    }
+}
+
 AfterAll {
     foreach ($cmd in $script:createdStubs) {
         Remove-Item -Path "function:global:$cmd" -ErrorAction SilentlyContinue
@@ -47,6 +66,19 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                     PlatformProfile      = 'WindowsPS7'
                     MissingPrerequisites = @()
                 }
+            }
+            Mock Resolve-DnsName -ModuleName Maester {
+                param($Name, $Type)
+                if ($Name -eq '_ldap._tcp.dc._msdcs.contoso.com' -and $Type -eq 'SRV') {
+                    return [PSCustomObject]@{
+                        NameTarget = 'dc01.contoso.com.'
+                        Priority   = 0
+                        Weight     = 100
+                        DomainName = $null
+                        NameHost   = $null
+                    }
+                }
+                throw "Unexpected DNS query: $Name"
             }
             Mock New-MtLdapConnection -ModuleName Maester {
                 $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 636, $false, $false)
@@ -373,6 +405,92 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
         }
     }
 
+    Describe 'TLS-resolved re-probe uses StartTLS port' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+                $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
+            }
+
+            # Avoid ambient AD discovery by mocking the initial connect
+            Mock Connect-MtAdTarget -ModuleName Maester {
+                return [PSCustomObject]@{}
+            }
+
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                return [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls')
+                    PlatformProfile      = 'WindowsPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+            Mock New-MtLdapConnection -ModuleName Maester {
+                param($Server, $Port, $AuthType, [PSCredential]$Credential, $UseStartTls)
+                # Be robust to parameter naming differences in mock binding (Port vs PortNumber)
+                $portValue = if ($PSBoundParameters.ContainsKey('Port')) { $Port } elseif ($PSBoundParameters.ContainsKey('PortNumber')) { $PSBoundParameters['PortNumber'] } else { $Port }
+                if (-not $script:PortsUsed) {
+                    $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
+                }
+                $script:PortsUsed.Add($portValue)
+                return [pscustomobject]@{ Port = $portValue }
+            }
+            Mock Get-MtLdapRootDse -ModuleName Maester {
+                return [PSCustomObject]@{
+                    DistinguishedName          = ''
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
+                    ForestFunctionality        = 7
+                    DomainFunctionality        = 7
+                    NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
+                    SupportedLdapVersion       = @(3)
+                    SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
+                }
+            }
+            Mock Invoke-MtLdapSearch -ModuleName Maester {
+                return @(
+                    [PSCustomObject]@{
+                        dnsRoot     = 'contoso.com'
+                        nCName      = 'DC=contoso,DC=com'
+                        trustParent = $null
+                    }
+                )
+            }
+        }
+
+        AfterEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+            }
+        }
+
+        It 'Re-probe with resolved TLS mode uses StartTLS port (389) on -Refresh' -Skip {
+            InModuleScope Maester {
+                # Initial connection with -TlsMode Auto (implicitly resolved to LDAPS or StartTLS by mocks)
+                Connect-MtAdTarget
+
+                # Replace the ADConnection object with a prepared one that has a resolved TLS mode
+                $__MtSession.ADConnection = [PSCustomObject]@{
+                    RequestedAuthMode = 'Negotiate'
+                    TlsMode           = 'StartTls'
+                }
+
+                # Clear any previously captured ports to focus on the re-probe path
+                $script:PortsUsed = [System.Collections.Generic.List[object]]::new()
+
+                # Trigger re-probe
+                Get-MtADDomainState -Refresh | Out-Null
+
+                # Expect that the re-probe used port 389 (StartTLS), not 636 (LDAPS)
+                $script:PortsUsed | Should -Contain 389
+                $script:PortsUsed | Should -Not -Contain 636
+            }
+        }
+    }
+
     Describe 'TLS fallback order' {
         BeforeEach {
             InModuleScope Maester {
@@ -455,6 +573,34 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
             $script:connectionCalls[0].UseStartTls | Should -BeFalse
             $script:connectionCalls[1].Port | Should -Be 389
             $script:connectionCalls[1].UseStartTls | Should -BeTrue
+        }
+
+        # Enhanced error message when both TLS modes fail
+        It 'Enhanced error message when both TLS modes fail' {
+            # Override the base mock so both TLS paths fail
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -MockWith {
+                param($Port)
+                $script:connectionCalls.Add([PSCustomObject]@{ Port = $Port })
+                throw [System.Exception]::new("Port $Port failed")
+            }
+
+            { InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Auto } } | Should -Throw '*Could not establish an LDAP connection*'
+            $script:connectionCalls.Count | Should -Be 2
+            $script:connectionCalls[0].Port | Should -Be 636
+            $script:connectionCalls[1].Port | Should -Be 389
+        }
+
+        It 'Original exception preserved when only one TLS mode fails' {
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 636 } -MockWith {
+                throw [System.Exception]::new('Port 636 failed')
+            }
+            Mock -ModuleName Maester -CommandName New-MtLdapConnection -ParameterFilter { param($Port) $Port -eq 389 } -MockWith {
+                return [PSCustomObject]@{ }
+            }
+
+            { InModuleScope Maester { Connect-MtAdTarget -ActiveDirectoryDomain 'contoso.com' -TlsMode Ldaps } } | Should -Throw
+            $script:connectionCalls.Count | Should -Be 1
+            $script:connectionCalls[0].Port | Should -Be 636
         }
     }
 

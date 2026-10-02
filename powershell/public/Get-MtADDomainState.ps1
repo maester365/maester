@@ -598,7 +598,13 @@ function Get-MtADDomainState {
     $resolvedCategories = ResolveCategoryDependency -InputCategories $requestedCategories
 
     $computerSuffix = if ($ComputerName) { ":$ComputerName" } else { '' }
-    $metadataCacheKey = "DomainState:Metadata$computerSuffix"
+    # Build a target suffix based on resolved identity (domain and server) if available
+    $targetSuffix = if ($__MtSession.ADConnection.ResolvedDomain -and $__MtSession.ADConnection.ResolvedServer) {
+        ":$($__MtSession.ADConnection.ResolvedDomain):$($__MtSession.ADConnection.ResolvedServer)"
+    } elseif ($__MtSession.ADConnection.ResolvedDomain) {
+        ":$($__MtSession.ADConnection.ResolvedDomain)"
+    } else { '' }
+    $metadataCacheKey = "DomainState:Metadata$targetSuffix$computerSuffix"
 
     # Initialize domain state with safe defaults for all properties
     $domainState = [ordered]@{
@@ -643,7 +649,7 @@ function Get-MtADDomainState {
         }
 
         foreach ($cat in $resolvedCategories) {
-            $catCacheKey = "DomainState:$cat$computerSuffix"
+            $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
             if ($__MtSession.ADCache.ContainsKey($catCacheKey)) {
                 $cachedBag = $__MtSession.ADCache[$catCacheKey]
                 foreach ($prop in $categoryDescriptors[$cat].Properties) {
@@ -668,7 +674,7 @@ function Get-MtADDomainState {
             $__MtSession.ADCache.Remove($metadataCacheKey)
         }
         foreach ($cat in $resolvedCategories) {
-            $catCacheKey = "DomainState:$cat$computerSuffix"
+            $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
             if ($__MtSession.ADCache.ContainsKey($catCacheKey)) {
                 $__MtSession.ADCache.Remove($catCacheKey)
             }
@@ -689,9 +695,22 @@ function Get-MtADDomainState {
 
     $protocolConnection = $null
     try {
+        # When probing a different -ComputerName target, do not reuse the resolved TLS mode
+        # from the session's primary connection. Use the requested mode so the probe can
+        # negotiate a supported TLS mode for that specific target.
+        # Also use RequestedTlsMode when doing DNS-based lookup (no explicit server pinned)
+        # so that Auto fallback is preserved if the resolved DC changes.
+        $isDifferentComputer = $ComputerName -and ($ComputerName -ne $__MtSession.ADConnection.ResolvedServer)
+        $isDnsBasedLookup = -not $ComputerName -and -not $__MtSession.ADConnection.RequestedServer
+        $effectiveTlsMode = if ($isDifferentComputer -or $isDnsBasedLookup) {
+            $__MtSession.ADConnection.RequestedTlsMode
+        } else {
+            $__MtSession.ADConnection.TlsMode
+        }
+
         $protocolTargetParameters = @{
             AuthMode = $__MtSession.ADConnection.RequestedAuthMode
-            TlsMode  = $__MtSession.ADConnection.RequestedTlsMode
+            TlsMode  = $effectiveTlsMode
             PassThru = $true
         }
         if ($ComputerName) {
@@ -764,7 +783,7 @@ function Get-MtADDomainState {
                 }
 
                 # Cache the property bag
-                $catCacheKey = "DomainState:$cat$computerSuffix"
+                $catCacheKey = "DomainState:$cat$targetSuffix$computerSuffix"
                 $__MtSession.ADCache[$catCacheKey] = $bag
                 $anyCollectionOccurred = $true
             }

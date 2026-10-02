@@ -184,7 +184,7 @@ sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
 - PowerShell default shell provides native `pwsh` execution
 - Session context is predictable and debuggable
 
-**Note on implicit credentials over SSH:** Password-based SSH sessions as a domain user cannot obtain an ambient Kerberos ticket for `System.DirectoryServices.ActiveDirectory` DC discovery. However, **GSSAPI (Kerberos) SSH sessions CAN** obtain Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` (using `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name`) activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. To test implicit credentials over SSH, use GSSAPI authentication with a valid Kerberos TGT.
+**Note on implicit credentials over SSH:** GSSAPI (Kerberos) SSH sessions CAN validate implicit-credential rows when the client's TGT is **forwardable** and delegation is requested. The critical requirement is that the Linux runner's `/etc/krb5.conf` contains `forwardable = true` in `[libdefaults]` and the TGT is acquired with `kinit -f` (or the default is forwardable). SSH must be invoked with `-o GSSAPIDelegateCredentials=yes`. When configured correctly, the Windows runner receives a forwarded TGT in its LSA cache (visible via `klist` with `Ticket Flags ... forwarded`), enabling SSPI to request `ldap` service tickets for outbound authentication. Without `forwardable = true`, the TGT is not forwarded and implicit LDAP binds fail with `000004DC`.
 
 ---
 
@@ -557,7 +557,7 @@ Before declaring E2E validation complete, the following hard requirements **must
 
 - [ ] **Privileged User Tests** — All AD tests executed with a domain user holding at least read permissions on all target domains.
 - [ ] **Non-Privileged User Tests** — All AD tests executed with a low-privilege (`maesterreader`) account to validate that tests do not silently require elevated permissions or RSAT/AD module cmdlets.
-- [ ] **Implicit Credential Rows** — Windows runner implicit-credential rows validated via GSSAPI SSH (Kerberos) or domain-joined interactive session.
+- [ ] **Implicit Credential Rows** — Windows runner implicit-credential rows validated via GSSAPI SSH with a **forwardable** TGT (`forwardable = true` in `/etc/krb5.conf`, `kinit -f`, and `ssh -o GSSAPIDelegateCredentials=yes`). Verify the Windows runner `klist` shows a `krbtgt` ticket with the `forwarded` flag.
 - [ ] **Explicit Credential Rows** — All three forests (root, child, separate-forest) validated with explicit credentials over LDAPS.
 
 ### Code Prohibitions (Must Verify)
@@ -635,9 +635,9 @@ Before declaring E2E validation complete, the following hard requirements **must
   service is inactive and domain users are not resolvable through standard Linux
   NSS. Use explicit credentials for all separate-forest rows.
 - **SSH-based management** is the canonical transport for E2E validation. Two modes are supported:
-  - **GSSAPI (Kerberos) SSH:** Required for implicit-credential rows. The Linux runner acquires a TGT via `kinit` and connects to the Windows runner using Kerberos authentication.
-  - **Password-based SSH:** Works for explicit-credential rows only. Use `sshpass` with the Windows runner local admin password. Implicit-credential rows will fail because password auth does not provide a domain identity.
-- **Note on SSH implicit credentials:** GSSAPI (Kerberos) SSH sessions **CAN** obtain ambient Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. Password-based SSH cannot validate implicit credentials.
+  - **GSSAPI (Kerberos) SSH:** Required for implicit-credential rows. The Linux runner acquires a **forwardable** TGT via `kinit -f` (with `forwardable = true` in `/etc/krb5.conf`) and connects to the Windows runner using `ssh -o GSSAPIDelegateCredentials=yes`. The forwarded TGT appears in the Windows LSA cache and enables SSPI to request `ldap` service tickets for authenticated binds.
+  - **Password-based SSH:** Works for explicit-credential rows and runner management. Use `sshpass` with the Windows runner local admin or domain user password. Implicit-credential rows will fail because password auth does not provide a Kerberos identity.
+- **Note on SSH implicit credentials:** GSSAPI SSH sessions validate implicit-credential rows **only when the TGT is forwardable**. Verify on the Windows runner with `klist` — the cache must contain a `krbtgt` ticket with the `forwarded` flag. If `klist` shows only a `host` service ticket, the TGT was not forwarded; check `forwardable = true` in the Linux runner's `/etc/krb5.conf` and re-acquire the TGT. Password-based SSH cannot validate implicit credentials.
 - **Note on SSH explicit credentials:** The `Connect-Maester -ActiveDirectoryCredential` path is fully validated over both password-based and GSSAPI SSH. All explicit-credential rows pass.
 - **Child domain deployment** requires a two-step process:
   1. Join the child DC VM to the parent domain (`Add-Computer`)
