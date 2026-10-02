@@ -77,7 +77,7 @@
     $testResultMarkdown = "Active Directory users were reviewed for potential honey pot naming patterns.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserHoneyPotCount"
 
     return $testResult

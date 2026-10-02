@@ -87,10 +87,15 @@
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Potential honey pot style Active Directory users were reviewed in detail.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($potentialHoneyPots.Count -gt 0) {
+        $testResultMarkdown = "Potential honey pot style Active Directory users were reviewed in detail.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Potential honey pot style Active Directory users were reviewed in detail.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserHoneyPotDetails"
 
     return $testResult

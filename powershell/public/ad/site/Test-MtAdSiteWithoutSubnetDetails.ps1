@@ -74,8 +74,13 @@
             $result += "`n✅ All sites have subnet associations configured." + "`n"
         }
 
-        $testResultMarkdown = "Active Directory sites without subnet associations have been analyzed.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($sitesWithoutSubnetCount -gt 0) {
+            $testResultMarkdown = "Active Directory sites without subnet associations have been analyzed.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = "Active Directory sites without subnet associations have been analyzed.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory site information. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

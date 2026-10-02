@@ -71,7 +71,7 @@
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

@@ -77,7 +77,7 @@
     $testResultMarkdown = "DNS host name configuration has been analyzed. DNS host names are required for proper Kerberos authentication.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerDnsHostNameCount"
 
     return $testResult

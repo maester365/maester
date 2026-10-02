@@ -62,10 +62,15 @@
 
     $testResult = $true
     Write-Verbose "Counts computed"
-    $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    if ($groups.Count -gt 0) {
+        $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    } else {
+        $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclInheritedObjectTypeDetails"
     return $testResult
 }

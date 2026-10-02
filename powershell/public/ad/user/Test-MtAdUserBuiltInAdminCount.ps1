@@ -54,7 +54,7 @@
     $testResultMarkdown = "Active Directory built-in administrator style accounts were counted.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserBuiltInAdminCount"
 
     return $testResult

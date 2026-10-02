@@ -118,8 +118,13 @@
             }
         }
 
-        $testResultMarkdown = "DNS root server hint details have been analyzed. $incorrectCount root servers have incorrect IP addresses.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($totalRootServers -gt 0) {
+            $testResultMarkdown = "DNS root server hint details have been analyzed. $incorrectCount root servers have incorrect IP addresses.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = "DNS root server hint details have been analyzed. 0 root servers have incorrect IP addresses.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve DNS root server data. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
     }

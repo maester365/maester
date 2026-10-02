@@ -72,9 +72,15 @@
         $testResultMarkdown = "Active Directory trust configuration details are listed below.`n`n%TestResult%"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    # Only include the table content when findings exist. If there are zero findings,
+    # omit the table entirely by replacing the placeholder with an empty string.
+    if ($totalCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

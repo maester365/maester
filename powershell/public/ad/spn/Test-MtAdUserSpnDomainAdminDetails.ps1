@@ -73,8 +73,8 @@
     $adminsWithSpns = ($domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalDomainAdmins = ($domainAdmins | Measure-Object).Count
 
-    # Test passes if we successfully retrieved SPN data
-    $testResult = $true
+    # Test passes if no domain admin accounts have SPNs configured
+    $testResult = $totalAdminSpns -eq 0
 
     # Generate markdown results
     if ($testResult) {
@@ -107,8 +107,13 @@
             $result += "`n**✅ Good**: No domain administrator accounts have SPNs configured." + "`n"
         }
 
+    if ($totalAdminSpns -gt 0) {
         $testResultMarkdown = "Active Directory domain administrator SPN detailed analysis.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Active Directory domain administrator SPN detailed analysis.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

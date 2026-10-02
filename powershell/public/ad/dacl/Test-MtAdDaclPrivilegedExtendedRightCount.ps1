@@ -62,7 +62,7 @@
     $testResultMarkdown = "This informational test counts allow ACEs that grant the ExtendedRight permission.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightCount"
     return $testResult
 }

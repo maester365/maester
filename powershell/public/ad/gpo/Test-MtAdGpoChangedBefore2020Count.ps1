@@ -67,7 +67,7 @@
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }
