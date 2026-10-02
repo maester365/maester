@@ -609,6 +609,7 @@ Describe 'Test-MtConnection AzureDevOps cache' {
     AfterEach {
         InModuleScope Maester {
             Remove-Item -Path function:Get-ADOPSConnection -ErrorAction SilentlyContinue
+            Remove-Item -Path function:Invoke-ADOPSRestMethod -ErrorAction SilentlyContinue
             $__MtSession.AzureDevOpsConnectionCache = $null
             $__MtSession.Remove('AzureDevOpsConnection')
         }
@@ -616,15 +617,42 @@ Describe 'Test-MtConnection AzureDevOps cache' {
 
     It 'caches a successful Azure DevOps probe under a cache-specific key' {
         $result = InModuleScope Maester {
+            $script:adoProbeUri = $null
             New-Item -Path function:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } } -Force | Out-Null
+            New-Item -Path function:Invoke-ADOPSRestMethod -Value {
+                [CmdletBinding()]
+                param($Uri, $Method)
+                $script:adoProbeUri = $Uri
+                @{ authenticatedUser = @{ id = 'user-id' } }
+            } -Force | Out-Null
             Test-MtConnection -Service AzureDevOps -Details
         }
 
         $result.AllConnected | Should -BeTrue
         $result.AzureDevOps['Organization'] | Should -Be 'ado-org'
         InModuleScope Maester {
+            $script:adoProbeUri | Should -Be 'https://dev.azure.com/ado-org/_apis/connectionData'
             $__MtSession.AzureDevOpsConnectionCache['Organization'] | Should -Be 'ado-org'
             $__MtSession.ContainsKey('AzureDevOpsConnection') | Should -BeFalse
+        }
+    }
+
+    It 'treats a saved ADOPS organization without a usable token as NotConnected' {
+        # ADOPS persists the organization in ~/.ADOPS/Config.json, so Get-ADOPSConnection returns it in any later session.
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } } -Force | Out-Null
+            New-Item -Path function:Invoke-ADOPSRestMethod -Value {
+                [CmdletBinding()]
+                param($Uri, $Method)
+                throw 'Failed to get token. Could not find existing token, please run the command Connect-ADOPS!'
+            } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
+
+        $result.AllConnected | Should -BeFalse
+        $result.AzureDevOps | Should -BeNullOrEmpty
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache | Should -Be 'NotConnected'
         }
     }
 

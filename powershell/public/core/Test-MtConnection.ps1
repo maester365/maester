@@ -249,13 +249,17 @@
                     if ($null -ne (Get-Command -Name Get-ADOPSConnection -ErrorAction Stop)) {
                         $connection = Get-ADOPSConnection
                         if ($null -ne $connection -and $null -ne $connection['Organization']) {
+                            # Get-ADOPSConnection reads ~/.ADOPS/Config.json, which persists across sessions after any
+                            # earlier Connect-ADOPS. Confirm a token can still be used before treating it as connected.
+                            $organization = [uri]::EscapeDataString($connection['Organization'])
+                            Invoke-ADOPSRestMethod -Uri "https://dev.azure.com/$organization/_apis/connectionData" -Method Get -ErrorAction Stop | Out-Null
                             $MtConnections.AzureDevOps = $connection
                             $__MtSession.AzureDevOpsConnectionCache = $connection
                             $IsConnected = $true
                         }
                     }
                 } catch {
-                    Write-Debug "AzureDevOps: $false"
+                    Write-Verbose "AzureDevOps connection check failed: $($_.Exception.Message)"
                 }
                 if (-not $IsConnected) {
                     # Cache negative result so subsequent calls skip the probe.
