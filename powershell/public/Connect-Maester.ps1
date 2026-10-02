@@ -8,6 +8,8 @@
 
    Non-Microsoft 365 services such as Active Directory and GitHub are not included in -Service All and must be explicitly specified.
 
+   When it finishes, Connect-Maester shows a summary table with the status of each service it tried (Connected, Skipped, Failed or Not installed) and a short detail. Use -Verbose to see the step-by-step messages for each connection.
+
    This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
    ```
@@ -198,6 +200,17 @@
 
    $__MtSession.Connections = $Service
 
+   # Record the outcome of each service so a single summary table can be shown at the end.
+   # Step-by-step explanations go to the verbose stream; the table carries what the user needs to act on.
+   $connectionSummary = [System.Collections.Generic.List[object]]::new()
+   function Add-ConnectionResult ([string] $Name, [string] $Status, [string] $Details) {
+      $connectionSummary.Add([PSCustomObject]@{ Service = $Name; Status = $Status; Details = $Details })
+   }
+   function Get-ErrorSummary ($ErrorRecord) {
+      $message = if ($ErrorRecord.Exception) { $ErrorRecord.Exception.Message } else { "$ErrorRecord" }
+      ("$message" -split "`r?`n" | Where-Object { $_.Trim() } | Select-Object -First 1)
+   }
+
    # Use an explicit module processing order so Microsoft Graph always connects before PnP.PowerShell.
    # This avoids relying on Get-ModuleImportOrder, which may reorder modules by bundled DLL version.
    $OrderedImport = @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'PnP.PowerShell')
@@ -206,99 +219,128 @@
       'Az.Accounts' {
          if ($Service -contains 'Azure' -or $Service -contains 'Dataverse' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Azure'
-
-            # Skip Connect-AzAccount if there is already an active Az context
-            # This preserves sessions from federated credentials, managed identity, or prior Connect-AzAccount calls
-            $existingContext = Get-AzContext -ErrorAction SilentlyContinue
-            if ($existingContext) {
-               Write-Verbose "Using existing Az context for account '$($existingContext.Account.Id)'"
-            } else {
-               try {
+            $azureConnected = $false
+            try {
+               # Skip Connect-AzAccount if there is already an active Az context
+               # This preserves sessions from federated credentials, managed identity, or prior Connect-AzAccount calls
+               $existingContext = Get-AzContext -ErrorAction SilentlyContinue
+               if ($existingContext) {
+                  Write-Verbose "Using existing Az context for account '$($existingContext.Account.Id)'"
+               } else {
                   $azWarning = @()
                   if ($TenantId) {
-                     Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId -WarningAction SilentlyContinue -WarningVariable azWarning
+                     Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId -WarningAction SilentlyContinue -WarningVariable azWarning -ErrorAction Stop | Out-Null
                   } else {
-                     Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -WarningAction SilentlyContinue -WarningVariable azWarning
+                     Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -WarningAction SilentlyContinue -WarningVariable azWarning -ErrorAction Stop | Out-Null
                   }
                   if ($azWarning.Count -gt 0) {
                      foreach ($warning in $azWarning) {
                         Write-Verbose $warning.Message
                      }
                   }
-               } catch [Management.Automation.CommandNotFoundException] {
-                  Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
-                  Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
+                  $existingContext = Get-AzContext -ErrorAction SilentlyContinue
                }
+               $azureConnected = $true
+               Add-ConnectionResult -Name 'Azure' -Status 'Connected' -Details $existingContext.Account.Id
+            } catch [Management.Automation.CommandNotFoundException] {
+               Write-Verbose 'The Azure PowerShell module is not installed. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell'
+               Add-ConnectionResult -Name 'Azure' -Status 'Not installed' -Details 'Run: Install-Module Az.Accounts -Scope CurrentUser'
+            } catch {
+               Write-Verbose "Failed to connect to Azure: $($_.Exception.Message)"
+               Add-ConnectionResult -Name 'Azure' -Status 'Failed' -Details (Get-ErrorSummary $_)
             }
 
             # Resolve, parse, and validate the Dataverse environment at connect time.
             # The resolved API base URL, resource URL, and environment ID are stored in
             # session variables for use by Get-MtAIAgentInfo at test time.
             if ($Service -contains 'Dataverse' -or $Service -contains 'All') {
-               # Step 1: Determine the Dataverse environment URL (explicit config or auto-discover)
-               $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
-               if ([string]::IsNullOrEmpty($dataverseUrl)) {
-                  Write-Verbose "No DataverseEnvironmentUrl configured. Auto-discovering via Global Discovery Service."
-                  $dataverseUrl = Get-MtDataverseEnvironmentUrl
+               if (-not $azureConnected) {
+                  Add-ConnectionResult -Name 'Dataverse' -Status 'Skipped' -Details 'Requires an Azure connection'
                } else {
-                  Write-Verbose "Using configured DataverseEnvironmentUrl: $dataverseUrl"
-               }
-
-               if (-not [string]::IsNullOrEmpty($dataverseUrl)) {
-                  # Step 2: Normalize and parse the URL into resource URL and API base URL
-                  $dataverseUrl = $dataverseUrl.TrimEnd('/')
-                  if ($dataverseUrl -notmatch '^https?://') {
-                     $dataverseUrl = "https://$dataverseUrl"
+                  $dataverseDiscoveryError = $null
+                  try {
+                     # Step 1: Determine the Dataverse environment URL (explicit config or auto-discover)
+                     $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
+                     if ([string]::IsNullOrEmpty($dataverseUrl)) {
+                        Write-Verbose "No DataverseEnvironmentUrl configured. Auto-discovering via Global Discovery Service."
+                        $dataverseUrl = Get-MtDataverseEnvironmentUrl
+                     } else {
+                        Write-Verbose "Using configured DataverseEnvironmentUrl: $dataverseUrl"
+                     }
+                  } catch {
+                     $dataverseUrl = $null
+                     $dataverseDiscoveryError = $_
                   }
 
-                  # Resource URL: environment host without '.api.' (used for token acquisition)
-                  $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
-                  # API URL: insert .api. after the hostname prefix (used for OData calls)
-                  # e.g. https://org5acae060.crm19.dynamics.com -> https://org5acae060.api.crm19.dynamics.com
-                  $apiUrl = $resourceUrl -replace '(https://[^.]+)\.', '$1.api.'
-                  $apiBase = "$apiUrl/api/data/v9.2"
-                  $environmentId = $resourceUrl -replace 'https?://', ''
-
-                  # Step 3: Validate token acquisition for the resolved environment
-                  try {
-                     $tokenResult = Get-AzAccessToken -ResourceUrl $resourceUrl -ErrorAction Stop
-                     if ($tokenResult) {
-                        Write-Verbose "Successfully obtained Dataverse access token for $resourceUrl"
+                  if ($dataverseDiscoveryError) {
+                     Write-Verbose "Dataverse environment discovery failed: $($dataverseDiscoveryError.Exception.Message)"
+                     Add-ConnectionResult -Name 'Dataverse' -Status 'Failed' -Details (Get-ErrorSummary $dataverseDiscoveryError)
+                  } elseif ([string]::IsNullOrEmpty($dataverseUrl)) {
+                     Write-Verbose "No Dataverse environment found. Copilot Studio agent security tests will be skipped. Configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings to specify an environment explicitly."
+                     Add-ConnectionResult -Name 'Dataverse' -Status 'Skipped' -Details 'No environment found, set DataverseEnvironmentUrl in maester-config.json'
+                  } else {
+                     # Step 2: Normalize and parse the URL into resource URL and API base URL
+                     $dataverseUrl = $dataverseUrl.TrimEnd('/')
+                     if ($dataverseUrl -notmatch '^https?://') {
+                        $dataverseUrl = "https://$dataverseUrl"
                      }
 
-                     # Store resolved values in session for Get-MtAIAgentInfo
-                     $__MtSession.DataverseApiBase = $apiBase
-                     $__MtSession.DataverseResourceUrl = $resourceUrl
-                     $__MtSession.DataverseEnvironmentId = $environmentId
-                  } catch {
-                     Write-Host "`nFailed to obtain Dataverse access token for '$resourceUrl'. Ensure the account has permissions to access the Copilot Studio environment via the Dataverse API." -ForegroundColor Yellow
-                     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
+                     # Resource URL: environment host without '.api.' (used for token acquisition)
+                     $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
+                     # API URL: insert .api. after the hostname prefix (used for OData calls)
+                     # e.g. https://org5acae060.crm19.dynamics.com -> https://org5acae060.api.crm19.dynamics.com
+                     $apiUrl = $resourceUrl -replace '(https://[^.]+)\.', '$1.api.'
+                     $apiBase = "$apiUrl/api/data/v9.2"
+                     $environmentId = $resourceUrl -replace 'https?://', ''
+
+                     # Step 3: Validate token acquisition for the resolved environment
+                     try {
+                        $tokenResult = Get-AzAccessToken -ResourceUrl $resourceUrl -ErrorAction Stop
+                        if ($tokenResult) {
+                           Write-Verbose "Successfully obtained Dataverse access token for $resourceUrl"
+                        }
+
+                        # Store resolved values in session for Get-MtAIAgentInfo
+                        $__MtSession.DataverseApiBase = $apiBase
+                        $__MtSession.DataverseResourceUrl = $resourceUrl
+                        $__MtSession.DataverseEnvironmentId = $environmentId
+                        Add-ConnectionResult -Name 'Dataverse' -Status 'Connected' -Details $environmentId
+                     } catch {
+                        Write-Verbose "Failed to obtain Dataverse access token for '$resourceUrl'. Ensure the account has permissions to access the Copilot Studio environment via the Dataverse API. Error: $($_.Exception.Message)"
+                        Add-ConnectionResult -Name 'Dataverse' -Status 'Failed' -Details "No access token for $environmentId`: $(Get-ErrorSummary $_)"
+                     }
                   }
-               } else {
-                  Write-Host "`nNo Dataverse environment found. Copilot Studio agent security tests will be skipped." -ForegroundColor Yellow
-                  Write-Host "You can configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings to specify an environment explicitly." -ForegroundColor Yellow
                }
             }
          }
       }
 
       'ExchangeOnlineManagement' {
-         $ExchangeModuleNotInstalledWarningShown = $false
+         $exchangeModuleInstalled = $true
          if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Exchange Online'
-            try {
-               if ($UseDeviceCode -and $PSVersionTable.PSEdition -eq 'Desktop') {
-                  Write-Host 'The Exchange Online module in Windows PowerShell does not support device code flow authentication.' -ForegroundColor Red
-                  Write-Host '💡Please use the Exchange Online module in PowerShell Core.' -ForegroundColor Yellow
-               } elseif ( $UseDeviceCode ) {
-                  Connect-ExchangeOnline -ShowBanner:$false -Device:$UseDeviceCode -ExchangeEnvironmentName $ExchangeEnvironmentName
-               } else {
-                  Connect-ExchangeOnline -ShowBanner:$false -ExchangeEnvironmentName $ExchangeEnvironmentName
+            if ($UseDeviceCode -and $PSVersionTable.PSEdition -eq 'Desktop') {
+               Write-Verbose 'The Exchange Online module in Windows PowerShell does not support device code flow authentication. Use the Exchange Online module in PowerShell 7.'
+               Add-ConnectionResult -Name 'Exchange Online' -Status 'Skipped' -Details 'Device code sign-in needs PowerShell 7 for Exchange Online'
+            } else {
+               try {
+                  if ( $UseDeviceCode ) {
+                     Connect-ExchangeOnline -ShowBanner:$false -Device:$UseDeviceCode -ExchangeEnvironmentName $ExchangeEnvironmentName -ErrorAction Stop
+                  } else {
+                     Connect-ExchangeOnline -ShowBanner:$false -ExchangeEnvironmentName $ExchangeEnvironmentName -ErrorAction Stop
+                  }
+                  $exchangeUpn = Get-ConnectionInformation -ErrorAction SilentlyContinue |
+                     Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                     Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
+                  Add-ConnectionResult -Name 'Exchange Online' -Status 'Connected' -Details $exchangeUpn
+               } catch [Management.Automation.CommandNotFoundException] {
+                  Write-Verbose 'The Exchange Online module is not installed. For more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2'
+                  Add-ConnectionResult -Name 'Exchange Online' -Status 'Not installed' -Details 'Run: Install-Module ExchangeOnlineManagement -Scope CurrentUser'
+                  $exchangeModuleInstalled = $false
+               } catch {
+                  Write-Verbose "Failed to connect to Exchange Online: $($_.Exception.Message)"
+                  Add-ConnectionResult -Name 'Exchange Online' -Status 'Failed' -Details (Get-ErrorSummary $_)
                }
-            } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
-               Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
-               $ExchangeModuleNotInstalledWarningShown = $true
             }
          }
 
@@ -330,28 +372,42 @@
                }
             }
             Write-Verbose 'Connecting to Microsoft Security & Compliance PowerShell'
+            $securityComplianceConnected = $false
             if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All') {
-               Write-Host "`nThe Security & Compliance module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
+               Write-Verbose 'The Security & Compliance module is dependent on the Exchange Online module. For more information see https://learn.microsoft.com/powershell/exchange/connect-to-scc-powershell'
+               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires ExchangeOnline in -Service'
+            } elseif ($UseDeviceCode) {
+               Write-Verbose 'The Security & Compliance module does not support device code flow authentication.'
+               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Device code sign-in is not supported for Security & Compliance'
+            } elseif (-not $exchangeModuleInstalled) {
+               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Not installed' -Details 'Run: Install-Module ExchangeOnlineManagement -Scope CurrentUser'
             } else {
-               if ($UseDeviceCode) {
-                  Write-Host "`nThe Security & Compliance module does not support device code flow authentication." -ForegroundColor Red
-               } else {
-                  try {
-                     Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false
-                  } catch [Management.Automation.CommandNotFoundException] {
-                     if (-not $ExchangeModuleNotInstalledWarningShown) {
-                        Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
-                        Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+               try {
+                  Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false -ErrorAction Stop
+                  $securityComplianceConnected = $true
+                  $securityComplianceUpn = Get-ConnectionInformation -ErrorAction SilentlyContinue |
+                     Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' } |
+                     Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
+                  Add-ConnectionResult -Name 'Security & Compliance' -Status 'Connected' -Details $securityComplianceUpn
+               } catch [Management.Automation.CommandNotFoundException] {
+                  Write-Verbose 'The Exchange Online module is not installed. For more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2'
+                  Add-ConnectionResult -Name 'Security & Compliance' -Status 'Not installed' -Details 'Run: Install-Module ExchangeOnlineManagement -Scope CurrentUser'
+               } catch {
+                  Write-Verbose "The first Security & Compliance connection attempt failed: $($_.Exception.Message)"
+                  # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
+                  $ExoUPN = Get-MtExo -Request ConnectionInformation | Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
+                  if ($ExoUPN) {
+                     Write-Verbose "Attempting to connect to the Security & Compliance PowerShell using UPN '$ExoUPN' derived from the ExchangeOnline connection."
+                     try {
+                        Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false -ErrorAction Stop
+                        $securityComplianceConnected = $true
+                        Add-ConnectionResult -Name 'Security & Compliance' -Status 'Connected' -Details "Using UPN $ExoUPN from Exchange Online"
+                     } catch {
+                        Write-Verbose "Failed to connect to the Security & Compliance PowerShell: $($_.Exception.Message)"
+                        Add-ConnectionResult -Name 'Security & Compliance' -Status 'Failed' -Details (Get-ErrorSummary $_)
                      }
-                  } catch {
-                     # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
-                     $ExoUPN = Get-MtExo -Request ConnectionInformation | Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
-                     if ($ExoUPN) {
-                        Write-Host "`nAttempting to connect to the Security & Compliance PowerShell using UPN '$ExoUPN' derived from the ExchangeOnline connection." -ForegroundColor Yellow
-                        Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false
-                     } else {
-                        Write-Host "`nFailed to connect to the Security & Compliance PowerShell. Please ensure you are connected to Exchange Online first." -ForegroundColor Red
-                     }
+                  } else {
+                     Add-ConnectionResult -Name 'Security & Compliance' -Status 'Failed' -Details 'Connect to Exchange Online first'
                   }
                }
             }
@@ -361,16 +417,18 @@
                block removes the broken function and re-imports the temporary PSSession module for EXO, which restores
                the working Get-AdminAuditLogConfig function.
             #>
-            $ExchangeConnectionInformation = Get-ConnectionInformation
-            if ($ExchangeConnectionInformation | Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' }) {
-               try {
-                  # Remove the broken cmdlet and re-import the working EXO one.
-                  Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
-                  $ExchangeConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
-                  Select-Object -ExpandProperty ModuleName |
-                  Import-Module -Function 'Get-AdminAuditLogConfig' > $null
-               } catch {
-                  Write-Error "Failed to restore Get-AdminAuditLogConfig cmdlet: $($_.Exception.Message)"
+            if ($securityComplianceConnected) {
+               $ExchangeConnectionInformation = Get-ConnectionInformation
+               if ($ExchangeConnectionInformation | Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' }) {
+                  try {
+                     # Remove the broken cmdlet and re-import the working EXO one.
+                     Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
+                     $ExchangeConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                     Select-Object -ExpandProperty ModuleName |
+                     Import-Module -Function 'Get-AdminAuditLogConfig' > $null
+                  } catch {
+                     Write-Error "Failed to restore Get-AdminAuditLogConfig cmdlet: $($_.Exception.Message)"
+                  }
                }
             }
          }
@@ -415,14 +473,26 @@
                   }
                }
 
+               $graphContext = Get-MgContext
+               if ($graphConnectError -or -not $graphContext) {
+                  $graphFailure = if ($graphConnectError) { Get-ErrorSummary $graphConnectError[0] } else { 'Not signed in' }
+                  Add-ConnectionResult -Name 'Microsoft Graph' -Status 'Failed' -Details $graphFailure
+               } else {
+                  $graphAccount = if ($graphContext.Account) { $graphContext.Account } else { $graphContext.AppName }
+                  Add-ConnectionResult -Name 'Microsoft Graph' -Status 'Connected' -Details $graphAccount
+               }
+
                #ensure TenantId
                if (-not $TenantId) {
-                  $TenantId = (Get-MgContext).TenantId
+                  $TenantId = $graphContext.TenantId
                }
 
             } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Graph PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation" -ForegroundColor Red
-               Write-Host "`Install-Module Microsoft.Graph.Authentication -Scope CurrentUser`n" -ForegroundColor Yellow
+               Write-Verbose 'The Graph PowerShell module is not installed. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation'
+               Add-ConnectionResult -Name 'Microsoft Graph' -Status 'Not installed' -Details 'Run: Install-Module Microsoft.Graph.Authentication -Scope CurrentUser'
+            } catch {
+               Write-Verbose "Failed to connect to Microsoft Graph: $($_.Exception.Message)"
+               Add-ConnectionResult -Name 'Microsoft Graph' -Status 'Failed' -Details (Get-ErrorSummary $_)
             }
          }
       }
@@ -431,16 +501,21 @@
          if ($Service -contains 'Teams' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Teams'
             try {
+               $teamsParams = @{ ErrorAction = 'Stop' }
                if ($UseDeviceCode) {
-                  Connect-MicrosoftTeams -UseDeviceAuthentication
+                  $teamsParams['UseDeviceAuthentication'] = $true
                } elseif ($TeamsEnvironmentName) {
-                  Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName > $null
-               } else {
-                  Connect-MicrosoftTeams > $null
+                  $teamsParams['TeamsEnvironmentName'] = $TeamsEnvironmentName
                }
+               $teamsConnection = Connect-MicrosoftTeams @teamsParams
+               $teamsAccount = if ($teamsConnection.Account.Id) { $teamsConnection.Account.Id } elseif ($teamsConnection.Account) { "$($teamsConnection.Account)" }
+               Add-ConnectionResult -Name 'Microsoft Teams' -Status 'Connected' -Details $teamsAccount
             } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/microsoftteams/teams-powershell-install" -ForegroundColor Red
-               Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
+               Write-Verbose 'The Teams PowerShell module is not installed. For more information see https://learn.microsoft.com/microsoftteams/teams-powershell-install'
+               Add-ConnectionResult -Name 'Microsoft Teams' -Status 'Not installed' -Details 'Run: Install-Module MicrosoftTeams -Scope CurrentUser'
+            } catch {
+               Write-Verbose "Failed to connect to Microsoft Teams: $($_.Exception.Message)"
+               Add-ConnectionResult -Name 'Microsoft Teams' -Status 'Failed' -Details (Get-ErrorSummary $_)
             }
          }
       }
@@ -453,56 +528,54 @@
             $resolvedSharePointClientId = $SharePointClientId
 
             if (-not $resolvedSharePointClientId) {
-               Write-Warning "SharePoint Online connection skipped because -SharePointClientId was not provided."
-               break
-            }
-
-            try {
-               # Use the provided admin URL or auto-discover from the tenant's initial domain
-               if ($SharePointAdminUrl) {
-                  $spoAdminUrl = $SharePointAdminUrl
-                  Write-Verbose "Using provided SharePoint admin URL: $spoAdminUrl"
-               } elseif ($Service -notcontains 'Graph' -and $Service -notcontains 'All') {
-                  Write-Host "SharePoint admin URL auto-discovery requires a Microsoft Graph connection. Either include 'Graph' in -Service or supply -SharePointAdminUrl explicitly (e.g. https://contoso-admin.sharepoint.com)." -ForegroundColor Red
-                  break
-               } else {
-                  $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
-                  $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
-                  $tenantPrefix = ($initialDomain -split '\.')[0]
-                  $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
-                  Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
-               }
-               if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
-                  Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
-                  Write-Host "The PnP.PowerShell module is not installed. For more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
-                  break
-               }
-
-               Import-Module PnP.PowerShell -ErrorAction Stop
-               $pnpParams = @{
-                  Url      = $spoAdminUrl
-                  ClientId = $resolvedSharePointClientId
-               }
-               if ($SharePointCertificateThumbprint) {
-                  if (-not $TenantId) {
-                     Write-Host "The -TenantId parameter is required when using -SharePointCertificateThumbprint." -ForegroundColor Red
-                     break
-                  }
-                  $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
-                  $pnpParams['Tenant'] = $TenantId
-               } else {
-                  if ($UseDeviceCode) {
-                     $pnpParams['DeviceLogin'] = $true
+               Write-Verbose 'SharePoint Online connection skipped because -SharePointClientId was not provided.'
+               Add-ConnectionResult -Name 'SharePoint Online' -Status 'Skipped' -Details '-SharePointClientId was not provided'
+            } elseif (-not $SharePointAdminUrl -and $Service -notcontains 'Graph' -and $Service -notcontains 'All') {
+               Write-Verbose "SharePoint admin URL auto-discovery requires a Microsoft Graph connection. Either include 'Graph' in -Service or supply -SharePointAdminUrl explicitly (e.g. https://contoso-admin.sharepoint.com)."
+               Add-ConnectionResult -Name 'SharePoint Online' -Status 'Skipped' -Details 'Include Graph in -Service or pass -SharePointAdminUrl'
+            } elseif ($SharePointCertificateThumbprint -and -not $TenantId) {
+               Add-ConnectionResult -Name 'SharePoint Online' -Status 'Failed' -Details '-TenantId is required with -SharePointCertificateThumbprint'
+            } elseif (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
+               Write-Verbose 'The PnP.PowerShell module is not installed. For more information see https://pnp.github.io/powershell/articles/installation.html'
+               Add-ConnectionResult -Name 'SharePoint Online' -Status 'Not installed' -Details 'Run: Install-Module PnP.PowerShell -Scope CurrentUser'
+            } else {
+               try {
+                  # Use the provided admin URL or auto-discover from the tenant's initial domain
+                  if ($SharePointAdminUrl) {
+                     $spoAdminUrl = $SharePointAdminUrl
+                     Write-Verbose "Using provided SharePoint admin URL: $spoAdminUrl"
                   } else {
-                     $pnpParams['Interactive'] = $true
+                     $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
+                     $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
+                     $tenantPrefix = ($initialDomain -split '\.')[0]
+                     $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
+                     Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
                   }
-                  if ($TenantId) {
+
+                  Import-Module PnP.PowerShell -ErrorAction Stop
+                  $pnpParams = @{
+                     Url      = $spoAdminUrl
+                     ClientId = $resolvedSharePointClientId
+                  }
+                  if ($SharePointCertificateThumbprint) {
+                     $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
                      $pnpParams['Tenant'] = $TenantId
+                  } else {
+                     if ($UseDeviceCode) {
+                        $pnpParams['DeviceLogin'] = $true
+                     } else {
+                        $pnpParams['Interactive'] = $true
+                     }
+                     if ($TenantId) {
+                        $pnpParams['Tenant'] = $TenantId
+                     }
                   }
+                  Connect-PnPOnline @pnpParams -ErrorAction Stop
+                  Add-ConnectionResult -Name 'SharePoint Online' -Status 'Connected' -Details $spoAdminUrl
+               } catch {
+                  Write-Verbose "Failed to connect to SharePoint Online: $($_.Exception.Message)"
+                  Add-ConnectionResult -Name 'SharePoint Online' -Status 'Failed' -Details (Get-ErrorSummary $_)
                }
-               Connect-PnPOnline @pnpParams
-            } catch {
-               Write-Host "Failed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
             }
          }
       }
@@ -514,7 +587,20 @@
       if (-not [string]::IsNullOrWhiteSpace($GitHubOrganization)) {
          $connectGitHubParams['Organization'] = $GitHubOrganization
       }
-      Connect-MtGitHub @connectGitHubParams
+      try {
+         # Connect-MtGitHub explains its own failures, so the summary only needs the outcome.
+         Connect-MtGitHub @connectGitHubParams
+         $gitHubConnection = $__MtSession.GitHubConnection
+         if ($gitHubConnection.Connected) {
+            Add-ConnectionResult -Name 'GitHub' -Status 'Connected' -Details $gitHubConnection.Organization
+         } else {
+            $gitHubFailure = if ($gitHubConnection.FailureReason) { "$($gitHubConnection.FailureReason), see the message above" } else { 'See the message above' }
+            Add-ConnectionResult -Name 'GitHub' -Status 'Failed' -Details $gitHubFailure
+         }
+      } catch {
+         Write-Verbose "Failed to connect to GitHub: $($_.Exception.Message)"
+         Add-ConnectionResult -Name 'GitHub' -Status 'Failed' -Details (Get-ErrorSummary $_)
+      }
    }
 
     # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
@@ -540,8 +626,12 @@
                 $__MtSession.ADConnection.ResolvedForest,
                 $__MtSession.ADConnection.AuthenticationMode,
                 $__MtSession.ADConnection.TlsMode)
+          Add-ConnectionResult -Name 'Active Directory' -Status 'Connected' -Details ("{0} ({1})" -f $__MtSession.ADConnection.ResolvedDomain, $__MtSession.ADConnection.ResolvedServer)
        } catch {
-          Write-Error $_.Exception.Message
+          Write-Verbose "Failed to connect to Active Directory: $($_.Exception.Message)"
+          Add-ConnectionResult -Name 'Active Directory' -Status 'Failed' -Details (Get-ErrorSummary $_)
        }
     }
+
+   Write-MtConnectionSummary -Summary $connectionSummary
 } # end function Connect-Maester
