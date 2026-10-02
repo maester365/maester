@@ -52,15 +52,29 @@ function New-MtLdapConnection {
             $connection.SessionOptions.ReferralChasing = [System.DirectoryServices.Protocols.ReferralChasingOptions]::None
             $connection.SessionOptions.SecureSocketLayer = ($effectivePort -eq 636 -and -not $UseStartTls.IsPresent)
 
-            if ($SkipCertificateCheck.IsPresent) {
-                # Dangerous: this bypass is allowed only for tests and fixtures.
+            # Set a callback that logs certificate details and validates the chain.
+            # When SkipCertificateCheck is present we still log but return $true.
+            # Wrap in try/catch because test mocks may not expose this property.
+            try {
+                $skipCertCheck = $SkipCertificateCheck.IsPresent
                 $connection.SessionOptions.VerifyServerCertificate = {
                     param($ldapConnection, $certificate)
 
                     [void]$ldapConnection
-                    [void]$certificate
-                    return $true
-                }
+                    $script:__MtLastLdapCertificateDetail = Get-MtLdapCertificateDetail -Certificate $certificate
+
+                    if ($skipCertCheck) {
+                        return $true
+                    }
+
+                    $chain = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Chain
+                    $result = $chain.Build($certificate)
+                    $chain.Dispose()
+                    return $result
+                }.GetNewClosure()
+            }
+            catch {
+                Write-Verbose "Unable to set VerifyServerCertificate callback: $_."
             }
         }
 
