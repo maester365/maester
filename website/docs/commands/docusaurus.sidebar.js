@@ -54,6 +54,7 @@ module.exports = [
     'commands/Get-MtGraphScope',
     'commands/Get-MtGroupMember',
     'commands/Get-MtHtmlReport',
+    'commands/Get-MtLdapCertificateDetail',
     'commands/Get-MtLdapComputer',
     'commands/Get-MtLdapConfigurationContainer',
     'commands/Get-MtLdapDacl',
