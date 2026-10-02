@@ -184,7 +184,7 @@ sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
 - PowerShell default shell provides native `pwsh` execution
 - Session context is predictable and debuggable
 
-**Note on implicit credentials over SSH:** Neither password-based nor GSSAPI (Kerberos) SSH sessions can validate implicit-credential LDAP rows on Windows. SSH creates a **network logon** session; Windows OpenSSH does not expose delegated Kerberos credentials to SSPI, and the LSA lacks the credential material (TGT or password hash) required for `AuthType = Negotiate` or `Ntlm` to perform an authenticated LDAP bind. The bind succeeds silently as anonymous, but directory searches fail with `000004DC: In order to perform this operation a successful bind must be completed on the connection.` To validate implicit-credential rows, use an **interactive logon session** (RDP or console) on the Windows runner. Explicit credentials (`-ActiveDirectoryCredential`) work correctly over both password-based and GSSAPI SSH.
+**Note on implicit credentials over SSH:** Password-based SSH sessions as a domain user cannot obtain an ambient Kerberos ticket for `System.DirectoryServices.ActiveDirectory` DC discovery. However, **GSSAPI (Kerberos) SSH sessions CAN** obtain Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` (using `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name`) activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. To test implicit credentials over SSH, use GSSAPI authentication with a valid Kerberos TGT.
 
 ---
 
@@ -557,7 +557,7 @@ Before declaring E2E validation complete, the following hard requirements **must
 
 - [ ] **Privileged User Tests** — All AD tests executed with a domain user holding at least read permissions on all target domains.
 - [ ] **Non-Privileged User Tests** — All AD tests executed with a low-privilege (`maesterreader`) account to validate that tests do not silently require elevated permissions or RSAT/AD module cmdlets.
-- [ ] **Implicit Credential Rows** — Windows runner implicit-credential rows validated via **interactive logon** (RDP or console) on the domain-joined Windows runner. SSH (password or GSSAPI) cannot validate implicit credentials because Windows SSH sessions are network logons that do not expose credential material to SSPI for LDAP authentication.
+- [ ] **Implicit Credential Rows** — Windows runner implicit-credential rows validated via GSSAPI SSH (Kerberos) or domain-joined interactive session.
 - [ ] **Explicit Credential Rows** — All three forests (root, child, separate-forest) validated with explicit credentials over LDAPS.
 
 ### Code Prohibitions (Must Verify)
@@ -635,9 +635,9 @@ Before declaring E2E validation complete, the following hard requirements **must
   service is inactive and domain users are not resolvable through standard Linux
   NSS. Use explicit credentials for all separate-forest rows.
 - **SSH-based management** is the canonical transport for E2E validation. Two modes are supported:
-  - **GSSAPI (Kerberos) SSH:** Authenticates the SSH session using Kerberos, but **cannot validate implicit-credential LDAP rows** because Windows OpenSSH does not forward Kerberos credentials to the Windows LSA/SSPI for use by `System.DirectoryServices.Protocols`. Use GSSAPI SSH for explicit-credential rows or for managing the Windows runner.
-  - **Password-based SSH:** Works for explicit-credential rows and runner management. Use `sshpass` with the Windows runner local admin or domain user password.
-- **Note on SSH implicit credentials:** SSH sessions (both password and GSSAPI) create a **network logon** on Windows. SSPI cannot perform an authenticated LDAP bind without a TGT or explicit password in a network logon context. The `Get-MtAmbientDomainController` fallback may resolve the DC, but `Connect-Maester` will fail on directory searches with `000004DC`. Validate implicit-credential rows exclusively via **RDP or console logon**.
+  - **GSSAPI (Kerberos) SSH:** Required for implicit-credential rows. The Linux runner acquires a TGT via `kinit` and connects to the Windows runner using Kerberos authentication.
+  - **Password-based SSH:** Works for explicit-credential rows only. Use `sshpass` with the Windows runner local admin password. Implicit-credential rows will fail because password auth does not provide a domain identity.
+- **Note on SSH implicit credentials:** GSSAPI (Kerberos) SSH sessions **CAN** obtain ambient Kerberos tickets and validate implicit-credential rows. The `Get-MtAmbientDomainController` fallback in `Connect-MtAdTarget.ps1` activates in GSSAPI SSH sessions where `$env:LOGONSERVER` and `$env:USERDNSDOMAIN` are empty. Password-based SSH cannot validate implicit credentials.
 - **Note on SSH explicit credentials:** The `Connect-Maester -ActiveDirectoryCredential` path is fully validated over both password-based and GSSAPI SSH. All explicit-credential rows pass.
 - **Child domain deployment** requires a two-step process:
   1. Join the child DC VM to the parent domain (`Add-Computer`)
