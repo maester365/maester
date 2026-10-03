@@ -53,6 +53,8 @@ export default function TestResultsTable(props) {
     const anchorId = getTestResultAnchorId(item);
 
     if (anchorId) {
+      // The row is already on screen, so skip the deep-link effect's scroll-to-row.
+      lastRelaxedLinkedAnchorId.current = anchorId;
       navigate({
         pathname: "/",
         hash: getTestResultAnchorHash(anchorId),
@@ -356,13 +358,13 @@ export default function TestResultsTable(props) {
               className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer scroll-mt-4"
               onClick={() => !props.isPrintView && handleOpenLinkedSheet(item)}
             >
-              <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
+              <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[13rem]">
                 {props.isPrintView ? (
                   <a href={`#${item.Id}`} className="text-left font-medium outline-hidden text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full block">
-                    <span className="truncate text-sm">{item.Id || item.Name}</span>
+                    <span className="block truncate text-sm" title={item.Id || item.Name}>{item.Id || item.Name}</span>
                   </a>
                 ) : (
-                  <span className="truncate text-sm">{item.Id || item.Name}</span>
+                  <span className="block truncate text-sm" title={item.Id || item.Name}>{item.Id || item.Name}</span>
                 )}
               </TableCell>
               <TableCell className="whitespace-normal">
