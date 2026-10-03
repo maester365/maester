@@ -66,7 +66,7 @@ mindmap
 | Severity | Medium |
 | Suite | Entra ID SCA |
 | Category | General |
-| PowerShell test | [Test-MtEidscaPR03](/docs/commands/Test-MtEidscaPR03) |
+| PowerShell test | [Test-MtEidscaPR03](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaPR03.ps1) |
 | Tags | EIDSCA, EIDSCA.PR03 |
 
 ## Source

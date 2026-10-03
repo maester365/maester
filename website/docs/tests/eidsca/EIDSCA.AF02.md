@@ -50,7 +50,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Severity | Medium |
 | Suite | Entra ID SCA |
 | Category | General |
-| PowerShell test | [Test-MtEidscaAF02](/docs/commands/Test-MtEidscaAF02) |
+| PowerShell test | [Test-MtEidscaAF02](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaAF02.ps1) |
 | Tags | EIDSCA, EIDSCA.AF02 |
 
 ## Source
