@@ -6,6 +6,10 @@ Maximum password age is a critical security control that forces users to change 
 
 While NIST guidelines have shifted toward longer password ages (or no expiration) when combined with other controls like MFA, many compliance frameworks still require regular password changes. The 90-day recommendation balances security with usability.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Configure the maximum password age to **90 days or less** (or 0 for never expire if using modern authentication with MFA). For environments without comprehensive MFA deployment, regular password changes remain important.

@@ -5,6 +5,8 @@ Describe "Active Directory - Group Policy Links" -Tag "AD", "AD.GPO", "AD-GPOL-0
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "GPO link data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

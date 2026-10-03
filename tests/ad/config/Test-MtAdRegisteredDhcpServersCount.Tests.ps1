@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-11" 
         $result = Test-MtAdRegisteredDhcpServersCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "registered DHCP server data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

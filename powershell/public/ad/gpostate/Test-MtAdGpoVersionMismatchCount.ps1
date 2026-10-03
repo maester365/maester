@@ -40,7 +40,7 @@ function Test-MtAdGpoVersionMismatchCount {
     $totalCount = $gpoReportsArray.Count
     $mismatchCount = @($gpoReportsArray | Where-Object { [bool]$_.HasVersionMismatch }).Count
 
-    $testResult = $true
+    $testResult = $mismatchCount -eq 0
     $mismatchPercentage = if ($totalCount -gt 0) { [Math]::Round(($mismatchCount / $totalCount) * 100, 2) } else { 0 }
 
     $result = "| Metric | Value |" + "`n"

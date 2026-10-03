@@ -1,5 +1,9 @@
 Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Limit delegation to only the accounts that need it, prefer constrained models, and protect delegated accounts with strong authentication, tiering, and monitoring.

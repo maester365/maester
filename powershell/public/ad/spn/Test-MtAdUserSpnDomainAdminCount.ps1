@@ -60,8 +60,8 @@
     $adminsWithSpns = ($domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalDomainAdmins = ($domainAdmins | Measure-Object).Count
 
-    # Test passes if we successfully retrieved SPN data
-    $testResult = $true
+    # Test passes if no domain admin accounts have SPNs configured
+    $testResult = $totalAdminSpns -eq 0
 
     # Generate markdown results
     if ($testResult) {

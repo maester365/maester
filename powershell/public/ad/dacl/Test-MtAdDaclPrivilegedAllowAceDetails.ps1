@@ -118,10 +118,15 @@
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
+    if ($objectBreakdown.Count -gt 0) {
+        $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
+    } else {
+        $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceDetails"
     return $testResult
 }

@@ -12,6 +12,10 @@ Trust details reveal critical security properties including:
 - **SID Filtering**: Whether the trust is quarantined
 - **Selective Authentication**: Whether authentication is restricted
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 **Configuration Best Practices:**

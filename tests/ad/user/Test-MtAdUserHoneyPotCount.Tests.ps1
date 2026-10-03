@@ -1,8 +1,10 @@
 Describe "Active Directory - Users" -Tag "AD", "AD.User", "AD-USER-26" {
-    It "AD-USER-26: Honey pot user count should be retrievable" {
+    It "AD-USER-26: Honey pot user count should be investigated" {
         $result = Test-MtAdUserHoneyPotCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "potential honey pot user count data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

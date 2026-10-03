@@ -7,6 +7,10 @@ Subnets are the foundation of Active Directory site assignment:
 
 Understanding the number and distribution of subnets helps ensure proper client site assignment across the organization.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Maintain accurate subnet definitions that reflect the physical network

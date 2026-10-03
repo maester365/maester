@@ -5,6 +5,10 @@ Computers located in the default `CN=Computers` container represent a security a
 - **Provisioning issues**: Indicates the domain join process hasn't been customized or automated provisioning is failing
 - **Shadow IT**: May represent unauthorized systems joined to the domain
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Move all computers from the default Computers container into appropriate OUs based on:

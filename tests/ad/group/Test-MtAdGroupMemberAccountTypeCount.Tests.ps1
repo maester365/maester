@@ -5,6 +5,8 @@ Describe "Active Directory - Group Members" -Tag "AD", "AD.Group", "AD-GMC-02" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "account type data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

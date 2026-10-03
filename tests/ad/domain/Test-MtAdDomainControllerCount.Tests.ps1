@@ -5,6 +5,8 @@ Describe "Active Directory - Domain" -Tag "AD", "AD.Domain", "AD-DOM-03" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "domain controller data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

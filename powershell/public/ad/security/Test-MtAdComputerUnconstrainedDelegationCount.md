@@ -6,6 +6,10 @@
 - **Privilege Escalation**: Can be used to escalate from standard user to domain admin
 - **Ticket Theft**: Attackers can harvest TGTs from memory on these computers
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Eliminate unconstrained delegation**:

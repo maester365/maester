@@ -1,10 +1,12 @@
 Describe "Active Directory - SPN Analysis" -Tag "AD", "AD.SPN", "AD-SPN-09" {
-    It "AD-SPN-09: User SPN unknown service class count should be retrievable" {
+    It "AD-SPN-09: User SPN unknown service class count should be investigated" {
 
         $result = Test-MtAdUserSpnUnknownCount
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "user SPN unknown service class data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

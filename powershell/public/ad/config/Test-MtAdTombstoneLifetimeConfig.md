@@ -6,6 +6,10 @@ The **tombstone lifetime** determines how long Active Directory retains “delet
 
 If tombstone lifetime is **too short**, recovery may fail before you notice the issue. If it is **too long**, AD can accumulate a larger tombstone dataset, increasing replication/database growth and operational overhead.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Align tombstone lifetime with your **operational recovery window** (common baselines are ~180 days or longer, but choose based on your incident response and retention requirements).
 - Document and periodically review your **maximum time-to-detect** for directory changes.

@@ -47,7 +47,7 @@
     $domainControllers = $adState.DomainControllers
     $dcCount = ($domainControllers | Measure-Object).Count
 
-    $testResult = $true
+    $testResult = $subscriptionCount -eq $dcCount
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

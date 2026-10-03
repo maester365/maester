@@ -7,6 +7,10 @@ Unknown SPN service classes on user accounts require immediate attention because
 
 User accounts are preferred targets for Kerberoasting, making unknown SPNs on these accounts particularly concerning.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Investigate all unknown SPNs on user accounts:

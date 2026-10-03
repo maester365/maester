@@ -54,7 +54,8 @@
             }
         } | Sort-Object SamAccountName)
 
-    $testResult = $true
+    $unconstrainedDelegationCount = (@($delegatedUsers | Where-Object { $_.TrustedForDelegation -eq $true }) | Measure-Object).Count
+    $testResult = $unconstrainedDelegationCount -eq 0
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -78,8 +79,13 @@
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($delegatedUsers.Count -gt 0) {
+        $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     Write-Verbose "Completed Test-MtAdUserDelegationDetails"

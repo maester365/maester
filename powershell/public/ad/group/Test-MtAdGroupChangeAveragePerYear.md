@@ -6,6 +6,10 @@ Understanding the rate of group membership changes provides insights into:
 - **Change management**: Identify periods of high activity
 - **Lifecycle management**: Understand group creation and modification patterns
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Monitor group membership changes for security anomalies:

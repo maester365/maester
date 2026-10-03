@@ -7,6 +7,10 @@ Overly broad IPv6 subnets can cause similar issues to IPv4 catch-all subnets:
 
 IPv6 /48 prefixes or larger are considered catch-all ranges.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Use appropriately-sized IPv6 subnets (typically /64 for client networks)

@@ -3,6 +3,8 @@ Describe "Active Directory - Users" -Tag "AD", "AD.User", "AD-USER-20" {
         $result = Test-MtAdUserKnownServiceAccountCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "user data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

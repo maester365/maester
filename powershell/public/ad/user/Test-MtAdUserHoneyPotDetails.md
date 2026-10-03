@@ -4,6 +4,10 @@ Detailed visibility into potential honey pot style users helps separate intentio
 - **Operational clarity**: Distinguish test or stale accounts from active users.
 - **Risk reduction**: Remove attractive-but-unnecessary account names.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Track owner and purpose for each identified account.

@@ -5,6 +5,8 @@ Describe "Active Directory - Domain" -Tag "AD", "AD.Domain", "AD-DOM-07" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "NetBIOS name compliance data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

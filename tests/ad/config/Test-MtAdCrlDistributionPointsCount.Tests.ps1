@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-20" 
         $result = Test-MtAdCrlDistributionPointsCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "CRL distribution point data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

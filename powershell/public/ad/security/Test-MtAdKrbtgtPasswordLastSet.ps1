@@ -46,7 +46,9 @@
     $passwordLastSet = $krbtgt.PasswordLastSet
     $daysSinceChange = if ($passwordLastSet) { (Get-Date) - $passwordLastSet } else { $null }
 
-    $testResult = $true
+    $passwordAgeDays = if ($daysSinceChange) { [Math]::Round($daysSinceChange.TotalDays, 0) } else { [int]::MaxValue }
+    $maxAge = 180
+    $testResult = $passwordAgeDays -le $maxAge
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

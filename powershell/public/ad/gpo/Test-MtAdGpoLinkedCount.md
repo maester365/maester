@@ -6,6 +6,10 @@ For security assessments, it is important to understand the scope of actively li
 - Spot environments where many GPOs exist but only a subset are actually applied
 - Prioritize review/cleanup efforts based on real policy exposure
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - **Review linked (active) GPOs regularly**: Linked policies can change security posture immediately when modified.

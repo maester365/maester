@@ -106,7 +106,7 @@ function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     $testResultMarkdown = "Active Directory DACL entries were analyzed for privileged extended rights. $($identityGroups.Count) identity reference(s) have at least one privileged extended right ACE.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightIdentity"
     return $testResult
 }

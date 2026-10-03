@@ -5,6 +5,8 @@ Describe "Active Directory - Schema" -Tag "AD", "AD.Schema", "AD-SCH-01" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "schema modification year data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

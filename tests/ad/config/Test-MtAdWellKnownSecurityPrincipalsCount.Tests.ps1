@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-10" 
         $result = Test-MtAdWellKnownSecurityPrincipalsCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "well-known security principals data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

@@ -96,8 +96,13 @@
             }
         }
 
-        $testResultMarkdown = "Active Directory computer delegation configuration has been analyzed. $totalDelegationCount computers have delegation configured.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($totalCount -gt 0) {
+            $testResultMarkdown = "Active Directory computer delegation configuration has been analyzed. $totalDelegationCount computers have delegation configured.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = "Active Directory computer delegation configuration has been analyzed. $totalDelegationCount computers have delegation configured.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

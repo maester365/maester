@@ -58,7 +58,7 @@
     $testResultMarkdown = "Active Directory replication connections have been analyzed. Manual connections bypass automatic topology optimization and should be documented.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

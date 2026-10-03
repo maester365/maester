@@ -4,6 +4,10 @@ Organizational Units are a common delegation boundary in Active Directory. Under
 - **Supports delegation review** for administrative boundaries
 - **Provides context** for OU-focused DACL investigations
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review OU permissions regularly, especially where OUs host privileged users, servers, or administrative delegation models. Unexpectedly large or complex OU ACLs can indicate legacy delegation that should be validated.

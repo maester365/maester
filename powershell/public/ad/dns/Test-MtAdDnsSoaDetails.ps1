@@ -76,8 +76,13 @@
             }
         }
 
-        $testResultMarkdown = "Active Directory DNS SOA records have been analyzed. $soaCount zones have SOA records configured.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($soaCount -gt 0) {
+            $testResultMarkdown = "Active Directory DNS SOA records have been analyzed. $soaCount zones have SOA records configured.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = "Active Directory DNS SOA records have been analyzed. 0 zones have SOA records configured.`n`n%TestResult%"
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve DNS SOA data. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
     }

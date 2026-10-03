@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-05" 
         $result = Test-MtAdRecycleBinEnabledPaths
         if ($null -ne $result) {
             $result | Should -Be $true -Because "recycle bin configuration should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

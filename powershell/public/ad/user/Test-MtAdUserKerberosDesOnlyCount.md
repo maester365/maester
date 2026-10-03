@@ -1,5 +1,9 @@
 DES is an obsolete Kerberos encryption type with known cryptographic weakness. Accounts limited to DES-only support should be considered legacy debt and prioritized for cleanup.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Move DES-only accounts to stronger Kerberos encryption types such as AES and eliminate dependencies on deprecated protocols. Validate application compatibility before enforcement.

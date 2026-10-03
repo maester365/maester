@@ -5,6 +5,8 @@ Describe "Active Directory - Group Policy" -Tag "AD", "AD.GPO", "AD-GPO-04" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Unlinked GPOs should not exist"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

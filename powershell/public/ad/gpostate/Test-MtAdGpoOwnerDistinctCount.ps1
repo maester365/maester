@@ -57,7 +57,7 @@ function Test-MtAdGpoOwnerDistinctCount {
     $testResultMarkdown = "Active Directory GPO owners have been analyzed. There are $distinctOwnerCount distinct owner(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoOwnerDistinctCount"
     return $testResult
 }
