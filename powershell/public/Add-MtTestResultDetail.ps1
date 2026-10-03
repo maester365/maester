@@ -162,6 +162,19 @@
         }
     }
 
+    # Capture the referenced objects as structured records before they are
+    # flattened into markdown, so reports retain machine-readable entity identity.
+    # Only collected when the run asked for an asset inventory, so reports that do not
+    # use it are not enlarged by the extra records.
+    $relatedObjects = @()
+    if ($__MtSession.IncludeAssetInventory -and $GraphObjects) {
+        try {
+            $relatedObjects = @(ConvertTo-MtAssetRecord -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType)
+        } catch {
+            Write-Warning "Failed to build related object records: $($_.Exception.Message)"
+        }
+    }
+
     if ($hasGraphResults) {
         try {
             $graphResultMarkdown = Get-GraphObjectMarkdown -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType
@@ -206,6 +219,10 @@
         TestInvestigate = $TestInvestigate
         Severity        = $Severity
         Service         = $Service
+    }
+    # Only present when the run collects an asset inventory, so results of runs that do not opt in are unchanged.
+    if ($__MtSession.IncludeAssetInventory) {
+        $testInfo.RelatedObjects = $relatedObjects
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName

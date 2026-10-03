@@ -31,24 +31,9 @@
         [switch] $AsPlainTextLink
     )
 
-    $markdownLinkTemplate = @{
-        AuthenticationMethod = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
-        AuthorizationPolicy  = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings"
-        ConditionalAccess    = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
-        ConsentPolicy        = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings"
-        Devices              = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/{0}"
-        Domains              = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/DomainsManagementMenuBlade/~/CustomDomainNames"
-        Groups               = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/{0}"
-        IdentityProtection   = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/IdentityProtectionMenuBlade/~/UsersAtRiskAlerts/fromNav/Identity"
-        Users                = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/{0}"
-        UserRole             = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/AdministrativeRole/userId/{0}"
-    }
-
-    $graphObjectTypeMapping = @{
-        '#microsoft.graph.user' = 'Users'
-        '#microsoft.graph.group' = 'Groups'
-        '#microsoft.graph.device' = 'Devices'
-    }
+    $portalLinkTemplate = Get-MtPortalLinkTemplate
+    $markdownLinkTemplate = $portalLinkTemplate.LinkTemplates
+    $graphObjectTypeMapping = $portalLinkTemplate.OdataTypeMapping
 
     # This will work for now, will need to add switch as we add support for complex urls like Applications blade, etc..
     $result = ""

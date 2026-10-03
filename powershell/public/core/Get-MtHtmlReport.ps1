@@ -45,7 +45,16 @@
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
         # or from `Merge-MtMaesterResult` for multi-tenant reports.
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [psobject] $MaesterResults
+        [psobject] $MaesterResults,
+
+        # Replaces user identities (display names, user principal names and object ids) with stable asset ids.
+        # None: keep the values as-is. HtmlOnly / AllOutputs: redact them from this html report.
+        [ValidateSet('None', 'HtmlOnly', 'AllOutputs')]
+        [string] $RedactUserIdentity = 'None',
+
+        # Replacement map built by Invoke-Maester, which removes the AssetInventory it was built from.
+        [Parameter(DontShow)]
+        [hashtable] $UserIdentityReplacementMap
     )
 
     process {
@@ -90,6 +99,20 @@
 
         Write-Verbose "Generating HTML report."
         $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
+        # Redact before escaping: escaped & < > would no longer match the replacement values.
+        if ($RedactUserIdentity -ne 'None') {
+            if ($PSBoundParameters.ContainsKey('UserIdentityReplacementMap')) {
+                $replacements = $UserIdentityReplacementMap
+            } else {
+                $replacements = Get-MtUserIdentityReplacementMap -MaesterResults $MaesterResults
+                $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
+                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AssetInventory' }
+                if (-not $hasInventory) {
+                    Write-Warning "RedactUserIdentity: the results carry no AssetInventory, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAssetInventory."
+                }
+            }
+            $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded
+        }
 
         # Prevent values from terminating the script element while preserving them when JavaScript parses the JSON.
         $json = $json.Replace('&', '\u0026').Replace('<', '\u003c').Replace('>', '\u003e')

@@ -3,7 +3,7 @@ type ReportLocation = {
   hash: string
 }
 
-const knownReportPaths = new Set(["", "settings", "system", "config"])
+const knownReportPaths = new Set(["", "assets", "settings", "system", "config"])
 export const reportMainElementId = "report-main"
 
 function safeDecodeURIComponent(value: string) {
