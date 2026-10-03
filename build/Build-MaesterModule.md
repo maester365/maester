@@ -108,13 +108,17 @@ Two transformations are applied to each source file:
 Merges the ORCA class hierarchy into a single `OrcaClasses.ps1`:
 
 1. **Base classes and enums** from `orcaClass.psm1` (preamble preserved since
-   this file runs standalone via `ScriptsToProcess`)
+   this file is dot-sourced as a standalone script)
 2. **Derived check classes** from each recursive `check-ORCA*.ps1` file, with
    preambles stripped and `using module` directives removed (the base classes
    are now defined inline above)
 
-This file is registered as `ScriptsToProcess` in the manifest so that class
-definitions are available before the module's `.psm1` loads.
+`Maester.psm1` dot-sources this file right after its preamble, so the classes
+are defined in the module's own scope before any function runs. It is not listed
+in `ScriptsToProcess`: that runs the file in the importer's scope, so a module
+imported from inside a script (`Build-LocalMaester.ps1`, a CI step) lost the
+classes when the script ended and every ORCA check failed with
+`Cannot find type [PolicyInfo]`.
 
 When `-Format` is specified, each derived check class file is also passed
 through `Invoke-Formatter` for indentation normalization.
@@ -139,7 +143,6 @@ This phase runs before the manifest update (Phase F) so that
 Copies the source `Maester.psd1` to the output directory and updates:
 
 - `FunctionsToExport` — set to the sorted, deduplicated list from Phase B
-- `ScriptsToProcess` — set to `@('OrcaClasses.ps1')`
 
 All other manifest fields (version, GUID, `RequiredModules`,
 `AliasesToExport`, etc.) are preserved from the source.

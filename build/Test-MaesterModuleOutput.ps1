@@ -113,7 +113,9 @@ if ($ExpectedVersion) {
 # Check 4 — Module imports and exports the expected number of commands
 # ──────────────────────────────────────────────────────────────────────────────
 
-$ImportedModules = @(Import-Module $ManifestPath -Force -PassThru -ErrorAction Stop)
+# Import from a child scope that has ended by the time the checks run, the way a script such as
+# Build-LocalMaester.ps1 or a CI step imports the module for its caller (see Check 4b).
+$ImportedModules = @(& { Import-Module $ManifestPath -Force -Global -PassThru -ErrorAction Stop })
 $ImportedModule = $ImportedModules | Where-Object { $_.Name -eq 'Maester' } | Select-Object -First 1
 if (-not $ImportedModule) {
     throw 'Import-Module did not return the Maester module object.'
@@ -124,6 +126,20 @@ if ($CommandCount -lt $MinimumCommandCount) {
     throw "Built module exports $CommandCount commands; expected at least $MinimumCommandCount."
 }
 Write-Host "   Verified: module imports and exports $CommandCount commands"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Check 4b — ORCA classes resolve inside the module
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Check 4 imported the module from a scope that has since ended. Classes defined in the
+# importer's scope (ScriptsToProcess) are gone by now, so this fails unless Maester.psm1
+# defines them in the module's own scope.
+try {
+    $null = & $ImportedModule { New-Object -TypeName PolicyInfo; New-Object -TypeName ORCA100 }
+} catch {
+    throw "ORCA classes do not resolve inside the built module: $($_.Exception.Message)"
+}
+Write-Host '   Verified: ORCA classes resolve inside the module'
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Check 5 — Runtime result details resolve companion Markdown from the bundle

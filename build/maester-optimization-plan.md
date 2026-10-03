@@ -264,6 +264,10 @@ Determine the required order by inspecting class inheritance relationships:
 remain in `ScriptsToProcess` (or equivalent) because PowerShell classes defined inside a
 module are not accessible to Pester test scripts running in a separate scope.
 
+**Update:** `ScriptsToProcess` turned out to break when the module is imported from a script,
+so `Maester.psm1` now dot-sources `OrcaClasses.ps1` into the module scope instead. The ORCA
+Pester tests only call `Test-ORCA*` functions and never reference the classes directly.
+
 ---
 
 ## 5. Preserve Pester Test File Boundaries
