@@ -1,6 +1,6 @@
 #### Test-MtAdGpoCpasswordFoundCount
 
-[One-sentence description of what this test checks]
+ Counts the number of GPOs that contain a cpassword.
 
 #### Why This Test Matters
 - Detective control: counts GPOs containing a cpassword which indicates potential credential exposure.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoNoPermissionsDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPO reports missing permissions.
 
 #### Why This Test Matters
 - Detective control: identifies GPO reports with missing permissions which could enable unintended access.

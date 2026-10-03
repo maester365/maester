@@ -4,7 +4,7 @@
 
 #### Test-MtAdGpoDenyAceDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPO reports that include a Deny ACE.
 
 #### Why This Test Matters
 - Detective control: lists GPO reports that contain a Deny ACE which could block legitimate policy application.

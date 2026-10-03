@@ -1,6 +1,6 @@
 #### Test-MtAdGpoComputerSettingsDisabledDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs where computer settings are disabled.
 
 #### Why This Test Matters
 - Detective control: lists GPOs where computer settings are disabled which can affect machine-level policy delivery.

@@ -4,7 +4,7 @@
 
 #### Test-MtAdGpoNoDomainComputersCount
 
-[One-sentence description of what this test checks]
+ Counts GPO reports that do not include Domain Computers.
 
 #### Why This Test Matters
 - Detective control: identifies GPO reports missing Domain Computers which could impact scope or applicability.

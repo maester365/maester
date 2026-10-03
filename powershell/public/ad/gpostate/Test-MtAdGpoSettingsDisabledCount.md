@@ -1,6 +1,6 @@
 #### Test-MtAdGpoSettingsDisabledCount
 
-[One-sentence description of what this test checks]
+ Counts GPOs where settings are disabled (AllDisabled, UserDisabled, or ComputerDisabled).
 
 #### Why This Test Matters
 - Detective control: checks how many GPOs have disabled settings (AllDisabled, UserDisabled, ComputerDisabled).

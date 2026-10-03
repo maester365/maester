@@ -1,6 +1,6 @@
 #### Test-MtAdGpoDefaultPasswordFoundDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs that contain a default password.
 
 #### Why This Test Matters
 - Detective control: verifies whether any GPO reports contain a default password and highlights those findings for remediation.

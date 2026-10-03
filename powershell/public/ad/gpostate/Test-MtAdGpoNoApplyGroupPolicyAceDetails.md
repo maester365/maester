@@ -1,6 +1,6 @@
 #### Test-MtAdGpoNoApplyGroupPolicyAceDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs missing the "Apply Group Policy" ACE.
 
 #### Why This Test Matters
 - Detective control: lists GPOs missing the Apply Group Policy ACE, which governs how policy is applied.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoOwnerDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPO owners, including how many GPOs each owner has.
 
 #### Why This Test Matters
 - Operational value: summarizes GPO owners and how many GPOs each owner has, revealing ownership distribution.

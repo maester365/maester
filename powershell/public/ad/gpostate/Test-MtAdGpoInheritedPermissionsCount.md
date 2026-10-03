@@ -4,7 +4,7 @@
 
 #### Test-MtAdGpoInheritedPermissionsCount
 
-[One-sentence description of what this test checks]
+ Counts GPO reports with inherited permissions.
 
 #### Why This Test Matters
 - Detective control: checks for inherited permissions in GPOs which may lead to broader access than intended.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoDisabledLinkDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs with disabled GPO links.
 
 #### Why This Test Matters
 - Detective control: checks for GPOs with disabled links to identify potential misconfigurations that could affect policy delivery.

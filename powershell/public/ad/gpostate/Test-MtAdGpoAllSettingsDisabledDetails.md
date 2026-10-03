@@ -1,6 +1,6 @@
 #### Test-MtAdGpoAllSettingsDisabledDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs where all settings are disabled.
 
 #### Why This Test Matters
 - Detective control: lists GPOs where all settings are disabled which can be a sign of misconfiguration or excessive restriction.

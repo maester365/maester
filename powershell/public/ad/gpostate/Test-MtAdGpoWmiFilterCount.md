@@ -1,6 +1,6 @@
 #### Test-MtAdGpoWmiFilterCount
 
-[One-sentence description of what this test checks]
+ Counts the number of GPOs that have a non-empty WMI filter.
 
 #### Why This Test Matters
 - Operational control: counts GPOs that have a non-empty WMI filter to gauge policy scoping across the environment.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoWmiFilterDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs with a WMI filter configuration.
 
 #### Why This Test Matters
 - Detective control: detects GPOs with a non-empty WMI filter, which can influence policy scope per machine.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoStateTotalCount
 
-[One-sentence description of what this test checks]
+ Counts the total number of Group Policy Objects (GPOs) returned by Get-MtADGpoState.
 
 #### Why This Test Matters
 - Operational control: provides a quick overview of the total GPOs present in the AD state to gauge scope.

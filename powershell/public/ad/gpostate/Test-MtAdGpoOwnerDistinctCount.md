@@ -1,6 +1,6 @@
 #### Test-MtAdGpoOwnerDistinctCount
 
-[One-sentence description of what this test checks]
+ Counts the number of distinct GPO owners.
 
 #### Why This Test Matters
 - Operational control: assesses diversity of GPO owners which can highlight unusual configurations or omissions.

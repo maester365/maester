@@ -4,7 +4,7 @@
 
 #### Test-MtAdGpoNoEnterpriseDcCount
 
-[One-sentence description of what this test checks]
+ Counts GPO reports that do not include Enterprise Domain Controllers.
 
 #### Why This Test Matters
 - Detective control: flags GPO reports missing Enterprise Domain Controllers which could impact domain-wide policy targeting.

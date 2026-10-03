@@ -1,6 +1,6 @@
 #### Test-MtAdGpoCpasswordFoundDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs that contain a cpassword.
 
 #### Why This Test Matters
 - Detective control: detects GPOs that contain a Cpassword which could be exploited if leaked.
