@@ -33,7 +33,7 @@ MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName)
 | Severity | Unknown |
 | Suite | Maester |
 | Category | Entra |
-| PowerShell test | `Test-MtRecommendationBreakGlassOnly` |
+| PowerShell test | [Test-MtRecommendationBreakGlassOnly](https://github.com/maester365/maester/blob/main/powershell/internal/Test-MtRecommendationBreakGlassOnly.ps1) |
 | Tags | $($_.recommendationType), Entra, Maester, MT.1024, Recommendation |
 
 ## Source
