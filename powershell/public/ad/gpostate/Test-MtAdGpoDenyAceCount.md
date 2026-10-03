@@ -4,7 +4,7 @@
 
 #### Test-MtAdGpoDenyAceCount
 
-[One-sentence description of what this test checks]
+ Counts GPO reports that include a Deny ACE.
 
 #### Why This Test Matters
 - Detective control: checks for Deny ACEs in GPO reports which can override permissions.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoEnforcementCount
 
-[One-sentence description of what this test checks]
+ Counts the number of GPOs that have enforced GPO links.
 
 #### Why This Test Matters
 - Detective control: counts GPOs with enforced links which indicates explicit policy delivery is configured.

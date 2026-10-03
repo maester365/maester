@@ -1,6 +1,6 @@
 #### Test-MtAdGpoDefaultPasswordFoundCount
 
-[One-sentence description of what this test checks]
+ Counts the number of GPOs that contain a default password.
 
 #### Why This Test Matters
 - Detective control: counts GPOs where a default password is found in the report.

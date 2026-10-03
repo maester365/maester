@@ -1,6 +1,6 @@
 #### Test-MtAdGpoVersionMismatchCount
 
-[One-sentence description of what this test checks]
+ Counts the number of GPOs with a version mismatch.
 
 #### Why This Test Matters
 - Detective control: flags GPOs that have a version mismatch which could affect policy consistency across machines.

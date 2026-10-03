@@ -1,6 +1,6 @@
 #### Test-MtAdGpoUserSettingsDisabledDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPOs where user settings are disabled.
 
 #### Why This Test Matters
 - Detective control: looks for GPOs where user settings are disabled, which can impact user policy delivery.

@@ -1,6 +1,6 @@
 #### Test-MtAdGpoNoPermissionsCount
 
-[One-sentence description of what this test checks]
+ Counts Group Policy Objects (GPOs) with missing permissions.
 
 #### Why This Test Matters
 - Detective control: counts GPO reports with missing permissions which could expose resources to unintended access.

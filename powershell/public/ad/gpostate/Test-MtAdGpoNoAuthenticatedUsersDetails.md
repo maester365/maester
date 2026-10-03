@@ -4,7 +4,7 @@
 
 #### Test-MtAdGpoNoAuthenticatedUsersDetails
 
-[One-sentence description of what this test checks]
+ Returns details of GPO reports without Authenticated Users.
 
 #### Why This Test Matters
 - Detective control: detects GPO reports missing Authenticated Users which could widen access.
