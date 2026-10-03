@@ -25,7 +25,9 @@ function disableTransitionsBriefly() {
   return () => {
     // Force a style recalc so the new colours are committed before transitions come back.
     window.getComputedStyle(document.body)
-    window.setTimeout(() => style.remove(), 1)
+    window.setTimeout(() => {
+      style.remove()
+    }, 1)
   }
 }
 
