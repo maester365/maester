@@ -82,11 +82,12 @@ Concatenates all internal and public `.ps1` source files into a single
 `Maester.psm1`, organized as:
 
 1. **Module preamble** — `#Requires`, `$__MtSession` initialization
-2. **Internal functions** — from `powershell/internal/` (excluding
+2. **ORCA class load** — dot-sources `OrcaClasses.ps1` (see Phase D)
+3. **Internal functions** — from `powershell/internal/` (excluding
    `check-ORCA*.ps1`, which go to Phase D)
-3. **Public functions** — from `powershell/public/`
-4. **Export-ModuleMember** — auto-generated function and alias exports
-5. **Manifest loader** — `Import-PowerShellDataFile` for runtime metadata
+4. **Public functions** — from `powershell/public/`
+5. **Export-ModuleMember** — auto-generated function and alias exports
+6. **Manifest loader** — `Import-PowerShellDataFile` for runtime metadata
 
 Two transformations are applied to each source file:
 
