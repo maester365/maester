@@ -396,6 +396,7 @@ function documentationFunctionName(test, functionDocs) {
 // Private helpers (e.g. internal/eidsca) have no command reference page, so link to their source instead.
 function commandLinkFor(functionName, functionPath, commandsRoot) {
   if (!functionName) return "";
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is built from repo constants and a PowerShell function name
   if (existsSync(join(commandsRoot, `${functionName}.mdx`))) return `/docs/commands/${functionName}`;
   return functionPath ? `${sourceBaseUrl}${toPosixPath(relative(repoRoot, functionPath))}` : "";
 }
@@ -405,6 +406,7 @@ function commandLinkFor(functionName, functionPath, commandsRoot) {
 // in that version so the Docusaurus broken-link check keeps passing.
 function relinkVersionedCommandReferences(versionedTestsRoot, writes) {
   const versionedCommandsRoot = join(dirname(versionedTestsRoot), "commands");
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- versioned docs paths are derived from versions.json inside the repo
   if (!existsSync(versionedTestsRoot) || !existsSync(versionedCommandsRoot)) return;
   const functionDocs = loadFunctionDocs();
   for (const file of walkFiles(versionedTestsRoot, (path) => path.endsWith(".md"))) {
@@ -415,6 +417,7 @@ function relinkVersionedCommandReferences(versionedTestsRoot, writes) {
     });
     if (updated === content) continue;
     if (checkMode) writes.push(file);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- file comes from walkFiles() over the repo's versioned docs
     else writeFileSync(file, updated);
   }
 }
