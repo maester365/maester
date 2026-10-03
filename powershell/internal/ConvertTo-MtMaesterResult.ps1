@@ -327,7 +327,6 @@
                 TestInvestigate = $false
                 Severity        = $null
                 Service         = $null
-                RelatedObjects  = @()
             }
         }
 

@@ -274,13 +274,14 @@
             $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
             if ($IncludeAssetInventory.IsPresent) {
-                $out.OutputAssetsJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.json"
+                # Added only when requested so the OutputFiles of runs that do not opt in are unchanged.
+                $out | Add-Member -MemberType NoteProperty -Name OutputAssetsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.json") -Force
             }
 
             if ($ExportCsv.IsPresent) {
                 $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
                 if ($IncludeAssetInventory.IsPresent) {
-                    $out.OutputAssetsCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.csv"
+                    $out | Add-Member -MemberType NoteProperty -Name OutputAssetsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.csv") -Force
                 }
             }
             if ($ExportExcel.IsPresent) {
@@ -414,9 +415,7 @@
         OutputMarkdownFile        = $OutputMarkdownFile
         OutputMarkdownSummaryFile = $OutputMarkdownSummaryFile
         OutputJsonFile            = $OutputJsonFile
-        OutputAssetsJsonFile      = $null
         OutputCsvFile             = $null
-        OutputAssetsCsvFile       = $null
         OutputExcelFile           = $null
     }
 

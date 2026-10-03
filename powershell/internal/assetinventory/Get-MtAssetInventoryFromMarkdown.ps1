@@ -9,7 +9,7 @@ function Get-MtAssetInventoryFromMarkdown {
     Works on any markdown string (ResultDetail.TestResult), requires no module session,
     and therefore also handles ad-hoc $portalLink sites that bypass Get-GraphObjectMarkdown.
 
-    When the URL appears inside a markdown link [name](url), the display name is captured too.
+    When the URL appears inside a markdown link `[name](url)`, the display name is captured too.
     The matched URL is kept as the record's PortalLink.
     #>
     [CmdletBinding()]

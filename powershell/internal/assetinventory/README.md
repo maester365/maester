@@ -11,8 +11,9 @@ the top-level `AssetInventory` property, written to `<name>-assets.json` (and
 Collection is off by default: `Invoke-Maester -IncludeAssetInventory` turns it on. The switch
 sets `$__MtSession.IncludeAssetInventory`, which gates the per-test `RelatedObjects` capture in
 `Add-MtTestResultDetail`, and is passed to `ConvertTo-MtMaesterResult`, which gates the merge
-and the `AssetInventory` property. A report generated without it carries none of this data and
-the report's sidebar does not offer the Assets page.
+and the `AssetInventory` property. A report generated without it carries none of this data (no
+`RelatedObjects` on the test results, no assets entries in `OutputFiles`) and the report's
+sidebar does not offer the Assets page.
 
 `-RedactUserIdentity` needs the inventory to know which values belong to which user, so it
 collects one even when `-IncludeAssetInventory` was not passed. In that case `Invoke-Maester`
@@ -226,7 +227,10 @@ every report carries it. `ConvertTo-MtRedactedReportContent` applies that map to
 report content, matching case-insensitively (UPNs and object ids are case-insensitive) and on word boundaries so a short display name cannot rewrite the middle
 of an unrelated word (a service account named `Test` must not turn `TestResult` into a token).
 With `-JsonEncoded` only json string values are rewritten, never property names, so a user
-named like a property (`Severity`) cannot leave the report unparseable. `Get-MtAssetUniqueId` is the
+named like a property (`Severity`) cannot leave the report unparseable. Object ids and UPNs are
+found by their shape and looked up in a dictionary, and only the remaining values (display names
+and escaped forms) go into a regex alternation, so a tenant with tens of thousands of cached users
+does not slow redaction down. `Get-MtAssetUniqueId` is the
 single place the id is derived, so the html report, the json/markdown exports and the assets
 files all use the same token. It lower-cases the `System|Type|Id` identity before hashing,
 because the grouping that feeds it is case-insensitive while URL casing is not stable across

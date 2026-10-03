@@ -219,7 +219,10 @@
         TestInvestigate = $TestInvestigate
         Severity        = $Severity
         Service         = $Service
-        RelatedObjects  = $relatedObjects
+    }
+    # Only present when the run collects an asset inventory, so results of runs that do not opt in are unchanged.
+    if ($__MtSession.IncludeAssetInventory) {
+        $testInfo.RelatedObjects = $relatedObjects
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName

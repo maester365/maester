@@ -77,7 +77,7 @@
                         Type              = $directoryTypes[$segments[0]]
                         Id                = $directoryKey
                         DisplayName       = $null
-                        UserPrincipalName = if ($segments[0] -eq 'users' -and $directoryKey.Contains('@')) { $directoryKey }
+                        UserPrincipalName = if ($segments[0] -eq 'users' -and $directoryKey.Contains('@')) { $directoryKey } else { $null }
                         PortalLink        = $null
                         SourceUri         = $uri
                         Source            = 'GraphCache'

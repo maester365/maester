@@ -42,20 +42,44 @@ function ConvertTo-MtRedactedReportContent {
             if ([string]::IsNullOrEmpty($value)) { continue }
             $replacement = [string]$ReplacementMap[$key]
             $lookup[$value] = $replacement
-            if ($JsonEncoded) {
+            # Only values with characters ConvertTo-Json escapes (quotes, backslashes, control and
+            # non-ASCII characters, and ' < > & on Windows PowerShell) have a different serialized form.
+            if ($JsonEncoded -and $value -match '[^\x20-\x7E]|["\\''<>&]') {
                 $serialized = [string](ConvertTo-Json -InputObject $value -Compress)
                 $lookup[$serialized.Substring(1, $serialized.Length - 2)] = $replacement
             }
         }
 
+        # Object ids and UPNs are matched by shape and looked up in the dictionary, so their number
+        # does not affect the speed: a single alternation of every user read from a large tenant
+        # took about a minute per output. Only the remaining values (display names and escaped
+        # forms, which come from the much smaller asset inventory) are listed in the pattern.
+        $tokenPattern = '[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}|\w[\w.''+#-]*@[\w-]+(?:\.[\w-]+)*'
+        $tokenRegex = [regex]::new("^(?:$tokenPattern)$", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        $phrases = @($lookup.Keys | Where-Object { -not $tokenRegex.IsMatch($_) })
+
         $valuePattern = $null
+        $phrasePattern = $null
         if ($lookup.Count -gt 0) {
-            # Longest first so a display name that contains another value is replaced whole.
-            $alternation = ($lookup.Keys | Sort-Object -Property Length -Descending | ForEach-Object { [regex]::Escape($_) }) -join '|'
             # Word boundaries: a service account named "Test" must not rewrite "TestResult".
+            $alternation = $tokenPattern
+            if ($phrases.Count -gt 0) {
+                # Longest first so a display name that contains another value is replaced whole.
+                $phraseAlternation = ($phrases | Sort-Object -Property Length -Descending | ForEach-Object { [regex]::Escape($_) }) -join '|'
+                $phrasePattern = [regex]::new("(?<![\w-])(?:$phraseAlternation)(?![\w-])", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+                $alternation = "$tokenPattern|$phraseAlternation"
+            }
+            # Tokens come first so a UPN is replaced whole even when its local part is also a display name.
             $valuePattern = [regex]::new("(?<![\w-])(?:$alternation)(?![\w-])", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
         }
-        $replaceValue = [System.Text.RegularExpressions.MatchEvaluator] { param($match) $lookup[$match.Value] }
+        $replaceValue = [System.Text.RegularExpressions.MatchEvaluator] {
+            param($match)
+            $replacement = $null
+            if ($lookup.TryGetValue($match.Value, [ref] $replacement)) { return $replacement }
+            # An id or UPN shaped token that is not a known user can still contain a display name.
+            if ($phrasePattern) { return $phrasePattern.Replace($match.Value, $replaceValue) }
+            return $match.Value
+        }
 
         # A json string token, plus the colon that follows it when the token is a property name.
         $jsonStringPattern = [regex]::new('"[^"\\]*(?:\\.[^"\\]*)*"(?<key>\s*:)?')

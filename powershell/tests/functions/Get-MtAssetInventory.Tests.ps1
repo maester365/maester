@@ -524,7 +524,7 @@ Describe 'Asset inventory' {
                     $__MtSession.IncludeAssetInventory = $false
                     Add-MtTestResultDetail -TestName 'AssetGateOff' -Result 'ok' -Description 'd' `
                         -GraphObjects $graphObject -GraphObjectType Users
-                    $off = @($__MtSession.TestResultDetail['AssetGateOff'].RelatedObjects)
+                    $off = $__MtSession.TestResultDetail['AssetGateOff'].ContainsKey('RelatedObjects')
 
                     $__MtSession.IncludeAssetInventory = $true
                     Add-MtTestResultDetail -TestName 'AssetGateOn' -Result 'ok' -Description 'd' `
@@ -536,10 +536,11 @@ Describe 'Asset inventory' {
                     $__MtSession.TestResultDetail.Remove('AssetGateOn')
                 }
 
-                [PSCustomObject]@{ Off = $off.Count; On = $on.Count; OnId = $on[0].Id }
+                [PSCustomObject]@{ Off = $off; On = $on.Count; OnId = $on[0].Id }
             }
 
-            $captured.Off | Should -Be 0
+            # Without capture the property is absent, so results of runs that do not opt in are unchanged.
+            $captured.Off | Should -BeFalse
             $captured.On | Should -Be 1
             $captured.OnId | Should -Be '66666666-6666-6666-6666-666666666666'
         }
@@ -811,6 +812,51 @@ Describe 'Asset inventory' {
             }
 
             $redacted | Should -Be 'Owner asset-user-001'
+        }
+
+        It 'Should redact a quoted UPN and an apostrophe in the local part' {
+            $redacted = InModuleScope Maester {
+                ConvertTo-MtRedactedReportContent -Content "upn = 'jane@contoso.com'; owner o'brien@contoso.com." -ReplacementMap @{
+                    'jane@contoso.com'    = 'asset-user-001'
+                    "o'brien@contoso.com" = 'asset-user-002'
+                }
+            }
+
+            $redacted | Should -Be "upn = 'asset-user-001'; owner asset-user-002."
+        }
+
+        It 'Should replace a UPN whole when its local part is also a display name' {
+            $redacted = InModuleScope Maester {
+                ConvertTo-MtRedactedReportContent -Content 'jdoe@contoso.com and jdoe' -ReplacementMap @{
+                    'jdoe@contoso.com' = 'asset-user-001'
+                    'jdoe'             = 'asset-user-001'
+                }
+            }
+
+            $redacted | Should -Be 'asset-user-001 and asset-user-001'
+        }
+
+        It 'Should still redact a display name inside an unknown UPN' {
+            $redacted = InModuleScope Maester {
+                ConvertTo-MtRedactedReportContent -Content 'Jane.Doe@other.com' -ReplacementMap @{ 'Jane' = 'asset-user-001' }
+            }
+
+            $redacted | Should -Be 'asset-user-001.Doe@other.com'
+        }
+
+        It 'Should redact a large tenant quickly' {
+            $elapsed = InModuleScope Maester {
+                $map = @{}
+                foreach ($i in 1..20000) {
+                    $map["user$i@contoso.com"] = "asset-$i"
+                    $map[[guid]::NewGuid().ToString()] = "asset-$i"
+                }
+                $content = (1..5000 | ForEach-Object { "{""Name"":""MT.1033: user$_@contoso.com must have MFA""}" }) -join ','
+                (Measure-Command { $null = ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap $map -JsonEncoded }).TotalSeconds
+            }
+
+            # A single alternation of every key took minutes at this size.
+            $elapsed | Should -BeLessThan 20
         }
 
         It 'Should carry the user principal name from related objects into the inventory' {

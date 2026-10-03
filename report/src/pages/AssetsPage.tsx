@@ -1,7 +1,21 @@
-import { useMemo, useState } from "react"
-import { ExternalLink, Search } from "lucide-react"
-import { Link } from "@/lib/router"
+import { lazy, Suspense, useCallback, useMemo, useState } from "react"
+import { ExternalLink } from "lucide-react"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"
 import { useTenant } from "@/context/TenantContext"
+import {
+    Card,
+    MultiSelect,
+    MultiSelectItem,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeaderCell,
+    TableRow,
+    TextInput,
+} from "@/components/ui/report"
+
+const ResultInfoSheet = lazy(() => import("@/components/ResultInfoSheet"))
 
 interface AssetRecord {
     System: string
@@ -88,7 +102,7 @@ function ChecksCell({
     const top = highestSeverity(severities)
 
     return (
-        <td className="whitespace-nowrap px-4 py-3 text-sm">
+        <TableCell className="whitespace-nowrap text-sm">
             <div className="flex items-center gap-2">
                 <span className="font-medium text-gray-900 tabular-nums dark:text-gray-100">
                     {tests.length}
@@ -105,7 +119,7 @@ function ChecksCell({
                     </span>
                 )}
             </div>
-        </td>
+        </TableCell>
     )
 }
 
@@ -123,7 +137,7 @@ function ResultsCell({
     const other = tests.length - passed - failed
 
     return (
-        <td className="whitespace-nowrap px-4 py-3 text-sm">
+        <TableCell className="whitespace-nowrap text-sm">
             <div className="flex items-center gap-2 tabular-nums">
                 <span
                     title={`${passed} passed check(s)`}
@@ -146,7 +160,7 @@ function ResultsCell({
                     </span>
                 )}
             </div>
-        </td>
+        </TableCell>
     )
 }
 
@@ -161,6 +175,10 @@ function isReferencedByCheck(asset: AssetRecord) {
 
 type TabId = "referenced" | "touched"
 
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TestResult = any
+
 export default function AssetsPage() {
     const { selectedTenant: testResults } = useTenant()
     const assets: AssetRecord[] = useMemo(
@@ -171,16 +189,36 @@ export default function AssetsPage() {
     const [tab, setTab] = useState<TabId>("referenced")
     const [search, setSearch] = useState("")
     const [systemFilter, setSystemFilter] = useState("All")
-    const [typeFilter, setTypeFilter] = useState("All")
+    const [typeFilter, setTypeFilter] = useState<string[]>([])
+
+    // The checks of the clicked asset, shown in the result sheet without leaving this page.
+    const [sheetTests, setSheetTests] = useState<TestResult[]>([])
+    const [sheetIndex, setSheetIndex] = useState(-1)
+    const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+    const allTests: TestResult[] = useMemo(() => testResults.Tests || [], [testResults])
 
     const testIndex = useMemo(() => {
         const map = new Map<string, TestInfo>()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        for (const test of (testResults.Tests || []) as any[]) {
-            if (test?.Id) map.set(test.Id, { Severity: test.Severity, Result: test.Result })
+        for (const test of allTests) {
+            if (test?.Id && !map.has(test.Id)) map.set(test.Id, { Severity: test.Severity, Result: test.Result })
         }
         return map
-    }, [testResults])
+    }, [allTests])
+
+    const openTest = useCallback(
+        (asset: AssetRecord, testId: string) => {
+            // Data-driven checks share one id across several results, so list every result of the asset's checks.
+            const ids = new Set(asset.Tests || [])
+            const tests = allTests.filter((test) => ids.has(test?.Id))
+            const index = tests.findIndex((test) => test.Id === testId)
+            if (index === -1) return
+            setSheetTests(tests)
+            setSheetIndex(index)
+            setIsSheetOpen(true)
+        },
+        [allTests]
+    )
 
     const tabAssets = useMemo(
         () => ({
@@ -213,13 +251,14 @@ export default function AssetsPage() {
         return Array.from(counts.entries()).sort((a, b) => a[0].localeCompare(b[0]))
     }, [scoped, activeSystemFilter])
 
-    const activeTypeFilter = types.some(([type]) => type === typeFilter) ? typeFilter : "All"
+    // Types selected on another tab or system that do not exist here are ignored rather than hiding every row.
+    const activeTypeFilter = typeFilter.filter((type) => types.some(([t]) => t === type))
 
     const filtered = useMemo(() => {
         const term = search.trim().toLowerCase()
         return scoped.filter((a) => {
             if (activeSystemFilter !== "All" && a.System !== activeSystemFilter) return false
-            if (activeTypeFilter !== "All" && a.Type !== activeTypeFilter) return false
+            if (activeTypeFilter.length > 0 && !activeTypeFilter.includes(a.Type)) return false
             if (!term) return true
             return [a.Type, a.Id, a.DisplayName, ...(a.Tests || [])]
                 .filter(Boolean)
@@ -245,7 +284,7 @@ export default function AssetsPage() {
     }
 
     return (
-        <div className="max-w-6xl">
+        <div>
             <h1 className="mb-2 text-2xl font-semibold text-gray-900 dark:text-white">
                 Asset Inventory
             </h1>
@@ -281,166 +320,162 @@ export default function AssetsPage() {
                 ))}
             </div>
 
-            {/* Filters */}
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-                <div className="relative">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    <input
-                        type="text"
+            <Card>
+                {/* Filters */}
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                    <TextInput
+                        icon={MagnifyingGlassIcon}
                         value={search}
                         onChange={(e) => {
                             setSearch(e.target.value)
                         }}
                         placeholder="Search by name, id, type or test..."
-                        className="w-72 rounded-md border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                        className="min-w-[16rem] flex-1"
                     />
-                </div>
-                <div className="flex flex-wrap gap-1">
-                    {systems.map((system) => (
-                        <button
-                            key={system}
-                            onClick={() => {
-                                setSystemFilter(system)
-                            }}
-                            className={
-                                "rounded-md px-3 py-1.5 text-sm font-medium transition-colors " +
-                                (activeSystemFilter === system
-                                    ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
-                                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800")
-                            }
-                        >
-                            {system}
-                            {system !== "All" && (
-                                <span className="ml-1.5 text-xs text-gray-400">
-                                    {scoped.filter((a) => a.System === system).length}
-                                </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
-                <select
-                    value={activeTypeFilter}
-                    onChange={(e) => {
-                        setTypeFilter(e.target.value)
-                    }}
-                    className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                >
-                    <option value="All">All types ({types.length})</option>
-                    {types.map(([type, count]) => (
-                        <option key={type} value={type}>
-                            {type} ({count})
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead className="bg-gray-50 dark:bg-gray-800">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                    System
-                                </th>
-                                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                    Type
-                                </th>
-                                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                    Object
-                                </th>
-                                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                    Kind
-                                </th>
-                                {showReferencedBy && (
-                                    <>
-                                        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                            Checks
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                            Results
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                            Referenced by
-                                        </th>
-                                    </>
+                    <MultiSelect
+                        value={activeTypeFilter}
+                        onValueChange={setTypeFilter}
+                        placeholder={`Type (${types.length})`}
+                        className="min-w-[16rem] flex-1"
+                    >
+                        {types.map(([type, count]) => (
+                            <MultiSelectItem key={type} value={type}>
+                                {`${type} (${count})`}
+                            </MultiSelectItem>
+                        ))}
+                    </MultiSelect>
+                    <div className="flex flex-wrap gap-1">
+                        {systems.map((system) => (
+                            <button
+                                key={system}
+                                onClick={() => {
+                                    setSystemFilter(system)
+                                }}
+                                className={
+                                    "rounded-md px-3 py-1.5 text-sm font-medium transition-colors " +
+                                    (activeSystemFilter === system
+                                        ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+                                        : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800")
+                                }
+                            >
+                                {system}
+                                {system !== "All" && (
+                                    <span className="ml-1.5 text-xs text-gray-400">
+                                        {scoped.filter((a) => a.System === system).length}
+                                    </span>
                                 )}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                            {filtered.map((asset, index) => {
-                                const portalLink = safePortalLink(asset.PortalLink)
-                                return (
-                                    <tr key={`${asset.System}-${asset.Type}-${asset.Id}-${index}`}>
-                                        <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                                            {asset.System}
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
-                                            {asset.Type}
-                                        </td>
-                                        <td className="px-4 py-3 text-sm">
-                                            <div className="flex flex-col">
-                                                {portalLink ? (
-                                                    <a
-                                                        href={portalLink}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1 font-medium text-orange-600 hover:underline dark:text-orange-400"
-                                                    >
-                                                        {asset.DisplayName || asset.Id || asset.Type}
-                                                        <ExternalLink className="h-3 w-3 shrink-0" />
-                                                    </a>
-                                                ) : (
-                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                        {asset.DisplayName || asset.Id || "—"}
-                                                    </span>
-                                                )}
-                                                {asset.Id && asset.DisplayName && (
-                                                    <span className="mt-0.5 font-mono text-xs text-gray-400 dark:text-gray-500">
-                                                        {asset.Id}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-3">
-                                            <AnchorKindBadge kind={asset.AnchorKind} />
-                                        </td>
-                                        {showReferencedBy && <ChecksCell asset={asset} testIndex={testIndex} />}
-                                        {showReferencedBy && <ResultsCell asset={asset} testIndex={testIndex} />}
-                                        {showReferencedBy && (
-                                            <td className="px-4 py-3 text-sm">
-                                                {asset.Tests && asset.Tests.length > 0 ? (
-                                                    <div className="flex max-w-xs flex-wrap gap-1">
-                                                        {asset.Tests.map((testId) => (
-                                                            <Link
-                                                                key={testId}
-                                                                to={`/${encodeURIComponent(testId)}`}
-                                                                className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                                                            >
-                                                                {testId}
-                                                            </Link>
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-xs text-gray-400 dark:text-gray-500">
-                                                        run-level
-                                                    </span>
-                                                )}
-                                            </td>
-                                        )}
-                                    </tr>
-                                )
-                            })}
-                            {filtered.length === 0 && (
-                                <tr>
-                                    <td colSpan={showReferencedBy ? 7 : 4} className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                                        No assets match the current filter.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </div>
+
+                <Table className="mt-2 w-full">
+                    <TableHead>
+                        <TableRow>
+                            <TableHeaderCell>System</TableHeaderCell>
+                            <TableHeaderCell>Type</TableHeaderCell>
+                            <TableHeaderCell className="w-full">Object</TableHeaderCell>
+                            <TableHeaderCell>Kind</TableHeaderCell>
+                            {showReferencedBy && (
+                                <>
+                                    <TableHeaderCell>Checks</TableHeaderCell>
+                                    <TableHeaderCell>Results</TableHeaderCell>
+                                    <TableHeaderCell>Referenced by</TableHeaderCell>
+                                </>
+                            )}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filtered.map((asset, index) => {
+                            const portalLink = safePortalLink(asset.PortalLink)
+                            return (
+                                <TableRow
+                                    key={`${asset.System}-${asset.Type}-${asset.Id}-${index}`}
+                                    className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                                >
+                                    <TableCell className="whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        {asset.System}
+                                    </TableCell>
+                                    <TableCell className="whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                        {asset.Type}
+                                    </TableCell>
+                                    <TableCell className="whitespace-normal break-words text-sm">
+                                        <div className="flex flex-col">
+                                            {portalLink ? (
+                                                <a
+                                                    href={portalLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 font-medium text-orange-600 hover:underline dark:text-orange-400"
+                                                >
+                                                    {asset.DisplayName || asset.Id || asset.Type}
+                                                    <ExternalLink className="h-3 w-3 shrink-0" />
+                                                </a>
+                                            ) : (
+                                                <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                    {asset.DisplayName || asset.Id || "—"}
+                                                </span>
+                                            )}
+                                            {asset.Id && asset.DisplayName && (
+                                                <span className="mt-0.5 break-all font-mono text-xs text-gray-400 dark:text-gray-500">
+                                                    {asset.Id}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="whitespace-nowrap">
+                                        <AnchorKindBadge kind={asset.AnchorKind} />
+                                    </TableCell>
+                                    {showReferencedBy && <ChecksCell asset={asset} testIndex={testIndex} />}
+                                    {showReferencedBy && <ResultsCell asset={asset} testIndex={testIndex} />}
+                                    {showReferencedBy && (
+                                        <TableCell className="text-sm">
+                                            {asset.Tests && asset.Tests.length > 0 ? (
+                                                <div className="flex min-w-[8rem] flex-wrap gap-1">
+                                                    {asset.Tests.map((testId) => (
+                                                        <button
+                                                            key={testId}
+                                                            type="button"
+                                                            onClick={() => openTest(asset, testId)}
+                                                            title="Show the check result"
+                                                            className="inline-flex items-center whitespace-nowrap rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-orange-950 dark:hover:text-orange-400"
+                                                        >
+                                                            {testId}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-gray-400 dark:text-gray-500">
+                                                    run-level
+                                                </span>
+                                            )}
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            )
+                        })}
+                        {filtered.length === 0 && (
+                            <TableRow>
+                                <td colSpan={showReferencedBy ? 7 : 4} className="p-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No assets match the current filter.
+                                </td>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </Card>
+
+            <Suspense fallback={null}>
+                <ResultInfoSheet
+                    Item={sheetTests[sheetIndex] ?? null}
+                    isOpen={isSheetOpen}
+                    onClose={() => setIsSheetOpen(false)}
+                    onNavigateNext={sheetIndex < sheetTests.length - 1 ? () => setSheetIndex(sheetIndex + 1) : undefined}
+                    onNavigatePrevious={sheetIndex > 0 ? () => setSheetIndex(sheetIndex - 1) : undefined}
+                    currentIndex={sheetIndex !== -1 ? sheetIndex + 1 : undefined}
+                    totalCount={sheetTests.length}
+                />
+            </Suspense>
         </div>
     )
 }
