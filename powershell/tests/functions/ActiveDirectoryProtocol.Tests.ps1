@@ -604,6 +604,180 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
         }
     }
 
+    Describe 'Platform-aware TLS fallback on non-Windows' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+            }
+
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                return [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls')
+                    PlatformProfile      = 'LinuxPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+            Mock New-MtLdapConnection -ModuleName Maester {
+                param($Port)
+                throw "Connection refused on port $Port"
+            }
+            Mock Get-MtLdapRootDse -ModuleName Maester {
+                throw 'Should not be called'
+            }
+        }
+
+        It 'Auto mode on Linux skips StartTLS and only attempts LDAPS' {
+            InModuleScope Maester {
+                $cred = New-Object System.Management.Automation.PSCredential ('user@contoso.com', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+
+                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode Auto } | Should -Throw
+            }
+
+            Should -Invoke New-MtLdapConnection -ModuleName Maester -Times 1 -ParameterFilter { $Port -eq 636 }
+            Should -Invoke New-MtLdapConnection -ModuleName Maester -Times 0 -ParameterFilter { $Port -eq 389 }
+        }
+
+        It 'explicit StartTls on Linux still attempts StartTLS' {
+            InModuleScope Maester {
+                $cred = New-Object System.Management.Automation.PSCredential ('user@contoso.com', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+
+                Mock New-MtLdapConnection -ModuleName Maester {
+                    param($Port, $UseStartTls)
+                    if ($Port -eq 389 -and $UseStartTls) {
+                        $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 389, $false, $false)
+                        return New-Object System.DirectoryServices.Protocols.LdapConnection @($id)
+                    }
+                    throw 'Connection refused'
+                }
+                Mock Get-MtLdapRootDse -ModuleName Maester {
+                    return [PSCustomObject]@{
+                        DistinguishedName          = ''
+                        DefaultNamingContext       = 'DC=contoso,DC=com'
+                        ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                        SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                        DnsHostName                = 'dc01.contoso.com'
+                        ForestFunctionality        = 7
+                        DomainFunctionality        = 7
+                        NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
+                        SupportedLdapVersion       = @(3)
+                        SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
+                    }
+                }
+                Mock Invoke-MtLdapSearch -ModuleName Maester {
+                    return @(
+                        [PSCustomObject]@{
+                            dnsRoot     = 'contoso.com'
+                            nCName      = 'DC=contoso,DC=com'
+                            trustParent = $null
+                        }
+                    )
+                }
+
+                $result = Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode StartTls -PassThru
+
+                $result.TlsMode | Should -Be 'StartTls'
+            }
+
+            Should -Invoke New-MtLdapConnection -ModuleName Maester -Times 1 -ParameterFilter { $Port -eq 389 -and $UseStartTls -eq $true }
+        }
+    }
+
+    Describe 'Certificate error detection and guidance' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+            }
+
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                return [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls')
+                    PlatformProfile      = 'WindowsPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+        }
+
+        It 'logs certificate guidance when LDAPS fails with cert error and StartTLS succeeds' {
+            InModuleScope Maester {
+                $cred = New-Object System.Management.Automation.PSCredential ('user@contoso.com', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+
+                Mock New-MtLdapConnection -ModuleName Maester {
+                    param($Port, $UseStartTls)
+                    if ($Port -eq 636) {
+                        throw 'The remote certificate is invalid according to the validation procedure.'
+                    }
+                    if ($Port -eq 389 -and $UseStartTls) {
+                        $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 389, $false, $false)
+                        return New-Object System.DirectoryServices.Protocols.LdapConnection @($id)
+                    }
+                    throw 'Connection refused'
+                }
+                Mock Get-MtLdapRootDse -ModuleName Maester {
+                    return [PSCustomObject]@{
+                        DistinguishedName          = ''
+                        DefaultNamingContext       = 'DC=contoso,DC=com'
+                        ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                        SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                        DnsHostName                = 'dc01.contoso.com'
+                        ForestFunctionality        = 7
+                        DomainFunctionality        = 7
+                        NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
+                        SupportedLdapVersion       = @(3)
+                        SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
+                    }
+                }
+                Mock Invoke-MtLdapSearch -ModuleName Maester {
+                    return @(
+                        [PSCustomObject]@{
+                            dnsRoot     = 'contoso.com'
+                            nCName      = 'DC=contoso,DC=com'
+                            trustParent = $null
+                        }
+                    )
+                }
+
+                $verboseOutput = Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode Auto -Verbose 4>&1
+
+                $verboseStrings = $verboseOutput | ForEach-Object { $_.ToString() }
+                ($verboseStrings -join ' ') | Should -Match 'LDAPS connection failed due to certificate validation'
+                ($verboseStrings -join ' ') | Should -Match 'Attempting StartTLS fallback on port 389'
+                ($verboseStrings -join ' ') | Should -Match 'StartTLS fallback succeeded. Connected using TLS on port 389. Note: The DC LDAPS certificate \(port 636\) is misconfigured.'
+            }
+        }
+
+        It 'logs both-fail certificate guidance when both TLS modes fail with cert errors' {
+            InModuleScope Maester {
+                $cred = New-Object System.Management.Automation.PSCredential ('user@contoso.com', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+
+                Mock New-MtLdapConnection -ModuleName Maester {
+                    throw 'The remote certificate is invalid according to the validation procedure.'
+                }
+                Mock Get-MtLdapRootDse -ModuleName Maester {
+                    throw 'Should not be called'
+                }
+
+                $verboseOutput = [System.Collections.Generic.List[object]]::new()
+                $thrownError = $null
+                try {
+                    Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode Auto -Verbose 4>&1 | ForEach-Object { $verboseOutput.Add($_) }
+                }
+                catch {
+                    $thrownError = $_
+                }
+
+                $thrownError | Should -Not -BeNullOrEmpty
+                $thrownError.Exception.Message | Should -Match 'certificate|Check that the DC certificate'
+
+                $verboseStrings = $verboseOutput | Where-Object { $null -ne $_ } | ForEach-Object { $_.ToString() }
+                ($verboseStrings -join ' ') | Should -Match 'Both LDAPS and StartTLS failed due to certificate issues'
+            }
+        }
+    }
+
     Describe 'Selector mismatch' {
         BeforeEach {
             InModuleScope Maester {

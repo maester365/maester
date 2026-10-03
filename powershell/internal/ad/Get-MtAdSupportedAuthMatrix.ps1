@@ -42,6 +42,7 @@ function Get-MtAdSupportedAuthMatrix {
             ExplicitCredentialAuthModes = @('Negotiate', 'Kerberos', 'Basic')
             IntegratedAuthModes         = @('Negotiate', 'Kerberos')
             Notes                       = @(
+                'WARNING: StartTLS is known to fail on this platform due to an upstream .NET bug (dotnet/runtime#96988, dotnet/runtime#110391). Auto mode will use LDAPS only. Explicit StartTLS may still be attempted if requested.',
                 'Requires the System.DirectoryServices.Protocols assembly from the .NET runtime and compatible LDAP native libraries.',
                 'PSWSMan is required for WSMan/PSRP transport on non-Windows platforms.',
                 'NTLM is not supported for cross-platform LDAP on Linux.'
@@ -57,6 +58,7 @@ function Get-MtAdSupportedAuthMatrix {
             ExplicitCredentialAuthModes = @('Negotiate', 'Kerberos', 'Basic')
             IntegratedAuthModes         = @('Negotiate', 'Kerberos')
             Notes                       = @(
+                'WARNING: StartTLS is known to fail on this platform due to an upstream .NET bug (dotnet/runtime#96988, dotnet/runtime#110391). Auto mode will use LDAPS only. Explicit StartTLS may still be attempted if requested.',
                 'Requires the System.DirectoryServices.Protocols assembly from the .NET runtime and compatible LDAP native libraries.',
                 'PSWSMan is required for WSMan/PSRP transport on non-Windows platforms.',
                 'NTLM is not supported for cross-platform LDAP on macOS.'
