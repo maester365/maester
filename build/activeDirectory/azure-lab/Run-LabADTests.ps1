@@ -87,30 +87,30 @@ if (-not $winRunner) {
     throw "No Windows runner found in LabConfig."
 }
 
-Write-Host "Lab: $($lab.deployment.labPrefix) in $resourceGroup" -ForegroundColor Cyan
-Write-Host "Windows runner: $($winRunner.azureVmName) at $($winRunner.publicIp)" -ForegroundColor Cyan
-Write-Host "Key Vault: $keyVault" -ForegroundColor Cyan
-Write-Host "Domains to test: $($Domains -join ', ')" -ForegroundColor Cyan
-Write-Host "Evidence dir: $EvidenceDir" -ForegroundColor Cyan
+Write-Output "Lab: $($lab.deployment.labPrefix) in $resourceGroup"
+Write-Output "Windows runner: $($winRunner.azureVmName) at $($winRunner.publicIp)"
+Write-Output "Key Vault: $keyVault"
+Write-Output "Domains to test: $($Domains -join ', ')"
+Write-Output "Evidence dir: $EvidenceDir"
 
 # Timing estimate
 $estimatedMinutes = $Domains.Count * 10
-Write-Host "`nWARNING: Estimated runtime is ~$estimatedMinutes minutes for $($Domains.Count) domain(s)." -ForegroundColor Yellow
-Write-Host "If your execution environment has a command timeout, ensure it exceeds $([math]::Ceiling($estimatedMinutes * 1.5)) minutes." -ForegroundColor Yellow
-Write-Host "Test a single domain with: ./Run-LabADTests.ps1 -Domains RootForest`n" -ForegroundColor Yellow
+Write-Warning "Estimated runtime is ~$estimatedMinutes minutes for $($Domains.Count) domain(s)."
+Write-Warning "If your execution environment has a command timeout, ensure it exceeds $([math]::Ceiling($estimatedMinutes * 1.5)) minutes."
+Write-Warning "Test a single domain with: ./Run-LabADTests.ps1 -Domains RootForest"
 
 # --- Ensure Azure login ---
 $azAccount = az account show 2>$null | ConvertFrom-Json
 if (-not $azAccount) {
-    Write-Host "Logging in to Azure with managed identity..." -ForegroundColor Yellow
+    Write-Output "Logging in to Azure with managed identity..."
     az login --identity | Out-Null
 } else {
-    Write-Host "Already logged in as: $($azAccount.user.name)" -ForegroundColor Green
+    Write-Output "Already logged in as: $($azAccount.user.name)"
 }
 
 # --- Build module ---
 if (-not $SkipBuild) {
-    Write-Host "`nBuilding Maester module..." -ForegroundColor Cyan
+    Write-Output "Building Maester module..."
     $buildScript = "$PSScriptRoot/../../build/Build-LocalMaester.ps1"
     if (-not (Test-Path $buildScript)) {
         throw "Build script not found: $buildScript"
@@ -119,13 +119,13 @@ if (-not $SkipBuild) {
     if ($LASTEXITCODE -ne 0) {
         throw "Module build failed."
     }
-    Write-Host "Module built successfully." -ForegroundColor Green
+    Write-Output "Module built successfully."
 } else {
-    Write-Host "`nSkipping module build (using existing)." -ForegroundColor Yellow
+    Write-Output "Skipping module build (using existing)."
 }
 
 # --- Retrieve secrets ---
-Write-Host "`nRetrieving credentials from Key Vault..." -ForegroundColor Cyan
+Write-Output "Retrieving credentials from Key Vault..."
 
 function Get-KvSecret {
     param([string]$Name)
@@ -143,13 +143,21 @@ $readerPassword = Get-KvSecret -Name $lab.credentials.secretNames.rootDomainRead
 $childReaderPassword = $readerPassword
 $forestReaderPassword = $readerPassword
 
-try { $childReaderPassword = Get-KvSecret -Name $lab.credentials.secretNames.childDomainReaderPassword } catch { }
-try { $forestReaderPassword = Get-KvSecret -Name $lab.credentials.secretNames.forestDomainReaderPassword } catch { }
+try {
+    $childReaderPassword = Get-KvSecret -Name $lab.credentials.secretNames.childDomainReaderPassword
+} catch {
+    Write-Verbose "Child domain reader password not found in Key Vault; using root domain reader password."
+}
+try {
+    $forestReaderPassword = Get-KvSecret -Name $lab.credentials.secretNames.forestDomainReaderPassword
+} catch {
+    Write-Verbose "Forest domain reader password not found in Key Vault; using root domain reader password."
+}
 
-Write-Host "Credentials retrieved." -ForegroundColor Green
+Write-Output "Credentials retrieved."
 
 # --- Copy module to runner ---
-Write-Host "`nCopying module to Windows runner..." -ForegroundColor Cyan
+Write-Output "Copying module to Windows runner..."
 $moduleSource = "$PSScriptRoot/../../module"
 if (-not (Test-Path $moduleSource)) {
     throw "Built module not found at: $moduleSource. Run without -SkipBuild."
@@ -173,7 +181,7 @@ sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
     $sshTarget 'tar -xzf C:\MaesterDev\module.tar.gz -C C:\MaesterDev' 2>$null
 
 Remove-Item $tarFile -ErrorAction SilentlyContinue
-Write-Host "Module copied to C:\MaesterDev on runner." -ForegroundColor Green
+Write-Output "Module copied to C:\MaesterDev on runner."
 
 # --- Run tests per domain ---
 New-Item -ItemType Directory -Force -Path $EvidenceDir | Out-Null
@@ -189,11 +197,12 @@ foreach ($domainRole in $Domains) {
     }
 
     $domainStart = Get-Date
-    Write-Host "`n========================================" -ForegroundColor Cyan
-    Write-Host "Testing domain: $($dc.domain) ($domainRole)" -ForegroundColor Cyan
-    Write-Host "Via DC: $($dc.fqdn)" -ForegroundColor Cyan
-    Write-Host "Started at: $($domainStart.ToString('HH:mm:ss'))" -ForegroundColor Cyan
-    Write-Host "========================================" -ForegroundColor Cyan
+    Write-Output ""
+    Write-Output "========================================"
+    Write-Output "Testing domain: $($dc.domain) ($domainRole)"
+    Write-Output "Via DC: $($dc.fqdn)"
+    Write-Output "Started at: $($domainStart.ToString('HH:mm:ss'))"
+    Write-Output "========================================"
 
     $passwordToUse = $readerPassword
     if ($domainRole -eq 'ChildDomain') { $passwordToUse = $childReaderPassword }
@@ -229,15 +238,15 @@ Write-Output "[$(Get-Date -Format 'HH:mm:ss')] TEST EXECUTION COMPLETE for $doma
         $remoteScriptPath "$sshTarget`:C:\tmp\run-$domainRole.ps1" 2>$null
 
     # Execute with progress tracking
-    Write-Host "Executing remote script... (this takes ~8-10 minutes per domain)" -ForegroundColor Yellow
+    Write-Output "Executing remote script... (this takes ~8-10 minutes per domain)"
     $execResult = sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
         $sshTarget "pwsh -ExecutionPolicy Bypass -File C:\tmp\run-$domainRole.ps1" 2>&1
 
-    Write-Host $execResult -ForegroundColor Gray
+    Write-Output $execResult
 
     $domainEnd = Get-Date
     $domainDuration = $domainEnd - $domainStart
-    Write-Host "Domain $domainRole completed in $($domainDuration.ToString('mm\:ss'))" -ForegroundColor Green
+    Write-Output "Domain $domainRole completed in $($domainDuration.ToString('mm\:ss'))"
 
     # Retrieve reports
     $remoteReportDir = "C:\MaesterReports\lab-run"
@@ -262,10 +271,10 @@ Write-Output "[$(Get-Date -Format 'HH:mm:ss')] TEST EXECUTION COMPLETE for $doma
             Error       = $json.ErrorCount
             Duration    = $json.TotalDuration
         }
-        Write-Host "Results: $($json.PassedCount) Passed, $($json.FailedCount) Failed, $($json.InvestigateCount) Investigate, $($json.SkippedCount) Skipped" -ForegroundColor Green
+        Write-Output "Results: $($json.PassedCount) Passed, $($json.FailedCount) Failed, $($json.InvestigateCount) Investigate, $($json.SkippedCount) Skipped"
     } else {
         Write-Warning "No JSON report retrieved for $domainRole — the test may have timed out or failed before generating output."
-        Write-Host "Troubleshooting: Check if the SSH session timed out. Run with -Domains $domainRole to test this domain individually." -ForegroundColor Yellow
+        Write-Warning "Troubleshooting: Check if the SSH session timed out. Run with -Domains $domainRole to test this domain individually."
     }
 
     Remove-Item $remoteScriptPath -ErrorAction SilentlyContinue
@@ -275,23 +284,24 @@ Write-Output "[$(Get-Date -Format 'HH:mm:ss')] TEST EXECUTION COMPLETE for $doma
 $overallEnd = Get-Date
 $overallDuration = $overallEnd - $overallStart
 
-Write-Host "`n========================================" -ForegroundColor Cyan
-Write-Host "LAB TEST RUN COMPLETE" -ForegroundColor Cyan
-Write-Host "Total duration: $($overallDuration.ToString('hh\:mm\:ss'))" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Output ""
+Write-Output "========================================"
+Write-Output "LAB TEST RUN COMPLETE"
+Write-Output "Total duration: $($overallDuration.ToString('hh\:mm\:ss'))"
+Write-Output "========================================"
 
 $testResults | Format-Table -AutoSize
 
 $summaryFile = "$EvidenceDir/summary.json"
 $testResults | ConvertTo-Json -Depth 3 | Set-Content $summaryFile
 
-Write-Host "Evidence saved to: $EvidenceDir" -ForegroundColor Green
-Write-Host "Summary saved to: $summaryFile" -ForegroundColor Green
+Write-Output "Evidence saved to: $EvidenceDir"
+Write-Output "Summary saved to: $summaryFile"
 
 if ($testResults.Count -lt $Domains.Count) {
-    Write-Host "`nWARNING: Only $($testResults.Count) of $($Domains.Count) domains produced results." -ForegroundColor Red
-    Write-Host "This usually means the SSH session timed out during test execution." -ForegroundColor Red
-    Write-Host "Re-run with -Domains <Role> to test individual domains with shorter runtime." -ForegroundColor Yellow
+    Write-Warning "Only $($testResults.Count) of $($Domains.Count) domains produced results."
+    Write-Warning "This usually means the SSH session timed out during test execution."
+    Write-Warning "Re-run with -Domains <Role> to test individual domains with shorter runtime."
 }
 
 # Clean up env
