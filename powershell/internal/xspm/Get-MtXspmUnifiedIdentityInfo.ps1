@@ -38,8 +38,8 @@
             let IdentityInfoLookbackWindow = datetime_add('day', IdentityInfoUpdateInterval, LookbackTimestamp);
             let AllEntraPimRoles = IdentityInfo
                 | where tolower(AccountUpn) contains tolower(UserPrincipalName) and AccountObjectId contains (ObjectId)
-                | where TimeGenerated >(IdentityInfoLookbackWindow) and TimeGenerated <(LookbackTimestamp)
-                | summarize arg_max(TimeGenerated, *) by AccountObjectId
+                | where Timestamp >(IdentityInfoLookbackWindow) and Timestamp <(LookbackTimestamp)
+                | summarize arg_max(Timestamp, *) by AccountObjectId
                 | mv-expand parse_json(PrivilegedEntraPimRoles)
                 | extend RoleDefinitionName = tostring(bag_keys(PrivilegedEntraPimRoles)[0])
                 | where RoleDefinitionName contains (EntraRoleDefinitionName)
@@ -53,8 +53,8 @@
                 | sort by AccountUpn, RoleDefinitionName;
             let EntraActiveRoles = IdentityInfo
                 | where tolower(AccountUpn) contains tolower(UserPrincipalName) or AccountObjectId contains (ObjectId)
-                | where TimeGenerated >(IdentityInfoLookbackWindow) and TimeGenerated <(LookbackTimestamp)
-                | summarize arg_max(TimeGenerated, *) by AccountObjectId
+                | where Timestamp >(IdentityInfoLookbackWindow) and Timestamp <(LookbackTimestamp)
+                | summarize arg_max(Timestamp, *) by AccountObjectId
                 | where isnotempty(AssignedRoles)
                 | mv-expand parse_json(AssignedRoles)
                 | extend RoleDefinitionName = tostring(AssignedRoles)
@@ -86,8 +86,8 @@
                 | summarize AssignedEntraRoles = make_set(RoleAssignments) by AccountObjectId;
             IdentityInfo
             | where tolower(AccountUpn) contains tolower(UserPrincipalName) and AccountObjectId contains (ObjectId)
-            | where TimeGenerated >(IdentityInfoLookbackWindow) and TimeGenerated <(LookbackTimestamp)
-            | summarize arg_max(TimeGenerated, *) by AccountObjectId
+            | where Timestamp >(IdentityInfoLookbackWindow) and Timestamp <(LookbackTimestamp)
+            | summarize arg_max(Timestamp, *) by AccountObjectId
             | join kind=inner ( AllEntraRoles ) on AccountObjectId
             | project-away ReportId, AssignedRoles, PrivilegedEntraPimRoles, AccountObjectId1
             | sort by AccountName asc
@@ -307,7 +307,7 @@
         };
         let UnifiedIdentityInfoXdr = (ObjectName:string, ObjectId:guid, LookbackTimestamp:datetime=datetime(now)) {
             let PrivilegedUsers = Int_PrivilegedIdentityInfo(UserPrincipalName=tolower(ObjectName),ObjectId=tostring(ObjectId))
-            | where TimeGenerated > ago(14d)
+            | where Timestamp > ago(14d)
             | where Type == 'User'
             | where tolower(AccountDisplayName) contains tolower(ObjectName) and AccountObjectId contains tostring(ObjectId)
             | extend OnPremSynchronized = iff(isnotempty(OnPremObjectId), 'true', 'false')
@@ -318,13 +318,13 @@
                 IdentityAccountInfo
                 | where SourceProvider == @'AzureActiveDirectory'
                 | where tolower(DisplayName) contains tolower(ObjectName) and SourceProviderAccountId contains tostring(ObjectId)
-                | summarize arg_max(TimeGenerated, *) by AccountId
+                | summarize arg_max(Timestamp, *) by AccountId
                 | where IsPrimary == false
-                | project TimeGenerated, DisplayName, SourceProviderAccountId, IdentityId, IdentityLinkBy, IdentityLinkType, IsPrimary, AccountId
+                | project Timestamp, DisplayName, SourceProviderAccountId, IdentityId, IdentityLinkBy, IdentityLinkType, IsPrimary, AccountId
                 | join kind = leftouter (
                     IdentityAccountInfo
                         | where SourceProvider == @'AzureActiveDirectory'
-                        | summarize arg_max(TimeGenerated, *) by AccountId
+                        | summarize arg_max(Timestamp, *) by AccountId
                         | where IsPrimary == true
                         | project IdentityId, AccountObjectId = SourceProviderAccountId, AccountUpn, AccountStatus
                 ) on IdentityId
@@ -338,25 +338,25 @@
             let IdentityInfoUpdateInterval = -14;
             let IdentityInfoLookbackWindow = datetime_add('day', IdentityInfoUpdateInterval, LookbackTimestamp);
             let AllUsers = IdentityInfo
-            | where TimeGenerated >(IdentityInfoLookbackWindow) and TimeGenerated <(LookbackTimestamp)
-            | summarize arg_max(TimeGenerated, *) by AccountObjectId
+            | where Timestamp >(IdentityInfoLookbackWindow) and Timestamp <(LookbackTimestamp)
+            | summarize arg_max(Timestamp, *) by AccountObjectId
             | where Type == 'User'
             | where tolower(AccountDisplayName) contains tolower(ObjectName) and AccountObjectId contains tostring(ObjectId)
             | extend AccountStatus = iff(IsAccountEnabled == true, 'Enabled', 'Disabled')
-            | summarize arg_max(TimeGenerated, *) by AccountObjectId
-            | join kind=anti (PrivilegedUsers | where TimeGenerated > ago(14d)) on AccountObjectId
+            | summarize arg_max(Timestamp, *) by AccountObjectId
+            | join kind=anti (PrivilegedUsers | where Timestamp > ago(14d)) on AccountObjectId
             // Enrichment to primary work account
             | join kind=leftouter (
                 IdentityAccountInfo
                 | where SourceProvider == @'AzureActiveDirectory'
                 | where tolower(DisplayName) contains tolower(ObjectName) and SourceProviderAccountId contains tostring(ObjectId)
-                | summarize arg_max(TimeGenerated, *) by AccountId
+                | summarize arg_max(Timestamp, *) by AccountId
                 | where IsPrimary == false
-                | project TimeGenerated, DisplayName, SourceProviderAccountId, IdentityId, IdentityLinkBy, IdentityLinkType, IsPrimary, AccountId
+                | project Timestamp, DisplayName, SourceProviderAccountId, IdentityId, IdentityLinkBy, IdentityLinkType, IsPrimary, AccountId
                 | join kind = leftouter (
                     IdentityAccountInfo
                         | where SourceProvider == @'AzureActiveDirectory'
-                        | summarize arg_max(TimeGenerated, *) by AccountId
+                        | summarize arg_max(Timestamp, *) by AccountId
                         | where IsPrimary == true
                         | project IdentityId, AccountObjectId = SourceProviderAccountId, AccountUpn, AccountStatus
                 ) on IdentityId
