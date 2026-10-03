@@ -19,5 +19,5 @@
 - `Test-MtAdGpoStateTotalCount` is the primary reference.
 
 #### Related links
-- [Microsoft Learn - Group Policy overview](https://learn.microsoft.com/en-us/windows-server/group-policy/)
+- [Microsoft Learn - Group Policy overview](https://learn.microsoft.com/windows-server/group-policy/)
 - ANSSI checkpoint: https://www.anssi.gouv.fr/
