@@ -5,6 +5,8 @@ Describe "Active Directory - Security Accounts" -Tag "AD", "AD.Security", "AD-DC
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "stale enabled computers retain attackable directory credentials"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

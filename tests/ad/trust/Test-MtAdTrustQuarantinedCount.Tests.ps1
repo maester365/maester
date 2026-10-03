@@ -5,6 +5,8 @@ Describe "Active Directory - Trusts" -Tag "AD", "AD.Trust", "AD-TRUST-03" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "quarantined trust data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

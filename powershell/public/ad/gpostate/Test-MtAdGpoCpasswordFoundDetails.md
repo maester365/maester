@@ -20,5 +20,5 @@
 - `Test-MtAdGpoCpasswordFoundCount` - counts GPOs with cpasswords.
 
 #### Related links
-- [Microsoft Learn - Group Policy security](https://learn.microsoft.com/en-us/windows-server/group-policy/) 
+- [Microsoft Learn - Group Policy security](https://learn.microsoft.com/windows-server/group-policy/) 
 - ANSSI checkpoint: https://www.anssi.gouv.fr/

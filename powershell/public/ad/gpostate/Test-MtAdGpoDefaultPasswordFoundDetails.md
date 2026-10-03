@@ -21,5 +21,5 @@
 - `Test-MtAdGpoDefaultPasswordFoundCount` - Counts how many GPOs have a default password.
 
 #### Related links
-- [Microsoft Learn - Group Policy security best practices](https://learn.microsoft.com/en-us/windows-server/group-policy/intro-and-overview)
+- [Microsoft Learn - Group Policy security best practices](https://learn.microsoft.com/windows-server/group-policy/intro-and-overview)
 - ANSSI checkpoint: https://www.anssi.gouv.fr/
