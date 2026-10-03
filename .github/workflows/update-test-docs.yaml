@@ -8,6 +8,7 @@ on:
     paths:
       - "powershell/**"
       - "tests/**"
+      - "website/docs/commands/**"
       - "website/contributors/attribution-overrides.yml"
       - "website/contributors/contributors.yml"
       - "website/scripts/contributors.mjs"
@@ -75,4 +76,5 @@ jobs:
           add-paths: |
             website/contributors/email-aliases.json
             website/docs/tests
+            website/versioned_docs/*/tests
             website/src/data/contributors.json
