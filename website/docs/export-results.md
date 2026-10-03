@@ -4,6 +4,8 @@ title: 📤 Exporting results
 
 Maester supports exporting test results to CSV and Excel files. This is useful for sharing test results with others or for further analysis in a spreadsheet program.
 
+Maester can also collect an asset inventory of the objects involved in a run, and redact user identities from any of the generated files.
+
 ## Exporting a markdown summary
 
 To export a compact markdown summary that contains only the counters table, use `Invoke-Maester` with `-OutputMarkdownSummaryFile`.
@@ -48,3 +50,70 @@ To export just the test results without the test suite hierarchy, use the `-Pass
 $results = Invoke-Maester -PassThru
 Convert-MtResultsToFlatObject -InputObject $results -PassThru
 ```
+
+## Asset inventory
+
+Maester can collect an **asset inventory**: the consolidated list of objects that the run
+touched — Entra ID objects such as conditional access policies, users, groups and service
+principals, tenant-level configuration surfaces, the Microsoft Graph resources that were read,
+and external systems such as GitHub.
+
+Collection is opt-in, because it makes the report larger. Use `-IncludeAssetInventory`:
+
+```powershell
+$results = Invoke-Maester -IncludeAssetInventory -PassThru
+$results.AssetInventory | Where-Object Type -eq 'ConditionalAccessPolicy'
+```
+
+The inventory is then shown on the **Assets** page of the HTML report. Without the switch, no
+inventory is collected and the Assets page is not offered.
+
+When you also use `-OutputFolder`, the inventory is written next to the other reports as
+`<name>-assets.json`. Adding `-ExportCsv` also writes `<name>-assets.csv`.
+
+```powershell
+Invoke-Maester -IncludeAssetInventory -OutputFolder "C:\path\to\results" -ExportCsv
+```
+
+Each asset carries a `UniqueId` that is derived from its identity, so the same object keeps the
+same id across runs and can be correlated between reports.
+
+## Hiding user identities from reports
+
+Reports that are shared beyond the security team often should not name individual users. Use
+`-RedactUserIdentity` to replace user display names, user principal names and user object ids with the user's
+`UniqueId` from the asset inventory:
+
+| Value | Effect |
+| --- | --- |
+| `None` (default) | No redaction. |
+| `HtmlOnly` | Redact the html report only, so the machine readable exports keep the real identifiers for follow-up. |
+| `AllOutputs` | Redact every generated output: html, json, markdown, markdown summary, csv, Excel and the asset json/csv. |
+
+Use `AllOutputs` when any file besides the html report leaves the security team, for example as a
+pipeline artifact or mail attachment.
+
+```powershell
+Invoke-Maester -OutputFolder "C:\path\to\results" -RedactUserIdentity AllOutputs
+```
+
+Redaction is driven by the asset inventory, so `-RedactUserIdentity` collects one automatically.
+It stays internal to the redaction step unless you also pass `-IncludeAssetInventory`.
+
+The same parameter is available on `Get-MtHtmlReport` when you generate the html report yourself.
+
+:::caution
+
+Redaction is best effort. Maester replaces the users in the asset inventory, the account that
+ran Maester, plus the user
+principal names and object ids of every user it read from Microsoft Graph during the run (for
+example the users named in data-driven test titles). Free text that names a person the run never
+read is not detected, and display names are only replaced for users in the asset inventory.
+
+The replacement token is derived from the object's identity with an unsalted hash, so it is
+pseudonymization rather than anonymization: anyone holding a list of candidate object ids or
+user principal names can reverse it, and the same user produces the same token in every
+tenant's report. Review a report before sharing it if the tenant has strict privacy
+requirements.
+
+:::

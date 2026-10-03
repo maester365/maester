@@ -13,6 +13,7 @@ import {
   ChevronUp,
   ChevronDown,
   FileJson,
+  Boxes,
   BookOpen,
   MessageCircle,
   Building2,
@@ -170,6 +171,11 @@ export function Sidebar() {
 
   const displayTenantName = selectedTenant?.TenantName || selectedTenant?.TenantId || "Tenant"
 
+  // The asset inventory is opt-in (Invoke-Maester -IncludeAssetInventory), so only offer the
+  // page when the report actually carries one.
+  const hasAssetInventory =
+    tenants.some((tenant) => Array.isArray(tenant?.AssetInventory) && tenant.AssetInventory.length > 0)
+
 
   return (
     <div
@@ -262,6 +268,17 @@ export function Sidebar() {
           isCollapsed={isCollapsed}
           onClick={scrollReportToTop}
         />
+
+        {hasAssetInventory && (
+          <NavItem
+            href="/assets"
+            icon={Boxes}
+            label="Assets"
+            isActive={pathname === "/assets"}
+            isCollapsed={isCollapsed}
+            onClick={scrollReportToTop}
+          />
+        )}
 
         <NavGroup
           icon={Eye}

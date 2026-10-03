@@ -23,7 +23,11 @@
 
         # Skip checking PowerShell Gallery for the latest Maester version.
         [Parameter(Mandatory = $false)]
-        [switch] $SkipVersionCheck
+        [switch] $SkipVersionCheck,
+
+        # Build the consolidated asset inventory and attach it as the AssetInventory property.
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludeAssetInventory
     )
 
     $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
@@ -323,6 +327,7 @@
                 TestInvestigate = $false
                 Severity        = $null
                 Service         = $null
+                RelatedObjects  = @()
             }
         }
 
@@ -419,6 +424,18 @@
         }
     }
 
+    # Consolidated inventory of all objects referenced by the run (RelatedObjects,
+    # result markdown deep links and the session request caches). Never fail the
+    # results conversion over inventory issues.
+    $assetInventory = @()
+    if ($IncludeAssetInventory.IsPresent) {
+        try {
+            $assetInventory = @(Get-MtAssetInventory -MaesterResults ([PSCustomObject]@{ Tests = $mtTests }))
+        } catch {
+            Write-Verbose "Failed to build asset inventory: $($_.Exception.Message)"
+        }
+    }
+
     $mtTestResults = [PSCustomObject][ordered]@{
         Result            = $PesterResults.Result
         FailedCount       = $Recount.FailedCount
@@ -449,6 +466,10 @@
         Tests             = $mtTests
         Blocks            = $mtBlocks
         EndOfJson         = 'EndOfJson' # Always leave this as the last property. Used by the script to determine the end of the JSON
+    }
+
+    if ($IncludeAssetInventory.IsPresent) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'AssetInventory' -Value $assetInventory
     }
 
     # Add output files information if provided

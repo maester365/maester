@@ -1,0 +1,112 @@
+function Get-MtAssetInventory {
+    <#
+    .SYNOPSIS
+    Builds a consolidated asset inventory of all objects involved in a Maester test run.
+
+    .DESCRIPTION
+    Combines three sources into one normalized inventory:
+    1. Structured RelatedObjects captured by Add-MtTestResultDetail (per-test attribution, strongest signal)
+    2. Portal deep links parsed from result markdown (covers ad-hoc $portalLink sites and old reports)
+    3. Session request caches (run-level view of every Graph/GitHub resource the run touched)
+
+    Records are deduplicated on System/Type/Id; per-test attribution is aggregated
+    into a Tests array so each asset shows which checks reference it.
+
+    .EXAMPLE
+    $results = Invoke-Maester -PassThru
+    Get-MtAssetInventory -MaesterResults $results
+    #>
+    [CmdletBinding()]
+    [OutputType([object[]])]
+    param(
+        # The Maester results object (as produced by ConvertTo-MtMaesterResult / Invoke-Maester -PassThru,
+        # or re-hydrated from a TestResults json file). Optional: without it only the session caches are used.
+        [Parameter(Mandatory = $false)]
+        [psobject] $MaesterResults,
+
+        # Skip the session-cache source (e.g. when analyzing a report file offline).
+        [Parameter(Mandatory = $false)]
+        [switch] $ExcludeSessionCache
+    )
+
+    $records = [System.Collections.Generic.List[object]]::new()
+
+    if ($MaesterResults -and $MaesterResults.Tests) {
+        foreach ($test in $MaesterResults.Tests) {
+            $detail = $test.ResultDetail
+            if (-not $detail) { continue }
+
+            # Source 1: structured records captured before markdown rendering
+            foreach ($related in @(Get-ObjectProperty $detail 'RelatedObjects')) {
+                if ($null -eq $related) { continue }
+                $records.Add([PSCustomObject]@{
+                        System            = $related.System
+                        AnchorKind        = $related.AnchorKind
+                        Type              = $related.Type
+                        Id                = $related.Id
+                        DisplayName       = $related.DisplayName
+                        UserPrincipalName = Get-ObjectProperty $related 'UserPrincipalName'
+                        PortalLink        = $related.PortalLink
+                        TestId            = $test.Id
+                        Source            = $related.Source
+                    })
+            }
+
+            # Source 2: portal deep links in the rendered markdown
+            $markdown = Get-ObjectProperty $detail 'TestResult'
+            if (-not [string]::IsNullOrWhiteSpace($markdown)) {
+                foreach ($parsed in @(Get-MtAssetInventoryFromMarkdown -Markdown $markdown -TestId $test.Id)) {
+                    $records.Add($parsed)
+                }
+            }
+        }
+    }
+
+    # Source 3: run-level cache view
+    if (-not $ExcludeSessionCache) {
+        foreach ($cached in @(Get-MtAssetInventoryFromCache)) {
+            $records.Add(($cached | Select-Object *, @{n = 'TestId'; e = { $null } }))
+        }
+    }
+
+    # Consolidate: one record per System/Type/Id with aggregated test attribution.
+    # Structured GraphObjects records win over markdown/cache records for the same asset.
+    # Unknown sources rank last so a record with a missing Source never outranks a structured one.
+    $sourceRank = @{ GraphObjects = 0; Markdown = 1; GraphCache = 2; GitHubCache = 2 }
+    # Objects passed without an id fall back to their UPN or name, otherwise distinct users would
+    # merge into one asset and all but the first would escape redaction.
+    $identityOf = {
+        param($record)
+        if ($record.Id) { return [string]$record.Id }
+        $userPrincipalName = Get-ObjectProperty $record 'UserPrincipalName'
+        # Bare UPN: the same key a users/{upn} cache read and the signed-in account produce.
+        if ($userPrincipalName) { return [string]$userPrincipalName }
+        if ($record.DisplayName) { return "name:$($record.DisplayName)" }
+        return ''
+    }
+    $inventory = $records | Group-Object -Property { "$($_.System)|$($_.Type)|$(& $identityOf $_)" } | ForEach-Object {
+        $best = $_.Group | Sort-Object {
+            $rank = $sourceRank[[string]$_.Source]
+            if ($null -eq $rank) { [int]::MaxValue } else { $rank }
+        } | Select-Object -First 1
+        $uniqueId = Get-MtAssetUniqueId -System $best.System -Type $best.Type -Id (& $identityOf $best)
+        [PSCustomObject]@{
+            System            = $best.System
+            AnchorKind        = $best.AnchorKind
+            Type              = $best.Type
+            Id                = $best.Id
+            UniqueId          = $uniqueId
+            DisplayName       = ($_.Group.DisplayName | Where-Object { $_ } | Select-Object -First 1)
+            UserPrincipalName = ($_.Group | ForEach-Object { Get-ObjectProperty $_ 'UserPrincipalName' } | Where-Object { $_ } | Select-Object -First 1)
+            PortalLink        = ($_.Group.PortalLink | Where-Object { $_ } | Select-Object -First 1)
+            Tests             = @($_.Group.TestId | Where-Object { $_ } | Select-Object -Unique)
+            Sources           = @($_.Group.Source | Select-Object -Unique)
+        }
+    }
+
+    # Assign first: Select-MtAssetByType returns a comma-forced array, which a direct pipe into
+    # Sort-Object would hand over as one object instead of enumerating it.
+    $filtered = Select-MtAssetByType -Assets $inventory
+
+    return @($filtered | Sort-Object System, Type, DisplayName)
+}
