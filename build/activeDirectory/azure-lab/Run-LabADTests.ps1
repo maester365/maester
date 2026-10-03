@@ -15,6 +15,10 @@
 
     Requires: Azure CLI (az), sshpass, pwsh, and SSH access to the Windows runner.
 
+    TIMING WARNING: A full 3-domain test run takes approximately 25-30 minutes.
+    If running via an automation platform with a command timeout, increase the
+    timeout to at least 1800 seconds (30 minutes) or test domains individually.
+
 .PARAMETER LabConfigPath
     Path to LabConfig.json. Defaults to ./build/activeDirectory/azure-lab/LabConfig.json
 
@@ -26,6 +30,7 @@
 
 .PARAMETER Domains
     Which domains to test. Defaults to all domains in LabConfig. Options: RootForest, ChildDomain, SeparateForest.
+    Use this to test a single domain when you have timeout constraints.
 
 .PARAMETER Tag
     Test tag filter. Defaults to "AD".
@@ -33,10 +38,16 @@
 .EXAMPLE
     ./Run-LabADTests.ps1
     Builds module, runs AD tests against all domains, retrieves reports.
+    Expected runtime: 25-30 minutes.
 
 .EXAMPLE
     ./Run-LabADTests.ps1 -Domains RootForest -SkipBuild
     Re-runs tests against root domain only without rebuilding.
+    Expected runtime: 8-10 minutes.
+
+.EXAMPLE
+    ./Run-LabADTests.ps1 -Domains RootForest,ChildDomain
+    Tests root and child domains. Expected runtime: 15-20 minutes.
 #>
 [CmdletBinding()]
 param(
@@ -81,6 +92,12 @@ Write-Host "Windows runner: $($winRunner.azureVmName) at $($winRunner.publicIp)"
 Write-Host "Key Vault: $keyVault" -ForegroundColor Cyan
 Write-Host "Domains to test: $($Domains -join ', ')" -ForegroundColor Cyan
 Write-Host "Evidence dir: $EvidenceDir" -ForegroundColor Cyan
+
+# Timing estimate
+$estimatedMinutes = $Domains.Count * 10
+Write-Host "`nWARNING: Estimated runtime is ~$estimatedMinutes minutes for $($Domains.Count) domain(s)." -ForegroundColor Yellow
+Write-Host "If your execution environment has a command timeout, ensure it exceeds $([math]::Ceiling($estimatedMinutes * 1.5)) minutes." -ForegroundColor Yellow
+Write-Host "Test a single domain with: ./Run-LabADTests.ps1 -Domains RootForest`n" -ForegroundColor Yellow
 
 # --- Ensure Azure login ---
 $azAccount = az account show 2>$null | ConvertFrom-Json
@@ -162,6 +179,7 @@ Write-Host "Module copied to C:\MaesterDev on runner." -ForegroundColor Green
 New-Item -ItemType Directory -Force -Path $EvidenceDir | Out-Null
 
 $testResults = @()
+$overallStart = Get-Date
 
 foreach ($domainRole in $Domains) {
     $dc = $lab.domainControllers | Where-Object { $_.role -eq $domainRole }
@@ -170,24 +188,37 @@ foreach ($domainRole in $Domains) {
         continue
     }
 
-    Write-Host "`nTesting domain: $($dc.domain) ($domainRole) via $($dc.fqdn) ..." -ForegroundColor Cyan
+    $domainStart = Get-Date
+    Write-Host "`n========================================" -ForegroundColor Cyan
+    Write-Host "Testing domain: $($dc.domain) ($domainRole)" -ForegroundColor Cyan
+    Write-Host "Via DC: $($dc.fqdn)" -ForegroundColor Cyan
+    Write-Host "Started at: $($domainStart.ToString('HH:mm:ss'))" -ForegroundColor Cyan
+    Write-Host "========================================" -ForegroundColor Cyan
 
     $passwordToUse = $readerPassword
     if ($domainRole -eq 'ChildDomain') { $passwordToUse = $childReaderPassword }
     if ($domainRole -eq 'SeparateForest') { $passwordToUse = $forestReaderPassword }
 
+    # Remote script with progress output so partial results are visible even on timeout
     $remoteScript = @"
 `$ErrorActionPreference = 'Stop'
+Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Importing Maester module..."
 Import-Module C:\MaesterDev\Maester.psd1 -Force
+
+Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Connecting to $($dc.domain)..."
 `$cred = [PSCredential]::new('$($dc.domain)\$($lab.credentials.testUserName)', (ConvertTo-SecureString '$passwordToUse' -AsPlainText -Force))
 Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential `$cred `
   -ActiveDirectoryServer '$($dc.fqdn)' -ActiveDirectoryDomain '$($dc.domain)' `
   -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
+Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Connection established."
+
 `$reportDir = 'C:\MaesterReports\lab-run'
 New-Item -ItemType Directory -Force -Path `$reportDir | Out-Null
+
+Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Starting test execution (270 tests, ~8-10 min)..."
 Invoke-Maester -Path C:\MaesterTests\ad -Tag $Tag -NonInteractive -SkipGraphConnect `
   -OutputFolder `$reportDir -OutputFolderFileName '$domainRole'
-Write-Output 'DONE'
+Write-Output "[$(Get-Date -Format 'HH:mm:ss')] TEST EXECUTION COMPLETE for $domainRole"
 "@
 
     $remoteScriptPath = "/tmp/run-$domainRole-$(Get-Random).ps1"
@@ -197,11 +228,16 @@ Write-Output 'DONE'
     sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
         $remoteScriptPath "$sshTarget`:C:\tmp\run-$domainRole.ps1" 2>$null
 
-    # Execute
+    # Execute with progress tracking
+    Write-Host "Executing remote script... (this takes ~8-10 minutes per domain)" -ForegroundColor Yellow
     $execResult = sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
         $sshTarget "pwsh -ExecutionPolicy Bypass -File C:\tmp\run-$domainRole.ps1" 2>&1
 
     Write-Host $execResult -ForegroundColor Gray
+
+    $domainEnd = Get-Date
+    $domainDuration = $domainEnd - $domainStart
+    Write-Host "Domain $domainRole completed in $($domainDuration.ToString('mm\:ss'))" -ForegroundColor Green
 
     # Retrieve reports
     $remoteReportDir = "C:\MaesterReports\lab-run"
@@ -228,15 +264,20 @@ Write-Output 'DONE'
         }
         Write-Host "Results: $($json.PassedCount) Passed, $($json.FailedCount) Failed, $($json.InvestigateCount) Investigate, $($json.SkippedCount) Skipped" -ForegroundColor Green
     } else {
-        Write-Warning "No JSON report retrieved for $domainRole"
+        Write-Warning "No JSON report retrieved for $domainRole — the test may have timed out or failed before generating output."
+        Write-Host "Troubleshooting: Check if the SSH session timed out. Run with -Domains $domainRole to test this domain individually." -ForegroundColor Yellow
     }
 
     Remove-Item $remoteScriptPath -ErrorAction SilentlyContinue
 }
 
 # --- Summary ---
+$overallEnd = Get-Date
+$overallDuration = $overallEnd - $overallStart
+
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "LAB TEST RUN COMPLETE" -ForegroundColor Cyan
+Write-Host "Total duration: $($overallDuration.ToString('hh\:mm\:ss'))" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 $testResults | Format-Table -AutoSize
@@ -246,6 +287,12 @@ $testResults | ConvertTo-Json -Depth 3 | Set-Content $summaryFile
 
 Write-Host "Evidence saved to: $EvidenceDir" -ForegroundColor Green
 Write-Host "Summary saved to: $summaryFile" -ForegroundColor Green
+
+if ($testResults.Count -lt $Domains.Count) {
+    Write-Host "`nWARNING: Only $($testResults.Count) of $($Domains.Count) domains produced results." -ForegroundColor Red
+    Write-Host "This usually means the SSH session timed out during test execution." -ForegroundColor Red
+    Write-Host "Re-run with -Domains <Role> to test individual domains with shorter runtime." -ForegroundColor Yellow
+}
 
 # Clean up env
 Remove-Item Env:SSHPASS -ErrorAction SilentlyContinue

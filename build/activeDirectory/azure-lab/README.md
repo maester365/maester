@@ -713,3 +713,13 @@ evidence/lab-run-YYYYMMDD-HHMMSS/
   3. Reboot again to complete the promotion
 - Each Maester AD test run should still target exactly one endpoint at a time;
   this lab only automates the infrastructure.
+
+### Troubleshooting `Run-LabADTests.ps1`
+
+| Symptom | Cause | Solution |
+|---|---|---|
+| SSH command times out after 10-15 minutes | Default automation timeout is too short for 270 tests | Increase timeout to 1800s (30 min) or run one domain at a time: `./Run-LabADTests.ps1 -Domains RootForest` |
+| "No JSON report retrieved" warning | Remote test execution was killed mid-run | Check SSH timeout. The script prints progress timestamps — if the last line is not "TEST EXECUTION COMPLETE", the process was interrupted. |
+| Child domain shows all "NotRun" | Connection succeeded but tests never started | Same as timeout — child domain tests take ~8-10 minutes. Ensure adequate timeout. |
+| "Connection failed" for separate forest | Credentials or DNS issue | Verify `LabConfig.json` has correct forest credentials. The separate forest has no trust — explicit credentials over LDAPS are required and validated. |
+| Module build fails locally | Missing prerequisites | Run `./build/Build-LocalMaester.ps1` directly to see the error. Ensure PowerShell 7 and all build dependencies are installed. |
