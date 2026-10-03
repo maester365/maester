@@ -60,6 +60,6 @@ Describe 'Get-MtEamClassification' {
         $classification.Count | Should -Be 145
         $classification['62e90394-69f5-4237-9190-012177145e10'] | Should -Be 'ControlPlane'
         $classification['a0b1b346-4d3e-4e8b-98f8-753987be4970'] | Should -Be 'UserAccess'
-        $classification.Values | Should -Contain 'Unclassified'
+        $classification.Values | Where-Object { $_ -notin 'ControlPlane', 'ManagementPlane', 'UserAccess', 'Unclassified' } | Should -BeNullOrEmpty
     }
 }
