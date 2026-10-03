@@ -36,13 +36,17 @@ function safePortalLink(link?: string | null) {
     return link && /^https:\/\//i.test(link) ? link : null
 }
 
+function ownValue(map: Record<string, string>, key: string) {
+    return Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined
+}
+
 function AnchorKindBadge({ kind }: { kind: string }) {
     return (
         <span
-            title={anchorKindDescriptions[kind]}
+            title={ownValue(anchorKindDescriptions, kind)}
             className={
                 "inline-flex items-center rounded px-2 py-0.5 text-xs font-medium " +
-                (anchorKindStyles[kind] || anchorKindStyles.Collection)
+                (ownValue(anchorKindStyles, kind) || anchorKindStyles.Collection)
             }
         >
             {kind}
@@ -261,7 +265,9 @@ export default function AssetsPage() {
                 ).map(({ id, label }) => (
                     <button
                         key={id}
-                        onClick={() => setTab(id)}
+                        onClick={() => {
+                            setTab(id)
+                        }}
                         className={
                             "-mb-px border-b-2 px-1 pb-3 text-sm font-medium transition-colors " +
                             (tab === id
@@ -282,7 +288,9 @@ export default function AssetsPage() {
                     <input
                         type="text"
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) => {
+                            setSearch(e.target.value)
+                        }}
                         placeholder="Search by name, id, type or test..."
                         className="w-72 rounded-md border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
                     />
@@ -291,7 +299,9 @@ export default function AssetsPage() {
                     {systems.map((system) => (
                         <button
                             key={system}
-                            onClick={() => setSystemFilter(system)}
+                            onClick={() => {
+                                setSystemFilter(system)
+                            }}
                             className={
                                 "rounded-md px-3 py-1.5 text-sm font-medium transition-colors " +
                                 (activeSystemFilter === system
@@ -310,7 +320,9 @@ export default function AssetsPage() {
                 </div>
                 <select
                     value={activeTypeFilter}
-                    onChange={(e) => setTypeFilter(e.target.value)}
+                    onChange={(e) => {
+                        setTypeFilter(e.target.value)
+                    }}
                     className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
                 >
                     <option value="All">All types ({types.length})</option>
@@ -355,66 +367,69 @@ export default function AssetsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                            {filtered.map((asset, index) => (
-                                <tr key={`${asset.System}-${asset.Type}-${asset.Id}-${index}`}>
-                                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                                        {asset.System}
-                                    </td>
-                                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
-                                        {asset.Type}
-                                    </td>
-                                    <td className="px-4 py-3 text-sm">
-                                        <div className="flex flex-col">
-                                            {safePortalLink(asset.PortalLink) ? (
-                                                <a
-                                                    href={safePortalLink(asset.PortalLink)!}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 font-medium text-orange-600 hover:underline dark:text-orange-400"
-                                                >
-                                                    {asset.DisplayName || asset.Id || asset.Type}
-                                                    <ExternalLink className="h-3 w-3 shrink-0" />
-                                                </a>
-                                            ) : (
-                                                <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                    {asset.DisplayName || asset.Id || "—"}
-                                                </span>
-                                            )}
-                                            {asset.Id && asset.DisplayName && (
-                                                <span className="mt-0.5 font-mono text-xs text-gray-400 dark:text-gray-500">
-                                                    {asset.Id}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td className="whitespace-nowrap px-4 py-3">
-                                        <AnchorKindBadge kind={asset.AnchorKind} />
-                                    </td>
-                                    {showReferencedBy && <ChecksCell asset={asset} testIndex={testIndex} />}
-                                    {showReferencedBy && <ResultsCell asset={asset} testIndex={testIndex} />}
-                                    {showReferencedBy && (
-                                        <td className="px-4 py-3 text-sm">
-                                            {asset.Tests && asset.Tests.length > 0 ? (
-                                                <div className="flex max-w-xs flex-wrap gap-1">
-                                                    {asset.Tests.map((testId) => (
-                                                        <Link
-                                                            key={testId}
-                                                            to={`/${encodeURIComponent(testId)}`}
-                                                            className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                                                        >
-                                                            {testId}
-                                                        </Link>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <span className="text-xs text-gray-400 dark:text-gray-500">
-                                                    run-level
-                                                </span>
-                                            )}
+                            {filtered.map((asset, index) => {
+                                const portalLink = safePortalLink(asset.PortalLink)
+                                return (
+                                    <tr key={`${asset.System}-${asset.Type}-${asset.Id}-${index}`}>
+                                        <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                                            {asset.System}
                                         </td>
-                                    )}
-                                </tr>
-                            ))}
+                                        <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                                            {asset.Type}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm">
+                                            <div className="flex flex-col">
+                                                {portalLink ? (
+                                                    <a
+                                                        href={portalLink}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-1 font-medium text-orange-600 hover:underline dark:text-orange-400"
+                                                    >
+                                                        {asset.DisplayName || asset.Id || asset.Type}
+                                                        <ExternalLink className="h-3 w-3 shrink-0" />
+                                                    </a>
+                                                ) : (
+                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                        {asset.DisplayName || asset.Id || "—"}
+                                                    </span>
+                                                )}
+                                                {asset.Id && asset.DisplayName && (
+                                                    <span className="mt-0.5 font-mono text-xs text-gray-400 dark:text-gray-500">
+                                                        {asset.Id}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="whitespace-nowrap px-4 py-3">
+                                            <AnchorKindBadge kind={asset.AnchorKind} />
+                                        </td>
+                                        {showReferencedBy && <ChecksCell asset={asset} testIndex={testIndex} />}
+                                        {showReferencedBy && <ResultsCell asset={asset} testIndex={testIndex} />}
+                                        {showReferencedBy && (
+                                            <td className="px-4 py-3 text-sm">
+                                                {asset.Tests && asset.Tests.length > 0 ? (
+                                                    <div className="flex max-w-xs flex-wrap gap-1">
+                                                        {asset.Tests.map((testId) => (
+                                                            <Link
+                                                                key={testId}
+                                                                to={`/${encodeURIComponent(testId)}`}
+                                                                className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                                                            >
+                                                                {testId}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                                                        run-level
+                                                    </span>
+                                                )}
+                                            </td>
+                                        )}
+                                    </tr>
+                                )
+                            })}
                             {filtered.length === 0 && (
                                 <tr>
                                     <td colSpan={showReferencedBy ? 7 : 4} className="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
