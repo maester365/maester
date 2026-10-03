@@ -1,0 +1,152 @@
+{
+  "_comment": "Reconstructed from live Azure resources via managed identity. LabConfig.json is gitignored.",
+  "deployment": {
+    "resourceGroupName": "RG_5100_MISOULE_2",
+    "location": "eastus",
+    "subscriptionId": "91194fa5-109e-499e-a086-8e79b705b7ab",
+    "labPrefix": "misoule",
+    "costCenterTag": "Plan04Task18"
+  },
+  "network": {
+    "vnetName": "MiSouleADTestVNet",
+    "vnetAddressSpace": "10.20.0.0/24",
+    "subnetName": "LabSubnet",
+    "subnetAddressSpace": "10.20.0.0/24",
+    "nsgName": "MiSouleADTestNsg"
+  },
+  "domainControllers": [
+    {
+      "role": "RootForest",
+      "azureVmName": "MiSouleDC02",
+      "guestName": "MiSouleDC02",
+      "fqdn": "MiSouleDC02.misoule02.local",
+      "privateIp": "10.20.0.4",
+      "domain": "misoule02.local",
+      "forest": "misoule02.local",
+      "netBiosName": "MISOULE02"
+    },
+    {
+      "role": "ChildDomain",
+      "azureVmName": "MiSouleDC03",
+      "guestName": "MiSouleDC03",
+      "fqdn": "MiSouleDC03.child.misoule02.local",
+      "privateIp": "10.20.0.5",
+      "domain": "child.misoule02.local",
+      "forest": "misoule02.local",
+      "parentDomain": "misoule02.local",
+      "parentDnsIp": "10.20.0.4",
+      "childName": "child",
+      "netBiosName": "CHILD",
+      "promotionUser": "misoule02.local\\labadmin"
+    },
+    {
+      "role": "SeparateForest",
+      "azureVmName": "MiSouleDC04",
+      "guestName": "MiSouleDC04",
+      "fqdn": "MiSouleDC04.misoule03.local",
+      "privateIp": "10.20.0.6",
+      "domain": "misoule03.local",
+      "forest": "misoule03.local",
+      "netBiosName": "MISOULE03"
+    }
+  ],
+  "runners": [
+    {
+      "osType": "Windows",
+      "azureVmName": "MiSouleRunW",
+      "computerName": "MiSouleRunW",
+      "guestName": "MiSouleRunW",
+      "privateIp": "10.20.0.10",
+      "publicIp": "20.51.232.32",
+      "domain": "misoule02.local",
+      "implicitCredentials": true,
+      "adminUsername": "labadmin",
+      "domainJoinUser": "MISOULE02\\maesterjoin",
+      "sshPort": 22
+    },
+    {
+      "osType": "Ubuntu",
+      "azureVmName": "MiSouleRunnerLinux",
+      "computerName": "MiSouleRunnerLinux",
+      "guestName": "MiSouleRunnerLinux",
+      "privateIp": "10.20.0.11",
+      "publicIp": "74.235.186.76",
+      "domain": "misoule02.local",
+      "implicitCredentials": false,
+      "adminUsername": "labadmin",
+      "domainJoinUser": "maesterjoin@misoule02.local",
+      "sshPort": 22
+    }
+  ],
+  "credentials": {
+    "keyVaultName": "kvmisoule-lab-20260820",
+    "localAdminUsername": "labadmin",
+    "testUserName": "maesterreader",
+    "domainJoinUserName": "maesterjoin",
+    "secretNames": {
+      "windowsLocalAdminPassword": "misoule-lab-20260820200638-windowslocaladminpassword",
+      "windowsRunnerLocalAdminPassword": "misoule-lab-20260820200638-windowslocaladminpassword",
+      "linuxLocalAdminPassword": "misoule-lab-20260820200638-linuxlocaladminpassword",
+      "rootDomainReaderPassword": "misoule-lab-20260820200638-rootdomainreaderpassword",
+      "childDomainReaderPassword": "misoule-lab-20260820200638-childdomainreaderpassword",
+      "forestDomainReaderPassword": "misoule-lab-20260820200638-forestdomainreaderpassword",
+      "rootDomainJoinPassword": "misoule-lab-20260820200638-misoule02safemodepassword",
+      "rootSafeModePassword": "misoule-lab-20260820200638-misoule02safemodepassword",
+      "forestSafeModePassword": "misoule-lab-20260820200638-misoule03safemodepassword"
+    }
+  },
+  "storage": {
+    "evidenceStorageAccount": "maesterev90368723",
+    "evidenceContainer": "evidence"
+  },
+  "trust": {
+    "intraForestTrust": true,
+    "separateForestTrust": false,
+    "dnsForwarders": [
+      {
+        "domain": "misoule03.local",
+        "targetDc": "MiSouleDC04",
+        "targetIp": "10.20.0.6"
+      }
+    ]
+  },
+  "testing": {
+    "_comment": "Notes from Plan 06 validation runs",
+    "lastValidated": "2026-10-03",
+    "validatedBy": "Plan 06 AD Test Operational Value",
+    "rootDomainResults": {
+      "total": 270,
+      "passed": 162,
+      "failed": 11,
+      "investigate": 78,
+      "skipped": 19,
+      "error": 0
+    },
+    "childDomainResults": {
+      "total": 270,
+      "passed": 170,
+      "failed": 3,
+      "investigate": 78,
+      "skipped": 19,
+      "error": 0
+    },
+    "separateForestResults": {
+      "total": 270,
+      "passed": 171,
+      "failed": 2,
+      "investigate": 78,
+      "skipped": 19,
+      "error": 0
+    },
+    "knownIssues": [
+      "Full 3-domain test run takes ~25-30 minutes; use adequate SSH timeout.",
+      "Windows runner SSH password auth works for explicit credentials; GSSAPI required for implicit credential validation.",
+      "Child domain and separate forest both connect successfully with explicit credentials over LDAPS."
+    ],
+    "helperScripts": [
+      "Run-LabADTests.ps1",
+      "Run-LabADTests.sh"
+    ]
+  }
+}
+}
