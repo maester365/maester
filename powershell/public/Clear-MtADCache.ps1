@@ -59,6 +59,8 @@ function Clear-MtADCache {
 
         $__MtSession.ADCache = @{}
         $__MtSession.ADCollectionTime = $null
+        # Clear the group member cache as part of a full AD cache reset
+        $script:__MtLdapGroupMemberCache = @{}
         return
     }
 
@@ -73,6 +75,12 @@ function Clear-MtADCache {
         Remove-CacheKeyIfPresent -Key "DomainState:$ComputerName"
         # Also clear the global legacy aggregate key to ensure a clean state when scoped by computer
         Remove-CacheKeyIfPresent -Key 'DomainState'
+        # Clear target-scoped Dacls keys for this computer
+        foreach ($key in @($__MtSession.ADCache.Keys)) {
+            if ($key -like "Dacls:*:$ComputerName") {
+                Remove-CacheKeyIfPresent -Key $key
+            }
+        }
         return
     }
 
@@ -82,14 +90,20 @@ function Clear-MtADCache {
     if ($Categories) {
         foreach ($cat in $Categories) {
             if ($ComputerName) {
-                # Per-cat, per-computer key only
+                # Per-cat, per-computer keys (with target suffix)
+                foreach ($key in @($__MtSession.ADCache.Keys)) {
+                    if ($key -like "DomainState:$($cat):*:$ComputerName") {
+                        Remove-CacheKeyIfPresent -Key $key
+                    }
+                }
+                # Also remove the legacy key when ResolvedDomain is absent
                 Remove-CacheKeyIfPresent -Key "DomainState:$($cat):$ComputerName"
             }
             else {
                 # Global per-category key and all per-computer variants for this category
                 Remove-CacheKeyIfPresent -Key "DomainState:$cat"
                 foreach ($key in @($__MtSession.ADCache.Keys)) {
-                    if ($key -like "DomainState:$($cat):*") {
+                    if ($key -like "DomainState:$($cat):*" ) {
                         Remove-CacheKeyIfPresent -Key $key
                     }
                 }
@@ -99,11 +113,27 @@ function Clear-MtADCache {
         # Always remove legacy aggregate keys when a scoped clear occurs
         Remove-CacheKeyIfPresent -Key 'DomainState'
         if ($ComputerName) {
+            # Remove any legacy aggregate key for the specific computer name to ensure clean state
             Remove-CacheKeyIfPresent -Key "DomainState:$ComputerName"
         }
 
-        # Preserve non-affected caches
-        # Dacls and GpoState are never touched by scoped clearing
+        # If DaclEntries is among the categories, clear target-scoped Dacls caches
+        if ($Categories -contains 'DaclEntries') {
+            if ($ComputerName) {
+                foreach ($key in @($__MtSession.ADCache.Keys)) {
+                    if ($key -like "Dacls:*:$ComputerName") {
+                        Remove-CacheKeyIfPresent -Key $key
+                    }
+                }
+            }
+            else {
+                foreach ($key in @($__MtSession.ADCache.Keys)) {
+                    if ($key -like 'Dacls:*') {
+                        Remove-CacheKeyIfPresent -Key $key
+                    }
+                }
+            }
+        }
     }
     # If we reach here, we have performed the scoped clearing (or none was required).
     # Do not overwrite non-scoped caches here.
