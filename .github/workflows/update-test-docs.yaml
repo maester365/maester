@@ -76,5 +76,5 @@ jobs:
           add-paths: |
             website/contributors/email-aliases.json
             website/docs/tests
-            website/versioned_docs/*/tests
+            website/versioned_docs/*/tests/**
             website/src/data/contributors.json

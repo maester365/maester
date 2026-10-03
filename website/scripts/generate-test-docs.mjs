@@ -393,9 +393,20 @@ function documentationFunctionName(test, functionDocs) {
   return fallbackFunctionName(test);
 }
 
+let sourceFileIndex;
+// Every PowerShell source file by function name. Kept separate from loadFunctionDocs() so linking to
+// an undocumented helper does not change which files contributors.mjs attributes the test to.
+function sourceFileFor(functionName) {
+  sourceFileIndex ??= new Map(
+    walkFiles(join(repoRoot, "powershell"), (path) => path.endsWith(".ps1")).map((file) => [file.split(sep).pop().replace(/\.ps1$/i, "").toLowerCase(), file]),
+  );
+  return sourceFileIndex.get(functionName.toLowerCase()) ?? "";
+}
+
 // Private helpers (e.g. internal/eidsca) have no command reference page, so link to their source instead.
 function commandLinkFor(functionName, functionPath, commandsRoot) {
   if (!functionName) return "";
+  functionPath ||= sourceFileFor(functionName);
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is built from repo constants and a PowerShell function name
   if (existsSync(join(commandsRoot, `${functionName}.mdx`))) return `/docs/commands/${functionName}`;
   return functionPath ? `${sourceBaseUrl}${toPosixPath(relative(repoRoot, functionPath))}` : "";
