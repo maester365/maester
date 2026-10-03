@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import ResultInfo from "./ResultInfo";
 import { useModalFocus } from "./ui/report";
@@ -31,6 +31,18 @@ function ResultInfoSheet({
 }: ResultInfoSheetProps) {
   const sheetRef = useRef<HTMLElement>(null);
   useModalFocus(isOpen, sheetRef);
+
+  // Stay mounted after closing until the exit animation finishes.
+  const [isMounted, setIsMounted] = useState(isOpen);
+  useEffect(() => {
+    if (isOpen) {
+      setIsMounted(true);
+      return;
+    }
+    // Fallback in case animationend never fires (e.g. animations disabled).
+    const timeout = window.setTimeout(() => setIsMounted(false), 250);
+    return () => window.clearTimeout(timeout);
+  }, [isOpen]);
 
   // Memoize the keyboard handler to prevent recreating it on every render
   const handleKeyboard = useCallback(
@@ -70,16 +82,23 @@ function ResultInfoSheet({
     return null;
   }
 
+  const state = isOpen ? "open" : "closed";
+
   return (
-    isOpen && (
-      <div className="report-sheet-overlay fixed inset-0 z-50 bg-black/80" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    (isOpen || isMounted) && (
+      <>
+      {/* Overlay and sheet are siblings (as in shadcn/Radix) so the overlay's fade-in
+          opacity doesn't cascade into the sheet and let the page bleed through it. */}
+      <div data-state={state} className="report-sheet-overlay fixed inset-0 z-50 bg-black/80" aria-hidden="true" onMouseDown={onClose} />
       <aside
         ref={sheetRef}
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-label={Item.Title || Item.Name}
-        className="report-sheet fixed inset-y-0 right-0 w-full overflow-y-auto outline-hidden border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
+        data-state={state}
+        onAnimationEnd={(event) => !isOpen && event.target === event.currentTarget && setIsMounted(false)}
+        className="report-sheet fixed inset-y-0 right-0 z-50 w-full overflow-y-auto outline-hidden border-l border-gray-200 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] sm:max-w-2xl lg:max-w-4xl"
       >
         <button onClick={onClose} className="absolute left-4 top-4 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-orange-500" aria-label="Close">
           <XMarkIcon className="h-4 w-4" />
@@ -115,7 +134,7 @@ function ResultInfoSheet({
           <ResultInfo Item={Item} isPrintView={false} />
         </div>
       </aside>
-      </div>
+      </>
     )
   );
 }

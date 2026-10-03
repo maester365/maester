@@ -343,7 +343,7 @@ export function useModalFocus(open: boolean, containerRef: RefObject<HTMLElement
     const container = containerRef.current
     if (!open || !container) return
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    container.focus()
+    container.focus({ preventScroll: true })
 
     const keepFocusInside = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return
@@ -365,7 +365,7 @@ export function useModalFocus(open: boolean, containerRef: RefObject<HTMLElement
     document.addEventListener("keydown", keepFocusInside)
     return () => {
       document.removeEventListener("keydown", keepFocusInside)
-      previouslyFocused?.focus()
+      previouslyFocused?.focus({ preventScroll: true })
     }
   }, [open, containerRef])
 }

@@ -174,7 +174,7 @@ export function Sidebar() {
   return (
     <div
       className={cx(
-        "relative flex h-full max-h-screen flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 dark:border-gray-800 dark:bg-black",
+        "relative flex h-full max-h-screen flex-col overflow-hidden border-r border-gray-200 bg-white transition-[width] duration-300 dark:border-gray-800 dark:bg-black",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
