@@ -9,7 +9,7 @@ Without SID filtering, an attacker who compromises a domain in a trusting forest
 
 #### Control Type
 
-**Detective**
+**Operational**
 
 #### Security Recommendation
 

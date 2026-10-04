@@ -54,8 +54,8 @@
     $externalCount = ($externalTrusts | Measure-Object).Count
     $totalCount = ($trusts | Measure-Object).Count
 
-    # Test passes if we successfully retrieved trust data
-    $testResult = $true
+    # Test fails if any external/forest trusts lack SID filtering (quarantine)
+    $testResult = ($nonQuarantinedCount -eq 0)
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"

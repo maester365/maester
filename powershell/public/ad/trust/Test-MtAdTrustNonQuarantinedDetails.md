@@ -9,7 +9,7 @@ This test specifically identifies which external and forest trusts lack SID filt
 
 #### Control Type
 
-**Preventive**
+**Detective**
 
 #### Security Recommendation
 
