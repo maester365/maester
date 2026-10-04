@@ -1,11 +1,11 @@
-Non-quarantined trusts (those without SID filtering) are a significant security risk:
+Non-quarantined external/forest trusts (those without SID filtering) are a significant security risk:
 
 - **SID History Vulnerability**: Attackers can exploit SID history to elevate privileges across trust boundaries
 - **Privilege Escalation Path**: Compromised external accounts can gain access to privileged resources
 - **Audit Finding**: Most security audits flag non-quarantined external trusts as high-risk
 - **Compliance Gap**: Fails compliance requirements for many security frameworks
 
-This test specifically identifies which trusts lack SID filtering, enabling targeted remediation.
+This test specifically identifies which external and forest trusts lack SID filtering, enabling targeted remediation. Intra-forest (parent-child) trusts are excluded because they do not support quarantine.
 
 #### Control Type
 
@@ -31,16 +31,16 @@ Set-ADTrust -Target <TrustName> -Quarantine $true
 
 #### How the Test Works
 
-This test filters trust objects where `Quarantined` is `$false` and displays:
+This test derives quarantine status from the `trustAttributes` LDAP attribute (bit `0x4` = `QUARANTINED_DOMAIN`). It filters to external and forest trusts only — intra-forest (parent-child) trusts are excluded because they do not support quarantine. The test displays:
 
 - Target domain of the trust
 - Trust direction (Inbound, Outbound, or Bidirectional)
-- Whether it's an intra-forest or inter-forest trust
-- Trust type (External, Forest, or Kerberos)
+- Trust type (External, Domain, MIT Kerberos, or DCE)
+- Quarantine (SID filtering) status
 
 #### Related Tests
 
-- `Test-MtAdTrustQuarantinedCount` - Count of quarantined vs non-quarantined trusts
+- `Test-MtAdTrustQuarantinedCount` - Count of quarantined vs non-quarantined external/forest trusts
 - `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined
 - `Test-MtAdTrustDetails` - Complete trust configuration details
 

@@ -7,7 +7,8 @@
     This test retrieves comprehensive details about all domain trusts configured
     in Active Directory. Trust details include target domain, trust direction,
     trust type, SID filtering status, and whether the trust is within the same
-    forest. This information is essential for security audits and trust management.
+    forest. Properties are derived from the LDAP trustAttributes bitmask and
+    trustType numeric values.
 
     .EXAMPLE
     Test-MtAdTrustDetails
@@ -37,6 +38,23 @@
     $trusts = $adState.Trusts
     $totalCount = ($trusts | Measure-Object).Count
 
+    # Derive properties from trustAttributes bitmask and trustType
+    # trustAttributes bits:
+    #   0x4  = QUARANTINED_DOMAIN (SID filtering enabled)
+    #   0x10 = CROSS_ORGANIZATION (selective authentication)
+    #   0x20 = WITHIN_FOREST (parent-child intra-forest trust)
+    # trustType values:
+    #   1 = DOWNLEVEL (Windows NT 4 external)
+    #   2 = UPLEVEL (Windows 2000+ AD domain)
+    #   3 = MIT (Kerberos realm)
+    #   4 = DCE
+    foreach ($trust in $trusts) {
+        $trustAttributes = [int]$trust.TrustAttributes
+        $trust | Add-Member -NotePropertyName Quarantined -NotePropertyValue (($trustAttributes -band 0x4) -ne 0) -Force
+        $trust | Add-Member -NotePropertyName IntraForest -NotePropertyValue (($trustAttributes -band 0x20) -ne 0) -Force
+        $trust | Add-Member -NotePropertyName SelectiveAuthentication -NotePropertyValue (($trustAttributes -band 0x10) -ne 0) -Force
+    }
+
     # Test passes if we successfully retrieved trust data
     $testResult = $true
 
@@ -51,13 +69,19 @@
         $result += "| --- | --- | --- | --- | --- | --- |" + "`n"
 
         foreach ($trust in $trusts) {
-            $target = $trust.Target
-            $direction = $trust.Direction
-            $trustType = switch ($trust.TrustType) {
-                "External" { "External" }
-                "Forest" { "Forest" }
-                "Kerberos" { "Kerberos" }
-                default { $trust.TrustType }
+            $target = $trust.TrustPartner
+            $direction = switch ([int]$trust.TrustDirection) {
+                1 { "Inbound" }
+                2 { "Outbound" }
+                3 { "Bidirectional" }
+                default { $trust.TrustDirection }
+            }
+            $trustType = switch ([int]$trust.TrustType) {
+                1 { "External (Downlevel)" }
+                2 { "Domain (Uplevel)" }
+                3 { "MIT (Kerberos)" }
+                4 { "DCE" }
+                default { "Type $($trust.TrustType)" }
             }
             $intraForest = if ($trust.IntraForest) { "Yes" } else { "No" }
             $quarantined = if ($trust.Quarantined) { "Yes" } else { "No" }

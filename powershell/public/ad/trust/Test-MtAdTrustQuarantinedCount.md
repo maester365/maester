@@ -9,7 +9,7 @@ Without SID filtering, an attacker who compromises a domain in a trusting forest
 
 #### Control Type
 
-**Operational**
+**Detective**
 
 #### Security Recommendation
 
@@ -21,9 +21,10 @@ Without SID filtering, an attacker who compromises a domain in a trusting forest
 
 #### How the Test Works
 
-This test checks the `Quarantined` property of each trust object. When `Quarantined` is `$true`, SID filtering is enabled. The test returns:
+This test derives quarantine status from the `trustAttributes` LDAP attribute (bit `0x4` = `QUARANTINED_DOMAIN`). It counts only external and forest trusts — intra-forest (parent-child) trusts are excluded because they do not support quarantine. The test returns:
 
 - Total count of trusts
+- Count of external/forest trusts evaluated
 - Count of quarantined trusts (SID filtering enabled)
 - Count of non-quarantined trusts (SID filtering disabled)
 
