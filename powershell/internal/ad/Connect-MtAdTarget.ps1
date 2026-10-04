@@ -394,8 +394,12 @@ function Connect-MtAdTarget {
     $allCertErrors = $allExceptions | Where-Object {
         $_.Message -match '(?i)(certificate|trust|validation|expired|chain)'
     }
-    if ($allCertErrors.Count -eq $allExceptions.Count -and $allExceptions.Count -gt 0 -and $tlsAttempts.Count -ge 2) {
-        Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+    if ($allCertErrors.Count -eq $allExceptions.Count -and $allExceptions.Count -gt 0) {
+        if ($tlsAttempts.Count -ge 2) {
+            Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+        } else {
+            Write-Verbose 'LDAPS connection failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+        }
     }
 
     Write-Verbose "All TLS attempts failed. Attempted: $($tlsAttempts.Name -join ', ')"
