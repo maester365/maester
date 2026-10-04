@@ -8,21 +8,27 @@ the top-level `AssetInventory` property, written to `<name>-assets.json` (and
 
 ## Opting in
 
-Collection is off by default: `Invoke-Maester -IncludeAssetInventory` turns it on. The switch
-sets `$__MtSession.IncludeAssetInventory`, which gates the per-test `RelatedObjects` capture in
+Collection is off by default: `Invoke-Maester -IncludeAssetInventory` turns it on and the html
+report then offers the **Affected objects** page. The switch sets
+`$__MtSession.IncludeAssetInventory`, which gates the per-test `RelatedObjects` capture in
 `Add-MtTestResultDetail`, and is passed to `ConvertTo-MtMaesterResult`, which gates the merge
 and the `AssetInventory` property. A report generated without it carries none of this data (no
 `RelatedObjects` on the test results, no assets entries in `OutputFiles`) and the report's
-sidebar does not offer the Assets page.
+sidebar does not offer the page.
 
 `-RedactUserIdentity` needs the inventory to know which values belong to which user, so it
 collects one even when `-IncludeAssetInventory` was not passed. In that case `Invoke-Maester`
 removes the `AssetInventory` property again once the replacement map has been built, so the
-report does not grow and the Assets page does not appear unasked.
+report does not grow and the page does not appear unasked.
 
-The Assets page also needs a report template built from current `/report/src`. If the switch was
-passed and `<name>-assets.json` was written but the sidebar still has no Assets entry, the
-check-in artifact `powershell/assets/ReportTemplate.html` is stale — see the stale template
+`Get-MtHtmlReport` embeds a slim copy: per record only `System`, `Type`, `Id`, `DisplayName`,
+`PortalLink`, `Tests` and a `Referenced` flag (true when a check pointed at the object rather than
+only the request cache), and no `RelatedObjects` on the tests. The JSON output and the assets
+files keep the full records.
+
+The page also needs a report template built from current `/report/src`. If
+`<name>-assets.json` was written but the sidebar has no Affected objects entry, the check-in
+artifact `powershell/assets/ReportTemplate.html` is stale — see the stale template
 troubleshooting section in [report/README.md](../../../report/README.md).
 
 ## Record schema
@@ -112,7 +118,7 @@ principal URL also satisfies the less specific app registration pattern). The ma
 becomes the record's `PortalLink`, and when it sits inside a markdown link `[name](url)` the
 display name is recovered from the link that owns it. Only `https://` URLs are considered:
 display names are not escaped in result markdown, so a crafted name could otherwise smuggle a
-`javascript:` URL into the Assets page.
+`javascript:` URL into the Affected objects page.
 This source catches the ~55 checks that build `$portalLink` strings by hand (XSPM, CISA
 Exchange, PIM, entitlement management, ...) without going through `Get-GraphObjectMarkdown`,
 and it works post-hoc on any previously collected report JSON.

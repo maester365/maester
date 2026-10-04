@@ -82,7 +82,30 @@
             $copy = & $copyWithout $Results ''
             if ($null -ne $copy.Tests) {
                 # Assign directly so a single test or no tests still serializes as an array.
-                $copy.Tests = @($copy.Tests | ForEach-Object { [PSCustomObject](& $copyWithout $_ 'ErrorRecord') })
+                $copy.Tests = @($copy.Tests | ForEach-Object {
+                        $test = & $copyWithout $_ 'ErrorRecord'
+                        # RelatedObjects only feeds the AssetInventory built from it, which the report carries.
+                        if ($null -ne $test.ResultDetail) {
+                            $test.ResultDetail = [PSCustomObject](& $copyWithout $test.ResultDetail 'RelatedObjects')
+                        }
+                        [PSCustomObject]$test
+                    })
+            }
+            # The Affected objects page only reads these fields, so the report leaves out the rest
+            # (UniqueId, UserPrincipalName, AnchorKind and the Sources list). The JSON output and the
+            # assets files keep the full records.
+            if ($null -ne $copy.AssetInventory) {
+                $copy.AssetInventory = @($copy.AssetInventory | ForEach-Object {
+                        [PSCustomObject]@{
+                            System      = $_.System
+                            Type        = $_.Type
+                            Id          = $_.Id
+                            DisplayName = $_.DisplayName
+                            PortalLink  = $_.PortalLink
+                            Tests       = @($_.Tests)
+                            Referenced  = [bool](@($_.Sources) | Where-Object { $_ -in 'GraphObjects', 'Markdown' })
+                        }
+                    })
             }
             [PSCustomObject]$copy
         }

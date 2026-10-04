@@ -171,7 +171,7 @@ export function Sidebar() {
 
   const displayTenantName = selectedTenant?.TenantName || selectedTenant?.TenantId || "Tenant"
 
-  // The asset inventory is opt-in (Invoke-Maester -IncludeAssetInventory), so only offer the
+  // Affected objects are opt-in (Invoke-Maester -IncludeAssetInventory), so only offer the
   // page when the report actually carries one.
   const hasAssetInventory =
     tenants.some((tenant) => Array.isArray(tenant?.AssetInventory) && tenant.AssetInventory.length > 0)
@@ -273,7 +273,7 @@ export function Sidebar() {
           <NavItem
             href="/assets"
             icon={Boxes}
-            label="Assets"
+            label="Affected objects"
             isActive={pathname === "/assets"}
             isCollapsed={isCollapsed}
             onClick={scrollReportToTop}

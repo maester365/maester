@@ -215,6 +215,31 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             }
         }
 
+        It 'Leaves the affected objects out unless -IncludeAssetInventory is used' {
+            $folder = & $script:invokePii @{}
+
+            Test-Path (Join-Path $folder 'Pii-assets.json') | Should -BeFalse
+            $json = Get-Content (Join-Path $folder 'Pii.json') -Raw
+            $json | Should -Not -BeLike '*"AssetInventory":*'
+            $json | Should -Not -BeLike '*"RelatedObjects":*'
+            Get-Content (Join-Path $folder 'Pii.html') -Raw | Should -Not -BeLike '*"AssetInventory":*'
+        }
+
+        It 'Embeds only the fields the Affected objects page reads in the html report' {
+            $folder = & $script:invokePii @{ IncludeAssetInventory = $true }
+
+            $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
+            $html | Should -BeLike '*"AssetInventory":*'
+            $html | Should -BeLike '*"Referenced":true*'
+            $html | Should -Not -BeLike '*"UniqueId":*'
+            $html | Should -Not -BeLike '*"RelatedObjects":*'
+
+            # The json output keeps the full records.
+            $json = Get-Content (Join-Path $folder 'Pii.json') -Raw
+            $json | Should -BeLike '*"UniqueId":*'
+            $json | Should -BeLike '*"RelatedObjects":*'
+        }
+
         It 'Writes the assets json as an array even for a single asset' {
             $folder = & $script:invokePii @{ IncludeAssetInventory = $true }
 

@@ -133,7 +133,7 @@
         [string] $OutputHtmlFile,
 
         # Collect the asset inventory: the consolidated list of objects the run touched.
-        # Adds the AssetInventory property to the results, the Assets page to the html report and,
+        # Adds the AssetInventory property to the results, the Affected objects page to the html report and,
         # with -OutputFolder, the <name>-assets.json file (plus -assets.csv with -ExportCsv).
         # Off by default because it enlarges the report; it is enabled automatically when
         # -RedactUserIdentity is used, since redaction is driven by the inventory.
