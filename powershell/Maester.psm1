@@ -32,7 +32,7 @@ $__MtSession = @{
 	ADConnection           = $null               # Active Directory connection state
 	ADCredential           = $null               # Active Directory credential retained only for the connected session
 	ADCollectionTime       = $null               # Timestamp of last AD data collection
-	IncludeAssetInventory  = $false              # Set by Invoke-Maester -IncludeAssetInventory; gates per-test asset capture
+	IncludeAssetInventory  = $false              # Set by Invoke-Maester -IncludeAffectedObjects; gates per-test asset capture
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

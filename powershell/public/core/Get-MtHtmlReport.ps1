@@ -131,7 +131,7 @@
                 $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
                     Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AssetInventory' }
                 if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AssetInventory, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAssetInventory."
+                    Write-Warning "RedactUserIdentity: the results carry no AssetInventory, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
                 }
             }
             $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded

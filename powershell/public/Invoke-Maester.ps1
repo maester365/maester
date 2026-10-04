@@ -137,7 +137,7 @@
         # with -OutputFolder, the <name>-assets.json file (plus -assets.csv with -ExportCsv).
         # Off by default because it enlarges the report; it is enabled automatically when
         # -RedactUserIdentity is used, since redaction is driven by the inventory.
-        [switch] $IncludeAssetInventory,
+        [switch] $IncludeAffectedObjects,
 
         # Replaces user identities (display names, user principal names and object ids) with stable
         # asset ids in the generated outputs.
@@ -273,14 +273,14 @@
             $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
             $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
-            if ($IncludeAssetInventory.IsPresent) {
+            if ($IncludeAffectedObjects.IsPresent) {
                 # Added only when requested so the OutputFiles of runs that do not opt in are unchanged.
                 $out | Add-Member -MemberType NoteProperty -Name OutputAssetsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.json") -Force
             }
 
             if ($ExportCsv.IsPresent) {
                 $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
-                if ($IncludeAssetInventory.IsPresent) {
+                if ($IncludeAffectedObjects.IsPresent) {
                     $out | Add-Member -MemberType NoteProperty -Name OutputAssetsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.csv") -Force
                 }
             }
@@ -357,8 +357,8 @@
 
     # Redaction maps user identities onto their asset ids, so it needs the inventory even when
     # the caller did not ask for the Assets page. Collect it in that case, but only surface it
-    # in the results and output files when -IncludeAssetInventory was actually requested.
-    $collectAssetInventory = $IncludeAssetInventory.IsPresent -or $RedactUserIdentity -ne 'None'
+    # in the results and output files when -IncludeAffectedObjects was actually requested.
+    $collectAssetInventory = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
 
     if (-not $DisableTelemetry) {
         Write-Telemetry -EventName InvokeMaester
@@ -564,7 +564,7 @@
 
         # Drop the inventory again when it was only collected to drive redaction, so the reports
         # stay the size the caller asked for and the Assets page is not silently turned on.
-        if ($collectAssetInventory -and -not $IncludeAssetInventory.IsPresent) {
+        if ($collectAssetInventory -and -not $IncludeAffectedObjects.IsPresent) {
             $maesterResults.PSObject.Properties.Remove('AssetInventory')
         }
 

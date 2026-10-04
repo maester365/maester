@@ -58,10 +58,10 @@ touched — Entra ID objects such as Conditional Access policies, users, groups 
 principals, tenant-level configuration surfaces, the Microsoft Graph resources that were read,
 and external systems such as GitHub.
 
-Collection is opt-in, because it makes the report larger. Use `-IncludeAssetInventory`:
+Collection is opt-in, because it makes the report larger. Use `-IncludeAffectedObjects`:
 
 ```powershell
-$results = Invoke-Maester -IncludeAssetInventory -PassThru
+$results = Invoke-Maester -IncludeAffectedObjects -PassThru
 $results.AssetInventory | Where-Object Type -eq 'ConditionalAccessPolicy'
 ```
 
@@ -73,7 +73,7 @@ When you also use `-OutputFolder`, the list is written next to the other reports
 `<name>-assets.json`. Adding `-ExportCsv` also writes `<name>-assets.csv`.
 
 ```powershell
-Invoke-Maester -IncludeAssetInventory -OutputFolder "C:\path\to\results" -ExportCsv
+Invoke-Maester -IncludeAffectedObjects -OutputFolder "C:\path\to\results" -ExportCsv
 ```
 
 Each asset carries a `UniqueId` that is derived from its identity, so the same object keeps the
@@ -99,7 +99,7 @@ Invoke-Maester -OutputFolder "C:\path\to\results" -RedactUserIdentity AllOutputs
 ```
 
 Redaction is driven by the affected objects, so `-RedactUserIdentity` collects them automatically.
-They stay internal to the redaction step unless you also pass `-IncludeAssetInventory`.
+They stay internal to the redaction step unless you also pass `-IncludeAffectedObjects`.
 
 The same parameter is available on `Get-MtHtmlReport` when you generate the html report yourself.
 

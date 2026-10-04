@@ -180,7 +180,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             }
         }
 
-        It 'Redacts the html report when -RedactUserIdentity is used without -IncludeAssetInventory' {
+        It 'Redacts the html report when -RedactUserIdentity is used without -IncludeAffectedObjects' {
             $folder = & $script:invokePii @{ RedactUserIdentity = 'HtmlOnly' }
 
             $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
@@ -215,7 +215,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             }
         }
 
-        It 'Leaves the affected objects out unless -IncludeAssetInventory is used' {
+        It 'Leaves the affected objects out unless -IncludeAffectedObjects is used' {
             $folder = & $script:invokePii @{}
 
             Test-Path (Join-Path $folder 'Pii-assets.json') | Should -BeFalse
@@ -226,7 +226,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
         }
 
         It 'Embeds only the fields the Affected objects page reads in the html report' {
-            $folder = & $script:invokePii @{ IncludeAssetInventory = $true }
+            $folder = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
             $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
             $html | Should -BeLike '*"AssetInventory":*'
@@ -241,7 +241,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
         }
 
         It 'Writes the assets json as an array even for a single asset' {
-            $folder = & $script:invokePii @{ IncludeAssetInventory = $true }
+            $folder = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
             $assetsJson = (Get-Content (Join-Path $folder 'Pii-assets.json') -Raw).Trim()
             $assetsJson | Should -BeLike '`[*'
@@ -250,7 +250,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
         }
 
         It 'Stops capturing related objects once the run is finished' {
-            $null = & $script:invokePii @{ IncludeAssetInventory = $true }
+            $null = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
             InModuleScope Maester { $__MtSession.IncludeAssetInventory } | Should -BeFalse
         }
@@ -271,7 +271,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
         }
 
         It 'Redacts the assets csv with -RedactUserIdentity AllOutputs' {
-            $folder = & $script:invokePii @{ RedactUserIdentity = 'AllOutputs'; IncludeAssetInventory = $true; ExportCsv = $true }
+            $folder = & $script:invokePii @{ RedactUserIdentity = 'AllOutputs'; IncludeAffectedObjects = $true; ExportCsv = $true }
 
             $csv = Get-Content (Join-Path $folder 'Pii-assets.csv') -Raw
             $csv | Should -Not -BeLike '*Jane Doe*'

@@ -382,7 +382,7 @@ export default function AssetsPage() {
                 <p className="text-gray-500 dark:text-gray-400">
                     This report has no affected objects. Run{" "}
                     <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm dark:bg-gray-800">
-                        Invoke-Maester -IncludeAssetInventory
+                        Invoke-Maester -IncludeAffectedObjects
                     </code>{" "}
                     to collect the objects behind each result.
                 </p>

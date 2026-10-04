@@ -8,7 +8,7 @@ the top-level `AssetInventory` property, written to `<name>-assets.json` (and
 
 ## Opting in
 
-Collection is off by default: `Invoke-Maester -IncludeAssetInventory` turns it on and the html
+Collection is off by default: `Invoke-Maester -IncludeAffectedObjects` turns it on and the html
 report then offers the **Affected objects** page. The switch sets
 `$__MtSession.IncludeAssetInventory`, which gates the per-test `RelatedObjects` capture in
 `Add-MtTestResultDetail`, and is passed to `ConvertTo-MtMaesterResult`, which gates the merge
@@ -17,7 +17,7 @@ and the `AssetInventory` property. A report generated without it carries none of
 sidebar does not offer the page.
 
 `-RedactUserIdentity` needs the inventory to know which values belong to which user, so it
-collects one even when `-IncludeAssetInventory` was not passed. In that case `Invoke-Maester`
+collects one even when `-IncludeAffectedObjects` was not passed. In that case `Invoke-Maester`
 removes the `AssetInventory` property again once the replacement map has been built, so the
 report does not grow and the page does not appear unasked.
 
