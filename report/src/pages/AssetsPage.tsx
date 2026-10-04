@@ -284,9 +284,21 @@ export default function AssetsPage() {
         [tileFilter, groups]
     )
 
+    // With a severity or result filter on, a row shows only the checks that match it.
+    const visibleChecks = useCallback(
+        (o: AffectedObject) =>
+            !isReferencedTab || (severityFilter.size === 0 && resultFilter === "All")
+                ? o.checks
+                : o.checks.filter(
+                      (c) =>
+                          (severityFilter.size === 0 || severityFilter.has(c.severity)) &&
+                          (resultFilter === "All" || c.status === resultFilter)
+                  ),
+        [isReferencedTab, severityFilter, resultFilter]
+    )
+
     const rows = useMemo(() => {
         const term = search.trim().toLowerCase()
-        const filterChecks = isReferencedTab && (severityFilter.size > 0 || resultFilter !== "All")
         const compare = (a: AffectedObject, b: AffectedObject) => {
             if (!sort) return byPriority(a, b)
             const sorters: Record<SortColumn, () => number> = {
@@ -307,15 +319,10 @@ export default function AssetsPage() {
                         .some((value) => String(value).toLowerCase().includes(term))
                 )
                     return false
-                if (!filterChecks) return true
-                return o.checks.some(
-                    (c) =>
-                        (severityFilter.size === 0 || severityFilter.has(c.severity)) &&
-                        (resultFilter === "All" || c.status === resultFilter)
-                )
+                return visibleChecks(o).length > 0
             })
             .sort(compare)
-    }, [scoped, search, activeTiles, groupKey, isReferencedTab, severityFilter, resultFilter, sort, byPriority])
+    }, [scoped, search, activeTiles, groupKey, visibleChecks, sort, byPriority])
 
     const toggleIn = <T,>(set: Set<T>, value: T) => {
         const next = new Set(set)
@@ -326,7 +333,7 @@ export default function AssetsPage() {
 
     const openCheck = useCallback(
         (object: AffectedObject, checkId: string) => {
-            const order = new Map(object.checks.map((c, i) => [c.id, i]))
+            const order = new Map(visibleChecks(object).map((c, i) => [c.id, i]))
             const tests = allTests
                 .filter((test) => order.has(test?.Id))
                 .sort((a, b) => (order.get(a.Id) ?? 0) - (order.get(b.Id) ?? 0))
@@ -336,7 +343,7 @@ export default function AssetsPage() {
             setSheetIndex(index)
             setIsSheetOpen(true)
         },
-        [allTests]
+        [allTests, visibleChecks]
     )
 
     const onSort = (column: SortColumn) => {
@@ -399,6 +406,7 @@ export default function AssetsPage() {
 
     const renderRow = (o: AffectedObject) => {
         const isOpen = open.has(o.key)
+        const checks = visibleChecks(o)
         const top = severities.find((s) => severityRank[s] === (o.failSeverity || o.maxSeverity))
         return [
             <tr
@@ -455,7 +463,7 @@ export default function AssetsPage() {
                         </td>
                         <td className="px-3 py-3 align-middle">
                             <div className="flex flex-wrap gap-1">
-                                {o.checks.map((c) => (
+                                {checks.map((c) => (
                                     <Pill key={c.id} mono className={statusBadge[c.status]} title={`${c.result || "Unknown"}: ${c.title}`}>
                                         {statusMark[c.status]} {c.id}
                                     </Pill>
@@ -470,7 +478,7 @@ export default function AssetsPage() {
             isReferencedTab && isOpen ? (
                 <tr key={`${o.key}-checks`} className="border-b border-gray-200 bg-gray-50/60 dark:border-zinc-800 dark:bg-zinc-900/40">
                     <td colSpan={columnCount} className="p-0">
-                        {o.checks.map((c) => (
+                        {checks.map((c) => (
                             <button
                                 key={c.id}
                                 type="button"
