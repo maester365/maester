@@ -118,11 +118,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
     if ($objectBreakdown.Count -gt 0) {
-        $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
     } else {
-        $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

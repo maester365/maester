@@ -68,11 +68,10 @@
         }
     }
 
+    $testResultMarkdown = "Active Directory SASL mechanism details have been retrieved. These mechanisms determine available authentication protocols.`n`n%TestResult%"
     if ($mechanismCount -gt 0) {
-        $testResultMarkdown = "Active Directory SASL mechanism details have been retrieved. These mechanisms determine available authentication protocols.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Active Directory SASL mechanism details have been retrieved. These mechanisms determine available authentication protocols.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

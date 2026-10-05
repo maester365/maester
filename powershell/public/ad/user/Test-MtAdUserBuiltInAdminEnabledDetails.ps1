@@ -54,11 +54,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "Enabled built-in administrator style Active Directory user details were retrieved.`n`n%TestResult%"
     if ($enabledBuiltInAdmins.Count -gt 0) {
-        $testResultMarkdown = "Enabled built-in administrator style Active Directory user details were retrieved.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Enabled built-in administrator style Active Directory user details were retrieved.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

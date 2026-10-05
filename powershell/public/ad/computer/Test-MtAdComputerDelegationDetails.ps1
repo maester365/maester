@@ -96,11 +96,10 @@
             }
         }
 
+        $testResultMarkdown = "Active Directory computer delegation configuration has been analyzed. $totalDelegationCount computers have delegation configured.`n`n%TestResult%"
         if ($totalCount -gt 0) {
-            $testResultMarkdown = "Active Directory computer delegation configuration has been analyzed. $totalDelegationCount computers have delegation configured.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory computer delegation configuration has been analyzed. $totalDelegationCount computers have delegation configured.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

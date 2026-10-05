@@ -95,11 +95,10 @@
             $result += "All NetBIOS names comply with naming standards."
         }
 
+        $testResultMarkdown = "NetBIOS name compliance details have been retrieved.`n`n%TestResult%"
         if ($totalNames -gt 0) {
-            $testResultMarkdown = "NetBIOS name compliance details have been retrieved.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "NetBIOS name compliance details have been retrieved.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

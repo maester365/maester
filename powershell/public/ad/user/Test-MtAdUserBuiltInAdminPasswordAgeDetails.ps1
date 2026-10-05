@@ -52,11 +52,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "Built-in administrator style account password age data was retrieved from Active Directory.`n`n%TestResult%"
     if ($builtInAdminUsers.Count -gt 0) {
-        $testResultMarkdown = "Built-in administrator style account password age data was retrieved from Active Directory.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Built-in administrator style account password age data was retrieved from Active Directory.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

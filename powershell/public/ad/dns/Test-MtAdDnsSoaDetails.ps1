@@ -76,11 +76,10 @@
             }
         }
 
+        $testResultMarkdown = "Active Directory DNS SOA records have been analyzed. $soaCount zones have SOA records configured.`n`n%TestResult%"
         if ($soaCount -gt 0) {
-            $testResultMarkdown = "Active Directory DNS SOA records have been analyzed. $soaCount zones have SOA records configured.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory DNS SOA records have been analyzed. 0 zones have SOA records configured.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

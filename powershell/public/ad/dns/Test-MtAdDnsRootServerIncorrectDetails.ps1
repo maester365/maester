@@ -118,11 +118,10 @@
             }
         }
 
+        $testResultMarkdown = "DNS root server hint details have been analyzed. $incorrectCount root servers have incorrect IP addresses.`n`n%TestResult%"
         if ($totalRootServers -gt 0) {
-            $testResultMarkdown = "DNS root server hint details have been analyzed. $incorrectCount root servers have incorrect IP addresses.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "DNS root server hint details have been analyzed. 0 root servers have incorrect IP addresses.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

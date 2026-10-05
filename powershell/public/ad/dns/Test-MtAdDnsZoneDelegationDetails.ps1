@@ -74,11 +74,10 @@
             }
         }
 
+        $testResultMarkdown = "Active Directory DNS zone delegation details have been analyzed. $delegationCount zone delegations were found.`n`n%TestResult%"
         if ($delegationCount -gt 0) {
-            $testResultMarkdown = "Active Directory DNS zone delegation details have been analyzed. $delegationCount zone delegations were found.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory DNS zone delegation details have been analyzed. $delegationCount zone delegations were found.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

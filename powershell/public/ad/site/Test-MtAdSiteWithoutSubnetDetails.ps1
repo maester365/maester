@@ -74,11 +74,10 @@
             $result += "`n✅ All sites have subnet associations configured." + "`n"
         }
 
+        $testResultMarkdown = "Active Directory sites without subnet associations have been analyzed.`n`n%TestResult%"
         if ($sitesWithoutSubnetCount -gt 0) {
-            $testResultMarkdown = "Active Directory sites without subnet associations have been analyzed.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory sites without subnet associations have been analyzed.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

@@ -107,13 +107,12 @@
             $result += "`n**✅ Good**: No domain administrator accounts have SPNs configured." + "`n"
         }
 
-    if ($totalAdminSpns -gt 0) {
         $testResultMarkdown = "Active Directory domain administrator SPN detailed analysis.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Active Directory domain administrator SPN detailed analysis.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
-    }
+        if ($totalAdminSpns -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

@@ -75,11 +75,10 @@
         $result += "| $dc | $roles | $roleCount |" + "`n"
     }
 
+    $testResultMarkdown = "FSMO role distribution has been analyzed across $dcCount domain controller(s).`n`n%TestResult%"
     if ($dcCount -gt 0) {
-        $testResultMarkdown = "FSMO role distribution has been analyzed across $fsmoHolderCount domain controller(s).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "FSMO role distribution has been analyzed across 0 domain controller(s).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

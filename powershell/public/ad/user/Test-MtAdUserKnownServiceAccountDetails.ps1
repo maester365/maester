@@ -96,11 +96,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "Active Directory users were reviewed for known service account naming patterns.`n`n%TestResult%"
     if ($serviceAccountCount -gt 0) {
-        $testResultMarkdown = "Active Directory users were reviewed for known service account naming patterns.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Active Directory users were reviewed for known service account naming patterns.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

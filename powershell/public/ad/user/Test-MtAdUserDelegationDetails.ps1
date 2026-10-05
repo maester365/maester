@@ -79,11 +79,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
     if ($delegatedUsers.Count -gt 0) {
-        $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

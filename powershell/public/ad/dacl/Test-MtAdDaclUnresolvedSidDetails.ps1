@@ -66,11 +66,10 @@ function Test-MtAdDaclUnresolvedSidDetails {
     }
 
     $testResult = $true
+    $testResultMarkdown = "Active Directory DACL entries were analyzed for orphaned SID references. $($objectGroups.Count) object(s) contain unresolved SID ACEs.`n`n%TestResult%"
     if ($objectGroups.Count -gt 0) {
-        $testResultMarkdown = "Active Directory DACL entries were analyzed for orphaned SID references. $($objectGroups.Count) object(s) contain unresolved SID ACEs.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
     } else {
-        $testResultMarkdown = "Active Directory DACL entries were analyzed for orphaned SID references. $($objectGroups.Count) object(s) contain unresolved SID ACEs.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', ""
     }
 

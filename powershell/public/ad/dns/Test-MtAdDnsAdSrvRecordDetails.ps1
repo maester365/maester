@@ -82,11 +82,10 @@
             }
         }
 
+        $testResultMarkdown = "Active Directory DNS SRV record details have been analyzed. $adSrvCount AD DS SRV records were found.`n`n%TestResult%"
         if ($adSrvCount -gt 0) {
-            $testResultMarkdown = "Active Directory DNS SRV record details have been analyzed. $adSrvCount AD DS SRV records were found.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory DNS SRV record details have been analyzed. 0 AD DS SRV records found.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

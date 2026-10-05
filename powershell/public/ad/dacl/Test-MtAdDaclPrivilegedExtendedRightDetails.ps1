@@ -86,11 +86,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "This informational test groups ExtendedRight allow ACEs by ObjectType GUID.`n`n%TestResult%"
     if ($breakdown.Count -gt 0) {
-        $testResultMarkdown = "This informational test groups ExtendedRight allow ACEs by ObjectType GUID.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
     } else {
-        $testResultMarkdown = "This informational test groups ExtendedRight allow ACEs by ObjectType GUID.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

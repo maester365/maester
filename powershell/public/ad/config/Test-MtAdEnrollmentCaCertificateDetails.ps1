@@ -95,11 +95,10 @@
             $result += "| $($row.'CA Name') | $($row.'Certificate Valid From') | $($row.'Certificate Valid To') | $($row.'Certificate Parsed') |" + "`n"
         }
 
+        $testResultMarkdown = "Active Directory enrollment Enterprise CAs have been analyzed for certificate validity dates.`n`n%TestResult%"
         if ($caCount -gt 0) {
-            $testResultMarkdown = "Active Directory enrollment Enterprise CAs have been analyzed for certificate validity dates.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory enrollment Enterprise CAs have been analyzed for certificate validity dates.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

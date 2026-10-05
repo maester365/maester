@@ -66,11 +66,10 @@
         $result += "| Unknown/Missing | $unknownCount | - | $unknownNames |" + "`n"
     }
 
+    $testResultMarkdown = "Domain controller operating system distribution has been analyzed across $dcCount DC(s).`n`n%TestResult%"
     if ($dcCount -gt 0) {
-        $testResultMarkdown = "Domain controller operating system distribution has been analyzed across $dcCount DC(s).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Domain controller operating system distribution has been analyzed across 0 DC(s).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

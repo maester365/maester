@@ -62,11 +62,10 @@
 
     $testResult = $true
     Write-Verbose "Counts computed"
+    $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
     if ($groups.Count -gt 0) {
-        $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
     } else {
-        $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', ""
     }
 

@@ -59,11 +59,10 @@
     }
     Write-Verbose "Counts computed"
 
+    $testResultMarkdown = "Active Directory DACL deny-ACE details have been compiled. The results are grouped by object and identity reference for review.`n`n%TestResult%"
     if ($denyGroupCount -gt 0) {
-        $testResultMarkdown = "Active Directory DACL deny-ACE details have been compiled. The results are grouped by object and identity reference for review.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Active Directory DACL deny-ACE details have been compiled. The results are grouped by object and identity reference for review.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
     }
 

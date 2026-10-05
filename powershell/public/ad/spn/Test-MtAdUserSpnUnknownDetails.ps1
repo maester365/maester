@@ -117,11 +117,10 @@
             $result += "No unknown SPN service classes found on user accounts. All SPNs match the known service database." + "`n"
         }
 
+        $testResultMarkdown = "Active Directory user SPN unknown service class details.`n`n%TestResult%"
         if ($unknownCount -gt 0) {
-            $testResultMarkdown = "Active Directory user SPN unknown service class details.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory user SPN unknown service class details.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {

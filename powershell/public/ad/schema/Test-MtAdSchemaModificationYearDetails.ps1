@@ -68,11 +68,10 @@
             $result += "| $($yearData.Name) | $($yearData.Count) | $percentage% |" + "`n"
         }
 
+        $testResultMarkdown = "Active Directory schema modification details by year. Schema changes occurred across $yearCount different years.`n`n%TestResult%"
         if ($yearCount -gt 0) {
-            $testResultMarkdown = "Active Directory schema modification details by year. Schema changes occurred across $yearCount different years.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         } else {
-            $testResultMarkdown = "Active Directory schema modification details by year. Schema changes occurred across $yearCount different years.`n`n%TestResult%"
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
         }
     } else {
