@@ -1137,7 +1137,7 @@
     {
       "Id": "AD-TRUST-04",
       "Severity": "High",
-      "Title": "Trust non-quarantined details should be retrievable"
+      "Title": "Trusts should not have weak SID filtering"
     },
     {
       "Id": "AD-TRUST-05",
