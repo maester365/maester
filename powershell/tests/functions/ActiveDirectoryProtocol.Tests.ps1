@@ -632,11 +632,38 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
             InModuleScope Maester {
                 $cred = New-Object System.Management.Automation.PSCredential ('user@contoso.com', (ConvertTo-SecureString 'password' -AsPlainText -Force))
 
-                { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode Auto } | Should -Throw
+                $thrownError = { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode Auto } | Should -Throw -PassThru
+                $thrownError.Exception.Message | Should -Not -Match 'StartTLS'
             }
 
             Should -Invoke New-MtLdapConnection -ModuleName Maester -Times 1 -ParameterFilter { $Port -eq 636 }
             Should -Invoke New-MtLdapConnection -ModuleName Maester -Times 0 -ParameterFilter { $Port -eq 389 }
+        }
+
+        It 'Auto mode on Linux logs LDAPS-only certificate guidance when LDAPS fails with cert error' {
+            InModuleScope Maester {
+                $cred = New-Object System.Management.Automation.PSCredential ('user@contoso.com', (ConvertTo-SecureString 'password' -AsPlainText -Force))
+
+                Mock New-MtLdapConnection -ModuleName Maester {
+                    throw 'The remote certificate is invalid according to the validation procedure.'
+                }
+
+                $verboseOutput = [System.Collections.Generic.List[object]]::new()
+                $thrownError = $null
+                try {
+                    Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryCredential $cred -TlsMode Auto -Verbose 4>&1 | ForEach-Object { $verboseOutput.Add($_) }
+                }
+                catch {
+                    $thrownError = $_
+                }
+
+                $thrownError | Should -Not -BeNullOrEmpty
+                $thrownError.Exception.Message | Should -Not -Match 'StartTLS'
+
+                $verboseText = ($verboseOutput | Where-Object { $null -ne $_ } | ForEach-Object { $_.ToString() }) -join ' '
+                $verboseText | Should -Match 'LDAPS connection failed due to certificate issues'
+                $verboseText | Should -Not -Match 'Both LDAPS and StartTLS failed'
+            }
         }
 
         It 'explicit StartTls on Linux still attempts StartTLS' {

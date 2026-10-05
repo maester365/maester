@@ -319,7 +319,8 @@ function Connect-MtAdTarget {
 
     $isWindowsRuntime = $adPrerequisites.PlatformProfile -like 'Windows*'
 
-    $tlsAttempts = switch ($RequestedTlsMode) {
+    # Wrap in @() so a single attempt stays an array; otherwise .Count returns the hashtable key count
+    $tlsAttempts = @(switch ($RequestedTlsMode) {
             'Ldaps' { @(@{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }) }
             'StartTls' { @(@{ Name = 'StartTls'; Port = 389; UseStartTls = $true }) }
             default {
@@ -336,7 +337,7 @@ function Connect-MtAdTarget {
                     )
                 }
             }
-        }
+        })
 
         foreach ($tlsAttempt in $tlsAttempts) {
             Write-Verbose "Attempting TLS mode '$($tlsAttempt.Name)' to '$Server' on port $($tlsAttempt.Port) with AuthType '$AuthenticationMode'"
