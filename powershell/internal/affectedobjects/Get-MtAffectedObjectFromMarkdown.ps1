@@ -9,8 +9,12 @@ function Get-MtAffectedObjectFromMarkdown {
     Works on any markdown string (ResultDetail.TestResult), requires no module session,
     and therefore also handles ad-hoc $portalLink sites that bypass Get-GraphObjectMarkdown.
 
-    When the URL appears inside a markdown link `[name](url)`, the display name is captured too.
-    The matched URL is kept as the record's PortalLink.
+    When the URL appears inside a markdown link `[name](url)` (optionally with a title,
+    `[name](url "title")`), the display name is captured too, with markdown escapes such as
+    `\(` and `\_` removed. The matched URL is kept as the record's PortalLink.
+
+    Links with an empty target whose text is a user principal name (`[user@contoso.com]()`, as the
+    Entra recommendation checks write them) are captured as users keyed by that UPN.
     #>
     [CmdletBinding()]
     [OutputType([object[]])]
@@ -31,7 +35,8 @@ function Get-MtAffectedObjectFromMarkdown {
         # Ordered: more specific patterns first. Id = first capture group.
         $patterns = @(
             @{ System   = 'EntraID'; Type = 'ConditionalAccessPolicy'; Regex = "Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/($guid)" }
-            @{ System = 'EntraID'; Type = 'ServicePrincipal'; Regex = "ManagedAppMenuBlade/~/\w+/objectId/($guid)/appId/($guid)" }
+            # The appId suffix is optional: some checks link the enterprise app by object id only.
+            @{ System = 'EntraID'; Type = 'ServicePrincipal'; Regex = "ManagedAppMenuBlade/~/\w+/objectId/($guid)(?:/appId/$guid)?" }
             @{ System = 'EntraID'; Type = 'AppRegistration'; Regex = "ApplicationMenuBlade/~/\w+/appId/($guid)" }
             @{ System = 'EntraID'; Type = 'User'; Regex = "UserProfileMenuBlade/~/\w+/userId/($guid)" }
             @{ System = 'EntraID'; Type = 'Group'; Regex = "GroupDetailsMenuBlade/~/\w+/groupId/($guid)" }
@@ -54,7 +59,11 @@ function Get-MtAffectedObjectFromMarkdown {
         # different occurrence. .NET allows the repeated 'url' group name across the alternation.
         # https only: display names are not escaped in result markdown, so a crafted name can smuggle
         # a javascript: url into a link that would otherwise match a portal pattern.
-        $linkPattern = '\[(?<name>[^\]]+)\]\((?<url>https://[^)\s]+)\)|(?<url>https://[^\s)\]]+)'
+        # The name may contain one level of brackets ("[RaviK] - Policy") and the url may be followed
+        # by a link title (`[name](url "title")`).
+        $linkPattern = '\[(?<name>(?:[^\[\]]|\[[^\[\]]*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"[^"]*")?\)|(?<url>https://[^\s)\]]+)'
+        # Markdown backslash escapes (\( \_ \* ...) that result markdown adds around display names.
+        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>])'
 
         foreach ($link in [regex]::Matches($Markdown, $linkPattern)) {
             $url = $link.Groups['url'].Value
@@ -64,12 +73,17 @@ function Get-MtAffectedObjectFromMarkdown {
                 $match = [regex]::Match($url, $pattern.Regex)
                 if (-not $match.Success) { continue }
 
+                $displayName = $null
+                if ($link.Groups['name'].Success) {
+                    $displayName = $link.Groups['name'].Value -replace $markdownEscape, '$1'
+                }
+
                 $records.Add([PSCustomObject]@{
                         System      = $pattern.System
                         AnchorKind  = 'Instance'
                         Type        = $pattern.Type
                         Id          = $match.Groups[1].Value
-                        DisplayName = if ($link.Groups['name'].Success) { $link.Groups['name'].Value } else { $null }
+                        DisplayName = $displayName
                         PortalLink  = $url
                         TestId      = $TestId
                         Source      = 'Markdown'
@@ -77,6 +91,22 @@ function Get-MtAffectedObjectFromMarkdown {
                 # Patterns are ordered most specific first, so the first hit owns the url.
                 break
             }
+        }
+
+        # Users listed as empty links ([user@contoso.com]()) carry no portal link but name the user.
+        foreach ($link in [regex]::Matches($Markdown, '\[(?<upn>[^\[\]\s()]+@[^\[\]\s()]+\.[^\[\]\s()]+)\]\(\)')) {
+            $userPrincipalName = $link.Groups['upn'].Value -replace $markdownEscape, '$1'
+            $records.Add([PSCustomObject]@{
+                    System            = 'EntraID'
+                    AnchorKind        = 'Instance'
+                    Type              = 'User'
+                    Id                = $userPrincipalName
+                    DisplayName       = $userPrincipalName
+                    UserPrincipalName = $userPrincipalName
+                    PortalLink        = $null
+                    TestId            = $TestId
+                    Source            = 'Markdown'
+                })
         }
 
         # Dedupe within this markdown blob: a check commonly links the same object from several rows.

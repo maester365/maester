@@ -69,6 +69,39 @@ function Get-MtAffectedObject {
         }
     }
 
+    # Some sources only know a user by UPN (users/{upn} reads, [upn]() links in recommendation
+    # results). Key those records by the user's object id when the run saw it, so each user is one
+    # object instead of one per identifier.
+    $userIdByUpn = [System.Collections.Generic.Dictionary[string, string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($record in $records) {
+        $userPrincipalName = Get-ObjectProperty $record 'UserPrincipalName'
+        if ($record.Type -eq 'User' -and $userPrincipalName -and $record.Id -and -not ([string]$record.Id).Contains('@')) {
+            $userIdByUpn[[string]$userPrincipalName] = [string]$record.Id
+        }
+    }
+    if (-not $ExcludeSessionCache -and $__MtSession.GraphCache) {
+        foreach ($response in @($__MtSession.GraphCache.Values)) {
+            if ($null -eq $response -or $response -is [string]) { continue }
+            foreach ($item in @($response) + @($response.value)) {
+                if ($null -eq $item -or $item -is [string]) { continue }
+                $userPrincipalName = [string](Get-ObjectProperty $item 'userPrincipalName')
+                $id = [string](Get-ObjectProperty $item 'id')
+                if ($userPrincipalName -and $id -and -not $userIdByUpn.ContainsKey($userPrincipalName)) {
+                    $userIdByUpn[$userPrincipalName] = $id
+                }
+            }
+        }
+    }
+    $userLinkTemplate = (Get-MtPortalLinkTemplate).LinkTemplates.Users
+    foreach ($record in $records) {
+        $upnKey = [string]$record.Id
+        $userId = $null
+        if ($record.Type -eq 'User' -and $upnKey.Contains('@') -and $userIdByUpn.TryGetValue($upnKey, [ref] $userId)) {
+            $record.Id = $userId
+            if (-not $record.PortalLink -and $userLinkTemplate) { $record.PortalLink = $userLinkTemplate -f $userId }
+        }
+    }
+
     # Consolidate: one record per System/Type/Id with aggregated test attribution.
     # Structured GraphObjects records win over markdown/cache records for the same object.
     # Unknown sources rank last so a record with a missing Source never outranks a structured one.
@@ -96,7 +129,8 @@ function Get-MtAffectedObject {
             Type              = $best.Type
             Id                = $best.Id
             UniqueId          = $uniqueId
-            DisplayName       = ($_.Group.DisplayName | Where-Object { $_ } | Select-Object -First 1)
+            # Prefer a real name over a UPN that only stood in for one ([upn]() links, users/{upn} reads).
+            DisplayName       = (@($_.Group.DisplayName | Where-Object { $_ }) | Sort-Object { ([string]$_).Contains('@') } | Select-Object -First 1)
             UserPrincipalName = ($_.Group | ForEach-Object { Get-ObjectProperty $_ 'UserPrincipalName' } | Where-Object { $_ } | Select-Object -First 1)
             PortalLink        = ($_.Group.PortalLink | Where-Object { $_ } | Select-Object -First 1)
             Tests             = @($_.Group.TestId | Where-Object { $_ } | Select-Object -Unique)

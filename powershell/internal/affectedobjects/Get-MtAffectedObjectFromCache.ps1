@@ -41,6 +41,14 @@
         directoryRoles    = 'DirectoryRole'
     }
 
+    # Keyed reads below these collections address an object the checks also link to under a
+    # canonical type, so the read merges with it instead of listing it a second time as a Graph path:
+    # accessPackages/{id}/accessPackageResourceRoleScopes is that access package.
+    $keyedObjectTypes = @{
+        'identityGovernance/entitlementManagement/accessPackages'        = 'AccessPackage'
+        'identityGovernance/entitlementManagement/accessPackageCatalogs' = 'AccessPackageCatalog'
+    }
+
     # Action endpoints are verbs, not resources: they address no object worth inventorying.
     $actionSegments = @('$batch', 'runHuntingQuery', 'getMemberGroups', 'getMemberObjects', 'checkMemberGroups')
 
@@ -86,20 +94,52 @@
             }
 
             $instanceId = $null
+            $keyedPath = $null
+            $keyName = $null
             $typeSegments = [System.Collections.Generic.List[string]]::new()
             foreach ($segment in $segments) {
                 if ($segment -match $guidPattern) {
                     # First key wins: in a/{x}/b/{y} the object is the outer object, not the child.
-                    if (-not $instanceId) { $instanceId = $segment }
-                } elseif ($segment -match "^(?<res>[^(]+)\((?:\w+=)?'(?<key>[^']+)'\)") {
+                    if (-not $instanceId) {
+                        $instanceId = $segment
+                        $keyedPath = $typeSegments -join '/'
+                    }
+                } elseif ($segment -match "^(?<res>[^(]+)\((?:(?<keyName>\w+)=)?'(?<key>[^']+)'\)") {
                     # Covers key('x') and alternate keys such as applications(appId='x').
                     $typeSegments.Add($Matches.res)
-                    if (-not $instanceId) { $instanceId = $Matches.key }
+                    if (-not $instanceId) {
+                        $instanceId = $Matches.key
+                        $keyedPath = $typeSegments -join '/'
+                        $keyName = $Matches.keyName
+                    }
                 } else {
                     $typeSegments.Add($segment)
                 }
             }
             $type = $typeSegments -join '/'
+
+            # Map keyed reads onto the canonical object type. App registrations are keyed by appId
+            # everywhere else (portal links use it), so only an appId alternate key maps to one.
+            $canonicalType = $null
+            if ($instanceId -and $keyedPath -and $keyedObjectTypes.ContainsKey($keyedPath)) {
+                $canonicalType = $keyedObjectTypes[$keyedPath]
+            } elseif ($instanceId -and $keyedPath -eq 'applications' -and $keyName -eq 'appId') {
+                $canonicalType = 'AppRegistration'
+            }
+            if ($canonicalType) {
+                $records.Add([PSCustomObject]@{
+                        System            = 'EntraID'
+                        AnchorKind        = 'Instance'
+                        Type              = $canonicalType
+                        Id                = $instanceId
+                        DisplayName       = $null
+                        UserPrincipalName = $null
+                        PortalLink        = $null
+                        SourceUri         = $uri
+                        Source            = 'GraphCache'
+                    })
+                continue
+            }
 
             if ($instanceId) {
                 $anchorKind = 'Instance'

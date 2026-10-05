@@ -100,7 +100,7 @@ pattern acts as a type system:
 | URL pattern (fragment)                                        | Type                           |
 | ------------------------------------------------------------- | ------------------------------ |
 | `Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{guid}` | ConditionalAccessPolicy        |
-| `ManagedAppMenuBlade/~/*/objectId/{guid}/appId/{guid}`        | ServicePrincipal               |
+| `ManagedAppMenuBlade/~/*/objectId/{guid}[/appId/{guid}]`      | ServicePrincipal               |
 | `ApplicationMenuBlade/~/*/appId/{guid}`                       | AppRegistration                |
 | `UserProfileMenuBlade/~/*/userId/{guid}`                      | User                           |
 | `GroupDetailsMenuBlade/~/*/groupId/{guid}`                    | Group                          |
@@ -116,7 +116,12 @@ pattern acts as a type system:
 The first pattern that matches a URL owns it, so ordering resolves overlaps (a service
 principal URL also satisfies the less specific app registration pattern). The matched URL
 becomes the record's `PortalLink`, and when it sits inside a markdown link `[name](url)` the
-display name is recovered from the link that owns it. Only `https://` URLs are considered:
+display name is recovered from the link that owns it. The name may contain one level of
+brackets (`[[RaviK] - Policy](url)`), the URL may carry a link title (`[name](url "title")`),
+and markdown escapes such as `\(` and `\_` are removed from the name. Links with an empty target
+whose text is a UPN (`[user@contoso.com]()`, as the Entra recommendation checks list affected
+users) become `User` records keyed by that UPN; `Get-MtAffectedObject` re-keys them to the
+user's object id when the run saw it, so each user is one object. Only `https://` URLs are considered:
 display names are not escaped in result markdown, so a crafted name could otherwise smuggle a
 `javascript:` URL into the Affected objects page.
 This source catches the ~55 checks that build `$portalLink` strings by hand (XSPM, CISA
@@ -135,8 +140,12 @@ request URLs — a free record of every resource the run actually read:
     separate object. The key may be a GUID **or a UPN** — `users/alice@contoso.com` must
     resolve to `EntraID | User | alice@contoso.com`, because a UPN left inside `Type` is
     never reached by the report's PII redaction (which matches on `Type -eq 'User'`).
-    `applications` is deliberately excluded: the cache keys it by object id while the portal
+    `applications/{id}` is deliberately excluded: the cache keys it by object id while the portal
     links parsed from markdown carry the app id, so the two would not merge anyway.
+  - a keyed read below `identityGovernance/entitlementManagement/accessPackages` or
+    `.../accessPackageCatalogs`, or an `applications(appId='{guid}')` read → **Instance** under
+    `AccessPackage`, `AccessPackageCatalog` or `AppRegistration`, so it merges with the object
+    the checks link to instead of listing it a second time as a Graph path.
   - any other GUID segment or an OData key segment
     (`authenticationMethodConfigurations('Fido2')`, or an alternate key such as
     `applications(appId='{guid}')`) → **Instance**. The **first** key in the

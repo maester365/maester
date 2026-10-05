@@ -149,6 +149,69 @@ Describe 'Affected objects' {
             $objects.Id | Should -Be '44444444-4444-4444-4444-444444444444'
         }
 
+        It 'Should capture the display name of a link that has a title' {
+            $markdown = '| [Microsoft Graph Command Line Tools](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/55555555-5555-5555-5555-555555555555/appId/66666666-6666-6666-6666-666666666666 "Backs Connect-MgGraph") |'
+
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
+            }
+
+            $affectedObject.Type | Should -Be 'ServicePrincipal'
+            $affectedObject.Id | Should -Be '55555555-5555-5555-5555-555555555555'
+            $affectedObject.DisplayName | Should -Be 'Microsoft Graph Command Line Tools'
+            $affectedObject.PortalLink | Should -Not -BeLike '* *'
+        }
+
+        It 'Should capture a display name that contains brackets' {
+            $markdown = '- [[RaviK] - Require app protection policy](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444)'
+
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
+            }
+
+            $affectedObject.DisplayName | Should -Be '[RaviK] - Require app protection policy'
+        }
+
+        It 'Should remove markdown escapes from the display name' {
+            $markdown = '- [AzMfa Test \(Require MFA\) test\_21783](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444)'
+
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
+            }
+
+            $affectedObject.DisplayName | Should -Be 'AzMfa Test (Require MFA) test_21783'
+        }
+
+        It 'Should capture an enterprise application linked by object id only' {
+            $markdown = '- [Mailbox Migration Account](https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/55555555-5555-5555-5555-555555555555) with Global Administrator'
+
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
+            }
+
+            $affectedObject.Type | Should -Be 'ServicePrincipal'
+            $affectedObject.Id | Should -Be '55555555-5555-5555-5555-555555555555'
+            $affectedObject.DisplayName | Should -Be 'Mailbox Migration Account'
+        }
+
+        It 'Should capture users listed as empty links by their UPN' {
+            $markdown = "| ❌ Fail | [jane@contoso.com]() | 07/14/2026 |`n| ❌ Fail | [not a user]() | 07/14/2026 |"
+
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown -TestId 'MT.1024'
+            }
+
+            @($affectedObject).Count | Should -Be 1
+            $affectedObject.Type | Should -Be 'User'
+            $affectedObject.Id | Should -Be 'jane@contoso.com'
+            $affectedObject.UserPrincipalName | Should -Be 'jane@contoso.com'
+        }
+
         It 'Should return nothing for markdown without portal links' {
             $affectedObject = InModuleScope Maester {
                 Get-MtAffectedObjectFromMarkdown -Markdown 'All good, nothing to report.'
@@ -278,7 +341,7 @@ Describe 'Affected objects' {
             $affectedObject.AnchorKind | Should -Be 'Singleton'
         }
 
-        It 'Should read an alternate key such as appId as the instance id' {
+        It 'Should map an appId alternate key onto the app registration' {
             $affectedObject = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     "https://graph.microsoft.com/beta/applications(appId='66666666-6666-6666-6666-666666666666')" = 'x'
@@ -290,9 +353,44 @@ Describe 'Affected objects' {
                 }
             }
 
-            $affectedObject.Type | Should -Be 'applications'
+            # App registrations are keyed by appId, the same id their portal links carry.
+            $affectedObject.System | Should -Be 'EntraID'
+            $affectedObject.Type | Should -Be 'AppRegistration'
             $affectedObject.Id | Should -Be '66666666-6666-6666-6666-666666666666'
             $affectedObject.AnchorKind | Should -Be 'Instance'
+        }
+
+        It 'Should map a keyed read below <Path> onto <Expected>' -ForEach @(
+            @{ Path = 'identityGovernance/entitlementManagement/accessPackages/77777777-7777-7777-7777-777777777777/accessPackageResourceRoleScopes'; Expected = 'AccessPackage' }
+            @{ Path = 'identityGovernance/entitlementManagement/accessPackageCatalogs/77777777-7777-7777-7777-777777777777/accessPackageResources'; Expected = 'AccessPackageCatalog' }
+        ) {
+            $affectedObject = InModuleScope Maester -Parameters @{ Path = $Path } {
+                param($Path)
+                $__MtSession.GraphCache = @{ "https://graph.microsoft.com/beta/$Path" = 'x' }
+                try {
+                    Get-MtAffectedObjectFromCache
+                } finally {
+                    $__MtSession.GraphCache = @{}
+                }
+            }
+
+            $affectedObject.System | Should -Be 'EntraID'
+            $affectedObject.Type | Should -Be $Expected
+            $affectedObject.Id | Should -Be '77777777-7777-7777-7777-777777777777'
+        }
+
+        It 'Should leave an applications read keyed by object id as a Graph path' {
+            # Object ids and the appIds that key app registrations are different values, so these cannot merge.
+            $affectedObject = InModuleScope Maester {
+                $__MtSession.GraphCache = @{ 'https://graph.microsoft.com/beta/applications/66666666-6666-6666-6666-666666666666' = 'x' }
+                try {
+                    Get-MtAffectedObjectFromCache
+                } finally {
+                    $__MtSession.GraphCache = @{}
+                }
+            }
+
+            $affectedObject.Type | Should -Be 'applications'
         }
 
         It 'Should leave collections that are not keyed directory reads alone' {
@@ -403,6 +501,39 @@ Describe 'Affected objects' {
     }
 
     Context 'Get-MtAffectedObject' {
+        It 'Should merge a user known only by UPN into the user known by object id' {
+            $inventory = InModuleScope Maester {
+                $__MtSession.GraphCache = @{
+                    'https://graph.microsoft.com/beta/users' = @{ value = @(@{ id = '88888888-8888-8888-8888-888888888888'; userPrincipalName = 'jane@contoso.com' }) }
+                }
+                try {
+                    Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{
+                            Tests = @(
+                                [PSCustomObject]@{
+                                    Id           = 'MT.1024'
+                                    ResultDetail = [PSCustomObject]@{ TestResult = '| [jane@contoso.com]() |'; RelatedObjects = @() }
+                                }
+                                [PSCustomObject]@{
+                                    Id           = 'MT.1026'
+                                    ResultDetail = [PSCustomObject]@{
+                                        TestResult     = '[Jane Doe](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/88888888-8888-8888-8888-888888888888)'
+                                        RelatedObjects = @()
+                                    }
+                                }
+                            )
+                        }) | Where-Object Type -EQ 'User'
+                } finally {
+                    $__MtSession.GraphCache = @{}
+                }
+            }
+
+            @($inventory).Count | Should -Be 1
+            $inventory.Id | Should -Be '88888888-8888-8888-8888-888888888888'
+            $inventory.DisplayName | Should -Be 'Jane Doe'
+            $inventory.UserPrincipalName | Should -Be 'jane@contoso.com'
+            $inventory.Tests | Should -Be @('MT.1024', 'MT.1026')
+        }
+
         It 'Should merge sources and aggregate the referencing tests' {
             $results = [PSCustomObject]@{
                 Tests = @(
