@@ -38,5 +38,5 @@ function Get-MtAffectedObjectUniqueId {
         $sha256.Dispose()
     }
 
-    return 'asset-' + ([System.BitConverter]::ToString($hash).Replace('-', '').ToLowerInvariant().Substring(0, 16))
+    return 'object-' + ([System.BitConverter]::ToString($hash).Replace('-', '').ToLowerInvariant().Substring(0, 16))
 }

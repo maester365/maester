@@ -187,7 +187,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $html | Should -Not -BeLike '*Jane Doe*'
             $html | Should -Not -BeLike '*jane.doe@contoso.com*'
             $html | Should -Not -BeLike '*9a9a9a9a-1111-2222-3333-444444444444*'
-            $html | Should -BeLike '*asset-*'
+            $html | Should -BeLike '*object-*'
 
             # HtmlOnly keeps the machine readable export intact
             Get-Content (Join-Path $folder 'Pii.json') -Raw | Should -BeLike '*Jane Doe*'
@@ -209,7 +209,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $folder = & $script:invokePii @{ RedactUserIdentity = 'AllOutputs' }
 
             $json = Get-Content (Join-Path $folder 'Pii.json') -Raw
-            $json | Should -BeLike '*MT.9998: Member should be blocked (asset-*'
+            $json | Should -BeLike '*MT.9998: Member should be blocked (object-*'
             foreach ($file in 'Pii.html', 'Pii.json', 'Pii.md') {
                 Get-Content (Join-Path $folder $file) -Raw | Should -Not -BeLike '*sam.member@contoso.com*' -Because "$file must be redacted"
             }
@@ -277,7 +277,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $csv = Get-Content (Join-Path $folder 'Pii-affected-objects.csv') -Raw
             $csv | Should -Not -BeLike '*Jane Doe*'
             $csv | Should -Not -BeLike '*jane.doe@contoso.com*'
-            $csv | Should -BeLike '*asset-*'
+            $csv | Should -BeLike '*object-*'
         }
     }
 }

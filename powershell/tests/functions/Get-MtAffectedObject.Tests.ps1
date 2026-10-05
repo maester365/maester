@@ -440,7 +440,7 @@ Describe 'Affected objects' {
             $inventory.Sources | Should -Contain 'Markdown'
             # The structured record outranks the markdown one for the portal link
             $inventory.PortalLink | Should -Be 'https://entra.microsoft.com/policy'
-            $inventory.UniqueId | Should -BeLike 'asset-*'
+            $inventory.UniqueId | Should -BeLike 'object-*'
         }
 
         It 'Should produce a stable unique id for the same identity' {
@@ -551,11 +551,11 @@ Describe 'Affected objects' {
             $script:results = [PSCustomObject]@{
                 AffectedObjects = @(
                     [PSCustomObject]@{
-                        System = 'EntraID'; Type = 'User'; UniqueId = 'asset-user-001'
+                        System = 'EntraID'; Type = 'User'; UniqueId = 'object-user-001'
                         Id = '11111111-1111-1111-1111-111111111111'; DisplayName = 'Jane Doe'
                     },
                     [PSCustomObject]@{
-                        System = 'EntraID'; Type = 'Group'; UniqueId = 'asset-group-001'
+                        System = 'EntraID'; Type = 'Group'; UniqueId = 'object-group-001'
                         Id = '22222222-2222-2222-2222-222222222222'; DisplayName = 'Sales'
                     }
                 )
@@ -568,8 +568,8 @@ Describe 'Affected objects' {
                 Get-MtUserIdentityReplacementMap -MaesterResults $Results
             }
 
-            $map['Jane Doe'] | Should -Be 'asset-user-001'
-            $map['11111111-1111-1111-1111-111111111111'] | Should -Be 'asset-user-001'
+            $map['Jane Doe'] | Should -Be 'object-user-001'
+            $map['11111111-1111-1111-1111-111111111111'] | Should -Be 'object-user-001'
             $map.ContainsKey('Sales') | Should -BeFalse
         }
 
@@ -578,7 +578,7 @@ Describe 'Affected objects' {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
                         AffectedObjects = @(
                             [PSCustomObject]@{
-                                System = 'EntraID'; Type = 'User'; UniqueId = 'asset-user-002'
+                                System = 'EntraID'; Type = 'User'; UniqueId = 'object-user-002'
                                 Id = '33333333-3333-3333-3333-333333333333'; DisplayName = 'Ed'
                             }
                         )
@@ -586,7 +586,7 @@ Describe 'Affected objects' {
             }
 
             $map.ContainsKey('Ed') | Should -BeFalse
-            $map['33333333-3333-3333-3333-333333333333'] | Should -Be 'asset-user-002'
+            $map['33333333-3333-3333-3333-333333333333'] | Should -Be 'object-user-002'
         }
 
         Context 'Session cache' {
@@ -628,15 +628,15 @@ Describe 'Affected objects' {
             It 'Should map users that were only read as part of a list' {
                 $map = & $script:mapWithCache -IncludeSessionCache
 
-                $map['sam.member@contoso.com'] | Should -BeLike 'asset-*'
-                $map['kim.member@contoso.com'] | Should -BeLike 'asset-*'
+                $map['sam.member@contoso.com'] | Should -BeLike 'object-*'
+                $map['kim.member@contoso.com'] | Should -BeLike 'object-*'
                 $map['77777777-7777-7777-7777-777777777777'] | Should -Be $map['sam.member@contoso.com']
             }
 
             It 'Should map users from keyed reads without their display name' {
                 $map = & $script:mapWithCache -IncludeSessionCache
 
-                $map['lee@contoso.com'] | Should -BeLike 'asset-*'
+                $map['lee@contoso.com'] | Should -BeLike 'object-*'
                 $map.ContainsKey('Support') | Should -BeFalse
                 # Non-user objects carry no UPN
                 $map.ContainsKey('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') | Should -BeFalse
@@ -681,7 +681,7 @@ Describe 'Affected objects' {
                 }
 
                 $redacted | Should -Not -BeLike '*sam.member@contoso.com*'
-                ($redacted | ConvertFrom-Json).Title | Should -BeLike 'User should be blocked from using legacy authentication (asset-*)'
+                ($redacted | ConvertFrom-Json).Title | Should -BeLike 'User should be blocked from using legacy authentication (object-*)'
             }
         }
 
@@ -694,7 +694,7 @@ Describe 'Affected objects' {
                         })
                 }
 
-                $map['ops.admin@contoso.com'] | Should -BeLike 'asset-*'
+                $map['ops.admin@contoso.com'] | Should -BeLike 'object-*'
                 $map.Count | Should -Be 1
             }
 
@@ -749,7 +749,7 @@ Describe 'Affected objects' {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
                         AffectedObjects = @(
                             [PSCustomObject]@{
-                                System = 'EntraID'; Type = 'User'; UniqueId = 'asset-user-003'
+                                System = 'EntraID'; Type = 'User'; UniqueId = 'object-user-003'
                                 Id = '44444444-4444-4444-4444-444444444444'; DisplayName = 'Jane Doe'
                                 UserPrincipalName = 'jane@contoso.com'
                             }
@@ -757,7 +757,7 @@ Describe 'Affected objects' {
                     })
             }
 
-            $map['jane@contoso.com'] | Should -Be 'asset-user-003'
+            $map['jane@contoso.com'] | Should -Be 'object-user-003'
         }
 
         It 'Should give a user read by UPN and by object id one token whatever the inventory order' {
@@ -765,11 +765,11 @@ Describe 'Affected objects' {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
                         AffectedObjects = @(
                             [PSCustomObject]@{
-                                System = 'EntraID'; Type = 'User'; UniqueId = 'asset-by-upn'
+                                System = 'EntraID'; Type = 'User'; UniqueId = 'object-by-upn'
                                 Id = 'jane@contoso.com'; UserPrincipalName = 'jane@contoso.com'
                             }
                             [PSCustomObject]@{
-                                System = 'EntraID'; Type = 'User'; UniqueId = 'asset-by-id'
+                                System = 'EntraID'; Type = 'User'; UniqueId = 'object-by-id'
                                 Id = '44444444-4444-4444-4444-444444444444'; DisplayName = 'Jane Doe'
                                 UserPrincipalName = 'jane@contoso.com'
                             }
@@ -777,8 +777,8 @@ Describe 'Affected objects' {
                     })
             }
 
-            $map['jane@contoso.com'] | Should -Be 'asset-by-id'
-            $map['44444444-4444-4444-4444-444444444444'] | Should -Be 'asset-by-id'
+            $map['jane@contoso.com'] | Should -Be 'object-by-id'
+            $map['44444444-4444-4444-4444-444444444444'] | Should -Be 'object-by-id'
         }
 
         It 'Should keep users passed without an id apart so each one is redacted' {
@@ -801,55 +801,55 @@ Describe 'Affected objects' {
             $result.Inventory.Count | Should -Be 2
             # Same token the signed-in account or a users/{upn} cache read of Bob would get.
             $result.Map['bob@contoso.com'] | Should -Be (InModuleScope Maester { Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id 'bob@contoso.com' })
-            $result.Map['Bob Smith'] | Should -BeLike 'asset-*'
+            $result.Map['Bob Smith'] | Should -BeLike 'object-*'
             $result.Map['bob@contoso.com'] | Should -Be $result.Map['Bob Smith']
             $result.Map['bob@contoso.com'] | Should -Not -Be $result.Map['jane@contoso.com']
         }
 
         It 'Should redact a UPN written in different casing' {
             $redacted = InModuleScope Maester {
-                ConvertTo-MtRedactedReportContent -Content 'Owner Jane@Contoso.com' -ReplacementMap @{ 'jane@contoso.com' = 'asset-user-001' }
+                ConvertTo-MtRedactedReportContent -Content 'Owner Jane@Contoso.com' -ReplacementMap @{ 'jane@contoso.com' = 'object-user-001' }
             }
 
-            $redacted | Should -Be 'Owner asset-user-001'
+            $redacted | Should -Be 'Owner object-user-001'
         }
 
         It 'Should redact a quoted UPN and an apostrophe in the local part' {
             $redacted = InModuleScope Maester {
                 ConvertTo-MtRedactedReportContent -Content "upn = 'jane@contoso.com'; owner o'brien@contoso.com." -ReplacementMap @{
-                    'jane@contoso.com'    = 'asset-user-001'
-                    "o'brien@contoso.com" = 'asset-user-002'
+                    'jane@contoso.com'    = 'object-user-001'
+                    "o'brien@contoso.com" = 'object-user-002'
                 }
             }
 
-            $redacted | Should -Be "upn = 'asset-user-001'; owner asset-user-002."
+            $redacted | Should -Be "upn = 'object-user-001'; owner object-user-002."
         }
 
         It 'Should replace a UPN whole when its local part is also a display name' {
             $redacted = InModuleScope Maester {
                 ConvertTo-MtRedactedReportContent -Content 'jdoe@contoso.com and jdoe' -ReplacementMap @{
-                    'jdoe@contoso.com' = 'asset-user-001'
-                    'jdoe'             = 'asset-user-001'
+                    'jdoe@contoso.com' = 'object-user-001'
+                    'jdoe'             = 'object-user-001'
                 }
             }
 
-            $redacted | Should -Be 'asset-user-001 and asset-user-001'
+            $redacted | Should -Be 'object-user-001 and object-user-001'
         }
 
         It 'Should still redact a display name inside an unknown UPN' {
             $redacted = InModuleScope Maester {
-                ConvertTo-MtRedactedReportContent -Content 'Jane.Doe@other.com' -ReplacementMap @{ 'Jane' = 'asset-user-001' }
+                ConvertTo-MtRedactedReportContent -Content 'Jane.Doe@other.com' -ReplacementMap @{ 'Jane' = 'object-user-001' }
             }
 
-            $redacted | Should -Be 'asset-user-001.Doe@other.com'
+            $redacted | Should -Be 'object-user-001.Doe@other.com'
         }
 
         It 'Should redact a large tenant quickly' {
             $elapsed = InModuleScope Maester {
                 $map = @{}
                 foreach ($i in 1..20000) {
-                    $map["user$i@contoso.com"] = "asset-$i"
-                    $map[[guid]::NewGuid().ToString()] = "asset-$i"
+                    $map["user$i@contoso.com"] = "object-$i"
+                    $map[[guid]::NewGuid().ToString()] = "object-$i"
                 }
                 $content = (1..5000 | ForEach-Object { "{""Name"":""MT.1033: user$_@contoso.com must have MFA""}" }) -join ','
                 (Measure-Command { $null = ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap $map -JsonEncoded }).TotalSeconds
@@ -880,15 +880,15 @@ Describe 'Affected objects' {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{ Tenants = @($Results) })
             }
 
-            $map['Jane Doe'] | Should -Be 'asset-user-001'
+            $map['Jane Doe'] | Should -Be 'object-user-001'
         }
 
         It 'Should redact values from plain text content' {
             $redacted = InModuleScope Maester {
-                ConvertTo-MtRedactedReportContent -Content 'Jane Doe failed the check' -ReplacementMap @{ 'Jane Doe' = 'asset-user-001' }
+                ConvertTo-MtRedactedReportContent -Content 'Jane Doe failed the check' -ReplacementMap @{ 'Jane Doe' = 'object-user-001' }
             }
 
-            $redacted | Should -Be 'asset-user-001 failed the check'
+            $redacted | Should -Be 'object-user-001 failed the check'
         }
 
         It 'Should redact values that json escaping would otherwise hide' {
@@ -896,10 +896,10 @@ Describe 'Affected objects' {
             $json = InModuleScope Maester -Parameters @{ DisplayName = $displayName } {
                 param($DisplayName)
                 $content = [PSCustomObject]@{ name = $DisplayName } | ConvertTo-Json -Compress
-                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ $DisplayName = 'asset-user-001' } -JsonEncoded
+                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ $DisplayName = 'object-user-001' } -JsonEncoded
             }
 
-            $json | Should -Be '{"name":"asset-user-001"}'
+            $json | Should -Be '{"name":"object-user-001"}'
         }
 
         It 'Should redact values next to the escapes Windows PowerShell writes for quotes and html characters' {
@@ -908,12 +908,12 @@ Describe 'Affected objects' {
             $json = InModuleScope Maester -Parameters @{ Content = $content } {
                 param($Content)
                 ConvertTo-MtRedactedReportContent -Content $Content -JsonEncoded -ReplacementMap @{
-                    'Jane Doe'         = 'asset-user-001'
-                    'jane@contoso.com' = 'asset-user-001'
+                    'Jane Doe'         = 'object-user-001'
+                    'jane@contoso.com' = 'object-user-001'
                 }
             }
 
-            $json | Should -Be '{"s":"displayName = \u0027asset-user-001\u0027, upn = \u0027asset-user-001\u0027 \u003cb\u003e"}'
+            $json | Should -Be '{"s":"displayName = \u0027object-user-001\u0027, upn = \u0027object-user-001\u0027 \u003cb\u003e"}'
         }
 
         It 'Should return the content unchanged when the map is empty' {
@@ -929,43 +929,43 @@ Describe 'Affected objects' {
             # also rename json properties and leave the report unparseable.
             $redacted = InModuleScope Maester {
                 $content = '{"Title":"Testing scope","TestResult":"Latest TestResults show Test only"}'
-                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ 'Test' = 'asset-user-001' }
+                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ 'Test' = 'object-user-001' }
             }
 
-            $redacted | Should -Be '{"Title":"Testing scope","TestResult":"Latest TestResults show asset-user-001 only"}'
+            $redacted | Should -Be '{"Title":"Testing scope","TestResult":"Latest TestResults show object-user-001 only"}'
             { $redacted | ConvertFrom-Json } | Should -Not -Throw
         }
 
         It 'Should never rename a json property that equals a display name' {
             $redacted = InModuleScope Maester {
                 $content = [PSCustomObject]@{ Severity = 'High'; Title = 'Severity of Severity' } | ConvertTo-Json -Compress
-                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ 'Severity' = 'asset-user-001' } -JsonEncoded
+                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ 'Severity' = 'object-user-001' } -JsonEncoded
             }
 
-            $redacted | Should -Be '{"Severity":"High","Title":"asset-user-001 of asset-user-001"}'
+            $redacted | Should -Be '{"Severity":"High","Title":"object-user-001 of object-user-001"}'
             ($redacted | ConvertFrom-Json).Severity | Should -Be 'High'
         }
 
         It 'Should redact json values that contain escaped quotes around a property-like text' {
             $redacted = InModuleScope Maester {
                 $content = [PSCustomObject]@{ Note = 'say "Jane Doe": hi'; Owner = 'Jane Doe' } | ConvertTo-Json -Compress
-                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ 'Jane Doe' = 'asset-user-001' } -JsonEncoded
+                ConvertTo-MtRedactedReportContent -Content $content -ReplacementMap @{ 'Jane Doe' = 'object-user-001' } -JsonEncoded
             }
 
             $parsed = $redacted | ConvertFrom-Json
-            $parsed.Note | Should -Be 'say "asset-user-001": hi'
-            $parsed.Owner | Should -Be 'asset-user-001'
+            $parsed.Note | Should -Be 'say "object-user-001": hi'
+            $parsed.Owner | Should -Be 'object-user-001'
         }
 
         It 'Should prefer the longest matching value' {
             $redacted = InModuleScope Maester {
                 ConvertTo-MtRedactedReportContent -Content 'Jane Doe Admin and Jane Doe' -ReplacementMap @{
-                    'Jane Doe'       = 'asset-a'
-                    'Jane Doe Admin' = 'asset-b'
+                    'Jane Doe'       = 'object-a'
+                    'Jane Doe Admin' = 'object-b'
                 }
             }
 
-            $redacted | Should -Be 'asset-b and asset-a'
+            $redacted | Should -Be 'object-b and object-a'
         }
     }
 }

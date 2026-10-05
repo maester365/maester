@@ -52,7 +52,7 @@ Describe 'Get-MtHtmlReport' {
             AffectedObjects = @(
                 [PSCustomObject]@{
                     System = 'EntraID'; AnchorKind = 'Instance'; Type = 'User'
-                    Id = '11111111-1111-1111-1111-111111111111'; UniqueId = 'asset-user-001'
+                    Id = '11111111-1111-1111-1111-111111111111'; UniqueId = 'object-user-001'
                     DisplayName = 'user@contoso.com'; PortalLink = 'https://example.test/11111111-1111-1111-1111-111111111111'
                     Tests = @('MT.1033.0'); Sources = @('GraphObjects')
                 }
@@ -158,7 +158,7 @@ Describe 'Get-MtHtmlReport' {
         It 'Should replace user PII with the object unique ID for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity $_
 
-            $html | Should -BeLike '*asset-user-001*'
+            $html | Should -BeLike '*object-user-001*'
             $html | Should -Not -BeLike '*user@contoso.com*'
             $html | Should -Not -BeLike '*11111111-1111-1111-1111-111111111111*'
         }
@@ -176,11 +176,11 @@ Describe 'Get-MtHtmlReport' {
 
         It 'Should redact with a supplied replacement map when the results carry no inventory' {
             $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
-            $map = @{ 'user@contoso.com' = 'asset-user-001'; '11111111-1111-1111-1111-111111111111' = 'asset-user-001' }
+            $map = @{ 'user@contoso.com' = 'object-user-001'; '11111111-1111-1111-1111-111111111111' = 'object-user-001' }
 
             $html = Get-MtHtmlReport -MaesterResults $withoutInventory -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap $map
 
-            $html | Should -BeLike '*asset-user-001*'
+            $html | Should -BeLike '*object-user-001*'
             $html | Should -Not -BeLike '*user@contoso.com*'
         }
 
@@ -189,9 +189,9 @@ Describe 'Get-MtHtmlReport' {
             $results.Tests = @($singleTenant.Tests | Select-Object -Property * -ExcludeProperty ResultDetail |
                     Select-Object *, @{ n = 'ResultDetail'; e = { [PSCustomObject]@{ TestResult = 'Owner: R&D <Lab> Admin' } } })
 
-            $html = Get-MtHtmlReport -MaesterResults $results -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{ 'R&D <Lab> Admin' = 'asset-user-002' }
+            $html = Get-MtHtmlReport -MaesterResults $results -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{ 'R&D <Lab> Admin' = 'object-user-002' }
 
-            $html | Should -BeLike '*Owner: asset-user-002*'
+            $html | Should -BeLike '*Owner: object-user-002*'
             $html | Should -Not -BeLike '*R\u0026D*'
         }
 
