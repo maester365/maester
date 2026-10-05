@@ -115,14 +115,59 @@ Describe 'Resolve-MtRunConfig' {
         { InModuleScope Maester { Resolve-MtRunConfig -Config './does-not-exist.json' } } | Should -Throw '*does not exist*'
     }
 
-    It 'Keeps the 2.x discovery rules when no explicit source is given' {
+    It 'Merges the root file and the Custom overlay when no explicit source is given' {
         $folder = Join-Path $TestDrive 'discovered'
         $null = New-Item -ItemType Directory -Path (Join-Path $folder 'Custom') -Force
         '{ "GlobalSettings": {}, "TestSettings": [ { "Id": "MT.1001", "Severity": "Low" } ] }' | Set-Content (Join-Path $folder 'maester-config.json')
         '{ "TestSettings": [ { "Id": "MT.1001", "Severity": "Critical" } ] }' | Set-Content (Join-Path $folder 'Custom/maester-config.json')
         $config = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtRunConfig -Path $Folder }
         $config.TestSettingsHash['MT.1001'].Severity | Should -Be 'Critical'
-        $config.ConfigSource | Should -Be 'maester-config.json'
+        $config.ConfigSource | Should -Be 'maester-config.json, Custom/maester-config.json'
+    }
+
+    It 'Applies a Custom row to any test ID, not only IDs the root file lists' {
+        $folder = Join-Path $TestDrive 'anyid'
+        $null = New-Item -ItemType Directory -Path (Join-Path $folder 'Custom') -Force
+        '{ "TestSettings": [] }' | Set-Content (Join-Path $folder 'maester-config.json')
+        '{ "TestSettings": [ { "Id": "CONTOSO.1", "Severity": "Low", "Enabled": false } ] }' | Set-Content (Join-Path $folder 'Custom/maester-config.json')
+        $config = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtRunConfig -Path $Folder }
+        $config.TestSettingsHash['CONTOSO.1'].Enabled | Should -BeFalse
+    }
+
+    It 'Honours a Custom config with no root file beside it' {
+        $folder = Join-Path $TestDrive 'customonly'
+        $null = New-Item -ItemType Directory -Path (Join-Path $folder 'Custom') -Force
+        '{ "GlobalSettings": { "FromCustom": 1 } }' | Set-Content (Join-Path $folder 'Custom/maester-config.json')
+        $config = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtRunConfig -Path $Folder }
+        $config.GlobalSettings.FromCustom | Should -Be 1
+        $config.ConfigSource | Should -Be 'Custom/maester-config.json'
+    }
+
+    It 'Merges the tenant file over the base files instead of replacing them, and warns about inherited settings' {
+        $folder = Join-Path $TestDrive 'tenant'
+        $tenantId = '11111111-2222-3333-4444-555555555555'
+        $null = New-Item -ItemType Directory -Path (Join-Path $folder 'Custom') -Force
+        '{ "GlobalSettings": { "EmergencyAccessAccounts": [ "a" ], "Other": "base" }, "TestSettings": [ { "Id": "MT.1001", "Severity": "Low" } ] }' | Set-Content (Join-Path $folder 'maester-config.json')
+        '{ "TestSettings": [ { "Id": "MT.1001", "Severity": "High" }, { "Id": "MT.1002", "Severity": "Low" } ] }' | Set-Content (Join-Path $folder 'Custom/maester-config.json')
+        '{ "GlobalSettings": { "Other": "tenant" }, "TestSettings": [ { "Id": "MT.1002", "Severity": "Critical" } ] }' | Set-Content (Join-Path $folder "maester-config.$tenantId.json")
+        $config = InModuleScope Maester -Parameters @{ Folder = $folder; TenantId = $tenantId } {
+            Resolve-MtRunConfig -Path $Folder -TenantId $TenantId -WarningVariable script:w -WarningAction SilentlyContinue
+            $script:w | Set-Variable -Name tenantWarnings -Scope Global
+        }
+        $config.GlobalSettings.Other | Should -Be 'tenant'
+        $config.GlobalSettings.EmergencyAccessAccounts | Should -Be @('a')
+        $config.TestSettingsHash['MT.1001'].Severity | Should -Be 'High'
+        $config.TestSettingsHash['MT.1002'].Severity | Should -Be 'Critical'
+        $config.ConfigSource | Should -Be "maester-config.json, Custom/maester-config.json, maester-config.$tenantId.json"
+        "$global:tenantWarnings" | Should -BeLike '*EmergencyAccessAccounts*'
+    }
+
+    It 'Uses the shipped defaults when no file is found' {
+        $folder = Join-Path $TestDrive 'nothing'
+        $null = New-Item -ItemType Directory -Path $folder -Force
+        $config = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtRunConfig -Path $Folder }
+        $config.ConfigSource | Should -Be 'defaults'
+        $config.TestSettingsHash['MT.1001'].Severity | Should -Not -BeNullOrEmpty
     }
 }
 

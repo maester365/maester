@@ -1,0 +1,14 @@
+{
+  "Id": "CIS",
+  "Name": "CIS Microsoft 365 Foundations Benchmark",
+  "Source": "CIS",
+  "Tags": [
+    "CIS"
+  ],
+  "IdPattern": "^CIS\\.",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "Upstream": {
+    "Name": "CIS Microsoft 365 Foundations Benchmark",
+    "Url": "https://www.cisecurity.org/benchmark/microsoft_365"
+  }
+}

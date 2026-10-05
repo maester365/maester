@@ -277,7 +277,14 @@
 
     $testIndex = 0
 
+    # Tests superseded by a built-in (stale copies of 2.x wrappers) produce no row.
+    $supersededKeys = @{}
+    if ($RunContext -and $RunContext.Superseded) {
+        foreach ($item in $RunContext.Superseded.Items) { $supersededKeys["$($item.File):$($item.Line)"] = $true }
+    }
+
     foreach ($test in $sortedTests) {
+        if ($supersededKeys.Count -gt 0 -and $test.ScriptBlock.File -and $supersededKeys.ContainsKey("$($test.ScriptBlock.File):$($test.StartLine)")) { continue }
         $testIndex++
 
         $name = $test.ExpandedName
@@ -364,6 +371,9 @@
         $annotation = Get-MtPesterRowAnnotation -Test $test -Id $testId -Result $result -ResultDetail $testResultDetail -RunContext $RunContext
         if ($annotation.ResultOverride) { $result = $annotation.ResultOverride }
         if ($annotation.IdOverride) { $testId = $annotation.IdOverride }
+        $origin = if ($RunContext -and $RunContext.FileOrigin -and $test.ScriptBlock.File -and $RunContext.FileOrigin.ContainsKey($test.ScriptBlock.File)) {
+            $RunContext.FileOrigin[$test.ScriptBlock.File]
+        } else { [PSCustomObject]@{ Source = $null; Suite = $null } }
 
         $timeSpanFormat = 'hh\:mm\:ss'
         # Individual tests usually complete in well under a second, so keep milliseconds
@@ -385,6 +395,8 @@
             Duration        = $test.Duration.ToString($testTimeSpanFormat)
             ResultDetail    = $testResultDetail
             # Additive in result schema 2.1.
+            Source          = $origin.Source
+            Suite           = $origin.Suite
             Format          = $annotation.Format
             ReasonCode      = $annotation.ReasonCode
             ReasonDetail    = $annotation.ReasonDetail
@@ -455,6 +467,10 @@
     # Assigned through a variable: an if-expression would turn an empty array into $null.
     $unknownIds = @()
     if ($RunContext -and $RunContext.Plan) { $unknownIds = @($RunContext.Plan.UnknownIds) }
+    $supersededItems = @()
+    if ($RunContext -and $RunContext.Superseded) {
+        $supersededItems = @($RunContext.Superseded.Items | ForEach-Object { [PSCustomObject]@{ Id = $_.Id; File = $_.File; MatchedBy = $_.MatchedBy } })
+    }
 
     $mtTestResults = [PSCustomObject][ordered]@{
         Result            = $PesterResults.Result
@@ -491,7 +507,7 @@
         Selection         = [PSCustomObject]@{
             BuiltIn    = if ($RunContext -and $RunContext.Selection) { $RunContext.Selection.BuiltIn } else { 'All' }
             UnknownIds = $unknownIds
-            Superseded = @()
+            Superseded = $supersededItems
         }
         Tests             = $mtTests
         Blocks            = $mtBlocks

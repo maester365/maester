@@ -12,6 +12,8 @@ Describe 'Sample' -Tag 'Sample' {
     It 'FAM.1.<_>: family' -ForEach @('a', 'b', 'c') { $true | Should -BeTrue }
 }
 '@ | Set-Content (Join-Path $script:folder 'Sample.Tests.ps1')
+    # A stale copy of a 2.x built-in wrapper: never run, no row.
+    "Describe 'Maester/Entra' { It 'MT.1001: copy of a built-in' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:folder 'Stale.Tests.ps1')
 
     # Invoke-Maester calls Invoke-Pester, so the runs happen in a child process: all of them in one, for speed.
     $script:scenarios = [ordered]@{
@@ -26,13 +28,20 @@ Describe 'Sample' -Tag 'Sample' {
         Metadata        = "-Config @{ Metadata = @{ RunId = 'run-42' } }"
         DryRunExclude   = "-DryRun -ExcludeTestId 'S.1002'"
         DryRun          = '-DryRun'
+        # These run the built-in tests too (no -SkipBuiltIn).
+        WithBuiltIn     = 'BUILTIN -TestId S.1001, MT.1001, MT.1002'
+        MissingPath     = 'BUILTIN MISSINGPATH -TestId MT.1001'
     }
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add("`$ErrorActionPreference = 'Continue'")
     $lines.Add("Import-Module '$script:manifest' -WarningAction SilentlyContinue")
     foreach ($name in $script:scenarios.Keys) {
         $out = Join-Path $TestDrive "$name.json"
-        $lines.Add("try { `$null = Invoke-Maester -Path '$script:folder' -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -OutputJsonFile '$out' -WarningAction SilentlyContinue -ErrorAction SilentlyContinue $($script:scenarios[$name]) } catch { }")
+        $arguments = $script:scenarios[$name]
+        $skip = if ($arguments -like 'BUILTIN*') { '' } else { '-SkipBuiltIn' }
+        $path = if ($arguments -like '*MISSINGPATH*') { Join-Path $TestDrive 'does-not-exist' } else { $script:folder }
+        $arguments = $arguments -replace '^BUILTIN ', '' -replace '^MISSINGPATH ', ''
+        $lines.Add("try { `$null = Invoke-Maester -Path '$path' $skip -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -OutputJsonFile '$out' -WarningAction SilentlyContinue -ErrorAction SilentlyContinue $arguments } catch { }")
     }
     $null = pwsh -NoProfile -NonInteractive -Command ($lines -join [Environment]::NewLine) 2>&1
 
@@ -55,7 +64,7 @@ Describe 'Invoke-Maester selection (Pester provider)' {
         It 'Writes result schema 2.1 with the additive fields' {
             $r.SchemaVersion | Should -Be '2.1'
             $r.CatalogVersion | Should -Not -BeNullOrEmpty
-            $r.Selection.BuiltIn | Should -Be 'All'
+            $r.Selection.BuiltIn | Should -Be 'None'
             @($r.Selection.UnknownIds).Count | Should -Be 0
             (Get-Row $r 'S.1001').Format | Should -Be 'Pester'
         }
@@ -150,6 +159,39 @@ Describe 'Invoke-Maester selection (Pester provider)' {
             $r = Invoke-MaesterRun 'DryRun'
             $family = @($r.Tests | Where-Object ParentId -EQ 'FAM.1')
             $family.Id | Select-Object -Unique | Should -Be 'FAM.1'
+        }
+    }
+
+    Context 'Built-in tests and custom tests (M2)' {
+        It 'Runs built-in tests from the module next to the custom tests' {
+            $r = Invoke-MaesterRun 'WithBuiltIn'
+            (Get-Row $r 'S.1001').Result | Should -Be 'Passed'
+            $builtIn = Get-Row $r 'MT.1002'
+            $builtIn | Should -Not -BeNullOrEmpty
+            $builtIn.Source | Should -Be 'Maester'
+            $builtIn.Suite | Should -Be 'Maester'
+            (Get-Row $r 'S.1001').Source | Should -Be 'Custom'
+            $r.Selection.BuiltIn | Should -Be 'All'
+        }
+
+        It 'Does not run or report a stale copy of a built-in test' {
+            $r = Invoke-MaesterRun 'WithBuiltIn'
+            @($r.Tests | Where-Object Id -EQ 'MT.1001') | Should -HaveCount 1
+            (Get-Row $r 'MT.1001').ScriptBlockFile | Should -Not -BeLike '*Stale.Tests.ps1'
+            $r.Selection.Superseded.Id | Should -Contain 'MT.1001'
+        }
+
+        It 'Supersedes stale copies with -SkipBuiltIn too' {
+            $r = Invoke-MaesterRun 'Default'
+            Get-Row $r 'MT.1001' | Should -BeNullOrEmpty
+            $r.Selection.BuiltIn | Should -Be 'None'
+            @($r.Tests | Where-Object Source -NE 'Custom') | Should -HaveCount 0
+        }
+
+        It 'Still runs the built-in tests when -Path does not exist' {
+            $r = Invoke-MaesterRun 'MissingPath'
+            $r | Should -Not -BeNullOrEmpty
+            (Get-Row $r 'MT.1001') | Should -Not -BeNullOrEmpty
         }
     }
 }

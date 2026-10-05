@@ -2,9 +2,11 @@
     It 'requests preview scopes when the selected tags can run preview tests: <Case>' -TestCases @(
         @{ Case = 'Preview switch'; Parameters = @{ IncludePreview = $true }; Expected = $true }
         @{ Case = 'specific tag'; Parameters = @{ Tag = 'Entra' }; Expected = $true }
+        @{ Case = 'All tag'; Parameters = @{ Tag = 'All' }; Expected = $true }
         @{
-            Case = 'All tag'; Parameters = @{ Tag = 'All'; ExcludeTag = 'Preview' }
-            Expected = $true
+            # 3.0: 'All' is an alias of -IncludePreview, and an explicit -ExcludeTag wins over it.
+            Case = 'All tag with explicit exclusion'; Parameters = @{ Tag = 'All'; ExcludeTag = 'Preview' }
+            Expected = $false
         }
         @{ Case = 'default selection'; Parameters = @{}; Expected = $false }
         @{
@@ -53,6 +55,7 @@
             OutputFolderFileName = "TestResults"
             ExcludeTag           = "testtag"
             NoLogo               = $true
+            SkipBuiltIn          = $true
         }
         $Result = Invoke-Maester @maesterParams
         # Dynamically calculate expected counts from smoke test files

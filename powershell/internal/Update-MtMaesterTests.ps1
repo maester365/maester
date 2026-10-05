@@ -1,88 +1,90 @@
 ﻿function Update-MtMaesterTests {
+    <#
+    .SYNOPSIS
+    Removes the stale copies of built-in tests from a folder (used by Update-MaesterTests).
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
+    [OutputType([pscustomobject])]
     param(
-        # The path to install the Maester tests to, defaults to the current directory.
+        # The folder to clean up.
         [Parameter(Mandatory = $true)]
-        [string] $Path,
-
-        # Defaults to update, used to show the correct message as 'installed' or 'updated'.
-        [Parameter(Mandatory = $false)]
-        [switch] $Install,
-
-        # Switch to control the toggling off of the "Are you sure?" prompt
-        [Parameter(Mandatory = $false)]
-        [switch] $Force
+        [string] $Path
     )
 
-    $MaesterTestsPath = Get-MtMaesterTestFolderPath
-    if (-not (Test-Path -Path $MaesterTestsPath -PathType Container)) {
-        Write-Error "Maester tests not found at $MaesterTestsPath"
+    if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
+        Write-Error "The folder '$Path' does not exist."
         return
     }
+    $Path = (Resolve-Path -LiteralPath $Path).Path
 
-    $MaesterTests = (Get-ChildItem -Path $MaesterTestsPath -Exclude 'Custom').Name
+    $builtInRoot = Get-MtMaesterTestFolderPath
+    $builtInFiles = @(Get-MtBuiltInPesterFile -BuiltInRoot $builtInRoot)
+    $builtInInventory = if ($builtInFiles.Count -gt 0) { @(Get-MtPesterFileInventory -Path $builtInFiles) } else { @() }
+    $resolvedBuiltInRoot = if (Test-Path -LiteralPath $builtInRoot) { (Resolve-Path -LiteralPath $builtInRoot).Path } else { $builtInRoot }
 
-    $targetFolderExists = (Test-Path -Path $Path -PathType Container)
-    if (-not $targetFolderExists) {
-        Write-Verbose "Creating directory $([System.IO.Path]::GetFullPath($Path))"
-        try {
-            New-Item -Path $Path -ItemType Directory | Out-Null
-        } catch {
-            Write-Error "Unable to create directory $([System.IO.Path]::GetFullPath($Path))"
-            Write-Verbose $_
-            return
+    $candidates = @(Get-ChildItem -LiteralPath $Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch '[\\/][Cc]ustom[\\/]' -and -not $_.FullName.StartsWith($resolvedBuiltInRoot, [System.StringComparison]::OrdinalIgnoreCase) } |
+            ForEach-Object { $_.FullName })
+    $removed = [System.Collections.Generic.List[string]]::new()
+    if ($candidates.Count -gt 0) {
+        $inventory = @(Get-MtPesterFileInventory -Path $candidates)
+        $superseded = Get-MtSupersededTest -CustomInventory $inventory -BuiltInInventory $builtInInventory
+        foreach ($file in $superseded.ExcludeFiles) {
+            if ($PSCmdlet.ShouldProcess($file, 'Remove copy of a built-in Maester test')) {
+                Remove-Item -LiteralPath $file -Force
+                $removed.Add($file)
+            }
+        }
+        $partial = @($superseded.Items | Where-Object { $_.File -notin $superseded.ExcludeFiles } | ForEach-Object { $_.File } | Select-Object -Unique)
+        foreach ($file in $partial) {
+            Write-Warning "Kept '$file': it has tests of your own as well as copies of built-in tests. The copies are not run."
         }
     }
 
-    $installOrUpdate = if ($Install) { 'installed' } else { 'updated' }
-
-    if ($targetFolderExists) {
-        # Check if the folder already exists and prompt user to confirm overwrite.
-        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object { $_.Name -in $($MaesterTests) }
-
-        if ($itemsToDelete.Count -gt 0) {
-            $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
-            $itemsToDelete | ForEach-Object { $message += "  $($_.FullName)`n" }
-
-            # Display prompt unless Force has been explicitly set
-            if (!$Force) {
-                $message += 'Do you want to continue? (y/n): '
-                $continue = Get-MtConfirmation $message
+    # Folders the removal left empty.
+    if ($removed.Count -gt 0) {
+        $folders = @($removed | ForEach-Object { Split-Path $_ -Parent } | Select-Object -Unique | Sort-Object { $_.Length } -Descending)
+        foreach ($folder in $folders) {
+            $current = $folder
+            while ($current -and $current.Length -gt $Path.Length -and (Test-Path -LiteralPath $current) -and -not (Get-ChildItem -LiteralPath $current -Force)) {
+                if ($PSCmdlet.ShouldProcess($current, 'Remove empty folder')) { Remove-Item -LiteralPath $current -Force }
+                $current = Split-Path $current -Parent
             }
+        }
+    }
 
-            # Continue if either user has accepted prompt, or Force has been explicitly set
-            if ($continue -or $Force) {
-                foreach ($item in $itemsToDelete) {
-                    if ($item.Attributes -ne 'Directory') {
-                        Remove-Item -Path $item.FullName -Force
-                    } else {
-                        Remove-Item -Path $item.FullName -Recurse -Force
-                    }
+    # A copy of the config file Maester 2.x shipped: keep only what differs from the defaults.
+    $configFile = Join-Path $Path 'maester-config.json'
+    $reducedRows = $null
+    if (Test-Path -LiteralPath $configFile) {
+        $config = ConvertTo-MtConfigLayer -InputObject $configFile
+        $rows = @($config.TestSettings)
+        if ($rows.Count -ge 300 -and -not ($rows | Where-Object { $_ -and -not $_.PSObject.Properties['Title'] })) {
+            $defaults = @{}
+            foreach ($d in @((Get-MtShippedMaesterConfig).TestSettings)) { if ($d.Id) { $defaults[[string]$d.Id] = $d } }
+            $kept = @($rows | Where-Object {
+                    $default = $defaults[[string]$_.Id]
+                    -not $default -or $_.Severity -ne $default.Severity -or ($_.PSObject.Properties.Name | Where-Object { $_ -notin 'Id', 'Title', 'Severity' })
+                } | ForEach-Object {
+                    $row = [ordered]@{ Id = $_.Id }
+                    foreach ($p in $_.PSObject.Properties) { if ($p.Name -notin 'Id', 'Title') { $row[$p.Name] = $p.Value } }
+                    [pscustomobject]$row
+                })
+            if ($PSCmdlet.ShouldProcess($configFile, "Reduce to the $($kept.Count) of $($rows.Count) test settings that differ from the defaults")) {
+                $newConfig = [ordered]@{}
+                foreach ($p in $config.PSObject.Properties) {
+                    if ($p.Name -in 'ModuleVersion', 'ConfigVersion') { continue }
+                    $newConfig[$p.Name] = if ($p.Name -eq 'TestSettings') { $kept } else { $p.Value }
                 }
-            } else {
-                Write-Host "Maester tests not $installOrUpdate." -ForegroundColor Red
-                return
+                $newConfig | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $configFile -Encoding UTF8
+                $reducedRows = $kept.Count
             }
         }
     }
 
-    try {
-        Write-Verbose "Copying Maester tests from $MaesterTestsPath/* to $Path"
-        Copy-Item -Path $MaesterTestsPath/* -Destination $Path -Recurse -Force
-    } catch {
-        Write-Error "Unable to copy the Maester tests to $Path."
-        Write-Verbose $_
-        return
-    }
-
-    $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
-    #if (Get-MgContext) { #ToAdjust: Issue with -SkipGraphConnect
-    if (Test-MtConnection Graph) {
-        $message = 'Run Invoke-Maester to start testing.'
-    }
-
-    Write-Host "Maester tests $installOrUpdate successfully!`n$message" -ForegroundColor Green
+    Write-Host "Removed $($removed.Count) copies of built-in tests from $Path." -ForegroundColor Green
+    if ($null -ne $reducedRows) { Write-Host "Reduced maester-config.json to the $reducedRows test settings that differ from the defaults." -ForegroundColor Green }
+    [pscustomobject]@{ RemovedFiles = $removed.ToArray(); ConfigRowsKept = $reducedRows }
 }

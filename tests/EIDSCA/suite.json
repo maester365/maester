@@ -1,0 +1,14 @@
+{
+  "Id": "EIDSCA",
+  "Name": "Entra ID Security Config Analyzer",
+  "Source": "EIDSCA",
+  "Tags": [
+    "EIDSCA"
+  ],
+  "IdPattern": "^EIDSCA\\.",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "Upstream": {
+    "Name": "EIDSCA",
+    "Url": "https://github.com/Cloud-Architekt/AzureAD-Attack-Defense"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "Id": "Maester",
+  "Name": "Maester",
+  "Source": "Maester",
+  "Tags": [],
+  "IdPattern": "^(MT\\.|MT1060\\.|AZDO\\.)",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}"
+}

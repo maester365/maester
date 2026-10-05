@@ -65,10 +65,13 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         $entry.ResultTags | Should -Not -Contain 'CA'
     }
 
-    It 'freezes the selection quirks: -Tag All and -Tag Full select nothing, PesterConfiguration ExcludeTag is discarded' {
-        ($script:selection.Cases | Where-Object Name -EQ 'Tag All').SelectedCount | Should -Be 0
-        ($script:selection.Cases | Where-Object Name -EQ 'Tag Full').SelectedCount | Should -Be 0
-        $pcCase = $script:selection.Cases | Where-Object Name -EQ 'PesterConfiguration Filter.ExcludeTag EIDSCA'
-        $pcCase.Filter.ExcludeTag | Should -Not -Contain 'EIDSCA'
+    It 'records the 3.0 selection fixes: -Tag All and -Tag Full are the include switches, PesterConfiguration ExcludeTag is honoured' {
+        # 2.x selected nothing for 'All' and 'Full' and discarded a caller's Filter.ExcludeTag (design section 7.1).
+        $cases = @{}
+        foreach ($c in $script:selection.Cases) { $cases[$c.Name] = $c }
+        $cases['Tag All'].SelectedCount | Should -Be $cases['IncludePreview'].SelectedCount
+        $cases['Tag Full'].SelectedCount | Should -Be $cases['IncludeLongRunning'].SelectedCount
+        $cases['PesterConfiguration Filter.ExcludeTag EIDSCA'].Filter.ExcludeTag | Should -Contain 'EIDSCA'
+        $cases['PesterConfiguration Filter.ExcludeTag EIDSCA'].SelectedCount | Should -Be $cases['ExcludeTag EIDSCA'].SelectedCount
     }
 }

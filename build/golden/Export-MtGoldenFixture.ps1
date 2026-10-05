@@ -522,6 +522,12 @@ try {
 
         # Map the captured Run.Path ('.' or './tests/...', relative to the user folder) onto the repo's tests/ folder.
         $scopes = foreach ($p in $runPath) {
+            # 3.0 also passes the custom root (here the temporary user folder); it holds no built-in test.
+            if ([System.IO.Path]::IsPathRooted($p) -and [System.IO.Path]::GetFullPath($p).StartsWith([System.IO.Path]::GetFullPath($workDir), [System.StringComparison]::OrdinalIgnoreCase)) { continue }
+            # 3.0 passes the module's built-in root as an absolute path; map it back onto the repo.
+            if ([System.IO.Path]::IsPathRooted($p) -and $p.StartsWith($RepoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+                $p = $p.Substring($RepoRoot.Length).TrimStart([char]92, [char]47)
+            }
             $rel = ($p -replace '\\', '/') -replace '^\./', ''
             if ($rel -in '.', '', 'tests') { 'tests/' } elseif ($rel -like 'tests/*') { $rel.TrimEnd('/') + '/' } else { throw "Unexpected Run.Path '$p'" }
         }
@@ -555,7 +561,8 @@ try {
             Tag        = $filterTag
             ExcludeTag = $filterExcludeTag
         }
-        $result.RunPath = $runPath
+        # Repo-relative scopes, so the file does not depend on where the repository is checked out.
+        $result.RunPath = @($scopes)
         $selectedIdSet = @(Get-UniqueTagSet $selectedIds)
         $result.SelectedCount = $selectedIdSet.Count
         $result.SelectedFamilies = @(Get-UniqueTagSet $selectedFamilies)

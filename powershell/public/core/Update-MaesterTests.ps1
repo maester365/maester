@@ -1,45 +1,51 @@
 ﻿function Update-MaesterTests {
     <#
     .SYNOPSIS
-    Updates the specified folder with the latest ready-made Maester tests built by the Maester team.
+    Removes copies of the built-in Maester tests from a folder.
 
     .DESCRIPTION
-    The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
+    From Maester 3.0 the tests that ship with Maester run from the module itself. Copies of them that
+    Install-MaesterTests wrote in Maester 2.x are not run any more. Update-MaesterTests removes those
+    copies: every *.Tests.ps1 file outside a Custom folder whose tests all have the ID of a current,
+    previous or retired built-in test. Files with any other test, and everything under Custom/, are kept.
 
-    The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
+    A maester-config.json that is a copy of the file Maester 2.x shipped is reduced to the settings
+    that differ from the built-in defaults.
 
     .PARAMETER Path
-    The path to install or update the Maester tests in.
+    The folder to clean up. Defaults to the current directory.
+
+    .PARAMETER Force
+    Does not ask for confirmation.
 
     .EXAMPLE
-    Update-MaesterTests -Path .\maester-tests
+    Update-MaesterTests -Path ./maester-tests -WhatIf
 
-    Installs or updates the latest Maester tests in the specified directory.
+    Lists the files that would be removed.
 
     .EXAMPLE
-    Update-MaesterTests -Path .\
+    Update-MaesterTests -Path ./maester-tests -Force
 
-    Install the latest set of Maester tests in the current directory.
+    Removes the copies without asking.
 
     .LINK
     https://maester.dev/docs/commands/Update-MaesterTests
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
-    [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Kept for compatibility with Maester 2.x')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param(
-        # The path to install or update Maester tests in. Defaults to the current directory.
+        # The folder to clean up. Defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = '.\',
+        [string] $Path = '.',
 
-        # Switch to control the toggling off of the "Are you sure?" prompt
+        # Do not ask for confirmation.
         [Parameter(Mandatory = $false)]
         [switch] $Force
     )
+
     Write-Verbose 'Checking if newer version is available.'
     Get-IsNewMaesterVersionAvailable | Out-Null
 
-    Write-Verbose "Updating Maester tests in '$Path'."
-    Update-MtMaesterTests -Path $Path -Force:$Force
+    if ($Force -and -not $PSBoundParameters.ContainsKey('Confirm')) { $ConfirmPreference = 'None' }
+    Update-MtMaesterTests -Path $Path
 }

@@ -68,8 +68,9 @@ $ExpectedItems = @(
     'Maester.Format.ps1xml'
     'assets'
     'lib/Maester.Engine.dll'
-    'maester-tests'
-    'maester-tests/Custom'
+    'builtin-pester'
+    'builtin-pester/maester-config.json'
+    'assets/templates/Custom/README.md'
 )
 
 foreach ($Item in $ExpectedItems) {

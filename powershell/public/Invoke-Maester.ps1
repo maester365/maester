@@ -272,7 +272,10 @@
 
         # Work out which tests would run, and why the others would not, without running any test.
         # Each test that would have run is reported as NotRun with reason DryRun.
-        [switch] $DryRun
+        [switch] $DryRun,
+
+        # Run only the custom tests under -Path. The tests that ship with Maester always run otherwise.
+        [switch] $SkipBuiltIn
     )
 
     function GetDefaultFileName() {
@@ -345,20 +348,21 @@
         return $result
     }
 
-    function GetPesterConfiguration($Path, $Tag, $ExcludeTag, $PesterConfiguration) {
+    function GetPesterConfiguration($RunPath, $ExcludePath, $Tag, $ExcludeTag, $PesterConfiguration) {
         if (!$PesterConfiguration) {
             $PesterConfiguration = New-PesterConfiguration
         }
 
         $PesterConfiguration.Run.PassThru = $true
         $PesterConfiguration.Output.Verbosity = $Verbosity
-        if ($Path) { $PesterConfiguration.Run.Path = $Path }
-        else {
-            if (Test-Path -Path './powershell/tests/pester.ps1') {
-                # Internal dev, exclude Maester's core tests
-                $PesterConfiguration.Run.Path = './tests'
-            }
+        $PesterConfiguration.Run.Path = @($RunPath)
+        if ($ExcludePath) {
+            # Appended, never replaced: a caller's Run.ExcludePath still applies.
+            $PesterConfiguration.Run.ExcludePath = @(@($PesterConfiguration.Run.ExcludePath.Value) + $ExcludePath | Where-Object { $_ })
         }
+        # Pester 6 options that would lose Maester's result details or fail discovery of an empty -ForEach.
+        if ($PesterConfiguration.Run.PSObject.Properties['Parallel']) { $PesterConfiguration.Run.Parallel = $false }
+        if ($PesterConfiguration.Run.PSObject.Properties['FailOnNullOrEmptyForEach']) { $PesterConfiguration.Run.FailOnNullOrEmptyForEach = $false }
         if ($Tag) { $PesterConfiguration.Filter.Tag = $Tag }
         if ($ExcludeTag) { $PesterConfiguration.Filter.ExcludeTag = $ExcludeTag }
 
@@ -396,25 +400,66 @@
         Write-Telemetry -EventName InvokeMaester
     }
 
+    Write-MtOlderVersionWarning
+
+    # PesterConfiguration.Run.Path is used as -Path when -Path is not given, as in 2.x.
+    if (-not $Path -and $PesterConfiguration -and $PesterConfiguration.Run.Path.Value -and @($PesterConfiguration.Run.Path.Value)[0] -ne '.') {
+        $Path = @($PesterConfiguration.Run.Path.Value)[0]
+    }
+
+    # Where the tests come from: the built-in suites from the module, and custom tests under -Path.
+    $testSource = Resolve-MtTestSource -Path $Path -SkipBuiltIn:$SkipBuiltIn
+
     # Stage 1 (first pass): resolve the run config without the tenant-specific file, so that its
     # Selection section takes part in the tag rules below. The second pass runs once connected.
-    $configSearchPath = if ($Path) { $Path }
-    elseif ($PesterConfiguration -and $PesterConfiguration.Run.Path.Value -and @($PesterConfiguration.Run.Path.Value)[0] -ne '.') { @($PesterConfiguration.Run.Path.Value)[0] }
-    elseif (Test-Path -Path './powershell/tests/pester.ps1') { './tests' }
-    else { '.' }
     try {
-        $runConfig = Resolve-MtRunConfig -Path $configSearchPath -Config $Config -WarningAction SilentlyContinue
+        $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -Config $Config -WarningAction SilentlyContinue
     } catch {
         Write-Error -Message $_.Exception.Message
         return
     }
+    if (-not $SkipBuiltIn -and $runConfig.Selection.BuiltIn -eq 'None') {
+        $SkipBuiltIn = [switch]$true
+        $testSource = Resolve-MtTestSource -Path $Path -SkipBuiltIn
+    }
+    if ($testSource.Error) {
+        Write-Error -Message $testSource.Error
+        return
+    }
+    foreach ($message in $testSource.Messages) {
+        if ($message.Level -eq 'Warning') { Write-Warning $message.Text }
+        elseif (-not $NonInteractive.IsPresent) { Write-Information $message.Text -InformationAction Continue }
+    }
+
+    # A caller's PesterConfiguration filter takes part in selection: Filter.Tag is the include set when
+    # -Tag is not given, and Filter.ExcludeTag adds to the exclusions instead of being overwritten.
+    if (-not $Tag -and $PesterConfiguration -and @($PesterConfiguration.Filter.Tag.Value | Where-Object { $_ }).Count -gt 0) {
+        $Tag = @($PesterConfiguration.Filter.Tag.Value | Where-Object { $_ })
+    }
+    if ($PesterConfiguration) {
+        $ExcludeTag = @(@($ExcludeTag) + @($PesterConfiguration.Filter.ExcludeTag.Value) | Where-Object { $_ } | Select-Object -Unique)
+    }
+
     $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
         -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
+    if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
     $Tag = $selection.Tag
     $ExcludeTag = $selection.ExcludeTag
     $IncludePreview = [switch]$selection.IncludePreview
     $IncludeLongRunning = [switch]$selection.IncludeLongRunning
     $autoExcludedTag = [System.Collections.Generic.List[string]]::new()
+
+    # The deprecated 'All' and 'Full' tags are aliases of -IncludePreview and -IncludeLongRunning.
+    # No test carries them, so in 2.x they selected nothing.
+    $DeprecatedTags = @('All', 'Full')
+    $UsedDeprecatedTags = $DeprecatedTags | Where-Object { $Tag -contains $_ -or $ExcludeTag -contains $_ }
+    if ($UsedDeprecatedTags) {
+        Write-Warning "The 'All' and 'Full' tags are deprecated and will be removed in a future release. Use -IncludePreview instead of 'All' and -IncludeLongRunning instead of 'Full'."
+    }
+    if ('All' -in $Tag) { $IncludePreview = [switch]$true; $selection.IncludePreview = $true }
+    if ('Full' -in $Tag) { $IncludeLongRunning = [switch]$true; $selection.IncludeLongRunning = $true }
+    $Tag = @($Tag | Where-Object { $_ -notin $DeprecatedTags })
+    $selection.Tag = $Tag
 
     $isMail = $null -ne $MailRecipient
 
@@ -427,15 +472,6 @@
         $ExcludeTag += 'Preview'
         $autoExcludedTag.Add('Preview')
         Write-Verbose 'Excluding Preview tests. Use -IncludePreview to include them.'
-    }
-
-    # Include Preview when the deprecated All tag is specified.
-    if ('All' -in $Tag) {
-        Write-Verbose (
-            'Including preview tests. Please use -IncludePreview instead of the ' +
-            'deprecated ''All'' tag.'
-        )
-        $ExcludeTag = $ExcludeTag | Where-Object { $_ -ne 'Preview' }
     }
 
     $EffectiveIncludePreview = 'Preview' -notin @($ExcludeTag)
@@ -486,20 +522,17 @@
         Write-Verbose 'Excluding LongRunning tests. Use -IncludeLongRunning to include them.'
     }
 
-    # Include tests tagged as "LongRunning" if "Full" is included in the Tag parameter. Included for backward compatibility with deprecated tags.
-    if ('Full' -in $Tag) {
-        Write-Verbose 'Including long-running tests. Please use -IncludeLongRunning instead of the deprecated ''Full'' tag.'
-        $ExcludeTag = $ExcludeTag | Where-Object { $_ -ne 'LongRunning' }
-    }
+    $pesterRunPath = @()
+    if ($testSource.BuiltInFiles.Count -gt 0) { $pesterRunPath += $testSource.BuiltInRoot }
+    if ($testSource.CustomFiles.Count -gt 0) { $pesterRunPath += $testSource.CustomRoot }
+    $pesterRunPath = @(Get-MtOutermostPath -Path $pesterRunPath)
+    $wantedFiles = [System.Collections.Generic.HashSet[string]]::new([string[]]@($testSource.BuiltInFiles + $testSource.CustomFiles), [System.StringComparer]::OrdinalIgnoreCase)
+    $pesterExcludePath = @(foreach ($root in $pesterRunPath) {
+            Get-ChildItem -LiteralPath $root -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
+                ForEach-Object { $_.FullName } | Where-Object { -not $wantedFiles.Contains($_) }
+        })
 
-    # Warn about deprecated tag usage.
-    $DeprecatedTags = @('All', 'Full')
-    $UsedDeprecatedTags = $DeprecatedTags | Where-Object { $Tag -contains $_ -or $ExcludeTag -contains $_ }
-    if ($UsedDeprecatedTags) {
-        Write-Warning "The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead: `n`nLongRunning: Tests that can take a long time to run when the tenant has a large number of objects. Replaces 'Full'.`nPreview: Tests that are still being tested or are dependent on preview APIs. Replaces 'All'."
-    }
-
-    $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    $pesterConfig = GetPesterConfiguration -RunPath $pesterRunPath -ExcludePath $pesterExcludePath -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
 
     # Active Directory tests are always opt-in. Supplying -Tag AD alone is not sufficient;
     # the connection must have been explicitly validated by Connect-Maester first.
@@ -512,41 +545,7 @@
         Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
     }
 
-    $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
-
-    if ( Test-Path -Path $Path -PathType Leaf ) {
-        if ($NonInteractive.IsPresent) {
-            Write-Error -Message "The path '$Path' is a file. Please provide a folder path."
-        } else {
-            Write-Host "The path '$Path' is a file. Please provide a folder path." -ForegroundColor Red
-            Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
-            Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
-        }
-        return
-    }
-
-    if ( -not ( Test-Path -Path $Path -PathType Container ) ) {
-        if ($NonInteractive.IsPresent) {
-            Write-Error -Message "The path '$Path' does not exist."
-        } else {
-            Write-Host "The path '$Path' does not exist." -ForegroundColor Red
-            Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
-            Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
-        }
-        return
-    }
-
-    if ( -not ( Get-ChildItem -Path "$Path\*.Tests.ps1" -Recurse ) ) {
-        if ($NonInteractive.IsPresent) {
-            Write-Error -Message "No test files found in the path '$Path'."
-        } else {
-            Write-Host "No test files found in the path '$Path'." -ForegroundColor Red
-            Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
-            Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
-        }
-        return
-    }
 
     # If DriftRoot is specified, set the environment variable for drift tests.
     if ($DriftRoot) {
@@ -567,7 +566,7 @@
 
     Set-MtProgressView
     Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
-    Write-Verbose "Reading Maester config from: $Path"
+    Write-Verbose "Reading Maester config from: $($testSource.ConfigSearchPath)"
     # Resolve tenant ID for tenant-specific config lookup (maester-config.{tenantId}.json)
     $configTenantId = $null
     if (Test-MtConnection Graph) {
@@ -575,9 +574,42 @@
     }
     if ($null -eq $Config -and [string]::IsNullOrWhiteSpace($env:MAESTER_CONFIG)) {
         # Second pass: the discovered files, now including maester-config.<tenantId>.json.
-        $runConfig = Resolve-MtRunConfig -Path $Path -TenantId $configTenantId
+        $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -TenantId $configTenantId
     }
     $__MtSession.MaesterConfig = $runConfig
+
+    # Where each row came from (Source and Suite, design appendix A.6).
+    $originCache = @{}
+    $fileOrigin = @{}
+    foreach ($f in $testSource.BuiltInFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $testSource.BuiltInRoot -BuiltIn -Cache $originCache }
+    foreach ($f in $testSource.CustomFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $testSource.CustomRoot -Cache $originCache }
+
+    # Stale copies of 2.x built-in wrappers under the custom root are not run (design section 8).
+    $builtInInventory = $null
+    $customInventory = @()
+    $superseded = $null
+    if ($testSource.CustomFiles.Count -gt 0) {
+        Write-MtProgress -Activity 'Starting Maester' -Status 'Checking custom tests...' -Force
+        $builtInInventory = @(Get-MtPesterFileInventory -Path @(Get-MtBuiltInPesterFile -BuiltInRoot $testSource.BuiltInRoot))
+        $customInventory = @(Get-MtPesterFileInventory -Path $testSource.CustomFiles)
+        $superseded = Get-MtSupersededTest -CustomInventory $customInventory -BuiltInInventory $builtInInventory
+        if ($superseded.ExcludeFiles.Count -gt 0) {
+            $pesterConfig.Run.ExcludePath = @(@($pesterConfig.Run.ExcludePath.Value) + $superseded.ExcludeFiles | Where-Object { $_ })
+        }
+        if ($superseded.ExcludeLines.Count -gt 0) {
+            $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + $superseded.ExcludeLines | Where-Object { $_ })
+        }
+        if ($superseded.Items.Count -gt 0) {
+            $files = @($superseded.Items | ForEach-Object { $_.File } | Select-Object -Unique)
+            $shown = @($files | Select-Object -First 5) -join ', '
+            $more = if ($files.Count -gt 5) { " and $($files.Count - 5) more" } else { '' }
+            Write-Warning ("$($superseded.Items.Count) test(s) in $($files.Count) file(s) are copies of tests that now ship with Maester and were not run " +
+                "($shown$more). The tests that ship with Maester run from the module. Run Update-MaesterTests -Path '$($testSource.CustomRoot)' to remove the copies.")
+        }
+        $supersededKeys = @{}
+        foreach ($i in $superseded.Items) { $supersededKeys["$($i.File):$($i.Line)"] = $true }
+        $customInventory = @($customInventory | Where-Object { -not $supersededKeys.ContainsKey("$($_.File):$($_.Line)") })
+    }
 
     # Stage 5: ID-based selection and config admission. Pester selects by tag only, so tests that
     # these rules deselect are excluded by line and reported as NotRun with a reason.
@@ -586,7 +618,8 @@
         $selection.DefaultAction -eq 'Skip' -or (@($runConfig.TestSettings) | Where-Object { $_ -and $_.PSObject.Properties['Enabled'] })
     if ($needsIdSelection) {
         Write-MtProgress -Activity 'Starting Maester' -Status 'Selecting tests by ID...' -Force
-        $inventory = @(Get-MtPesterFileInventory -Path $Path)
+        if ($null -eq $builtInInventory) { $builtInInventory = if ($testSource.BuiltInFiles.Count -gt 0) { @(Get-MtPesterFileInventory -Path $testSource.BuiltInFiles) } else { @() } }
+        $inventory = @($builtInInventory | Where-Object { $_.File -in $testSource.BuiltInFiles }) + $customInventory
         $plan = Get-MtPesterSelectionPlan -Inventory $inventory -Selection $selection -RunConfig $runConfig
         if ($plan.ExcludeLines.Count -gt 0) {
             $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + $plan.ExcludeLines | Where-Object { $_ })
@@ -617,6 +650,8 @@
         IncludeTag      = @($pesterConfig.Filter.Tag.Value | Where-Object { $_ })
         ExcludeTag      = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ })
         AutoExcludedTag = @($autoExcludedTag)
+        FileOrigin      = $fileOrigin
+        Superseded      = $superseded
         TenantContext   = [PSCustomObject]@{
             TenantId    = $configTenantId
             Environment = if (Test-MtConnection Graph) { (Get-MgContext).Environment } else { $null }
@@ -633,6 +668,7 @@
     } finally {
         $__MtSession.IncludeAffectedObjects = $false
     }
+    $null = Remove-MtForeignModule
 
     if ($pesterResults) {
 

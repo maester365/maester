@@ -709,14 +709,19 @@ Update-ModuleManifest -Path $OutputManifest `
 Write-Host "   FunctionsToExport: $($ExportFunctionList.Count) functions"
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Phase G — Copy tests as-is and preserve Pester file boundaries
+# Phase G — Copy the built-in Pester test suites, preserving Pester file boundaries
 # ──────────────────────────────────────────────────────────────────────────────
+# Built-in tests run from the module (Maester 3.0 design, section 7.2). Suites that are not yet
+# migrated to the native format ship as Pester files in builtin-pester/. The Custom folder is the
+# user's and is not shipped; Install-MaesterTests writes its README from assets/templates.
 
-Write-Host '── Phase G: Copying test suites' -ForegroundColor Cyan
+Write-Host '── Phase G: Copying built-in test suites' -ForegroundColor Cyan
 
-$TestsOutput = Join-Path $OutputRoot 'maester-tests'
-Copy-Item -Path $TestsRoot -Destination $TestsOutput -Recurse -Force
-Write-Host '   Copied: tests/ → maester-tests/'
+$TestsOutput = Join-Path $OutputRoot 'builtin-pester'
+$null = New-Item -Path $TestsOutput -ItemType Directory -Force
+Get-ChildItem -LiteralPath $TestsRoot -Force | Where-Object { $_.Name -ine 'Custom' } |
+    Copy-Item -Destination $TestsOutput -Recurse -Force
+Write-Host '   Copied: tests/ → builtin-pester/ (without Custom/)'
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Phase H — Build profiling (optional)

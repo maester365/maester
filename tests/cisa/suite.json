@@ -1,0 +1,14 @@
+{
+  "Id": "CISA",
+  "Name": "CISA SCuBA baselines",
+  "Source": "CISA",
+  "Tags": [
+    "CISA"
+  ],
+  "IdPattern": "^CISA\\.",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "Upstream": {
+    "Name": "CISA ScubaGear",
+    "Url": "https://github.com/cisagov/ScubaGear"
+  }
+}

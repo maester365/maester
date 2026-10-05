@@ -1,84 +1,73 @@
 ﻿function Install-MaesterTests {
     <#
     .SYNOPSIS
-    Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
+    Prepares a folder for your own Maester tests and configuration.
 
     .DESCRIPTION
-    The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
+    From Maester 3.0 the tests that ship with Maester run from the module itself, so updating the module
+    updates them and nothing needs to be copied. Install-MaesterTests prepares a folder for your custom
+    tests and configuration: it writes Custom/README.md and a starter maester-config.json when they are
+    missing. It never writes a test file and never overwrites an existing file, so it is safe to call
+    on every pipeline run.
 
-    The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
+    Run Invoke-Maester -Path <folder> to run the built-in tests together with the custom tests in it.
 
     .PARAMETER Path
-    The path to install the Maester tests in. Defaults to the current directory.
+    The folder to prepare. Defaults to the current directory.
 
-    .Parameter SkipPesterCheck
-    Skips the automatic installation check for Pester.
-
-    .EXAMPLE
-    Install-MaesterTests
-
-    Install the latest set of Maester tests in the current directory and installs the Pester module if needed.
+    .PARAMETER SkipPesterCheck
+    No longer has any effect. Maester 3.0 does not install Pester; install it yourself only if you run
+    Pester-format custom tests.
 
     .EXAMPLE
-    Install-MaesterTests -Path .\maester-tests
+    Install-MaesterTests -Path ./maester-tests
 
-    Installs the latest Maester tests in the specified directory and installs the Pester module if needed.
-
-    .EXAMPLE
-    Install-MaesterTests -SkipPesterCheck
-
-    Installs the latest Maester tests in the current directory. Skips the check for the required version of Pester.
+    Creates ./maester-tests with Custom/README.md and maester-config.json.
 
     .LINK
     https://maester.dev/docs/commands/Install-MaesterTests
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Kept for compatibility with Maester 2.x')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'SkipPesterCheck', Justification = 'Kept for compatibility with Maester 2.x')]
     [CmdletBinding()]
     param(
-        # The path to install the Maester tests to, defaults to the current directory.
+        # The folder to prepare. Defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = '.\',
+        [string] $Path = '.',
 
-        # Skip automatic installation of Pester
+        # No longer has any effect. Kept so that existing scripts keep working.
         [Parameter(Mandatory = $false)]
         [switch] $SkipPesterCheck
     )
 
-    # Note: If testing this locally in dev, you will need to run ./build/Build-MaesterModule.ps1 to build the module
-    # with the tests embedded in ./module/maester-tests. The build script runs automatically in the release workflows.
-
-    [version]$MinPesterVersion = '5.5.0'
-    # The default action installs the minimum required version of Pester if not present. Opt out with -SkipPesterCheck.
-    if ( $PSBoundParameters.ContainsKey('SkipPesterCheck') ) {
-        Write-Verbose 'Skipping Pester version check.'
-    } else {
-        if ( ((Get-Module -Name 'Pester' -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $MinPesterVersion ) {
-            Write-Host 'The minimum required version of Pester is not installed.' -ForegroundColor Yellow
-            Write-Host "Installing Pester version $MinPesterVersion..." -ForegroundColor Yellow
-            Install-Module -Name 'Pester' -MinimumVersion $MinPesterVersion -SkipPublisherCheck -Force -Scope CurrentUser
-            Import-Module -Name 'Pester'
-        } else {
-            Write-Verbose 'The minimum required version of Pester is already installed.'
-        }
-    }
-
     Get-IsNewMaesterVersionAvailable | Out-Null
 
-    Write-Verbose "Installing Maester tests to $Path"
+    $templates = Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/templates'
+    $customFolder = Join-Path $Path 'Custom'
+    $null = New-Item -Path $customFolder -ItemType Directory -Force
 
-    $targetFolderExists = (Test-Path -Path $Path -PathType Container)
-
-
-    # Check if current folder is empty and prompt user to continue if it is not
-    if ($targetFolderExists -and (Get-ChildItem -Path $Path).Count -gt 0) {
-        $message = "`nThe folder $Path is not empty.`nWe recommend installing the tests in an empty folder.`nDo you want to continue with this folder? (y/n): "
-        $continue = Get-MtConfirmation $message
-        if (!$continue) {
-            Write-Host 'Maester tests not installed.' -ForegroundColor Red
-            return
+    $written = [System.Collections.Generic.List[string]]::new()
+    foreach ($file in @(
+            @{ Source = Join-Path $templates 'Custom/README.md'; Target = Join-Path $customFolder 'README.md' }
+            @{ Source = Join-Path $templates 'maester-config.json'; Target = Join-Path $Path 'maester-config.json' }
+        )) {
+        if (-not (Test-Path -LiteralPath $file.Target)) {
+            Copy-Item -LiteralPath $file.Source -Destination $file.Target
+            $written.Add($file.Target)
         }
     }
+    foreach ($w in $written) { Write-Verbose "Created $w" }
 
-    Update-MtMaesterTests -Path $Path -Install
+    $staleCopies = @(Get-ChildItem -LiteralPath $Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch '[\\/][Cc]ustom[\\/]' })
+    if ($staleCopies.Count -gt 0) {
+        Write-Host "This folder has $($staleCopies.Count) test file(s) outside Custom/. Copies of the built-in tests are no longer needed; run Update-MaesterTests -Path '$Path' to remove them." -ForegroundColor Yellow
+    }
+
+    $message = 'Run Connect-Maester to sign in and then run Invoke-Maester to start testing.'
+    if (Test-MtConnection Graph) {
+        $message = 'Run Invoke-Maester to start testing.'
+    }
+    Write-Host "Maester is ready. The built-in tests run from the module; put your own tests in $customFolder.`n$message" -ForegroundColor Green
 }
