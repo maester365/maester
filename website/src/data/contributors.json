@@ -440,7 +440,7 @@
         "ORCA.233.1"
       ],
       "initials": "MS",
-      "recentCommits": 3
+      "recentCommits": 5
     },
     {
       "id": "Cloud-Architekt",
@@ -532,7 +532,7 @@
         "MT.1087"
       ],
       "initials": "TN",
-      "recentCommits": 0
+      "recentCommits": 1
     },
     {
       "id": "f-bader",
@@ -1615,7 +1615,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "oed-metzb",
@@ -2919,7 +2919,7 @@
         "MT.1028"
       ],
       "initials": "RF",
-      "recentCommits": 1
+      "recentCommits": 2
     },
     {
       "id": "remold",
@@ -4103,7 +4103,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 22
+      "recentCommits": 23
     }
   ],
   "attributions": {

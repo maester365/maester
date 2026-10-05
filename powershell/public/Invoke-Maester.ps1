@@ -147,6 +147,22 @@
         # The path to the file to save the test results in html format. The filename should include an .html extension.
         [string] $OutputHtmlFile,
 
+        # Collect the affected objects: the consolidated list of objects the run touched.
+        # Adds the AffectedObjects property to the results, the Affected objects page to the html report and,
+        # with -OutputFolder, the <name>-affected-objects.json file (plus -affected-objects.csv with -ExportCsv).
+        # Off by default because it enlarges the report; it is enabled automatically when
+        # -RedactUserIdentity is used, since redaction is driven by the inventory.
+        [switch] $IncludeAffectedObjects,
+
+        # Replaces user identities (display names, user principal names and object ids) with stable
+        # stable ids in the generated outputs.
+        # None (default): no redaction.
+        # AllOutputs: redact every generated output (html, json, markdown, csv, Excel, affected objects json and csv).
+        # HtmlOnly: redact the html report only, so the machine readable exports keep the
+        # real identifiers for follow up while the shareable report does not.
+        [ValidateSet('None', 'HtmlOnly', 'AllOutputs')]
+        [string] $RedactUserIdentity = 'None',
+
         # The path to the file to save the test results in markdown format. The filename should include a .md extension.
         [string] $OutputMarkdownFile,
 
@@ -289,9 +305,16 @@
             $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
             $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
+            if ($IncludeAffectedObjects.IsPresent) {
+                # Added only when requested so the OutputFiles of runs that do not opt in are unchanged.
+                $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.json") -Force
+            }
 
             if ($ExportCsv.IsPresent) {
                 $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
+                if ($IncludeAffectedObjects.IsPresent) {
+                    $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.csv") -Force
+                }
             }
             if ($ExportExcel.IsPresent) {
                 $out.OutputExcelFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).xlsx"
@@ -363,6 +386,11 @@
 
     # Reset the graph cache and urls to avoid stale data.
     Clear-ModuleVariable
+
+    # Redaction maps user identities onto their stable ids, so it needs the inventory even when
+    # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
+    # in the results and output files when -IncludeAffectedObjects was actually requested.
+    $collectAffectedObjects = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
 
     if (-not $DisableTelemetry) {
         Write-Telemetry -EventName InvokeMaester
@@ -598,7 +626,13 @@
 
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
-    $pesterResults = Invoke-Pester -Configuration $pesterConfig
+    # Capture is for this run's tests only; later ad-hoc Add-MtTestResultDetail calls must not collect.
+    $__MtSession.IncludeAffectedObjects = $collectAffectedObjects
+    try {
+        $pesterResults = Invoke-Pester -Configuration $pesterConfig
+    } finally {
+        $__MtSession.IncludeAffectedObjects = $false
+    }
 
     if ($pesterResults) {
 
@@ -622,37 +656,91 @@
             }
         }
 
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -RunContext $runContext
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects -RunContext $runContext
+
+        # 'AllOutputs' redacts every generated output, 'HtmlOnly' leaves the machine readable
+        # exports intact so findings can still be traced back to the real objects.
+        $redactNonHtml = $RedactUserIdentity -eq 'AllOutputs'
+        $userIdentityReplacements = @{}
+        if ($RedactUserIdentity -ne 'None') {
+            $userIdentityReplacements = Get-MtUserIdentityReplacementMap -MaesterResults $maesterResults -IncludeSessionCache
+        }
+
+        # Drop the inventory again when it was only collected to drive redaction, so the reports
+        # stay the size the caller asked for and the Affected objects page is not silently turned on.
+        if ($collectAffectedObjects -and -not $IncludeAffectedObjects.IsPresent) {
+            $maesterResults.PSObject.Properties.Remove('AffectedObjects')
+        }
+
+        # Csv and Excel are produced by Convert-MtResultsToFlatObject, which writes the file
+        # itself, so redaction has to happen on a copy of the results rather than on the output.
+        $exportResults = $maesterResults
+        if ($redactNonHtml -and $userIdentityReplacements.Count -gt 0) {
+            $exportResults = $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue |
+                ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements -JsonEncoded |
+                    ConvertFrom-Json
+        }
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+            $output = $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue
+            if ($redactNonHtml) {
+                $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
+            }
+            $output | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsJsonFile) -and $maesterResults.AffectedObjects) {
+            Write-MtProgress -Activity 'Creating affected objects'
+            $output = ConvertTo-Json -InputObject @($maesterResults.AffectedObjects) -Depth 5 -WarningAction SilentlyContinue
+            if ($redactNonHtml) {
+                $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
+            }
+            $output | Out-File -FilePath $out.OutputAffectedObjectsJsonFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsCsvFile) -and $maesterResults.AffectedObjects) {
+            $output = $maesterResults.AffectedObjects | Select-Object System, AnchorKind, Type, Id, UniqueId, DisplayName, UserPrincipalName, PortalLink,
+            @{ Name = 'Tests'; Expression = { $_.Tests -join '; ' } },
+            @{ Name = 'Sources'; Expression = { $_.Sources -join '; ' } } |
+                ConvertTo-Csv -NoTypeInformation
+            if ($redactNonHtml) {
+                # Piped so the replacement regex is built once, not once per row.
+                $output = @($output | ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements)
+            }
+            $output | Out-File -FilePath $out.OutputAffectedObjectsCsvFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
             Write-MtProgress -Activity 'Creating markdown report'
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
+            if ($redactNonHtml) {
+                $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements
+            }
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
             Write-MtProgress -Activity 'Creating markdown summary report'
             $output = Get-MtMarkdownSummaryReport -MaesterResults $maesterResults
+            if ($redactNonHtml) {
+                $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements
+            }
             $output | Out-File -FilePath $out.OutputMarkdownSummaryFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {
             Write-MtProgress -Activity 'Creating CSV'
-            Convert-MtResultsToFlatObject -InputObject $maesterResults -CsvFilePath $out.OutputCsvFile
+            Convert-MtResultsToFlatObject -InputObject $exportResults -CsvFilePath $out.OutputCsvFile
         }
 
         if (![string]::IsNullOrEmpty($out.OutputExcelFile)) {
             Write-MtProgress -Activity 'Creating Excel workbook'
-            Convert-MtResultsToFlatObject -InputObject $maesterResults -ExcelFilePath $out.OutputExcelFile
+            Convert-MtResultsToFlatObject -InputObject $exportResults -ExcelFilePath $out.OutputExcelFile
         }
 
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
             Write-MtProgress -Activity 'Creating html report'
-            $output = Get-MtHtmlReport -MaesterResults $maesterResults
+            $output = Get-MtHtmlReport -MaesterResults $maesterResults -RedactUserIdentity $RedactUserIdentity -UserIdentityReplacementMap $userIdentityReplacements
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
             if (-not $NonInteractive.IsPresent) {
                 Write-Host "🔥 Maester test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green

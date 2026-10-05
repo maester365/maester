@@ -5,7 +5,9 @@
 .DESCRIPTION
     Calls the Dataverse Global Discovery Service (GDS) to find environments
     accessible by the current user. Returns the ApiUrl of the first enabled
-    environment, or $null if none are found.
+    environment, or $null if none are found. Throws when discovery itself fails
+    (no Azure context, no token, or the query fails) so the caller can tell a
+    failure apart from a tenant that has no Dataverse environments.
 
     The GDS endpoint is selected based on the current Azure environment
     (AzureCloud, AzureUSGovernment, AzureChinaCloud).
@@ -30,8 +32,7 @@ function Get-MtDataverseEnvironmentUrl {
     # Determine the Azure environment from the current Az context
     $azContext = Get-AzContext -ErrorAction SilentlyContinue
     if (-not $azContext) {
-        Write-Warning "No active Azure context. Ensure you are connected via 'Connect-Maester -Service Dataverse'."
-        return $null
+        throw "No active Azure context. Ensure you are connected via 'Connect-Maester -Service Dataverse'."
     }
 
     # Map Azure environment to Global Discovery Service URL
@@ -62,8 +63,7 @@ function Get-MtDataverseEnvironmentUrl {
             $gdsToken = $gdsTokenResult.Token
         }
     } catch {
-        Write-Warning "Failed to get Global Discovery Service token. Ensure you are connected via 'Connect-Maester -Service Dataverse'. Error: $_"
-        return $null
+        throw "Could not get a Global Discovery Service token: $($_.Exception.Message)"
     }
 
     $gdsHeaders = @{
@@ -75,12 +75,11 @@ function Get-MtDataverseEnvironmentUrl {
     try {
         $gdsResponse = Invoke-RestMethod -Uri "$gdsBaseUrl/api/discovery/v2.0/Instances?`$select=ApiUrl,FriendlyName,State&`$filter=State eq 0" -Headers $gdsHeaders -ErrorAction Stop
     } catch {
-        Write-Warning "Failed to query Global Discovery Service for Dataverse environments: $_"
-        return $null
+        throw "Could not query the Global Discovery Service for Dataverse environments: $($_.Exception.Message)"
     }
 
     if (-not $gdsResponse.value -or $gdsResponse.value.Count -eq 0) {
-        Write-Warning "No Dataverse environments found via Global Discovery Service. If you have a GCC environment or a specific environment URL, configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings."
+        Write-Verbose "No Dataverse environments found via Global Discovery Service. If you have a GCC environment or a specific environment URL, configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings."
         return $null
     }
 

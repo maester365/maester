@@ -2,6 +2,13 @@
 
 **Monitor your Microsoft 365 tenant's security configuration using Maester!**
 
+> [!IMPORTANT]
+> **Contributions paused for the Maester 3.0 rewrite (from October 6, 2026, for about a week)**
+>
+> We're rewriting the Maester engine and all of the tests for 3.0. To avoid merge conflicts, please **don't open new pull requests** (new tests, test updates or engine changes) until the rewrite lands. PRs that are already open won't be merged during the pause.
+>
+> Bug reports and ideas are still welcome as issues. We'll remove this notice when contributions reopen. Thank you for your patience! 💖
+
 Maester is an open source **PowerShell-based test automation framework** designed to help you monitor and maintain the security configuration of your Microsoft 365 environment. To learn more about Maester and to get started, visit [Maester.dev](https://maester.dev).
 
 [![PSGallery Preview Version](https://img.shields.io/powershellgallery/v/maester.svg?style=flat&logo=powershell&label=Preview%20Version&include_prereleases)](https://www.powershellgallery.com/packages/maester)

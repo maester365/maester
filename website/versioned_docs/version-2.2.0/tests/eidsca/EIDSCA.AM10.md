@@ -46,7 +46,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Severity | Medium |
 | Suite | Entra ID SCA |
 | Category | General |
-| PowerShell test | [Test-MtEidscaAM10](/docs/commands/Test-MtEidscaAM10) |
+| PowerShell test | [Test-MtEidscaAM10](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaAM10.ps1) |
 | Tags | EIDSCA, EIDSCA.AM10 |
 
 ## Source

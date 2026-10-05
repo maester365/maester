@@ -337,10 +337,64 @@ Describe 'Invoke-MtADManagementCommand' {
         Should -Invoke New-PSSession -ModuleName Maester -Times 1 -ParameterFilter {
             -not $UseSSL -and $Authentication -eq 'Negotiate'
         }
-        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 1 -ParameterFilter {
-            $SkipCACheck -and $SkipCNCheck -and -not $NoEncryption
+        # HTTP fallback does not use TLS, so SkipCACheck/SkipCNCheck are not applicable.
+        # Verify message encryption is still enabled (NoEncryption is not set).
+        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 2 -ParameterFilter {
+            -not $NoEncryption
         }
         Should -Invoke Remove-PSSession -ModuleName Maester -Times 1
+    }
+
+    It 'auto-falls back to HTTP Negotiate when explicit credentials are present and HTTPS fails' {
+        $script:newSessionCall = 0
+        Mock New-PSSession -ModuleName Maester {
+            $script:newSessionCall++
+            if ($script:newSessionCall -eq 1) {
+                throw 'The validated HTTPS listener is unavailable.'
+            }
+            [PSCustomObject]@{ Id = 2; State = 'Opened' }
+        }
+        Mock Invoke-Command -ModuleName Maester {
+            [PSCustomObject]@{
+                DCName                   = 'dc01.contoso.com'
+                EnableSMB1Protocol       = $false
+                EnableSMB2Protocol       = $true
+                EnableSMB3_1_1Protocol   = $true
+                EnableSecuritySignature  = $true
+                RequireSecuritySignature = $true
+            }
+        }
+
+        $result = InModuleScope Maester {
+            Invoke-MtADManagementCommand -Operation SmbConfiguration
+        }
+
+        $result.RequireSecuritySignature | Should -BeTrue
+        Should -Invoke New-PSSession -ModuleName Maester -Times 2
+        Should -Invoke New-PSSession -ModuleName Maester -Times 1 -ParameterFilter {
+            -not $UseSSL -and $Authentication -eq 'Negotiate'
+        }
+        # HTTP fallback does not use TLS, so SkipCACheck/SkipCNCheck are not applicable.
+        # Verify message encryption is still enabled (NoEncryption is not set).
+        Should -Invoke New-PSSessionOption -ModuleName Maester -Times 2 -ParameterFilter {
+            -not $NoEncryption
+        }
+        Should -Invoke Remove-PSSession -ModuleName Maester -Times 1
+    }
+
+    It 'does not attempt connection fallback when no explicit credentials are present' {
+        Mock New-PSSession -ModuleName Maester {
+            throw 'The validated HTTPS listener is unavailable.'
+        }
+
+        $result = InModuleScope Maester {
+            $__MtSession.ADCredential = $null
+            Invoke-MtADManagementCommand -Operation SmbConfiguration
+        }
+
+        $result.ErrorCategory | Should -Be 'Capability'
+        $result.RedactedMessage | Should -Match 'credential is required'
+        Should -Invoke New-PSSession -ModuleName Maester -Times 0
     }
 
     It 'honors cancellation before creating a session' {

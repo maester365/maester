@@ -36,6 +36,7 @@ function New-MtLdapConnection {
     $networkCredential = $null
 
     try {
+        Write-Verbose "Creating LDAP connection to '$Server' on port $effectivePort with AuthType '$AuthType', UseStartTls: $($UseStartTls.IsPresent), SkipCertificateCheck: $($SkipCertificateCheck.IsPresent)"
         $identifier = New-Object -TypeName System.DirectoryServices.Protocols.LdapDirectoryIdentifier -ArgumentList @(
             $Server,
             $effectivePort,
@@ -52,15 +53,41 @@ function New-MtLdapConnection {
             $connection.SessionOptions.ReferralChasing = [System.DirectoryServices.Protocols.ReferralChasingOptions]::None
             $connection.SessionOptions.SecureSocketLayer = ($effectivePort -eq 636 -and -not $UseStartTls.IsPresent)
 
-            if ($SkipCertificateCheck.IsPresent) {
-                # Dangerous: this bypass is allowed only for tests and fixtures.
-                $connection.SessionOptions.VerifyServerCertificate = {
+            # Set a callback that logs certificate details and validates the chain.
+            # When SkipCertificateCheck is present we still log but return $true.
+            # Wrap in try/catch because test mocks may not expose this property.
+            try {
+                $skipCertCheck = $SkipCertificateCheck.IsPresent
+                $callback = {
                     param($ldapConnection, $certificate)
 
                     [void]$ldapConnection
-                    [void]$certificate
-                    return $true
+                    $script:__MtLastLdapCertificateDetail = Get-MtLdapCertificateDetail -Certificate $certificate
+
+                    if ($skipCertCheck) {
+                        return $true
+                    }
+
+                    $chain = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Chain
+                    try {
+                        return $chain.Build($certificate)
+                    }
+                    finally {
+                        $chain.Dispose()
+                    }
+                }.GetNewClosure()
+
+                # Bind the callback to the Maester module so internal functions like
+                # Get-MtLdapCertificateDetail are resolvable when .NET invokes it.
+                $maesterModule = Get-Module Maester
+                if ($null -ne $maesterModule) {
+                    $callback = $maesterModule.NewBoundScriptBlock($callback)
                 }
+
+                $connection.SessionOptions.VerifyServerCertificate = $callback
+            }
+            catch {
+                Write-Verbose "Unable to set VerifyServerCertificate callback: $_."
             }
         }
 
@@ -85,11 +112,15 @@ function New-MtLdapConnection {
         }
 
         if ($UseStartTls.IsPresent) {
+            Write-Verbose "Negotiating StartTLS with server '$Server' on port $effectivePort"
             $startTlsControls = New-Object -TypeName System.DirectoryServices.Protocols.DirectoryControlCollection
             $connection.SessionOptions.StartTransportLayerSecurity($startTlsControls)
+            Write-Verbose "StartTLS negotiation completed successfully"
         }
 
+        Write-Verbose "Attempting LDAP bind to '$Server' on port $effectivePort with AuthType '$AuthType'"
         $connection.Bind()
+        Write-Verbose "LDAP bind to '$Server' on port $effectivePort succeeded"
         return $connection
     }
     catch {
@@ -102,6 +133,7 @@ function New-MtLdapConnection {
             }
         }
 
+        Write-Verbose "LDAP connection to '$Server' on port $effectivePort failed: $($_.Exception.Message)"
         throw "Failed to establish LDAP connection to '$Server' on port $effectivePort. $($_.Exception.Message)"
     }
     finally {

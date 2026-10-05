@@ -493,6 +493,13 @@ $Builder = [System.Text.StringBuilder]::new()
 $ModulePreamble = Get-ModulePreambleFromSource -Path (Join-Path $SourceRoot 'Maester.psm1')
 $null = $Builder.AppendLine($ModulePreamble)
 
+# Load the ORCA classes (written to OrcaClasses.ps1 in Phase D) into the module's own scope.
+# They used to be ScriptsToProcess, which defines them in the scope of whoever imports the
+# module: when that is a script (Build-LocalMaester.ps1, a CI step), the classes disappear when
+# the script ends and every ORCA check fails with "Cannot find type [PolicyInfo]".
+$null = $Builder.AppendLine()
+$null = $Builder.AppendLine('. "$PSScriptRoot/OrcaClasses.ps1"')
+
 $null = $Builder.AppendLine()
 $null = $Builder.AppendLine('#region Internal Functions')
 $null = $Builder.AppendLine()
@@ -694,13 +701,12 @@ Write-Host '── Phase F: Updating module manifest' -ForegroundColor Cyan
 $OutputManifest = Join-Path $OutputRoot 'Maester.psd1'
 Copy-Item -Path "$SourceRoot/Maester.psd1" -Destination $OutputManifest -Force
 
-# Update FunctionsToExport and ScriptsToProcess in the output manifest.
+# Update FunctionsToExport in the output manifest. OrcaClasses.ps1 is dot-sourced by
+# Maester.psm1 itself (see Phase C), not listed in ScriptsToProcess.
 Update-ModuleManifest -Path $OutputManifest `
-    -FunctionsToExport $ExportFunctionList.ToArray() `
-    -ScriptsToProcess @('OrcaClasses.ps1')
+    -FunctionsToExport $ExportFunctionList.ToArray()
 
 Write-Host "   FunctionsToExport: $($ExportFunctionList.Count) functions"
-Write-Host '   ScriptsToProcess:  OrcaClasses.ps1'
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Phase G — Copy tests as-is and preserve Pester file boundaries

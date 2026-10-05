@@ -63,7 +63,7 @@ mindmap
 | Severity | High |
 | Suite | Entra ID SCA |
 | Category | General |
-| PowerShell test | [Test-MtEidscaAP14](/docs/commands/Test-MtEidscaAP14) |
+| PowerShell test | [Test-MtEidscaAP14](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaAP14.ps1) |
 | Tags | EIDSCA, EIDSCA.AP14 |
 
 ## Source

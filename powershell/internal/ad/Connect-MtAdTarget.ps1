@@ -313,20 +313,34 @@ function Connect-MtAdTarget {
             [string]$RequestedTlsMode
         )
 
-        $lastException = $null
+    $lastException = $null
+    $allExceptions = [System.Collections.Generic.List[System.Exception]]::new()
+    $hadCertFailureOn636 = $false
 
-        $tlsAttempts = switch ($RequestedTlsMode) {
+    $isWindowsRuntime = $adPrerequisites.PlatformProfile -like 'Windows*'
+
+    # Wrap in @() so a single attempt stays an array; otherwise .Count returns the hashtable key count
+    $tlsAttempts = @(switch ($RequestedTlsMode) {
             'Ldaps' { @(@{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }) }
             'StartTls' { @(@{ Name = 'StartTls'; Port = 389; UseStartTls = $true }) }
             default {
-                @(
-                    @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
-                    @{ Name = 'StartTls'; Port = 389; UseStartTls = $true }
-                )
+                if ($isWindowsRuntime) {
+                    Write-Verbose 'Windows runtime detected. TLS fallback order: LDAPS (636), StartTLS (389).'
+                    @(
+                        @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
+                        @{ Name = 'StartTls'; Port = 389; UseStartTls = $true }
+                    )
+                } else {
+                    Write-Verbose 'Non-Windows runtime detected. Skipping StartTLS in Auto mode due to known upstream .NET bug. Only LDAPS (636) will be attempted.'
+                    @(
+                        @{ Name = 'Ldaps'; Port = 636; UseStartTls = $false }
+                    )
+                }
             }
-        }
+        })
 
         foreach ($tlsAttempt in $tlsAttempts) {
+            Write-Verbose "Attempting TLS mode '$($tlsAttempt.Name)' to '$Server' on port $($tlsAttempt.Port) with AuthType '$AuthenticationMode'"
             $connection = $null
             try {
                 $connectionParameters = @{
@@ -347,18 +361,77 @@ function Connect-MtAdTarget {
                 $rootDse = Get-MtLdapRootDse -Connection $connection
                 $targetMetadata = Get-MtAdTargetState -Connection $connection -RootDse $rootDse -ConnectedServer $Server -TlsMode $tlsAttempt.Name -AuthenticationMode $AuthenticationMode
 
+                if ($hadCertFailureOn636) {
+                    Write-Verbose 'StartTLS fallback succeeded. Connected using TLS on port 389. Note: The DC LDAPS certificate (port 636) is misconfigured.'
+                }
+                Write-Verbose "TLS mode '$($tlsAttempt.Name)' succeeded. Resolved server: $($targetMetadata.ResolvedServer), domain: $($targetMetadata.ResolvedDomain), forest: $($targetMetadata.ResolvedForest)"
+
                 return [PSCustomObject]@{
                     Connection = $connection
                     Metadata   = $targetMetadata
                 }
             }
-            catch {
-                $lastException = $_.Exception
-                Close-MtAdLdapConnection -Connection $connection
+        catch {
+            # Capture the latest exception and gracefully close any open connection
+            $lastException = $_.Exception
+            $allExceptions.Add($lastException)
+
+            Write-Verbose "TLS mode '$($tlsAttempt.Name)' failed: $($_.Exception.Message)"
+
+            $isCertificateError = $_.Exception.Message -match '(?i)(certificate|trust|validation|expired|chain)'
+            if ($isCertificateError -and $tlsAttempt.Port -eq 636) {
+                $hadCertFailureOn636 = $true
+                $remainingAttempts = @($tlsAttempts | Where-Object { $_.Port -ne 636 })
+                if ($remainingAttempts.Count -gt 0) {
+                    Write-Verbose 'LDAPS connection failed due to certificate validation. Attempting StartTLS fallback on port 389...'
+                }
             }
+
+            Close-MtAdLdapConnection -Connection $connection
+        }
+    }
+
+    # Check if all attempts failed with certificate errors
+    $allCertErrors = $allExceptions | Where-Object {
+        $_.Message -match '(?i)(certificate|trust|validation|expired|chain)'
+    }
+    if ($allCertErrors.Count -eq $allExceptions.Count -and $allExceptions.Count -gt 0) {
+        if ($tlsAttempts.Count -ge 2) {
+            Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+        } else {
+            Write-Verbose 'LDAPS connection failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+        }
+    }
+
+    Write-Verbose "All TLS attempts failed. Attempted: $($tlsAttempts.Name -join ', ')"
+
+    # If we attempted multiple TLS modes (e.g., LDAPS then StartTLS) but still failed, return a clearer error
+    if ($tlsAttempts.Count -ge 2 -and $allExceptions.Count -gt 0) {
+        $sanitizedErrors = $allExceptions | ForEach-Object { Get-MtAdSanitizedErrorMessage -Exception $_ }
+        $errorSummary = ($sanitizedErrors -join ' | ')
+
+        # Check if any exception indicates a certificate/TLS issue
+        $isCertificateError = $allExceptions | Where-Object {
+            $_ -is [System.Security.Authentication.AuthenticationException] -or
+            ($_.Message -match 'certificate|cert|TLS|SSL|handshake|trust') -or
+            ($null -ne $_.InnerException -and $_.InnerException.Message -match 'certificate|cert|TLS|SSL|handshake|trust')
+        } | Select-Object -First 1
+
+        $certDetailHint = ''
+        if ($script:__MtLastLdapCertificateDetail) {
+            $cd = $script:__MtLastLdapCertificateDetail
+            $certDetailHint = " Certificate detected: Subject='$($cd.Subject)', Issuer='$($cd.Issuer)', Thumbprint='$($cd.Thumbprint)', Valid='$($cd.NotBefore)' to '$($cd.NotAfter)'."
         }
 
+        if ($isCertificateError) {
+            throw [System.Exception]::new("Could not establish a secure LDAP connection to '$Server' over LDAPS (636) or StartTLS (389). The DC may not have a valid certificate, or the certificate may not be trusted by this machine. Check that the DC certificate is present, not expired, and trusted.$certDetailHint Original errors: $errorSummary")
+        } else {
+            throw [System.Exception]::new("Could not establish an LDAP connection to '$Server' over LDAPS (636) or StartTLS (389).$certDetailHint Original errors: $errorSummary")
+        }
+    } elseif ($null -ne $lastException) {
+        # Preserve original exception behavior when only a single TLS mode was attempted or auto-detection is not conclusive
         throw $lastException
+    }
     }
 
     Write-Verbose 'Validating Active Directory connectivity'
@@ -430,6 +503,7 @@ function Connect-MtAdTarget {
             $targetServer = Get-MtAmbientDomainController
         }
 
+        Write-Verbose "Resolved target server: '$targetServer'. Attempting AD connection with AuthMode '$authenticationMode' and TlsMode '$TlsMode'."
         $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode
         $adConnectionState = Get-MtAdSessionState -Connected $true `
             -ResolvedForest $resolvedConnection.Metadata.ResolvedForest `
@@ -467,15 +541,16 @@ function Connect-MtAdTarget {
 
         $__MtSession.ADCredential = $ActiveDirectoryCredential
         $__MtSession.ADConnection = $adConnectionState
-        Write-Verbose "Connected to AD: $($resolvedConnection.Metadata.ResolvedServer)"
+        Write-Verbose "Connected to AD: $($resolvedConnection.Metadata.ResolvedServer) using TLS mode $($resolvedConnection.Metadata.TlsMode)"
     }
     catch {
         $sanitizedError = Get-MtAdSanitizedErrorMessage -Exception $_.Exception
+        Write-Verbose "Active Directory connection failed: $sanitizedError"
         if (-not $PassThru.IsPresent) {
             $__MtSession.ADCredential = $null
             $__MtSession.ADConnection = Get-MtAdSessionState -Connected $false -ErrorMessage $sanitizedError
         }
-        throw "Failed to connect to Active Directory: $sanitizedError"
+        throw [System.Exception]::new("Failed to connect to Active Directory: $sanitizedError")
     }
     finally {
         if ($null -ne $resolvedConnection) {

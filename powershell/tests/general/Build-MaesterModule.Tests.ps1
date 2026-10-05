@@ -184,7 +184,9 @@ Describe 'Build-MaesterModule' {
                 $OrcaContent | Should -Match 'class ORCA999 : ORCACheck'
                 $OrcaContent | Should -Not -Match 'using module'
                 $Manifest.FunctionsToExport | Should -Contain 'Get-TestThing'
-                $Manifest.ScriptsToProcess | Should -Contain 'OrcaClasses.ps1'
+                # The classes are loaded into the module scope by Maester.psm1, not by the importer.
+                $Manifest.ScriptsToProcess | Should -Not -Contain 'OrcaClasses.ps1'
+                $Psm1Content | Should -Match ([regex]::Escape('. "$PSScriptRoot/OrcaClasses.ps1"'))
             } finally {
                 Remove-Item -LiteralPath $Fixture.FixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
             }

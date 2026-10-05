@@ -380,7 +380,7 @@ $manifestPath = Join-Path $MaesterModulePath 'Maester.psd1'
 if (-not (Test-Path -LiteralPath $manifestPath)) {
     throw "Maester module manifest not found at '$manifestPath'."
 }
-$maesterModule = Import-Module $manifestPath -Force -PassThru
+$maesterModule = Import-Module $manifestPath -Force -PassThru | Where-Object Name -eq 'Maester'
 
 $results = [System.Collections.Generic.List[object]]::new()
 foreach ($row in $selectedRows) {

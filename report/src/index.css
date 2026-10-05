@@ -271,10 +271,38 @@ code {
   from { transform: translateX(100%); }
 }
 
+@keyframes report-sheet-overlay-out {
+  to { opacity: 0; }
+}
+
+@keyframes report-sheet-out {
+  to { transform: translateX(100%); }
+}
+
 .report-sheet-overlay {
-  animation: report-sheet-overlay-in 500ms ease-in-out;
+  animation: report-sheet-overlay-in 300ms ease-out;
 }
 
 .report-sheet {
-  animation: report-sheet-in 500ms ease-in-out;
+  animation: report-sheet-in 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+
+.report-sheet-overlay[data-state="closed"] {
+  animation: report-sheet-overlay-out 200ms ease-in forwards;
+  pointer-events: none;
+}
+
+.report-sheet[data-state="closed"] {
+  animation: report-sheet-out 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .report-sheet-overlay,
+  .report-sheet,
+  .report-sheet-overlay[data-state="closed"],
+  .report-sheet[data-state="closed"] {
+    animation: none;
+  }
 }

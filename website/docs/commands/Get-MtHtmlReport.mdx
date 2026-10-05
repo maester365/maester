@@ -15,7 +15,8 @@ Generates a formatted html report using the MaesterResults object created by Con
 ## SYNTAX
 
 ```powershell
-Get-MtHtmlReport [-MaesterResults] <PSObject> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtHtmlReport [-MaesterResults] <PSObject> [-RedactUserIdentity <String>]
+ [-UserIdentityReplacementMap <Hashtable>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -81,6 +82,40 @@ Required: True
 Position: 1
 Default value: None
 Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -RedactUserIdentity
+
+Replaces user identities (display names, user principal names and object ids) with stable stable ids.
+None: keep the values as-is.
+HtmlOnly / AllOutputs: redact them from this html report.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UserIdentityReplacementMap
+
+Replacement map built by Invoke-Maester, which removes the AffectedObjects it was built from.
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

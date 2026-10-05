@@ -49,7 +49,13 @@
         return $null
     }
 
-    $cacheKey = 'Dacls'
+    # Build target-scoped cache key matching the DomainState pattern
+    $targetSuffix = if ($__MtSession.ADConnection.ResolvedDomain -and $__MtSession.ADConnection.ResolvedServer) {
+        ":$($__MtSession.ADConnection.ResolvedDomain):$($__MtSession.ADConnection.ResolvedServer)"
+    } elseif ($__MtSession.ADConnection.ResolvedDomain) {
+        ":$($__MtSession.ADConnection.ResolvedDomain)"
+    } else { '' }
+    $cacheKey = "Dacls$targetSuffix"
 
     if ($Refresh -or -not $__MtSession.ADCache.ContainsKey($cacheKey)) {
         Write-Verbose 'Collecting AD ACLs from Active Directory'

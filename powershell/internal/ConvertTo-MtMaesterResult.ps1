@@ -25,6 +25,10 @@
         [Parameter(Mandatory = $false)]
         [switch] $SkipVersionCheck,
 
+        # Build the consolidated affected objects and attach it as the AffectedObjects property.
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludeAffectedObjects,
+
         # Optional run context from Invoke-Maester: the selection, the selection plan and the run config.
         # Used to add the 3.0 fields (reason codes, family IDs) to each row.
         [Parameter(Mandatory = $false)]
@@ -436,6 +440,18 @@
         }
     }
 
+    # Consolidated inventory of all objects referenced by the run (RelatedObjects,
+    # result markdown deep links and the session request caches). Never fail the
+    # results conversion over inventory issues.
+    $affectedObjects = @()
+    if ($IncludeAffectedObjects.IsPresent) {
+        try {
+            $affectedObjects = @(Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{ Tests = $mtTests }))
+        } catch {
+            Write-Verbose "Failed to build affected objects: $($_.Exception.Message)"
+        }
+    }
+
     # Assigned through a variable: an if-expression would turn an empty array into $null.
     $unknownIds = @()
     if ($RunContext -and $RunContext.Plan) { $unknownIds = @($RunContext.Plan.UnknownIds) }
@@ -480,6 +496,10 @@
         Tests             = $mtTests
         Blocks            = $mtBlocks
         EndOfJson         = 'EndOfJson' # Always leave this as the last property. Used by the script to determine the end of the JSON
+    }
+
+    if ($IncludeAffectedObjects.IsPresent) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'AffectedObjects' -Value $affectedObjects
     }
 
     # Add output files information if provided
