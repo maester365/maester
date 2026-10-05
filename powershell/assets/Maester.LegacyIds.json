@@ -1,0 +1,3221 @@
+{
+  "SchemaVersion": "1.0",
+  "GeneratedFrom": "fc6a9078bcdd59b5b2f788682fdcd2be27e15b9c",
+  "Entries": [
+    {
+      "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",
+      "CurrentId": "CIS.M365.1.1.1",
+      "Rule": "title",
+      "FirstSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled",
+      "CurrentId": "CIS.M365.2.1.1",
+      "Rule": "function",
+      "FirstSeenCommit": "a43b8c0dde5d19dbdceff2207fceb64305ef7a7b",
+      "LastSeenCommit": "a43b8c0dde5d19dbdceff2207fceb64305ef7a7b",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeLink.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.1",
+      "Rule": "function",
+      "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeLink.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled",
+      "CurrentId": "CIS.M365.2.1.3",
+      "Rule": "function",
+      "FirstSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
+      "LastSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
+      "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.3",
+      "Rule": "title",
+      "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.4 (L2) Ensure Safe Attachments policy is enabled",
+      "CurrentId": "CIS.M365.2.1.4",
+      "Rule": "function",
+      "FirstSeenCommit": "f57df8fe3eafecad5d9532fef92b24e3c20a75ef",
+      "LastSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.4",
+      "Rule": "title",
+      "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled",
+      "CurrentId": "CIS.M365.2.1.5",
+      "Rule": "title",
+      "FirstSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
+      "LastSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators",
+      "CurrentId": "CIS.M365.2.1.6",
+      "Rule": "function",
+      "FirstSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
+      "LastSeenCommit": "d559e19379a79601c1b0fbe83e21f0e1392ffebe",
+      "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.6",
+      "Rule": "title",
+      "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.7",
+      "Rule": "title",
+      "FirstSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
+      "LastSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "fa29e2a789266746a70463e26f3dd57d4b2ff788",
+      "LastSeenCommit": "7de09d69a1bed0a89e3a6524e169c7bb27e4c992",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-AllowGuestsToAccessGroups",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-AllowGuestsToBeGroupOwner",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-AllowToAddGuests",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-BannedPasswordCheckOnPremisesMode",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-BannedPasswordList",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-BlockUserConsentForRiskyApps",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-ClassificationDescriptions",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-ClassificationList",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-ConstrainGroupSpecificConsentToMembersOfGroupId",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-CustomBlockedWordsList",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-DefaultClassification",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableAdminConsentRequests",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableBannedPasswordCheck",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableBannedPasswordCheckOnPremises",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableGroupCreation",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableGroupSpecificConsent",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableMIPLabels",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-EnableMSStandardBlockedWords",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-GroupCreationAllowedGroupId",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-GuestUsageGuidelinesUrl",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-LockoutDurationInSeconds",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-LockoutThreshold",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-Microsoft.Identity.IAM.Insights.AdminMFAV2",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-Microsoft.Identity.IAM.Insights.RoleOverlap",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-Microsoft.Identity.IAM.Insights.SigninRiskPolicy",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-Microsoft.Identity.IAM.Insights.StaleApps",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-Microsoft.Identity.IAM.Insights.UserRiskPolicy",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-NewUnifiedGroupWritebackDefault",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-PrefixSuffixNamingRequirement",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-WebSessionIdleTimeout",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowDeletedIdentitiesDataRemoval",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowEmailVerifiedUsersToJoinOrganization",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowExternalIdToUseEmailOtp",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowExternalIdentitiesToLeave",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowInvitesFrom",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowUserConsentForRiskyApps",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToCreateApps",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToCreateSecurityGroups",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToCreateTenants",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToReadBitlockerKeysForOwnedDevice",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToReadOtherUsers",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToSignUpEmailBasedSubscriptions",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-allowedToUseSSPR",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationMethodsRegistrationCampaignExcluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationMethodsRegistrationCampaignIncluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationMethodsRegistrationCampaignSnoozeDurationInDays",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationMethodsRegistrationCampaignState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationModeConfiguration.rules",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-blockMsolPowerShell",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-defaultLength",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-defaultLifetimeInMinutes",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-displayAppInformationRequiredState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-displayAppInformationRequiredStateExcluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-displayAppInformationRequiredStateIncluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-displayLocationInformationRequiredExcluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-displayLocationInformationRequiredState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-displayLocationInformationRequiredStateIncluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-enabledPreviewFeatures",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-excludeTargets",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-featureRolloutPolicy",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-guestUserRoleId",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-includeTargets",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-isAttestationEnforced",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-isEnabled",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-isOfficePhoneAllowed",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-isSelfServiceRegistrationAllowed",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-isSoftwareOathEnabled",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-isUsableOnce",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-keyRestrictions.aaGuids",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-keyRestrictions.enforcementType",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-keyRestrictions.isEnforced",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-maximumLifetimeInMinutes",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-minimumLifetimeInMinutes",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-notifyReviewers",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-numberMatchingRequiredState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-numberMatchingRequiredStateExcluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-numberMatchingRequiredStateIncluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-permissionGrantPolicyIdsAssignedToDefaultUserRole",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-policyMigrationState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-reportSuspiciousActivitySettingsIncluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-reportSuspiciousActivitySettingsReporting code:",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-reportSuspiciousActivitySettingsState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-requestDurationInDays",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-reviewers",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-state",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-systemCredentialPreferencesState",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-systemCredentialPreferencesStateExcluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-systemCredentialPreferencesStateIncluded",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "AADSC-version",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ebba5b3df01b126c624fa9c4e02773a6f8abb21e",
+      "LastSeenCommit": "0131beb6599a6b0bb5279e81888d48a481440b0e",
+      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "App management restrictions on applications and service principals is configured and enabled",
+      "CurrentId": "MT.1002",
+      "Rule": "title",
+      "FirstSeenCommit": "c719496991fe90b2e629063847650f943d0df69e",
+      "LastSeenCommit": "c719496991fe90b2e629063847650f943d0df69e",
+      "LastSeenFile": "tests/Identity/Test-AppManagementPolicies.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.1.1 (L1) Ensure Administrative accounts are separate and cloud-only",
+      "CurrentId": "CIS.M365.1.1.1",
+      "Rule": "function",
+      "FirstSeenCommit": "19128f8d7c31df7d62a9bb665ee94d1737f818a0",
+      "LastSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenFile": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.1.1: Ensure Administrative accounts are separate and cloud-only",
+      "CurrentId": "CIS.M365.1.1.1",
+      "Rule": "function",
+      "FirstSeenCommit": "a5165f7a75438136ebce918231ef9c05434b00f4",
+      "LastSeenCommit": "6596496226d18406bbc001dd119c2139dde85a2f",
+      "LastSeenFile": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.1.3 (L1) Ensure that between two and four global admins are designated",
+      "CurrentId": "CIS.M365.1.1.3",
+      "Rule": "title",
+      "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisGlobalAdminCount.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist",
+      "CurrentId": "CIS.M365.1.2.1",
+      "Rule": "title",
+      "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCis365PublicGroup.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.2.2 (L1) Ensure sign-in to shared mailboxes is blocked",
+      "CurrentId": "CIS.M365.1.2.2",
+      "Rule": "title",
+      "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisSharedMailboxSignIn.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.3.1 (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'",
+      "CurrentId": "CIS.M365.1.3.1",
+      "Rule": "title",
+      "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisPasswordExpiry.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.3.3 (L2) Ensure 'External sharing' of calendars is not available",
+      "CurrentId": "CIS.M365.1.3.3",
+      "Rule": "title",
+      "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisCalendarSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 1.3.6 (L2) Ensure the customer lockbox feature is enabled",
+      "CurrentId": "CIS.M365.1.3.6",
+      "Rule": "title",
+      "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisCustomerLockBox.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.1",
+      "Rule": "function",
+      "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeLink.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.11 (L2) Ensure comprehensive attachment filtering is applied",
+      "CurrentId": "CIS.M365.2.1.11",
+      "Rule": "title",
+      "FirstSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.12 (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.12",
+      "Rule": "title",
+      "FirstSeenCommit": "5a82f51d84dffda157308885725462e0d18c3aad",
+      "LastSeenCommit": "5a82f51d84dffda157308885725462e0d18c3aad",
+      "LastSeenFile": "tests/cis/Test-MtCisHostedConnectionFilterPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.13 (L1) Ensure the connection filter safe list is off (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.13",
+      "Rule": "title",
+      "FirstSeenCommit": "222cde5ea3722f391da338d4869d86069ac5f56f",
+      "LastSeenCommit": "222cde5ea3722f391da338d4869d86069ac5f56f",
+      "LastSeenFile": "tests/cis/Test-MtCisConnectionFilterSafeList.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.14 (L2) Ensure comprehensive attachment filtering is applied",
+      "CurrentId": "CIS.M365.2.1.11",
+      "Rule": "title",
+      "FirstSeenCommit": "6697e81f452c6673d15ca08367ee881d9bcff886",
+      "LastSeenCommit": "83b2c5d0b7e4f470fbbd05ed54dd07bf24fbdf99",
+      "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled",
+      "CurrentId": "CIS.M365.2.1.2",
+      "Rule": "function",
+      "FirstSeenCommit": "7baebb2f069ebf4f6a0333cbc32ea3f1458b09be",
+      "LastSeenCommit": "c15b144941c28dbe4819c3944342ec44a07a547b",
+      "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilter.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.2",
+      "Rule": "title",
+      "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilter.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.3",
+      "Rule": "title",
+      "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.4",
+      "Rule": "title",
+      "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled",
+      "CurrentId": "CIS.M365.2.1.5",
+      "Rule": "title",
+      "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.6",
+      "Rule": "title",
+      "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
+      "CurrentId": "CIS.M365.2.1.7",
+      "Rule": "title",
+      "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains",
+      "CurrentId": "CIS.M365.2.1.9",
+      "Rule": "title",
+      "FirstSeenCommit": "dfffedfaf152607c1d573549d2443890205d57ea",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisDkim.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.4.4 (L1) Ensure Zero-hour auto purge for Microsoft Teams is on",
+      "CurrentId": "CIS.M365.2.4.4",
+      "Rule": "function",
+      "FirstSeenCommit": "ae728316378e9d63f8b30e4bc6f0c36974553e29",
+      "LastSeenCommit": "ae728316378e9d63f8b30e4bc6f0c36974553e29",
+      "LastSeenFile": "tests/cis/Test-MtCisZAP.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 2.4.4 (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)",
+      "CurrentId": "CIS.M365.2.4.4",
+      "Rule": "title",
+      "FirstSeenCommit": "e88fddcf9725996d957018ee33f51383c651d940",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisZAP.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 3.1.1 (L1) Ensure Microsoft 365 audit log search is Enabled",
+      "CurrentId": "CIS.M365.3.1.1",
+      "Rule": "title",
+      "FirstSeenCommit": "22714f8f530937f69cf8ffb31fb39c84945e128b",
+      "LastSeenCommit": "22714f8f530937f69cf8ffb31fb39c84945e128b",
+      "LastSeenFile": "tests/cis/Test-MtCisAuditLogSearch.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
+      "CurrentId": "CIS.M365.8.1.1",
+      "Rule": "title",
+      "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisThirdPartyFileSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 8.2.2 (L1) Ensure communication with unmanaged Teams users is disabled",
+      "CurrentId": "CIS.M365.8.2.2",
+      "Rule": "title",
+      "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisCommunicateWithUnmanagedTeamsUsers.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 8.2.4 (L1) Ensure communication with Skype users is disabled",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisCommunicateWithSkypeUsers.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 8.4.1 (L1) Ensure all or a majority of third-party and custom apps are blocked",
+      "CurrentId": "CIS.M365.8.4.1",
+      "Rule": "function",
+      "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisThirdPartyAndCustomApps.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 8.5.3 (L1) Ensure only people in my org can bypass the lobby",
+      "CurrentId": "CIS.M365.8.5.3",
+      "Rule": "title",
+      "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisTeamsLobbyBypass.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS 8.6.1 (L1) Ensure users can report security concerns in Teams to internal destination",
+      "CurrentId": "CIS.M365.8.6.1",
+      "Rule": "function",
+      "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
+      "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
+      "LastSeenFile": "tests/cis/Test-MtCisTeamsReportSecurityConcerns.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS.M365.5.1.3.1",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "ab7c8014a1d4aa6627d4f020ac3cde5e8d47b76a",
+      "LastSeenCommit": "ecf6d709d0af85540c4b89591fdce49ff361eb83",
+      "LastSeenFile": "tests/cis/Test-MtCisEnsureGuestUserDynamicGroup.Tests.ps1"
+    },
+    {
+      "LegacyId": "CIS.M365.8.2.4",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "39b3d7dababf31a0a1e5ad4a60952dfa0519a387",
+      "LastSeenCommit": "31471d908ad58cc3b43e917ed05444f8308859bb",
+      "LastSeenFile": "tests/cis/Test-MtCisCommunicateWithSkypeUsers.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.03.1",
+      "CurrentId": "CISA.MS.EXO.3.1",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDkim.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.06.1",
+      "CurrentId": "CISA.MS.EXO.6.1",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaContactSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.06.2",
+      "CurrentId": "CISA.MS.EXO.6.2",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaCalendarSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.07.1",
+      "CurrentId": "CISA.MS.EXO.7.1",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExternalSenderWarning.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.08.1",
+      "CurrentId": "CISA.MS.EXO.8.1",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlp.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.09.3",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.09.5",
+      "CurrentId": "CISA.MS.EXO.9.5",
+      "Rule": "title",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
+    },
+    {
+      "LegacyId": "Configure which users are allowed to present in Teams meetings",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
+      "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "EIDSCA",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure MailTips are enabled for end users",
+      "CurrentId": "MT.1039",
+      "Rule": "title",
+      "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains",
+      "CurrentId": "MT.1043",
+      "Rule": "title",
+      "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure additional storage providers are restricted in Outlook on the web",
+      "CurrentId": "CIS.M365.6.5.3",
+      "Rule": "title",
+      "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'",
+      "CurrentId": "MT.1054",
+      "Rule": "function",
+      "FirstSeenCommit": "824da0eb7d27a58b362a77084722299fb229dd03",
+      "LastSeenCommit": "824da0eb7d27a58b362a77084722299fb229dd03",
+      "LastSeenFile": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'",
+      "CurrentId": "MT.1054",
+      "Rule": "title",
+      "FirstSeenCommit": "7347d0b002ada9eaf4e8a44029ce6d8c80dc7375",
+      "LastSeenCommit": "7347d0b002ada9eaf4e8a44029ce6d8c80dc7375",
+      "LastSeenFile": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure intune device clean-up rule is configured",
+      "CurrentId": "MT.1053",
+      "Rule": "title",
+      "FirstSeenCommit": "824da0eb7d27a58b362a77084722299fb229dd03",
+      "LastSeenCommit": "7347d0b002ada9eaf4e8a44029ce6d8c80dc7375",
+      "LastSeenFile": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure modern authentication for Exchange Online is enabled",
+      "CurrentId": "MT.1044",
+      "Rule": "title",
+      "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.",
+      "CurrentId": "MT.1050",
+      "Rule": "manual",
+      "FirstSeenCommit": "465e55ed2a252b8c467c9d1abbd76fa33d405cbd",
+      "LastSeenCommit": "465e55ed2a252b8c467c9d1abbd76fa33d405cbd",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1"
+    },
+    {
+      "LegacyId": "Ensure users installing Outlook add-ins is not allowed",
+      "CurrentId": "MT.1041",
+      "Rule": "title",
+      "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Exclude",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaEnforceNonPersistentBrowserSession.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1001",
+      "CurrentId": "MT.1001",
+      "Rule": "prefix",
+      "FirstSeenCommit": "8aa400994a8ea42a6252c0599644f5afb7461fc4",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1002",
+      "CurrentId": "MT.1002",
+      "Rule": "prefix",
+      "FirstSeenCommit": "8aa400994a8ea42a6252c0599644f5afb7461fc4",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-AppManagementPolicies.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1003",
+      "CurrentId": "MT.1003",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e48a942254482e449d715a17868047536ffef36f",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1004",
+      "CurrentId": "MT.1004",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e48a942254482e449d715a17868047536ffef36f",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1005",
+      "CurrentId": "MT.1005",
+      "Rule": "prefix",
+      "FirstSeenCommit": "62cc06cdf669d34689955f0a0b0d4c83f9e2ba73",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1006",
+      "CurrentId": "MT.1006",
+      "Rule": "prefix",
+      "FirstSeenCommit": "5266d901eef8ec037a16d33b9aa7b5c479b95782",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1007",
+      "CurrentId": "MT.1007",
+      "Rule": "prefix",
+      "FirstSeenCommit": "d9c22405697bf03e552a85072b2d00ec2a37cbce",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1008",
+      "CurrentId": "MT.1008",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9270b1518e1920c67b79a4d116a90bfecca15f0e",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1009",
+      "CurrentId": "MT.1009",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9270b1518e1920c67b79a4d116a90bfecca15f0e",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1010",
+      "CurrentId": "MT.1010",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9270b1518e1920c67b79a4d116a90bfecca15f0e",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1011",
+      "CurrentId": "MT.1011",
+      "Rule": "prefix",
+      "FirstSeenCommit": "fe7489288515f6d8c93db6f6cdc591246926df02",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1012",
+      "CurrentId": "MT.1012",
+      "Rule": "prefix",
+      "FirstSeenCommit": "77e876318ff4bc5ba4fa356f0d58de0db83f102b",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1013",
+      "CurrentId": "MT.1013",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e48a3f303cceed37968972a91a40f4c7e7079564",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1014",
+      "CurrentId": "MT.1014",
+      "Rule": "prefix",
+      "FirstSeenCommit": "52dcce5a430694a2fe3577ccb10c84bb851719a4",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1015",
+      "CurrentId": "MT.1015",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e63c7612fa60d74977e2843233822297460ebed8",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1016",
+      "CurrentId": "MT.1016",
+      "Rule": "prefix",
+      "FirstSeenCommit": "fd695dc7ac2d4296ba324e8f4f2b5dc8a3113535",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1017",
+      "CurrentId": "MT.1017",
+      "Rule": "prefix",
+      "FirstSeenCommit": "b1b1bb74de813a7cebf36e3a272cc5da47bbbb92",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1018",
+      "CurrentId": "MT.1018",
+      "Rule": "prefix",
+      "FirstSeenCommit": "b1b1bb74de813a7cebf36e3a272cc5da47bbbb92",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1019",
+      "CurrentId": "MT.1019",
+      "Rule": "prefix",
+      "FirstSeenCommit": "20dcefc374a96d28212728cde11cb032e3b12044",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ID1020",
+      "CurrentId": "MT.1020",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
+      "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "Include",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaEnforceNonPersistentBrowserSession.Tests.ps1"
+    },
+    {
+      "LegacyId": "Limit external participants from having control in a Teams meeting",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
+      "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
+      "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MFA for All users should pass even if not targeting guests",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaMfaForGuest.Tests.ps1"
+    },
+    {
+      "LegacyId": "MFA for All users that excludes any guest type should fail",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaMfaForGuest.Tests.ps1"
+    },
+    {
+      "LegacyId": "MFA for Guests should pass",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaMfaForGuest.Tests.ps1"
+    },
+    {
+      "LegacyId": "MFA for Guests that excludes any guest type should fail",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaMfaForGuest.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.1.1",
+      "CurrentId": "CISA.MS.AAD.1.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "09bba8f272f9ea27f78d100e759aaadecd733af5",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaBlockLegacyAuth.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.1.1v1",
+      "CurrentId": "CISA.MS.AAD.1.1",
+      "Rule": "title",
+      "FirstSeenCommit": "70102b643780d9d16f536152758b04fd6962ffc9",
+      "LastSeenCommit": "79780a4d0e1660e80cde62a48e4ba7345f9dbf6a",
+      "LastSeenFile": "tests/CISA/Test-MtCisaBlockHighRisk.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.2.1",
+      "CurrentId": "CISA.MS.AAD.2.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "09bba8f272f9ea27f78d100e759aaadecd733af5",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaBlockHighRiskUsers.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.2.1v1",
+      "CurrentId": "CISA.MS.AAD.2.1",
+      "Rule": "title",
+      "FirstSeenCommit": "8577f2b693f5492db308555680084c51609f8c63",
+      "LastSeenCommit": "7f7834cb28e6a0e99b942970781c63d1ff0f1703",
+      "LastSeenFile": "tests/CISA/Test-MtCisaBlockHighRisk.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.2.2",
+      "CurrentId": "CISA.MS.AAD.2.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "09bba8f272f9ea27f78d100e759aaadecd733af5",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaNotifyHighRiskUsers.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.2.2v1",
+      "CurrentId": "CISA.MS.AAD.2.2",
+      "Rule": "title",
+      "FirstSeenCommit": "3c4b65421ae30460f255d30102b161a809983339",
+      "LastSeenCommit": "3c4b65421ae30460f255d30102b161a809983339",
+      "LastSeenFile": "tests/CISA/Test-MtCisaNotifyHighRisk.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.2.3",
+      "CurrentId": "CISA.MS.AAD.2.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "09bba8f272f9ea27f78d100e759aaadecd733af5",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaBlockHighRiskSignIns.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.1",
+      "CurrentId": "CISA.MS.AAD.3.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ab24b904bfb0894a97c607aec53f6b04abedbdec",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaPhishResistant.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.2",
+      "CurrentId": "CISA.MS.AAD.3.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ab24b904bfb0894a97c607aec53f6b04abedbdec",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaMfa.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.3",
+      "CurrentId": "CISA.MS.AAD.3.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ab24b904bfb0894a97c607aec53f6b04abedbdec",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaAuthenticatorContext.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.4",
+      "CurrentId": "CISA.MS.AAD.3.4",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ab24b904bfb0894a97c607aec53f6b04abedbdec",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaMethodsMigration.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.5",
+      "CurrentId": "CISA.MS.AAD.3.5",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ab24b904bfb0894a97c607aec53f6b04abedbdec",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaWeakFactor.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.6",
+      "CurrentId": "CISA.MS.AAD.3.6",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ab24b904bfb0894a97c607aec53f6b04abedbdec",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaPrivilegedPhishResistant.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.7",
+      "CurrentId": "CISA.MS.AAD.3.7",
+      "Rule": "prefix",
+      "FirstSeenCommit": "5491b29ed6eea45a5c4e99b4149567b32b7aefe6",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaManagedDevice.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.3.8",
+      "CurrentId": "CISA.MS.AAD.3.8",
+      "Rule": "prefix",
+      "FirstSeenCommit": "2afe4e6e426841a5816f79959e068e9690760875",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaManagedDeviceRegistration.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.4.1",
+      "CurrentId": "CISA.MS.AAD.4.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "713ab50fc4b49baa585ef2f4dedde29ddf676c91",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaDiagnosticSettings.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.5.1",
+      "CurrentId": "CISA.MS.AAD.5.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "5b5ad49b5dafc3b6f44bdf1e30c9c0ccb2cfbfea",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaAppRegistration.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.5.2",
+      "CurrentId": "CISA.MS.AAD.5.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "37a2f6c63ca0f4a56a84e413306b03b3ed9f6693",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaAppUserConsent.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.5.3",
+      "CurrentId": "CISA.MS.AAD.5.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "29edaab113436aab328d80782f563d78da26a338",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaAppAdminConsent.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.5.4",
+      "CurrentId": "CISA.MS.AAD.5.4",
+      "Rule": "prefix",
+      "FirstSeenCommit": "865dce205e73bed1368bdb828030da8cf0aed945",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaAppGroupOwnerConsent.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.6.1",
+      "CurrentId": "CISA.MS.AAD.6.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "1444cfa01e7acda5b2ebfa8439d2a3680d9fd1ae",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaPasswordExpiration.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.1",
+      "CurrentId": "CISA.MS.AAD.7.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "5d72e751ba27318270eadc5db3fc69863caae018",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaGlobalAdminCount.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.2",
+      "CurrentId": "CISA.MS.AAD.7.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "8ee887450c9486e716bab48c20d27916d44649e8",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaGlobalAdminRatio.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.3",
+      "CurrentId": "CISA.MS.AAD.7.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "985bdee4f35c82892419a6458c05036a0a3f8688",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaCloudGlobalAdmin.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.4",
+      "CurrentId": "CISA.MS.AAD.7.4",
+      "Rule": "prefix",
+      "FirstSeenCommit": "4ec027e6a9c9ece38fe78257151cb18fe1c54706",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaPermanentRoleAssignment.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.5",
+      "CurrentId": "CISA.MS.AAD.7.5",
+      "Rule": "prefix",
+      "FirstSeenCommit": "b8025ff97468b7815cb12f8f6e5583b5bba44e7b",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaUnmanagedRoleAssignments.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.6",
+      "CurrentId": "CISA.MS.AAD.7.6",
+      "Rule": "prefix",
+      "FirstSeenCommit": "7314efe45021c54471bd730a2e45d3b44776ed6d",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaRequireActivationApproval.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.7",
+      "CurrentId": "CISA.MS.AAD.7.7",
+      "Rule": "prefix",
+      "FirstSeenCommit": "652a2d4b425710581d7f166c39e1fb941e29989f",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaAssignmentNotification.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.8",
+      "CurrentId": "CISA.MS.AAD.7.8",
+      "Rule": "prefix",
+      "FirstSeenCommit": "718913c2740482a066c6278ed47b27306c006526",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaActivationNotificationGlobalAdmin.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.7.9",
+      "CurrentId": "CISA.MS.AAD.7.9",
+      "Rule": "prefix",
+      "FirstSeenCommit": "718913c2740482a066c6278ed47b27306c006526",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaActivationNotificationOther.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.8.1",
+      "CurrentId": "CISA.MS.AAD.8.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "1444e71412374abfe81c04ff0740b0b8c6601574",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaGuestUserAccess.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.8.2",
+      "CurrentId": "CISA.MS.AAD.8.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "f6a664d4dca2f40afe59aebdb326029a6ea69a73",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaGuestInvitation.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.AAD.8.3",
+      "CurrentId": "CISA.MS.AAD.8.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "6f7a75b6ef626a55a7fdacf6a28c69cc7482ce06",
+      "LastSeenCommit": "bf41a6bbb1bbd95867a093ed580356fdacba39cf",
+      "LastSeenFile": "tests/cisa/entra/Test-MtCisaCrossTenantInboundDefault.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.01.1",
+      "CurrentId": "CISA.MS.EXO.1.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAutoExternalForwarding.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.02.1",
+      "CurrentId": "CISA.MS.EXO.2.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpfRestriction.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.02.2",
+      "CurrentId": "CISA.MS.EXO.2.2",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpfDirective.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.03.1",
+      "CurrentId": "CISA.MS.EXO.3.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDkim.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.04.1",
+      "CurrentId": "CISA.MS.EXO.4.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcRecordExist.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.04.2",
+      "CurrentId": "CISA.MS.EXO.4.2",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcRecordReject.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.04.3",
+      "CurrentId": "CISA.MS.EXO.4.3",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcAggregateCisa.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.05.1",
+      "CurrentId": "CISA.MS.EXO.5.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSmtpAuthentication.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.06.1",
+      "CurrentId": "CISA.MS.EXO.6.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaContactSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.06.2",
+      "CurrentId": "CISA.MS.EXO.6.2",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaCalendarSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.07.1",
+      "CurrentId": "CISA.MS.EXO.7.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExternalSenderWarning.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.08.1",
+      "CurrentId": "CISA.MS.EXO.8.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlp.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.08.2",
+      "CurrentId": "CISA.MS.EXO.8.2",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpPii.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.08.3",
+      "CurrentId": "CISA.MS.EXO.8.3",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpAlternate.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.08.4",
+      "CurrentId": "CISA.MS.EXO.8.4",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpBaselineRule.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.09.1",
+      "CurrentId": "CISA.MS.EXO.9.1",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.09.2",
+      "CurrentId": "CISA.MS.EXO.9.2",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFileType.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.09.3",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.09.4",
+      "CurrentId": "CISA.MS.EXO.9.4",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaEmailFilterAlternative.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.09.5",
+      "CurrentId": "CISA.MS.EXO.9.5",
+      "Rule": "title",
+      "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.1.1",
+      "CurrentId": "CISA.MS.EXO.1.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "8ff27526a46559e3f1c569bef29b0aefb48bbe19",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAutoExternalForwarding.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.10.1",
+      "CurrentId": "CISA.MS.EXO.10.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareScan.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.10.2",
+      "CurrentId": "CISA.MS.EXO.10.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareAction.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.10.3",
+      "CurrentId": "CISA.MS.EXO.10.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareZap.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.11.1",
+      "CurrentId": "CISA.MS.EXO.11.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
+      "LastSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaImpersonation.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.11.2",
+      "CurrentId": "CISA.MS.EXO.11.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
+      "LastSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaImpersonationTip.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.11.3",
+      "CurrentId": "CISA.MS.EXO.11.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
+      "LastSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMailboxIntelligence.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.12.1",
+      "CurrentId": "CISA.MS.EXO.12.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "d119939a0fca63d684941e7194531ec6e6e0a455",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamAllowList.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.12.2",
+      "CurrentId": "CISA.MS.EXO.12.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "4b0afaad10741d4fff485316df5a6b843d3afcfa",
+      "LastSeenCommit": "6d7e5099d9d830c07cab2a660a471f29f74d18f3",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamSafeList.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.13.1",
+      "CurrentId": "CISA.MS.EXO.13.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "af562d509546fe752d9a5771dd9a1e70e2482fb2",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMailboxAuditing.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.14.1",
+      "CurrentId": "CISA.MS.EXO.14.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpamFilter.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.14.2",
+      "CurrentId": "CISA.MS.EXO.14.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpamAction.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.14.3",
+      "CurrentId": "CISA.MS.EXO.14.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpamBypass.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.14.4",
+      "CurrentId": "CISA.MS.EXO.14.4",
+      "Rule": "prefix",
+      "FirstSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenCommit": "3ff87639310f887af7730b1bbaf565cf23fbc5f7",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpamAlternative.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.15.1",
+      "CurrentId": "CISA.MS.EXO.15.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
+      "LastSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLink.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.15.2",
+      "CurrentId": "CISA.MS.EXO.15.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
+      "LastSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkDownloadScan.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.15.3",
+      "CurrentId": "CISA.MS.EXO.15.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
+      "LastSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkClickTracking.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.16.1",
+      "CurrentId": "CISA.MS.EXO.16.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
+      "LastSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExoAlert.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.16.2",
+      "CurrentId": "CISA.MS.EXO.16.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
+      "LastSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExoAlertSiem.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.17.1",
+      "CurrentId": "CISA.MS.EXO.17.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e4b0509ffa2a15e5ee5c89fa846533d21ab648e9",
+      "LastSeenCommit": "e4b0509ffa2a15e5ee5c89fa846533d21ab648e9",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAuditLog.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.17.2",
+      "CurrentId": "CISA.MS.EXO.17.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e4b0509ffa2a15e5ee5c89fa846533d21ab648e9",
+      "LastSeenCommit": "e4b0509ffa2a15e5ee5c89fa846533d21ab648e9",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAuditLogPremium.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.17.3",
+      "CurrentId": "CISA.MS.EXO.17.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e4b0509ffa2a15e5ee5c89fa846533d21ab648e9",
+      "LastSeenCommit": "e4b0509ffa2a15e5ee5c89fa846533d21ab648e9",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAuditLogRetention.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.2.1",
+      "CurrentId": "CISA.MS.EXO.2.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "5ca22ad6f107099c9994b81bedcda4f833b680ea",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpfRestriction.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.2.2",
+      "CurrentId": "CISA.MS.EXO.2.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "5ca22ad6f107099c9994b81bedcda4f833b680ea",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpfDirective.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.3.1",
+      "CurrentId": "CISA.MS.EXO.3.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "0a35ee1d1f66e6fe80b0e759fe51396d37ea459f",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDkim.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.4.1",
+      "CurrentId": "CISA.MS.EXO.4.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "08e311441d83840588ca52f09e5fdaef5364bc20",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcRecordExist.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.4.2",
+      "CurrentId": "CISA.MS.EXO.4.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "34b898fb1dd3c74bd09014074df1ab81a2b5b86e",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcRecordReject.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.4.3",
+      "CurrentId": "CISA.MS.EXO.4.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "6dacd7d49a4fe6a93660fd55b950bc2b8a370485",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcAggregateCisa.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.5.1",
+      "CurrentId": "CISA.MS.EXO.5.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a8b19f8122c6fb1285d73ec63962ea304e07f427",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSmtpAuthentication.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.6.1",
+      "CurrentId": "CISA.MS.EXO.6.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "df52b92fc29ae2c35ed223ad6fc8aa54268a540e",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaContactSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.6.2",
+      "CurrentId": "CISA.MS.EXO.6.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "b7440c550a260c39605a35381e59af40c983bd27",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaCalendarSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.7.1",
+      "CurrentId": "CISA.MS.EXO.7.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "e6e681509659bee44f3c0ca53bdb5792844cc36b",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExternalSenderWarning.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.8.1",
+      "CurrentId": "CISA.MS.EXO.8.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "bc80f82ffe04bf0223eef9fce6513b5e037268dc",
+      "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlp.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.8.2",
+      "CurrentId": "CISA.MS.EXO.8.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "b9e70bfde94c09265882356710b8317955e009bb",
+      "LastSeenCommit": "b9e70bfde94c09265882356710b8317955e009bb",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpPii.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.8.3",
+      "CurrentId": "CISA.MS.EXO.8.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "ee5352deb2ff9c523eda435b05183ad9a847780e",
+      "LastSeenCommit": "ee5352deb2ff9c523eda435b05183ad9a847780e",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpAlternate.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.8.4",
+      "CurrentId": "CISA.MS.EXO.8.4",
+      "Rule": "prefix",
+      "FirstSeenCommit": "833400f78d84f3666605959b2da53c78c0f1893f",
+      "LastSeenCommit": "833400f78d84f3666605959b2da53c78c0f1893f",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpBaselineRule.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.9.1",
+      "CurrentId": "CISA.MS.EXO.9.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
+      "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.9.2",
+      "CurrentId": "CISA.MS.EXO.9.2",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
+      "LastSeenCommit": "925f7440072bbacae7d0787466af5f27d1f826e0",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFileType.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.9.3",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
+      "LastSeenCommit": "e6db16c50cb93a790370609162c683a5d1338928",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.9.4",
+      "CurrentId": "CISA.MS.EXO.9.4",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
+      "LastSeenCommit": "e6db16c50cb93a790370609162c683a5d1338928",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaEmailFilterAlternative.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.EXO.9.5",
+      "CurrentId": "CISA.MS.EXO.9.5",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
+      "LastSeenCommit": "e6db16c50cb93a790370609162c683a5d1338928",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.SHAREPOINT.1.1",
+      "CurrentId": "CISA.MS.SHAREPOINT.1.1",
+      "Rule": "prefix",
+      "FirstSeenCommit": "9fdded345aa8bc6d94cafaa3bc42e3db3e9078d1",
+      "LastSeenCommit": "6fc7aa6949e5db2493586f91fa555b2e4a27d2c5",
+      "LastSeenFile": "tests/cisa/spo/Test-MtCisaSpoSharing.Tests.ps1"
+    },
+    {
+      "LegacyId": "MS.SHAREPOINT.1.3",
+      "CurrentId": "CISA.MS.SHAREPOINT.1.3",
+      "Rule": "prefix",
+      "FirstSeenCommit": "4da3dcda2d88e84504cab66d3547736a4d5101b2",
+      "LastSeenCommit": "07be28f871297f763e97439577bfd78867567027",
+      "LastSeenFile": "tests/cisa/spo/Test-MtCisaSpoSharingAllowedDomain.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Check 'User Access Administrators' at root scope",
+      "CurrentId": "MT.1056",
+      "Rule": "function",
+      "FirstSeenCommit": "5fc121e488c1de3399d8b14dfc56cafd3f81bf7e",
+      "LastSeenCommit": "0c90df79d37fc71ad0a64a7d911497b49bcfb2d9",
+      "LastSeenFile": "tests/Maester/Azure/UserAccessAdmin.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Configure which users are allowed to present in Teams meetings",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Limit external participants from having control in a Teams meeting",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
+      "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Only invited users should be automatically admitted to Teams meetings",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
+      "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Restrict anonymous users from joining meetings",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
+      "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Restrict anonymous users from starting Teams meetings",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
+      "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT. Restrict dial-in users from bypassing a meeting lobby",
+      "CurrentId": "MT.1042",
+      "Rule": "title",
+      "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1024",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "3f0451f4cbf6fa8c2ee94e3071150403df75fcc6",
+      "LastSeenCommit": "093a68b080f02f7c0b0bf847242715b4c928154e",
+      "LastSeenFile": "tests/Maester/Entra/Test-EntraRecommendations.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1033",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d548a5af03e89ecb179708c6ffab4c1c075a3d37",
+      "LastSeenCommit": "ff922fd6f185d2138af4d63aced14898666460d3",
+      "LastSeenFile": "tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1034",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d548a5af03e89ecb179708c6ffab4c1c075a3d37",
+      "LastSeenCommit": "ff922fd6f185d2138af4d63aced14898666460d3",
+      "LastSeenFile": "tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1037 Only users with Presenter role are allowed to present in Teams meetings",
+      "CurrentId": "MT.1037",
+      "Rule": "title",
+      "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
+      "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1038 Only invited users should be automatically admitted to Teams meetings",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
+      "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
+      "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1039 Restrict anonymous users from joining meetings",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
+      "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
+      "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1040",
+      "CurrentId": "CIS.M365.6.5.3",
+      "Rule": "title",
+      "FirstSeenCommit": "ae83037141667b8adda14376303a28118e4d265a",
+      "LastSeenCommit": "3df09deb503965936fc2029882ce949ca1f42764",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1040 Restrict anonymous users from starting Teams meetings",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
+      "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
+      "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1041 Limit external participants from having control in a Teams meeting",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
+      "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
+      "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1042 Restrict dial-in users from bypassing a meeting lobby",
+      "CurrentId": "MT.1042",
+      "Rule": "title",
+      "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
+      "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1045 Only invited users should be automatically admitted to Teams meetings",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
+      "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1046 Restrict anonymous users from joining meetings",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
+      "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1047 Restrict anonymous users from starting Teams meetings",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
+      "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1048 Limit external participants from having control in a Teams meeting",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
+      "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1050 Apps with high-risk permissions having a direct or indirect path to Global Admin",
+      "CurrentId": "MT.1050",
+      "Rule": "manual",
+      "FirstSeenCommit": "e5bd44b95eba7d559edc709b78eb459cb1dfc9e5",
+      "LastSeenCommit": "e5bd44b95eba7d559edc709b78eb459cb1dfc9e5",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1050 Apps with high-risk permissions having a direct path to Global Admin",
+      "CurrentId": "MT.1050",
+      "Rule": "manual",
+      "FirstSeenCommit": "4a9af871baedf2dff0f7901bd872ecf520b5e62d",
+      "LastSeenCommit": "06d1487f8a0dbcd60343476f0043316cb43e0ae2",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1051 Apps with high-risk permissions having an indirect path to Global Admin",
+      "CurrentId": "MT.1051",
+      "Rule": "manual",
+      "FirstSeenCommit": "4a9af871baedf2dff0f7901bd872ecf520b5e62d",
+      "LastSeenCommit": "06d1487f8a0dbcd60343476f0043316cb43e0ae2",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1059",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "61d25e7734c6d1010ebcb29e527fb507603672db",
+      "LastSeenCommit": "61d25e7734c6d1010ebcb29e527fb507603672db",
+      "LastSeenFile": "tests/Maester/Defender/Test-MtMdiHealthIssues.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.1060",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "f7f078f2f50a985663c8115ec639134f8864af7c",
+      "LastSeenCommit": "2525601247f62c96233878d3a871964aa949f8f6",
+      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeApplicationAccessPolicy.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.XXX1",
+      "CurrentId": "MT.1086",
+      "Rule": "title",
+      "FirstSeenCommit": "013cce9d605c9859a43bd1c0c6d75e0a26384532",
+      "LastSeenCommit": "18a24fd602180a43558b93d9bd9bc21da192fe37",
+      "LastSeenFile": "tests/XSPM/Test-XspmCriticalAssetManagement.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.XXX2",
+      "CurrentId": "MT.1087",
+      "Rule": "function",
+      "FirstSeenCommit": "18a24fd602180a43558b93d9bd9bc21da192fe37",
+      "LastSeenCommit": "18a24fd602180a43558b93d9bd9bc21da192fe37",
+      "LastSeenFile": "tests/XSPM/Test-XspmCriticalAssetManagement.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT.nnnn",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "60a8cd968ccf9d471c4d36ff152d461a8be506e9",
+      "LastSeenCommit": "60a8cd968ccf9d471c4d36ff152d461a8be506e9",
+      "LastSeenFile": "tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1001",
+      "CurrentId": "MT.1001",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1003",
+      "CurrentId": "MT.1003",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1004",
+      "CurrentId": "MT.1004",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1005",
+      "CurrentId": "MT.1005",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1006",
+      "CurrentId": "MT.1006",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1007",
+      "CurrentId": "MT.1007",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1008",
+      "CurrentId": "MT.1008",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1009",
+      "CurrentId": "MT.1009",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1010",
+      "CurrentId": "MT.1010",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1011",
+      "CurrentId": "MT.1011",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1012",
+      "CurrentId": "MT.1012",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1013",
+      "CurrentId": "MT.1013",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1014",
+      "CurrentId": "MT.1014",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1015",
+      "CurrentId": "MT.1015",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1016",
+      "CurrentId": "MT.1016",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1017",
+      "CurrentId": "MT.1017",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1018",
+      "CurrentId": "MT.1018",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1019",
+      "CurrentId": "MT.1019",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "MT1020",
+      "CurrentId": "MT.1020",
+      "Rule": "prefix",
+      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
+      "LastSeenFile": "tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA100",
+      "CurrentId": "ORCA.100",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA100.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA101",
+      "CurrentId": "ORCA.101",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA101.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA102",
+      "CurrentId": "ORCA.102",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA102.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA103",
+      "CurrentId": "ORCA.103",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA103.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA104",
+      "CurrentId": "ORCA.104",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA104.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA105",
+      "CurrentId": "ORCA.105",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA105.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA106",
+      "CurrentId": "ORCA.106",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA106.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA107",
+      "CurrentId": "ORCA.107",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA107.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA108",
+      "CurrentId": "ORCA.108",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA108.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA108_1",
+      "CurrentId": "ORCA.108.1",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA108_1.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA109",
+      "CurrentId": "ORCA.109",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA109.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA110",
+      "CurrentId": "ORCA.110",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA110.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA111",
+      "CurrentId": "ORCA.111",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA111.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA112",
+      "CurrentId": "ORCA.112",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA112.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA113",
+      "CurrentId": "ORCA.113",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA113.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA114",
+      "CurrentId": "ORCA.114",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA114.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA115",
+      "CurrentId": "ORCA.115",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA115.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA116",
+      "CurrentId": "ORCA.116",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA116.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA118",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "b238e666fba7c6ba7edccce07d194ebf6b6816d6",
+      "LastSeenFile": "tests/orca/Test-ORCA118.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA118_1",
+      "CurrentId": "ORCA.118.1",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA118_1.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA118_2",
+      "CurrentId": "ORCA.118.2",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA118_2.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA118_3",
+      "CurrentId": "ORCA.118.3",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA118_3.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA118_4",
+      "CurrentId": "ORCA.118.4",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA118_4.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA119",
+      "CurrentId": "ORCA.119",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA119.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA120",
+      "CurrentId": "ORCA.120.3",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "b238e666fba7c6ba7edccce07d194ebf6b6816d6",
+      "LastSeenFile": "tests/orca/Test-ORCA120.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA120_malware",
+      "CurrentId": "ORCA.120.2",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA120_malware.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA120_phish",
+      "CurrentId": "ORCA.120.1",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA120_phish.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA120_spam",
+      "CurrentId": "ORCA.120.3",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA120_spam.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA121",
+      "CurrentId": "ORCA.121",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA121.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA123",
+      "CurrentId": "ORCA.123",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA123.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA124",
+      "CurrentId": "ORCA.124",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA124.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA139",
+      "CurrentId": "ORCA.139",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA139.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA140",
+      "CurrentId": "ORCA.140",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA140.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA141",
+      "CurrentId": "ORCA.141",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA141.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA142",
+      "CurrentId": "ORCA.142",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA142.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA143",
+      "CurrentId": "ORCA.143",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA143.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA156",
+      "CurrentId": "ORCA.156",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA156.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA158",
+      "CurrentId": "ORCA.158",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA158.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA179",
+      "CurrentId": "ORCA.179",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA179.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA180",
+      "CurrentId": "ORCA.180",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA180.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA189",
+      "CurrentId": "ORCA.189",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA189.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA189_2",
+      "CurrentId": "ORCA.189.2",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA189_2.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA205",
+      "CurrentId": "ORCA.205",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA205.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA220",
+      "CurrentId": "ORCA.220",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA220.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA221",
+      "CurrentId": "ORCA.221",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA221.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA222",
+      "CurrentId": "ORCA.222",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA222.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA223",
+      "CurrentId": "ORCA.223",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA223.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA224",
+      "CurrentId": "ORCA.224",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA224.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA225",
+      "CurrentId": "ORCA.225",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA225.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA226",
+      "CurrentId": "ORCA.226",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA226.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA227",
+      "CurrentId": "ORCA.227",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA227.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA228",
+      "CurrentId": "ORCA.228",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA228.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA229",
+      "CurrentId": "ORCA.229",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA229.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA230",
+      "CurrentId": "ORCA.230",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA230.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA231",
+      "CurrentId": "ORCA.231",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA231.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA232",
+      "CurrentId": "ORCA.232",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA232.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA233",
+      "CurrentId": "ORCA.233",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA233.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA233_1",
+      "CurrentId": "ORCA.233.1",
+      "Rule": "title",
+      "FirstSeenCommit": "e16908cdfe921208ddc90a344d0ebba7f030db59",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA233_1.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA234",
+      "CurrentId": "ORCA.234",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA234.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA235",
+      "CurrentId": "ORCA.235",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA235.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA236",
+      "CurrentId": "ORCA.236",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA236.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA237",
+      "CurrentId": "ORCA.237",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA237.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA238",
+      "CurrentId": "ORCA.238",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA238.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA239",
+      "CurrentId": "ORCA.239",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA239.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA240",
+      "CurrentId": "ORCA.240",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA240.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA241",
+      "CurrentId": "ORCA.241",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA241.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA242",
+      "CurrentId": "ORCA.242",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA242.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA243",
+      "CurrentId": "ORCA.243",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA243.Tests.ps1"
+    },
+    {
+      "LegacyId": "ORCA244",
+      "CurrentId": "ORCA.244",
+      "Rule": "title",
+      "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
+      "LastSeenCommit": "8e12ddb478bb7e415497df6ee6bdcca8c783a321",
+      "LastSeenFile": "tests/orca/Test-ORCA244.Tests.ps1"
+    },
+    {
+      "LegacyId": "Only invited users should be automatically admitted to Teams meetings",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
+      "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
+      "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Policy without non persistent browser session should fail",
+      "CurrentId": "retired",
+      "Rule": "manual",
+      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
+      "LastSeenFile": "tests/Maester/Entra/Test-MtCaEnforceNonPersistentBrowserSession.Tests.ps1"
+    },
+    {
+      "LegacyId": "Restrict anonymous users from joining meetings",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
+      "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
+      "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Restrict anonymous users from starting Teams meetings",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
+      "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
+      "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "Restrict dial-in users from bypassing a meeting lobby",
+      "CurrentId": "MT.1042",
+      "Rule": "title",
+      "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
+      "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
+      "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
+    },
+    {
+      "LegacyId": "User should be blocked from using legacy authentication",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "cc21bdde10fb6c77214a46ec22a99a40f5476927",
+      "LastSeenCommit": "e96a086d518922022e2093b15961559e38ab5195",
+      "LastSeenFile": "tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1"
+    }
+  ],
+  "FamilyPrefixes": [
+    "MT.1024.",
+    "MT.1033.",
+    "MT.1034.",
+    "MT.1059.",
+    "MT1060."
+  ]
+}

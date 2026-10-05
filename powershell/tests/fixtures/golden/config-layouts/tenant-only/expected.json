@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "Description": "Maester 2.x golden: which config file(s) Get-MtMaesterConfig picks for this folder. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.",
+    "Layout": "tenant-only",
+    "Files": [
+      "maester-config.11111111-2222-3333-4444-555555555555.json"
+    ],
+    "Notes": "The shipped file is the module's maester-tests/maester-config.json; here Get-MtMaesterTestFolderPath is pointed at the repo tests/ folder, which the build copies there. Paths are repo-relative."
+  },
+  "Scenarios": [
+    {
+      "TenantId": null,
+      "ConfigFile": "tests/maester-config.json",
+      "ConfigSource": "maester-config.json",
+      "CustomOverlay": null,
+      "UsedShippedFile": true,
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": ""
+      },
+      "Severity": {
+        "MT.1001": "Medium",
+        "MT.1003": "High",
+        "MT.1005": "High"
+      }
+    },
+    {
+      "TenantId": "11111111-2222-3333-4444-555555555555",
+      "ConfigFile": "powershell/tests/fixtures/golden/config-layouts/tenant-only/maester-config.11111111-2222-3333-4444-555555555555.json",
+      "ConfigSource": "maester-config.11111111-2222-3333-4444-555555555555.json",
+      "CustomOverlay": null,
+      "UsedShippedFile": false,
+      "GlobalSettings": {
+        "EmergencyAccessAccounts": [
+          {
+            "Type": "User",
+            "Id": "e0000000-0000-0000-0000-000000000001"
+          }
+        ],
+        "GoldenTenantOnly": "tenant"
+      },
+      "Severity": {
+        "MT.1001": null,
+        "MT.1003": null,
+        "MT.1005": "Low"
+      }
+    }
+  ]
+}
