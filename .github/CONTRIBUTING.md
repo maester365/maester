@@ -2,6 +2,13 @@
 
 Thank you for your interest in contributing to Maester.
 
+> [!IMPORTANT]
+> **Contributions paused for the Maester 3.0 rewrite (from October 6, 2026, for about a week)**
+>
+> We're rewriting the Maester engine and all of the tests for 3.0. To avoid merge conflicts, please **don't open new pull requests** (new tests, test updates or engine changes) until the rewrite lands. PRs that are already open won't be merged during the pause.
+>
+> Bug reports and ideas are still welcome as issues. We'll remove this notice when contributions reopen. Thank you for your patience! 💖
+
 The Maester team strives to maintain code that is resilient, safe, easy to understand, and easy to maintain. We welcome contributions that support these goals.
 
 ## Start Here
