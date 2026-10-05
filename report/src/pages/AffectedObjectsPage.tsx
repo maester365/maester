@@ -328,10 +328,11 @@ export default function AffectedObjectsPage() {
                         .some((value) => String(value).toLowerCase().includes(term))
                 )
                     return false
-                return visibleChecks(o).length > 0
+                // Run-level reads have no checks, so only the Referenced tab hides rows without visible checks.
+                return !isReferencedTab || visibleChecks(o).length > 0
             })
             .sort(compare)
-    }, [scoped, search, activeTiles, groupKey, visibleChecks, sort, byPriority])
+    }, [scoped, search, activeTiles, groupKey, visibleChecks, sort, byPriority, isReferencedTab])
 
     const toggleIn = <T,>(set: Set<T>, value: T) => {
         const next = new Set(set)
