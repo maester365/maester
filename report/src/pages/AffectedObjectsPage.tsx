@@ -653,7 +653,8 @@ export default function AffectedObjectsPage() {
                     )}
                 </div>
 
-                {(hasFilters || (isReferencedTab && !sort)) && (
+                {/* hasFilters covers a custom sort, so without it the priority hint is the only content. */}
+                {(hasFilters || isReferencedTab) && (
                     <div className="flex flex-wrap items-center gap-2 px-4 pt-2 text-xs">
                         {[...activeTiles].map((name) => (
                             <span key={name} className="inline-flex h-5 items-center gap-1 rounded bg-orange-50 px-1.5 text-orange-600 dark:bg-orange-950 dark:text-orange-400">
