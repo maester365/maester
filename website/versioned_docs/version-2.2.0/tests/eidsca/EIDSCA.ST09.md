@@ -46,7 +46,7 @@ https://graph.microsoft.com/beta/settings
 | Severity | Medium |
 | Suite | Entra ID SCA |
 | Category | General |
-| PowerShell test | [Test-MtEidscaST09](/docs/commands/Test-MtEidscaST09) |
+| PowerShell test | [Test-MtEidscaST09](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaST09.ps1) |
 | Tags | EIDSCA, EIDSCA.ST09 |
 
 ## Source
