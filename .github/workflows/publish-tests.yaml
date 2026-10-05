@@ -18,6 +18,10 @@ on:
 
 jobs:
   build:
+    # maester365/maester-tests keeps its 2.x content: pipelines clone it at run time and pass
+    # -Path ./tests/Maester. From 3.0 the built-in tests ship in the module, so 3.x releases do
+    # not publish here (Maester 3.0 design, section 15.2).
+    if: ${{ !startsWith(github.event.release.tag_name, '3.') && !startsWith(github.event.release.tag_name, 'v3.') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
