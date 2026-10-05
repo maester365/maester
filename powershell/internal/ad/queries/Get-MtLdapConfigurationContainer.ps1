@@ -134,7 +134,7 @@
 
     $kds = @()
     try {
-        $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID', 'msKds-RootKeyData'))
+        $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID', 'msKds-RootKeyData'))
     }
     catch {
         Write-Verbose "Could not query KDS Root Keys: $($_.Exception.Message)"
