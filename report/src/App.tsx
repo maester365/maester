@@ -7,6 +7,7 @@ import { TenantProvider } from "@/context/TenantContext"
 
 // Import pages
 import HomePage from "@/pages/HomePage"
+import AffectedObjectsPage from "@/pages/AffectedObjectsPage"
 import SettingsPage from "@/pages/SettingsPage"
 import SystemPage from "@/pages/SystemPage"
 import ConfigPage from "@/pages/ConfigPage"
@@ -26,7 +27,7 @@ function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null>
     if (mainRef.current) {
       mainRef.current.scrollTo(0, 0)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
   return null
@@ -35,13 +36,14 @@ function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null>
 function App({ testResults }: { testResults: unknown }) {
   const mainRef = useRef<HTMLElement>(null)
   const { pathname } = useLocation()
-  const page = pathname === "/settings" ? <SettingsPage />
-    : pathname === "/system" ? <SystemPage />
-      : pathname === "/config" ? <ConfigPage />
-        : pathname === "/view/excel" ? <ExcelPage />
-          : pathname === "/view/markdown" ? <MarkdownPage />
-            : pathname === "/view/print" ? <PrintPage />
-              : <HomePage />
+  const page = pathname === "/affected-objects" ? <AffectedObjectsPage />
+    : pathname === "/settings" ? <SettingsPage />
+      : pathname === "/system" ? <SystemPage />
+        : pathname === "/config" ? <ConfigPage />
+          : pathname === "/view/excel" ? <ExcelPage />
+            : pathname === "/view/markdown" ? <MarkdownPage />
+              : pathname === "/view/print" ? <PrintPage />
+                : <HomePage />
 
   return (
     <ThemeProvider>

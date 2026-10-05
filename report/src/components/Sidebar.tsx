@@ -13,6 +13,7 @@ import {
   ChevronUp,
   ChevronDown,
   FileJson,
+  Boxes,
   BookOpen,
   MessageCircle,
   Building2,
@@ -170,6 +171,11 @@ export function Sidebar() {
 
   const displayTenantName = selectedTenant?.TenantName || selectedTenant?.TenantId || "Tenant"
 
+  // Affected objects are opt-in (Invoke-Maester -IncludeAffectedObjects), so only offer the
+  // page when the report actually carries one.
+  const hasAffectedObjects =
+    tenants.some((tenant) => Array.isArray(tenant?.AffectedObjects) && tenant.AffectedObjects.length > 0)
+
 
   return (
     <div
@@ -262,6 +268,17 @@ export function Sidebar() {
           isCollapsed={isCollapsed}
           onClick={scrollReportToTop}
         />
+
+        {hasAffectedObjects && (
+          <NavItem
+            href="/affected-objects"
+            icon={Boxes}
+            label="Affected objects"
+            isActive={pathname === "/affected-objects"}
+            isCollapsed={isCollapsed}
+            onClick={scrollReportToTop}
+          />
+        )}
 
         <NavGroup
           icon={Eye}

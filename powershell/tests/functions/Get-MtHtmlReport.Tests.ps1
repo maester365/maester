@@ -42,11 +42,19 @@ Describe 'Get-MtHtmlReport' {
             }
             Tests          = @(
                 [PSCustomObject]@{
-                    Index = 1; Id = 'MT.1001'; Title = 'Test One'
-                    Name = 'MT.1001: Test One'; Result = 'Passed'
-                    Severity = 'High'; Tag = @('MT.1001'); Block = 'Maester'
+                    Index = 1; Id = 'MT.1033.0'; Title = 'User should be blocked from using legacy authentication (user@contoso.com)'
+                    Name = 'MT.1033.0: User should be blocked from using legacy authentication (user@contoso.com)'; Result = 'Passed'
+                    Severity = 'High'; Tag = @('MT.1033'); Block = 'Maester'
                     Duration = '00:00:01'; ErrorRecord = @()
-                    ResultDetail = [PSCustomObject]@{ TestDescription = 'Desc'; TestResult = 'OK' }
+                    ResultDetail = [PSCustomObject]@{ TestDescription = 'Desc'; TestResult = 'user@contoso.com (11111111-1111-1111-1111-111111111111)' }
+                }
+            )
+            AffectedObjects = @(
+                [PSCustomObject]@{
+                    System = 'EntraID'; AnchorKind = 'Instance'; Type = 'User'
+                    Id = '11111111-1111-1111-1111-111111111111'; UniqueId = 'object-user-001'
+                    DisplayName = 'user@contoso.com'; PortalLink = 'https://example.test/11111111-1111-1111-1111-111111111111'
+                    Tests = @('MT.1033.0'); Sources = @('GraphObjects')
                 }
             )
             Blocks         = @(
@@ -126,13 +134,73 @@ Describe 'Get-MtHtmlReport' {
         It 'Should contain the test data' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
-            $html | Should -BeLike '*MT.1001*'
+            $html | Should -BeLike '*MT.1033.0*'
         }
 
         It 'Should contain emergency access account config data' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
             $html | Should -BeLike '*BreakGlass1@contoso.com*'
+        }
+
+        It 'Should keep user PII when RedactUserIdentity is None' {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity None
+
+            $html | Should -BeLike '*user@contoso.com*'
+        }
+
+        It 'Should default to keeping user PII' {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant
+
+            $html | Should -BeLike '*user@contoso.com*'
+        }
+
+        It 'Should replace user PII with the object unique ID for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity $_
+
+            $html | Should -BeLike '*object-user-001*'
+            $html | Should -Not -BeLike '*user@contoso.com*'
+            $html | Should -Not -BeLike '*11111111-1111-1111-1111-111111111111*'
+        }
+
+        It 'Should redact the signed-in account for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity $_
+
+            $html | Should -Not -BeLike '*test@contoso.com*'
+        }
+
+        It 'Should reject an unknown RedactUserIdentity value' {
+            { Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity 'Always' } |
+                Should -Throw
+        }
+
+        It 'Should redact with a supplied replacement map when the results carry no inventory' {
+            $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
+            $map = @{ 'user@contoso.com' = 'object-user-001'; '11111111-1111-1111-1111-111111111111' = 'object-user-001' }
+
+            $html = Get-MtHtmlReport -MaesterResults $withoutInventory -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap $map
+
+            $html | Should -BeLike '*object-user-001*'
+            $html | Should -Not -BeLike '*user@contoso.com*'
+        }
+
+        It 'Should redact a display name that the script escaping would otherwise hide' {
+            $results = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
+            $results.Tests = @($singleTenant.Tests | Select-Object -Property * -ExcludeProperty ResultDetail |
+                    Select-Object *, @{ n = 'ResultDetail'; e = { [PSCustomObject]@{ TestResult = 'Owner: R&D <Lab> Admin' } } })
+
+            $html = Get-MtHtmlReport -MaesterResults $results -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{ 'R&D <Lab> Admin' = 'object-user-002' }
+
+            $html | Should -BeLike '*Owner: object-user-002*'
+            $html | Should -Not -BeLike '*R\u0026D*'
+        }
+
+        It 'Should warn when redaction is requested but the results carry no inventory' {
+            $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
+
+            $null = Get-MtHtmlReport -MaesterResults $withoutInventory -RedactUserIdentity AllOutputs -WarningVariable warnings -WarningAction SilentlyContinue
+
+            ($warnings -join ' ') | Should -BeLike '*no AffectedObjects*'
         }
 
         It 'Should not contain sample data from the template' {
