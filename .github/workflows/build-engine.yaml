@@ -1,0 +1,63 @@
+# Verifies that the committed engine DLL is the build output of src/Maester.Engine
+# and that it loads and runs on every operating system.
+name: build-engine
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'src/**'
+      - 'powershell/lib/**'
+      - 'build/Build-MaesterEngine.ps1'
+      - '.github/workflows/build-engine.yaml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  verify-dll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: src/global.json
+
+      - name: Rebuild the engine and compare with the committed DLL
+        shell: pwsh
+        run: ./build/Build-MaesterEngine.ps1 -Verify
+
+  load-and-run:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+
+      - name: Load the engine and run its tests
+        shell: pwsh
+        run: |
+          $PSVersionTable | Format-Table -AutoSize | Out-String | Write-Host
+          $config = New-PesterConfiguration
+          $config.Run.Path = './powershell/tests/functions/engine'
+          $config.Run.Exit = $true
+          $config.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $config

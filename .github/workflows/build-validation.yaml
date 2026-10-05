@@ -39,6 +39,7 @@ jobs:
               - 'build/**'
               - 'powershell/**'
               - 'report/**'
+              - 'src/**'
               - 'tests/**'
               - '.github/workflows/build-validation.yaml'
 
@@ -76,17 +77,6 @@ jobs:
         run: |
           ./powershell/tests/pester.ps1
 
-      - name: Run Tests using Windows PowerShell
-        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
-        shell: powershell
-        run: |
-          # Reuse downloaded modules from pwsh
-          $env:PSModulePath = ($env:PSModulePath).TrimEnd(';')+";$HOME\Documents\PowerShell\Modules"
-          # Remove old test results
-          Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
-          # Run Pester tests on Windows PowerShell
-          ./powershell/tests/pester.ps1
-
       - name: Build module and validate output
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
@@ -122,7 +112,7 @@ jobs:
                 "| Coverage      | $pct%             |",
                 "",
                 "> Coverage is measured on the Linux + PowerShell 7 matrix leg only.",
-                "> Code paths gated to Windows PowerShell 5.1 or other platforms may appear uncovered here.",
+                "> Code paths gated to Windows or macOS may appear uncovered here.",
                 "> No threshold is enforced in this baseline run."
               ) -join "`n"
               $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8

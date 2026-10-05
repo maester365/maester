@@ -67,6 +67,7 @@ $ExpectedItems = @(
     'OrcaClasses.ps1'
     'Maester.Format.ps1xml'
     'assets'
+    'lib/Maester.Engine.dll'
     'maester-tests'
     'maester-tests/Custom'
 )
@@ -124,6 +125,18 @@ if ($CommandCount -lt $MinimumCommandCount) {
     throw "Built module exports $CommandCount commands; expected at least $MinimumCommandCount."
 }
 Write-Host "   Verified: module imports and exports $CommandCount commands"
+
+# The engine loads as a nested module: the attribute type resolves and its cmdlet stays private.
+if (-not ('MaesterTestAttribute' -as [type])) {
+    throw 'The engine DLL did not load: [MaesterTestAttribute] is not available after importing the module.'
+}
+if ($ImportedModule.ExportedCommands.ContainsKey('Invoke-MtEngineRun')) {
+    throw 'The engine cmdlet Invoke-MtEngineRun must not be exported.'
+}
+if (-not (& $ImportedModule { Get-Command Invoke-MtEngineRun -ErrorAction SilentlyContinue })) {
+    throw 'The engine cmdlet Invoke-MtEngineRun is not available inside the module.'
+}
+Write-Host '   Verified: engine DLL loaded (attribute types and scheduler)'
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Check 5 — Runtime result details resolve companion Markdown from the bundle

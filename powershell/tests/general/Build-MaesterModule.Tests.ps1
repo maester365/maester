@@ -29,6 +29,8 @@ BeforeAll {
         $null = New-Item -Path (Join-Path $SourceRoot 'public/example') -ItemType Directory -Force
         $null = New-Item -Path (Join-Path $SourceRoot 'internal/orca/nested') -ItemType Directory -Force
         $null = New-Item -Path (Join-Path $SourceRoot 'assets') -ItemType Directory -Force
+        $null = New-Item -Path (Join-Path $SourceRoot 'lib') -ItemType Directory -Force
+        Set-Content -Path (Join-Path $SourceRoot 'lib/Maester.Engine.dll') -Value 'placeholder'
         $null = New-Item -Path $TestsRoot -ItemType Directory -Force
 
         $PublicFunctionContent = if ($WithPublicParseError) {
@@ -165,6 +167,7 @@ Describe 'Build-MaesterModule' {
                 $OutputTestMetadata | Should -Exist
                 $OutputOrcaClasses | Should -Exist
                 $OutputManifest | Should -Exist
+                Join-Path $Fixture.OutputRoot 'lib/Maester.Engine.dll' | Should -Exist
 
                 $Psm1Content = Get-Content -Path $OutputPsm1 -Raw
                 $TestMetadata = Get-Content -Path $OutputTestMetadata -Raw | ConvertFrom-Json

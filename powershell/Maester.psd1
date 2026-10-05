@@ -15,7 +15,7 @@
     ModuleVersion        = '2.0.0'
 
     # Supported PSEditions
-    CompatiblePSEditions = 'Core', 'Desktop'
+    CompatiblePSEditions = 'Core'
 
     # ID used to uniquely identify this module
     GUID                 = '502a7fe7-b1ae-4bf5-98db-00831b14ed6f'
@@ -33,7 +33,7 @@
     Description          = 'Maester is an automation framework to assess and monitor your Microsoft 365 security configuration.'
 
     # Minimum version of the PowerShell engine required by this module
-    PowerShellVersion    = '5.1'
+    PowerShellVersion    = '7.4'
 
 
     # Modules that must be imported into the global environment prior to importing this module
@@ -50,6 +50,10 @@
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
     ScriptsToProcess     = @()
+
+    # The engine: the [MaesterTest] and [MaesterParameter] attribute types and the scheduling core.
+    # Built from src/Maester.Engine by build/Build-MaesterEngine.ps1. Its cmdlets are not exported.
+    NestedModules        = @('lib/Maester.Engine.dll')
 
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess     = @('Maester.Format.ps1xml')

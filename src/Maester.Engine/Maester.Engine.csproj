@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Maester.Engine: the scheduling core and the attribute types of the Maester module.
+    The built DLL is committed to powershell/lib/Maester.Engine.dll. Rebuild it with
+    ./build/Build-MaesterEngine.ps1 after changing anything here; CI rebuilds it and fails
+    when the committed bytes differ.
+  -->
+  <PropertyGroup>
+    <!-- PowerShell 7.4 runs on .NET 8, the oldest runtime Maester 3 supports. -->
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Maester.Engine</AssemblyName>
+    <RootNamespace>Maester.Engine</RootNamespace>
+    <Version>3.0.0</Version>
+    <LangVersion>12.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Reproducible output: no PDB, no source paths, no build-machine data in the DLL. -->
+    <DebugType>none</DebugType>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Compile against the oldest supported PowerShell. The runtime supplies the assembly. -->
+    <PackageReference Include="System.Management.Automation" Version="7.4.0" PrivateAssets="all" ExcludeAssets="runtime" />
+  </ItemGroup>
+</Project>

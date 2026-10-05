@@ -663,6 +663,12 @@ $AssetsOutput = Join-Path $OutputRoot 'assets'
 Copy-Item -Path $AssetsSource -Destination $AssetsOutput -Recurse -Force
 Write-Host '   Copied: assets/'
 
+# Engine DLL (committed prebuilt; see build/Build-MaesterEngine.ps1)
+$LibSource = Join-Path $SourceRoot 'lib'
+$LibOutput = Join-Path $OutputRoot 'lib'
+Copy-Item -Path $LibSource -Destination $LibOutput -Recurse -Force
+Write-Host '   Copied: lib/'
+
 # Format file
 $FormatFile = Join-Path $SourceRoot 'Maester.Format.ps1xml'
 if (Test-Path -LiteralPath $FormatFile) {
