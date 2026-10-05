@@ -674,7 +674,7 @@ Write-Host '   Copied: assets/'
 $LibSource = Join-Path $SourceRoot 'lib'
 $LibOutput = Join-Path $OutputRoot 'lib'
 Copy-Item -Path $LibSource -Destination $LibOutput -Recurse -Force
-Write-Host '   Copied: lib/'
+Write-Information '   Copied: lib/' -InformationAction Continue
 
 # Format file
 $FormatFile = Join-Path $SourceRoot 'Maester.Format.ps1xml'
@@ -715,13 +715,13 @@ Write-Host "   FunctionsToExport: $($ExportFunctionList.Count) functions"
 # migrated to the native format ship as Pester files in builtin-pester/. The Custom folder is the
 # user's and is not shipped; Install-MaesterTests writes its README from assets/templates.
 
-Write-Host '── Phase G: Copying built-in test suites' -ForegroundColor Cyan
+Write-Information '── Phase G: Copying built-in test suites' -InformationAction Continue
 
 $TestsOutput = Join-Path $OutputRoot 'builtin-pester'
 $null = New-Item -Path $TestsOutput -ItemType Directory -Force
 Get-ChildItem -LiteralPath $TestsRoot -Force | Where-Object { $_.Name -ine 'Custom' } |
     Copy-Item -Destination $TestsOutput -Recurse -Force
-Write-Host '   Copied: tests/ → builtin-pester/ (without Custom/)'
+Write-Information '   Copied: tests/ → builtin-pester/ (without Custom/)' -InformationAction Continue
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Phase H — Build profiling (optional)

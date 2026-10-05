@@ -7,17 +7,17 @@ BeforeAll {
         $script:privateValue = 'module-private'
         function Get-PrivateValue { $script:privateValue }
 
-        function Test-Returns { [CmdletBinding()] param([object[]] $Value) foreach ($v in $Value) { $v } }
-        function Test-ReturnsNothing { [CmdletBinding()] param() }
-        function Test-Throws { [CmdletBinding()] param() throw 'boom' }
+        function Test-ReturnValue { [CmdletBinding()] param([object[]] $Value) foreach ($v in $Value) { $v } }
+        function Test-ReturnNothing { [CmdletBinding()] param() }
+        function Test-Throw { [CmdletBinding()] param() throw 'boom' }
         function Test-StatementTerminating { [CmdletBinding()] param() $x = $null; $x.Missing(); return $true }
         function Test-NonTerminating { [CmdletBinding()] param() Write-Error 'soft'; return $true }
-        function Test-Skips {
+        function Test-Skip {
             [CmdletBinding()] param()
             $record = [System.Management.Automation.ErrorRecord]::new([System.Exception]::new('not applicable'), 'MaesterTestSkipped', 'NotSpecified', $null)
             $PSCmdlet.ThrowTerminatingError($record)
         }
-        function Test-SkipsInsideOwnTryCatch {
+        function Test-SkipInsideOwnTryCatch {
             [CmdletBinding()] param()
             try {
                 $record = [System.Management.Automation.ErrorRecord]::new([System.Exception]::new('inner'), 'MaesterTestSkipped', 'NotSpecified', $null)
@@ -27,10 +27,10 @@ BeforeAll {
                 return $false
             }
         }
-        function Test-Breaks { [CmdletBinding()] param() break }
-        function Test-Exits { [CmdletBinding()] param() exit 3 }
-        function Test-Sleeps { [CmdletBinding()] param() Start-Sleep -Seconds 30; $true }
-        function Test-Streams {
+        function Test-Break { [CmdletBinding()] param() break }
+        function Test-Exit { [CmdletBinding()] param() exit 3 }
+        function Test-Sleep { [CmdletBinding()] param() Start-Sleep -Seconds 30; $true }
+        function Test-Stream {
             [CmdletBinding()] param()
             Write-Warning 'w1'
             Write-Verbose 'v1' -Verbose
@@ -48,7 +48,7 @@ BeforeAll {
                 [MaesterParameter(Kind = 'Entra.Group')]
                 [string[]] $ExcludedGroups
             )
-            $true
+            $null -eq $ExcludedGroups
         }
         Export-ModuleMember -Function @()
     }
@@ -100,17 +100,17 @@ Describe 'Invoke-MtEngineRun outcomes' {
         @{ Case = 'a string'; Value = @('text'); Kind = 'NonBoolean' }
         @{ Case = 'two booleans'; Value = @($true, $true); Kind = 'Multiple' }
     ) {
-        $r = Invoke-Fixture -Command 'Test-Returns' -Parameters @{ Value = $Value }
+        $r = Invoke-Fixture -Command 'Test-ReturnValue' -Parameters @{ Value = $Value }
         $r.Status | Should -Be 'Completed'
         $r.ReturnKind | Should -Be $Kind
     }
 
     It 'Reports a test that writes nothing as Null' {
-        (Invoke-Fixture -Command 'Test-ReturnsNothing').ReturnKind | Should -Be 'Null'
+        (Invoke-Fixture -Command 'Test-ReturnNothing').ReturnKind | Should -Be 'Null'
     }
 
     It 'Reports a throw as Error with the message' {
-        $r = Invoke-Fixture -Command 'Test-Throws'
+        $r = Invoke-Fixture -Command 'Test-Throw'
         $r.Status | Should -Be 'Error'
         $r.Reason | Should -Be 'boom'
         $r.TerminatingError | Should -Not -BeNullOrEmpty
@@ -149,19 +149,19 @@ Describe 'Invoke-MtEngineRun outcomes' {
     }
 
     It 'Reports the skip record as Skipped' {
-        $r = Invoke-Fixture -Command 'Test-Skips'
+        $r = Invoke-Fixture -Command 'Test-Skip'
         $r.Status | Should -Be 'Skipped'
         $r.Reason | Should -Be 'not applicable'
     }
 
     It 'Reports a skip re-thrown from the test''s own try/catch as Skipped' {
-        (Invoke-Fixture -Command 'Test-SkipsInsideOwnTryCatch').Status | Should -Be 'Skipped'
+        (Invoke-Fixture -Command 'Test-SkipInsideOwnTryCatch').Status | Should -Be 'Skipped'
     }
 
     It 'Reports a stray break as Aborted and keeps running later items' {
         $items = @(
-            [Maester.Engine.MtWorkItem]@{ Command = 'Test-Breaks' }
-            [Maester.Engine.MtWorkItem]@{ Command = 'Test-Returns'; Parameters = @{ Value = @($true) } }
+            [Maester.Engine.MtWorkItem]@{ Command = 'Test-Break' }
+            [Maester.Engine.MtWorkItem]@{ Command = 'Test-ReturnValue'; Parameters = @{ Value = @($true) } }
         )
         $r = Invoke-MtEngineRun -WorkItem $items -Module $script:fixtureModule -NoStreamReplay
         $r[0].Status | Should -Be 'Aborted'
@@ -169,12 +169,12 @@ Describe 'Invoke-MtEngineRun outcomes' {
     }
 
     It 'Reports exit as Aborted without ending the session' {
-        (Invoke-Fixture -Command 'Test-Exits').Status | Should -Be 'Aborted'
+        (Invoke-Fixture -Command 'Test-Exit').Status | Should -Be 'Aborted'
     }
 
     It 'Stops a test at its deadline and reports Timeout' {
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
-        $r = Invoke-Fixture -Command 'Test-Sleeps' -TimeoutSeconds 1
+        $r = Invoke-Fixture -Command 'Test-Sleep' -TimeoutSeconds 1
         $sw.Elapsed.TotalSeconds | Should -BeLessThan 10
         $r.Status | Should -Be 'Timeout'
     }
@@ -200,28 +200,28 @@ Describe 'Invoke-MtEngineRun outcomes' {
     }
 
     It 'Captures warning, verbose and information records on the result' {
-        $r = Invoke-Fixture -Command 'Test-Streams'
+        $r = Invoke-Fixture -Command 'Test-Stream'
         $r.Warnings.Message | Should -Be 'w1'
         $r.Verbose.Message | Should -Be 'v1'
         $r.Information.MessageData | Should -Contain 'i1'
     }
 
     It 'Replays the records on its own streams unless -NoStreamReplay is set' {
-        $item = [Maester.Engine.MtWorkItem]@{ Command = 'Test-Streams' }
+        $item = [Maester.Engine.MtWorkItem]@{ Command = 'Test-Stream' }
         $null = Invoke-MtEngineRun -WorkItem $item -Module $script:fixtureModule -WarningVariable wv -InformationVariable iv -WarningAction SilentlyContinue
         $wv.Message | Should -Be 'w1'
         $iv.MessageData | Should -Contain 'i1'
     }
 
     It 'Returns one result per item, in order' {
-        $items = 1..5 | ForEach-Object { [Maester.Engine.MtWorkItem]@{ Id = "ITEM.$_"; Command = 'Test-ReturnsNothing' } }
+        $items = 1..5 | ForEach-Object { [Maester.Engine.MtWorkItem]@{ Id = "ITEM.$_"; Command = 'Test-ReturnNothing' } }
         $r = Invoke-MtEngineRun -WorkItem $items -Module $script:fixtureModule -NoStreamReplay
         $r.Id | Should -Be @('ITEM.1', 'ITEM.2', 'ITEM.3', 'ITEM.4', 'ITEM.5')
     }
 
     It 'Calls the start and finish callbacks on the pipeline thread' {
         $script:events = [System.Collections.Generic.List[string]]::new()
-        $item = [Maester.Engine.MtWorkItem]@{ Id = 'CB.1'; Command = 'Test-ReturnsNothing' }
+        $item = [Maester.Engine.MtWorkItem]@{ Id = 'CB.1'; Command = 'Test-ReturnNothing' }
         $null = Invoke-MtEngineRun -WorkItem $item -Module $script:fixtureModule -NoStreamReplay `
             -OnItemStarting { $script:events.Add("start $($args[0].Id)") } `
             -OnItemFinished { $script:events.Add("finish $($args[0].Id)") }

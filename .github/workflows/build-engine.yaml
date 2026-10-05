@@ -57,7 +57,8 @@ jobs:
         run: |
           $PSVersionTable | Format-Table -AutoSize | Out-String | Write-Host
           $config = New-PesterConfiguration
-          $config.Run.Path = './powershell/tests/functions/engine'
+          # Only the tests that need nothing but the DLL; the module's own tests run in build-validation.
+          $config.Run.Path = @('./powershell/tests/functions/engine/Invoke-MtEngineRun.Tests.ps1', './powershell/tests/functions/engine/MaesterTestSchema.Tests.ps1')
           $config.Run.Exit = $true
           $config.Output.Verbosity = 'Detailed'
           Invoke-Pester -Configuration $config

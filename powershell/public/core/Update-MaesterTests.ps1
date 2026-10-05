@@ -32,6 +32,7 @@
     https://maester.dev/docs/commands/Update-MaesterTests
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Kept for compatibility with Maester 2.x')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Justification = 'ShouldProcess is called by Update-MtMaesterTests, which inherits -WhatIf and -Confirm')]
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param(
         # The folder to clean up. Defaults to the current directory.

@@ -150,16 +150,17 @@ Describe 'Resolve-MtRunConfig' {
         '{ "GlobalSettings": { "EmergencyAccessAccounts": [ "a" ], "Other": "base" }, "TestSettings": [ { "Id": "MT.1001", "Severity": "Low" } ] }' | Set-Content (Join-Path $folder 'maester-config.json')
         '{ "TestSettings": [ { "Id": "MT.1001", "Severity": "High" }, { "Id": "MT.1002", "Severity": "Low" } ] }' | Set-Content (Join-Path $folder 'Custom/maester-config.json')
         '{ "GlobalSettings": { "Other": "tenant" }, "TestSettings": [ { "Id": "MT.1002", "Severity": "Critical" } ] }' | Set-Content (Join-Path $folder "maester-config.$tenantId.json")
-        $config = InModuleScope Maester -Parameters @{ Folder = $folder; TenantId = $tenantId } {
-            Resolve-MtRunConfig -Path $Folder -TenantId $TenantId -WarningVariable script:w -WarningAction SilentlyContinue
-            $script:w | Set-Variable -Name tenantWarnings -Scope Global
+        $out = InModuleScope Maester -Parameters @{ Folder = $folder; TenantId = $tenantId } {
+            $c = Resolve-MtRunConfig -Path $Folder -TenantId $TenantId -WarningVariable w -WarningAction SilentlyContinue
+            [pscustomobject]@{ Config = $c; Warnings = @($w) }
         }
+        $config = $out.Config
         $config.GlobalSettings.Other | Should -Be 'tenant'
         $config.GlobalSettings.EmergencyAccessAccounts | Should -Be @('a')
         $config.TestSettingsHash['MT.1001'].Severity | Should -Be 'High'
         $config.TestSettingsHash['MT.1002'].Severity | Should -Be 'Critical'
         $config.ConfigSource | Should -Be "maester-config.json, Custom/maester-config.json, maester-config.$tenantId.json"
-        "$global:tenantWarnings" | Should -BeLike '*EmergencyAccessAccounts*'
+        "$($out.Warnings)" | Should -BeLike '*EmergencyAccessAccounts*'
     }
 
     It 'Uses the shipped defaults when no file is found' {

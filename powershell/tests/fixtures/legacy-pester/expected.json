@@ -1,5 +1,5 @@
 {
-  "description": "Frozen legacy Pester fixtures (custom-test shapes found in user Custom folders). Each entry is one It (or one expanded instance). disposition is the expected Maester 3.0 handling per design section 8: Run (handed to the Pester provider), Superseded (not executed, no row), LoadFailed (one Error/LoadFailed row per statically known ID), NotRun (excluded by default selection). pester2x is the raw Invoke-Pester 5.7.1 result with no tag filter; maester2x is the row Result from Invoke-Maester 2.x with default selection.",
+  "description": "Frozen legacy Pester fixtures (custom-test shapes found in user Custom folders). Each entry is one It (or one expanded instance). disposition is the expected Maester 3.0 handling per design section 8: Run (handed to the Pester provider), Superseded (not executed, no row), LoadFailed (one Error/LoadFailed row per statically known ID), NotRun (excluded by default selection). pester2x is the raw Invoke-Pester 5.7.1 result with no tag filter; maester2x is the row Result from Invoke-Maester 2.x with default selection. Broken.SyntaxError.Tests.ps1 is stored as Broken.SyntaxError.Tests.ps1.txt so static analysis of the repository does not fail on it; copy it to a .Tests.ps1 name to use it.",
   "recordedWith": {
     "pester": "5.7.1",
     "powershell": "7.6.2",

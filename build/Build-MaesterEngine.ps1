@@ -27,6 +27,7 @@
 
     Fails if the committed DLL is not the build output of the committed source.
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Build script output for the console')]
 [CmdletBinding()]
 param (
     [Parameter()]
