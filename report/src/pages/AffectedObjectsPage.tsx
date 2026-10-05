@@ -51,22 +51,25 @@ interface AffectedObject {
 }
 
 const severities = ["Critical", "High", "Medium", "Low", "Info"] as const
-const severityRank: Record<string, number> = { Critical: 5, High: 4, Medium: 3, Low: 2, Info: 1 }
+// Maps rather than object literals: the keys come from report data, and Map.get never resolves
+// inherited properties such as "constructor".
+const severityRanks = new Map<string, number>([["Critical", 5], ["High", 4], ["Medium", 3], ["Low", 2], ["Info", 1]])
+const severityRank = (severity: string | undefined) => (severity ? severityRanks.get(severity) ?? 0 : 0)
 
-const severityBadge: Record<string, string> = {
-    Critical: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300",
-    High: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
-    Medium: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-    Low: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
-    Info: "bg-gray-100 text-gray-600 dark:bg-zinc-800 dark:text-zinc-300",
-}
-const severityDot: Record<string, string> = {
-    Critical: "bg-rose-700",
-    High: "bg-red-600",
-    Medium: "bg-amber-500",
-    Low: "bg-green-600",
-    Info: "bg-gray-500",
-}
+const severityBadge = new Map<string, string>([
+    ["Critical", "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"],
+    ["High", "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"],
+    ["Medium", "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"],
+    ["Low", "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"],
+    ["Info", "bg-gray-100 text-gray-600 dark:bg-zinc-800 dark:text-zinc-300"],
+])
+const severityDot = new Map<string, string>([
+    ["Critical", "bg-rose-700"],
+    ["High", "bg-red-600"],
+    ["Medium", "bg-amber-500"],
+    ["Low", "bg-green-600"],
+    ["Info", "bg-gray-500"],
+])
 const statusBadge: Record<Status, string> = {
     Failed: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
     Passed: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
@@ -76,9 +79,6 @@ const statusMark: Record<Status, string> = { Failed: "✕", Passed: "✓", Other
 
 const referencedSources = ["GraphObjects", "Markdown"]
 
-function lookup<T>(map: Record<string, T>, key: string | undefined | null): T | undefined {
-    return key && Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined
-}
 
 // Only https links are rendered: a javascript: or data: url in an href runs script on click.
 function safePortalLink(link?: string | null) {
@@ -106,7 +106,7 @@ function Pill({ className, mono, title, children }: { className: string; mono?: 
 }
 
 function SeverityPill({ severity }: { severity?: string }) {
-    const style = lookup(severityBadge, severity)
+    const style = severity ? severityBadge.get(severity) : undefined
     return style ? <Pill className={style}>{severity}</Pill> : null
 }
 
@@ -131,7 +131,7 @@ function Segmented<T extends string>({ label, options, isOn, onToggle, render }:
                     key={option}
                     type="button"
                     aria-pressed={isOn(option)}
-                    onClick={() => onToggle(option)}
+                    onClick={() => { onToggle(option) }}
                     className={cn(
                         "flex shrink-0 items-center gap-1.5 border-r border-gray-200 px-2.5 last:border-r-0 dark:border-zinc-700",
                         isOn(option)
@@ -220,7 +220,7 @@ export default function AffectedObjectsPage() {
                     .sort(
                         (a, b) =>
                             (a.status === "Failed" ? 0 : 1) - (b.status === "Failed" ? 0 : 1) ||
-                            (severityRank[b.severity] ?? 0) - (severityRank[a.severity] ?? 0) ||
+                            severityRank(b.severity) - severityRank(a.severity) ||
                             a.id.localeCompare(b.id)
                     )
                 const failedChecks = checks.filter((check) => check.status === "Failed")
@@ -236,8 +236,8 @@ export default function AffectedObjectsPage() {
                             : (record.Sources || []).some((source) => referencedSources.includes(source)),
                     checks,
                     failed: failedChecks.length,
-                    failSeverity: Math.max(0, ...failedChecks.map((check) => severityRank[check.severity] ?? 0)),
-                    maxSeverity: Math.max(0, ...checks.map((check) => severityRank[check.severity] ?? 0)),
+                    failSeverity: Math.max(0, ...failedChecks.map((check) => severityRank(check.severity))),
+                    maxSeverity: Math.max(0, ...checks.map((check) => severityRank(check.severity))),
                 }
             }),
         [records, checksById]
@@ -301,13 +301,22 @@ export default function AffectedObjectsPage() {
         const term = search.trim().toLowerCase()
         const compare = (a: AffectedObject, b: AffectedObject) => {
             if (!sort) return byPriority(a, b)
-            const sorters: Record<SortColumn, () => number> = {
-                type: () => a.info.name.localeCompare(b.info.name) || a.label.localeCompare(b.label),
-                object: () => a.label.localeCompare(b.label),
-                severity: () => a.failSeverity - b.failSeverity || a.maxSeverity - b.maxSeverity,
-                checks: () => a.failed - b.failed || a.checks.length - b.checks.length,
+            let result: number
+            switch (sort.column) {
+                case "type":
+                    result = a.info.name.localeCompare(b.info.name) || a.label.localeCompare(b.label)
+                    break
+                case "object":
+                    result = a.label.localeCompare(b.label)
+                    break
+                case "severity":
+                    result = a.failSeverity - b.failSeverity || a.maxSeverity - b.maxSeverity
+                    break
+                case "checks":
+                    result = a.failed - b.failed || a.checks.length - b.checks.length
+                    break
             }
-            return sort.direction * sorters[sort.column]() || byPriority(a, b)
+            return sort.direction * result || byPriority(a, b)
         }
         return scoped
             .filter((o) => {
@@ -396,7 +405,7 @@ export default function AffectedObjectsPage() {
                 "cursor-pointer select-none whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-900 hover:text-orange-600 dark:text-zinc-100 dark:hover:text-orange-400",
                 className
             )}
-            onClick={() => onSort(column)}
+            onClick={() => { onSort(column) }}
             aria-sort={sort?.column === column ? (sort.direction === 1 ? "ascending" : "descending") : "none"}
         >
             {label}
@@ -407,7 +416,7 @@ export default function AffectedObjectsPage() {
     const renderRow = (o: AffectedObject) => {
         const isOpen = open.has(o.key)
         const checks = visibleChecks(o)
-        const top = severities.find((s) => severityRank[s] === (o.failSeverity || o.maxSeverity))
+        const top = severities.find((s) => severityRank(s) === (o.failSeverity || o.maxSeverity))
         return [
             <tr
                 key={o.key}
@@ -482,7 +491,7 @@ export default function AffectedObjectsPage() {
                             <button
                                 key={c.id}
                                 type="button"
-                                onClick={() => openCheck(o, c.id)}
+                                onClick={() => { openCheck(o, c.id) }}
                                 title="Show the check result"
                                 className="grid min-h-9 w-full grid-cols-[68px_84px_minmax(0,1fr)] items-center gap-3 border-t border-gray-200 py-1.5 pl-12 pr-4 text-left first:border-t-0 hover:bg-gray-100 lg:grid-cols-[68px_84px_150px_minmax(0,1fr)] dark:border-zinc-800 dark:hover:bg-zinc-800/60"
                             >
@@ -521,7 +530,7 @@ export default function AffectedObjectsPage() {
                 <tr
                     key={`group-${name}`}
                     className="cursor-pointer border-b border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900"
-                    onClick={() => setClosedGroups(toggleIn(closedGroups, name))}
+                    onClick={() => { setClosedGroups(toggleIn(closedGroups, name)) }}
                     aria-expanded={!closed}
                 >
                     <td colSpan={columnCount} className="px-3 py-2">
@@ -559,7 +568,7 @@ export default function AffectedObjectsPage() {
                     <button
                         key={id}
                         type="button"
-                        onClick={() => switchTab(id)}
+                        onClick={() => { switchTab(id) }}
                         className={cn(
                             "-mb-px border-b-2 px-1 pb-3 text-sm font-medium transition-colors",
                             tab === id
@@ -580,7 +589,7 @@ export default function AffectedObjectsPage() {
                         type="button"
                         aria-pressed={activeTiles.has(name)}
                         title={`Show only ${name}`}
-                        onClick={() => setTileFilter(toggleIn(tileFilter, name))}
+                        onClick={() => { setTileFilter(toggleIn(tileFilter, name)) }}
                         className={cn(
                             "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
                             activeTiles.has(name)
@@ -605,7 +614,7 @@ export default function AffectedObjectsPage() {
                     <TextInput
                         icon={MagnifyingGlassIcon}
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) => { setSearch(e.target.value) }}
                         placeholder="Search by name, id, type or check"
                         className="min-w-[14rem] flex-1"
                     />
@@ -615,10 +624,10 @@ export default function AffectedObjectsPage() {
                                 label="Severity"
                                 options={severities}
                                 isOn={(s) => severityFilter.has(s)}
-                                onToggle={(s) => setSeverityFilter(toggleIn(severityFilter, s))}
+                                onToggle={(s) => { setSeverityFilter(toggleIn(severityFilter, s)) }}
                                 render={(s) => (
                                     <>
-                                        <span className={cn("h-2 w-2 rounded-full", severityDot[s])} />
+                                        <span className={cn("h-2 w-2 rounded-full", severityDot.get(s))} />
                                         {s}
                                     </>
                                 )}
@@ -631,12 +640,12 @@ export default function AffectedObjectsPage() {
                             />
                         </>
                     )}
-                    <ToggleButton on={grouped} onClick={() => setGrouped(!grouped)} icon={Layers}>
+                    <ToggleButton on={grouped} onClick={() => { setGrouped(!grouped) }} icon={Layers}>
                         Group by {isReferencedTab ? "type" : "area"}
                     </ToggleButton>
                     {isReferencedTab && (
                         <ToggleButton
-                            onClick={() => setOpen(allOpen ? new Set() : new Set([...open, ...rowKeys]))}
+                            onClick={() => { setOpen(allOpen ? new Set() : new Set([...open, ...rowKeys])) }}
                             icon={allOpen ? ListChevronsDownUp : ListChevronsUpDown}
                         >
                             {allOpen ? "Collapse all" : "Expand all"}
@@ -644,12 +653,12 @@ export default function AffectedObjectsPage() {
                     )}
                 </div>
 
-                {(activeTiles.size > 0 || hasFilters || (isReferencedTab && !sort)) && (
+                {(hasFilters || (isReferencedTab && !sort)) && (
                     <div className="flex flex-wrap items-center gap-2 px-4 pt-2 text-xs">
                         {[...activeTiles].map((name) => (
                             <span key={name} className="inline-flex h-5 items-center gap-1 rounded bg-orange-50 px-1.5 text-orange-600 dark:bg-orange-950 dark:text-orange-400">
                                 {name}
-                                <button type="button" aria-label={`Remove ${name} filter`} onClick={() => setTileFilter(toggleIn(tileFilter, name))}>
+                                <button type="button" aria-label={`Remove ${name} filter`} onClick={() => { setTileFilter(toggleIn(tileFilter, name)) }}>
                                     <X className="h-3 w-3" />
                                 </button>
                             </span>
@@ -714,11 +723,11 @@ export default function AffectedObjectsPage() {
 
             <Suspense fallback={null}>
                 <ResultInfoSheet
-                    Item={sheetTests[sheetIndex] ?? null}
+                    Item={sheetTests.find((_, index) => index === sheetIndex) ?? null}
                     isOpen={isSheetOpen}
-                    onClose={() => setIsSheetOpen(false)}
-                    onNavigateNext={sheetIndex < sheetTests.length - 1 ? () => setSheetIndex(sheetIndex + 1) : undefined}
-                    onNavigatePrevious={sheetIndex > 0 ? () => setSheetIndex(sheetIndex - 1) : undefined}
+                    onClose={() => { setIsSheetOpen(false) }}
+                    onNavigateNext={sheetIndex < sheetTests.length - 1 ? () => { setSheetIndex(sheetIndex + 1) } : undefined}
+                    onNavigatePrevious={sheetIndex > 0 ? () => { setSheetIndex(sheetIndex - 1) } : undefined}
                     currentIndex={sheetIndex !== -1 ? sheetIndex + 1 : undefined}
                     totalCount={sheetTests.length}
                 />
