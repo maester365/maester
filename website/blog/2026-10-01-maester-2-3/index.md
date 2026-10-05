@@ -1,6 +1,6 @@
 ---
 title: "Introducing Maester 2.3 🚀"
-description: Security checks for Microsoft Entra Agent ID, the CIS Microsoft 365 Foundations Benchmark v7.0.0, macOS and Azure DevOps Advanced Security coverage, multi-forest Active Directory, a much smaller report, and security hardening across the module.
+description: A new Affected objects report, security checks for Microsoft Entra Agent ID, the CIS Microsoft 365 Foundations Benchmark v7.0.0, macOS and Azure DevOps Advanced Security coverage, multi-forest Active Directory, a much smaller report, and security hardening across the module.
 slug: maester-2-3
 authors: [maesterteam]
 tags: [maester, release, security, entra, m365, agents, azuredevops, activedirectory]
@@ -10,12 +10,13 @@ date: 2026-10-01
 
 Maester 2.3 is here.
 
-2.2 went wide. 2.3 goes deep: AI agents in Microsoft Entra, the latest CIS benchmark, the Macs and code repositories in your estate, and a hard look at how Maester itself handles the data it collects from your tenant.
+2.2 went wide. 2.3 goes deep: the objects behind every failed check, AI agents in Microsoft Entra, the latest CIS benchmark, the Macs and code repositories in your estate, and a hard look at how Maester itself handles the data it collects from your tenant.
 
 <!-- truncate -->
 
 ## Highlights
 
+- **A new Affected objects report** that shows every policy, user, app, and group behind your failed checks, plus optional user identity redaction
 - **14 Microsoft Entra Agent ID checks** for orphaned, over-privileged, and unowned AI agent identities
 - **CIS Microsoft 365 Foundations Benchmark v7.0.0**, with updated logic and guidance across the CIS checks
 - **4 new Entra ID checks** for dynamic group rules and app registration credentials
@@ -120,12 +121,53 @@ The Active Directory checks we shipped in 2.2 got a lot of real-world feedback, 
 - **Connection fixes**: WinRM falls back to HTTP with Negotiate encryption when HTTPS fails and you've supplied credentials, and a domain controller without LDAPS or StartTLS now gives a clear error
 - **Cache scoped to the target**: switching between domains no longer returns cached data from the previous one
 - **SYSVOL on PowerShell 7.2**: SYSVOL content collection now works on PowerShell 7.2
+- **Easier troubleshooting**: `-Verbose` now shows each step of the LDAP connection, certificate problems are detected and explained, and a new troubleshooting guide covers the common connection errors. On Linux and macOS, Maester skips StartTLS by default because of an upstream .NET bug
 
 The AD checks also have **severity ratings** now. Checks that match a checkpoint in the [CERT-FR (ANSSI) Active Directory checklist](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html) take their severity from it and link to it in their docs. Inventory-only checks are rated `Info`. A small number that need a closer look are still unrated. The AD checks also have their own pages in the Tests section of maester.dev, so you can browse them like any other suite.
 
 The AD checks are still in preview and we're still working through feedback, so keep it coming.
 
 Special thanks to [Mike Soule](/contributors/soulemike) for the refactor and connection fixes, [Agnivesh](/contributors/agnivesh) for the severity ratings and AD test pages, and everyone who ran the preview against their own domains and told us what broke.
+
+## See what your failed checks actually affect
+
+A Maester report tells you which checks failed. The question that usually comes next is *what does this affect?* Which Conditional Access policies, which users, which apps? Until now, the answer was buried in the details of each result.
+
+The new **Affected objects** report turns that around. Run Maester with `-IncludeAffectedObjects` and the HTML report gets a new page that lists every object your checks pointed at, alongside every check that pointed at it:
+
+```powershell
+Invoke-Maester -IncludeAffectedObjects
+```
+
+![The Affected objects page, filtered to failed checks, with one Conditional Access policy expanded to show its four failed checks](./img/affected-objects.png)
+
+- **One tile per object type**, showing how many objects have failed checks. Click tiles to filter the table
+- **Sorted for remediation**: Conditional Access policies first, then users, then everything else, each ordered by its most severe failed check
+- **Filters for severity and result**. Select *Failed*, and each row shows only its failed checks
+- **Expand a row** to see each check that referenced the object, and select a check to open its result without leaving the page
+- **Select the object's name** to open it in the admin portal
+
+![A failed check opened in the side panel from the Affected objects page](./img/affected-objects-check.png)
+
+A second tab, **Data touched**, lists everything the run read, grouped by area: Intune, Entra roles, PIM alerts, and so on. It's a quick way to see the scope of what Maester looked at.
+
+The same list is also saved next to your results as `<name>-affected-objects.json`, and as a CSV when you use `-ExportCsv`, so you can feed it into your own tooling. Nothing is collected unless you pass the switch.
+
+### Redact user identities
+
+Sharing a report outside your security team? `-RedactUserIdentity` replaces user display names, UPNs, and object IDs with a stable token:
+
+```powershell
+# Redact the HTML report, keep real identifiers in the JSON, CSV, and other exports
+Invoke-Maester -IncludeAffectedObjects -RedactUserIdentity HtmlOnly
+
+# Redact every output
+Invoke-Maester -RedactUserIdentity AllOutputs
+```
+
+Two things to know before you rely on it. This is pseudonymization, not anonymization: the token is an unsalted hash, so anyone with a list of candidate users can reverse it. And it's best effort: only users the run read from Microsoft Graph (plus the signed-in account) are replaced, and email and Teams notifications aren't redacted.
+
+Special thanks to [Thomas Naunheim](/contributors/cloud-architekt) for building the Affected objects report and redaction.
 
 ## A smaller, faster report
 
@@ -134,6 +176,7 @@ The HTML report has been rebuilt on a much smaller stack. It looks the same, and
 - The report app is **about 85% smaller** (2.24 MB down to 335 kB)
 - The favicon is embedded, so a report opens with **no network requests at all**. That helps when you open reports offline, send them by email, or host them behind a strict Content Security Policy
 - Reports no longer embed each test's internal PowerShell error record. That shaved 40% off a real 764-test report, and stops local file paths (like your user name) from leaking into reports you share
+- The result panel slides in more smoothly, the theme toggle is instant, the table no longer jumps when you select a row, and long test IDs are truncated instead of overlapping the title
 
 Special thanks to [Jan-Henrik Damaschke](https://github.com/itpropro) for the rebuild.
 
@@ -186,6 +229,7 @@ A lot of this release is about Maester behaving well in tenants that aren't quit
 - **Skips stay skips**: a check that skipped from inside its own error handling was reported as **Error**. That affected 17 checks, and it's now fixed centrally, so your custom tests benefit too
 - **Azure DevOps**: a saved ADOPS sign-in with an expired token no longer turns every Azure DevOps test into an error. The tests now skip with "Not connected to Azure DevOps"
 - **Copilot Studio**: when the agent query fails, the `MT.1113` to `MT.1122` skips now say why (for example, a missing Dataverse permission) instead of dumping raw JSON to the console
+- **ORCA checks in scripts**: when the module was imported from inside a script (as many CI pipelines do), every ORCA check failed with `Cannot find type [PolicyInfo]`. The ORCA classes now load in the module's own scope
 - **No runtime downloads for role tiers**: the privileged-role classification used by the permanent role and PIM alert checks now ships with the module instead of being downloaded from GitHub at runtime. It's refreshed automatically through a reviewed pull request each month
 - **Exposure Management**: the XSPM identity queries use the correct Advanced Hunting schema, and the external data sources they use can be pointed at your own mirrors
 - **Fewer false positives**: the MFA checks ignore risk-scoped Conditional Access policies, break-glass accounts are excluded from risk recommendations, `MT.1011` explains why browser-scoped policies don't match, and checks that can't be verified now skip with a reason instead of failing silently
@@ -201,7 +245,7 @@ Special thanks to [Nathan McNulty](/contributors/nathanmcnulty), [Sebastian Clae
 
 ## Thank you to every contributor
 
-Maester 2.3 includes contributions from 24 people:
+Maester 2.3 includes contributions from 25 people:
 
 - [Agnivesh](/contributors/agnivesh) for the Agent ID and dynamic group checks, Active Directory severity ratings, and generated docs fixes.
 - [Beerd Veldman](/contributors/brianveldman) for fixing typos across the docs.
@@ -215,7 +259,7 @@ Maester 2.3 includes contributions from 24 people:
 - [Massimo Mazzariol](/contributors/massimomazzariol) for fixes to BitLocker, Azure DevOps, Entra recommendation links, and unit tests.
 - [Matthias](/contributors/blindzero) for the Graph client timeout, the CISA DKIM coexistence fix, and clearer Entra Connect guidance.
 - [Michael Morten Sonne](/contributors/michaelmsonne) for documenting the risks of client secret authentication.
-- [Mike Soule](/contributors/soulemike) for multi-forest, cross-platform Active Directory support and AD connection fixes.
+- [Mike Soule](/contributors/soulemike) for multi-forest, cross-platform Active Directory support, AD connection fixes, and the AD troubleshooting guide.
 - [Morten Mynster](/contributors/mynster9361) for updating the CIS checks to v7.0.0 and proposing the `Connect-Maester` connection summary.
 - [Nathan McNulty](/contributors/nathanmcnulty) for Graph retries, the PIM fallback, the embedded role classification, and XSPM data sources.
 - [Rafał Fitt](/contributors/rafalfitt) for admin consent guidance in `Connect-Maester` and fixing the XSPM identity queries.
@@ -224,9 +268,10 @@ Maester 2.3 includes contributions from 24 people:
 - [Sebastian Claesson](/contributors/sebastianclaesson) for the Azure DevOps Advanced Security checks and sovereign cloud fixes.
 - [Simon Vedder](/contributors/simon-vedder) for the app registration credential checks.
 - [Stefan Wey](/contributors/weycc81) for EIDSCA remediation docs and fixing "Edit this page".
+- [Thomas Naunheim](/contributors/cloud-architekt) for the Affected objects report and user identity redaction.
 - [Thomas S. Schmidt](/contributors/thomas-s-schmidt) for centralizing the module preamble.
 - [Travis McDade](/contributors/thetechgy) for hardening our GitHub Actions workflows.
-- [Merill Fernando](/contributors/merill) for security hardening, the `Connect-Maester` summary, and report, release, and automation improvements.
+- [Merill Fernando](/contributors/merill) for security hardening, the `Connect-Maester` summary, report polish, and release and automation improvements.
 
 Thank you as well to everyone who reviewed a pull request, reported an issue, tested a preview build, or ran the AD checks against a domain we'll never see. Your feedback shaped this release.
 
@@ -242,6 +287,9 @@ Update-MaesterTests
 Then explore what's new:
 
 ```powershell
+# Affected objects report
+Invoke-Maester -IncludeAffectedObjects
+
 # Microsoft Entra Agent ID (preview)
 Connect-Maester -IncludePreview
 Invoke-Maester -Tag "MT.1200", "MT.1201", "MT.1203", "MT.1204", "MT.1205", "MT.1206", "MT.1207", "MT.1208", "MT.1209", "MT.1210", "MT.1211", "MT.1212", "MT.1213", "MT.1223" -IncludePreview -IncludeLongRunning
@@ -256,7 +304,7 @@ Invoke-Maester -Tag "MT.1214", "MT.1215", "MT.1216", "MT.1217"
 Invoke-Maester -Tag "CIS"
 ```
 
-Maester now tests the agents you're deploying, the Macs and repositories they run on, and itself. Go check the agent identities in your tenant before someone else does.
+Maester now tests the agents you're deploying, the Macs and repositories they run on, and itself, and shows you exactly which objects each failure affects. Go check the agent identities in your tenant before someone else does.
 
 ## Thank you to our Maester Cloud supporters
 
