@@ -36,6 +36,7 @@ function New-MtLdapConnection {
     $networkCredential = $null
 
     try {
+        Write-Verbose "Creating LDAP connection to '$Server' on port $effectivePort with AuthType '$AuthType', UseStartTls: $($UseStartTls.IsPresent), SkipCertificateCheck: $($SkipCertificateCheck.IsPresent)"
         $identifier = New-Object -TypeName System.DirectoryServices.Protocols.LdapDirectoryIdentifier -ArgumentList @(
             $Server,
             $effectivePort,
@@ -111,11 +112,15 @@ function New-MtLdapConnection {
         }
 
         if ($UseStartTls.IsPresent) {
+            Write-Verbose "Negotiating StartTLS with server '$Server' on port $effectivePort"
             $startTlsControls = New-Object -TypeName System.DirectoryServices.Protocols.DirectoryControlCollection
             $connection.SessionOptions.StartTransportLayerSecurity($startTlsControls)
+            Write-Verbose "StartTLS negotiation completed successfully"
         }
 
+        Write-Verbose "Attempting LDAP bind to '$Server' on port $effectivePort with AuthType '$AuthType'"
         $connection.Bind()
+        Write-Verbose "LDAP bind to '$Server' on port $effectivePort succeeded"
         return $connection
     }
     catch {
@@ -128,6 +133,7 @@ function New-MtLdapConnection {
             }
         }
 
+        Write-Verbose "LDAP connection to '$Server' on port $effectivePort failed: $($_.Exception.Message)"
         throw "Failed to establish LDAP connection to '$Server' on port $effectivePort. $($_.Exception.Message)"
     }
     finally {
