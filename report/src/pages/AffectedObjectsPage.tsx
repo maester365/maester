@@ -3,15 +3,15 @@ import { ChevronRight, ExternalLink, Layers, ListChevronsDownUp, ListChevronsUpD
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"
 import { useTenant } from "@/context/TenantContext"
 import { Card, TextInput } from "@/components/ui/report"
-import { assetIconUri } from "@/lib/assetIcons"
-import { assetTypePriority, getAssetTypeInfo, type AssetTypeInfo } from "@/lib/assetTypes"
+import { affectedObjectIconUri } from "@/lib/affectedObjectIcons"
+import { affectedObjectTypePriority, getAffectedObjectTypeInfo, type AffectedObjectTypeInfo } from "@/lib/affectedObjectTypes"
 import { cn } from "@/lib/utils"
 
 const ResultInfoSheet = lazy(() => import("@/components/ResultInfoSheet"))
 
 // The html report embeds a slim record (Referenced flag); older reports and the json output carry
 // the full record with its Sources list.
-interface AssetRecord {
+interface AffectedObjectRecord {
     System: string
     Type: string
     Id?: string | null
@@ -39,8 +39,8 @@ interface CheckInfo {
 
 interface AffectedObject {
     key: string
-    record: AssetRecord
-    info: AssetTypeInfo
+    record: AffectedObjectRecord
+    info: AffectedObjectTypeInfo
     label: string
     portalLink: string | null
     referenced: boolean
@@ -110,8 +110,8 @@ function SeverityPill({ severity }: { severity?: string }) {
     return style ? <Pill className={style}>{severity}</Pill> : null
 }
 
-function TypeIcon({ info, size = 20 }: { info: AssetTypeInfo; size?: number }) {
-    return <img src={assetIconUri(info.icon)} alt="" width={size} height={size} className="shrink-0" />
+function TypeIcon({ info, size = 20 }: { info: AffectedObjectTypeInfo; size?: number }) {
+    return <img src={affectedObjectIconUri(info.icon)} alt="" width={size} height={size} className="shrink-0" />
 }
 
 function Segmented<T extends string>({ label, options, isOn, onToggle, render }: {
@@ -165,10 +165,10 @@ function ToggleButton({ on, onClick, icon: Icon, children }: { on?: boolean; onC
     )
 }
 
-export default function AssetsPage() {
+export default function AffectedObjectsPage() {
     const { selectedTenant: testResults } = useTenant()
-    const records: AssetRecord[] = useMemo(
-        () => (Array.isArray(testResults.AssetInventory) ? testResults.AssetInventory : []),
+    const records: AffectedObjectRecord[] = useMemo(
+        () => (Array.isArray(testResults.AffectedObjects) ? testResults.AffectedObjects : []),
         [testResults]
     )
     const allTests: TestResult[] = useMemo(() => testResults.Tests || [], [testResults])
@@ -214,7 +214,7 @@ export default function AssetsPage() {
     const objects: AffectedObject[] = useMemo(
         () =>
             records.map((record, index) => {
-                const info = getAssetTypeInfo(record.System, record.Type)
+                const info = getAffectedObjectTypeInfo(record.System, record.Type)
                 const checks = (record.Tests || [])
                     .map((id) => checksById.get(id) ?? { id, title: "", status: "Other" as Status, result: "", severity: "" })
                     .sort(
@@ -252,7 +252,7 @@ export default function AssetsPage() {
     // most severe failed check, then the number of failed checks.
     const byPriority = useCallback(
         (a: AffectedObject, b: AffectedObject) =>
-            (assetTypePriority[a.info.name] ?? 2) - (assetTypePriority[b.info.name] ?? 2) ||
+            (affectedObjectTypePriority[a.info.name] ?? 2) - (affectedObjectTypePriority[b.info.name] ?? 2) ||
             b.failSeverity - a.failSeverity ||
             b.failed - a.failed ||
             b.maxSeverity - a.maxSeverity ||
@@ -262,7 +262,7 @@ export default function AssetsPage() {
     )
 
     const groups = useMemo(() => {
-        const map = new Map<string, { count: number; failed: number; info: AssetTypeInfo; first: AffectedObject }>()
+        const map = new Map<string, { count: number; failed: number; info: AffectedObjectTypeInfo; first: AffectedObject }>()
         for (const o of scoped) {
             const key = groupKey(o)
             const group = map.get(key)

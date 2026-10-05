@@ -62,7 +62,7 @@ Collection is opt-in, because it makes the report larger. Use `-IncludeAffectedO
 
 ```powershell
 $results = Invoke-Maester -IncludeAffectedObjects -PassThru
-$results.AssetInventory | Where-Object Type -eq 'ConditionalAccessPolicy'
+$results.AffectedObjects | Where-Object Type -eq 'ConditionalAccessPolicy'
 ```
 
 The HTML report then has an **Affected objects** page, with the checks that passed or failed for
@@ -70,13 +70,13 @@ each object and a link to open it in the admin portal. Without the switch, nothi
 the page is not offered.
 
 When you also use `-OutputFolder`, the list is written next to the other reports as
-`<name>-assets.json`. Adding `-ExportCsv` also writes `<name>-assets.csv`.
+`<name>-affected-objects.json`. Adding `-ExportCsv` also writes `<name>-affected-objects.csv`.
 
 ```powershell
 Invoke-Maester -IncludeAffectedObjects -OutputFolder "C:\path\to\results" -ExportCsv
 ```
 
-Each asset carries a `UniqueId` that is derived from its identity, so the same object keeps the
+Each object carries a `UniqueId` that is derived from its identity, so the same object keeps the
 same id across runs and can be correlated between reports.
 
 ## Hiding user identities from reports
@@ -89,7 +89,7 @@ Reports that are shared beyond the security team often should not name individua
 | --- | --- |
 | `None` (default) | No redaction. |
 | `HtmlOnly` | Redact the html report only, so the machine readable exports keep the real identifiers for follow-up. |
-| `AllOutputs` | Redact every generated output: html, json, markdown, markdown summary, csv, Excel and the asset json/csv. |
+| `AllOutputs` | Redact every generated output: html, json, markdown, markdown summary, csv, Excel and the affected objects json/csv. |
 
 Use `AllOutputs` when any file besides the html report leaves the security team, for example as a
 pipeline artifact or mail attachment.

@@ -2,89 +2,89 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
-Describe 'Asset inventory' {
-    Context 'ConvertTo-MtAssetRecord' {
-        It 'Should use a UPN as the asset label when no display name is available' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
+Describe 'Affected objects' {
+    Context 'ConvertTo-MtAffectedObjectRecord' {
+        It 'Should use a UPN as the object label when no display name is available' {
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
                         id                = '11111111-1111-1111-1111-111111111111'
                         userPrincipalName = 'user@contoso.com'
                     })
             }
 
-            $asset.DisplayName | Should -Be 'user@contoso.com'
-            $asset.Type | Should -Be 'User'
-            $asset.AnchorKind | Should -Be 'Instance'
-            $asset.Source | Should -Be 'GraphObjects'
+            $affectedObject.DisplayName | Should -Be 'user@contoso.com'
+            $affectedObject.Type | Should -Be 'User'
+            $affectedObject.AnchorKind | Should -Be 'Instance'
+            $affectedObject.Source | Should -Be 'GraphObjects'
         }
 
         It 'Should infer the type from @odata.type when no type is declared' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjects ([PSCustomObject]@{
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjects ([PSCustomObject]@{
                         '@odata.type' = '#microsoft.graph.group'
                         id            = '22222222-2222-2222-2222-222222222222'
                         displayName   = 'Sales'
                     })
             }
 
-            $asset.Type | Should -Be 'Group'
-            $asset.PortalLink | Should -BeLike '*groupId/22222222-2222-2222-2222-222222222222*'
+            $affectedObject.Type | Should -Be 'Group'
+            $affectedObject.PortalLink | Should -BeLike '*groupId/22222222-2222-2222-2222-222222222222*'
         }
 
         It 'Should mark tenant level settings types as a surface' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjectType AuthorizationPolicy -GraphObjects ([PSCustomObject]@{
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjectType AuthorizationPolicy -GraphObjects ([PSCustomObject]@{
                         displayName = 'Authorization Policy'
                     })
             }
 
-            $asset.AnchorKind | Should -Be 'Surface'
+            $affectedObject.AnchorKind | Should -Be 'Surface'
         }
 
         It 'Should not drop objects of an unknown type' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjects ([PSCustomObject]@{
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjects ([PSCustomObject]@{
                         '@odata.type' = '#microsoft.graph.someNewThing'
                         id            = '33333333-3333-3333-3333-333333333333'
                     })
             }
 
-            $asset | Should -Not -BeNullOrEmpty
-            $asset.Type | Should -Be '#microsoft.graph.someNewThing'
+            $affectedObject | Should -Not -BeNullOrEmpty
+            $affectedObject.Type | Should -Be '#microsoft.graph.someNewThing'
         }
 
         It 'Should not treat an object of an instance type without id as an addressable instance' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
                         displayName = 'Jane Doe'
                     })
             }
 
-            $asset.AnchorKind | Should -Be 'Unknown'
-            $asset.PortalLink | Should -BeNullOrEmpty
+            $affectedObject.AnchorKind | Should -Be 'Unknown'
+            $affectedObject.PortalLink | Should -BeNullOrEmpty
         }
 
         It 'Should keep the settings page link of a surface type without id' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjectType AuthorizationPolicy -GraphObjects ([PSCustomObject]@{
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjectType AuthorizationPolicy -GraphObjects ([PSCustomObject]@{
                         displayName = 'Authorization Policy'
                     })
             }
 
-            $asset.PortalLink | Should -BeLike '*UserSettings*'
+            $affectedObject.PortalLink | Should -BeLike '*UserSettings*'
         }
 
         It 'Should keep the user principal name on user records' {
-            $asset = InModuleScope Maester {
-                ConvertTo-MtAssetRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
+            $affectedObject = InModuleScope Maester {
+                ConvertTo-MtAffectedObjectRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
                         id                = '11111111-1111-1111-1111-111111111111'
                         displayName       = 'Jane Doe'
                         userPrincipalName = 'jane@contoso.com'
                     })
             }
 
-            $asset.DisplayName | Should -Be 'Jane Doe'
-            $asset.UserPrincipalName | Should -Be 'jane@contoso.com'
+            $affectedObject.DisplayName | Should -Be 'Jane Doe'
+            $affectedObject.UserPrincipalName | Should -Be 'jane@contoso.com'
         }
 
         It 'Should map <OdataType> to the catalog type <Expected>' -ForEach @(
@@ -94,11 +94,11 @@ Describe 'Asset inventory' {
         ) {
             $result = InModuleScope Maester -Parameters @{ OdataType = $OdataType } {
                 param($OdataType)
-                $record = ConvertTo-MtAssetRecord -GraphObjects ([PSCustomObject]@{
+                $record = ConvertTo-MtAffectedObjectRecord -GraphObjects ([PSCustomObject]@{
                         '@odata.type' = $OdataType
                         id            = '33333333-3333-3333-3333-333333333333'
                     })
-                $kept = Select-MtAssetByType -Assets @($record) -WarningVariable warnings -WarningAction SilentlyContinue
+                $kept = Select-MtAffectedObjectByType -Objects @($record) -WarningVariable warnings -WarningAction SilentlyContinue
                 [PSCustomObject]@{ Record = $record; Kept = @($kept).Count; Warnings = @($warnings).Count }
             }
 
@@ -109,99 +109,99 @@ Describe 'Asset inventory' {
         }
     }
 
-    Context 'Get-MtAssetInventoryFromMarkdown' {
+    Context 'Get-MtAffectedObjectFromMarkdown' {
         It 'Should extract a conditional access policy and its display name' {
             $markdown = '| [Require MFA](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444) |'
 
-            $asset = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
                 param($Markdown)
-                Get-MtAssetInventoryFromMarkdown -Markdown $Markdown -TestId 'MT.1001'
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown -TestId 'MT.1001'
             }
 
-            $asset.Type | Should -Be 'ConditionalAccessPolicy'
-            $asset.Id | Should -Be '44444444-4444-4444-4444-444444444444'
-            $asset.DisplayName | Should -Be 'Require MFA'
-            $asset.TestId | Should -Be 'MT.1001'
+            $affectedObject.Type | Should -Be 'ConditionalAccessPolicy'
+            $affectedObject.Id | Should -Be '44444444-4444-4444-4444-444444444444'
+            $affectedObject.DisplayName | Should -Be 'Require MFA'
+            $affectedObject.TestId | Should -Be 'MT.1001'
         }
 
         It 'Should keep the matched url as the portal link' {
             $markdown = '| [Require MFA](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444) |'
 
-            $asset = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
                 param($Markdown)
-                Get-MtAssetInventoryFromMarkdown -Markdown $Markdown
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
             }
 
-            $asset.PortalLink | Should -Be 'https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444'
+            $affectedObject.PortalLink | Should -Be 'https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444'
         }
 
         It 'Should attribute a url to its most specific pattern only' {
             # The service principal url also satisfies the less specific app registration pattern.
             $markdown = '[Contoso App](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/44444444-4444-4444-4444-444444444444/appId/55555555-5555-5555-5555-555555555555)'
 
-            $assets = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+            $objects = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
                 param($Markdown)
-                Get-MtAssetInventoryFromMarkdown -Markdown $Markdown
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
             }
 
-            @($assets).Count | Should -Be 1
-            $assets.Type | Should -Be 'ServicePrincipal'
-            $assets.Id | Should -Be '44444444-4444-4444-4444-444444444444'
+            @($objects).Count | Should -Be 1
+            $objects.Type | Should -Be 'ServicePrincipal'
+            $objects.Id | Should -Be '44444444-4444-4444-4444-444444444444'
         }
 
         It 'Should return nothing for markdown without portal links' {
-            $asset = InModuleScope Maester {
-                Get-MtAssetInventoryFromMarkdown -Markdown 'All good, nothing to report.'
+            $affectedObject = InModuleScope Maester {
+                Get-MtAffectedObjectFromMarkdown -Markdown 'All good, nothing to report.'
             }
 
-            @($asset).Count | Should -Be 0
+            @($affectedObject).Count | Should -Be 0
         }
 
         It 'Should return nothing for empty markdown' {
-            $asset = InModuleScope Maester {
-                Get-MtAssetInventoryFromMarkdown -Markdown ''
+            $affectedObject = InModuleScope Maester {
+                Get-MtAffectedObjectFromMarkdown -Markdown ''
             }
 
-            @($asset).Count | Should -Be 0
+            @($affectedObject).Count | Should -Be 0
         }
 
         It 'Should not take a non-https url from a crafted link as the portal link' {
             # A display name such as this one closes the link early and injects its own url.
             $markdown = '  - [x](javascript:alert`1`//Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444) [y](#)'
 
-            $assets = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+            $objects = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
                 param($Markdown)
-                Get-MtAssetInventoryFromMarkdown -Markdown $Markdown
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
             }
 
-            @($assets | Where-Object { $_.PortalLink -notlike 'https://*' }).Count | Should -Be 0
+            @($objects | Where-Object { $_.PortalLink -notlike 'https://*' }).Count | Should -Be 0
         }
     }
 
-    Context 'Get-MtAssetInventoryFromCache' {
+    Context 'Get-MtAffectedObjectFromCache' {
         It 'Should classify graph cache keys by their url shape' {
-            $assets = InModuleScope Maester {
+            $objects = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/v1.0/users/55555555-5555-5555-5555-555555555555/authentication/methods' = 'x'
                     'https://graph.microsoft.com/beta/policies/authorizationPolicy'                                      = 'x'
                     'https://graph.microsoft.com/v1.0/servicePrincipals?$select=id'                                      = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
             # A keyed read of a directory collection normalizes onto the object it addresses
-            ($assets | Where-Object { $_.Type -eq 'User' }).AnchorKind | Should -Be 'Instance'
-            ($assets | Where-Object { $_.Type -eq 'User' }).Id | Should -Be '55555555-5555-5555-5555-555555555555'
-            ($assets | Where-Object { $_.Type -eq 'policies/authorizationPolicy' }).AnchorKind | Should -Be 'Singleton'
-            ($assets | Where-Object { $_.Type -eq 'servicePrincipals' }).AnchorKind | Should -Be 'Collection'
+            ($objects | Where-Object { $_.Type -eq 'User' }).AnchorKind | Should -Be 'Instance'
+            ($objects | Where-Object { $_.Type -eq 'User' }).Id | Should -Be '55555555-5555-5555-5555-555555555555'
+            ($objects | Where-Object { $_.Type -eq 'policies/authorizationPolicy' }).AnchorKind | Should -Be 'Singleton'
+            ($objects | Where-Object { $_.Type -eq 'servicePrincipals' }).AnchorKind | Should -Be 'Collection'
         }
 
         It 'Should normalize a keyed directory read onto its canonical Entra type' {
-            $assets = InModuleScope Maester {
+            $objects = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/v1.0/users/55555555-5555-5555-5555-555555555555'                       = 'x'
                     'https://graph.microsoft.com/v1.0/users/55555555-5555-5555-5555-555555555555/authentication/methods' = 'x'
@@ -210,107 +210,107 @@ Describe 'Asset inventory' {
                     'https://graph.microsoft.com/v1.0/directoryRoles/99999999-9999-9999-9999-999999999999/members'      = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            # The user is one asset, not one per sub-resource that was read
-            @($assets | Where-Object { $_.Type -eq 'User' }).Count | Should -Be 1
-            ($assets | Where-Object { $_.Type -eq 'User' }).System | Should -Be 'EntraID'
-            ($assets | Where-Object { $_.Type -eq 'User' }).Id | Should -Be '55555555-5555-5555-5555-555555555555'
-            ($assets | Where-Object { $_.Type -eq 'Group' }).Id | Should -Be '77777777-7777-7777-7777-777777777777'
-            ($assets | Where-Object { $_.Type -eq 'ServicePrincipal' }).AnchorKind | Should -Be 'Instance'
+            # The user is one object, not one per sub-resource that was read
+            @($objects | Where-Object { $_.Type -eq 'User' }).Count | Should -Be 1
+            ($objects | Where-Object { $_.Type -eq 'User' }).System | Should -Be 'EntraID'
+            ($objects | Where-Object { $_.Type -eq 'User' }).Id | Should -Be '55555555-5555-5555-5555-555555555555'
+            ($objects | Where-Object { $_.Type -eq 'Group' }).Id | Should -Be '77777777-7777-7777-7777-777777777777'
+            ($objects | Where-Object { $_.Type -eq 'ServicePrincipal' }).AnchorKind | Should -Be 'Instance'
             # The sub-resource must not leak into the type name as directoryRoles/members
-            ($assets | Where-Object { $_.Type -eq 'DirectoryRole' }).Id | Should -Be '99999999-9999-9999-9999-999999999999'
+            ($objects | Where-Object { $_.Type -eq 'DirectoryRole' }).Id | Should -Be '99999999-9999-9999-9999-999999999999'
         }
 
         It 'Should treat a UPN key as a user rather than folding it into the type' {
-            $asset = InModuleScope Maester {
+            $affectedObject = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/v1.0/users/alice@contoso.com?$select=id' = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            $asset.System | Should -Be 'EntraID'
-            $asset.Type | Should -Be 'User'
-            $asset.Id | Should -Be 'alice@contoso.com'
-            $asset.AnchorKind | Should -Be 'Instance'
+            $affectedObject.System | Should -Be 'EntraID'
+            $affectedObject.Type | Should -Be 'User'
+            $affectedObject.Id | Should -Be 'alice@contoso.com'
+            $affectedObject.AnchorKind | Should -Be 'Instance'
         }
 
         It 'Should keep a guest UPN whole and decode it' {
-            $asset = InModuleScope Maester {
+            $affectedObject = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/v1.0/users/john_contoso.com%23EXT%23@tenant.onmicrosoft.com' = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            $asset.System | Should -Be 'EntraID'
-            $asset.Type | Should -Be 'User'
-            $asset.Id | Should -Be 'john_contoso.com#EXT#@tenant.onmicrosoft.com'
-            $asset.UserPrincipalName | Should -Be 'john_contoso.com#EXT#@tenant.onmicrosoft.com'
+            $affectedObject.System | Should -Be 'EntraID'
+            $affectedObject.Type | Should -Be 'User'
+            $affectedObject.Id | Should -Be 'john_contoso.com#EXT#@tenant.onmicrosoft.com'
+            $affectedObject.UserPrincipalName | Should -Be 'john_contoso.com#EXT#@tenant.onmicrosoft.com'
         }
 
         It 'Should strip an empty POST body suffix from the cache key' {
-            $asset = InModuleScope Maester {
+            $affectedObject = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/beta/policies/authorizationPolicy_' = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            $asset.Type | Should -Be 'policies/authorizationPolicy'
-            $asset.AnchorKind | Should -Be 'Singleton'
+            $affectedObject.Type | Should -Be 'policies/authorizationPolicy'
+            $affectedObject.AnchorKind | Should -Be 'Singleton'
         }
 
         It 'Should read an alternate key such as appId as the instance id' {
-            $asset = InModuleScope Maester {
+            $affectedObject = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     "https://graph.microsoft.com/beta/applications(appId='66666666-6666-6666-6666-666666666666')" = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            $asset.Type | Should -Be 'applications'
-            $asset.Id | Should -Be '66666666-6666-6666-6666-666666666666'
-            $asset.AnchorKind | Should -Be 'Instance'
+            $affectedObject.Type | Should -Be 'applications'
+            $affectedObject.Id | Should -Be '66666666-6666-6666-6666-666666666666'
+            $affectedObject.AnchorKind | Should -Be 'Instance'
         }
 
         It 'Should leave collections that are not keyed directory reads alone' {
-            $assets = InModuleScope Maester {
+            $objects = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/v1.0/users?$select=id'                     = 'x'
                     'https://graph.microsoft.com/v1.0/applications/99999999-9999-9999-9999-999999999999' = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            ($assets | Where-Object { $_.Type -eq 'users' }).AnchorKind | Should -Be 'Collection'
+            ($objects | Where-Object { $_.Type -eq 'users' }).AnchorKind | Should -Be 'Collection'
             # applications is excluded from the mapping: the cache keys by object id, portal links by app id
-            ($assets | Where-Object { $_.Type -eq 'applications' }).System | Should -Be 'MicrosoftGraph'
+            ($objects | Where-Object { $_.Type -eq 'applications' }).System | Should -Be 'MicrosoftGraph'
         }
 
         It 'Should merge a cache read with the check that rendered the same object' {
@@ -319,7 +319,7 @@ Describe 'Asset inventory' {
                     'https://graph.microsoft.com/beta/groups/44444444-4444-4444-4444-444444444444' = 'x'
                 }
                 try {
-                    Get-MtAssetInventory -MaesterResults ([PSCustomObject]@{
+                    Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{
                             Tests = @([PSCustomObject]@{
                                     Id           = 'MT.1044'
                                     ResultDetail = [PSCustomObject]@{
@@ -347,8 +347,8 @@ Describe 'Asset inventory' {
                     'https://graph.microsoft.com/v1.0/users/alice@contoso.com' = 'x'
                 }
                 try {
-                    $inventory = @(Get-MtAssetInventory -MaesterResults ([PSCustomObject]@{ Tests = @() }))
-                    $results = [PSCustomObject]@{ AssetInventory = $inventory }
+                    $inventory = @(Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{ Tests = @() }))
+                    $results = [PSCustomObject]@{ AffectedObjects = $inventory }
                     $map = Get-MtUserIdentityReplacementMap -MaesterResults $results
                     $json = $results | ConvertTo-Json -Depth 5 -Compress
                     (ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $map -JsonEncoded).Contains('alice@contoso.com')
@@ -361,48 +361,48 @@ Describe 'Asset inventory' {
         }
 
         It 'Should skip batch requests' {
-            $assets = InModuleScope Maester {
+            $objects = InModuleScope Maester {
                 $__MtSession.GraphCache = @{ 'https://graph.microsoft.com/v1.0/$batch_{"requests":[]}' = 'x' }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            @($assets).Count | Should -Be 0
+            @($objects).Count | Should -Be 0
         }
 
         It 'Should skip action endpoints that address no resource' {
-            $assets = InModuleScope Maester {
+            $objects = InModuleScope Maester {
                 $__MtSession.GraphCache = @{ 'https://graph.microsoft.com/v1.0/security/runHuntingQuery_{"Query":"x"}' = 'x' }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            @($assets).Count | Should -Be 0
+            @($objects).Count | Should -Be 0
         }
 
         It 'Should anchor a nested keyed path on the outermost object' {
-            $asset = InModuleScope Maester {
+            $affectedObject = InModuleScope Maester {
                 $__MtSession.GraphCache = @{
                     'https://graph.microsoft.com/v1.0/policies/22222222-2222-2222-2222-222222222222/assignments/33333333-3333-3333-3333-333333333333' = 'x'
                 }
                 try {
-                    Get-MtAssetInventoryFromCache
+                    Get-MtAffectedObjectFromCache
                 } finally {
                     $__MtSession.GraphCache = @{}
                 }
             }
 
-            $asset.Id | Should -Be '22222222-2222-2222-2222-222222222222'
+            $affectedObject.Id | Should -Be '22222222-2222-2222-2222-222222222222'
         }
     }
 
-    Context 'Get-MtAssetInventory' {
+    Context 'Get-MtAffectedObject' {
         It 'Should merge sources and aggregate the referencing tests' {
             $results = [PSCustomObject]@{
                 Tests = @(
@@ -431,7 +431,7 @@ Describe 'Asset inventory' {
 
             $inventory = InModuleScope Maester -Parameters @{ Results = $results } {
                 param($Results)
-                Get-MtAssetInventory -MaesterResults $Results -ExcludeSessionCache
+                Get-MtAffectedObject -MaesterResults $Results -ExcludeSessionCache
             }
 
             @($inventory).Count | Should -Be 1
@@ -446,9 +446,9 @@ Describe 'Asset inventory' {
         It 'Should produce a stable unique id for the same identity' {
             $ids = InModuleScope Maester {
                 @(
-                    (Get-MtAssetUniqueId -System 'EntraID' -Type 'User' -Id '11111111-1111-1111-1111-111111111111'),
-                    (Get-MtAssetUniqueId -System 'EntraID' -Type 'User' -Id '11111111-1111-1111-1111-111111111111'),
-                    (Get-MtAssetUniqueId -System 'EntraID' -Type 'User' -Id '99999999-9999-9999-9999-999999999999')
+                    (Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id '11111111-1111-1111-1111-111111111111'),
+                    (Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id '11111111-1111-1111-1111-111111111111'),
+                    (Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id '99999999-9999-9999-9999-999999999999')
                 )
             }
 
@@ -461,8 +461,8 @@ Describe 'Asset inventory' {
             # record, and which casing survives depends on hashtable enumeration order.
             $ids = InModuleScope Maester {
                 @(
-                    (Get-MtAssetUniqueId -System 'MicrosoftGraph' -Type 'policies/authorizationPolicy' -Id $null),
-                    (Get-MtAssetUniqueId -System 'MicrosoftGraph' -Type 'policies/authorizationpolicy' -Id $null)
+                    (Get-MtAffectedObjectUniqueId -System 'MicrosoftGraph' -Type 'policies/authorizationPolicy' -Id $null),
+                    (Get-MtAffectedObjectUniqueId -System 'MicrosoftGraph' -Type 'policies/authorizationpolicy' -Id $null)
                 )
             }
 
@@ -470,7 +470,7 @@ Describe 'Asset inventory' {
         }
     }
 
-    Context 'IncludeAssetInventory gating' {
+    Context 'IncludeAffectedObjects gating' {
         BeforeAll {
             $script:pesterResults = InModuleScope Maester {
                 [PSCustomObject]@{
@@ -500,16 +500,16 @@ Describe 'Asset inventory' {
                 ConvertTo-MtMaesterResult -PesterResults $PesterResults -SkipVersionCheck
             }
 
-            $result.PSObject.Properties.Name | Should -Not -Contain 'AssetInventory'
+            $result.PSObject.Properties.Name | Should -Not -Contain 'AffectedObjects'
         }
 
         It 'Should attach the inventory when requested' {
             $result = InModuleScope Maester -Parameters @{ PesterResults = $script:pesterResults } {
                 param($PesterResults)
-                ConvertTo-MtMaesterResult -PesterResults $PesterResults -SkipVersionCheck -IncludeAssetInventory
+                ConvertTo-MtMaesterResult -PesterResults $PesterResults -SkipVersionCheck -IncludeAffectedObjects
             }
 
-            $result.PSObject.Properties.Name | Should -Contain 'AssetInventory'
+            $result.PSObject.Properties.Name | Should -Contain 'AffectedObjects'
         }
 
         It 'Should only capture related objects when the session collects an inventory' {
@@ -519,21 +519,21 @@ Describe 'Asset inventory' {
                     displayName = 'Test User'
                 }
 
-                $previous = $__MtSession.IncludeAssetInventory
+                $previous = $__MtSession.IncludeAffectedObjects
                 try {
-                    $__MtSession.IncludeAssetInventory = $false
-                    Add-MtTestResultDetail -TestName 'AssetGateOff' -Result 'ok' -Description 'd' `
+                    $__MtSession.IncludeAffectedObjects = $false
+                    Add-MtTestResultDetail -TestName 'ObjectGateOff' -Result 'ok' -Description 'd' `
                         -GraphObjects $graphObject -GraphObjectType Users
-                    $off = $__MtSession.TestResultDetail['AssetGateOff'].ContainsKey('RelatedObjects')
+                    $off = $__MtSession.TestResultDetail['ObjectGateOff'].ContainsKey('RelatedObjects')
 
-                    $__MtSession.IncludeAssetInventory = $true
-                    Add-MtTestResultDetail -TestName 'AssetGateOn' -Result 'ok' -Description 'd' `
+                    $__MtSession.IncludeAffectedObjects = $true
+                    Add-MtTestResultDetail -TestName 'ObjectGateOn' -Result 'ok' -Description 'd' `
                         -GraphObjects $graphObject -GraphObjectType Users
-                    $on = @($__MtSession.TestResultDetail['AssetGateOn'].RelatedObjects)
+                    $on = @($__MtSession.TestResultDetail['ObjectGateOn'].RelatedObjects)
                 } finally {
-                    $__MtSession.IncludeAssetInventory = $previous
-                    $__MtSession.TestResultDetail.Remove('AssetGateOff')
-                    $__MtSession.TestResultDetail.Remove('AssetGateOn')
+                    $__MtSession.IncludeAffectedObjects = $previous
+                    $__MtSession.TestResultDetail.Remove('ObjectGateOff')
+                    $__MtSession.TestResultDetail.Remove('ObjectGateOn')
                 }
 
                 [PSCustomObject]@{ Off = $off; On = $on.Count; OnId = $on[0].Id }
@@ -549,7 +549,7 @@ Describe 'Asset inventory' {
     Context 'PII redaction' {
         BeforeAll {
             $script:results = [PSCustomObject]@{
-                AssetInventory = @(
+                AffectedObjects = @(
                     [PSCustomObject]@{
                         System = 'EntraID'; Type = 'User'; UniqueId = 'asset-user-001'
                         Id = '11111111-1111-1111-1111-111111111111'; DisplayName = 'Jane Doe'
@@ -562,7 +562,7 @@ Describe 'Asset inventory' {
             }
         }
 
-        It 'Should map user display names and ids but leave other asset types alone' {
+        It 'Should map user display names and ids but leave other object types alone' {
             $map = InModuleScope Maester -Parameters @{ Results = $script:results } {
                 param($Results)
                 Get-MtUserIdentityReplacementMap -MaesterResults $Results
@@ -576,7 +576,7 @@ Describe 'Asset inventory' {
         It 'Should not map display names too short to match safely' {
             $map = InModuleScope Maester {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
-                        AssetInventory = @(
+                        AffectedObjects = @(
                             [PSCustomObject]@{
                                 System = 'EntraID'; Type = 'User'; UniqueId = 'asset-user-002'
                                 Id = '33333333-3333-3333-3333-333333333333'; DisplayName = 'Ed'
@@ -648,8 +648,8 @@ Describe 'Asset inventory' {
                     $previous = $__MtSession.GraphCache
                     $__MtSession.GraphCache = $Cache
                     try {
-                        $inventory = @(Get-MtAssetInventory -MaesterResults ([PSCustomObject]@{ Tests = @() }))
-                        $map = Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{ AssetInventory = $inventory }) -IncludeSessionCache
+                        $inventory = @(Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{ Tests = @() }))
+                        $map = Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{ AffectedObjects = $inventory }) -IncludeSessionCache
                         [PSCustomObject]@{
                             Inventory = ($inventory | Where-Object Id -EQ '99999999-9999-9999-9999-999999999999').UniqueId
                             Map       = $map['lee@contoso.com']
@@ -744,10 +744,10 @@ Describe 'Asset inventory' {
             }
         }
 
-        It 'Should map the user principal name of a user asset' {
+        It 'Should map the user principal name of a user object' {
             $map = InModuleScope Maester {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
-                        AssetInventory = @(
+                        AffectedObjects = @(
                             [PSCustomObject]@{
                                 System = 'EntraID'; Type = 'User'; UniqueId = 'asset-user-003'
                                 Id = '44444444-4444-4444-4444-444444444444'; DisplayName = 'Jane Doe'
@@ -763,7 +763,7 @@ Describe 'Asset inventory' {
         It 'Should give a user read by UPN and by object id one token whatever the inventory order' {
             $map = InModuleScope Maester {
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
-                        AssetInventory = @(
+                        AffectedObjects = @(
                             [PSCustomObject]@{
                                 System = 'EntraID'; Type = 'User'; UniqueId = 'asset-by-upn'
                                 Id = 'jane@contoso.com'; UserPrincipalName = 'jane@contoso.com'
@@ -783,24 +783,24 @@ Describe 'Asset inventory' {
 
         It 'Should keep users passed without an id apart so each one is redacted' {
             $result = InModuleScope Maester {
-                $records = ConvertTo-MtAssetRecord -GraphObjectType Users -GraphObjects @(
+                $records = ConvertTo-MtAffectedObjectRecord -GraphObjectType Users -GraphObjects @(
                     [PSCustomObject]@{ displayName = 'Jane Doe'; userPrincipalName = 'jane@contoso.com' }
                     [PSCustomObject]@{ displayName = 'Bob Smith'; userPrincipalName = 'bob@contoso.com' }
                 )
-                $inventory = @(Get-MtAssetInventory -ExcludeSessionCache -MaesterResults ([PSCustomObject]@{
+                $inventory = @(Get-MtAffectedObject -ExcludeSessionCache -MaesterResults ([PSCustomObject]@{
                             Tests = @([PSCustomObject]@{
                                     Id = 'MT.1001'; ResultDetail = [PSCustomObject]@{ RelatedObjects = $records; TestResult = '' }
                                 })
                         }))
                 [PSCustomObject]@{
                     Inventory = $inventory
-                    Map       = Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{ AssetInventory = $inventory })
+                    Map       = Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{ AffectedObjects = $inventory })
                 }
             }
 
             $result.Inventory.Count | Should -Be 2
             # Same token the signed-in account or a users/{upn} cache read of Bob would get.
-            $result.Map['bob@contoso.com'] | Should -Be (InModuleScope Maester { Get-MtAssetUniqueId -System 'EntraID' -Type 'User' -Id 'bob@contoso.com' })
+            $result.Map['bob@contoso.com'] | Should -Be (InModuleScope Maester { Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id 'bob@contoso.com' })
             $result.Map['Bob Smith'] | Should -BeLike 'asset-*'
             $result.Map['bob@contoso.com'] | Should -Be $result.Map['Bob Smith']
             $result.Map['bob@contoso.com'] | Should -Not -Be $result.Map['jane@contoso.com']
@@ -861,10 +861,10 @@ Describe 'Asset inventory' {
 
         It 'Should carry the user principal name from related objects into the inventory' {
             $inventory = InModuleScope Maester {
-                $record = ConvertTo-MtAssetRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
+                $record = ConvertTo-MtAffectedObjectRecord -GraphObjectType Users -GraphObjects ([PSCustomObject]@{
                         id = '55555555-5555-5555-5555-555555555555'; displayName = 'Jane Doe'; userPrincipalName = 'jane@contoso.com'
                     })
-                Get-MtAssetInventory -ExcludeSessionCache -MaesterResults ([PSCustomObject]@{
+                Get-MtAffectedObject -ExcludeSessionCache -MaesterResults ([PSCustomObject]@{
                         Tests = @([PSCustomObject]@{
                                 Id = 'MT.1001'; ResultDetail = [PSCustomObject]@{ RelatedObjects = @($record); TestResult = '' }
                             })
@@ -874,7 +874,7 @@ Describe 'Asset inventory' {
             $inventory.UserPrincipalName | Should -Be 'jane@contoso.com'
         }
 
-        It 'Should collect user assets from every tenant of a merged result' {
+        It 'Should collect user objects from every tenant of a merged result' {
             $map = InModuleScope Maester -Parameters @{ Results = $script:results } {
                 param($Results)
                 Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{ Tenants = @($Results) })
@@ -900,6 +900,20 @@ Describe 'Asset inventory' {
             }
 
             $json | Should -Be '{"name":"asset-user-001"}'
+        }
+
+        It 'Should redact values next to the escapes Windows PowerShell writes for quotes and html characters' {
+            # Windows PowerShell's ConvertTo-Json writes ' < > & as \u0027 \u003c \u003e \u0026.
+            $content = '{"s":"displayName = \u0027Jane Doe\u0027, upn = \u0027jane@contoso.com\u0027 \u003cb\u003e"}'
+            $json = InModuleScope Maester -Parameters @{ Content = $content } {
+                param($Content)
+                ConvertTo-MtRedactedReportContent -Content $Content -JsonEncoded -ReplacementMap @{
+                    'Jane Doe'         = 'asset-user-001'
+                    'jane@contoso.com' = 'asset-user-001'
+                }
+            }
+
+            $json | Should -Be '{"s":"displayName = \u0027asset-user-001\u0027, upn = \u0027asset-user-001\u0027 \u003cb\u003e"}'
         }
 
         It 'Should return the content unchanged when the map is empty' {

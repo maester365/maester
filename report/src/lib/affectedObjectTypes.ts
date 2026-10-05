@@ -1,8 +1,8 @@
-// Display names, areas and icons for the asset types in the AssetInventory. The PowerShell side
+// Display names, areas and icons for the object types in the AffectedObjects. The PowerShell side
 // keeps its canonical type names (ConditionalAccessPolicy, or a Graph path for cache reads); this
 // file only decides how they read on the Affected objects page.
 
-export interface AssetTypeInfo {
+export interface AffectedObjectTypeInfo {
   name: string
   area: string
   icon: string
@@ -80,7 +80,7 @@ function sentenceCase(value: string) {
   return words.join(" ").replace(/\b(Vpp|Ndes|Pim)\b/gi, (acronym) => acronym.toUpperCase())
 }
 
-export function getAssetTypeInfo(system: string, type: string): AssetTypeInfo {
+export function getAffectedObjectTypeInfo(system: string, type: string): AffectedObjectTypeInfo {
   const known = Object.prototype.hasOwnProperty.call(knownTypes, type) ? knownTypes[type] : undefined
   if (known) {
     return { name: known[0], icon: known[1], area: systemNames[system] ?? system }
@@ -103,7 +103,7 @@ export function getAssetTypeInfo(system: string, type: string): AssetTypeInfo {
 }
 
 // Conditional Access policies and users are what most reviews start with, so they lead the default order.
-export const assetTypePriority: Record<string, number> = {
+export const affectedObjectTypePriority: Record<string, number> = {
   "Conditional Access policy": 0,
   User: 1,
 }

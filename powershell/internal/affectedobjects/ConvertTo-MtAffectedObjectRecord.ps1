@@ -1,7 +1,7 @@
-﻿function ConvertTo-MtAssetRecord {
+﻿function ConvertTo-MtAffectedObjectRecord {
     <#
     .SYNOPSIS
-    Converts Graph objects passed to Add-MtTestResultDetail into normalized asset inventory records.
+    Converts Graph objects passed to Add-MtTestResultDetail into normalized affected objects records.
 
     .DESCRIPTION
     Produces one record per Graph object with a stable schema:
@@ -26,8 +26,8 @@
 
     $portalLinkTemplate = Get-MtPortalLinkTemplate
 
-    # GraphObjectType → canonical asset type. Must match the type names emitted by
-    # Get-MtAssetInventoryFromMarkdown so records from both sources dedupe correctly.
+    # GraphObjectType → canonical object type. Must match the type names emitted by
+    # Get-MtAffectedObjectFromMarkdown so records from both sources dedupe correctly.
     $canonicalType = @{
         ConditionalAccess = 'ConditionalAccessPolicy'
         Users             = 'User'
@@ -38,13 +38,13 @@
 
     # GraphObjectType whose objects are really another type: the check links to a settings blade
     # but passes the affected objects. IdentityProtection results are the users at risk.
-    $assetTypeAlias = @{
+    $objectTypeAlias = @{
         IdentityProtection = 'Users'
     }
 
     # Kept out of Get-MtPortalLinkTemplate: Get-GraphObjectMarkdown would render these types without a link.
     # Applications are absent because markdown deep links identify them by appId, not object id.
-    $odataAssetType = @{
+    $odataObjectType = @{
         '#microsoft.graph.servicePrincipal'        = 'ServicePrincipal'
         '#microsoft.graph.directoryRole'           = 'DirectoryRole'
         '#microsoft.graph.conditionalAccessPolicy' = 'ConditionalAccessPolicy'
@@ -63,8 +63,8 @@
         if (-not $type -and $odataType -and $portalLinkTemplate.OdataTypeMapping.ContainsKey($odataType)) {
             $type = $portalLinkTemplate.OdataTypeMapping[$odataType]
         }
-        if ($type -and $assetTypeAlias.ContainsKey($type)) {
-            $type = $assetTypeAlias[$type]
+        if ($type -and $objectTypeAlias.ContainsKey($type)) {
+            $type = $objectTypeAlias[$type]
         }
 
         $portalLink = $null
@@ -77,7 +77,7 @@
         }
 
         if ($type -and $portalLinkTemplate.InstanceTypes -contains $type) {
-            # Without an id the object is not addressable, and every id-less record would merge into one asset.
+            # Without an id the object is not addressable, and every id-less record would merge into one object.
             $anchorKind = if ($id) { 'Instance' } else { 'Unknown' }
         } elseif ($type) {
             $anchorKind = 'Surface'
@@ -92,7 +92,7 @@
             AnchorKind        = $anchorKind
             Type              = if ($type -and $canonicalType.ContainsKey($type)) { $canonicalType[$type] }
             elseif ($type) { $type }
-            elseif ($odataType -and $odataAssetType.ContainsKey($odataType)) { $odataAssetType[$odataType] }
+            elseif ($odataType -and $odataObjectType.ContainsKey($odataType)) { $odataObjectType[$odataType] }
             elseif ($odataType) { $odataType }
             else { 'Unknown' }
             Id                = $id

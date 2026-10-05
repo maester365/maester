@@ -173,8 +173,8 @@ export function Sidebar() {
 
   // Affected objects are opt-in (Invoke-Maester -IncludeAffectedObjects), so only offer the
   // page when the report actually carries one.
-  const hasAssetInventory =
-    tenants.some((tenant) => Array.isArray(tenant?.AssetInventory) && tenant.AssetInventory.length > 0)
+  const hasAffectedObjects =
+    tenants.some((tenant) => Array.isArray(tenant?.AffectedObjects) && tenant.AffectedObjects.length > 0)
 
 
   return (
@@ -269,12 +269,12 @@ export function Sidebar() {
           onClick={scrollReportToTop}
         />
 
-        {hasAssetInventory && (
+        {hasAffectedObjects && (
           <NavItem
-            href="/assets"
+            href="/affected-objects"
             icon={Boxes}
             label="Affected objects"
-            isActive={pathname === "/assets"}
+            isActive={pathname === "/affected-objects"}
             isCollapsed={isCollapsed}
             onClick={scrollReportToTop}
           />

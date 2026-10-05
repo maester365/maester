@@ -1,11 +1,11 @@
-﻿function Get-MtAssetInventoryFromCache {
+﻿function Get-MtAffectedObjectFromCache {
     <#
     .SYNOPSIS
-    Derives an asset inventory from the request caches in the current Maester session.
+    Derives the affected objects from the request caches in the current Maester session.
 
     .DESCRIPTION
     Walks $__MtSession.GraphCache and $__MtSession.GitHubCache — both keyed by request URL —
-    and parses each key into a normalized asset record (System / AnchorKind / Type / Id / SourceUri).
+    and parses each key into a normalized object record (System / AnchorKind / Type / Id / SourceUri).
 
     Graph URIs yield:
     - Instance records when a path segment is a GUID (e.g. users/{id}/authentication/methods)
@@ -30,7 +30,7 @@
     )
     # Graph collections whose keyed reads address a directory object the rest of the inventory
     # already knows under a canonical EntraID type. Mapping them here means a check that both
-    # reads users/{id} and renders a portal link produces one asset, not two.
+    # reads users/{id} and renders a portal link produces one object, not two.
     # applications is deliberately absent: the cache keys it by object id while the portal links
     # parsed from markdown carry the app id, so the two would not merge anyway.
     $directoryTypes = @{
@@ -61,7 +61,7 @@
             if ($segments[-1] -in $actionSegments) { continue }
 
             # A keyed read of a directory collection is the object itself, whatever sub-resource
-            # follows: users/{id}/authentication/methods is still that user, not a fifth asset.
+            # follows: users/{id}/authentication/methods is still that user, not a fifth object.
             # The key may be a GUID or a UPN, and a UPN must be recognised or it lands in Type,
             # where the report's PII redaction never reaches it.
             if ($segments.Count -ge 2 -and $directoryTypes.ContainsKey($segments[0])) {
@@ -89,7 +89,7 @@
             $typeSegments = [System.Collections.Generic.List[string]]::new()
             foreach ($segment in $segments) {
                 if ($segment -match $guidPattern) {
-                    # First key wins: in a/{x}/b/{y} the asset is the outer object, not the child.
+                    # First key wins: in a/{x}/b/{y} the object is the outer object, not the child.
                     if (-not $instanceId) { $instanceId = $segment }
                 } elseif ($segment -match "^(?<res>[^(]+)\((?:\w+=)?'(?<key>[^']+)'\)") {
                     # Covers key('x') and alternate keys such as applications(appId='x').

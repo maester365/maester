@@ -7,7 +7,7 @@ import { TenantProvider } from "@/context/TenantContext"
 
 // Import pages
 import HomePage from "@/pages/HomePage"
-import AssetsPage from "@/pages/AssetsPage"
+import AffectedObjectsPage from "@/pages/AffectedObjectsPage"
 import SettingsPage from "@/pages/SettingsPage"
 import SystemPage from "@/pages/SystemPage"
 import ConfigPage from "@/pages/ConfigPage"
@@ -36,7 +36,7 @@ function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null>
 function App({ testResults }: { testResults: unknown }) {
   const mainRef = useRef<HTMLElement>(null)
   const { pathname } = useLocation()
-  const page = pathname === "/assets" ? <AssetsPage />
+  const page = pathname === "/affected-objects" ? <AffectedObjectsPage />
     : pathname === "/settings" ? <SettingsPage />
       : pathname === "/system" ? <SystemPage />
         : pathname === "/config" ? <ConfigPage />

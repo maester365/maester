@@ -132,17 +132,17 @@
         # The path to the file to save the test results in html format. The filename should include an .html extension.
         [string] $OutputHtmlFile,
 
-        # Collect the asset inventory: the consolidated list of objects the run touched.
-        # Adds the AssetInventory property to the results, the Affected objects page to the html report and,
-        # with -OutputFolder, the <name>-assets.json file (plus -assets.csv with -ExportCsv).
+        # Collect the affected objects: the consolidated list of objects the run touched.
+        # Adds the AffectedObjects property to the results, the Affected objects page to the html report and,
+        # with -OutputFolder, the <name>-affected-objects.json file (plus -affected-objects.csv with -ExportCsv).
         # Off by default because it enlarges the report; it is enabled automatically when
         # -RedactUserIdentity is used, since redaction is driven by the inventory.
         [switch] $IncludeAffectedObjects,
 
         # Replaces user identities (display names, user principal names and object ids) with stable
-        # asset ids in the generated outputs.
+        # stable ids in the generated outputs.
         # None (default): no redaction.
-        # AllOutputs: redact every generated output (html, json, markdown, csv, Excel, assets json and csv).
+        # AllOutputs: redact every generated output (html, json, markdown, csv, Excel, affected objects json and csv).
         # HtmlOnly: redact the html report only, so the machine readable exports keep the
         # real identifiers for follow up while the shareable report does not.
         [ValidateSet('None', 'HtmlOnly', 'AllOutputs')]
@@ -275,13 +275,13 @@
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
             if ($IncludeAffectedObjects.IsPresent) {
                 # Added only when requested so the OutputFiles of runs that do not opt in are unchanged.
-                $out | Add-Member -MemberType NoteProperty -Name OutputAssetsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.json") -Force
+                $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.json") -Force
             }
 
             if ($ExportCsv.IsPresent) {
                 $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
                 if ($IncludeAffectedObjects.IsPresent) {
-                    $out | Add-Member -MemberType NoteProperty -Name OutputAssetsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-assets.csv") -Force
+                    $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.csv") -Force
                 }
             }
             if ($ExportExcel.IsPresent) {
@@ -355,10 +355,10 @@
     # Reset the graph cache and urls to avoid stale data.
     Clear-ModuleVariable
 
-    # Redaction maps user identities onto their asset ids, so it needs the inventory even when
-    # the caller did not ask for the Assets page. Collect it in that case, but only surface it
+    # Redaction maps user identities onto their stable ids, so it needs the inventory even when
+    # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
     # in the results and output files when -IncludeAffectedObjects was actually requested.
-    $collectAssetInventory = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
+    $collectAffectedObjects = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
 
     if (-not $DisableTelemetry) {
         Write-Telemetry -EventName InvokeMaester
@@ -523,11 +523,11 @@
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
     # Capture is for this run's tests only; later ad-hoc Add-MtTestResultDetail calls must not collect.
-    $__MtSession.IncludeAssetInventory = $collectAssetInventory
+    $__MtSession.IncludeAffectedObjects = $collectAffectedObjects
     try {
         $pesterResults = Invoke-Pester -Configuration $pesterConfig
     } finally {
-        $__MtSession.IncludeAssetInventory = $false
+        $__MtSession.IncludeAffectedObjects = $false
     }
 
     if ($pesterResults) {
@@ -552,7 +552,7 @@
             }
         }
 
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAssetInventory:$collectAssetInventory
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects
 
         # 'AllOutputs' redacts every generated output, 'HtmlOnly' leaves the machine readable
         # exports intact so findings can still be traced back to the real objects.
@@ -563,9 +563,9 @@
         }
 
         # Drop the inventory again when it was only collected to drive redaction, so the reports
-        # stay the size the caller asked for and the Assets page is not silently turned on.
-        if ($collectAssetInventory -and -not $IncludeAffectedObjects.IsPresent) {
-            $maesterResults.PSObject.Properties.Remove('AssetInventory')
+        # stay the size the caller asked for and the Affected objects page is not silently turned on.
+        if ($collectAffectedObjects -and -not $IncludeAffectedObjects.IsPresent) {
+            $maesterResults.PSObject.Properties.Remove('AffectedObjects')
         }
 
         # Csv and Excel are produced by Convert-MtResultsToFlatObject, which writes the file
@@ -585,17 +585,17 @@
             $output | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
         }
 
-        if (![string]::IsNullOrEmpty($out.OutputAssetsJsonFile) -and $maesterResults.AssetInventory) {
-            Write-MtProgress -Activity 'Creating asset inventory'
-            $output = ConvertTo-Json -InputObject @($maesterResults.AssetInventory) -Depth 5 -WarningAction SilentlyContinue
+        if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsJsonFile) -and $maesterResults.AffectedObjects) {
+            Write-MtProgress -Activity 'Creating affected objects'
+            $output = ConvertTo-Json -InputObject @($maesterResults.AffectedObjects) -Depth 5 -WarningAction SilentlyContinue
             if ($redactNonHtml) {
                 $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
             }
-            $output | Out-File -FilePath $out.OutputAssetsJsonFile -Encoding UTF8
+            $output | Out-File -FilePath $out.OutputAffectedObjectsJsonFile -Encoding UTF8
         }
 
-        if (![string]::IsNullOrEmpty($out.OutputAssetsCsvFile) -and $maesterResults.AssetInventory) {
-            $output = $maesterResults.AssetInventory | Select-Object System, AnchorKind, Type, Id, UniqueId, DisplayName, UserPrincipalName, PortalLink,
+        if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsCsvFile) -and $maesterResults.AffectedObjects) {
+            $output = $maesterResults.AffectedObjects | Select-Object System, AnchorKind, Type, Id, UniqueId, DisplayName, UserPrincipalName, PortalLink,
             @{ Name = 'Tests'; Expression = { $_.Tests -join '; ' } },
             @{ Name = 'Sources'; Expression = { $_.Sources -join '; ' } } |
                 ConvertTo-Csv -NoTypeInformation
@@ -603,7 +603,7 @@
                 # Piped so the replacement regex is built once, not once per row.
                 $output = @($output | ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements)
             }
-            $output | Out-File -FilePath $out.OutputAssetsCsvFile -Encoding UTF8
+            $output | Out-File -FilePath $out.OutputAffectedObjectsCsvFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {

@@ -1,13 +1,13 @@
-﻿function Get-MtAssetTypeDefinition {
+﻿function Get-MtAffectedObjectTypeDefinition {
     <#
     .SYNOPSIS
-    Returns the curated asset type catalog used to filter the asset inventory.
+    Returns the curated object type catalog used to filter the affected objects.
 
     .DESCRIPTION
-    Single source of truth for which object types count as an "asset".
+    Single source of truth for which object types count as an affected object.
 
     KnownTypes lists the systems whose Type values are a curated, enumerable set. A record of
-    such a system whose Type is not listed is dropped by Get-MtAssetInventory and reported in a
+    such a system whose Type is not listed is dropped by Get-MtAffectedObject and reported in a
     warning, so a new type is noticed and added here instead of silently reaching the report.
 
     Systems that are not listed in KnownTypes (MicrosoftGraph, ...) are pass-through: their Type
@@ -18,9 +18,9 @@
     without a warning.
 
     .EXAMPLE
-    (Get-MtAssetTypeDefinition).KnownTypes.EntraID
+    (Get-MtAffectedObjectTypeDefinition).KnownTypes.EntraID
 
-    Lists the Entra ID object types that are inventoried as assets.
+    Lists the Entra ID object types that are listed as affected objects.
     #>
     [CmdletBinding()]
     [OutputType([hashtable])]

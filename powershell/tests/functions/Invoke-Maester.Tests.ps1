@@ -124,7 +124,7 @@
         $summaryContent | Should -Match '\|\s*Total\b[^|]*\|'
     }
 
-    Context 'Asset inventory and PII redaction' {
+    Context 'Affected objects and PII redaction' {
         BeforeAll {
             if (Get-MgContext) { Disconnect-Graph }
 
@@ -191,7 +191,7 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
 
             # HtmlOnly keeps the machine readable export intact
             Get-Content (Join-Path $folder 'Pii.json') -Raw | Should -BeLike '*Jane Doe*'
-            Test-Path (Join-Path $folder 'Pii-assets.json') | Should -BeFalse
+            Test-Path (Join-Path $folder 'Pii-affected-objects.json') | Should -BeFalse
         }
 
         It 'Redacts every output with -RedactUserIdentity AllOutputs' {
@@ -218,18 +218,18 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
         It 'Leaves the affected objects out unless -IncludeAffectedObjects is used' {
             $folder = & $script:invokePii @{}
 
-            Test-Path (Join-Path $folder 'Pii-assets.json') | Should -BeFalse
+            Test-Path (Join-Path $folder 'Pii-affected-objects.json') | Should -BeFalse
             $json = Get-Content (Join-Path $folder 'Pii.json') -Raw
-            $json | Should -Not -BeLike '*"AssetInventory":*'
+            $json | Should -Not -BeLike '*"AffectedObjects":*'
             $json | Should -Not -BeLike '*"RelatedObjects":*'
-            Get-Content (Join-Path $folder 'Pii.html') -Raw | Should -Not -BeLike '*"AssetInventory":*'
+            Get-Content (Join-Path $folder 'Pii.html') -Raw | Should -Not -BeLike '*"AffectedObjects":*'
         }
 
         It 'Embeds only the fields the Affected objects page reads in the html report' {
             $folder = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
             $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
-            $html | Should -BeLike '*"AssetInventory":*'
+            $html | Should -BeLike '*"AffectedObjects":*'
             $html | Should -BeLike '*"Referenced":true*'
             $html | Should -Not -BeLike '*"UniqueId":*'
             $html | Should -Not -BeLike '*"RelatedObjects":*'
@@ -240,19 +240,20 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             $json | Should -BeLike '*"RelatedObjects":*'
         }
 
-        It 'Writes the assets json as an array even for a single asset' {
+        It 'Writes the objects json as an array even for a single object' {
             $folder = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
-            $assetsJson = (Get-Content (Join-Path $folder 'Pii-assets.json') -Raw).Trim()
-            $assetsJson | Should -BeLike '`[*'
-            $assets = @($assetsJson | ConvertFrom-Json)
-            ($assets | Where-Object Type -EQ 'User').UserPrincipalName | Should -Be 'jane.doe@contoso.com'
+            $affectedObjectsJson = (Get-Content (Join-Path $folder 'Pii-affected-objects.json') -Raw).Trim()
+            $affectedObjectsJson | Should -BeLike '`[*'
+            # Windows PowerShell's ConvertFrom-Json emits a json array as one object, so enumerate it.
+            $objects = @($affectedObjectsJson | ConvertFrom-Json | ForEach-Object { $_ })
+            ($objects | Where-Object Type -EQ 'User').UserPrincipalName | Should -Be 'jane.doe@contoso.com'
         }
 
         It 'Stops capturing related objects once the run is finished' {
             $null = & $script:invokePii @{ IncludeAffectedObjects = $true }
 
-            InModuleScope Maester { $__MtSession.IncludeAssetInventory } | Should -BeFalse
+            InModuleScope Maester { $__MtSession.IncludeAffectedObjects } | Should -BeFalse
         }
 
         It 'Does not leave capture on when the run stops before the tests' {
@@ -267,13 +268,13 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             }
             Invoke-Maester @params -ErrorAction SilentlyContinue
 
-            InModuleScope Maester { $__MtSession.IncludeAssetInventory } | Should -BeFalse
+            InModuleScope Maester { $__MtSession.IncludeAffectedObjects } | Should -BeFalse
         }
 
-        It 'Redacts the assets csv with -RedactUserIdentity AllOutputs' {
+        It 'Redacts the objects csv with -RedactUserIdentity AllOutputs' {
             $folder = & $script:invokePii @{ RedactUserIdentity = 'AllOutputs'; IncludeAffectedObjects = $true; ExportCsv = $true }
 
-            $csv = Get-Content (Join-Path $folder 'Pii-assets.csv') -Raw
+            $csv = Get-Content (Join-Path $folder 'Pii-affected-objects.csv') -Raw
             $csv | Should -Not -BeLike '*Jane Doe*'
             $csv | Should -Not -BeLike '*jane.doe@contoso.com*'
             $csv | Should -BeLike '*asset-*'

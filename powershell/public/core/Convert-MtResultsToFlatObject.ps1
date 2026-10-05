@@ -182,7 +182,12 @@
             }
 
             try {
-                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8BOM -NoTypeInformation
+                if ($PSVersionTable.PSVersion.Major -ge 6) {
+                    $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8BOM -NoTypeInformation
+                } else {
+                    # Windows PowerShell has no -UseQuotes (it always quotes) and its UTF8 encoding already writes a BOM.
+                    $FlattenedResults | Export-Csv -Path $CsvFilePath -Encoding UTF8 -NoTypeInformation
+                }
                 Write-Verbose "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"

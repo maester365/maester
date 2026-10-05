@@ -1,7 +1,7 @@
 function ConvertTo-MtRedactedReportContent {
     <#
     .SYNOPSIS
-    Replaces user identity values in generated report content with stable asset ids.
+    Replaces user identity values in generated report content with stable stable ids.
 
     .DESCRIPTION
     Applies the replacement map produced by Get-MtUserIdentityReplacementMap to a rendered report
@@ -53,7 +53,7 @@ function ConvertTo-MtRedactedReportContent {
         # Object ids and UPNs are matched by shape and looked up in the dictionary, so their number
         # does not affect the speed: a single alternation of every user read from a large tenant
         # took about a minute per output. Only the remaining values (display names and escaped
-        # forms, which come from the much smaller asset inventory) are listed in the pattern.
+        # forms, which come from the much smaller affected objects) are listed in the pattern.
         $tokenPattern = '[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}|\w[\w.''+#-]*@[\w-]+(?:\.[\w-]+)*'
         $tokenRegex = [regex]::new("^(?:$tokenPattern)$", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
         $phrases = @($lookup.Keys | Where-Object { -not $tokenRegex.IsMatch($_) })
@@ -83,10 +83,21 @@ function ConvertTo-MtRedactedReportContent {
 
         # A json string token, plus the colon that follows it when the token is a property name.
         $jsonStringPattern = [regex]::new('"[^"\\]*(?:\\.[^"\\]*)*"(?<key>\s*:)?')
+        # Windows PowerShell escapes ' < > & as \u0027 \u003c \u003e \u0026. Left in place, the word
+        # character before a value ("\u0027Jane Doe\u0027") would defeat the word boundary, so these are
+        # decoded for matching and escaped again afterwards.
+        $htmlSafeEscape = [regex]::new('\\u00(?:27|3[ce]|26)', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        $decodeEscape = [System.Text.RegularExpressions.MatchEvaluator] { param($match) [string][char][Convert]::ToInt32($match.Value.Substring(2), 16) }
+        $encodeChar = [regex]::new("['<>&]")
+        $encodeEscape = [System.Text.RegularExpressions.MatchEvaluator] { param($match) '\u{0:x4}' -f [int][char]$match.Value }
         $replaceJsonString = [System.Text.RegularExpressions.MatchEvaluator] {
             param($match)
             if ($match.Groups['key'].Success) { return $match.Value }
-            $valuePattern.Replace($match.Value, $replaceValue)
+            if (-not $htmlSafeEscape.IsMatch($match.Value)) {
+                return $valuePattern.Replace($match.Value, $replaceValue)
+            }
+            $decoded = $htmlSafeEscape.Replace($match.Value, $decodeEscape)
+            $encodeChar.Replace($valuePattern.Replace($decoded, $replaceValue), $encodeEscape)
         }
     }
 

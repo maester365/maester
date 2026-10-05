@@ -24,7 +24,7 @@ function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
   // Only show the final segment (the actual page)
   const lastSegment = segments[segments.length - 1]
   // Routes whose page title differs from the path segment.
-  const label = lastSegment === "assets" ? "Affected objects" : lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1)
+  const label = lastSegment === "affected-objects" ? "Affected objects" : lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1)
   breadcrumbs.push({ label })
 
   return breadcrumbs

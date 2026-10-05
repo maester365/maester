@@ -49,7 +49,7 @@ Describe 'Get-MtHtmlReport' {
                     ResultDetail = [PSCustomObject]@{ TestDescription = 'Desc'; TestResult = 'user@contoso.com (11111111-1111-1111-1111-111111111111)' }
                 }
             )
-            AssetInventory = @(
+            AffectedObjects = @(
                 [PSCustomObject]@{
                     System = 'EntraID'; AnchorKind = 'Instance'; Type = 'User'
                     Id = '11111111-1111-1111-1111-111111111111'; UniqueId = 'asset-user-001'
@@ -155,7 +155,7 @@ Describe 'Get-MtHtmlReport' {
             $html | Should -BeLike '*user@contoso.com*'
         }
 
-        It 'Should replace user PII with the asset unique ID for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
+        It 'Should replace user PII with the object unique ID for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity $_
 
             $html | Should -BeLike '*asset-user-001*'
@@ -175,7 +175,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Should redact with a supplied replacement map when the results carry no inventory' {
-            $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AssetInventory
+            $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
             $map = @{ 'user@contoso.com' = 'asset-user-001'; '11111111-1111-1111-1111-111111111111' = 'asset-user-001' }
 
             $html = Get-MtHtmlReport -MaesterResults $withoutInventory -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap $map
@@ -185,7 +185,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Should redact a display name that the script escaping would otherwise hide' {
-            $results = $singleTenant | Select-Object -Property * -ExcludeProperty AssetInventory
+            $results = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
             $results.Tests = @($singleTenant.Tests | Select-Object -Property * -ExcludeProperty ResultDetail |
                     Select-Object *, @{ n = 'ResultDetail'; e = { [PSCustomObject]@{ TestResult = 'Owner: R&D <Lab> Admin' } } })
 
@@ -196,11 +196,11 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Should warn when redaction is requested but the results carry no inventory' {
-            $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AssetInventory
+            $withoutInventory = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
 
             $null = Get-MtHtmlReport -MaesterResults $withoutInventory -RedactUserIdentity AllOutputs -WarningVariable warnings -WarningAction SilentlyContinue
 
-            ($warnings -join ' ') | Should -BeLike '*no AssetInventory*'
+            ($warnings -join ' ') | Should -BeLike '*no AffectedObjects*'
         }
 
         It 'Should not contain sample data from the template' {

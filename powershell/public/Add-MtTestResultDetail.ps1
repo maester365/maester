@@ -164,12 +164,12 @@
 
     # Capture the referenced objects as structured records before they are
     # flattened into markdown, so reports retain machine-readable entity identity.
-    # Only collected when the run asked for an asset inventory, so reports that do not
+    # Only collected when the run asked for the affected objects, so reports that do not
     # use it are not enlarged by the extra records.
     $relatedObjects = @()
-    if ($__MtSession.IncludeAssetInventory -and $GraphObjects) {
+    if ($__MtSession.IncludeAffectedObjects -and $GraphObjects) {
         try {
-            $relatedObjects = @(ConvertTo-MtAssetRecord -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType)
+            $relatedObjects = @(ConvertTo-MtAffectedObjectRecord -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType)
         } catch {
             Write-Warning "Failed to build related object records: $($_.Exception.Message)"
         }
@@ -220,8 +220,8 @@
         Severity        = $Severity
         Service         = $Service
     }
-    # Only present when the run collects an asset inventory, so results of runs that do not opt in are unchanged.
-    if ($__MtSession.IncludeAssetInventory) {
+    # Only present when the run collects the affected objects, so results of runs that do not opt in are unchanged.
+    if ($__MtSession.IncludeAffectedObjects) {
         $testInfo.RelatedObjects = $relatedObjects
     }
 

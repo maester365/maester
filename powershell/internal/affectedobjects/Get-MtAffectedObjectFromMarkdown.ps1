@@ -1,7 +1,7 @@
-function Get-MtAssetInventoryFromMarkdown {
+function Get-MtAffectedObjectFromMarkdown {
     <#
     .SYNOPSIS
-    Extracts asset records from test result markdown by matching known portal deep-link patterns.
+    Extracts object records from test result markdown by matching known portal deep-link patterns.
 
     .DESCRIPTION
     Post-hoc parser for existing Maester reports: recovers (System, Type, Id) from the

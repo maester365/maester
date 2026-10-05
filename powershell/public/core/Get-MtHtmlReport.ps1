@@ -47,12 +47,12 @@
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [psobject] $MaesterResults,
 
-        # Replaces user identities (display names, user principal names and object ids) with stable asset ids.
+        # Replaces user identities (display names, user principal names and object ids) with stable stable ids.
         # None: keep the values as-is. HtmlOnly / AllOutputs: redact them from this html report.
         [ValidateSet('None', 'HtmlOnly', 'AllOutputs')]
         [string] $RedactUserIdentity = 'None',
 
-        # Replacement map built by Invoke-Maester, which removes the AssetInventory it was built from.
+        # Replacement map built by Invoke-Maester, which removes the AffectedObjects it was built from.
         [Parameter(DontShow)]
         [hashtable] $UserIdentityReplacementMap
     )
@@ -84,7 +84,7 @@
                 # Assign directly so a single test or no tests still serializes as an array.
                 $copy.Tests = @($copy.Tests | ForEach-Object {
                         $test = & $copyWithout $_ 'ErrorRecord'
-                        # RelatedObjects only feeds the AssetInventory built from it, which the report carries.
+                        # RelatedObjects only feeds the AffectedObjects built from it, which the report carries.
                         if ($null -ne $test.ResultDetail) {
                             $test.ResultDetail = [PSCustomObject](& $copyWithout $test.ResultDetail 'RelatedObjects')
                         }
@@ -93,9 +93,9 @@
             }
             # The Affected objects page only reads these fields, so the report leaves out the rest
             # (UniqueId, UserPrincipalName, AnchorKind and the Sources list). The JSON output and the
-            # assets files keep the full records.
-            if ($null -ne $copy.AssetInventory) {
-                $copy.AssetInventory = @($copy.AssetInventory | ForEach-Object {
+            # objects files keep the full records.
+            if ($null -ne $copy.AffectedObjects) {
+                $copy.AffectedObjects = @($copy.AffectedObjects | ForEach-Object {
                         [PSCustomObject]@{
                             System      = $_.System
                             Type        = $_.Type
@@ -129,9 +129,9 @@
             } else {
                 $replacements = Get-MtUserIdentityReplacementMap -MaesterResults $MaesterResults
                 $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
-                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AssetInventory' }
+                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
                 if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AssetInventory, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
+                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
                 }
             }
             $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded

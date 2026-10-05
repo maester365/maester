@@ -1,7 +1,7 @@
-function Get-MtAssetInventory {
+function Get-MtAffectedObject {
     <#
     .SYNOPSIS
-    Builds a consolidated asset inventory of all objects involved in a Maester test run.
+    Builds a consolidated affected objects of all objects involved in a Maester test run.
 
     .DESCRIPTION
     Combines three sources into one normalized inventory:
@@ -10,11 +10,11 @@ function Get-MtAssetInventory {
     3. Session request caches (run-level view of every Graph/GitHub resource the run touched)
 
     Records are deduplicated on System/Type/Id; per-test attribution is aggregated
-    into a Tests array so each asset shows which checks reference it.
+    into a Tests array so each object shows which checks reference it.
 
     .EXAMPLE
     $results = Invoke-Maester -PassThru
-    Get-MtAssetInventory -MaesterResults $results
+    Get-MtAffectedObject -MaesterResults $results
     #>
     [CmdletBinding()]
     [OutputType([object[]])]
@@ -55,7 +55,7 @@ function Get-MtAssetInventory {
             # Source 2: portal deep links in the rendered markdown
             $markdown = Get-ObjectProperty $detail 'TestResult'
             if (-not [string]::IsNullOrWhiteSpace($markdown)) {
-                foreach ($parsed in @(Get-MtAssetInventoryFromMarkdown -Markdown $markdown -TestId $test.Id)) {
+                foreach ($parsed in @(Get-MtAffectedObjectFromMarkdown -Markdown $markdown -TestId $test.Id)) {
                     $records.Add($parsed)
                 }
             }
@@ -64,17 +64,17 @@ function Get-MtAssetInventory {
 
     # Source 3: run-level cache view
     if (-not $ExcludeSessionCache) {
-        foreach ($cached in @(Get-MtAssetInventoryFromCache)) {
+        foreach ($cached in @(Get-MtAffectedObjectFromCache)) {
             $records.Add(($cached | Select-Object *, @{n = 'TestId'; e = { $null } }))
         }
     }
 
     # Consolidate: one record per System/Type/Id with aggregated test attribution.
-    # Structured GraphObjects records win over markdown/cache records for the same asset.
+    # Structured GraphObjects records win over markdown/cache records for the same object.
     # Unknown sources rank last so a record with a missing Source never outranks a structured one.
     $sourceRank = @{ GraphObjects = 0; Markdown = 1; GraphCache = 2; GitHubCache = 2 }
     # Objects passed without an id fall back to their UPN or name, otherwise distinct users would
-    # merge into one asset and all but the first would escape redaction.
+    # merge into one object and all but the first would escape redaction.
     $identityOf = {
         param($record)
         if ($record.Id) { return [string]$record.Id }
@@ -89,7 +89,7 @@ function Get-MtAssetInventory {
             $rank = $sourceRank[[string]$_.Source]
             if ($null -eq $rank) { [int]::MaxValue } else { $rank }
         } | Select-Object -First 1
-        $uniqueId = Get-MtAssetUniqueId -System $best.System -Type $best.Type -Id (& $identityOf $best)
+        $uniqueId = Get-MtAffectedObjectUniqueId -System $best.System -Type $best.Type -Id (& $identityOf $best)
         [PSCustomObject]@{
             System            = $best.System
             AnchorKind        = $best.AnchorKind
@@ -104,9 +104,9 @@ function Get-MtAssetInventory {
         }
     }
 
-    # Assign first: Select-MtAssetByType returns a comma-forced array, which a direct pipe into
+    # Assign first: Select-MtAffectedObjectByType returns a comma-forced array, which a direct pipe into
     # Sort-Object would hand over as one object instead of enumerating it.
-    $filtered = Select-MtAssetByType -Assets $inventory
+    $filtered = Select-MtAffectedObjectByType -Objects $inventory
 
     return @($filtered | Sort-Object System, Type, DisplayName)
 }

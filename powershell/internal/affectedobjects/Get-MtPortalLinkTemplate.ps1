@@ -6,7 +6,7 @@
     .DESCRIPTION
     Single source of truth for the GraphObjectType → admin portal deep-link mapping used by
     Get-GraphObjectMarkdown (markdown rendering) and Add-MtTestResultDetail (structured
-    RelatedObjects records for the asset inventory).
+    RelatedObjects records for the affected objects).
 
     Link templates use {0} as the placeholder for the object id. Types without {0}
     are tenant-level settings surfaces that have no per-object deep link.
