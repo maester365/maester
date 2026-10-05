@@ -74,16 +74,17 @@ namespace Maester.Engine
         //  - The try/catch is the engine's: with an enclosing try, a statement-terminating error inside the
         //    test (a failed cmdlet call, a method call on $null) ends the test instead of only that statement.
         //  - The one-pass foreach catches a stray break/continue that would otherwise unwind the engine.
-        //  - Preferences are set here because a nested pipeline inherits the caller's: a caller's Stop
-        //    preference would turn a test's Write-Error into a terminating error.
+        //  - Preferences are set inside the body, which runs in the test's module scope: that scope's parent
+        //    is the global scope, so a global Stop preference (the GitHub Actions pwsh shell sets one) would
+        //    otherwise turn a test's Write-Error into a terminating error.
         //  - Exactly one MtOutcome object is written when the command returned or threw. None means it left
         //    through exit, break or a pipeline stop.
         private const string InvocationScript = @"
 param($__mtId, $__mtModule, $__mtCommand, $__mtParameters)
-$ErrorActionPreference = 'Continue'
-$WarningPreference = 'Continue'
 $__mtBody = {
     param($__mtId, $__mtCommand, $__mtParameters)
+    $ErrorActionPreference = 'Continue'
+    $WarningPreference = 'Continue'
     [Maester.Engine.MtSession]::EnterTest($__mtId)
     try {
         $__mtReturned = $false

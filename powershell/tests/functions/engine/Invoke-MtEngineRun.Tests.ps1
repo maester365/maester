@@ -136,6 +136,18 @@ Describe 'Invoke-MtEngineRun outcomes' {
         $r.ReturnKind | Should -Be 'True'
     }
 
+    It 'Is not affected by a global Stop error preference (as the GitHub Actions pwsh shell sets)' {
+        $saved = $global:ErrorActionPreference
+        try {
+            $global:ErrorActionPreference = 'Stop'
+            $r = Invoke-Fixture -Command 'Test-ErrorPreference'
+        } finally {
+            $global:ErrorActionPreference = $saved
+        }
+        $r.Status | Should -Be 'Completed'
+        $r.ReturnKind | Should -Be 'True'
+    }
+
     It 'Reports the skip record as Skipped' {
         $r = Invoke-Fixture -Command 'Test-Skips'
         $r.Status | Should -Be 'Skipped'

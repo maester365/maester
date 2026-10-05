@@ -23,7 +23,19 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Otherwise the SDK stamps the git commit into the informational version, so every commit
+         (and every build outside a git checkout) would produce a different DLL. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <!-- The compiler's output depends on the order of the source files, and the default glob
+         enumerates them in file-system order, which differs between macOS, Linux and Windows. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="InvokeMtEngineRunCommand.cs" />
+    <Compile Include="MaesterTestAttribute.cs" />
+    <Compile Include="MtSession.cs" />
+    <Compile Include="MtWorkItem.cs" />
+  </ItemGroup>
   <ItemGroup>
     <!-- Compile against the oldest supported PowerShell. The runtime supplies the assembly. -->
     <PackageReference Include="System.Management.Automation" Version="7.4.0" PrivateAssets="all" ExcludeAssets="runtime" />
