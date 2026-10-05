@@ -16,10 +16,10 @@ This is the main Maester command that runs the tests and generates a report of t
 
 ```powershell
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-IncludeLongRunning]
- [-IncludePreview] [-OutputHtmlFile <String>] [-OutputMarkdownFile <String>]
- [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
- [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
- [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
+ [-IncludePreview] [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-RedactUserIdentity <String>]
+ [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
+ [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>]
+ [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
  [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
  [-DriftRoot <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
@@ -246,6 +246,47 @@ Accept wildcard characters: False
 
 The path to the file to save the test results in html format.
 The filename should include an .html extension.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeAffectedObjects
+
+Collect the affected objects: the consolidated list of objects the run touched.
+Adds the AffectedObjects property to the results, the Affected objects page to the html report and,
+with -OutputFolder, the &lt;name&gt;-affected-objects.json file (plus -affected-objects.csv with -ExportCsv).
+Off by default because it enlarges the report; it is enabled automatically when
+-RedactUserIdentity is used, since redaction is driven by the inventory.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RedactUserIdentity
+
+Replaces user identities (display names, user principal names and object ids) with stable
+stable ids in the generated outputs.
+None (default): no redaction.
+AllOutputs: redact every generated output (html, json, markdown, csv, Excel, affected objects json and csv).
+HtmlOnly: redact the html report only, so the machine readable exports keep the
+real identifiers for follow up while the shareable report does not.
 
 ```yaml
 Type: String
