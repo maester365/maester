@@ -52,7 +52,7 @@
 [CmdletBinding()]
 param(
     [string]$LabConfigPath = "$PSScriptRoot/LabConfig.json",
-    [string]$EvidenceDir = "$PSScriptRoot/../../.sisyphus/evidence/lab-run-$(Get-Date -Format yyyyMMdd-HHmmss)",
+    [string]$EvidenceDir = "$PSScriptRoot/../../../.sisyphus/evidence/lab-run-$(Get-Date -Format yyyyMMdd-HHmmss)",
     [switch]$SkipBuild,
     [ValidateSet('RootForest', 'ChildDomain', 'SeparateForest')]
     [string[]]$Domains = @('RootForest', 'ChildDomain', 'SeparateForest'),
@@ -111,7 +111,7 @@ if (-not $azAccount) {
 # --- Build module ---
 if (-not $SkipBuild) {
     Write-Output "Building Maester module..."
-    $buildScript = "$PSScriptRoot/../../build/Build-LocalMaester.ps1"
+    $buildScript = "$PSScriptRoot/../../../build/Build-LocalMaester.ps1"
     if (-not (Test-Path $buildScript)) {
         throw "Build script not found: $buildScript"
     }
@@ -158,7 +158,7 @@ Write-Output "Credentials retrieved."
 
 # --- Copy module to runner ---
 Write-Output "Copying module to Windows runner..."
-$moduleSource = "$PSScriptRoot/../../module"
+$moduleSource = "$PSScriptRoot/../../../module"
 if (-not (Test-Path $moduleSource)) {
     throw "Built module not found at: $moduleSource. Run without -SkipBuild."
 }
