@@ -105,6 +105,21 @@
 
     Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
+    .EXAMPLE
+    Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
+
+    Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3. A test named by its exact ID runs even if it is a preview or long-running test.
+
+    .EXAMPLE
+    Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
+
+    Shows what would run, and why every other test would not, without running anything. Each test that would have run is reported as NotRun with reason DryRun.
+
+    .EXAMPLE
+    Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
+
+    Runs with an explicit configuration instead of the config files found next to the tests. Several sources are merged left to right; here only tests enabled in TestSettings are run.
+
     .LINK
     https://maester.dev/docs/commands/Invoke-Maester
     #>
@@ -224,7 +239,24 @@
 
         # The root directory for configuration drift tracking.
         [Parameter(HelpMessage = 'Specify drift root directory, see https://maester.dev/docs/tests/MT.1060')]
-        [string] $DriftRoot
+        [string] $DriftRoot,
+
+        # Only run the tests with these IDs. Exact IDs or '*' wildcards, case-insensitive.
+        # A test named by its exact ID runs even if it is a preview or long-running test.
+        [string[]] $TestId,
+
+        # Do not run the tests with these IDs. Exact IDs or '*' wildcards, case-insensitive. Wins over -TestId.
+        [string[]] $ExcludeTestId,
+
+        # The run configuration: a path to a maester-config.json file, a config object (hashtable or
+        # PSCustomObject), or an array of paths and objects merged left to right. When set, config files
+        # next to the tests are not read. Defaults to the MAESTER_CONFIG environment variable, then to the
+        # config files found from -Path.
+        [object] $Config,
+
+        # Work out which tests would run, and why the others would not, without running any test.
+        # Each test that would have run is reported as NotRun with reason DryRun.
+        [switch] $DryRun
     )
 
     function GetDefaultFileName() {
@@ -336,6 +368,26 @@
         Write-Telemetry -EventName InvokeMaester
     }
 
+    # Stage 1 (first pass): resolve the run config without the tenant-specific file, so that its
+    # Selection section takes part in the tag rules below. The second pass runs once connected.
+    $configSearchPath = if ($Path) { $Path }
+    elseif ($PesterConfiguration -and $PesterConfiguration.Run.Path.Value -and @($PesterConfiguration.Run.Path.Value)[0] -ne '.') { @($PesterConfiguration.Run.Path.Value)[0] }
+    elseif (Test-Path -Path './powershell/tests/pester.ps1') { './tests' }
+    else { '.' }
+    try {
+        $runConfig = Resolve-MtRunConfig -Path $configSearchPath -Config $Config -WarningAction SilentlyContinue
+    } catch {
+        Write-Error -Message $_.Exception.Message
+        return
+    }
+    $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
+        -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
+    $Tag = $selection.Tag
+    $ExcludeTag = $selection.ExcludeTag
+    $IncludePreview = [switch]$selection.IncludePreview
+    $IncludeLongRunning = [switch]$selection.IncludeLongRunning
+    $autoExcludedTag = [System.Collections.Generic.List[string]]::new()
+
     $isMail = $null -ne $MailRecipient
 
     $isTeamsChannelMessage = -not ([String]::IsNullOrEmpty($TeamId) -or [String]::IsNullOrEmpty($TeamChannelId))
@@ -345,6 +397,7 @@
     # Exclude Preview by default when neither Tag nor IncludePreview is specified.
     if (-not $Tag -and -not $IncludePreview.IsPresent) {
         $ExcludeTag += 'Preview'
+        $autoExcludedTag.Add('Preview')
         Write-Verbose 'Excluding Preview tests. Use -IncludePreview to include them.'
     }
 
@@ -401,6 +454,7 @@
     # Exclude LongRunning tests unless: $IncludeLongRunning is present, or LongRunning is in $Tag, or CAWhatIf is in $Tag.
     if ( (-not $IncludeLongRunning.IsPresent) -and 'LongRunning' -notin $Tag -and 'Full' -notin $Tag -and 'CAWhatIf' -notin $Tag ) {
         $ExcludeTag += 'LongRunning'
+        $autoExcludedTag.Add('LongRunning')
         Write-Verbose 'Excluding LongRunning tests. Use -IncludeLongRunning to include them.'
     }
 
@@ -425,6 +479,7 @@
         $effectiveExcludeTags = @($pesterConfig.Filter.ExcludeTag.Value)
         if ('AD' -notin $effectiveExcludeTags) {
             $pesterConfig.Filter.ExcludeTag = @($effectiveExcludeTags + 'AD')
+            $autoExcludedTag.Add('AD')
         }
         Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
     }
@@ -490,7 +545,56 @@
     if (Test-MtConnection Graph) {
         $configTenantId = (Get-MgContext).TenantId
     }
-    $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path -TenantId $configTenantId
+    if ($null -eq $Config -and [string]::IsNullOrWhiteSpace($env:MAESTER_CONFIG)) {
+        # Second pass: the discovered files, now including maester-config.<tenantId>.json.
+        $runConfig = Resolve-MtRunConfig -Path $Path -TenantId $configTenantId
+    }
+    $__MtSession.MaesterConfig = $runConfig
+
+    # Stage 5: ID-based selection and config admission. Pester selects by tag only, so tests that
+    # these rules deselect are excluded by line and reported as NotRun with a reason.
+    $plan = $null
+    $needsIdSelection = $selection.TestId.Count -gt 0 -or $selection.ExcludeTestId.Count -gt 0 -or
+        $selection.DefaultAction -eq 'Skip' -or (@($runConfig.TestSettings) | Where-Object { $_ -and $_.PSObject.Properties['Enabled'] })
+    if ($needsIdSelection) {
+        Write-MtProgress -Activity 'Starting Maester' -Status 'Selecting tests by ID...' -Force
+        $inventory = @(Get-MtPesterFileInventory -Path $Path)
+        $plan = Get-MtPesterSelectionPlan -Inventory $inventory -Selection $selection -RunConfig $runConfig
+        if ($plan.ExcludeLines.Count -gt 0) {
+            $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + $plan.ExcludeLines | Where-Object { $_ })
+        }
+        if ($plan.LiftPreview -and $autoExcludedTag -contains 'Preview') {
+            $pesterConfig.Filter.ExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ -ne 'Preview' })
+        }
+        if ($plan.LiftLongRunning -and $autoExcludedTag -contains 'LongRunning') {
+            $pesterConfig.Filter.ExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ -ne 'LongRunning' })
+        }
+        if ($plan.UnknownIds.Count -gt 0) {
+            $unknownMessage = "These test IDs match no test: $($plan.UnknownIds -join ', ')"
+            switch ($selection.OnUnknownId) {
+                'Error' { Write-Error -Message "$unknownMessage. Selection.OnUnknownId is Error, so the run was stopped."; Reset-MtProgressView; return }
+                'Warn' { Write-Warning $unknownMessage }
+            }
+        }
+    }
+
+    if ($DryRun) {
+        $pesterConfig.Run.SkipRun = $true
+    }
+
+    $runContext = [PSCustomObject]@{
+        Selection       = $selection
+        Plan            = $plan
+        DryRun          = $DryRun.IsPresent
+        IncludeTag      = @($pesterConfig.Filter.Tag.Value | Where-Object { $_ })
+        ExcludeTag      = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ })
+        AutoExcludedTag = @($autoExcludedTag)
+        TenantContext   = [PSCustomObject]@{
+            TenantId    = $configTenantId
+            Environment = if (Test-MtConnection Graph) { (Get-MgContext).Environment } else { $null }
+            Connections = @($__MtSession.Connections)
+        }
+    }
 
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
@@ -518,7 +622,7 @@
             }
         }
 
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -RunContext $runContext
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
@@ -560,17 +664,17 @@
             }
         }
 
-        if ($MailRecipient) {
+        if ($MailRecipient -and -not $DryRun) {
             Write-MtProgress -Activity 'Sending mail'
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
         }
 
-        if ($TeamId -and $TeamChannelId) {
+        if ($TeamId -and $TeamChannelId -and -not $DryRun) {
             Write-MtProgress -Activity 'Sending Teams message'
             Send-MtTeamsMessage -MaesterResults $maesterResults -TeamId $TeamId -TeamChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
         }
 
-        if ($TeamChannelWebhookUri) {
+        if ($TeamChannelWebhookUri -and -not $DryRun) {
             Write-MtProgress -Activity 'Sending Teams message'
             Send-MtTeamsMessage -MaesterResults $maesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
         }

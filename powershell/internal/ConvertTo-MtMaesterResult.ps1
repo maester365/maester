@@ -23,7 +23,12 @@
 
         # Skip checking PowerShell Gallery for the latest Maester version.
         [Parameter(Mandatory = $false)]
-        [switch] $SkipVersionCheck
+        [switch] $SkipVersionCheck,
+
+        # Optional run context from Invoke-Maester: the selection, the selection plan and the run config.
+        # Used to add the 3.0 fields (reason codes, family IDs) to each row.
+        [Parameter(Mandatory = $false)]
+        [psobject] $RunContext
     )
 
     $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
@@ -352,6 +357,10 @@
             $result = $test.Result
         }
 
+        $annotation = Get-MtPesterRowAnnotation -Test $test -Id $testId -Result $result -ResultDetail $testResultDetail -RunContext $RunContext
+        if ($annotation.ResultOverride) { $result = $annotation.ResultOverride }
+        if ($annotation.IdOverride) { $testId = $annotation.IdOverride }
+
         $timeSpanFormat = 'hh\:mm\:ss'
         # Individual tests usually complete in well under a second, so keep milliseconds
         # here. The run-level totals below stay on the coarser format.
@@ -371,6 +380,14 @@
             Block           = $test.Block.ExpandedName
             Duration        = $test.Duration.ToString($testTimeSpanFormat)
             ResultDetail    = $testResultDetail
+            # Additive in result schema 2.1.
+            Format          = $annotation.Format
+            ReasonCode      = $annotation.ReasonCode
+            ReasonDetail    = $annotation.ReasonDetail
+            ParentId        = $annotation.ParentId
+            InstanceId      = $annotation.InstanceId
+            Parameters      = $null
+            Diagnostics     = @()
         }
         $mtTests += $mtTestInfo
     }
@@ -419,6 +436,10 @@
         }
     }
 
+    # Assigned through a variable: an if-expression would turn an empty array into $null.
+    $unknownIds = @()
+    if ($RunContext -and $RunContext.Plan) { $unknownIds = @($RunContext.Plan.UnknownIds) }
+
     $mtTestResults = [PSCustomObject][ordered]@{
         Result            = $PesterResults.Result
         FailedCount       = $Recount.FailedCount
@@ -446,6 +467,16 @@
         MgContext         = GetMgContextInfo
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
         MaesterConfig     = $__MtSession.MaesterConfig
+        # Additive in result schema 2.1.
+        SchemaVersion     = '2.1'
+        CatalogVersion    = $currentVersion
+        TenantContext     = if ($RunContext -and $RunContext.TenantContext) { $RunContext.TenantContext } else { $null }
+        RunMetadata       = if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Metadata']) { $__MtSession.MaesterConfig.Metadata } else { $null }
+        Selection         = [PSCustomObject]@{
+            BuiltIn    = if ($RunContext -and $RunContext.Selection) { $RunContext.Selection.BuiltIn } else { 'All' }
+            UnknownIds = $unknownIds
+            Superseded = @()
+        }
         Tests             = $mtTests
         Blocks            = $mtBlocks
         EndOfJson         = 'EndOfJson' # Always leave this as the last property. Used by the script to determine the end of the JSON
