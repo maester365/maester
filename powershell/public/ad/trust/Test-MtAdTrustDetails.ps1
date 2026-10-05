@@ -14,7 +14,7 @@
     Test-MtAdTrustDetails
 
     Returns $true if trust data is accessible, $false otherwise.
-    The test result includes detailed trust configuration information.
+    The test result includes detailed trust configuration information with SID filtering classification.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdTrustDetails
@@ -40,9 +40,11 @@
 
     # Derive properties from trustAttributes bitmask and trustType
     # trustAttributes bits:
-    #   0x4  = QUARANTINED_DOMAIN (SID filtering enabled)
+    #   0x4  = QUARANTINED_DOMAIN (SID filtering enabled on external trusts)
+    #   0x8  = FOREST_TRANSITIVE (forest trust)
     #   0x10 = CROSS_ORGANIZATION (selective authentication)
     #   0x20 = WITHIN_FOREST (parent-child intra-forest trust)
+    #   0x40 = TREAT_AS_EXTERNAL (SID history enabled on forest trusts)
     # trustType values:
     #   1 = DOWNLEVEL (Windows NT 4 external)
     #   2 = UPLEVEL (Windows 2000+ AD domain)
@@ -50,9 +52,21 @@
     #   4 = DCE
     foreach ($trust in $trusts) {
         $trustAttributes = [int]$trust.TrustAttributes
+        $trustType = [int]$trust.TrustType
+
+        $isForest   = ($trustAttributes -band 0x8) -ne 0
+        $isExternal = -not $isForest -and -not ($trustAttributes -band 0x20) -and ($trustType -in 1,2)
+        $isMit      = ($trustType -eq 3)
+        $sidFilteringWeak = ($isExternal -and -not ($trustAttributes -band 0x4)) -or
+                            ($isForest -and ($trustAttributes -band 0x40))
+
         $trust | Add-Member -NotePropertyName Quarantined -NotePropertyValue (($trustAttributes -band 0x4) -ne 0) -Force
         $trust | Add-Member -NotePropertyName IntraForest -NotePropertyValue (($trustAttributes -band 0x20) -ne 0) -Force
         $trust | Add-Member -NotePropertyName SelectiveAuthentication -NotePropertyValue (($trustAttributes -band 0x10) -ne 0) -Force
+        $trust | Add-Member -NotePropertyName IsForest -NotePropertyValue $isForest -Force
+        $trust | Add-Member -NotePropertyName IsExternal -NotePropertyValue $isExternal -Force
+        $trust | Add-Member -NotePropertyName IsMit -NotePropertyValue $isMit -Force
+        $trust | Add-Member -NotePropertyName SidFilteringWeak -NotePropertyValue $sidFilteringWeak -Force
     }
 
     # Test passes if we successfully retrieved trust data
