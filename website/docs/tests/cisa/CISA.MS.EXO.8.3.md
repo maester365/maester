@@ -45,7 +45,7 @@ Rationale: Any alternative DLP solution should be able to detect sensitive infor
 | Suite | CISA |
 | Category | exchange |
 | PowerShell test | [Test-MtCisaDlpAlternate](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.3.ps1) |
-| Services | Graph |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
 | Tags | CISA, CISA.MS.EXO.8.3, MS.EXO, MS.EXO.8.3 |
 
 ## Source

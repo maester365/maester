@@ -78,7 +78,7 @@ Set-HostedOutboundSpamFilterPolicy -Identity Default -BccSuspiciousOutboundAddit
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisOutboundSpamFilterPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.6.ps1) |
-| Services | ExchangeOnline |
+| Services | ExchangeOnline, SecurityCompliance |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.6, L1 |
 
 ## Source

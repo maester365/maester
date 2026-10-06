@@ -59,7 +59,7 @@ The test passes when at least one **enabled, non-simulation** DLP policy targets
 | Suite | Maester |
 | Category | Maester/Purview |
 | PowerShell test | [Test-MtPurviewAiDlpPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Purview/Test.MT.1175.ps1) |
-| Services | ExchangeOnline, Graph |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | EXCHANGE_DLP |
 | Tags | Maester, MT.1175, Purview |
 

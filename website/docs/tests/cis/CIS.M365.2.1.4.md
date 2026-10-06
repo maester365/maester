@@ -88,7 +88,7 @@ New-SafeAttachmentRule -Name "CIS 2.1.4 Rule" -SafeAttachmentPolicy "CIS 2.1.4" 
 | Suite | CIS |
 | Category | CIS E5 Level 2 |
 | PowerShell test | [Test-MtCisSafeAttachment](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.4.ps1) |
-| Services | ExchangeOnline, Graph |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.4, L2 |
 

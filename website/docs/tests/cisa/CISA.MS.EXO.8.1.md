@@ -75,7 +75,7 @@ Rationale: Users may inadvertently disclose sensitive information to unauthorize
 | Suite | CISA |
 | Category | exchange |
 | PowerShell test | [Test-MtCisaDlp](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.1.ps1) |
-| Services | ExchangeOnline, Graph |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | EXCHANGE_DLP |
 | Tags | CISA, CISA.MS.EXO.8.1, MS.EXO, MS.EXO.8.1 |
 

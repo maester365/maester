@@ -55,7 +55,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Suite | CISA |
 | Category | exchange |
 | PowerShell test | [Test-MtCisaImpersonationTip](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.11.2.ps1) |
-| Services | ExchangeOnline, Graph |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | CISA, CISA.MS.EXO.11.2, MS.EXO, MS.EXO.11.2 |
 

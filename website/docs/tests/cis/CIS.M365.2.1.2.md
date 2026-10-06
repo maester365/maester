@@ -89,7 +89,7 @@ vbs, vxd, wsc, wsf, wsh, xll, xz, z, ace
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisAttachmentFilter](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.2.ps1) |
-| Services | ExchangeOnline |
+| Services | ExchangeOnline, SecurityCompliance |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.2, L1 |
 
 ## Source
