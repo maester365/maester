@@ -22,6 +22,7 @@
         Category = 'CIS',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = ('ExchangeOnline', 'Graph'),
+        CompatibleLicense = 'ATP_ENTERPRISE',
         Author = 'NZLostboy',
         Contributor = 'Mynster9361'
     )]
@@ -34,9 +35,6 @@
         return $null
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } elseif ('P1' -notin (Get-MtLicenseInformation -Product MdoV2)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
 

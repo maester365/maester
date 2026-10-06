@@ -20,6 +20,7 @@
         Category = 'Maester/Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
+        CompatibleLicense = 'INTUNE_A',
         Author = 'nicolonsky'
     )]
     [CmdletBinding()]
@@ -27,11 +28,6 @@
     param()
 
     Write-Verbose 'Testing MDM Authority...'
-    if (-not (Get-MtLicenseInformation -Product Intune)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
-        return $null
-    }
-
     Write-Verbose 'Retrieving MDM Authority status...'
     $org = Invoke-MtGraphRequest -RelativeUri 'organization' -ApiVersion beta
     $detailedOrgInfo = Invoke-MtGraphRequest -RelativeUri "organization/$($org.id)?`$select=mobiledevicemanagementauthority" -ApiVersion beta

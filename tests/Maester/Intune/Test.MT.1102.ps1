@@ -20,6 +20,7 @@
         Category = 'Maester/Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
+        CompatibleLicense = 'INTUNE_A',
         Author = 'nicolonsky'
     )]
     [CmdletBinding()]
@@ -27,11 +28,6 @@
     param()
 
     Write-Verbose 'Testing Windows Feature Update Policies for unsupported builds...'
-    if (-not (Get-MtLicenseInformation -Product Intune)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
-        return $null
-    }
-
     try {
         Write-Verbose 'Retrieving Windows Feature Update Profiles status...'
         $featureUpdateProfiles = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/windowsFeatureUpdateProfiles' -ApiVersion beta

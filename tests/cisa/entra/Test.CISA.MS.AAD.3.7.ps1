@@ -21,6 +21,7 @@
         Category = 'CISA',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.7'),
         Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM',
         Author = 'soulemike',
         Contributor = 'michaelmsonne'
     )]
@@ -30,12 +31,6 @@
         # Do not check if Hybrid Joined devices are accepted.
         [switch]$SkipHybridJoinCheck
     )
-
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    if($EntraIDPlan -eq "Free"){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
-        return $null
-    }
 
     $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 

@@ -21,6 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.11.1'),
         Service = ('ExchangeOnline', 'Graph'),
+        CompatibleLicense = 'ATP_ENTERPRISE',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -32,9 +33,6 @@
         return $null
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } elseif ("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
 

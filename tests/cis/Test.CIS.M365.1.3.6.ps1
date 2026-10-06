@@ -22,18 +22,13 @@
         Category = 'CIS',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = 'ExchangeOnline',
+        CompatibleLicense = 'LOCKBOX_ENTERPRISE',
         Author = 'NZLostboy',
         Contributor = ('SamErde', 'Mynster9361')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    $licenseType = Get-MtLicenseInformation -Product CustomerLockbox
-    if ($null -eq $licenseType) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedCustomerLockbox
-        return $null
-    }
 
     Write-Verbose 'Requesting secure scores to get the customer lockbox setting'
     $customerLockbox = Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled

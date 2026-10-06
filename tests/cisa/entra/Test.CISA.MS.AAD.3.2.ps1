@@ -21,17 +21,14 @@
         Category = 'CISA',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.2'),
         Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    if($EntraIDPlan -eq "Free"){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
-        return $null
-    }elseif(Test-MtCisaPhishResistant){
+    if(Test-MtCisaPhishResistant){
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Test-MtCisaPhishResistant Passed"
         return $null
     }

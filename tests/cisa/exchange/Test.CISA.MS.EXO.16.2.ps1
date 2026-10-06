@@ -21,6 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.16.2'),
         Service = 'Graph',
+        CompatibleLicense = 'ATP_ENTERPRISE',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]
@@ -33,9 +34,6 @@
         return $null
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } elseif("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     } else {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not available for API validation.'

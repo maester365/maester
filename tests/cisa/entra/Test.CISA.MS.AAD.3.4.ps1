@@ -21,17 +21,12 @@
         Category = 'CISA',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.4'),
         Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    if($EntraIDPlan -eq "Free"){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
-        return $null
-    }
 
     #4/28/2024 - Select OData query option not supported
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationmethodspolicy" -ApiVersion "v1.0"

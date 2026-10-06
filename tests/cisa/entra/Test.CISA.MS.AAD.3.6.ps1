@@ -21,18 +21,13 @@
         Category = 'CISA',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.6'),
         Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM',
         Author = 'soulemike',
         Contributor = 'michaelmsonne'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    if($EntraIDPlan -eq "Free"){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
-        return $null
-    }
 
     $highlyPrivilegedRoles = Get-MtRole -CisaHighlyPrivilegedRoles
 

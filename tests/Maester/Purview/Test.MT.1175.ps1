@@ -32,6 +32,7 @@
         Category = 'Maester/Purview',
         Tag = ('Maester', 'Purview'),
         Service = ('ExchangeOnline', 'Graph'),
+        CompatibleLicense = 'EXCHANGE_DLP',
         Author = 'OfirGavish'
     )]
     [CmdletBinding()]
@@ -45,9 +46,6 @@
         return $null
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } elseif ($null -eq (Get-MtLicenseInformation -Product ExoDlp)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedExoDlp
         return $null
     }
 
