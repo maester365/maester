@@ -38,11 +38,6 @@
 
     Write-Verbose "Running Test-MtGsaForwardingProfileAssignmentNotNested..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $servicePrincipals = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion beta
     $forwardingProfiles = $servicePrincipals | Where-Object { $_.displayName -match 'trafficforwardingprofile' }
 

@@ -20,7 +20,7 @@
         Severity = 'High',
         Category = 'AzureConfig',
         Tag = ('Azure', 'Maester', 'Privileged'),
-        Service = 'Azure',
+        Service = ('Azure', 'Graph'),
         Author = 'Oppedijk',
         Contributor = 'merill'
     )]
@@ -29,16 +29,6 @@
     param()
 
     Write-Verbose "Checking if connected to Graph"
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
-    if(!(Test-MtConnection Azure)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
-        return $null
-    }
-
     Write-Verbose "Getting all User Access Administrators at Root Scope"
 
     $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()' -ApiVersion '2022-04-01'

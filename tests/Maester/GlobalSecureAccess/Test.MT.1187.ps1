@@ -38,11 +38,6 @@
 
     Write-Verbose "Running Test-MtGsaM365ProfileEnabled..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $forwardingProfiles = Invoke-MtGraphRequest -RelativeUri 'networkAccess/forwardingProfiles' -ApiVersion beta -ErrorAction Stop
     $m365Profile = $forwardingProfiles | Where-Object { $_.trafficForwardingType -eq 'm365' }
 

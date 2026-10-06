@@ -20,21 +20,13 @@
         Severity = 'High',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.11.1'),
-        Service = ('ExchangeOnline', 'Graph'),
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         CompatibleLicense = 'ATP_ENTERPRISE',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     $policies = Get-MtExo -Request AntiPhishPolicy
 

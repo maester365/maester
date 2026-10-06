@@ -37,11 +37,6 @@
 
     Write-Verbose "Test-MtPurviewAiSensitivityLabelsForFiles: Checking for sensitivity labels published with the File scope."
 
-    if (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
-
     try {
         $labels = Get-Label -ErrorAction Stop
         $labelPolicies = Get-LabelPolicy -ErrorAction Stop

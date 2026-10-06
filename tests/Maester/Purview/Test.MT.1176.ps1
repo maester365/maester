@@ -33,7 +33,7 @@
         Severity = 'Medium',
         Category = 'Maester/Purview',
         Tag = ('Maester', 'Purview'),
-        Service = ('SecurityCompliance', 'ExchangeOnline'),
+        Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]
     [CmdletBinding()]
@@ -41,11 +41,6 @@
     param()
 
     Write-Verbose "Test-MtPurviewAiRetentionPolicy: Checking for Microsoft Purview retention policies targeting Microsoft Copilot interactions."
-
-    if (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     # Microsoft Purview now exposes Copilot retention through two surfaces:
     #   - Get-RetentionCompliancePolicy        : legacy/general retention surface (Exchange/SharePoint/Teams + Copilot via the

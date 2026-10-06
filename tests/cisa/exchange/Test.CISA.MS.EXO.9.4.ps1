@@ -20,7 +20,7 @@
         Severity = 'Medium',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.9.4'),
-        Service = 'Graph',
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'SamErde')
     )]
@@ -28,13 +28,7 @@
     [OutputType([bool])]
     param()
 
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } elseif ( 'Eop' -in (Get-MtLicenseInformation -Product Eop) -or 'Eop' -in (Get-MtLicenseInformation -Product MdoV2) ) {
+    if ('Eop' -in (Get-MtLicenseInformation -Product Eop) -or 'Eop' -in (Get-MtLicenseInformation -Product MdoV2)) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Tenant is licensed for Exchange Online Protection; an alternative mail filter is not needed."
         return $null
     } else {

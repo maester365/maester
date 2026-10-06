@@ -47,11 +47,6 @@
 
     Write-Verbose "Running Test-MtMdeCatchupFullScan..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $deviceCount = 0
     $policyConfig = $null
     $deviceCount = Get-MdeDeviceCount

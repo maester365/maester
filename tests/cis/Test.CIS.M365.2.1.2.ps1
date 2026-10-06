@@ -21,21 +21,12 @@
         Severity = 'Medium',
         Category = 'CIS',
         Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
-        Service = 'ExchangeOnline',
+        Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'NZLostboy'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }
-    elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     # CIS default list of blocked file types (Default Value section of the recommendation)
     $defaultExtensions = @(

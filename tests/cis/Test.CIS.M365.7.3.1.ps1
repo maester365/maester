@@ -29,11 +29,6 @@
     param()
     Write-Verbose "Testing malicious file download prevention in SharePoint Online..."
 
-    if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
-        return $null
-    }
-
     $return = $true
     $spoTenant = Get-MtSpo
     if ($spoTenant.DisallowInfectedFileDownload) {

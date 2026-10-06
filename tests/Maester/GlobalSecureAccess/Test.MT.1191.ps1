@@ -37,11 +37,6 @@
 
     Write-Verbose "Running Test-MtGsaCompliantNetworkBreakGlassExcluded..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $compliantNetworkPolicies = Get-MtCompliantNetworkPolicy
     if (-not $compliantNetworkPolicies) {
         Add-MtTestResultDetail -Result 'No enabled Compliant Network enforcement policy was found, so there is nothing to evaluate.'

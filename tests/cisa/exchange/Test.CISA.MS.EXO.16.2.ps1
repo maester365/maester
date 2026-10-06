@@ -20,7 +20,7 @@
         Severity = 'Medium',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.16.2'),
-        Service = 'Graph',
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         CompatibleLicense = 'ATP_ENTERPRISE',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
@@ -29,14 +29,6 @@
     [OutputType([bool])]
     param()
 
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } else {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not available for API validation.'
-        return $null
-    }
+    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not available for API validation.'
+    return $null
 }

@@ -20,21 +20,13 @@
         Severity = 'Medium',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.14.2'),
-        Service = 'ExchangeOnline',
+        Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if(!(Test-MtConnection ExchangeOnline)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     $policies = Get-MtExo -Request HostedContentFilterPolicy
 
