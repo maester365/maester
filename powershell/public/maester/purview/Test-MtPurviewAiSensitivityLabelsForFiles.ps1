@@ -35,7 +35,8 @@
 
     try {
         $labels = Get-Label -ErrorAction Stop
-        $labelPolicies = Get-LabelPolicy -ErrorAction Stop
+        # The service returns a 'Force Validate not set' notice for each policy. It doesn't affect the properties read here.
+        $labelPolicies = Get-LabelPolicy -ErrorAction Stop -WarningAction SilentlyContinue
 
         # A label policy is "published" when it is in Enforce mode AND, when the Enabled property is exposed by
         # the SCC schema, it is also enabled. Some tenant/SCC versions omit Enabled entirely on label policies,
