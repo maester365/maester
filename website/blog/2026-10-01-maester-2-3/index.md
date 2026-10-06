@@ -139,17 +139,17 @@ The new **Affected objects** report turns that around. Run Maester with `-Includ
 Invoke-Maester -IncludeAffectedObjects
 ```
 
-![The Affected objects page, filtered to failed checks, with one Conditional Access policy expanded to show its four failed checks](./img/affected-objects.png)
+![The Affected objects page showing only Conditional Access policies, filtered to failed checks, with one policy expanded to show its four failed checks](./img/affected-objects.png)
 
-- **One tile per object type**, showing how many objects have failed checks. Click tiles to filter the table
-- **Sorted for remediation**: Conditional Access policies first, then users, then everything else, each ordered by its most severe failed check
-- **Filters for severity and result**. Select *Failed*, and each row shows only its failed checks
+- **One tile per object type**, showing how many objects have failed checks. The tiles work like tabs: *All objects* shows everything, and selecting a type, such as *User*, shows only that type
+- **Sorted for remediation**: by severity, Critical first, then by the number of failed checks, so the objects to fix first are at the top
+- **Filters for severity and result**. Select *Failed*, and each row shows only its failed checks. One click on the clear filter button resets everything
 - **Expand a row** to see each check that referenced the object, and select a check to open its result without leaving the page
 - **Select the object's name** to open it in the admin portal
 
 ![A failed check opened in the side panel from the Affected objects page](./img/affected-objects-check.png)
 
-A second tab, **Data touched**, lists everything the run read, grouped by area: Intune, Entra roles, PIM alerts, and so on. It's a quick way to see the scope of what Maester looked at.
+A second tab, **Data touched**, lists everything the run read, with a tile for each area: Intune, Entra roles, PIM alerts, and so on. It's a quick way to see the scope of what Maester looked at.
 
 The same list is also saved next to your results as `<name>-affected-objects.json`, and as a CSV when you use `-ExportCsv`, so you can feed it into your own tooling. Nothing is collected unless you pass the switch.
 
