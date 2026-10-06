@@ -310,7 +310,7 @@ export default function AffectedObjectsPage() {
                     result = a.label.localeCompare(b.label)
                     break
                 case "severity":
-                    result = a.failSeverity - b.failSeverity || a.maxSeverity - b.maxSeverity
+                    result = -bySeverity(a, b)
                     break
                 case "checks":
                     result = a.failed - b.failed || a.checks.length - b.checks.length
