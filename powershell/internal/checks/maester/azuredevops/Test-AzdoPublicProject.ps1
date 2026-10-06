@@ -25,11 +25,6 @@ function Test-AzdoPublicProject {
 
     Write-Verbose "Running Test-AzdoPublicProject"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.AllowAnonymousAccess'
     $result = $Policy.effectiveValue

@@ -12,7 +12,7 @@
         Severity = 'High',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.9.3'),
-        Service = 'ExchangeOnline',
+        Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

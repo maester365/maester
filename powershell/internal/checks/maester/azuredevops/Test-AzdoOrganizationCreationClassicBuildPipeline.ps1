@@ -25,11 +25,6 @@ function Test-AzdoOrganizationCreationClassicBuildPipeline {
 
     Write-Verbose "Running Test-AzdoOrganizationCreationClassicBuildPipeline"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $settings = Get-ADOPSOrganizationPipelineSettings
 
     if ($settings -eq 'AccessDeniedException') {

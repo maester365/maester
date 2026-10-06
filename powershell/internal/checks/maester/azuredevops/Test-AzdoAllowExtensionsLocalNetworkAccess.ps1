@@ -24,11 +24,6 @@ function Test-AzdoAllowExtensionsLocalNetworkAccess {
 
     Write-Verbose "Running Test-AzdoAllowExtensionsLocalNetworkAccess"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.AllowExtensionsLocalNetworkAccess'
     $result = $Policy.value

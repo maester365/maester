@@ -24,11 +24,6 @@ function Test-AzdoOrganizationRepositorySettingsGravatarImage {
 
     Write-Verbose "Running Test-AzdoOrganizationRepositorySettingsGravatarImage"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $result = (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "GravatarEnabled").value
 
     if (-not $result) {

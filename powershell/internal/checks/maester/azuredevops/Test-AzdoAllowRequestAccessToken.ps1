@@ -27,11 +27,6 @@ function Test-AzdoAllowRequestAccessToken {
 
     Write-Verbose "Running Test-AzdoAllowRequestAccessToken"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $UserPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User' -Force
     $Policy = $UserPolicies.policy | where-object -property name -eq 'Policy.AllowRequestAccessToken'
     $result = $Policy.effectiveValue

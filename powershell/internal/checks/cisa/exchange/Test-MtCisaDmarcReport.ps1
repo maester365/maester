@@ -24,11 +24,6 @@
         [switch]$Strict
     )
 
-    if(!(Test-MtConnection ExchangeOnline)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }
-
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
     <# Parked domains should have DMARC with reject policy
     $sendingDomains = $acceptedDomains | Where-Object {`
