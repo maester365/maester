@@ -170,13 +170,27 @@ Describe 'Active Directory test source safety' {
             }
         }
 
-        $adTestFiles.Count | Should -BeGreaterThan 0
+        # AD checks migrated to the native format are opt-in through their declared service instead of a
+        # Describe tag: the engine runs them only after Connect-Maester -Service ActiveDirectory.
+        $nativeAdFiles = @(Get-ChildItem (Join-Path $repositoryRoot 'tests/ad') -Recurse -Filter 'Test.*.ps1')
+        foreach ($file in $nativeAdFiles) {
+            $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$null)
+            $attribute = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.AttributeAst] -and $node.TypeName.Name -eq 'MaesterTest' }, $true) | Select-Object -First 1
+            $service = $attribute.NamedArguments | Where-Object ArgumentName -EQ 'Service'
+            if (-not $service -or $service.Argument.Extent.Text -notmatch 'ActiveDirectory') {
+                $issues += "$($file.FullName): a native AD test must declare Service = 'ActiveDirectory'."
+            }
+        }
+
+        ($adTestFiles.Count + $nativeAdFiles.Count) | Should -BeGreaterThan 0
         $issues | Should -BeNullOrEmpty
     }
 
     It 'Routes every public AD test command through a guarded collector before any AD operation' {
         $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
-        $adCommandFiles = Get-ChildItem (Join-Path $repositoryRoot 'powershell/public/ad') -Recurse -Filter 'Test-MtAd*.ps1'
+        # Public AD check commands, and AD checks migrated to native tests (tests/ad/**/Test.*.ps1).
+        $adCommandFiles = @(Get-ChildItem (Join-Path $repositoryRoot 'powershell/public/ad') -Recurse -Filter 'Test-MtAd*.ps1' -ErrorAction SilentlyContinue) +
+        @(Get-ChildItem (Join-Path $repositoryRoot 'tests/ad') -Recurse -Filter 'Test.*.ps1')
         $issues = @()
 
         foreach ($file in $adCommandFiles) {

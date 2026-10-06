@@ -1,0 +1,87 @@
+﻿function Test-MtCisInternalMalwareNotification {
+    <#
+    .SYNOPSIS
+    Checks if notifications for internal users sending malware are enabled
+
+    .DESCRIPTION
+    Notifications for internal users sending malware should be enabled, and an administrator email set
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.3, L1)
+
+    .EXAMPLE
+    Test-MtCisInternalMalwareNotification
+
+    Returns true safe malware notifications are enabled, and an administrator email address is set
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.2.1.3',
+        Title = 'Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)',
+        Severity = 'Medium',
+        Category = 'CIS',
+        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
+        Service = 'ExchangeOnline',
+        Author = 'NZLostboy',
+        Contributor = ('thomas-s-schmidt', 'Mynster9361')
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (!(Test-MtConnection ExchangeOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    } elseif (!(Test-MtConnection SecurityCompliance)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return $null
+    }
+
+    Write-Verbose 'Getting Malware Filter Policy...'
+    $policies = Get-MtExo -Request MalwareFilterPolicy
+
+    # We grab the default policy as that is what CIS checks
+    $policy = $policies | Where-Object { $_.IsDefault -eq $true }
+
+    Write-Verbose 'Executing checks'
+    $enableInternalSenderAdminNotification = $policy | Where-Object {
+        $_.enableInternalSenderAdminNotifications -match 'True'
+    }
+
+    $internalSenderAdminAddress = $policy | Where-Object {
+        $null -ne $_.InternalSenderAdminAddress
+    }
+
+    $testResult = (($enableInternalSenderAdminNotification | Measure-Object).Count -ge 1) -and (($internalSenderAdminAddress | Measure-Object).Count -ge 1)
+
+    $portalLink = 'https://security.microsoft.com/antimalwarev2'
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Your tenants default anti malware policy has recommended internal malware notifications configured ($portalLink).`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Your tenants default anti malware policy does not have the recommended internal malware notifications configured ($portalLink).`n`n%TestResult%"
+    }
+
+    $resultMd = "| Policy | Result |`n"
+    $resultMd += "| --- | --- |`n"
+
+    if ($enableInternalSenderAdminNotification) {
+        $enableInternalSenderAdminNotificationResult = '✅ Pass'
+    } else {
+        $enableInternalSenderAdminNotificationResult = '❌ Fail'
+    }
+
+    if ($internalSenderAdminAddress) {
+        $internalSenderAdminAddressResult = '✅ Pass'
+    } else {
+        $internalSenderAdminAddressResult = '❌ Fail'
+    }
+
+    $resultMd += "| EnableInternalSenderAdminNotification | $enableInternalSenderAdminNotificationResult |`n"
+    $resultMd += "| InternalSenderAdminAddress | $internalSenderAdminAddressResult |`n"
+
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
+}

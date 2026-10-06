@@ -1,0 +1,65 @@
+﻿function Test-MtCisExoAdditionalStorageProvider {
+    <#
+    .SYNOPSIS
+    Checks if additional storage providers are restricted in Outlook on the web
+
+    .DESCRIPTION
+    This setting allows users to open certain external files while working in Outlook on the web.
+    If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of
+    those third-party services.
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.5.3, L2)
+    6.5.3 (L2) Ensure additional storage providers are restricted in Outlook on the web (Automated)
+
+    .EXAMPLE
+    Test-MtCisExoAdditionalStorageProvider
+
+    Returns true if additional storage providers are restricted.
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisExoAdditionalStorageProvider
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.6.5.3',
+        Title = 'Ensure additional storage providers are restricted in Outlook on the web',
+        Severity = 'Medium',
+        Category = 'CIS',
+        Tag = ('CIS E3', 'CIS E3 Level 2', 'CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'Security'),
+        Service = 'ExchangeOnline',
+        Author = 'weyCC81',
+        Contributor = ('bastienperez', 'Mynster9361')
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    try {
+        Write-Verbose "Getting OWA Mailbox Policy..."
+        $owaMailboxPolicy = Get-MtExo -Request OwaMailboxPolicy
+        Write-Verbose "Found $($owaMailboxPolicy.Count) Exchange Web mailbox policies"
+
+        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
+
+        $owaMailboxPolicyDefault = $owaMailboxPolicy | Where-Object { $_.IsDefault -eq $true }
+        Write-Verbose "Filtered $(@($owaMailboxPolicyDefault).Count) Default Web mailbox policy"
+
+        if ($null -eq $owaMailboxPolicyDefault) {
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No default OWA mailbox policy was found."
+            return $null
+        }
+
+        $result = $owaMailboxPolicyDefault.AdditionalStorageProvidersAvailable
+
+        if ($result -eq $false) {
+            $testResultMarkdown = "Well done. AdditionalStorageProvidersAvailable is ``$($result)```n`n"
+        } else {
+            $testResultMarkdown = "``AdditionalStorageProvidersAvailable`` should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
+        }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
+
+    return !$result
+}

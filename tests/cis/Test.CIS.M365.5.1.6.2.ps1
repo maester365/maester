@@ -1,0 +1,46 @@
+﻿function Test-MtCisEnsureGuestAccessRestricted {
+    <#
+    .SYNOPSIS
+        Checks if guest user access is restricted.
+
+    .DESCRIPTION
+        Guest user access should be restricted to only necessary resources.
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.6.2, L1)
+
+    .EXAMPLE
+        Test-MtCisEnsureGuestAccessRestricted
+
+        Returns true if guest user access is restricted.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisEnsureGuestAccessRestricted
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.5.1.6.2',
+        Title = 'Ensure that guest user access is restricted',
+        Severity = 'Medium',
+        Category = 'CIS',
+        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
+        Service = 'Graph',
+        Author = 'oed-metzb',
+        Contributor = 'Mynster9361'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose 'Getting settings...'
+    $settings = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache
+
+    $testResult = $settings.guestUserRoleId -eq "10dae51f-b6af-4016-8d66-8c2a99b929b3" -or $settings.guestUserRoleId -eq "2af84b1e-32c8-42b7-82bc-daa82404023b"
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations."
+    }
+    else {
+        $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations."
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
+}

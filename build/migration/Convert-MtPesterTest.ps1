@@ -381,8 +381,14 @@ foreach ($entry in $entries) {
         $wrapperPath = Join-Path $RepoRoot $entry.File
         if (-not (Test-Path $wrapperPath)) { throw 'wrapper file not found (already converted?)' }
         $wrapper = Get-Ast $wrapperPath
-        $it = $wrapper.Ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'It' -and $n.Extent.StartLineNumber -eq $entry.Line }, $true) | Select-Object -First 1
-        if (-not $it) { throw "It not found at line $($entry.Line)" }
+        # Find the It by its name: line numbers in the golden file shift once other Its are removed.
+        $its = @($wrapper.Ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'It' }, $true))
+        $it = $its | Where-Object {
+            $nameAst = $_.CommandElements | Select-Object -Skip 1 | Where-Object { $_ -is [System.Management.Automation.Language.StringConstantExpressionAst] -or $_ -is [System.Management.Automation.Language.ExpandableStringExpressionAst] } | Select-Object -First 1
+            $nameAst -and $nameAst.Value -eq $entry.Name
+        } | Select-Object -First 1
+        if (-not $it) { $it = $its | Where-Object { $_.Extent.StartLineNumber -eq $entry.Line } | Select-Object -First 1 }
+        if (-not $it) { throw "It '$($entry.Name)' not found" }
         $flags = [System.Collections.Generic.List[string]]::new()
         foreach ($element in $it.CommandElements) {
             if ($element -is [System.Management.Automation.Language.CommandParameterAst] -and $element.ParameterName -in 'Skip', 'ForEach', 'TestCases') { throw "the It uses -$($element.ParameterName); convert by hand" }

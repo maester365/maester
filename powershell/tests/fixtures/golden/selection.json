@@ -8,7 +8,7 @@
       "Run.Path \".\" is the installed tests folder (repo tests/ without Custom); \"./tests/<x>\" maps to repo tests/<x>.",
       "SelectedIds are unique IDs; an ID shared by several Its is listed once. Families are listed by prefix in SelectedFamilies."
     ],
-    "ReplicaChecks": 11680
+    "ReplicaChecks": 2112
   },
   "Cases": [
     {

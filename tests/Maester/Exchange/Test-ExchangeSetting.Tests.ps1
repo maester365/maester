@@ -1,36 +1,8 @@
-Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
+﻿Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
 
-    It 'MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains' -Tag 'MT.1043' {
-        $result = Test-MtExoSetScl
 
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because 'SetScl should not be set to -1'
-        }
-    }
 
-    It 'MT.1044: Ensure modern authentication for Exchange Online is enabled' -Tag 'MT.1044' {
-        $result = Test-MtExoModernAuth
 
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because 'OAuth2ClientProfileEnabled should be True'
-        }
-    }
-
-    It 'MT.1039: Ensure MailTips are enabled for end users' -Tag 'MT.1039' {
-        $result = Test-MtExoMailTip
-
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because 'MailTipsExternalRecipientsTipsEnabled should be True'
-        }
-    }
-
-    It 'MT.1041: Ensure users installing Outlook add-ins is not allowed' -Tag 'MT.1041' {
-        $result = Test-MtExoOutlookAddin
-
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because "Apps in 'Default Role Assignment Policy' should be False"
-        }
-    }
 
     It 'MT.1062: Ensure Direct Send is set to be rejected' -Tag 'MT.1062' {
 
@@ -41,14 +13,6 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1074: Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain' -Tag 'MT.1074' {
-
-        $result = Test-MtLimitOnMicrosoftDomainUsage
-
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because 'no more than 100 outbound mails are sent per day using the .onmicrosoft.com domain.'
-        }
-    }
 
     It 'MT.1076: MOERA SHOULD NOT be used for sent mail' -Tag 'MT.1076' {
 

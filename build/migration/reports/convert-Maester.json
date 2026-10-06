@@ -1,0 +1,3650 @@
+[
+  {
+    "Id": "AZDO.1000",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: It 'AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth' not found [line 391]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "AZDO.1001",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoSSHAuthentication",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1001.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1002",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoLogAuditEvent",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1002.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1003",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1003 -> Test-AzdoPublicProject",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1003.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1004",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoArtifactsExternalPackageProtectionToken",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1004.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1005",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoEnforceAADConditionalAccess",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1005.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1006",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoExternalGuestAccess",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1006.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1007",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1007 -> Test-AzdoAllowTeamAdminsInvitationsAccessToken",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1007.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1008",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1008 -> Test-AzdoAllowRequestAccessToken",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1008.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1009",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoFeedbackCollection",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1009.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1010",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoAuditStream",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1010.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1011",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoResourceUsageProject",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1011.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1012",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoResourceUsageWorkItemTag",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1012.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1013",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationOwner",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1013.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1014",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationBadgesArePrivate",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1014.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1015",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationLimitVariablesAtQueueTime",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1015.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1016",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1016.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1017",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1017.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1018",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationProtectAccessToRepository",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1018.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1019",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1019 -> Test-AzdoOrganizationStageChooser",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1019.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1020",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1020 -> Test-AzdoOrganizationCreationClassicBuildPipeline",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1020.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1021",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1021 -> Test-AzdoOrganizationCreationClassicReleasePipeline",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1021.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1022",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationTriggerPullRequestGitHubRepository",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1022.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1023",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1023.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1024",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationTaskRestrictionsDisableNode6Task",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1024.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1025",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1025.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1026",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1026.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1027",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1027 -> Test-AzdoOrganizationRepositorySettingsGravatarImage",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1027.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1028",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1028.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1029",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationStorageUsage",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1029.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1030",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoProjectCollectionAdministrator",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1030.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1031",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoValidateSshKeyExpiration",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1031.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1032",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoDisableGlobalPATCreation",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1032.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1033",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1033.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1034",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationCreationRestriction",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1034.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1035",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoRestrictPersonalAccessTokenLifespan",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1035.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1036",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoRestrictFullScopePersonalAccessToken",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1036.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1037",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoDisablePATCreation",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1037.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1038",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckAZDO1038 -> Test-AzdoAllowExtensionsLocalNetworkAccess",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1038.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1039",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1039.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1040",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationSecretProtectionEnrollment",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1040.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1041",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationSecretProtectionPushProtection",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1041.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1042",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationAutomaticEnrollmentCodeSecurityNewRepository",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1042.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1043",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationCodeSecurityEnrollment",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1043.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1044",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationCodeSecurityScanning",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1044.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1045",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoOrganizationCopilotCodeReview",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1045.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1001",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForAdmin",
+    "Target": "tests/Maester/Entra/Test.MT.1001.ps1",
+    "Flags": [
+      "Manual: target /Users/merill/github/maester/.claude/worktrees/maester-3-planning-6643a9/tests/Maester/Entra/Test.MT.1001.ps1 already exists [line 463]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1002",
+    "Wrapper": "tests/Maester/Entra/Test-AppManagementPolicies.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppManagementPolicyEnabled",
+    "Target": "tests/Maester/Entra/Test.MT.1002.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1003",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForAllUsers",
+    "Target": "tests/Maester/Entra/Test.MT.1003.ps1",
+    "Flags": [
+      "Manual: target /Users/merill/github/maester/.claude/worktrees/maester-3-planning-6643a9/tests/Maester/Entra/Test.MT.1003.ps1 already exists [line 463]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1004",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForAdminManagement",
+    "Target": "tests/Maester/Entra/Test.MT.1004.ps1",
+    "Flags": [
+      "Manual: target /Users/merill/github/maester/.claude/worktrees/maester-3-planning-6643a9/tests/Maester/Entra/Test.MT.1004.ps1 already exists [line 463]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1005",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaBlockLegacyOtherAuthentication",
+    "Target": "tests/Maester/Entra/Test.MT.1005.ps1",
+    "Flags": [
+      "Manual: target /Users/merill/github/maester/.claude/worktrees/maester-3-planning-6643a9/tests/Maester/Entra/Test.MT.1005.ps1 already exists [line 463]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1006",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForAdmin",
+    "Target": "tests/Maester/Entra/Test.MT.1006.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1007",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForAllUsers",
+    "Target": "tests/Maester/Entra/Test.MT.1007.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1008",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForAdminManagement",
+    "Target": "tests/Maester/Entra/Test.MT.1008.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1009",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaBlockLegacyOtherAuthentication",
+    "Target": "tests/Maester/Entra/Test.MT.1009.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1010",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaBlockLegacyExchangeActiveSyncAuthentication",
+    "Target": "tests/Maester/Entra/Test.MT.1010.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1011",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaSecureSecurityInfoRegistration",
+    "Target": "tests/Maester/Entra/Test.MT.1011.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1012",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -Skip; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1013",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -Skip; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1014",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaDeviceComplianceAdminsExists",
+    "Target": "tests/Maester/Entra/Test.MT.1014.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1015",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaBlockUnknownOrUnsupportedDevicePlatform",
+    "Target": "tests/Maester/Entra/Test.MT.1015.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1016",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaMfaForGuest",
+    "Target": "tests/Maester/Entra/Test.MT.1016.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1017",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaEnforceNonPersistentBrowserSession",
+    "Target": "tests/Maester/Entra/Test.MT.1017.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1018",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaEnforceSignInFrequency",
+    "Target": "tests/Maester/Entra/Test.MT.1018.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1019",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaApplicationEnforcedRestriction",
+    "Target": "tests/Maester/Entra/Test.MT.1019.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1020",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaExclusionForDirectorySyncAccount",
+    "Target": "tests/Maester/Entra/Test.MT.1020.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1021",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1022",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1023",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1025",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1025 -> Test-MtPrivPermanentDirectoryRole",
+    "Target": "tests/Maester/Entra/Test.MT.1025.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1026",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1026 -> Test-MtPrivPermanentDirectoryRole",
+    "Target": "tests/Maester/Entra/Test.MT.1026.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1027",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1027 -> Test-MtPrivPermanentDirectoryRole",
+    "Target": "tests/Maester/Entra/Test.MT.1027.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1028",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1028 -> Test-MtPrivPermanentDirectoryRole",
+    "Target": "tests/Maester/Entra/Test.MT.1028.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1029",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1030",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1031",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1032",
+    "Wrapper": "tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1035",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaGroupsRestricted",
+    "Target": "tests/Maester/Entra/Test.MT.1035.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1036",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaGap",
+    "Target": "tests/Maester/Entra/Test.MT.1036.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1037",
+    "Wrapper": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -TestCases; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1038",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaReferencedGroupsExist",
+    "Target": "tests/Maester/Entra/Test.MT.1038.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1039",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtExoMailTip",
+    "Target": "tests/Maester/Exchange/Test.MT.1039.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1041",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtExoOutlookAddin",
+    "Target": "tests/Maester/Exchange/Test.MT.1041.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1042",
+    "Wrapper": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -TestCases; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1043",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtExoSetScl",
+    "Target": "tests/Maester/Exchange/Test.MT.1043.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1044",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtExoModernAuth",
+    "Target": "tests/Maester/Exchange/Test.MT.1044.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1045",
+    "Wrapper": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -TestCases; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1046",
+    "Wrapper": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -TestCases; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1047",
+    "Wrapper": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -TestCases; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1048",
+    "Wrapper": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -TestCases; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1049",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: It 'MT.1049: Conditional Access policies for User Risk and Sign-in Risk should be configured separately. See https://maester.dev/docs/tests/MT.1049' not found [line 391]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1050",
+    "Wrapper": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1050 -> Test-MtHighRiskAppPermissions",
+    "Target": "tests/Maester/Entra/Test.MT.1050.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1051",
+    "Wrapper": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1051 -> Test-MtHighRiskAppPermissions",
+    "Target": "tests/Maester/Entra/Test.MT.1051.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1052",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaDeviceCodeFlow",
+    "Target": "tests/Maester/Entra/Test.MT.1052.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1053",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtManagedDeviceCleanupSettings",
+    "Target": "tests/Maester/Intune/Test.MT.1053.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1054",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDeviceComplianceSettings",
+    "Target": "tests/Maester/Intune/Test.MT.1054.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1055",
+    "Wrapper": "tests/Maester/Entra/Test-Groups.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGroupCreationRestricted",
+    "Target": "tests/Maester/Entra/Test.MT.1055.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1056",
+    "Wrapper": "tests/Maester/Azure/UserAccessAdmin.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtUserAccessAdmin",
+    "Target": "tests/Maester/Azure/Test.MT.1056.ps1",
+    "Flags": [
+      "InferredService: Azure",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Azure",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1057",
+    "Wrapper": "tests/Maester/Entra/Test-AppRegistrations.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppRegistrationsWithSecrets",
+    "Target": "tests/Maester/Entra/Test.MT.1057.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1058",
+    "Wrapper": "tests/Maester/Entra/Test-AppRegistrations.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtSpExchangeAppAccessPolicy",
+    "Target": "tests/Maester/Entra/Test.MT.1058.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1061",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDeviceRegistrationMfaConflict",
+    "Target": "tests/Maester/Entra/Test.MT.1061.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1062",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1063",
+    "Wrapper": "tests/Maester/Entra/Test-MtAppRegistrationOwnersWithoutMFA.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppRegistrationOwnersWithoutMFA",
+    "Target": "tests/Maester/Entra/Test.MT.1063.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1064",
+    "Wrapper": "tests/Maester/Azure/Test-MtManagementGroupWriteRequirement.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtManagementGroupWriteRequirement",
+    "Target": "tests/Maester/Azure/Test.MT.1064.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Azure",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1065",
+    "Wrapper": "tests/Maester/Azure/Test-MtVaultSoftDelete.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtVaultSoftDelete",
+    "Target": "tests/Maester/Azure/Test.MT.1065.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Azure",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1066",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaReferencedObjectsExist",
+    "Target": "tests/Maester/Entra/Test.MT.1066.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1067",
+    "Wrapper": "tests/Maester/Entra/Test-AuthenticationMethodBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAuthenticationPolicyReferencedObjectsExist",
+    "Target": "tests/Maester/Entra/Test.MT.1067.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1068",
+    "Wrapper": "tests/Maester/Entra/Test-MtTenantCreationRestricted.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtTenantCreationRestricted",
+    "Target": "tests/Maester/Entra/Test.MT.1068.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1069",
+    "Wrapper": "tests/Maester/Entra/Test-MtSecurityGroupCreationRestricted.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtSecurityGroupCreationRestricted",
+    "Target": "tests/Maester/Entra/Test.MT.1069.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1070",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraDeviceRegistrationPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraDeviceJoinRestricted",
+    "Target": "tests/Maester/Entra/Test.MT.1070.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1071",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaAzureDevOps",
+    "Target": "tests/Maester/Entra/Test.MT.1071.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1072",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaApprovedClientApp",
+    "Target": "tests/Maester/Entra/Test.MT.1072.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1073",
+    "Wrapper": "tests/Maester/Entra/Test-MtOnPremisesSynchronization.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraIDConnectSyncSoftHardMatching",
+    "Target": "tests/Maester/Entra/Test.MT.1073.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1074",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtLimitOnMicrosoftDomainUsage",
+    "Target": "tests/Maester/Exchange/Test.MT.1074.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1075",
+    "Wrapper": "tests/Maester/Entra/Test-AppRegistrations.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtServicePrincipalsForAllUsers",
+    "Target": "tests/Maester/Entra/Test.MT.1075.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1076",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1083",
+    "Wrapper": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 398]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1084",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraIDConnect.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It uses -Skip; convert by hand [line 394]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1090",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraDeviceRegistrationPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDeviceRegistrationLocalAdminsGlobalAdmin",
+    "Target": "tests/Maester/Entra/Test.MT.1090.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1091",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraDeviceRegistrationPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDeviceRegistrationLocalAdminsRegisteringUser",
+    "Target": "tests/Maester/Entra/Test.MT.1091.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1092",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtApplePushNotificationCertificate",
+    "Target": "tests/Maester/Intune/Test.MT.1092.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1093",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppleAutomatedDeviceEnrollmentToken",
+    "Target": "tests/Maester/Intune/Test.MT.1093.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1094",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppleVolumePurchaseProgramToken",
+    "Target": "tests/Maester/Intune/Test.MT.1094.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1095",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAndroidEnterpriseConnection",
+    "Target": "tests/Maester/Intune/Test.MT.1095.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1096",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtOperationApprovalPolicies",
+    "Target": "tests/Maester/Intune/Test.MT.1096.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1097",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCertificateConnectors",
+    "Target": "tests/Maester/Intune/Test.MT.1097.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1098",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMobileThreatDefenseConnectors",
+    "Target": "tests/Maester/Intune/Test.MT.1098.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1099",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtWindowsDataProcessor",
+    "Target": "tests/Maester/Intune/Test.MT.1099.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1100",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtIntuneDiagnosticSettings",
+    "Target": "tests/Maester/Intune/Test.MT.1100.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Azure",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1101",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtTenantCustomization",
+    "Target": "tests/Maester/Intune/Test.MT.1101.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1102",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtFeatureUpdatePolicy",
+    "Target": "tests/Maester/Intune/Test.MT.1102.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1103",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtIntuneRbacGroupsProtected",
+    "Target": "tests/Maester/Intune/Test.MT.1103.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM",
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1105",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdmAuthority",
+    "Target": "tests/Maester/Intune/Test.MT.1105.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1106",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntitlementManagementValidResourceRoles.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntitlementManagementValidResourceRoles",
+    "Target": "tests/Maester/Entra/Test.MT.1106.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1107",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntitlementManagementDeletedGroups.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntitlementManagementDeletedGroups",
+    "Target": "tests/Maester/Entra/Test.MT.1107.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1108",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntitlementManagementInactivePolicies.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntitlementManagementInactivePolicies",
+    "Target": "tests/Maester/Entra/Test.MT.1108.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1109",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntitlementManagementValidApprovers.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntitlementManagementValidApprovers",
+    "Target": "tests/Maester/Entra/Test.MT.1109.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1110",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntitlementManagementOrphanedResources.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntitlementManagementOrphanedResources",
+    "Target": "tests/Maester/Entra/Test.MT.1110.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1113",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentBroadSharing",
+    "Target": "tests/Maester/AIAgent/Test.MT.1113.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1114",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentNoAuthentication",
+    "Target": "tests/Maester/AIAgent/Test.MT.1114.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1115",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentRiskyHttpConfig",
+    "Target": "tests/Maester/AIAgent/Test.MT.1115.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1116",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentEmailExfiltration",
+    "Target": "tests/Maester/AIAgent/Test.MT.1116.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1117",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentDormant",
+    "Target": "tests/Maester/AIAgent/Test.MT.1117.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1118",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentAuthorAuthentication",
+    "Target": "tests/Maester/AIAgent/Test.MT.1118.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1119",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentHardCodedCredentials",
+    "Target": "tests/Maester/AIAgent/Test.MT.1119.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1120",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentMcpTools",
+    "Target": "tests/Maester/AIAgent/Test.MT.1120.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1121",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentMissingInstructions",
+    "Target": "tests/Maester/AIAgent/Test.MT.1121.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1122",
+    "Wrapper": "tests/Maester/AIAgent/Test-AIAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAIAgentOrphaned",
+    "Target": "tests/Maester/AIAgent/Test.MT.1122.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1123",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtBitLockerFullDiskEncryption",
+    "Target": "tests/Maester/Intune/Test.MT.1123.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1147",
+    "Wrapper": "tests/Maester/Entra/Test-MtOnPremisesSynchronization.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtKrbtgtAzureADNotSynced",
+    "Target": "tests/Maester/Entra/Test.MT.1147.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1148",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeArchiveScanning",
+    "Target": "tests/Maester/Defender/Test.MT.1148.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1149",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeBehaviorMonitoring",
+    "Target": "tests/Maester/Defender/Test.MT.1149.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1150",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeCloudProtection",
+    "Target": "tests/Maester/Defender/Test.MT.1150.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1151",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeEmailScanning",
+    "Target": "tests/Maester/Defender/Test.MT.1151.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1152",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeScriptScanning",
+    "Target": "tests/Maester/Defender/Test.MT.1152.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1153",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeRealtimeMonitoring",
+    "Target": "tests/Maester/Defender/Test.MT.1153.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1154",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeRemovableDriveScanning",
+    "Target": "tests/Maester/Defender/Test.MT.1154.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1155",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeMappedDriveScanning",
+    "Target": "tests/Maester/Defender/Test.MT.1155.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1156",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeNetworkFileScanning",
+    "Target": "tests/Maester/Defender/Test.MT.1156.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1157",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeCpuLoadFactor",
+    "Target": "tests/Maester/Defender/Test.MT.1157.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1158",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeScheduleScanDay",
+    "Target": "tests/Maester/Defender/Test.MT.1158.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1159",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeQuickScanTime",
+    "Target": "tests/Maester/Defender/Test.MT.1159.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1160",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeSignatureBeforeScan",
+    "Target": "tests/Maester/Defender/Test.MT.1160.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1161",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeCloudBlockLevel",
+    "Target": "tests/Maester/Defender/Test.MT.1161.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1162",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeCloudExtendedTimeout",
+    "Target": "tests/Maester/Defender/Test.MT.1162.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1163",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeSignatureUpdateInterval",
+    "Target": "tests/Maester/Defender/Test.MT.1163.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1164",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdePuaProtection",
+    "Target": "tests/Maester/Defender/Test.MT.1164.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1165",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeNetworkProtection",
+    "Target": "tests/Maester/Defender/Test.MT.1165.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1166",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeDisableLocalAdminMerge",
+    "Target": "tests/Maester/Defender/Test.MT.1166.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1167",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeRealtimeScanDirection",
+    "Target": "tests/Maester/Defender/Test.MT.1167.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1168",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeRetainCleanedMalware",
+    "Target": "tests/Maester/Defender/Test.MT.1168.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1169",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeCatchupFullScan",
+    "Target": "tests/Maester/Defender/Test.MT.1169.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1170",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeCatchupQuickScan",
+    "Target": "tests/Maester/Defender/Test.MT.1170.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1171",
+    "Wrapper": "tests/Maester/Defender/Test-MtMdeAntivirusPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMdeSubmitSamplesConsent",
+    "Target": "tests/Maester/Defender/Test.MT.1171.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1172",
+    "Wrapper": "tests/Maester/Purview/Test-MtPurviewAi.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtPurviewAuditLogIngestion",
+    "Target": "tests/Maester/Purview/Test.MT.1172.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1173",
+    "Wrapper": "tests/Maester/Purview/Test-MtPurviewAi.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtPurviewAiSensitivityLabelsForFiles",
+    "Target": "tests/Maester/Purview/Test.MT.1173.ps1",
+    "Flags": [
+      "InferredService: SecurityCompliance",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SecurityCompliance",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1174",
+    "Wrapper": "tests/Maester/Purview/Test-MtPurviewAi.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtPurviewAiInsiderRiskPolicy",
+    "Target": "tests/Maester/Purview/Test.MT.1174.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1175",
+    "Wrapper": "tests/Maester/Purview/Test-MtPurviewAi.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtPurviewAiDlpPolicy",
+    "Target": "tests/Maester/Purview/Test.MT.1175.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1176",
+    "Wrapper": "tests/Maester/Purview/Test-MtPurviewAi.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtPurviewAiRetentionPolicy",
+    "Target": "tests/Maester/Purview/Test.MT.1176.ps1",
+    "Flags": [
+      "InferredService: SecurityCompliance, ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "SecurityCompliance",
+      "ExchangeOnline"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1177",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtIntuneLAPSConfiguration",
+    "Target": "tests/Maester/Intune/Test.MT.1177.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1178",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtIntuneASRRules",
+    "Target": "tests/Maester/Intune/Test.MT.1178.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1179",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtIntuneAppControl",
+    "Target": "tests/Maester/Intune/Test.MT.1179.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1180",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtIntuneManagedInstallerRules",
+    "Target": "tests/Maester/Intune/Test.MT.1180.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1181",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaAgentRiskBlockPolicy",
+    "Target": "tests/Maester/Entra/Test.MT.1181.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1182",
+    "Wrapper": "tests/Maester/Entra/Test-MtDomainsDmarcRecordMaturity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDomainsDmarcRecordMaturity",
+    "Target": "tests/Maester/Entra/Test.MT.1182.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1183",
+    "Wrapper": "tests/Maester/Entra/Test-MtOnPremisesSynchronization.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked",
+    "Target": "tests/Maester/Entra/Test.MT.1183.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1184",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaUntargetedPolicy",
+    "Target": "tests/Maester/Entra/Test.MT.1184.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1185",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraMsolPowerShellBlocked.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraMsolPowerShellBlocked",
+    "Target": "tests/Maester/Entra/Test.MT.1185.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1186",
+    "Wrapper": "tests/Maester/Entra/Test-MtHighPrivilegeServicePrincipalsForAllUsers.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtHighPrivilegeServicePrincipalsForAllUsers",
+    "Target": "tests/Maester/Entra/Test.MT.1186.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1187",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaM365ProfileEnabled.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaM365ProfileEnabled",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1187.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1188",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaPrivateAccessAppCompliantDevice.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaPrivateAccessAppCompliantDevice",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1188.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1189",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaForwardingProfileAssignmentNotNested.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaForwardingProfileAssignmentNotNested",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1189.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1190",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1190.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1191",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaCompliantNetworkBreakGlassExcluded.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaCompliantNetworkBreakGlassExcluded",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1191.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1192",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaPrivateAccessAppAssignmentNotNested.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaPrivateAccessAppAssignmentNotNested",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1192.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1193",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaPrivateAccessAppSegmentHygiene.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaPrivateAccessAppSegmentHygiene",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1193.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1194",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaBaselineThreatIntelligenceEnforced.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaBaselineThreatIntelligenceEnforced",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1194.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1195",
+    "Wrapper": "tests/Maester/GlobalSecureAccess/Test-MtGsaQuickAccessNoSignInFrequency.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtGsaQuickAccessNoSignInFrequency",
+    "Target": "tests/Maester/GlobalSecureAccess/Test.MT.1195.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1196",
+    "Wrapper": "tests/Maester/Entra/Test-MtDynamicGroupMembership.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDynamicGroupUserControlledAttributes",
+    "Target": "tests/Maester/Entra/Test.MT.1196.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1197",
+    "Wrapper": "tests/Maester/Entra/Test-MtDynamicGroupMembership.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtDynamicGroupMemberOfRule",
+    "Target": "tests/Maester/Entra/Test.MT.1197.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1198",
+    "Wrapper": "tests/Maester/Entra/Test-AppRegistrations.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppRegistrationCertificateLifetime",
+    "Target": "tests/Maester/Entra/Test.MT.1198.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1199",
+    "Wrapper": "tests/Maester/Entra/Test-AppRegistrations.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAppRegistrationCredentialExpiry",
+    "Target": "tests/Maester/Entra/Test.MT.1199.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1200",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentIdOrphaned.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentIdentityOrphaned",
+    "Target": "tests/Maester/Entra/Test.MT.1200.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1201",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentIdOrphaned.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentUserOrphaned",
+    "Target": "tests/Maester/Entra/Test.MT.1201.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1203",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentBlueprintOrphaned.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentBlueprintOrphaned",
+    "Target": "tests/Maester/Entra/Test.MT.1203.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1204",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentOwner",
+    "Target": "tests/Maester/Entra/Test.MT.1204.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1205",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentSponsor",
+    "Target": "tests/Maester/Entra/Test.MT.1205.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1206",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentInactive",
+    "Target": "tests/Maester/Entra/Test.MT.1206.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1207",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentForeignPrivileged",
+    "Target": "tests/Maester/Entra/Test.MT.1207.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1208",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentBlueprintCredentialHygiene",
+    "Target": "tests/Maester/Entra/Test.MT.1208.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1209",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentDirectoryRoles",
+    "Target": "tests/Maester/Entra/Test.MT.1209.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1210",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentUserExcessiveAccess",
+    "Target": "tests/Maester/Entra/Test.MT.1210.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1211",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentBlueprintAllAllowedInheritance",
+    "Target": "tests/Maester/Entra/Test.MT.1211.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1212",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentBlueprintOpenAccess",
+    "Target": "tests/Maester/Entra/Test.MT.1212.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1213",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentSecurity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentBlueprintRedirectUriHygiene",
+    "Target": "tests/Maester/Entra/Test.MT.1213.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1214",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMacOSSystemIntegrityProtection",
+    "Target": "tests/Maester/Intune/Test.MT.1214.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1215",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMacOSGatekeeper",
+    "Target": "tests/Maester/Intune/Test.MT.1215.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1216",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMacOSDefenderRiskScore",
+    "Target": "tests/Maester/Intune/Test.MT.1216.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1217",
+    "Wrapper": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtMacOSLAPSConfiguration",
+    "Target": "tests/Maester/Intune/Test.MT.1217.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1223",
+    "Wrapper": "tests/Maester/Entra/Test-MtEntraAgentHighRiskGraphPermissions.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtEntraAgentHighRiskGraphPermissions",
+    "Target": "tests/Maester/Entra/Test.MT.1223.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  }
+]

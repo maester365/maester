@@ -1,6 +1,9 @@
 ﻿Describe 'macOS Intune security checks' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtMacOSDefenderRiskScore, Test-MtMacOSGatekeeper, Test-MtMacOSLAPSConfiguration, Test-MtMacOSSystemIntegrityProtection
 
         function Get-TestCompliancePolicy {
             param(

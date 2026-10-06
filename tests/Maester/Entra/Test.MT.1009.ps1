@@ -1,0 +1,66 @@
+﻿function Test-MtCaBlockLegacyOtherAuthentication {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one Conditional Access policy that blocks legacy authentication.
+
+    .Description
+    Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
+    Conditional Access policy that blocks legacy authentication.
+
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
+
+    .Example
+    Test-MtCaBlockLegacyOtherAuthentication
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCaBlockLegacyOtherAuthentication
+    #>
+    [MaesterTest(
+        Id = 'MT.1009',
+        Title = 'At least one Conditional Access policy is configured to block other legacy authentication.',
+        Severity = 'High',
+        Category = 'Maester/Entra',
+        Tag = ('CA', 'Maester'),
+        Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM',
+        Author = 'f-bader'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param ()
+
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    # Remove policies that require password change, as they are related to user risk and not MFA on signin
+    $policies = $policies | Where-Object { $_.grantControls.builtInControls -notcontains 'passwordChange' }
+
+    $testDescription = "
+Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
+Conditional Access policy that blocks legacy authentication.
+
+See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)"
+    $testResult = "These Conditional Access policies block legacy authentication for other clients :`n`n"
+
+    $result = $false
+    foreach ($policy in $policies) {
+        if ( $policy.grantControls.builtInControls -contains 'block' `
+                -and "other" -in $policy.conditions.clientAppTypes `
+                -and $policy.conditions.applications.includeApplications -eq "All" `
+                -and $policy.conditions.users.includeUsers -eq "All" `
+        ) {
+            $result = $true
+            $CurrentResult = $true
+            $testResult += "  - [$(Get-MtSafeMarkdown $policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+        } else {
+            $CurrentResult = $false
+        }
+        Write-Verbose "$($policy.displayName) - $CurrentResult"
+    }
+
+    if ($result -eq $false) {
+        $testResult = "There was no Conditional Access policy blocking legacy authentication for other clients."
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+
+    return $result
+}

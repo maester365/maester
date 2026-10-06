@@ -1,4 +1,10 @@
-﻿Describe 'Test-MtPrivPermanentDirectoryRole' {
+﻿BeforeAll {
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtPrivPermanentDirectoryRole
+}
+
+Describe 'Test-MtPrivPermanentDirectoryRole' {
     BeforeEach {
         Mock -ModuleName Maester Get-MgContext {
             return [pscustomobject]@{ TenantId = 'tenant-id' }

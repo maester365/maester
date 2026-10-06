@@ -73,6 +73,10 @@ Describe 'MaesterTest ID grammar' {
                 ($name.Value -split ':', 2)[0].Trim()
             }
         }
+        # Checks migrated to the native format: their ID is in the file name and the attribute.
+        $ids = @($ids) + @(Get-ChildItem -Path (Join-Path $script:repoRoot 'tests') -Recurse -Filter 'Test.*.ps1' |
+                Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' } |
+                ForEach-Object { $_.Name -replace '^Test\.', '' -replace '\.ps1$', '' })
         $ids = $ids | Sort-Object -Unique
         $ids.Count | Should -BeGreaterThan 500
         $invalid = $ids | Where-Object { $_ -notmatch $script:schema.IdPattern -or $_.Length -gt $script:schema.IdMaxLength }

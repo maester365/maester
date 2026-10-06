@@ -1,0 +1,53 @@
+﻿function Test-MtManagedDeviceCleanupSettings {
+    <#
+    .SYNOPSIS
+    Ensure device clean-up rule is configured
+
+    .DESCRIPTION
+    The device clean-up rule should be configured
+
+    .EXAMPLE
+    Test-MtManagedDeviceCleanupSettings
+
+    Returns true if the device clean-up rule is configured
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtManagedDeviceCleanupSettings
+    #>
+    [MaesterTest(
+        Id = 'MT.1053',
+        Title = 'Ensure intune device clean-up rule is configured',
+        Severity = 'Medium',
+        Category = 'Maester/Intune',
+        Tag = ('Intune', 'Maester'),
+        Service = 'Graph',
+        Author = 'HenrikPiecha',
+        Contributor = ('merill', 'l-gosling')
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
+    param()
+
+    Write-Verbose 'Testing device clean-up rule configuration'
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
+        return $null
+    }
+
+    $deviceCleanupSettings = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/managedDeviceCleanupRules' -ApiVersion beta
+    if ((-not $deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) -or ($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays -eq 0)) {
+        $testResultMarkdown = 'No Intune device clean-up rule is configured.'
+        $return = $false
+    } else {
+        $testResultMarkdown = "Well done. At least one Intune device clean-up rule is configured.`n"
+        $testResultMarkdown += "| Name | Platform | Days to retire |`n"
+        $testResultMarkdown += "| --- | --- | --- |`n"
+        foreach ($setting in $deviceCleanupSettings) {
+            $testResultMarkdown += "| $(Get-MtSafeMarkdown $setting.displayName) | $($setting.deviceCleanupRulePlatformType) | $($setting.deviceInactivityBeforeRetirementInDays) |`n"
+        }
+        $return = $true
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $return
+}

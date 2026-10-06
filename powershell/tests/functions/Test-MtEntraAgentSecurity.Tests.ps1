@@ -1,6 +1,9 @@
 Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtEntraAgentBlueprintAllAllowedInheritance, Test-MtEntraAgentBlueprintCredentialHygiene, Test-MtEntraAgentBlueprintOpenAccess, Test-MtEntraAgentBlueprintRedirectUriHygiene, Test-MtEntraAgentDirectoryRoles, Test-MtEntraAgentForeignPrivileged, Test-MtEntraAgentInactive, Test-MtEntraAgentOwner, Test-MtEntraAgentSponsor, Test-MtEntraAgentUserExcessiveAccess
     }
 
     BeforeEach {

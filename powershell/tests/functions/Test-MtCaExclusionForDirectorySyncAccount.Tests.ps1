@@ -1,5 +1,8 @@
 ﻿Describe 'Test-MtCaExclusionForDirectorySyncAccount' {
     BeforeAll {
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtCaExclusionForDirectorySyncAccount
         Mock -ModuleName Maester Get-MtLicenseInformation { return 'P1' }
         Mock -ModuleName Maester Add-MtTestResultDetail {}
 

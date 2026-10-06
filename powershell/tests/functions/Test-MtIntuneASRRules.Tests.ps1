@@ -1,6 +1,9 @@
 ﻿Describe 'Test-MtIntuneASRRules' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtIntuneASRRules
 
         $script:AsrRoot = 'device_vendor_msft_policy_config_defender_attacksurfacereductionrules'
 

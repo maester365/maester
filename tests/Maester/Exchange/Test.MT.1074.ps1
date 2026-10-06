@@ -1,0 +1,105 @@
+﻿function Test-MtLimitOnMicrosoftDomainUsage {
+    <#
+    .SYNOPSIS
+    Ensure mailboxes do not use the .onmicrosoft.com domain as primary SMTP address
+
+    .DESCRIPTION
+    This test checks if any mailbox is using the .onmicrosoft.com domain as primary SMTP address.
+    Usage of the .onmicrosoft.com domain has its limitation and receives throttling.
+
+    .EXAMPLE
+    Test-MtLimitOnMicrosoftDomainUsage
+
+    Returns true if no mailbox is using the .onmicrosoft.com domain as primary SMTP address
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtLimitOnMicrosoftDomainUsage
+    #>
+    [MaesterTest(
+        Id = 'MT.1074',
+        Title = 'Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain',
+        Severity = 'Medium',
+        Category = 'Maester/Exchange',
+        Tag = ('Exchange', 'Maester'),
+        Service = ('ExchangeOnline', 'Graph'),
+        Author = 'HenrikPiecha',
+        Contributor = 'JeanPhilippeGeorge'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (Get-MtLicenseInformation -Product Mdo) {
+        $checkType = "DefenderForOffice365P2"
+    } elseif (-not (Test-MtConnection ExchangeOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    } else {
+        $checkType = "ExchangeOnline"
+    }
+
+    $return = $true
+    if ($checkType -eq "DefenderForOffice365P2") {
+        Write-Verbose "Checking if mailboxes send outbound mails using the .onmicrosoft.com domain..."
+        try {
+            $outboundThreshold = 100
+            $timespan = 14
+            $timespanISO6801 = "P$($timespan)D"
+
+            $query = "EmailEvents | where EmailDirection == 'Outbound' | where SenderMailFromDomain endswith '.onmicrosoft.com' | extend Day = startofday(Timestamp) | summarize count() by SenderMailFromDomain, Day | where count_ >= $($outboundThreshold)"
+            $KqlEmailEvents = Invoke-MtGraphSecurityQuery -Query $query -Timespan $timespanISO6801
+
+            if (($KqlEmailEvents | Measure-Object).Count -eq 0) {
+                $result = "Well done. No more than $($outboundThreshold) outbound mails have been sent in the last $($timespan) days using the .onmicrosoft.com domain."
+                Add-MtTestResultDetail -Result $result
+            } else {
+                $result = "In the last $($timespan) days, your tenant sent more than $($outboundThreshold) outbound mails on at least one day using the .onmicrosoft.com domain:`n`n%TestResult%"
+                $resultTable = "| SenderMailFromDomain | onDay | Count |`n"
+                $resultTable += "| --- | --- | --- |`n"
+                foreach ($item in $KqlEmailEvents) {
+                    $resultTable += "| $($item.SenderMailFromDomain) | $((Get-Date($item.Day)).ToString("dd.MM.yyyy")) | $($item.count_) |`n"
+                }
+                $result = $result -replace '%TestResult%', $resultTable
+                Add-MtTestResultDetail -Result $result
+                $return = $false
+            }
+            return $return
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
+        }
+    } elseif ($checkType -eq "ExchangeOnline") {
+        Write-Verbose "Checking if mailboxes use the .onmicrosoft.com domain as primary SMTP address..."
+        try {
+            $mbxes = Get-Mailbox -ResultSize Unlimited -Filter "RecipientTypeDetails -ne 'DiscoveryMailbox'" | Where-Object { $_.PrimarySmtpAddress -like "*@*.onmicrosoft.com" }
+            if (($mbxes | Measure-Object).Count -eq 0) {
+                $result = "Well done. No mailbox uses the .onmicrosoft.com domain as primary SMTP address."
+                Add-MtTestResultDetail -Result $result
+            } else {
+                $mgUsers = @()
+                $mailboxWithoutExternalDirectoryObjectIdDisplayNames = $mbxes | `
+                    Where-Object { -not $_.ExternalDirectoryObjectId } | `
+                    Select-Object -ExpandProperty DisplayName
+                [array]$mgUsers = foreach ($mbx in $mbxes) {
+                    if ($mbx.ExternalDirectoryObjectId) {
+                        Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $mbx.ExternalDirectoryObjectId
+                    }
+                }
+                $result = "Your tenant has $(($mbxes | Measure-Object).Count) mailboxes using the .onmicrosoft.com domain as primary SMTP address:`n`n%TestResult%"
+                if (($mailboxWithoutExternalDirectoryObjectIdDisplayNames | Measure-Object).Count -ge 1) {
+                    $mailboxWithoutExternalDirectoryObjectIdDisplayNamesResult = $mailboxWithoutExternalDirectoryObjectIdDisplayNames -join "`n+ "
+                    $result += "`n`nThe following mailboxes have no ExternalDirectoryObjectId and could not be looked up in Microsoft Graph:`n+ $mailboxWithoutExternalDirectoryObjectIdDisplayNamesResult"
+                }
+                $return = $false
+                Add-MtTestResultDetail -Result $result -GraphObjects $mgUsers -GraphObjectType Users
+            }
+            return $return
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
+        }
+    } else {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
+}

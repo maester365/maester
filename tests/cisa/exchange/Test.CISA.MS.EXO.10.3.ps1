@@ -1,0 +1,64 @@
+﻿function Test-MtCisaMalwareZap {
+    <#
+    .SYNOPSIS
+    Checks state of preset security policies
+
+    .DESCRIPTION
+    Email scanning SHALL be capable of reviewing emails after delivery.
+
+    .EXAMPLE
+    Test-MtCisaMalwareZap
+
+    Returns true if standard and strict protection is on
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisaMalwareZap
+    #>
+    [MaesterTest(
+        Id = 'CISA.MS.EXO.10.3',
+        Title = 'Email scanning SHALL be capable of reviewing emails after delivery.',
+        Severity = 'High',
+        Category = 'CISA',
+        Tag = ('MS.EXO', 'MS.EXO.10.3'),
+        Service = 'ExchangeOnline',
+        Author = 'soulemike',
+        Contributor = 'JeanPhilippeGeorge'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $policies = Get-MtExoThreatPolicyMalware
+
+    $failingPolicies = $policies | Where-Object { $_.IsEnabled -and -not $_.ZapEnabled }
+    $testResult = ($failingPolicies | Measure-Object).Count -eq 0
+
+    $portalLink = "https://security.microsoft.com/antimalwarev2"
+    $passResult = "✅ Pass"
+    $failResult = "❌ Fail"
+    $skipResult = "🗄️ Skip"
+
+    $result = "| Policy name | Enabled | ZapEnabled | Result |`n"
+    $result += "| --- | --- | --- | --- |`n"
+    foreach ($item in $policies) {
+        if (-not $item.IsEnabled) {
+            $result += "| $($item.Identity) | $false | $($item.ZapEnabled) | $($skipResult) |`n"
+        } elseif ($item.ZapEnabled) {
+            $result += "| $($item.Identity) | $true | $($item.ZapEnabled) | $($passResult) |`n"
+        } else {
+            $result += "| $($item.Identity) | $true | $($item.ZapEnabled) | $($failResult) |`n"
+        }
+    }
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. All the anti-malware policies in your tenant have the property ZapEnabled set to true ($portalLink).`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Your tenant does not have all the anti-malware policies with the property ZapEnabled set to true ($portalLink).`n`n%TestResult%"
+    }
+
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
+}

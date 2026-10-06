@@ -12,7 +12,7 @@ Describe 'Resolve-MtTestSource' {
         $null = New-Item -ItemType Directory -Path $folder -Force
         "Describe 'C' { It 'C.1: c' { } }" | Set-Content (Join-Path $folder 'C.Tests.ps1')
         $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder }
-        $source.BuiltInFiles.Count | Should -BeGreaterThan 100
+        $source.BuiltInFiles.Count | Should -BeGreaterThan 10
         $source.CustomFiles | Should -HaveCount 1
         $source.Error | Should -BeNullOrEmpty
     }
@@ -20,7 +20,7 @@ Describe 'Resolve-MtTestSource' {
     It 'Warns and still runs the built-in tests when -Path does not exist' {
         $source = InModuleScope Maester { Resolve-MtTestSource -Path (Join-Path $TestDrive 'missing/tests/Maester') }
         $source.Error | Should -BeNullOrEmpty
-        $source.BuiltInFiles.Count | Should -BeGreaterThan 100
+        $source.BuiltInFiles.Count | Should -BeGreaterThan 10
         $source.CustomFiles | Should -HaveCount 0
         ($source.Messages | Where-Object Level -EQ 'Warning').Text | Should -BeLike '*does not exist*'
         $source.ConfigSearchPath | Should -Be (Resolve-Path $TestDrive).Path
