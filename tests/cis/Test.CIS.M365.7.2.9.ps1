@@ -29,11 +29,6 @@
     param()
     Write-Verbose "Testing guest access expiration settings in SharePoint Online..."
 
-    if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
-        return $null
-    }
-
     $return = $true
     $spoTenant = Get-MtSpo
     if ($spoTenant.ExternalUserExpirationRequired -eq $true -and $spoTenant.ExternalUserExpireInDays -eq 30) {

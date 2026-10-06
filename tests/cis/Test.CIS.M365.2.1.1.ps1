@@ -21,7 +21,7 @@
         Severity = 'Medium',
         Category = 'CIS',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
-        Service = ('ExchangeOnline', 'Graph'),
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         CompatibleLicense = 'ATP_ENTERPRISE',
         Author = 'NZLostboy',
         Contributor = 'Mynster9361'
@@ -29,14 +29,6 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     Write-Verbose 'Getting Safe Links Policy...'
 

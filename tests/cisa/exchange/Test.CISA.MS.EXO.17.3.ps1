@@ -20,7 +20,7 @@
         Severity = 'Medium',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.17.3'),
-        Service = 'Graph',
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         CompatibleLicense = 'M365_ADVANCED_AUDITING',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
@@ -28,14 +28,6 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if(!(Test-MtConnection ExchangeOnline)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     $policies = Get-UnifiedAuditLogRetentionPolicy
 

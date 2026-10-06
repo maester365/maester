@@ -35,11 +35,6 @@
 
     Write-Verbose "Running Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $apps = Get-MtPrivateAccessApplication
     if (-not $apps) {
         Add-MtTestResultDetail -Result 'No Entra Private Access applications were found in this tenant.'

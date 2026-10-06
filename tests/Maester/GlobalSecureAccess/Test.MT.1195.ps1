@@ -56,11 +56,6 @@
 
     Write-Verbose "Running Test-MtGsaQuickAccessNoSignInFrequency..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     # Robust emptiness test: @($null).Count is 1, so filter out null/empty entries before counting.
     function Test-HasValue ($Value) { return (@($Value).Where({ $_ }).Count -gt 0) }
 

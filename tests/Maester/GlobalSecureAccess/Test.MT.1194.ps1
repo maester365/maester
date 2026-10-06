@@ -35,11 +35,6 @@
 
     Write-Verbose "Running Test-MtGsaBaselineThreatIntelligenceEnforced..."
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $forwardingProfiles = Invoke-MtGraphRequest -RelativeUri 'networkAccess/forwardingProfiles' -ApiVersion beta
     $internetProfile = $forwardingProfiles | Where-Object { $_.trafficForwardingType -eq 'internet' }
     if (-not ($internetProfile -and $internetProfile.state -eq 'enabled')) {

@@ -20,22 +20,13 @@
         Severity = 'Medium',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.8.3'),
-        Service = 'Graph',
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    #Add License Check
-    if(!(Test-MtConnection ExchangeOnline)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }else{
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Unable to validate 3rd party solutions."
-        return $null
-    }
+    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Unable to validate 3rd party solutions."
+    return $null
 }

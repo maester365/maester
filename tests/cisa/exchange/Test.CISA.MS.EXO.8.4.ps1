@@ -20,21 +20,13 @@
         Severity = 'High',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.8.4'),
-        Service = ('ExchangeOnline', 'Graph'),
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         CompatibleLicense = 'EXCHANGE_DLP',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if(!(Test-MtConnection ExchangeOnline)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     $policies = Get-MtExo -Request DlpCompliancePolicy
 

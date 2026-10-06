@@ -20,20 +20,12 @@
         Severity = 'High',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.9.5'),
-        Service = 'ExchangeOnline',
+        Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     $policies = Get-MtExo -Request MalwareFilterPolicy
 

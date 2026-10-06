@@ -40,11 +40,6 @@
 
     Write-Verbose "Test-MtPurviewAuditLogIngestion: Checking if the Microsoft 365 unified audit log is enabled."
 
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }
-
     try {
         $config = Get-AdminAuditLogConfig -ErrorAction Stop
         $enabled = [bool]$config.UnifiedAuditLogIngestionEnabled

@@ -20,7 +20,7 @@
         Severity = 'High',
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.10.2'),
-        Service = 'Graph',
+        Service = ('ExchangeOnline', 'Graph'),
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'
     )]
@@ -29,11 +29,6 @@
     param()
 
     Write-Verbose 0
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }
-
     $policies = Get-MtExoThreatPolicyMalware
 
     $failingPolicies = $policies | Where-Object { $_.IsEnabled -and $_.QuarantineTag -ne "AdminOnlyAccessPolicy" }

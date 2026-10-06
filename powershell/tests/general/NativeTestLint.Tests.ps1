@@ -36,12 +36,11 @@ Describe 'Native built-in test <Name>' -ForEach $NativeFiles {
     }
 
     It 'Does not check its own connection' {
-        $guards = @($script:function.Body.FindAll({
+        $calls = @($script:function.Body.FindAll({
                     param($n)
-                    $n -is [System.Management.Automation.Language.IfStatementAst] -and
-                    $n.Clauses[0].Item1.Extent.Text -match '-not\s*\(?\s*Test-MtConnection\b'
-                }, $true))
-        $guards | Should -BeNullOrEmpty -Because 'the Service property makes the engine skip the test when the service is not connected'
+                    $n -is [System.Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'Test-MtConnection'
+                }, $true) | ForEach-Object { $_.Extent.Text })
+        $calls | Should -BeNullOrEmpty -Because 'the Service property makes the engine skip the test when the service is not connected'
     }
 
     It 'Does not check its own licence' {

@@ -31,9 +31,6 @@
 
     if (Get-MtLicenseInformation -Product Mdo) {
         $checkType = "DefenderForOffice365P2"
-    } elseif (-not (Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
     } else {
         $checkType = "ExchangeOnline"
     }

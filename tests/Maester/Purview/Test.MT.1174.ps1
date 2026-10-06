@@ -29,7 +29,7 @@
         Severity = 'Medium',
         Category = 'Maester/Purview',
         Tag = ('Maester', 'Purview'),
-        Service = 'Graph',
+        Service = ('Graph', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]
     [CmdletBinding()]
@@ -37,11 +37,6 @@
     param()
 
     Write-Verbose "Test-MtPurviewAiInsiderRiskPolicy: Checking for Insider Risk Management policies using the Risky AI usage template."
-
-    if (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     try {
         $policies = Get-InsiderRiskPolicy -ErrorAction Stop

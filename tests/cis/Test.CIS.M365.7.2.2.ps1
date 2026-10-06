@@ -29,11 +29,6 @@
     param()
     Write-Verbose "Testing SharePoint Entra B2B integration..."
 
-    if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
-        return $null
-    }
-
     $return = $true
     $spoTenant = Get-MtSpo
     if ($spoTenant.EnableAzureADB2BIntegration) {

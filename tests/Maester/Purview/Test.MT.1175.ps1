@@ -31,7 +31,7 @@
         Severity = 'High',
         Category = 'Maester/Purview',
         Tag = ('Maester', 'Purview'),
-        Service = ('ExchangeOnline', 'Graph'),
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         CompatibleLicense = 'EXCHANGE_DLP',
         Author = 'OfirGavish'
     )]
@@ -40,14 +40,6 @@
     param()
 
     Write-Verbose "Test-MtPurviewAiDlpPolicy: Checking for DLP policies targeting the Microsoft 365 Copilot location."
-
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     try {
         $policies = Get-MtExo -Request DlpCompliancePolicy
