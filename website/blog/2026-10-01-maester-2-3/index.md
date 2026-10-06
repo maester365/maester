@@ -18,7 +18,7 @@ Maester 2.3 is here.
 
 - **14 Microsoft Entra Agent ID checks** for orphaned, over-privileged, and unowned AI agent identities
 - **CIS Microsoft 365 Foundations Benchmark v7.0.0**, with updated logic and guidance across the CIS checks
-- **4 new Entra ID checks** for dynamic group rules and app registration credentials
+- **4 new Entra ID checks** for dynamic group rules (including the `memberOf` operator Microsoft retires on November 3) and app registration credentials
 - **4 macOS checks** for Intune compliance and enrollment
 - **7 Azure DevOps checks** for GitHub Advanced Security Secret Protection, Code Security, and Copilot code review
 - **Multi-forest Active Directory**, Kerberos (GSSAPI) over SSH for testing AD from Linux and macOS, and severity ratings for the AD checks
@@ -76,9 +76,31 @@ Four new checks look at things that are easy to set up once and forget:
 | `MT.1198` | App registration certificates issued with excessive validity periods (default: over 365 days) |
 | `MT.1199` | App registration certificates and secrets that have expired or expire within 30 days |
 
-`MT.1197` is time-sensitive. With the retirement only weeks away, it lists each affected group with its source groups, assigned licenses, and any Conditional Access policies that reference it, so you can see what breaks before it does.
-
 `MT.1198` closes a gap that app management policies leave open. Those policies only apply to credentials added after the policy takes effect, so a tenant can pass `MT.1002` and still authenticate with multi-year certificates issued years ago.
+
+### `memberOf` dynamic groups stop updating on November 3
+
+Microsoft sent its final reminder on October 5:
+
+<div style={{ border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '12px', padding: '1rem 1.25rem', margin: '1.25rem 0', maxWidth: '640px', background: 'var(--ifm-background-surface-color)', boxShadow: 'var(--ifm-global-shadow-lw)' }}>
+  <div style={{ fontSize: '0.8rem', color: 'var(--ifm-color-emphasis-700)' }}>Message Center · <a href="https://mc.merill.net/message/MC1488834">MC1488834</a></div>
+  <div style={{ fontWeight: 700, fontSize: '1.05rem', lineHeight: 1.35, margin: '0.35rem 0 0.75rem' }}>Microsoft Entra ID: Final reminder to replace MemberOf rule operator configurations by November 3, 2026</div>
+  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem 1.25rem', fontSize: '0.85rem' }}>
+    <span><span style={{ color: 'var(--ifm-color-emphasis-700)' }}>Published</span> <strong>Oct 5, 2026</strong></span>
+    <span><span style={{ color: 'var(--ifm-color-emphasis-700)' }}>Act by</span> <strong style={{ color: 'var(--ifm-color-danger-dark)' }}>Nov 3, 2026</strong></span>
+    <span style={{ display: 'inline-flex', gap: '0.35rem', flexWrap: 'wrap' }}><span style={{ display: 'inline-block', padding: '0.05rem 0.5rem', borderRadius: '999px', background: 'var(--ifm-color-emphasis-200)', fontSize: '0.75rem', fontWeight: 600 }}>Retirement</span><span style={{ display: 'inline-block', padding: '0.05rem 0.5rem', borderRadius: '999px', background: 'var(--ifm-color-emphasis-200)', fontSize: '0.75rem', fontWeight: 600 }}>Admin impact</span><span style={{ display: 'inline-block', padding: '0.05rem 0.5rem', borderRadius: '999px', background: 'var(--ifm-color-emphasis-200)', fontSize: '0.75rem', fontWeight: 600 }}>User impact</span></span>
+  </div>
+</div>
+
+After November 3, dynamic groups that use the `memberOf` operator stop updating. Their membership freezes, and anything that relies on them, like license assignments and Conditional Access policies, keeps working from that stale membership.
+
+**Run Maester 2.3 and `MT.1197` finds these groups for you.** It lists each affected group with its source groups, assigned licenses, and any Conditional Access policies that reference it, so you can see what breaks before it does:
+
+```powershell
+Invoke-Maester -Tag "MT.1197"
+```
+
+`MT.1197` checks dynamic groups. The retirement also covers administrative units and entitlement management policies that use `memberOf`, so review those as well.
 
 Special thanks to [Agnivesh](/contributors/agnivesh) for the dynamic group checks and [Simon Vedder](/contributors/simon-vedder) for the app registration credential checks.
 
