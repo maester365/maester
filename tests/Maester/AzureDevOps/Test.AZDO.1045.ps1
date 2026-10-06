@@ -43,12 +43,7 @@ function Test-AzdoOrganizationCopilotCodeReview {
 
     Write-Verbose "Running Test-AzdoOrganizationCopilotCodeReview"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Organization = (Get-ADOPSConnection).Organization
+$Organization = (Get-ADOPSConnection).Organization
     $Uri = "https://dev.azure.com/$Organization/_apis/Contribution/HierarchyQuery?api-version=7.1-preview"
     $Body = '{
         "contributionIds": [

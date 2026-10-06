@@ -148,17 +148,21 @@ Describe 'Test-MtAppRegistrationCredentialExpiry' {
         $script:Result | Should -BeLike '*Well done*'
     }
 
-    It 'skips when Microsoft Graph is not connected' {
-        Mock -ModuleName Maester Test-MtConnection { return $false }
+    It 'declares Graph so the engine skips it when Microsoft Graph is not connected' {
+        (Get-MtTest -Id 'MT.1199').Service | Should -Contain 'Graph'
 
-        Test-MtAppRegistrationCredentialExpiry | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotConnectedGraph'
+        Mock -ModuleName Maester Test-MtConnection { return $false }
+        $row = Invoke-MtTest -Id 'MT.1199'
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'ServiceNotConnected'
     }
 
-    It 'skips when the Graph request fails' {
+    It 'throws when the Graph request fails, which the engine records as an error' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw 'GET https://graph.microsoft.com/v1.0/applications HTTP/1.1 403 Forbidden' }
 
-        Test-MtAppRegistrationCredentialExpiry | Should -BeNull
-        $script:SkippedBecause | Should -Be 'Error'
+        { Test-MtAppRegistrationCredentialExpiry } | Should -Throw '*403 Forbidden*'
+        $row = Invoke-MtTest -Id 'MT.1199'
+        $row.Result | Should -Be 'Error'
+        $row.ReasonCode | Should -Be 'TestError'
     }
 }

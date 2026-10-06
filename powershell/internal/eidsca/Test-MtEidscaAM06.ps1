@@ -8,22 +8,20 @@ function Test-MtEidscaAM06 {
     Determines whether the user's Authenticator app will show them the client app they are signing into.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.state -eq 'enabled'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.state
+
+    The native test EIDSCA.AM06 passes when this value -eq 'enabled'.
 
     .EXAMPLE
     Test-MtEidscaAM06
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.state -eq 'enabled'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.state
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Microsoft Authenticator is not enabled.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
     $rawValue = $result.featureSettings.displayAppInformationRequiredState.state

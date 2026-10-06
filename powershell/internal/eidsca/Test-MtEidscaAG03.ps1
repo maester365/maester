@@ -8,18 +8,19 @@ function Test-MtEidscaAG03 {
     Object Id or scope of users which will be included to report suspicious activities if they receive an authentication request that they did not initiate.
 
     Queries policies/authenticationMethodsPolicy
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.includeTarget.id
+
+    The native test EIDSCA.AG03 passes when this value -eq 'all_users'.
 
     .EXAMPLE
     Test-MtEidscaAG03
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.includeTarget.id
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 

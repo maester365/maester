@@ -528,6 +528,8 @@ tests/Custom/*.ps1
 
 # Build outputs and staging artifacts should not be checked in.
 website/build/
+# Test catalog exported by build/docs/Export-MtTestCatalogForDocs.ps1 for the test-docs generator
+website/.generated/
 # ORCA Staging
 build/orca/orca/
 
@@ -544,3 +546,4 @@ build/activeDirectory/AD-TestResults-*
 build/activeDirectory/**/*.bak
 # Lab-specific configuration files (contain deployment-specific values)
 build/activeDirectory/azure-lab/LabConfig.json
+.tmp-maester-published-result-tests-*/

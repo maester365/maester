@@ -137,17 +137,22 @@
         $script:Result | Should -BeLike '*No BitLocker settings found*'
     }
 
-    It 'skips when Graph is not connected' {
-        Mock -ModuleName Maester Test-MtConnection { return $false }
+    It 'declares Graph so the engine skips it when Graph is not connected' {
+        (Get-MtTest -Id 'MT.1123').Service | Should -Contain 'Graph'
 
-        Test-MtBitLockerFullDiskEncryption | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotConnectedGraph'
+        Mock -ModuleName Maester Test-MtConnection { return $false }
+        $row = Invoke-MtTest -Id 'MT.1123'
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'ServiceNotConnected'
     }
 
-    It 'skips when Intune is not licensed' {
-        Mock -ModuleName Maester Get-MtLicenseInformation { return $null }
+    It 'declares the Intune licence so the engine skips it when Intune is not licensed' {
+        (Get-MtTest -Id 'MT.1123').CompatibleLicense | Should -Contain 'INTUNE_A'
 
-        Test-MtBitLockerFullDiskEncryption | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotLicensedIntune'
+        Mock -ModuleName Maester Get-MgContext { return $null }
+        $config = [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = @('AAD_PREMIUM') } }
+        $row = Invoke-MtTest -Id 'MT.1123' -Config $config
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'LicenseNotFound'
     }
 }

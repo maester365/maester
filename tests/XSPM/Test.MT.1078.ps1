@@ -37,15 +37,10 @@
         return $null
     }
 
-    try {
-        Write-Verbose "Get details from UnifiedIdentityInfo ..."
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    Write-Verbose "Get details from UnifiedIdentityInfo ..."
+    $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
-    $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object { $_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
+$HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object { $_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
     $SensitiveDirectoryRolesOnAppsWithOwners = $HighPrivilegedAppsByEntraRoles | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
     if ($return -or [string]::IsNullOrEmpty($SensitiveDirectoryRolesOnAppsWithOwners)) {

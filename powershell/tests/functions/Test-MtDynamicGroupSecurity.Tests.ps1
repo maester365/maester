@@ -197,11 +197,17 @@
                 Should -Be 2
         }
 
-        It 'skips when Graph is disconnected' {
-            Mock -ModuleName Maester Test-MtConnection { return $false }
+        It 'is skipped by the engine when Graph is disconnected' {
+            # The engine gates on the [MaesterTest] Service declaration; the check no longer guards itself.
+            foreach ($id in @('MT.1196')) {
+                (Get-MtTest -Id $id).Service | Should -Contain 'Graph'
+            }
 
-            Test-MtDynamicGroupUserControlledAttributes | Should -BeNull
-            $script:SkippedBecause | Should -Be 'NotConnectedGraph'
+            Mock -ModuleName Maester Test-MtConnection { return $false }
+            foreach ($row in @(Invoke-MtTest -Id @('MT.1196'))) {
+                $row.Result | Should -Be 'Skipped'
+                $row.ReasonCode | Should -Be 'ServiceNotConnected'
+            }
         }
     }
 
@@ -286,12 +292,14 @@
         }
     }
 
-    It 'skips both checks when the group query fails' {
+    It 'throws from both checks when the group query fails, which the engine records as an error' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw 'Graph failure' }
 
-        Test-MtDynamicGroupUserControlledAttributes | Should -BeNull
-        $script:SkippedBecause | Should -Be 'Error'
-        Test-MtDynamicGroupMemberOfRule | Should -BeNull
-        $script:SkippedBecause | Should -Be 'Error'
+        { Test-MtDynamicGroupUserControlledAttributes } | Should -Throw 'Graph failure'
+        { Test-MtDynamicGroupMemberOfRule } | Should -Throw 'Graph failure'
+        foreach ($row in @(Invoke-MtTest -Id 'MT.1196', 'MT.1197')) {
+            $row.Result | Should -Be 'Error'
+            $row.ReasonCode | Should -Be 'TestError'
+        }
     }
 }

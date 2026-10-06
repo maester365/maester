@@ -12,6 +12,9 @@ on:
       - 'src/**'
       - 'powershell/lib/**'
       - 'build/Build-MaesterEngine.ps1'
+      - 'build/ci/Test-MaesterWithoutPester.ps1'
+      - 'powershell/internal/engine/**'
+      - 'powershell/public/Invoke-Maester.ps1'
       - '.github/workflows/build-engine.yaml'
 
 concurrency:
@@ -62,3 +65,22 @@ jobs:
           $config.Run.Exit = $true
           $config.Output.Verbosity = 'Detailed'
           Invoke-Pester -Configuration $config
+
+  run-without-pester:
+    # Pester is not a dependency of Maester 3.0: native tests must run where it is not installed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Microsoft.Graph.Authentication and remove Pester from the runner
+        shell: pwsh
+        run: |
+          Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Repository PSGallery -Force
+          Get-Module -ListAvailable -Name Pester -All | ForEach-Object { Split-Path $_.ModuleBase -Parent } | Sort-Object -Unique |
+              ForEach-Object { Write-Host "Removing $_"; sudo rm -rf $_ }
+
+      - name: Run Maester without Pester
+        shell: pwsh
+        run: ./build/ci/Test-MaesterWithoutPester.ps1

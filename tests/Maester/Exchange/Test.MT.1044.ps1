@@ -30,24 +30,19 @@
     [OutputType([bool])]
     param()
 
-    try {
-        Write-Verbose "Getting Organization Config..."
-        $organizationConfig = Get-MtExo -Request OrganizationConfig
-        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
+    Write-Verbose "Getting Organization Config..."
+    $organizationConfig = Get-MtExo -Request OrganizationConfig
+    $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
-        $result = $organizationConfig.OAuth2ClientProfileEnabled -eq $true
+    $result = $organizationConfig.OAuth2ClientProfileEnabled -eq $true
 
-        if ($result) {
-            $testResultMarkdown = "Well done. ``OAuth2ClientProfileEnabled`` is ``True```n`n"
-        } else {
-            $testResultMarkdown = "``OAuth2ClientProfileEnabled`` should be ``True`` and is ``$($organizationConfig.OAuth2ClientProfileEnabled)`` in [SecureScore]($portalLink_SecureScore)`n`n"
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
+    if ($result) {
+        $testResultMarkdown = "Well done. ``OAuth2ClientProfileEnabled`` is ``True```n`n"
+    } else {
+        $testResultMarkdown = "``OAuth2ClientProfileEnabled`` should be ``True`` and is ``$($organizationConfig.OAuth2ClientProfileEnabled)`` in [SecureScore]($portalLink_SecureScore)`n`n"
     }
 
-    return $result
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+return $result
 }

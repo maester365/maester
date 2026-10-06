@@ -21,7 +21,7 @@
 
     $builtInRoot = Get-MtMaesterTestFolderPath
     $builtInFiles = @(Get-MtBuiltInPesterFile -BuiltInRoot $builtInRoot)
-    $builtInInventory = if ($builtInFiles.Count -gt 0) { @(Get-MtPesterFileInventory -Path $builtInFiles) } else { @() }
+    $builtInInventory = @(if ($builtInFiles.Count -gt 0) { Get-MtPesterFileInventory -Path $builtInFiles })
     $resolvedBuiltInRoot = if (Test-Path -LiteralPath $builtInRoot) { (Resolve-Path -LiteralPath $builtInRoot).Path } else { $builtInRoot }
 
     $candidates = @(Get-ChildItem -LiteralPath $Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |

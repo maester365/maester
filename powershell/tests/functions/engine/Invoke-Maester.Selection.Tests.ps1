@@ -28,9 +28,12 @@ Describe 'Sample' -Tag 'Sample' {
         Metadata        = "-Config @{ Metadata = @{ RunId = 'run-42' } }"
         DryRunExclude   = "-DryRun -ExcludeTestId 'S.1002'"
         DryRun          = '-DryRun'
+        HashtableConfig = "-PesterConfiguration @{ Output = @{ Verbosity = 'None' }; Run = @{ ExcludePath = @('nothing.Tests.ps1') } }"
         # These run the built-in tests too (no -SkipBuiltIn).
         WithBuiltIn     = 'BUILTIN -TestId S.1001, MT.1001, MT.1002'
         MissingPath     = 'BUILTIN MISSINGPATH -TestId MT.1001'
+        # Pester is not installed: Import-MtPester is replaced in the module for the rest of the process, so this runs last.
+        NoPester        = 'NOPESTER'
     }
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add("`$ErrorActionPreference = 'Continue'")
@@ -41,6 +44,10 @@ Describe 'Sample' -Tag 'Sample' {
         $skip = if ($arguments -like 'BUILTIN*') { '' } else { '-SkipBuiltIn' }
         $path = if ($arguments -like '*MISSINGPATH*') { Join-Path $TestDrive 'does-not-exist' } else { $script:folder }
         $arguments = $arguments -replace '^BUILTIN ', '' -replace '^MISSINGPATH ', ''
+        if ($arguments -eq 'NOPESTER') {
+            $arguments = ''
+            $lines.Add("& (Get-Module Maester) { function script:Import-MtPester { `$false } }")
+        }
         $lines.Add("try { `$null = Invoke-Maester -Path '$path' $skip -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -OutputJsonFile '$out' -WarningAction SilentlyContinue -ErrorAction SilentlyContinue $arguments } catch { }")
     }
     $null = pwsh -NoProfile -NonInteractive -Command ($lines -join [Environment]::NewLine) 2>&1
@@ -90,6 +97,24 @@ Describe 'Invoke-Maester selection (Pester provider)' {
             $row = Get-Row $r 'FAM.1.a'
             $row.ParentId | Should -Be 'FAM.1'
             $row.InstanceId | Should -Be 'FAM.1.a'
+        }
+    }
+
+    Context 'Pester configuration and availability' {
+        It 'Accepts a hashtable for -PesterConfiguration' {
+            $r = Invoke-MaesterRun 'HashtableConfig'
+            (Get-Row $r 'S.1001').Result | Should -Be 'Passed'
+            (Get-Row $r 'S.1002').Result | Should -Be 'Failed'
+        }
+
+        It 'Reports each Pester-format test as PesterNotAvailable when Pester is missing' {
+            $r = Invoke-MaesterRun 'NoPester'
+            $r | Should -Not -BeNullOrEmpty
+            $row = Get-Row $r 'S.1001'
+            $row.Result | Should -Be 'Error'
+            $row.ReasonCode | Should -Be 'PesterNotAvailable'
+            $row.Format | Should -Be 'Pester'
+            (Get-Row $r 'FAM.1').ReasonCode | Should -Be 'PesterNotAvailable'
         }
     }
 

@@ -164,7 +164,12 @@ function Get-MtTestCatalog {
     $catalogFile = Join-Path $moduleBase 'Maester.TestCatalog.json'
     $rows = if (Test-Path -LiteralPath $catalogFile) {
         $catalog = Get-Content -LiteralPath $catalogFile -Raw | ConvertFrom-Json
+        # JSON null for an empty list would read back as @($null), a list of one, so the gates would apply.
+        $arrayProperties = @((Get-MtTestSchema).Properties.GetEnumerator() | Where-Object { $_.Value.Type -eq 'string[]' } | ForEach-Object { $_.Key }) + 'EffectiveTag'
         foreach ($t in $catalog.Tests) {
+            foreach ($name in $arrayProperties) {
+                if ($t.PSObject.Properties[$name]) { $t.$name = [string[]]@($t.$name | Where-Object { $null -ne $_ -and $_ -ne '' }) }
+            }
             # The catalog stores repository-relative paths; Markdown is bundled by ID.
             $t | Add-Member -NotePropertyName Errors -NotePropertyValue ([System.Collections.Generic.List[pscustomobject]]::new()) -Force
             $t | Add-Member -NotePropertyName BuiltIn -NotePropertyValue $true -Force

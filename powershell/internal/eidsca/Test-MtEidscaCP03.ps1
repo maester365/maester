@@ -8,18 +8,19 @@ function Test-MtEidscaCP03 {
     Defines whether user consent will be blocked when a risky request is detected
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'true'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.CP03 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaCP03
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

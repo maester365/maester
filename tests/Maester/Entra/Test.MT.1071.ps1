@@ -33,14 +33,9 @@
 
     $azureDevOpsAppId = '499b84ac-1321-427f-aa17-267ca6975798'
 
-    try {
-        $azureDevOpsServicePrincipal = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion v1.0 -Filter "appId eq '$azureDevOpsAppId'" -Select id
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $azureDevOpsServicePrincipal = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion v1.0 -Filter "appId eq '$azureDevOpsAppId'" -Select id
 
-    if (-not $azureDevOpsServicePrincipal) {
+if (-not $azureDevOpsServicePrincipal) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Azure DevOps app (App ID: $azureDevOpsAppId) is not available in this tenant."
         return $null
     }

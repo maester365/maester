@@ -59,8 +59,5 @@
         return ($unsupportedBuilds.Count -eq 0)
     } catch [System.Management.Automation.ItemNotFoundException] {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
     }
 }

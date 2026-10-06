@@ -40,15 +40,9 @@
 
     # Get AD GPO state data (uses cached data if available)
     $gpoState = $null
-    try {
-        $gpoState = Get-MtADGpoState
-    }
-    catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $gpoState = Get-MtADGpoState
 
-    # If unable to retrieve AD data, skip the test
+# If unable to retrieve AD data, skip the test
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError "Active Directory data is not available."
         return $null

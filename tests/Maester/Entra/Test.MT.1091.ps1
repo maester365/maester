@@ -28,10 +28,7 @@
     param()
 
     Write-Verbose 'Testing Entra Device Registration Policy configuration for Entra Join local admin settings'
-    if(-not (Test-MtConnection Graph)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
+
     $deviceRegistrationPolicy = @(Invoke-MtGraphRequest -RelativeUri 'policies/deviceRegistrationPolicy' -ApiVersion beta)
     $testResult = '```' + "`n"
     $testResult += $deviceRegistrationPolicy.azureADJoin.localAdmins | ConvertTo-Json

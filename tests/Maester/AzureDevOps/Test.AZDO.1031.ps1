@@ -35,12 +35,7 @@ function Test-AzdoValidateSshKeyExpiration {
 
     Write-Verbose "Running Test-AzdoValidateSshKeyExpiration"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $SecurityPolicies = Get-ADOPSOrganizationPolicy -Force
+$SecurityPolicies = Get-ADOPSOrganizationPolicy -Force
     $Policy = $SecurityPolicies | where-object -property name -eq 'Policy.ValidateSshKeyExpiration'
     $result = $Policy.effectiveValue
     if ($result) {

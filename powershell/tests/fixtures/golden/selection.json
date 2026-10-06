@@ -1,14 +1,13 @@
 {
   "_meta": {
     "Description": "Maester 2.x golden: Pester filter built by Invoke-Maester and the IDs it selects. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.",
-    "FilterSource": "Captured from the real Invoke-Maester code path (Invoke-Pester shadowed in the Maester module scope), run with -SkipGraphConnect in a folder without powershell/tests/pester.ps1.",
-    "SelectionSource": "Pester discovery of the built-in tests with the captured Filter.Tag/ExcludeTag; families (not discoverable without a tenant) use a replica of the Pester tag filter that was checked against Pester for every discovered test.",
+    "FilterSource": "The include and exclude tags of the real Invoke-Maester run context, run with -DryRun -SkipGraphConnect in an empty folder.",
+    "SelectionSource": "The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.",
     "Assumptions": [
       "Not connected to Active Directory, so Invoke-Maester appends AD to Filter.ExcludeTag.",
       "Run.Path \".\" is the installed tests folder (repo tests/ without Custom); \"./tests/<x>\" maps to repo tests/<x>.",
       "SelectedIds are unique IDs; an ID shared by several Its is listed once. Families are listed by prefix in SelectedFamilies."
-    ],
-    "ReplicaChecks": 2112
+    ]
   },
   "Cases": [
     {
@@ -22,9 +21,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 428,
       "SelectedFamilies": [
         "MT.1024",
@@ -478,9 +474,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 49,
       "SelectedFamilies": [],
       "SelectedIds": [
@@ -550,9 +543,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 28,
       "SelectedFamilies": [
         "MT.1033",
@@ -604,9 +594,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 0,
       "SelectedFamilies": [
         "MT.1033",
@@ -630,9 +617,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 384,
       "SelectedFamilies": [
         "MT.1024",
@@ -1038,9 +1022,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 443,
       "SelectedFamilies": [
         "MT.1024",
@@ -1507,9 +1488,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 443,
       "SelectedFamilies": [
         "MT.1024",
@@ -1974,9 +1952,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 471,
       "SelectedFamilies": [
         "MT.1024",
@@ -2473,9 +2448,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 443,
       "SelectedFamilies": [
         "MT.1024",
@@ -2942,9 +2914,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 443,
       "SelectedFamilies": [
         "MT.1024",
@@ -3415,9 +3384,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 27,
       "SelectedFamilies": [],
       "SelectedIds": [
@@ -3466,9 +3432,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 1,
       "SelectedFamilies": [],
       "SelectedIds": [
@@ -3491,9 +3454,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 36,
       "SelectedFamilies": [
         "MT.1033",
@@ -3560,9 +3520,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 36,
       "SelectedFamilies": [],
       "SelectedIds": [
@@ -3621,9 +3578,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 384,
       "SelectedFamilies": [
         "MT.1024",
@@ -4035,9 +3989,6 @@
           "AD"
         ]
       },
-      "RunPath": [
-        "tests/"
-      ],
       "SelectedCount": 427,
       "SelectedFamilies": [
         "MT.1024",

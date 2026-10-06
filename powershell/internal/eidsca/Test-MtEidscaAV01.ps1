@@ -8,18 +8,19 @@ function Test-MtEidscaAV01 {
     Whether the Voice call is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state
+
+    The native test EIDSCA.AV01 passes when this value -eq 'disabled'.
 
     .EXAMPLE
     Test-MtEidscaAV01
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 

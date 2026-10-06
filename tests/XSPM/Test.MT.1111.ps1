@@ -39,15 +39,10 @@
             return $null
     }
 
-    try {
-        Write-Verbose "Get details from UnifiedIdentityInfo ..."
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    Write-Verbose "Get details from UnifiedIdentityInfo ..."
+    $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
-    $UnlinkedPrivilegedUsers = $UnifiedIdentityInfo `
+$UnlinkedPrivilegedUsers = $UnifiedIdentityInfo `
         | Where-Object {
                 $_.Type -eq "User" `
                 -and $_.AccountStatus -eq "Enabled" `

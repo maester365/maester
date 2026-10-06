@@ -8,22 +8,20 @@ function Test-MtEidscaCR03 {
     Specifies whether reviewers will receive reminder emails
 
     Queries policies/adminConsentRequestPolicy
-    and returns the result of
-    graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
+    and returns the tenant value of
+    graph/policies/adminConsentRequestPolicy.remindersEnabled
+
+    The native test EIDSCA.CR03 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaCR03
 
-    Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.remindersEnabled
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAdminConsentWorkflow -eq $false ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
     $rawValue = $result.remindersEnabled

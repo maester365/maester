@@ -24,7 +24,7 @@
     stores the prerelease label separately from ModuleVersion.
 
 .PARAMETER MinimumCommandCount
-    Minimum number of commands the built module must export. Defaults to 200.
+    Minimum number of commands the built module must export. Defaults to 60 (Maester 3.0 exports no check functions).
 
 .EXAMPLE
     ./build/Test-MaesterModuleOutput.ps1
@@ -47,7 +47,7 @@ param (
 
     [Parameter()]
     [ValidateRange(1, [int]::MaxValue)]
-    [int] $MinimumCommandCount = 200
+    [int] $MinimumCommandCount = 60
 )
 
 Set-StrictMode -Version Latest
@@ -140,6 +140,16 @@ if (-not (& $ImportedModule { Get-Command Invoke-MtEngineRun -ErrorAction Silent
     throw 'The engine cmdlet Invoke-MtEngineRun is not available inside the module.'
 }
 Write-Host '   Verified: engine DLL loaded (attribute types and scheduler)'
+
+# The shipped catalog reads back with the same gates as the source: an empty list must stay empty, or every
+# test would look platform-, tenant- or cloud-restricted.
+$catalogRows = @(& $ImportedModule { Get-MtTestCatalog })
+if ($catalogRows.Count -eq 0) { throw 'The built module has no native tests in Maester.TestCatalog.json.' }
+$badGate = @($catalogRows | Where-Object { @($_.Platform) -contains $null -or @($_.TenantType) -contains $null -or @($_.Cloud) -contains $null -or @($_.Service) -contains $null })
+if ($badGate.Count -gt 0) { throw "Catalog rows with an empty applicability value: $(($badGate | Select-Object -First 5 | ForEach-Object Id) -join ', ')" }
+$invalid = @($catalogRows | Where-Object { $_.Errors.Count -gt 0 })
+if ($invalid.Count -gt 0) { throw "Invalid native tests in the catalog: $(($invalid | Select-Object -First 5 | ForEach-Object Id) -join ', ')" }
+Write-Host "   Verified: native test catalog loads $($catalogRows.Count) tests with clean applicability gates"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Check 4b — ORCA classes resolve inside the module

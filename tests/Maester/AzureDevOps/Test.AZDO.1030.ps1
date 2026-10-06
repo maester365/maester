@@ -34,12 +34,7 @@ function Test-AzdoProjectCollectionAdministrator {
 
     Write-Verbose "Running Test-AzdoProjectCollectionAdministrator"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    function Get-NestedAdoMembership {
+function Get-NestedAdoMembership {
         param (
             [Parameter()]
             $Member

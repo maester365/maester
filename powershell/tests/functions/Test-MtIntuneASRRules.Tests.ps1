@@ -147,10 +147,13 @@
         $script:Result | Should -BeLike '*No Attack Surface Reduction rules found*'
     }
 
-    It 'skips when Intune is not licensed' {
-        Mock -ModuleName Maester Get-MtLicenseInformation { return $null }
+    It 'declares the Intune licence so the engine skips it when Intune is not licensed' {
+        (Get-MtTest -Id 'MT.1178').CompatibleLicense | Should -Contain 'INTUNE_A'
 
-        Test-MtIntuneASRRules | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotLicensedIntune'
+        Mock -ModuleName Maester Get-MgContext { return $null }
+        $config = [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = @('AAD_PREMIUM') } }
+        $row = Invoke-MtTest -Id 'MT.1178' -Config $config
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'LicenseNotFound'
     }
 }

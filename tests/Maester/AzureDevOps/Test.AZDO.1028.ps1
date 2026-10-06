@@ -34,12 +34,7 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
 
     Write-Verbose "Running Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $result = (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "DisableTfvcRepositories").value
+$result = (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "DisableTfvcRepositories").value
 
     if ($result) {
         $resultMarkdown = "Team Foundation Version Control (TFVC) repositories cannot be created."

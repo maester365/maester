@@ -32,34 +32,29 @@
     [OutputType([bool])]
     param()
 
-    try {
-        Write-Verbose "Getting OWA Mailbox Policy..."
-        $owaMailboxPolicy = Get-MtExo -Request OwaMailboxPolicy
-        Write-Verbose "Found $($owaMailboxPolicy.Count) Exchange Web mailbox policies"
+    Write-Verbose "Getting OWA Mailbox Policy..."
+    $owaMailboxPolicy = Get-MtExo -Request OwaMailboxPolicy
+    Write-Verbose "Found $($owaMailboxPolicy.Count) Exchange Web mailbox policies"
 
-        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
+    $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
-        $owaMailboxPolicyDefault = $owaMailboxPolicy | Where-Object { $_.IsDefault -eq $true }
-        Write-Verbose "Filtered $(@($owaMailboxPolicyDefault).Count) Default Web mailbox policy"
+    $owaMailboxPolicyDefault = $owaMailboxPolicy | Where-Object { $_.IsDefault -eq $true }
+    Write-Verbose "Filtered $(@($owaMailboxPolicyDefault).Count) Default Web mailbox policy"
 
-        if ($null -eq $owaMailboxPolicyDefault) {
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No default OWA mailbox policy was found."
-            return $null
-        }
-
-        $result = $owaMailboxPolicyDefault.AdditionalStorageProvidersAvailable
-
-        if ($result -eq $false) {
-            $testResultMarkdown = "Well done. AdditionalStorageProvidersAvailable is ``$($result)```n`n"
-        } else {
-            $testResultMarkdown = "``AdditionalStorageProvidersAvailable`` should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    if ($null -eq $owaMailboxPolicyDefault) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No default OWA mailbox policy was found."
         return $null
     }
 
-    return !$result
+    $result = $owaMailboxPolicyDefault.AdditionalStorageProvidersAvailable
+
+    if ($result -eq $false) {
+        $testResultMarkdown = "Well done. AdditionalStorageProvidersAvailable is ``$($result)```n`n"
+    } else {
+        $testResultMarkdown = "``AdditionalStorageProvidersAvailable`` should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+return !$result
 }

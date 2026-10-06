@@ -8,18 +8,19 @@ function Test-MtEidscaAM01 {
     Whether the Authenticator App is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state
+
+    The native test EIDSCA.AM01 passes when this value -eq 'enabled'.
 
     .EXAMPLE
     Test-MtEidscaAM01
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 

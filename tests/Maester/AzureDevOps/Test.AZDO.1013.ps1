@@ -35,12 +35,7 @@ function Test-AzdoOrganizationOwner {
 
     Write-Verbose "Running Test-AzdoOrganizationOwner"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Data = Get-ADOPSOrganizationAdminOverview
+$Data = Get-ADOPSOrganizationAdminOverview
     if ($data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.exceptionType -eq 'AadGraphException') {
         $resultMarkdown = "Workload identities cannot fetch Organization Owner."
         Add-MtTestResultDetail -Result $resultMarkdown -SkippedCustomReason "Workload identities cannot fetch Organization Owner." -SkippedBecause Custom

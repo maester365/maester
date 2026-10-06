@@ -4,7 +4,8 @@
     Discover Pester test inventory and associated tags.
 
     .DESCRIPTION
-    Uses Pester discovery to enumerate all tests under the provided path and returns a list of objects containing:
+    Reads the native tests (Test.<ID>.ps1) and Pester-format tests (*.Tests.ps1) under the provided path
+    without running them, and returns a list of objects containing:
 
         TestName     - Name of the It test.
         FilePath     - Full path to the test file.
@@ -81,7 +82,7 @@
         # Path to the test files to inventory. Defaults to the project's 'tests' directory at the root.
         [Parameter(HelpMessage = 'Path to the test files to gather inventory from.')]
         [ValidateScript({ Test-Path -Path $_ -PathType Container })]
-        [string] $Path = (Resolve-Path -LiteralPath (Join-Path -Path $PSScriptRoot '..\..' 'tests')).Path,
+        [string] $Path = (Get-MtMaesterTestFolderPath),
 
         # Paths to exclude from discovery.
         [Parameter(HelpMessage = 'One or more paths to exclude (e.g. test-results folders). Accepts wildcard patterns.')]
@@ -140,33 +141,40 @@
     } # End of begin block
 
     process {
-        #region PesterDiscovery
-        # Configure Pester for test discovery.
-        $PesterConfig = New-PesterConfiguration
-        $PesterConfig.Run.SkipRun = $true          # Discover only
-        $PesterConfig.Run.PassThru = $true          # Emit discovery object
-        $PesterConfig.Run.Path = @($Path)
-        if ($ExcludePathResolved) {
-            $PesterConfig.Run.ExcludePath = $ExcludePathResolved
+        #region Discovery
+        # Static discovery of both test formats; no test code runs and Pester is not needed (Maester 3.0).
+        # Native tests come from the built-in catalog (or the Test.<ID>.ps1 files under -Path); Pester-format
+        # tests from the AST of the *.Tests.ps1 files under -Path.
+        $resolvedPath = (Resolve-Path -LiteralPath $Path).Path
+        $builtInRoot = Get-MtMaesterTestFolderPath
+        $nativeTests = if ((Test-Path -LiteralPath $builtInRoot) -and $resolvedPath -eq (Resolve-Path -LiteralPath $builtInRoot).Path) {
+            @(Get-MtTestCatalog)
+        } else {
+            @(Get-MtNativeTestInventory -Path $resolvedPath -Root $resolvedPath)
         }
-        if ($ExcludeTag) {
-            $PesterConfig.Filter.ExcludeTag = $ExcludeTag
+        $Tests = [System.Collections.Generic.List[object]]::new()
+        foreach ($t in $nativeTests) {
+            $Tests.Add([PSCustomObject]@{
+                    Name        = "$($t.Id): $($t.Title)"
+                    ScriptBlock = [PSCustomObject]@{ File = $t.File }
+                    Tag         = @($t.EffectiveTag)
+                    Block       = [PSCustomObject]@{ Name = $t.Category; Tag = @() }
+                })
         }
-        # Discover all Pester tests.
-        try {
-            $Result = Invoke-Pester -Configuration $PesterConfig
-        } catch {
-            Write-Error "Failed to run Pester discovery: $($_.Exception.Message)"
-            return
+        foreach ($row in @(Get-MtPesterFileInventory -Path $resolvedPath | Where-Object { $_.Line })) {
+            $Tests.Add([PSCustomObject]@{
+                    Name        = $row.Name
+                    ScriptBlock = [PSCustomObject]@{ File = $row.File }
+                    Tag         = @($row.Tags)
+                    Block       = [PSCustomObject]@{ Name = $row.Block; Tag = @() }
+                })
         }
-
-        if ($null -eq $Result) {
+        if ($Tests.Count -eq 0) {
             Write-Warning "No tests found in path: $Path"
             return
         }
-        $Tests = $Result.Tests
         Write-Verbose "Discovered $($Tests.Count) tests in $Path"
-        #endregion PesterDiscovery
+        #endregion Discovery
 
         #region FilterResults
         # This is required because Run.ExcludePath does not work with directories in Pester 5.

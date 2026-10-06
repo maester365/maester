@@ -8,18 +8,19 @@ function Test-MtEidscaAF01 {
     Whether the FIDO2 security keys is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').state -eq 'enabled'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').state
+
+    The native test EIDSCA.AF01 passes when this value -eq 'enabled'.
 
     .EXAMPLE
     Test-MtEidscaAF01
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').state -eq 'enabled'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').state
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 

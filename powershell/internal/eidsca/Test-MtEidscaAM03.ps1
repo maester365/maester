@@ -8,22 +8,20 @@ function Test-MtEidscaAM03 {
     Defines if number matching is required for MFA notifications.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state
+
+    The native test EIDSCA.AM03 passes when this value -eq 'enabled'.
 
     .EXAMPLE
     Test-MtEidscaAM03
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Microsoft Authenticator is not enabled.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
     $rawValue = $result.featureSettings.numberMatchingRequiredState.state

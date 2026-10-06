@@ -8,18 +8,19 @@ function Test-MtEidscaAP04 {
     Manages controls who can invite guests to your directory to collaborate on resources secured by your Entra ID (Azure AD), such as SharePoint sites or Azure resources.
 
     Queries policies/authorizationPolicy
-    and returns the result of
-    graph/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.allowInvitesFrom
+
+    The native test EIDSCA.AP04 passes when this value -in @('adminsAndGuestInviters','none').
 
     .EXAMPLE
     Test-MtEidscaAP04
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

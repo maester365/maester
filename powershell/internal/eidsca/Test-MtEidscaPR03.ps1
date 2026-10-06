@@ -8,22 +8,20 @@ function Test-MtEidscaPR03 {
     When enabled, the words in the list below are used in the banned password system to prevent easy-to-guess passwords.
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'True'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.PR03 passes when this value -eq 'True'.
 
     .EXAMPLE
     Test-MtEidscaPR03
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'True'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EntraIDPlan -eq 'Free' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     $rawValue = $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value

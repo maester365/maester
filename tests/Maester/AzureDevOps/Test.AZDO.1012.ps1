@@ -34,12 +34,7 @@ function Test-AzdoResourceUsageWorkItemTag {
 
     Write-Verbose "Running Test-AzdoResourceUsageWorkItemTag"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $WorkItemTags = (Get-ADOPSResourceUsage -Force).'Work Item Tags'
+$WorkItemTags = (Get-ADOPSResourceUsage -Force).'Work Item Tags'
 
     $CurrentUsage = $($WorkItemTags.count / $WorkItemTags.limit).ToString("P")
 

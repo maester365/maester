@@ -399,7 +399,8 @@
 
         It 'documents the re-enrollment scope limitation in the companion markdown' {
             # Static explanation belongs in the description, not repeated in every result.
-            $md = Get-Content "$PSScriptRoot/../../public/maester/intune/Test-MtMacOSLAPSConfiguration.md" -Raw
+            # The companion markdown moved next to the native test (tests/Maester/Intune/Test.MT.1217.md).
+            $md = Get-Content (Get-MtTest -Id 'MT.1217').MarkdownPath -Raw
             $md | Should -Match 'after a factory reset'
             $md | Should -Match '(?i)Scope limitation'
         }

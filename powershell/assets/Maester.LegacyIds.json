@@ -2283,30 +2283,6 @@
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
-      "LegacyId": "MT.1024",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "3f0451f4cbf6fa8c2ee94e3071150403df75fcc6",
-      "LastSeenCommit": "093a68b080f02f7c0b0bf847242715b4c928154e",
-      "LastSeenFile": "tests/Maester/Entra/Test-EntraRecommendations.Tests.ps1"
-    },
-    {
-      "LegacyId": "MT.1033",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "d548a5af03e89ecb179708c6ffab4c1c075a3d37",
-      "LastSeenCommit": "ff922fd6f185d2138af4d63aced14898666460d3",
-      "LastSeenFile": "tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1"
-    },
-    {
-      "LegacyId": "MT.1034",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "d548a5af03e89ecb179708c6ffab4c1c075a3d37",
-      "LastSeenCommit": "ff922fd6f185d2138af4d63aced14898666460d3",
-      "LastSeenFile": "tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1"
-    },
-    {
       "LegacyId": "MT.1037 Only users with Presenter role are allowed to present in Teams meetings",
       "CurrentId": "MT.1037",
       "Rule": "title",
@@ -2417,22 +2393,6 @@
       "FirstSeenCommit": "4a9af871baedf2dff0f7901bd872ecf520b5e62d",
       "LastSeenCommit": "06d1487f8a0dbcd60343476f0043316cb43e0ae2",
       "LastSeenFile": "tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1"
-    },
-    {
-      "LegacyId": "MT.1059",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "61d25e7734c6d1010ebcb29e527fb507603672db",
-      "LastSeenCommit": "61d25e7734c6d1010ebcb29e527fb507603672db",
-      "LastSeenFile": "tests/Maester/Defender/Test-MtMdiHealthIssues.Tests.ps1"
-    },
-    {
-      "LegacyId": "MT.1060",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "f7f078f2f50a985663c8115ec639134f8864af7c",
-      "LastSeenCommit": "2525601247f62c96233878d3a871964aa949f8f6",
-      "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeApplicationAccessPolicy.Tests.ps1"
     },
     {
       "LegacyId": "MT.XXX1",

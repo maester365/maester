@@ -34,12 +34,8 @@
     param()
 
     Write-Verbose "Checking if the temporary bypass for onPremisesObjectIdentifier updates is disabled..."
-    try {
-        $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
+
     if ($organizationConfig.onPremisesSyncEnabled -ne $true) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'OnPremisesSynchronization is not configured'
         return $null

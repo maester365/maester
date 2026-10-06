@@ -8,18 +8,19 @@ function Test-MtEidscaAG02 {
     Allows users to report suspicious activities if they receive an authentication request that they did not initiate. This control is available when using the Microsoft Authenticator app and voice calls. Reporting suspicious activity will set the user's risk to high. If the user is subject to risk-based Conditional Access policies, they may be blocked.
 
     Queries policies/authenticationMethodsPolicy
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.state -eq 'enabled'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.state
+
+    The native test EIDSCA.AG02 passes when this value -eq 'enabled'.
 
     .EXAMPLE
     Test-MtEidscaAG02
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.state -eq 'enabled'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.state
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 

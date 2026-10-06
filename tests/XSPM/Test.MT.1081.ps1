@@ -36,15 +36,10 @@
             return $null
     }
 
-    try {
-        Write-Verbose "Get details from UnifiedIdentityInfo ..."
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    Write-Verbose "Get details from UnifiedIdentityInfo ..."
+    $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
-    $HighPrivilegedUsersByEntraRoles = $UnifiedIdentityInfo | Where-Object { $_.Type -eq "User" -and ($_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True) | Sort-Object Classification, AccountDisplayName}
+$HighPrivilegedUsersByEntraRoles = $UnifiedIdentityInfo | Where-Object { $_.Type -eq "User" -and ($_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True) | Sort-Object Classification, AccountDisplayName}
     $HighPrivilegedHybridUsers = $HighPrivilegedUsersByEntraRoles | Where-Object { $_.SourceProvider -eq "ActiveDirectory" -or $_.SourceProvider -eq "Hybrid"}
 
     $Severity = "Medium"

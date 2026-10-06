@@ -36,12 +36,7 @@ function Test-AzdoLogAuditEvent {
 
     Write-Verbose "Running Test-AzdoLogAuditEvent"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
+$SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.LogAuditEvents'
     $result = $Policy.effectiveValue
     if ($result) {

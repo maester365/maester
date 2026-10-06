@@ -36,15 +36,10 @@
         return $null
     }
 
-    try {
-        Write-Verbose "Get details from UnifiedIdentityInfo.."
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    Write-Verbose "Get details from UnifiedIdentityInfo.."
+    $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
-    $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object { $_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" } | sort-object AccountDisplayName
+$HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object { $_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" } | sort-object AccountDisplayName
     $SensitiveApiRolesOnAppsWithOwners = $HighPrivilegedAppsByApiPermissions | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
     if ($return -or [string]::IsNullOrEmpty($SensitiveApiRolesOnAppsWithOwners) ) {

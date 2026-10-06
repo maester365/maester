@@ -27,14 +27,9 @@
     [OutputType([bool])]
     param()
 
-    try {
-        $OrganizationConfig = Invoke-MtGraphRequest -RelativeUri 'organization'
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $OrganizationConfig = Invoke-MtGraphRequest -RelativeUri 'organization'
 
-    if ($OrganizationConfig.onPremisesSyncEnabled -ne $true) {
+if ($OrganizationConfig.onPremisesSyncEnabled -ne $true) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'OnPremisesSynchronization is not configured'
         return $null
     }

@@ -1,0 +1,180 @@
+{
+  "TestSettings": [
+    {
+      "Id": "EIDSCA.AF01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AF02",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AF03",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AF04",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AF05",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AF06",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AG01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AG02",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AG03",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AM02",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM03",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM04",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM06",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM07",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM09",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AM10",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AP01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AP04",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AP05",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AP06",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AP07",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AP08",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AP09",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.AP10",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AP14",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AS04",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AT01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AT02",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.AV01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.CP01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.CP03",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.CP04",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.CR01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.CR02",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.CR03",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.CR04",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.PR01",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.PR02",
+      "Severity": "High"
+    },
+    {
+      "Id": "EIDSCA.PR03",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.PR05",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.PR06",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.ST08",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "EIDSCA.ST09",
+      "Severity": "Medium"
+    }
+  ]
+}

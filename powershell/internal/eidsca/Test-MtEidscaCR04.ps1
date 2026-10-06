@@ -8,22 +8,20 @@ function Test-MtEidscaCR04 {
     Specifies the duration the request is active before it automatically expires if no decision is applied
 
     Queries policies/adminConsentRequestPolicy
-    and returns the result of
-    graph/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
+    and returns the tenant value of
+    graph/policies/adminConsentRequestPolicy.requestDurationInDays
+
+    The native test EIDSCA.CR04 passes when this value -le 30.
 
     .EXAMPLE
     Test-MtEidscaCR04
 
-    Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
+    Returns the tenant value of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.requestDurationInDays
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAdminConsentWorkflow -eq $false ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
     $rawValue = $result.requestDurationInDays

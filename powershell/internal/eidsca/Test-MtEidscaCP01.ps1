@@ -8,22 +8,20 @@ function Test-MtEidscaCP01 {
     Group and team owners can authorize applications, such as applications published by third-party vendors, to access your organization's data associated with a group. For example, a team owner in Microsoft Teams can allow an app to read all Teams messages in the team, or list the basic profile of a group's members.
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'False'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.CP01 passes when this value -eq 'False'.
 
     .EXAMPLE
     Test-MtEidscaCP01
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'False'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $SettingsApiAvailable -notcontains 'EnableGroupSpecificConsent' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Group owner consent settings have been removed and replaced with Team owner consent settings.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     $rawValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value

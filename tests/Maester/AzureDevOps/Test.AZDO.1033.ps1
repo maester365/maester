@@ -38,12 +38,7 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
 
     Write-Verbose "Running Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Policy = Get-ADOPSTenantPolicy -PolicyCategory EnableLeakedPersonalAccessTokenAutoRevocation -Force
+$Policy = Get-ADOPSTenantPolicy -PolicyCategory EnableLeakedPersonalAccessTokenAutoRevocation -Force
 
     if ($null -eq $Policy) {
         $Message = "Tenant Policy for EnableLeakedPersonalAccessTokenAutoRevocation not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.

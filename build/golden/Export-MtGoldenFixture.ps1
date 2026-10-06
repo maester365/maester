@@ -452,45 +452,36 @@ if ($PSBoundParameters.ContainsKey('OutputPath')) {
 #endregion Tags and blocks
 
 #region Selection
-function Get-InvokeMaesterFilter {
-    # Runs the real Invoke-Maester with Invoke-Pester shadowed in the module scope, and returns the captured configuration.
+function Get-InvokeMaesterSelection {
+    # Runs the real Invoke-Maester with -DryRun and returns its result (rows and the effective tag filter).
     param([hashtable] $Parameters, [string] $WorkDir)
-    & $maesterModule {
-        $script:__GoldenCapturedConfig = $null
-        function script:Invoke-Pester {
-            param($Configuration)
-            $script:__GoldenCapturedConfig = $Configuration
-        }
-    }
     $common = @{
         SkipGraphConnect = $true
         NonInteractive   = $true
         DisableTelemetry = $true
         SkipVersionCheck = $true
         NoLogo           = $true
+        DryRun           = $true
+        PassThru         = $true
         OutputFolder     = (Join-Path $WorkDir 'test-results')
     }
     Push-Location $WorkDir
     try {
-        $null = Invoke-Maester @Parameters @common -WarningAction SilentlyContinue 3>$null 6>$null
+        $result = Invoke-Maester @Parameters @common -WarningAction SilentlyContinue 3>$null 6>$null
     } finally {
         Pop-Location
     }
-    $captured = & $maesterModule {
-        $c = $script:__GoldenCapturedConfig
-        Remove-Item -Path function:script:Invoke-Pester -ErrorAction SilentlyContinue
-        $c
-    }
-    if ($null -eq $captured) { throw "Invoke-Maester did not reach Invoke-Pester for case parameters: $($Parameters | ConvertTo-Json -Compress)" }
-    return $captured
+    if ($null -eq $result) { throw "Invoke-Maester did not produce a result for case parameters: $($Parameters | ConvertTo-Json -Compress)" }
+    $result
 }
 
-# A minimal user folder: Invoke-Maester refuses to run without *.Tests.ps1 files, and the dev-mode
-# Run.Path override only applies when ./powershell/tests/pester.ps1 exists, so the capture runs here.
-$workDir = Join-Path ([System.IO.Path]::GetTempPath()) "maester-golden-$([guid]::NewGuid().ToString('N'))"
-$null = New-Item -Path (Join-Path $workDir 'tests/Maester') -ItemType Directory -Force
-Set-Content -Path (Join-Path $workDir 'tests/Maester/Golden.Tests.ps1') -Value "Describe 'Golden' { It 'GOLDEN: placeholder' { } }"
+# Reason codes of tests that selection leaves out. OptInServiceNotConnected stands for 2.x adding AD to
+# Filter.ExcludeTag when Active Directory is not connected.
+$NotSelectedReasons = @('NotSelected', 'NotListed', 'Preview', 'LongRunning', 'ExcludedByTag', 'ExcludedById', 'DisabledByConfig', 'OptInServiceNotConnected')
 
+# An empty user folder: every built-in test is native and runs from the module.
+$workDir = Join-Path ([System.IO.Path]::GetTempPath()) "maester-golden-$([guid]::NewGuid().ToString('N'))"
+$null = New-Item -Path (Join-Path $workDir 'tests') -ItemType Directory -Force
 $selectionCases = @(
     [ordered]@{ Name = 'Default'; Parameters = [ordered]@{} }
     [ordered]@{ Name = 'Tag CIS'; Parameters = [ordered]@{ Tag = @('CIS') } }
@@ -523,7 +514,8 @@ $selectionCases = @(
 )
 
 $selectionResults = [System.Collections.Generic.List[object]]::new()
-$replicaChecks = 0
+$familyAlias = @{ 'MT.1024' = 'MT.1024'; 'MT.1033' = 'MT.1033'; 'MT.1034' = 'MT.1034'; 'MT.1059' = 'MT.1059'; 'MT.1060' = 'MT1060' }
+$familyIds = @($familyAlias.Keys)
 try {
     foreach ($case in $selectionCases) {
         Write-Verbose "Selection case: $($case.Name)"
@@ -538,43 +530,15 @@ try {
             $parameters.PesterConfiguration = $pc
         }
 
-        $captured = Get-InvokeMaesterFilter -Parameters $parameters -WorkDir $workDir
-        $filterTag = @($captured.Filter.Tag.Value | Where-Object { $_ })
-        $filterExcludeTag = @($captured.Filter.ExcludeTag.Value | Where-Object { $_ })
-        $runPath = @($captured.Run.Path.Value)
-
-        # Map the captured Run.Path ('.' or './tests/...', relative to the user folder) onto the repo's tests/ folder.
-        $scopes = foreach ($p in $runPath) {
-            # 3.0 also passes the custom root (here the temporary user folder); it holds no built-in test.
-            if ([System.IO.Path]::IsPathRooted($p) -and [System.IO.Path]::GetFullPath($p).StartsWith([System.IO.Path]::GetFullPath($workDir), [System.StringComparison]::OrdinalIgnoreCase)) { continue }
-            # 3.0 passes the module's built-in root as an absolute path; map it back onto the repo.
-            if ([System.IO.Path]::IsPathRooted($p) -and $p.StartsWith($RepoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
-                $p = $p.Substring($RepoRoot.Length).TrimStart([char]92, [char]47)
-            }
-            $rel = ($p -replace '\\', '/') -replace '^\./', ''
-            if ($rel -in '.', '', 'tests') { 'tests/' } elseif ($rel -like 'tests/*') { $rel.TrimEnd('/') + '/' } else { throw "Unexpected Run.Path '$p'" }
-        }
-        $inScope = { param($file) foreach ($s in $scopes) { if ($file -like "$s*") { return $true } }; return $false }
-
-        $filtered = Invoke-GoldenDiscovery -Tag $filterTag -ExcludeTag $filterExcludeTag
-        $pesterSelected = @{}
-        foreach ($test in $filtered.Tests) {
-            $pesterSelected["$(Get-RepoRelativePath $test.ScriptBlock.File):$($test.StartLine)"] = [bool]$test.ShouldRun
-        }
-
+        $run = Get-InvokeMaesterSelection -Parameters $parameters -WorkDir $workDir
+        $filterTag = @($run.Selection.IncludeTag | Where-Object { $_ })
+        $filterExcludeTag = @($run.Selection.ExcludeTag | Where-Object { $_ })
         $selectedIds = @(); $selectedFamilies = @()
-        foreach ($entry in $entries) {
-            $replica = Test-GoldenTagFilter -Tags $entry.SelectionTags -Tag $filterTag -ExcludeTag $filterExcludeTag
-            $key = "$($entry.File):$($entry.Line)"
-            if (-not $entry.Family -and $pesterSelected.ContainsKey($key)) {
-                if ($pesterSelected[$key] -ne $replica) { throw "Tag filter replica disagrees with Pester for $key in case '$($case.Name)'." }
-                $replicaChecks++
-            }
-            if ($replica -and (& $inScope $entry.File)) {
-                if ($entry.Family) { $selectedFamilies += $entry.Id } else { $selectedIds += $entry.Id }
-            }
+        foreach ($row in @($run.Tests)) {
+            if ($row.Result -eq 'NotRun' -and $row.ReasonCode -in $NotSelectedReasons) { continue }
+            $id = if ($row.ParentId) { $row.ParentId } else { $row.Id }
+            if ($familyIds -contains $id) { $selectedFamilies += $familyAlias[$id] } else { $selectedIds += $id }
         }
-
         $result = [ordered]@{
             Name       = $case.Name
             Parameters = $case.Parameters
@@ -584,8 +548,6 @@ try {
             Tag        = $filterTag
             ExcludeTag = $filterExcludeTag
         }
-        # Repo-relative scopes, so the file does not depend on where the repository is checked out.
-        $result.RunPath = @($scopes)
         $selectedIdSet = @(Get-UniqueTagSet $selectedIds)
         $result.SelectedCount = $selectedIdSet.Count
         $result.SelectedFamilies = @(Get-UniqueTagSet $selectedFamilies)
@@ -599,14 +561,13 @@ try {
 $selectionDocument = [ordered]@{
     _meta = [ordered]@{
         Description     = 'Maester 2.x golden: Pester filter built by Invoke-Maester and the IDs it selects. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.'
-        FilterSource    = 'Captured from the real Invoke-Maester code path (Invoke-Pester shadowed in the Maester module scope), run with -SkipGraphConnect in a folder without powershell/tests/pester.ps1.'
-        SelectionSource = 'Pester discovery of the built-in tests with the captured Filter.Tag/ExcludeTag; families (not discoverable without a tenant) use a replica of the Pester tag filter that was checked against Pester for every discovered test.'
+        FilterSource    = 'The include and exclude tags of the real Invoke-Maester run context, run with -DryRun -SkipGraphConnect in an empty folder.'
+        SelectionSource = 'The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.'
         Assumptions     = @(
             'Not connected to Active Directory, so Invoke-Maester appends AD to Filter.ExcludeTag.',
             'Run.Path "." is the installed tests folder (repo tests/ without Custom); "./tests/<x>" maps to repo tests/<x>.',
             'SelectedIds are unique IDs; an ID shared by several Its is listed once. Families are listed by prefix in SelectedFamilies.'
         )
-        ReplicaChecks   = $replicaChecks
     }
     Cases = $selectionResults.ToArray()
 }

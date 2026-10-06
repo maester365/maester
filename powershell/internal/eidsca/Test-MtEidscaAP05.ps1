@@ -8,18 +8,19 @@ function Test-MtEidscaAP05 {
     Indicates whether users can sign up for email based subscriptions.
 
     Queries policies/authorizationPolicy
-    and returns the result of
-    graph/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions
+
+    The native test EIDSCA.AP05 passes when this value -eq 'false'.
 
     .EXAMPLE
     Test-MtEidscaAP05
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

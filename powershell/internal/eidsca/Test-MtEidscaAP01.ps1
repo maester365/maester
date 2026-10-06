@@ -8,22 +8,20 @@ function Test-MtEidscaAP01 {
     Indicates whether administrators of the tenant can use the Self-Service Password Reset (SSPR). The policy applies to some critical critical roles in Microsoft Entra ID.
 
     Queries policies/authorizationPolicy
-    and returns the result of
-    graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.allowedToUseSSPR
+
+    The native test EIDSCA.AP01 passes when this value -eq 'false'.
 
     .EXAMPLE
     Test-MtEidscaAP01
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $AuthorizationPolicyAvailable -notmatch 'allowedToUseSSPR' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants or tenants that are not licensed for Entra ID P1.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     $rawValue = $result.allowedToUseSSPR

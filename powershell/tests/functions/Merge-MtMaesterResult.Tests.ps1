@@ -226,3 +226,52 @@ Describe 'Merge-MtMaesterResult' {
         }
     }
 }
+
+Describe 'Merge-MtMaesterResult -SameRun' {
+    BeforeAll {
+        function New-Partial {
+            param([object[]] $Rows, [string] $RunId = 'run-1', [string] $Catalog = '3.0.0', [string] $Duration = '00:00:10.000')
+            [PSCustomObject][ordered]@{
+                Result         = if ($Rows | Where-Object Result -EQ 'Failed') { 'Failed' } else { 'Passed' }
+                TotalCount     = $Rows.Count
+                ExecutedAt     = '2026-10-01T10:00:00'
+                TotalDuration  = $Duration
+                TenantId       = 'tenant-1-id'
+                CurrentVersion = $Catalog
+                CatalogVersion = $Catalog
+                RunMetadata    = [PSCustomObject]@{ RunId = $RunId }
+                Selection      = [PSCustomObject]@{ BuiltIn = 'All'; UnknownIds = @(); Superseded = @() }
+                Tests          = $Rows
+                Blocks         = @()
+                EndOfJson      = 'EndOfJson'
+            }
+        }
+        function New-Row { param($Id, $Result, $Block = 'Maester') [PSCustomObject]@{ Index = 0; Id = $Id; Name = "${Id}: test"; Result = $Result; Block = $Block } }
+    }
+
+    It 'Keeps the row that ran over the NotRun row of another partition' {
+        $a = New-Partial -Rows @((New-Row 'MT.1001' 'Passed'), (New-Row 'MT.1002' 'NotRun'), (New-Row 'MT.1003' 'NotRun'))
+        $b = New-Partial -Rows @((New-Row 'MT.1001' 'NotRun'), (New-Row 'MT.1002' 'Failed' 'Exchange'), (New-Row 'MT.1003' 'NotRun')) -Duration '00:00:30.000'
+        $m = Merge-MtMaesterResult -MaesterResults $a, $b -SameRun
+        $m.PSObject.Properties.Name | Should -Not -Contain 'Tenants'
+        $m.Tests | Should -HaveCount 3
+        ($m.Tests | Where-Object Id -EQ 'MT.1001').Result | Should -Be 'Passed'
+        ($m.Tests | Where-Object Id -EQ 'MT.1002').Result | Should -Be 'Failed'
+        ($m.Tests | Where-Object Id -EQ 'MT.1003').Result | Should -Be 'NotRun'
+        $m.PassedCount | Should -Be 1
+        $m.FailedCount | Should -Be 1
+        $m.NotRunCount | Should -Be 1
+        $m.TotalCount | Should -Be 3
+        $m.Result | Should -Be 'Failed'
+        $m.TotalDuration | Should -Be '00:00:30.000'
+        $m.Partitions | Should -HaveCount 2
+        ($m.Blocks | Where-Object Name -EQ 'Exchange').FailedCount | Should -Be 1
+        ($m.PSObject.Properties.Name)[-1] | Should -Be 'EndOfJson'
+    }
+
+    It 'Refuses partitions of different runs or catalog versions' {
+        $a = New-Partial -Rows @(New-Row 'MT.1001' 'Passed')
+        { Merge-MtMaesterResult -MaesterResults $a, (New-Partial -Rows @(New-Row 'MT.1001' 'Passed') -RunId 'run-2') -SameRun } | Should -Throw '*RunId*'
+        { Merge-MtMaesterResult -MaesterResults $a, (New-Partial -Rows @(New-Row 'MT.1001' 'Passed') -Catalog '3.1.0') -SameRun } | Should -Throw '*catalog*'
+    }
+}

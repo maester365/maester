@@ -36,15 +36,10 @@
             return $null
     }
 
-    try {
-        Write-Verbose "Get details from UnifiedIdentityInfo ..."
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    Write-Verbose "Get details from UnifiedIdentityInfo ..."
+    $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
-    $Severity = "Medium"
+$Severity = "Medium"
     $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object {$_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" }
     $SensitiveAppsWithUnusedPermissions = $HighPrivilegedAppsByApiPermissions | Where-Object { $_.ApiPermissions.InUse -eq $false }
 

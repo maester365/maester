@@ -36,12 +36,7 @@ function Test-AzdoFeedbackCollection {
 
     Write-Verbose "Running Test-AzdoFeedbackCollection"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Privacy' -Force
+$PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Privacy' -Force
     $Policy = $PrivacyPolicies.policy | where-object -property name -eq 'Policy.AllowFeedbackCollection'
     $result = $Policy.effectiveValue
     if ($result) {

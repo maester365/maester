@@ -76,8 +76,5 @@
     } catch [System.UnauthorizedAccessException] {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to read Intune diagnostic settings in Azure.'
         return $null
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
     }
 }

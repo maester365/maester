@@ -38,12 +38,7 @@ function Test-AzdoOrganizationStorageUsage {
 
     Write-Verbose "Running Test-AzdoOrganizationStorageUsage"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $StorageUsage = Get-ADOPSOrganizationCommerceMeterUsage -MeterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc' -Force
+$StorageUsage = Get-ADOPSOrganizationCommerceMeterUsage -MeterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc' -Force
     $availableQuantity = $StorageUsage.availableQuantity
     if ($availableQuantity -eq [double]::MaxValue) {
         $MaxQuantity = 'Unlimited'

@@ -64,7 +64,22 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         }
         # 2.x dropped the Describe tags of tests nested in a Context; native rows carry them (design section 5.3, item 4).
         $resultTagChanges = @('MT.1022', 'MT.1023')
+        # MT1060 (drift) became the native family MT.1060 (design section 10): its four 2.x Its are one
+        # family whose per-check tags (MT1060.<n>) are instance tags now, and its effective tags add MT.1060.
+        $renamedFamilies = @{ 'MT1060' = 'MT.1060' }
+        $renamedSeen = @{}
         $problems = foreach ($e in $script:tagsAndBlocks.Entries) {
+            if ($e.Family -and $renamedFamilies.ContainsKey($e.Id)) {
+                $newId = $renamedFamilies[$e.Id]
+                $now = @($byId["$newId|True"]) | Select-Object -First 1
+                if (-not $now) { "$($e.Id): missing as $newId"; continue }
+                $renamedSeen[$newId] = 1 + [int]$renamedSeen[$newId]
+                if ($now.Block -ne $e.Block) { "$($e.Id): Block '$($e.Block)' is now '$($now.Block)'" }
+                $was = @($e.SelectionTags | Where-Object { $_ -notlike "$($e.Id).*" } | Sort-Object -Unique) -join ','
+                $is = @($now.SelectionTags | Where-Object { $_ -ne $newId } | Sort-Object -Unique) -join ','
+                if ($was -ne $is) { "$($e.Id): selection tags '$was' are now '$is' on $newId" }
+                continue
+            }
             $candidates = $byId["$($e.Id)|$($e.Family)"]
             if (-not $candidates -or $candidates.Count -eq 0) { "$($e.Id): missing"; continue }
             # An ID with several entries (a family with several Its) is matched entry by entry on its tags.
@@ -83,7 +98,9 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
             }
         }
         @($problems) | Should -BeNullOrEmpty
-        @($fresh).Count | Should -Be @($script:tagsAndBlocks.Entries).Count
+        # Each renamed family is one native entry in place of its 2.x Its.
+        $merged = ($renamedSeen.Values | ForEach-Object { $_ - 1 } | Measure-Object -Sum).Sum
+        @($fresh).Count + $merged | Should -Be @($script:tagsAndBlocks.Entries).Count
     }
 
     It 'records every built-in ID once and the five run-time families' {

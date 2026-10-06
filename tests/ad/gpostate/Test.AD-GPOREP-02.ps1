@@ -32,15 +32,10 @@
 
     Write-Verbose "Starting Test-MtAdGpoNoPermissionsDetails"
     $gpoState = $null
-    try {
-        $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $gpoState = Get-MtADGpoState
+Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $gpoState) {
+if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }

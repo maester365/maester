@@ -8,18 +8,19 @@ function Test-MtEidscaAP06 {
     Controls whether users can join the tenant by email validation. To join, the user must have an email address in a domain which matches one of the verified domains in the tenant.
 
     Queries policies/authorizationPolicy
-    and returns the result of
-    graph/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization
+
+    The native test EIDSCA.AP06 passes when this value -eq 'false'.
 
     .EXAMPLE
     Test-MtEidscaAP06
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

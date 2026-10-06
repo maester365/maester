@@ -22,7 +22,7 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     $GraphParameters = @{
         RelativeUri     = 'groups'
         Filter          = "groupTypes/any(groupType:groupType eq 'DynamicMembership')"

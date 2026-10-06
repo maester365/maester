@@ -54,15 +54,10 @@
 
     $deviceCount = 0
     $policyConfig = $null
-    try {
-        $deviceCount = Get-MdeDeviceCount
-        $policyConfig = Get-MdePolicyConfiguration -PolicyFiltering $PolicyFiltering
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $deviceCount = Get-MdeDeviceCount
+    $policyConfig = Get-MdePolicyConfiguration -PolicyFiltering $PolicyFiltering
 
-    if ($deviceCount -eq 0) {
+if ($deviceCount -eq 0) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No MDE-managed Windows devices found"
         return $null
     }

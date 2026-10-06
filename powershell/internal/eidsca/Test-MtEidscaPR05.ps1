@@ -8,22 +8,20 @@ function Test-MtEidscaPR05 {
     The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases.
 
     Queries settings
-    and returns the result of
-    graph/settings.values -ge 60
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.PR05 passes when this value -ge 60.
 
     .EXAMPLE
     Test-MtEidscaPR05
 
-    Returns the result of graph.microsoft.com/beta/settings.values -ge 60
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EntraIDPlan -eq 'Free' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     $rawValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value

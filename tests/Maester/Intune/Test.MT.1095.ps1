@@ -48,8 +48,5 @@
         return $androidEnterpriseSettings.bindStatus -eq 'boundAndValidated' -and $androidEnterpriseSettings.lastAppSyncStatus -eq 'success' -and $lastSyncDiffDays -le 1
     } catch [System.Management.Automation.ItemNotFoundException] {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
     }
 }

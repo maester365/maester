@@ -535,6 +535,12 @@
     # Assigned through a variable: an if-expression would turn an empty array into $null.
     $unknownIds = @()
     if ($RunContext -and $RunContext.Plan) { $unknownIds = @($RunContext.Plan.UnknownIds) }
+    $includeTag = @()
+    $excludeTag = @()
+    if ($RunContext) {
+        $includeTag = @($RunContext.IncludeTag | Where-Object { $_ })
+        $excludeTag = @($RunContext.ExcludeTag | Where-Object { $_ })
+    }
     $supersededItems = @()
     if ($RunContext -and $RunContext.Superseded) {
         $supersededItems = @($RunContext.Superseded.Items | ForEach-Object { [PSCustomObject]@{ Id = $_.Id; File = $_.File; MatchedBy = $_.MatchedBy } })
@@ -576,6 +582,9 @@
             BuiltIn    = if ($RunContext -and $RunContext.Selection) { $RunContext.Selection.BuiltIn } else { 'All' }
             UnknownIds = $unknownIds
             Superseded = $supersededItems
+            IncludeTag = $includeTag
+            ExcludeTag = $excludeTag
+            DryRun     = [bool]($RunContext -and $RunContext.DryRun)
         }
         Tests             = $mtTests
         Blocks            = $mtBlocks

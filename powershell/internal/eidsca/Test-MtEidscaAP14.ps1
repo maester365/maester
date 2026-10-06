@@ -8,18 +8,19 @@ function Test-MtEidscaAP14 {
     Prevents all non-admins from reading user information from the directory. This flag doesn't prevent reading user information in other Microsoft services like Exchange Online.
 
     Queries policies/authorizationPolicy
-    and returns the result of
-    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers -eq 'true'
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers
+
+    The native test EIDSCA.AP14 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaAP14
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

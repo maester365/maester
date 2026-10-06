@@ -8,22 +8,20 @@ function Test-MtEidscaAS04 {
     Determines if users can use this authentication method to sign in to Microsoft Entra ID. true if users can use this method for primary authentication, otherwise false.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn
+
+    The native test EIDSCA.AS04 passes when this value -eq 'false'.
 
     .EXAMPLE
     Test-MtEidscaAS04
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAuthMethods -notcontains 'Sms' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Sms is not enabled.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')" -ApiVersion beta
 
     $rawValue = $result.includeTargets.isUsableForSignIn | select-object -unique

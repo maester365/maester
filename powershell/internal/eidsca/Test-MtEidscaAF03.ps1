@@ -8,22 +8,20 @@ function Test-MtEidscaAF03 {
     Requires the FIDO security key metadata to be published and verified with the FIDO Alliance Metadata Service, and also pass Microsoft's additional set of validation testing.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced -eq 'true'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced
+
+    The native test EIDSCA.AF03 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaAF03
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAuthMethods -notcontains 'Fido2' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
     $rawValue = $result.isAttestationEnforced

@@ -35,12 +35,7 @@ function Test-AzdoEnforceAADConditionalAccess {
 
     Write-Verbose "Running Test-AzdoEnforceAADConditionalAccess"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
+$SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.EnforceAADConditionalAccess'
     $result = $Policy.effectiveValue
     if ($result) {

@@ -44,12 +44,7 @@ function Test-AzdoOrganizationCodeSecurityScanning {
 
     Write-Verbose "Running Test-AzdoOrganizationCodeSecurityScanning"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Organization = (Get-ADOPSConnection).Organization
+$Organization = (Get-ADOPSConnection).Organization
     $Fetch = Get-AzdoAdvancedSecurityEnablement -Organization $Organization -IncludeAllProperties
 
     if ($null -ne $Fetch.RequestError) {

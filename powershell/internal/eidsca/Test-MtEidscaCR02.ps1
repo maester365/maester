@@ -8,22 +8,20 @@ function Test-MtEidscaCR02 {
     Specifies whether reviewers will receive notifications
 
     Queries policies/adminConsentRequestPolicy
-    and returns the result of
-    graph/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+    and returns the tenant value of
+    graph/policies/adminConsentRequestPolicy.notifyReviewers
+
+    The native test EIDSCA.CR02 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaCR02
 
-    Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAdminConsentWorkflow -eq $false ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
     $rawValue = $result.notifyReviewers

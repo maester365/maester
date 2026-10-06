@@ -20,6 +20,17 @@ function Merge-MtMaesterResult {
         An array of MaesterResults objects, each representing test results from a different tenant.
         Accepts pipeline input from Import-MtMaesterResult.
 
+     .Parameter SameRun
+        Merges partial results of one run instead of building a multi-tenant report. Use it when a run
+        was split across processes or containers (for example Invoke-Maester -TestId with different IDs
+        in each, all with the same Metadata.RunId and module version).
+
+        The rows are united by test ID: a row that ran (any result other than NotRun) replaces a NotRun
+        row for the same ID, so the rows each partition reports for tests it did not select are dropped
+        where another partition ran them. The counts, blocks and run result are recomputed, and each
+        partial result's tenant, timing and command are kept under Partitions. All results must have
+        the same CatalogVersion, and the same RunMetadata.RunId when they have one.
+
      .Parameter Path
         One or more paths to JSON result files, glob patterns, or directories.
         Files are loaded via Import-MtMaesterResult internally.
@@ -52,6 +63,10 @@ function Merge-MtMaesterResult {
         $merged = Merge-MtMaesterResult -MaesterResults @($result1, $result2)
         $html = Get-MtHtmlReport -MaesterResults $merged
         $html | Out-File -FilePath "MultiTenantReport.html" -Encoding UTF8
+
+     .Example
+        # Merge the partial results of one run split across two processes
+        Merge-MtMaesterResult -Path ./graph.json, ./exchange.json -SameRun | Get-MtHtmlReport | Out-File report.html
 
     .LINK
         https://maester.dev/docs/commands/Merge-MtMaesterResult
@@ -93,7 +108,10 @@ function Merge-MtMaesterResult {
         [psobject[]] $MaesterResults,
 
         [Parameter(Mandatory = $true, Position = 0, ParameterSetName = 'FromPath')]
-        [string[]] $Path
+        [string[]] $Path,
+
+        [Parameter()]
+        [switch] $SameRun
     )
 
     begin {
@@ -130,6 +148,10 @@ function Merge-MtMaesterResult {
             if (-not ($result.PSObject.Properties.Name -contains 'Tests')) {
                 throw "MaesterResults object is missing the 'Tests' property. TenantId: $($result.TenantId)"
             }
+        }
+
+        if ($SameRun) {
+            return Merge-MtPartitionResult -Results $collectedResults.ToArray()
         }
 
         Write-Verbose "Merging $($collectedResults.Count) tenant results into a multi-tenant report."

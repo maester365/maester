@@ -30,27 +30,22 @@
     [OutputType([bool])]
     param()
 
-    try {
-        $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
+    $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
 
-        Write-Verbose "Getting Transport Rules..."
-        $exchangeTransportRule = Get-MtExo -Request TransportRule
-        Write-Verbose "Found $($exchangeTransportRule.Count) Exchange Transport rules"
+    Write-Verbose "Getting Transport Rules..."
+    $exchangeTransportRule = Get-MtExo -Request TransportRule
+    Write-Verbose "Found $($exchangeTransportRule.Count) Exchange Transport rules"
 
-        $ruleWithSCL = $exchangeTransportRule | Where-Object { $_.SetScl -match "-1" }
-        $result = ($ruleWithSCL).Count -gt 0
+    $ruleWithSCL = $exchangeTransportRule | Where-Object { $_.SetScl -match "-1" }
+    $result = ($ruleWithSCL).Count -gt 0
 
-        if ($result -eq $false) {
-            $testResultMarkdown = "Well done. SetScl is not in use`n`n"
-        } else {
-            $testResultMarkdown = "SetScl is used $(($ruleWithSCL).Count) times in [Rules]($portalLink_TransportRules)`n`n"
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
+    if ($result -eq $false) {
+        $testResultMarkdown = "Well done. SetScl is not in use`n`n"
+    } else {
+        $testResultMarkdown = "SetScl is used $(($ruleWithSCL).Count) times in [Rules]($portalLink_TransportRules)`n`n"
     }
 
-    return !$result
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+return !$result
 }

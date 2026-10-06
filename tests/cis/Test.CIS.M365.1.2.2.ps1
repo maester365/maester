@@ -29,16 +29,10 @@
     [OutputType([bool])]
     param()
 
-    try {
-        Write-Verbose 'Getting all shared mailboxes'
-        $sharedMailboxes = Get-MtExo -Request EXOSharedMailbox -ErrorAction Stop
-    }
-    catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    Write-Verbose 'Getting all shared mailboxes'
+    $sharedMailboxes = Get-MtExo -Request EXOSharedMailbox -ErrorAction Stop
 
-    if (($sharedMailboxes | Measure-Object).Count -eq 0) {
+if (($sharedMailboxes | Measure-Object).Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no shared mailboxes in your tenant.'
         return $null
     }

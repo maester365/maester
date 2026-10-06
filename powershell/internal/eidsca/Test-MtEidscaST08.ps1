@@ -8,18 +8,19 @@ function Test-MtEidscaST08 {
     Indicating whether or not a guest user can be an owner of groups, manage
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'false'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.ST08 passes when this value -eq 'false'.
 
     .EXAMPLE
     Test-MtEidscaST08
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'false'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

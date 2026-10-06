@@ -191,6 +191,24 @@ Describe 'Active Directory test source safety' {
         # Public AD check commands, and AD checks migrated to native tests (tests/ad/**/Test.*.ps1).
         $adCommandFiles = @(Get-ChildItem (Join-Path $repositoryRoot 'powershell/public/ad') -Recurse -Filter 'Test-MtAd*.ps1' -ErrorAction SilentlyContinue) +
         @(Get-ChildItem (Join-Path $repositoryRoot 'tests/ad') -Recurse -Filter 'Test.*.ps1')
+        $guardedCollectors = @('Get-MtADDomainState', 'Get-MtADDacls', 'Get-MtADGpoState')
+
+        # Thin native AD tests call a shared helper in powershell/internal/checks/ad/ instead of a collector.
+        # A helper counts as guarded when it calls a guarded collector itself; helpers are scanned like checks.
+        $adHelperFiles = @(Get-ChildItem (Join-Path $repositoryRoot 'powershell/internal/checks/ad') -Recurse -Filter '*.ps1' -ErrorAction SilentlyContinue)
+        $guardedHelpers = @()
+        foreach ($helperFile in $adHelperFiles) {
+            $helperAst = [System.Management.Automation.Language.Parser]::ParseFile($helperFile.FullName, [ref]$null, [ref]$null)
+            $helperFunctions = $helperAst.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
+            foreach ($helperFunction in $helperFunctions) {
+                $callsCollector = $helperFunction.Body.FindAll({
+                        param($node)
+                        $node -is [System.Management.Automation.Language.CommandAst] -and $node.GetCommandName() -in $guardedCollectors
+                    }, $true) | Select-Object -First 1
+                if ($null -ne $callsCollector) { $guardedHelpers += $helperFunction.Name }
+            }
+        }
+        $adCommandFiles += $adHelperFiles
         $issues = @()
 
         foreach ($file in $adCommandFiles) {
@@ -207,7 +225,7 @@ Describe 'Active Directory test source safety' {
                     $node -is [System.Management.Automation.Language.CommandAst]
                 }, $true)
             $collector = $commands |
-                Where-Object { $_.GetCommandName() -in 'Get-MtADDomainState', 'Get-MtADDacls', 'Get-MtADGpoState' } |
+                Where-Object { $_.GetCommandName() -in ($guardedCollectors + $guardedHelpers) } |
                 Sort-Object { $_.Extent.StartOffset } |
                 Select-Object -First 1
 

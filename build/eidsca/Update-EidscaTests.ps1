@@ -1,32 +1,72 @@
 <#
  .Synopsis
-  Generates Maester tests for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
+  Generates the Maester EIDSCA checks for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
 
   .DESCRIPTION
-  * Downloads the latest version from https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json
-  * Generates Maester tests for each test defined in the JSON file
+  For each EIDSCA control collected by Maester the generator writes:
+  * tests/EIDSCA/Test.EIDSCA.<ID>.ps1 and .md: the native test (Maester 3.0). Its [MaesterTest] function reads
+    the tenant value and returns $true when it meets the recommended value.
+  * powershell/internal/eidsca/Test-MtEidsca<ID>.ps1: the internal function that reads the tenant value,
+    reports it with Add-MtTestResultDetail and returns it.
+  * powershell/public/eidsca/Test-MtEidscaControl.ps1: the public dispatcher.
+
+  The generator reads a local copy of the EIDSCA config (build/eidsca/EidscaConfig.json) and a cache of page
+  titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
+  files exactly. CI reruns it and fails on drift (powershell/tests/general/EidscaGenerator.Tests.ps1).
+  Severity comes from eidsca-test-metadata.json and Author/Contributor from the authorship seed (design section 11),
+  so regeneration keeps them.
 
   .EXAMPLE
     ./build/eidsca/Update-EidscaTests.ps1
+
+    Regenerates the files from the local copy of the EIDSCA config.
+
+  .EXAMPLE
+    ./build/eidsca/Update-EidscaTests.ps1 -Download
+
+    Downloads the latest EIDSCA config, looks up new page titles and regenerates the files.
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple EIDSCA tests.')]
 param (
-    # Folder where generated test file should be written to.
-    [string] $TestFilePath = "$PSScriptRoot/../../tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+    # Folder where the native test files (Test.EIDSCA.<ID>.ps1 and .md) are written.
+    [string] $TestPath = "$PSScriptRoot/../../tests/EIDSCA",
 
-    # Folder where control functions should be generated
+    # Folder where the internal tenant value functions (Test-MtEidsca<ID>.ps1) are written.
     [string] $PowerShellFunctionsPath = "$PSScriptRoot/../../powershell/internal/eidsca",
 
-    # Folder where the public function should be generated
+    # Folder where the public function Test-MtEidscaControl is written.
     [string] $PublicFunctionPath = "$PSScriptRoot/../../powershell/public/eidsca",
+
+    # Folder with the generator templates.
+    [string] $TemplatePath = "$PSScriptRoot/templates",
+
+    # Local copy of the EIDSCA config. -Download refreshes it from -AadSecConfigUrl.
+    [string] $ConfigPath = "$PSScriptRoot/EidscaConfig.json",
+
+    # Cache of the web page titles used in the generated Markdown links. -Download adds missing titles.
+    [string] $PageTitleCachePath = "$PSScriptRoot/PageTitles.json",
+
+    # Severity of each check (same shape as a Maester config: TestSettings with Id and Severity). Read only.
+    [string] $MaesterConfigPath = "$PSScriptRoot/eidsca-test-metadata.json",
+
+    # Authorship seed with the author and contributors of each check (design section 11).
+    [string] $AuthorshipPath = "$PSScriptRoot/../../docs/proposals/maester-3.0-evidence/authorship-seed.csv",
+
+    # Author used for a control that has no row in the authorship seed.
+    [string] $DefaultAuthor = 'Cloud-Architekt',
 
     # Control name to filter on
     [string] $ControlName = "*",
 
     # URL to the EIDSCA config file
-    [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json'
+    [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json',
+
+    # Download the EIDSCA config to -ConfigPath and look up page titles that are not in the cache.
+    [switch] $Download
 )
+
+$ErrorActionPreference = 'Stop'
 
 function GetRelativeUri($graphUri) {
     $relativeUri = $graphUri -replace 'https://graph.microsoft.com/v1.0/', ''
@@ -160,11 +200,24 @@ function GetPageTitle($uri) {
 
     $title = ''
     if ($isValidUri) {
-        $result = Invoke-WebRequest -Uri $uri
-        $output = $uri
-        if ($result.Content -match "(?s)<title>(?<title>.*?)</title>") {
-            $title = $Matches['title'].Trim() -replace '\s+', ' '
+        # Titles come from the committed cache so that regeneration is reproducible offline.
+        if ($script:PageTitleCache.Contains($uri)) {
+            return $script:PageTitleCache[$uri]
         }
+        if (-not $script:Download) {
+            Write-Warning "No cached page title for $uri. Run with -Download to look it up."
+            return $title
+        }
+        try {
+            $result = Invoke-WebRequest -Uri $uri
+            if ($result.Content -match "(?s)<title>(?<title>.*?)</title>") {
+                $title = $Matches['title'].Trim() -replace '\s+', ' '
+            }
+        } catch {
+            Write-Warning "Could not read the page title of ${uri}: $($_.Exception.Message)"
+            return $title
+        }
+        $script:PageTitleCache[$uri] = $title
     }
     return $title
 }
@@ -411,28 +464,110 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%GraphDocsUrlMarkdown%', $graphDocsUrlMarkdown
     }
 
-    # Add condition to test template if defined in EidscaTest
-    if (-not [string]::IsNullOrWhiteSpace($controlItem.SkipCondition) ) {
-        $SkipCheck = "if ( $($controlItem.SkipCondition) ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$($controlItem.SkipReason)'
-            return " + '$null' + "`
-    }"
-        $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
-
-        # Extract variable name from the condition to build syntax for TestCases
-        $SkipConditionVariable = ($controlItem.SkipCondition | Select-String -Pattern '\$([^\s]+)').Matches.Value
-        $SkipConditionVariableName = $SkipConditionVariable -replace '[$()]', ''
-        $output = $output -replace '%TestCases%', " -TestCases @{ $($SkipConditionVariableName) = $($SkipConditionVariable) }"
-    } else {
-        $output = $output -replace '%SkipCheck%', ""
-        $output = $output -replace '%TestCases%', ""
-    }
-
     return ConvertTo-LanguageNeutralMicrosoftUrl -Content $output
 }
 
-# Returns the contents of a file named @template.txt at the given folder path
-function GetTemplate($folderPath, $templateFileName = "@template.txt") {
+# Returns the value type the tenant value function casts the value to.
+function GetValueType($controlItem) {
+    if ($controlItem.DefaultValue -match "^[\d\.]+$") {
+        return 'int'
+    }
+    return (GetCompareOperator($controlItem.RecommendedValue)).valuetype
+}
+
+# Skip conditions in the EIDSCA config that are licence guards. The engine gates them with CompatibleLicense.
+$script:LicenseSkipConditions = @{
+    "`$EntraIDPlan -eq 'Free'" = 'AAD_PREMIUM'
+}
+
+# Turns the SkipCondition of a control into the code at the top of the native test.
+# - A licence guard becomes a CompatibleLicense token (no code).
+# - Any other condition is a fact only the test can see: the test reads the discovery variables it uses
+#   (from the Discovery lines of the EIDSCA config) and skips with the custom reason.
+# - A call to another control's function, (Test-MtEidsca<ID>), is replaced by a direct read of that control's
+#   tenant value, so no test calls another test and the other control's result detail is not reported
+#   (design section 13).
+function GetSkipCheck($controlItem, $discoveryLines, $controlLookup) {
+    $result = [pscustomobject]@{ Code = ''; CompatibleLicense = @() }
+    $condition = "$($controlItem.SkipCondition)".Trim()
+    if ([string]::IsNullOrWhiteSpace($condition)) {
+        return $result
+    }
+    if ($script:LicenseSkipConditions.ContainsKey($condition)) {
+        $result.CompatibleLicense = @($script:LicenseSkipConditions[$condition])
+        return $result
+    }
+    if ($condition -match '\$EntraIDPlan') {
+        throw "$($controlItem.CheckId): the licence condition '$condition' has no CompatibleLicense mapping in `$LicenseSkipConditions."
+    }
+
+    $lines = [System.Collections.Generic.List[string]]::new()
+
+    $calls = [regex]::Matches($condition, '\(Test-MtEidsca(?<id>[A-Za-z0-9]+)\)')
+    foreach ($call in $calls) {
+        $otherId = "EIDSCA.$($call.Groups['id'].Value)"
+        if (-not $controlLookup.ContainsKey($otherId)) {
+            throw "$($controlItem.CheckId): the skip condition calls $otherId, which is not an EIDSCA control."
+        }
+        $other = $controlLookup[$otherId]
+        $variableName = "eidsca$($call.Groups['id'].Value)Value"
+        $lines.Add("    # Tenant value of $otherId, read directly so that this test does not call another test.")
+        $lines.Add("    `$eidsca$($call.Groups['id'].Value)Result = Invoke-MtGraphRequest -RelativeUri `"$(GetRelativeUri($other.Control.GraphUri))`" -ApiVersion $(GetVersion($other.Control.GraphUri))")
+        $lines.Add("    [$(GetValueType $other.Item)]`$$variableName = `$eidsca$($call.Groups['id'].Value)Result.$($other.Item.CurrentValue)")
+        $condition = $condition.Replace($call.Value, "`$$variableName")
+    }
+
+    $variables = [regex]::Matches("$($controlItem.SkipCondition)", '\$(?<name>[A-Za-z_][A-Za-z0-9_]*)') |
+        ForEach-Object { $_.Groups['name'].Value } |
+        Where-Object { $_ -notin 'null', 'true', 'false' } |
+        Select-Object -Unique
+    $discoveryCode = foreach ($variable in $variables) {
+        $line = $discoveryLines | Where-Object { $_ -match "^\s*\`$$([regex]::Escape($variable))\s*=" } | Select-Object -First 1
+        if (-not $line) {
+            throw "$($controlItem.CheckId): the skip condition uses `$$variable, which no Discovery line in the EIDSCA config sets."
+        }
+        "    $($line.Trim())"
+    }
+    $lines.InsertRange(0, [string[]]@($discoveryCode))
+
+    $reason = "$($controlItem.SkipReason)".Replace("'", "''")
+    $lines.Add("    if ( $condition ) {")
+    $lines.Add("        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$reason'")
+    $lines.Add('        return $null')
+    $lines.Add('    }')
+    $result.Code = "`n" + ($lines -join "`n") + "`n"
+    return $result
+}
+
+function FormatAttributeString([string] $Value) { "'" + $Value.Replace("'", "''") + "'" }
+
+function FormatAttributeList([string[]] $Values) {
+    if ($Values.Count -eq 1) { return FormatAttributeString $Values[0] }
+    '(' + (($Values | ForEach-Object { FormatAttributeString $_ }) -join ', ') + ')'
+}
+
+# The [MaesterTest(...)] attribute of a native test (design section 4). Category and tags reproduce what
+# Pester selected on in 2.x: the Describe 'EIDSCA' block and its tags (the suite tag and the ID).
+function GetMaesterTestAttribute($meta) {
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $lines.Add("        Id = $(FormatAttributeString $meta.Id)")
+    $lines.Add("        Title = $(FormatAttributeString $meta.Title)")
+    if ($meta.Severity) { $lines.Add("        Severity = $(FormatAttributeString $meta.Severity)") }
+    $lines.Add("        Category = $(FormatAttributeString $meta.Category)")
+    $lines.Add("        Service = $(FormatAttributeList $meta.Service)")
+    if ($meta.CompatibleLicense.Count -gt 0) { $lines.Add("        CompatibleLicense = $(FormatAttributeList $meta.CompatibleLicense)") }
+    if ($meta.Author.Count -gt 0) { $lines.Add("        Author = $(FormatAttributeList $meta.Author)") }
+    if ($meta.Contributor.Count -gt 0) { $lines.Add("        Contributor = $(FormatAttributeList $meta.Contributor)") }
+    "    [MaesterTest(`n" + ($lines -join ",`n") + "`n    )]"
+}
+
+# Name of the [MaesterTest] function. Test-MtEidsca<ID> keeps its 2.x name and return value (the tenant value).
+function GetEidscaNativeFunctionName($checkId) {
+    return "Test-MtCheck$($checkId.Replace('EIDSCA.', 'Eidsca'))"
+}
+
+# Returns the contents of a template file in the template folder
+function GetTemplate($folderPath, $templateFileName) {
     $templateFilePath = Join-Path $folderPath $templateFileName
     return Get-Content $templateFilePath -Raw
 }
@@ -459,26 +594,61 @@ function GetEidscaPsFunctionName($checkId) {
     return $powerShellFunctionName
 }
 
+
 function GeneratePublicFunction($folderPath, $controlIds) {
-    $output = GetTemplate -folderPath $folderPath -templateFileName '@Test-MtEidscaControl.txt'
+    $output = GetTemplate -folderPath $TemplatePath -templateFileName 'Test-MtEidscaControl.ps1.txt'
     $output = $output -replace '%ArrayOfControlIds%', "'$($controlIds -replace '^.*\.' -join "','")'"
     $output = $output -replace '%InternalFunctionNameTemplate%', (GetEidscaPsFunctionName -checkId 'EIDSCA.$CheckId')
     CreateFile -folderPath $folderPath -fileName 'Test-MtEidscaControl.ps1' -content $output
 }
 
-# Start by getting the latest EIDSCA config
-$aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
+# Read the EIDSCA config: the local copy, refreshed from the upstream repository with -Download.
+if ($Download) {
+    $configContent = (Invoke-WebRequest -Uri $AadSecConfigUrl).Content
+    if ($configContent -is [byte[]]) { $configContent = [System.Text.Encoding]::UTF8.GetString($configContent) }
+    [System.IO.File]::WriteAllText($ConfigPath, $configContent, [System.Text.UTF8Encoding]::new($false))
+}
+$aadsc = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json
 $aadsc = ($aadsc | Where-Object { $_.CollectedBy -eq "Maester" }).ControlArea
-$Discovery = ($aadsc | Where-Object { $_.discovery -ne "" }).Discovery
+$Discovery = @(($aadsc | Where-Object { $_.discovery -ne "" }).Discovery | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+
+# Page titles for the Markdown links.
+$script:PageTitleCache = [ordered]@{}
+if (Test-Path -LiteralPath $PageTitleCachePath) {
+    foreach ($property in (Get-Content -LiteralPath $PageTitleCachePath -Raw | ConvertFrom-Json).PSObject.Properties) {
+        $script:PageTitleCache[$property.Name] = [string]$property.Value
+    }
+}
+
+# Severity (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
+$severityById = @{}
+if (Test-Path -LiteralPath $MaesterConfigPath) {
+    foreach ($row in (Get-Content -LiteralPath $MaesterConfigPath -Raw | ConvertFrom-Json).TestSettings) {
+        if ($row.Id -and $row.Severity) { $severityById[[string]$row.Id] = [string]$row.Severity }
+    }
+}
+$authorshipById = @{}
+if (Test-Path -LiteralPath $AuthorshipPath) {
+    foreach ($row in (Import-Csv -LiteralPath $AuthorshipPath)) { $authorshipById[$row.test_id] = $row }
+}
+
+# All controls by ID, so a skip condition can read another control's value.
+$controlLookup = @{}
+foreach ($control in $aadsc) {
+    foreach ($controlItem in $control.Controls) {
+        $controlLookup[$controlItem.CheckId] = [pscustomobject]@{ Control = $control; Item = $controlItem }
+    }
+}
 
 # Remove previously generated files
-Get-ChildItem -Path $PowerShellFunctionsPath -Filter "*" -Exclude "@template*" | Remove-Item -Force
+Get-ChildItem -Path $PowerShellFunctionsPath -Filter 'Test-MtEidsca*' -File -ErrorAction SilentlyContinue | Remove-Item -Force
+Get-ChildItem -Path $TestPath -Filter 'Test.EIDSCA.*' -File -ErrorAction SilentlyContinue | Remove-Item -Force
+# The 2.x Pester file is replaced by the native tests.
+Get-ChildItem -Path $TestPath -Filter 'Test-EIDSCA.Generated.Tests.ps1' -File -ErrorAction SilentlyContinue | Remove-Item -Force
 
-$psTemplate = GetTemplate $PowerShellFunctionsPath "@templateps1.txt" # Use the .txt extension to avoid running the script
-# The website docs generator consumes the internal Markdown generated from this template.
-$psMarkdownTemplate = GetTemplate $PowerShellFunctionsPath "@template.md"
-
-$sb = [System.Text.StringBuilder]::new()
+$psTemplate = GetTemplate $TemplatePath 'Test-MtEidsca.ps1.txt' # Use the .txt extension to avoid running the script
+$nativeTemplate = GetTemplate $TemplatePath 'Test.EIDSCA.ps1.txt'
+$markdownTemplate = GetTemplate $TemplatePath 'Test.EIDSCA.md.txt'
 
 if ($null -ne $ControlName) {
     $aadsc = $aadsc | Where-Object { $_.ControlName -like $ControlName }
@@ -488,8 +658,6 @@ $exportedControls = [System.Collections.Generic.List[string]]::new()
 foreach ($control in $aadsc) {
     Write-Verbose "Generating test for $($control.ControlName)"
 
-    $testOutputList = [System.Text.StringBuilder]::new()
-
     foreach ($controlItem in $control.Controls) {
         # Export check only if RecommendedValue is set
         if ($null -eq $controlItem.RecommendedValue -or $controlItem.RecommendedValue -eq '') {
@@ -497,64 +665,49 @@ foreach ($control in $aadsc) {
             continue
         }
 
-        $exportedControls.Add($controlItem.CheckId)
         $docName = $controlItem.CheckId
-
-        $testTemplate = @'
-Describe "EIDSCA" -Tag "EIDSCA",  "%CheckId%" {
-    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
-        <#
-            Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
-        #>
-        Test-MtEidscaControl -CheckId %CheckShortId% | Should -%ShouldOperator% %RecommendedValue%
-    }
-}
-'@
-
-        $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
         $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
+        if ($psOutput -eq '') { continue }
+        $exportedControls.Add($controlItem.CheckId)
 
-        $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
+        $markdownOutput = UpdateTemplate -template $markdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
+        $nativeOutput = UpdateTemplate -template $nativeTemplate -control $control -controlItem $controlItem -docName $docName
 
-        if ($testOutput -ne '') {
-            [void]$testOutputList.AppendLine($testOutput)
-
-            $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
-            CreateFile $PowerShellFunctionsPath "$psFunctionName.ps1" $psOutput
-            CreateFile $PowerShellFunctionsPath "$psFunctionName.md" $psMarkdownOutput
+        # The native test: attribute, skip check and the comparison the 2.x Pester It made.
+        $skipCheck = GetSkipCheck -controlItem $controlItem -discoveryLines $Discovery -controlLookup $controlLookup
+        $severity = $severityById[$controlItem.CheckId]
+        if (-not $severity) { $severity = $controlItem.Severity }
+        $authorship = $authorshipById[$controlItem.CheckId]
+        $authors = @(if ($authorship -and $authorship.author) { $authorship.author -split ';' } else { $DefaultAuthor }) | Where-Object { $_ }
+        $contributors = @(if ($authorship) { $authorship.contributors_recommended -split ';' }) | Where-Object { $_ -and $_ -notin $authors }
+        $attribute = GetMaesterTestAttribute @{
+            Id                = $controlItem.CheckId
+            Title             = "$($control.ControlName) - $($controlItem.DisplayName)."
+            Severity          = $severity
+            Category          = 'EIDSCA'
+            Service           = @('Graph')
+            CompatibleLicense = @($skipCheck.CompatibleLicense)
+            Author            = $authors
+            Contributor       = $contributors
         }
-    }
-    if ($testOutputList.Length -ne 0) {
-        [void]$sb.AppendLine($testOutputList)
+        $nativeOutput = $nativeOutput.Replace('%NativeFunctionName%', (GetEidscaNativeFunctionName -checkId $controlItem.CheckId))
+        $nativeOutput = $nativeOutput.Replace('%MaesterTestAttribute%', $attribute)
+        $nativeOutput = $nativeOutput.Replace('%SkipCheck%', $skipCheck.Code)
+        $nativeOutput = ConvertTo-LanguageNeutralMicrosoftUrl -Content $nativeOutput
+
+        $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
+        CreateFile $PowerShellFunctionsPath "$psFunctionName.ps1" $psOutput
+        CreateFile $TestPath "Test.$($controlItem.CheckId).ps1" $nativeOutput
+        CreateFile $TestPath "Test.$($controlItem.CheckId).md" $markdownOutput
     }
 }
 
 # Generate Test-MtEidscaControl
 GeneratePublicFunction -folderPath $PublicFunctionPath -controlIds $exportedControls
 
-$output = @'
-BeforeDiscovery {
-    try {
-<DiscoveryFromJson>    } catch {
-        $EntraIDPlan = "NotConnected"
-    }
+# Keep the page title cache sorted so that its diff stays small.
+if ($Download) {
+    $sortedCache = [ordered]@{}
+    foreach ($key in ($script:PageTitleCache.Keys | Sort-Object)) { $sortedCache[$key] = $script:PageTitleCache[$key] }
+    [System.IO.File]::WriteAllText($PageTitleCachePath, (($sortedCache | ConvertTo-Json) -replace '\r\n', "`n") + "`n", [System.Text.UTF8Encoding]::new($false))
 }
-
-'@
-
-# Replace placeholder with Discovery checks from definition in EIDSCA JSON
-# Indent each discovery line for proper formatting inside the try block
-$discoveryLines = ($Discovery | ForEach-Object { "        $_" }) -join [System.Environment]::NewLine
-$discoveryLines += [System.Environment]::NewLine
-$output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
-
-$output += $sb.ToString()
-if ($output -match "`r`n") {
-    $newLine = "`r`n"
-} else {
-    $newLine = "`n"
-}
-$output = RemoveTrailingWhitespace $output
-$output = $output -replace '(\r?\n)+$', ''
-[System.IO.File]::WriteAllText($TestFilePath, "$output$newLine", [System.Text.UTF8Encoding]::new($false))

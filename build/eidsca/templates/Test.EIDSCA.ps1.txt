@@ -1,0 +1,21 @@
+function %NativeFunctionName% {
+    <#
+    .SYNOPSIS
+    Checks if %ControlName% - %DisplayName% %CompareOperatorText% %RecommendedValue%
+
+    .DESCRIPTION
+    %ControlItemDescription%
+
+    Reads the tenant value of
+    https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
+    .%CurrentValueProperty% with %PSFunctionName%
+    and passes when it -%PwshCompareOperator% %RecommendedValue%.
+    #>
+%MaesterTestAttribute%
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+%SkipCheck%
+    $tenantValue = %PSFunctionName%
+    return ($tenantValue -%PwshCompareOperator% %RecommendedValue%)
+}

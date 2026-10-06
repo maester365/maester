@@ -45,12 +45,7 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
 
     Write-Verbose "Running Test-AzdoOrganizationSecretProtectionPushProtection"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Organization = (Get-ADOPSConnection).Organization
+$Organization = (Get-ADOPSConnection).Organization
     $Fetch = Get-AzdoAdvancedSecurityEnablement -Organization $Organization -IncludeAllProperties
 
     if ($null -ne $Fetch.RequestError) {

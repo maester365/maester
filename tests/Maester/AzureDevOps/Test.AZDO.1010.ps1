@@ -38,12 +38,7 @@ function Test-AzdoAuditStream {
 
     Write-Verbose "Running Test-AzdoAuditStream"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $AuditStreams = Get-ADOPSAuditStreams -ErrorAction SilentlyContinue
+$AuditStreams = Get-ADOPSAuditStreams -ErrorAction SilentlyContinue
 
     if ($null -eq $AuditStreams) {
         $Message = "Audit Streams was not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.

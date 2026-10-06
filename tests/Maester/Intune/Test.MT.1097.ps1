@@ -59,8 +59,5 @@
         return $healthStatus -notcontains $false
     } catch [System.Management.Automation.ItemNotFoundException] {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
     }
 }

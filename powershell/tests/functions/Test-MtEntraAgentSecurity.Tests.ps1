@@ -91,10 +91,17 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'disabled accounts'
         }
 
-        It 'skips when Graph is disconnected' {
+        It 'is skipped by the engine when Graph is disconnected' {
+            # The engine gates on the [MaesterTest] Service declaration; the check no longer guards itself.
+            foreach ($id in @('MT.1204')) {
+                (Get-MtTest -Id $id).Service | Should -Contain 'Graph'
+            }
+
             Mock -ModuleName Maester Test-MtConnection { return $false }
-            Test-MtEntraAgentOwner | Should -BeNull
-            $script:SkippedBecause | Should -Be 'NotConnectedGraph'
+            foreach ($row in @(Invoke-MtTest -Id @('MT.1204'))) {
+                $row.Result | Should -Be 'Skipped'
+                $row.ReasonCode | Should -Be 'ServiceNotConnected'
+            }
         }
     }
 

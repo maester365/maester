@@ -31,12 +31,8 @@
     $return = $true
 
     Write-Verbose "Checking if on-premises directory synchronization soft- and hard-match is blocked..."
-    try {
-        $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
+    $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
+
     if ($organizationConfig.onPremisesSyncEnabled -ne $true) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'OnPremisesSynchronization is not configured'
         return $null

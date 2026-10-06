@@ -8,18 +8,19 @@ function Test-MtEidscaAP10 {
     Controls if non-admin users may register custom-developed applications for use within this directory.
 
     Queries policies/authorizationPolicy
-    and returns the result of
-    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps
+
+    The native test EIDSCA.AP10 passes when this value -eq 'false'.
 
     .EXAMPLE
     Test-MtEidscaAP10
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

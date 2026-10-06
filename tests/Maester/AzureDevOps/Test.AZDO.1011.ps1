@@ -34,12 +34,7 @@ function Test-AzdoResourceUsageProject {
 
     Write-Verbose "Running Test-AzdoResourceUsageProject"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Projects = (Get-ADOPSResourceUsage -Force).Projects
+$Projects = (Get-ADOPSResourceUsage -Force).Projects
 
     $CurrentUsage = $($Projects.count / $Projects.limit).ToString("P")
 

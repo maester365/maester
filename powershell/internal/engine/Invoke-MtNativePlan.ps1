@@ -141,11 +141,19 @@ function Expand-MtTestFamily {
         ConvertTo-MtNativeRow -PlanRow $copy
     }
 
+    # The source runs as the parent test, so Add-MtTestResultDetail -SkippedBecause in it skips the family
+    # (for example when the feature the family enumerates is not enabled in the tenant).
     try {
+        [Maester.Engine.MtSession]::EnterTest($test.Id)
         $raw = if ($Module) { & $Module { param($fn) & $fn } $test.InstanceSource } else { & $test.InstanceSource }
         $instances = @($raw | Where-Object { $null -ne $_ })
     } catch {
+        if ($_.FullyQualifiedErrorId -like "$([Maester.Engine.MtSession]::SkipErrorId)*") {
+            return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Skipped' 'TestSkipped' $_.Exception.Message) }
+        }
         return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Error' 'InstanceSourceFailed' "The instance source $($test.InstanceSource) failed: $($_.Exception.Message)") }
+    } finally {
+        [Maester.Engine.MtSession]::ExitTest()
     }
     if ($instances.Count -eq 0) {
         return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Skipped' 'NoInstances' 'There is nothing in this tenant for this test to check.') }

@@ -8,18 +8,19 @@ function Test-MtEidscaCR01 {
     Defines if admin consent request feature is enabled or disabled
 
     Queries policies/adminConsentRequestPolicy
-    and returns the result of
-    graph/policies/adminConsentRequestPolicy.isEnabled -eq 'true'
+    and returns the tenant value of
+    graph/policies/adminConsentRequestPolicy.isEnabled
+
+    The native test EIDSCA.CR01 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaCR01
 
-    Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.isEnabled -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.isEnabled
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 

@@ -179,11 +179,11 @@
         # The filename prefix to use for all the files in the output folder. e.g. 'TestResults' will generate TestResults.html, TestResults.md, TestResults.json.
         [string] $OutputFolderFileName,
 
-        # An optional [PesterConfiguration] object for advanced configuration.
-        # Default is New-PesterConfiguration
-        # For help on each option see New-PesterConfiguration, or inspect the object it returns.
+        # An optional Pester configuration for Pester-format custom tests: a [PesterConfiguration] object or a
+        # hashtable. Its Run.Path, Filter.Tag, Filter.ExcludeTag and TestResult options also apply to native tests.
+        # Pester is needed only when the run has Pester-format tests.
         # See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
-        [PesterConfiguration] $PesterConfiguration,
+        [object] $PesterConfiguration,
 
         # Set the Pester verbosity level. Default is 'None'.
         # None      : Shows only the final summary.
@@ -348,26 +348,6 @@
         return $result
     }
 
-    function GetPesterConfiguration($RunPath, $ExcludePath, $Tag, $ExcludeTag, $PesterConfiguration) {
-        if (!$PesterConfiguration) {
-            $PesterConfiguration = New-PesterConfiguration
-        }
-
-        $PesterConfiguration.Run.PassThru = $true
-        $PesterConfiguration.Output.Verbosity = $Verbosity
-        $PesterConfiguration.Run.Path = @($RunPath)
-        if ($ExcludePath) {
-            # Appended, never replaced: a caller's Run.ExcludePath still applies.
-            $PesterConfiguration.Run.ExcludePath = @(@($PesterConfiguration.Run.ExcludePath.Value) + $ExcludePath | Where-Object { $_ })
-        }
-        # Pester 6 options that would lose Maester's result details or fail discovery of an empty -ForEach.
-        if ($PesterConfiguration.Run.PSObject.Properties['Parallel']) { $PesterConfiguration.Run.Parallel = $false }
-        if ($PesterConfiguration.Run.PSObject.Properties['FailOnNullOrEmptyForEach']) { $PesterConfiguration.Run.FailOnNullOrEmptyForEach = $false }
-        if ($Tag) { $PesterConfiguration.Filter.Tag = $Tag }
-        if ($ExcludeTag) { $PesterConfiguration.Filter.ExcludeTag = $ExcludeTag }
-
-        return $PesterConfiguration
-    }
 
     $version = Get-MtModuleVersion
 
@@ -403,8 +383,9 @@
     Write-MtOlderVersionWarning
 
     # PesterConfiguration.Run.Path is used as -Path when -Path is not given, as in 2.x.
-    if (-not $Path -and $PesterConfiguration -and $PesterConfiguration.Run.Path.Value -and @($PesterConfiguration.Run.Path.Value)[0] -ne '.') {
-        $Path = @($PesterConfiguration.Run.Path.Value)[0]
+    $callerRunPath = @(Get-MtPesterOption -Configuration $PesterConfiguration -Name 'Run.Path' | Where-Object { $_ })
+    if (-not $Path -and $callerRunPath.Count -gt 0 -and $callerRunPath[0] -ne '.') {
+        $Path = $callerRunPath[0]
     }
 
     # Where the tests come from: the built-in suites from the module, and custom tests under -Path.
@@ -433,11 +414,13 @@
 
     # A caller's PesterConfiguration filter takes part in selection: Filter.Tag is the include set when
     # -Tag is not given, and Filter.ExcludeTag adds to the exclusions instead of being overwritten.
-    if (-not $Tag -and $PesterConfiguration -and @($PesterConfiguration.Filter.Tag.Value | Where-Object { $_ }).Count -gt 0) {
-        $Tag = @($PesterConfiguration.Filter.Tag.Value | Where-Object { $_ })
+    $callerTag = @(Get-MtPesterOption -Configuration $PesterConfiguration -Name 'Filter.Tag' | Where-Object { $_ })
+    if (-not $Tag -and $callerTag.Count -gt 0) {
+        $Tag = $callerTag
     }
-    if ($PesterConfiguration) {
-        $ExcludeTag = @(@($ExcludeTag) + @($PesterConfiguration.Filter.ExcludeTag.Value) | Where-Object { $_ } | Select-Object -Unique)
+    $callerExcludeTag = @(Get-MtPesterOption -Configuration $PesterConfiguration -Name 'Filter.ExcludeTag' | Where-Object { $_ })
+    if ($callerExcludeTag.Count -gt 0) {
+        $ExcludeTag = @(@($ExcludeTag) + $callerExcludeTag | Where-Object { $_ } | Select-Object -Unique)
     }
 
     $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
@@ -532,22 +515,32 @@
                 ForEach-Object { $_.FullName } | Where-Object { -not $wantedFiles.Contains($_) }
         })
 
-    $pesterConfig = GetPesterConfiguration -RunPath $pesterRunPath -ExcludePath $pesterExcludePath -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    # What the engine decides for the Pester provider. A PesterConfiguration is built from it (and the
+    # caller's -PesterConfiguration) only when the plan has Pester-format tests.
+    $pesterFilter = [PSCustomObject]@{
+        RunPath           = @($pesterRunPath)
+        ExcludePath       = @($pesterExcludePath)
+        Tag               = @($Tag | Where-Object { $_ })
+        ExcludeTag        = @($ExcludeTag | Where-Object { $_ })
+        ExcludeLine       = @()
+        SkipRun           = $false
+        DisableTestResult = $false
+    }
 
     # Active Directory tests are always opt-in. Supplying -Tag AD alone is not sufficient;
     # the connection must have been explicitly validated by Connect-Maester first.
     if (-not (Test-MtConnection -Service ActiveDirectory)) {
-        $effectiveExcludeTags = @($pesterConfig.Filter.ExcludeTag.Value)
+        $effectiveExcludeTags = @($pesterFilter.ExcludeTag)
         if ('AD' -notin $effectiveExcludeTags) {
-            $pesterConfig.Filter.ExcludeTag = @($effectiveExcludeTags + 'AD')
+            $pesterFilter.ExcludeTag = @($effectiveExcludeTags + 'AD')
             $autoExcludedTag.Add('AD')
         }
         Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
     }
 
     # The exclusions before any ID-based lifting: native selection applies exact-ID lifting per test itself.
-    $nativeExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ })
-    Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
+    $nativeExcludeTag = @($pesterFilter.ExcludeTag | Where-Object { $_ })
+    Write-Verbose "Selection: $($pesterFilter | ConvertTo-Json -Depth 3 -Compress)"
 
     # If DriftRoot is specified, set the environment variable for drift tests.
     if ($DriftRoot) {
@@ -619,14 +612,16 @@
     $superseded = $null
     if ($testSource.CustomFiles.Count -gt 0) {
         Write-MtProgress -Activity 'Starting Maester' -Status 'Checking custom tests...' -Force
-        $builtInInventory = @(Get-MtPesterFileInventory -Path @(Get-MtBuiltInPesterFile -BuiltInRoot $testSource.BuiltInRoot))
+        # No built-in Pester file ships once every check is native (design section 10).
+        $builtInPesterFiles = @(Get-MtBuiltInPesterFile -BuiltInRoot $testSource.BuiltInRoot)
+        $builtInInventory = @(if ($builtInPesterFiles.Count -gt 0) { Get-MtPesterFileInventory -Path $builtInPesterFiles })
         $customInventory = @(Get-MtPesterFileInventory -Path $testSource.CustomFiles)
         $superseded = Get-MtSupersededTest -CustomInventory $customInventory -BuiltInInventory $builtInInventory -BuiltInId @($catalogIds)
         if ($superseded.ExcludeFiles.Count -gt 0) {
-            $pesterConfig.Run.ExcludePath = @(@($pesterConfig.Run.ExcludePath.Value) + $superseded.ExcludeFiles | Where-Object { $_ })
+            $pesterFilter.ExcludePath = @(@($pesterFilter.ExcludePath) + $superseded.ExcludeFiles | Where-Object { $_ })
         }
         if ($superseded.ExcludeLines.Count -gt 0) {
-            $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + $superseded.ExcludeLines | Where-Object { $_ })
+            $pesterFilter.ExcludeLine = @(@($pesterFilter.ExcludeLine) + $superseded.ExcludeLines | Where-Object { $_ })
         }
         if ($superseded.Items.Count -gt 0) {
             $files = @($superseded.Items | ForEach-Object { $_.File } | Select-Object -Unique)
@@ -644,7 +639,7 @@
         foreach ($t in $nativeCustom) { if ($t.Id) { $nativeCustomIds[$t.Id] = $t } }
         $duplicates = @($customInventory | Where-Object { $_.Id -and $nativeCustomIds.ContainsKey($_.Id) })
         foreach ($d in $duplicates) {
-            $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + "$($d.File):$($d.Line)" | Where-Object { $_ })
+            $pesterFilter.ExcludeLine = @(@($pesterFilter.ExcludeLine) + "$($d.File):$($d.Line)" | Where-Object { $_ })
             $nativeCustomIds[$d.Id].Errors.Add([pscustomobject]@{ Code = 'DuplicateId'; Message = "A Pester test has the same ID: $($d.File), line $($d.Line)."; Line = 1 })
         }
         if ($duplicates.Count -gt 0) {
@@ -666,13 +661,13 @@
         $inventory = @($builtInInventory | Where-Object { $_.File -in $testSource.BuiltInFiles }) + $customInventory
         $plan = Get-MtPesterSelectionPlan -Inventory $inventory -Selection $selection -RunConfig $runConfig
         if ($plan.ExcludeLines.Count -gt 0) {
-            $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + $plan.ExcludeLines | Where-Object { $_ })
+            $pesterFilter.ExcludeLine = @(@($pesterFilter.ExcludeLine) + $plan.ExcludeLines | Where-Object { $_ })
         }
         if ($plan.LiftPreview -and $autoExcludedTag -contains 'Preview') {
-            $pesterConfig.Filter.ExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ -ne 'Preview' })
+            $pesterFilter.ExcludeTag = @($pesterFilter.ExcludeTag | Where-Object { $_ -ne 'Preview' })
         }
         if ($plan.LiftLongRunning -and $autoExcludedTag -contains 'LongRunning') {
-            $pesterConfig.Filter.ExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ -ne 'LongRunning' })
+            $pesterFilter.ExcludeTag = @($pesterFilter.ExcludeTag | Where-Object { $_ -ne 'LongRunning' })
         }
     }
 
@@ -694,7 +689,7 @@
     }
 
     if ($DryRun) {
-        $pesterConfig.Run.SkipRun = $true
+        $pesterFilter.SkipRun = $true
     }
 
     # Stages 2, 5 and 6 for native tests: the tenant context, then selection and applicability.
@@ -705,7 +700,7 @@
     $nativePlan = @()
     if ($nativeTests.Count -gt 0) {
         $nativePlan = @(Resolve-MtNativePlan -Test $nativeTests -Selection $selection -RunConfig $runConfig -TenantContext $tenantContext `
-                -IncludeTag @($pesterConfig.Filter.Tag.Value | Where-Object { $_ }) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -DryRun:$DryRun)
+                -IncludeTag @($pesterFilter.Tag) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -DryRun:$DryRun)
     }
 
     # CI test results (NUnit/JUnit XML): Maester writes one file for native and Pester rows, requested
@@ -714,12 +709,14 @@
     $outputSection = if ($runConfig.PSObject.Properties['Output']) { $runConfig.Output } else { $null }
     if ($outputSection -and $outputSection.PSObject.Properties['TestResult'] -and $outputSection.TestResult -and $outputSection.TestResult.Path) {
         $xmlRequest = @{ Path = [string]$outputSection.TestResult.Path; Format = $(if ($outputSection.TestResult.Format) { [string]$outputSection.TestResult.Format } else { 'NUnitXml' }) }
-    } elseif ($pesterConfig.TestResult.Enabled.Value) {
-        $xmlRequest = @{ Path = [string]$pesterConfig.TestResult.OutputPath.Value; Format = [string]$pesterConfig.TestResult.OutputFormat.Value }
+    } elseif (Get-MtPesterOption -Configuration $PesterConfiguration -Name 'TestResult.Enabled') {
+        $resultPath = Get-MtPesterOption -Configuration $PesterConfiguration -Name 'TestResult.OutputPath'
+        $resultFormat = Get-MtPesterOption -Configuration $PesterConfiguration -Name 'TestResult.OutputFormat'
+        $xmlRequest = @{ Path = $(if ($resultPath) { [string]$resultPath } else { 'testResults.xml' }); Format = $(if ($resultFormat) { [string]$resultFormat } else { 'NUnitXml' }) }
     }
     if ($xmlRequest) {
         if ($xmlRequest.Format -in 'NUnitXml', 'NUnit2.5', 'JUnitXml') {
-            $pesterConfig.TestResult.Enabled = $false
+            $pesterFilter.DisableTestResult = $true
         } else {
             Write-Warning "Maester writes test results as NUnitXml or JUnitXml. $($xmlRequest.Format) is left to Pester and holds only the Pester-format tests."
             $xmlRequest = $null
@@ -730,8 +727,8 @@
         Selection       = $selection
         Plan            = $plan
         DryRun          = $DryRun.IsPresent
-        IncludeTag      = @($pesterConfig.Filter.Tag.Value | Where-Object { $_ })
-        ExcludeTag      = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ })
+        IncludeTag      = @($pesterFilter.Tag)
+        ExcludeTag      = @($pesterFilter.ExcludeTag)
         AutoExcludedTag = @($autoExcludedTag)
         FileOrigin      = $fileOrigin
         Superseded      = $superseded
@@ -752,8 +749,23 @@
             $nativeRows = @(Invoke-MtNativePlan -Plan $nativePlan -RunConfig $runConfig -Selection $selection -Verbosity $Verbosity)
         }
         $nativeTimer.Stop()
+        $pesterConfig = $null
         if ($pesterRunPath.Count -gt 0) {
-            $pesterResults = Invoke-Pester -Configuration $pesterConfig
+            $provider = Invoke-MtPesterProvider -Filter $pesterFilter -Configuration $PesterConfiguration -Verbosity $Verbosity
+            if ($provider.Unavailable) {
+                # Pester is not installed: each Pester-format test becomes an Error row; native results stand.
+                Write-Warning 'This run includes Pester-format tests, but Pester 5.7.1 or later is not installed, so they were not run. Install it with: Install-Module Pester -MinimumVersion 5.7.1 -Scope CurrentUser'
+                $excludedFiles = @($pesterFilter.ExcludePath)
+                $excludedLines = @($pesterFilter.ExcludeLine)
+                $pesterFiles = @(@($testSource.BuiltInFiles) + @($testSource.CustomFiles) | Where-Object { $_ -notin $excludedFiles })
+                if ($pesterFiles.Count -gt 0) {
+                    $nativeRows = @($nativeRows) + @(Get-MtPesterFileInventory -Path $pesterFiles | Where-Object { $_.Line -and "$($_.File):$($_.Line)" -notin $excludedLines } |
+                            ForEach-Object { New-MtPesterUnavailableRow -InventoryRow $_ -Origin $fileOrigin[$_.File] })
+                }
+            } else {
+                $pesterResults = $provider.Results
+                $pesterConfig = $provider.Configuration
+            }
         }
     } finally {
         $__MtSession.IncludeAffectedObjects = $false

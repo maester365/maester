@@ -8,18 +8,19 @@ function Test-MtEidscaCP04 {
     If this option is set to enabled, then users request admin consent to any app that requires access to data they do not have the permission to grant. If this option is set to disabled, then users must contact their admin to request to consent in order to use the apps they need.
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'true'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.CP04 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaCP04
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

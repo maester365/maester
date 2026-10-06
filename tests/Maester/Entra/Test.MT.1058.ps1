@@ -21,7 +21,7 @@
         Category = 'Maester/Entra',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         LongRunning,
-        Service = 'Graph',
+        Service = ('Graph', 'ExchangeOnline'),
         Author = 'l-gosling',
         Contributor = ('merill', 'SamErde', 'thomas-s-schmidt')
     )]
@@ -31,12 +31,7 @@
 
     Write-Verbose 'Running Test-MtSpExchangeAppAccessPolicy'
 
-    if (-not (Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    }
-
-    # Note: If you make any changes to this list, please keep it in sync
+# Note: If you make any changes to this list, please keep it in sync
     # with the markdown file Test-MtSpExchangeAppAccessPolicy.md
     $exchangePermissions = @(
         'Mail.Read', 'Mail.ReadBasic', 'Mail.ReadBasic.All', 'Mail.ReadWrite', 'Mail.Send',

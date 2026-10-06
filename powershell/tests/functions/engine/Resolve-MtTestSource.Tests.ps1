@@ -12,7 +12,9 @@ Describe 'Resolve-MtTestSource' {
         $null = New-Item -ItemType Directory -Path $folder -Force
         "Describe 'C' { It 'C.1: c' { } }" | Set-Content (Join-Path $folder 'C.Tests.ps1')
         $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder }
-        $source.BuiltInFiles.Count | Should -BeGreaterThan 10
+        # Every built-in check is a native test now; they come from the catalog, not from Pester files.
+        $source.BuiltInFiles | Should -HaveCount 0
+        $source.BuiltInRoot | Should -Not -BeNullOrEmpty
         $source.CustomFiles | Should -HaveCount 1
         $source.Error | Should -BeNullOrEmpty
     }
@@ -20,7 +22,7 @@ Describe 'Resolve-MtTestSource' {
     It 'Warns and still runs the built-in tests when -Path does not exist' {
         $source = InModuleScope Maester { Resolve-MtTestSource -Path (Join-Path $TestDrive 'missing/tests/Maester') }
         $source.Error | Should -BeNullOrEmpty
-        $source.BuiltInFiles.Count | Should -BeGreaterThan 10
+        $source.BuiltInRoot | Should -Not -BeNullOrEmpty
         $source.CustomFiles | Should -HaveCount 0
         ($source.Messages | Where-Object Level -EQ 'Warning').Text | Should -BeLike '*does not exist*'
         $source.ConfigSearchPath | Should -Be (Resolve-Path $TestDrive).Path
@@ -77,7 +79,9 @@ Describe 'Get-MtSupersededTest' {
     BeforeAll {
         $script:expected = (Get-Content (Join-Path $script:legacyFolder 'expected.json') -Raw | ConvertFrom-Json).tests
         $script:result = InModuleScope Maester -Parameters @{ Folder = $script:legacyFolder } {
-            $builtIn = @(Get-MtPesterFileInventory -Path @(Get-MtBuiltInPesterFile -BuiltInRoot (Get-MtMaesterTestFolderPath)))
+            # Every built-in check is native, so the built-in Pester inventory is empty and the IDs come from the catalog.
+            $builtInFiles = @(Get-MtBuiltInPesterFile -BuiltInRoot (Get-MtMaesterTestFolderPath))
+            $builtIn = @(if ($builtInFiles.Count -gt 0) { Get-MtPesterFileInventory -Path $builtInFiles })
             $custom = @(Get-MtPesterFileInventory -Path $Folder)
             [pscustomobject]@{ Custom = $custom; Superseded = Get-MtSupersededTest -CustomInventory $custom -BuiltInInventory $builtIn -BuiltInId @(Get-MtTestCatalog | ForEach-Object { $_.Id }) }
         }
@@ -107,11 +111,21 @@ Describe 'Get-MtTestFileOrigin' {
     It 'Takes Source and Suite from the nearest suite.json of a built-in file' {
         InModuleScope Maester {
             $root = Get-MtMaesterTestFolderPath
-            $file = Get-ChildItem (Join-Path $root 'cisa') -Recurse -Filter '*.Tests.ps1' | Select-Object -First 1
+            # CISA is fully native (Test.<ID>.ps1); the origin comes from suite.json whatever the file format.
+            $file = Get-ChildItem (Join-Path $root 'cisa') -Recurse -Filter '*.ps1' | Select-Object -First 1
+            $file | Should -Not -BeNullOrEmpty
             $origin = Get-MtTestFileOrigin -File $file.FullName -Root $root -BuiltIn
             $origin.Source | Should -Be 'CISA'
             $origin.Suite | Should -Be 'CISA'
         }
+    }
+
+    It 'Gives native built-in tests the Source and Suite of their suite folder in the catalog' {
+        $native = @(Get-MtTest | Where-Object { $_.BuiltIn -and $_.File -like '*cisa*' }) | Select-Object -First 1
+        $native | Should -Not -BeNullOrEmpty
+        $native.Format | Should -Be 'Native'
+        $native.Source | Should -Be 'CISA'
+        $native.Suite | Should -Be 'CISA'
     }
 
     It 'Gives a custom file without suite.json Source Custom' {

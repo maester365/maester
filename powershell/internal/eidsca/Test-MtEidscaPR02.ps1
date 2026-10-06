@@ -8,22 +8,20 @@ function Test-MtEidscaPR02 {
     If set to Yes, password protection is turned on for Active Directory domain controllers when the appropriate agent is installed.
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'True'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.PR02 passes when this value -eq 'True'.
 
     .EXAMPLE
     Test-MtEidscaPR02
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'True'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EntraIDPlan -eq 'Free' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     $rawValue = $result.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value

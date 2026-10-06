@@ -45,12 +45,7 @@ function Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository {
 
     Write-Verbose "Running Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $Organization = (Get-ADOPSConnection).Organization
+$Organization = (Get-ADOPSConnection).Organization
     $Fetch = Get-AzdoAdvancedSecurityEnablement -Organization $Organization
 
     if ($null -ne $Fetch.RequestError) {

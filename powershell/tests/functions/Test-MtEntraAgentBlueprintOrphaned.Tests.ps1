@@ -129,12 +129,18 @@
             }
     }
 
-    It 'skips when Graph is disconnected' {
+    It 'is skipped by the engine when Graph is disconnected' {
+        # The engine gates on the [MaesterTest] Service declaration; the check no longer guards itself.
+        foreach ($id in @('MT.1203')) {
+            (Get-MtTest -Id $id).Service | Should -Contain 'Graph'
+        }
+
         Mock -ModuleName Maester Test-MtConnection { return $false }
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw 'Should not be called' }
-
-        Test-MtEntraAgentBlueprintOrphaned | Should -BeNull
-        $script:BlueprintSkippedBecause | Should -Be 'NotConnectedGraph'
+        foreach ($row in @(Invoke-MtTest -Id @('MT.1203'))) {
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'ServiceNotConnected'
+        }
         Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly -Times 0
     }
 

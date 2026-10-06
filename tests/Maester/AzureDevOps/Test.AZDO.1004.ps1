@@ -37,12 +37,7 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
 
     Write-Verbose "Running Test-AzdoArtifactsExternalPackageProtectionToken"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
-    $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
+$SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.ArtifactsExternalPackageProtectionToken'
     $result = $Policy.effectiveValue
     if ($result) {

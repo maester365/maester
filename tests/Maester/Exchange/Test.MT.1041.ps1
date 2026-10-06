@@ -30,42 +30,37 @@
     [OutputType([bool])]
     param()
 
-    try {
-        Write-Verbose "Getting Role Assignment Policies..."
-        $roleAssignmentPolicy = Get-MtExo -Request RoleAssignmentPolicy
-        Write-Verbose "Found $($roleAssignmentPolicy.Count) Exchange Role Assignment Policy"
+    Write-Verbose "Getting Role Assignment Policies..."
+    $roleAssignmentPolicy = Get-MtExo -Request RoleAssignmentPolicy
+    Write-Verbose "Found $($roleAssignmentPolicy.Count) Exchange Role Assignment Policy"
 
-        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
+    $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
-        $roleAssignmentPolicyDefault = $roleAssignmentPolicy | Where-Object { $_.Identity -eq "Default Role Assignment Policy" }
-        Write-Verbose "Filtered $($roleAssignmentPolicyDefault.Count) Default Web mailbox policy"
+    $roleAssignmentPolicyDefault = $roleAssignmentPolicy | Where-Object { $_.Identity -eq "Default Role Assignment Policy" }
+    Write-Verbose "Filtered $($roleAssignmentPolicyDefault.Count) Default Web mailbox policy"
 
-        # Get Management Role Assignments
-        $managementRoleAssignments = Get-MtExo -Request ManagementRoleAssignment
+    # Get Management Role Assignments
+    $managementRoleAssignments = Get-MtExo -Request ManagementRoleAssignment
 
-        $myCustomApps = $managementRoleAssignments | Where-Object {
-            $_.Role -eq "My Custom Apps" -and $_.RoleAssigneeName -eq $roleAssignmentPolicyDefault.Name
-        }
-        $myMarketplaceApps = $managementRoleAssignments | Where-Object {
-            $_.Role -eq "My Marketplace Apps" -and $_.RoleAssigneeName -eq $roleAssignmentPolicyDefault.Name
-        }
-        $myReadWriteMailboxApps = $managementRoleAssignments | Where-Object {
-            $_.Role -eq "My ReadWriteMailbox Apps" -and $_.RoleAssigneeName -eq $roleAssignmentPolicyDefault.Name
-        }
-
-        $result = [bool]$myCustomApps -or [bool]$myMarketplaceApps -or [bool]$myReadWriteMailboxApps
-
-        if ($result -eq $false) {
-            $testResultMarkdown = "Well done. Apps in 'Default Role Assignment Policy' is ``$($result)```n`n"
-        } else {
-            $testResultMarkdown = "Apps in 'Default Role Assignment Policy' should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
+    $myCustomApps = $managementRoleAssignments | Where-Object {
+        $_.Role -eq "My Custom Apps" -and $_.RoleAssigneeName -eq $roleAssignmentPolicyDefault.Name
+    }
+    $myMarketplaceApps = $managementRoleAssignments | Where-Object {
+        $_.Role -eq "My Marketplace Apps" -and $_.RoleAssigneeName -eq $roleAssignmentPolicyDefault.Name
+    }
+    $myReadWriteMailboxApps = $managementRoleAssignments | Where-Object {
+        $_.Role -eq "My ReadWriteMailbox Apps" -and $_.RoleAssigneeName -eq $roleAssignmentPolicyDefault.Name
     }
 
-    return !$result
+    $result = [bool]$myCustomApps -or [bool]$myMarketplaceApps -or [bool]$myReadWriteMailboxApps
+
+    if ($result -eq $false) {
+        $testResultMarkdown = "Well done. Apps in 'Default Role Assignment Policy' is ``$($result)```n`n"
+    } else {
+        $testResultMarkdown = "Apps in 'Default Role Assignment Policy' should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+return !$result
 }

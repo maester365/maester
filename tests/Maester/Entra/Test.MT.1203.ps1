@@ -25,7 +25,7 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     try {
         Write-Verbose 'Reading Agent Identities, Blueprint Principals, and Blueprints.'
         $AgentIdentities = @(Invoke-MtGraphRequest -ApiVersion 'v1.0' `

@@ -35,11 +35,7 @@ function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
 
     Write-Verbose "Running Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-    $result = (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate
+$result = (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate
 
     if ($result) {
         $resultMarkdown = "New projects will by default have Advanced Security enabled."

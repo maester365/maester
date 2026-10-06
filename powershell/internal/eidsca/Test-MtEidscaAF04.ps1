@@ -8,22 +8,20 @@ function Test-MtEidscaAF04 {
     Manages if registration of FIDO2 keys should be restricted.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-    and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced -eq 'true'
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced
+
+    The native test EIDSCA.AF04 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaAF04
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced -eq 'true'
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ( $EnabledAuthMethods -notcontains 'Fido2' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled.'
-            return $null
-    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
     $rawValue = $result.keyRestrictions.isEnforced

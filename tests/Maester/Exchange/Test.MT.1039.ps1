@@ -29,24 +29,19 @@
     [OutputType([bool])]
     param()
 
-    try {
-        Write-Verbose "Getting Organization Config..."
-        $organizationConfig = Get-MtExo -Request OrganizationConfig
-        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
+    Write-Verbose "Getting Organization Config..."
+    $organizationConfig = Get-MtExo -Request OrganizationConfig
+    $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
-        $result = $organizationConfig.MailTipsExternalRecipientsTipsEnabled
+    $result = $organizationConfig.MailTipsExternalRecipientsTipsEnabled
 
-        if ($result) {
-            $testResultMarkdown = "Well done. ``MailTipsExternalRecipientsTipsEnabled`` is ``$($result)```n`n"
-        } else {
-            $testResultMarkdown = "``MailTipsExternalRecipientsTipsEnabled`` should be ``True`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
+    if ($result) {
+        $testResultMarkdown = "Well done. ``MailTipsExternalRecipientsTipsEnabled`` is ``$($result)```n`n"
+    } else {
+        $testResultMarkdown = "``MailTipsExternalRecipientsTipsEnabled`` should be ``True`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
     }
 
-    return $result
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+return $result
 }

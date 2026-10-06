@@ -8,18 +8,19 @@ function Test-MtEidscaST09 {
     Indicating whether or not a guest user can have access to Microsoft 365 groups content. This setting does not require an Azure Active Directory Premium P1 license.
 
     Queries settings
-    and returns the result of
-    graph/settings.values -eq 'True'
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.ST09 passes when this value -eq 'True'.
 
     .EXAMPLE
     Test-MtEidscaST09
 
-    Returns the result of graph.microsoft.com/beta/settings.values -eq 'True'
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

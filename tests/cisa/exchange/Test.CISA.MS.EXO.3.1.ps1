@@ -33,96 +33,91 @@
         [string]$Selector = "selector1"
     )
 
-    try {
-        $dkimSigningConfigs = Get-MtExo -Request DkimSigningConfig
-        $acceptedDomains = Get-MtExo -Request AcceptedDomain
-        <# DKIM record without key for parked domains
-        $sendingDomains = $acceptedDomains | Where-Object {`
-            -not $_.SendingFromDomainDisabled
-        }
-        #>
+    $dkimSigningConfigs = Get-MtExo -Request DkimSigningConfig
+    $acceptedDomains = Get-MtExo -Request AcceptedDomain
+    <# DKIM record without key for parked domains
+    $sendingDomains = $acceptedDomains | Where-Object {`
+        -not $_.SendingFromDomainDisabled
+    }
+    #>
 
-        $dkimRecords = @()
-        foreach ($domain in $acceptedDomains) {
-            if ($domain.IsCoexistenceDomain -eq $true) {
-                $dkimRecord = [PSCustomObject]@{
-                    domain     = $domain.DomainName
-                    pass       = 'Skipped'
-                    reason     = 'coexistence domain'
-                    dkimRecord = $null
-                }
-                $dkimRecords += $dkimRecord
-                continue
+    $dkimRecords = @()
+    foreach ($domain in $acceptedDomains) {
+        if ($domain.IsCoexistenceDomain -eq $true) {
+            $dkimRecord = [PSCustomObject]@{
+                domain     = $domain.DomainName
+                pass       = 'Skipped'
+                reason     = 'coexistence domain'
+                dkimRecord = $null
             }
-
-            $dkimSigningConfig = $dkimSigningConfigs | Where-Object {`
-                    $_.domain -eq $domain.domainname
-            }
-
-            if (-not $dkimSigningConfig) {
-                $dkimRecord = [PSCustomObject]@{
-                    domain     = $domain.DomainName
-                    pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
-                    reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
-                    dkimRecord = $null
-                }
-                $dkimRecords += $dkimRecord
-                continue
-            }
-            if ((Get-Date) -gt $dkimSigningConfig.RotateOnDate) {
-                if ($Selector -ne $dkimSigningConfig.SelectorAfterRotateOnDate) {
-                    Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorAfterRotateOnDate) based on EXO config"
-                }
-                $Selector = $dkimSigningConfig.SelectorAfterRotateOnDate
-            } else {
-                if ($Selector -ne $dkimSigningConfig.SelectorBeforeRotateOnDate) {
-                    Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorBeforeRotateOnDate) based on EXO config"
-                }
-                $selector = $dkimSigningConfig.SelectorBeforeRotateOnDate
-            }
-
-            $isMicrosoftDomain = $domain.DomainName.EndsWith(".onmicrosoft.com")
-            $isMicrosoftExoHybridDomain = $domain.DomainName.EndsWith(".mail.onmicrosoft.com")
-            $dkimDnsName = if ($isMicrosoftExoHybridDomain) {
-                "$($Selector)._domainkey.$($domain.DomainName)"
-            } elseif ($isMicrosoftDomain) {
-                $dkimSigningConfig."$($selector)CNAME"
-            } else {
-                "$($Selector)._domainkey.$($domain.DomainName)"
-            }
-            $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimDnsName $dkimDnsName -Records DKIM
-            $dkimRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
-            $dkimRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
-
-            if ($domain.SendingFromDomainDisabled) {
-                $dkimRecord.pass = 'Skipped'
-                $dkimRecord.reason = 'Parked domain'
-            } elseif (-not $dkimSigningConfig.enabled) {
-                $dkimRecord.pass = 'Failed'
-                $dkimRecord.reason = 'DKIM is disabled'
-            } elseif ($dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
-                if (-not $dkimRecord.dkimRecord.validBase64) {
-                    $dkimRecord.reason = 'Malformed public key'
-                } else {
-                    $dkimRecord.pass = 'Passed'
-                }
-            } elseif ($domain.DomainName -like '*.onmicrosoft.com') {
-                $dkimRecord.reason = "Recommendation: Disable sending from domain"
-            } elseif ($dkimRecord.dkimRecord -like "*not available") {
-                $dkimRecord.pass = "Skipped"
-                $dkimRecord.reason = $dkimRecord.dkimRecord
-            } else {
-                $dkimRecord.reason = $dkimRecord.dkimRecord
-            }
-
             $dkimRecords += $dkimRecord
+            continue
         }
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
+
+        $dkimSigningConfig = $dkimSigningConfigs | Where-Object {`
+                $_.domain -eq $domain.domainname
+        }
+
+        if (-not $dkimSigningConfig) {
+            $dkimRecord = [PSCustomObject]@{
+                domain     = $domain.DomainName
+                pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
+                reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
+                dkimRecord = $null
+            }
+            $dkimRecords += $dkimRecord
+            continue
+        }
+        if ((Get-Date) -gt $dkimSigningConfig.RotateOnDate) {
+            if ($Selector -ne $dkimSigningConfig.SelectorAfterRotateOnDate) {
+                Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorAfterRotateOnDate) based on EXO config"
+            }
+            $Selector = $dkimSigningConfig.SelectorAfterRotateOnDate
+        } else {
+            if ($Selector -ne $dkimSigningConfig.SelectorBeforeRotateOnDate) {
+                Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorBeforeRotateOnDate) based on EXO config"
+            }
+            $selector = $dkimSigningConfig.SelectorBeforeRotateOnDate
+        }
+
+        $isMicrosoftDomain = $domain.DomainName.EndsWith(".onmicrosoft.com")
+        $isMicrosoftExoHybridDomain = $domain.DomainName.EndsWith(".mail.onmicrosoft.com")
+        $dkimDnsName = if ($isMicrosoftExoHybridDomain) {
+            "$($Selector)._domainkey.$($domain.DomainName)"
+        } elseif ($isMicrosoftDomain) {
+            $dkimSigningConfig."$($selector)CNAME"
+        } else {
+            "$($Selector)._domainkey.$($domain.DomainName)"
+        }
+        $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimDnsName $dkimDnsName -Records DKIM
+        $dkimRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
+        $dkimRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
+
+        if ($domain.SendingFromDomainDisabled) {
+            $dkimRecord.pass = 'Skipped'
+            $dkimRecord.reason = 'Parked domain'
+        } elseif (-not $dkimSigningConfig.enabled) {
+            $dkimRecord.pass = 'Failed'
+            $dkimRecord.reason = 'DKIM is disabled'
+        } elseif ($dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
+            if (-not $dkimRecord.dkimRecord.validBase64) {
+                $dkimRecord.reason = 'Malformed public key'
+            } else {
+                $dkimRecord.pass = 'Passed'
+            }
+        } elseif ($domain.DomainName -like '*.onmicrosoft.com') {
+            $dkimRecord.reason = "Recommendation: Disable sending from domain"
+        } elseif ($dkimRecord.dkimRecord -like "*not available") {
+            $dkimRecord.pass = "Skipped"
+            $dkimRecord.reason = $dkimRecord.dkimRecord
+        } else {
+            $dkimRecord.reason = $dkimRecord.dkimRecord
+        }
+
+        $dkimRecords += $dkimRecord
     }
 
-    if ("Failed" -in $dkimRecords.pass) {
+if ("Failed" -in $dkimRecords.pass) {
         $testResult = $false
     } elseif ("Failed" -notin $dkimRecords.pass -and "Passed" -notin $dkimRecords.pass) {
         Add-MtTestResultDetail -SkippedBecause NotSupported

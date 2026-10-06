@@ -319,6 +319,11 @@ function Read-MtTestParameter {
     if ($previous -and $previous.Kind -eq 'Comment' -and $previous.Extent.EndLineNumber -ge $ParameterAst.Extent.StartLineNumber - 1) {
         $description = ($previous.Text -replace '^<#|#>$', '' -replace '^#\s?', '').Trim()
     }
+    if (-not $description) {
+        # A comment between the attributes and the variable: [Parameter()] # Description. [switch] $Name
+        $inside = $Tokens | Where-Object { $_.Kind -eq 'Comment' -and $_.Extent.StartOffset -ge $start -and $_.Extent.EndOffset -le $ParameterAst.Name.Extent.StartOffset } | Select-Object -Last 1
+        if ($inside) { $description = ($inside.Text -replace '^<#|#>$', '' -replace '^#\s?', '').Trim() }
+    }
     if (-not $description -and $HelpContent -and $HelpContent.Parameters -and $HelpContent.Parameters.ContainsKey($name.ToUpperInvariant())) {
         $description = $HelpContent.Parameters[$name.ToUpperInvariant()].Trim()
     }
