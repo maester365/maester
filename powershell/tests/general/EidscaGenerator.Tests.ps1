@@ -193,7 +193,7 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $pairs = @(
             @{ Fresh = $paths.TestPath; Committed = Join-Path $script:RepoRoot 'tests/EIDSCA'; Filter = 'Test.EIDSCA.*' }
             @{ Fresh = $paths.PowerShellFunctionsPath; Committed = Join-Path $script:RepoRoot 'powershell/internal/eidsca'; Filter = 'Test-MtEidsca*' }
-            @{ Fresh = $paths.PublicFunctionPath; Committed = Join-Path $script:RepoRoot 'powershell/public/eidsca'; Filter = 'Test-MtEidscaControl*' }
+            @{ Fresh = $paths.PublicFunctionPath; Committed = Join-Path $script:RepoRoot 'powershell/internal/checks/eidsca'; Filter = 'Test-MtEidscaControl*' }
         )
         $problems = foreach ($pair in $pairs) {
             $fresh = @(Get-ChildItem -Path $pair.Fresh -Filter $pair.Filter -File | ForEach-Object Name)

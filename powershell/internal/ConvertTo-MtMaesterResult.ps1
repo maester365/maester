@@ -383,6 +383,9 @@
         } else {
             $result = $test.Result
         }
+        # Pester's Inconclusive (Set-ItResult -Inconclusive) is not a Maester result: no count, report or XML
+        # mapping knows it. It means the test could not decide, which Maester reports as Skipped.
+        if ($result -eq 'Inconclusive') { $result = 'Skipped' }
 
         $annotation = Get-MtPesterRowAnnotation -Test $test -Id $testId -Result $result -ResultDetail $testResultDetail -RunContext $RunContext
         if ($annotation.ResultOverride) { $result = $annotation.ResultOverride }

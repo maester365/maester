@@ -50,7 +50,7 @@ Follow the configuration instructions unique to the products and integration pat
 | Suite | CISA |
 | Category | Entra ID P1 |
 | PowerShell test | [Test-MtCisaDiagnosticSettings](/docs/commands/Test-MtCisaDiagnosticSettings) |
-| Services | Azure |
+| Services | Graph, Azure |
 | Tags | CISA, CISA.MS.AAD.4.1, Entra ID P1, MS.AAD, MS.AAD.4.1 |
 
 ## Source

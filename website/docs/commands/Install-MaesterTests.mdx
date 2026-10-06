@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Installs the latest ready-made Maester tests built by the Maester team and the required Pester module."
+description: "Prepares a folder for your own Maester tests and configuration."
 id: Install-MaesterTests
 title: Install-MaesterTests
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
+Prepares a folder for your own Maester tests and configuration.
 
 ## SYNTAX
 
@@ -21,42 +21,31 @@ Install-MaesterTests [[-Path] <String>] [-SkipPesterCheck] [-ProgressAction <Act
 
 ## DESCRIPTION
 
-The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
+From Maester 3.0 the tests that ship with Maester run from the module itself, so updating the module
+updates them and nothing needs to be copied.
+Install-MaesterTests prepares a folder for your custom
+tests and configuration: it writes Custom/README.md and a starter maester-config.json when they are
+missing.
+It never writes a test file and never overwrites an existing file, so it is safe to call
+on every pipeline run.
 
-The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
+Run Invoke-Maester -Path &lt;folder&gt; to run the built-in tests together with the custom tests in it.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Install-MaesterTests
+Install-MaesterTests -Path ./maester-tests
 ```
 
-Install the latest set of Maester tests in the current directory and installs the Pester module if needed.
-
-### EXAMPLE 2
-
-```powershell
-Install-MaesterTests -Path .\maester-tests
-```
-
-Installs the latest Maester tests in the specified directory and installs the Pester module if needed.
-
-### EXAMPLE 3
-
-```powershell
-Install-MaesterTests -SkipPesterCheck
-```
-
-Installs the latest Maester tests in the current directory.
-Skips the check for the required version of Pester.
+Creates ./maester-tests with Custom/README.md and maester-config.json.
 
 ## PARAMETERS
 
 ### -Path
 
-The path to install the Maester tests in.
+The folder to prepare.
 Defaults to the current directory.
 
 ```yaml
@@ -66,14 +55,16 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: .\
+Default value: .
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -SkipPesterCheck
 
-Skips the automatic installation check for Pester.
+No longer has any effect.
+Maester 3.0 does not install Pester; install it yourself only if you run
+Pester-format custom tests.
 
 ```yaml
 Type: SwitchParameter

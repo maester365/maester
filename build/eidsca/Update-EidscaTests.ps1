@@ -8,7 +8,7 @@
     the tenant value and returns $true when it meets the recommended value.
   * powershell/internal/eidsca/Test-MtEidsca<ID>.ps1: the internal function that reads the tenant value,
     reports it with Add-MtTestResultDetail and returns it.
-  * powershell/public/eidsca/Test-MtEidscaControl.ps1: the public dispatcher.
+  * powershell/internal/checks/eidsca/Test-MtEidscaControl.ps1: the dispatcher (internal since Maester 3.0).
 
   The generator reads a local copy of the EIDSCA config (build/eidsca/EidscaConfig.json) and a cache of page
   titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
@@ -36,7 +36,7 @@ param (
     [string] $PowerShellFunctionsPath = "$PSScriptRoot/../../powershell/internal/eidsca",
 
     # Folder where the public function Test-MtEidscaControl is written.
-    [string] $PublicFunctionPath = "$PSScriptRoot/../../powershell/public/eidsca",
+    [string] $PublicFunctionPath = "$PSScriptRoot/../../powershell/internal/checks/eidsca",
 
     # Folder with the generator templates.
     [string] $TemplatePath = "$PSScriptRoot/templates",

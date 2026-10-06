@@ -17,13 +17,14 @@ Merges multiple MaesterResults objects into a single multi-tenant result for com
 ### FromObjects (Default)
 
 ```powershell
-Merge-MtMaesterResult [-MaesterResults] <PSObject[]> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Merge-MtMaesterResult [-MaesterResults] <PSObject[]> [-SameRun] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ### FromPath
 
 ```powershell
-Merge-MtMaesterResult [-Path] <String[]> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Merge-MtMaesterResult [-Path] <String[]> [-SameRun] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -84,6 +85,13 @@ $merged = Merge-MtMaesterResult -MaesterResults @($result1, $result2)
 $html = Get-MtHtmlReport -MaesterResults $merged
 $html | Out-File -FilePath "MultiTenantReport.html" -Encoding UTF8
 
+### EXAMPLE 6
+
+```powershell
+# Merge the partial results of one run split across two processes
+Merge-MtMaesterResult -Path ./graph.json, ./exchange.json -SameRun | Get-MtHtmlReport | Out-File report.html
+```
+
 ## PARAMETERS
 
 ### -MaesterResults
@@ -119,6 +127,33 @@ Aliases:
 Required: True
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SameRun
+
+Merges partial results of one run instead of building a multi-tenant report.
+Use it when a run
+was split across processes or containers (for example Invoke-Maester -TestId with different IDs
+in each, all with the same Metadata.RunId and module version).
+
+The rows are united by test ID: a row that ran (any result other than NotRun) replaces a NotRun
+row for the same ID, so the rows each partition reports for tests it did not select are dropped
+where another partition ran them.
+The counts, blocks and run result are recomputed, and each
+partial result's tenant, timing and command are kept under Partitions.
+All results must have
+the same CatalogVersion, and the same RunMetadata.RunId when they have one.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

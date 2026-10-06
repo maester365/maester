@@ -407,7 +407,6 @@ function buildInventory(catalog) {
       authors: test.Author ?? [],
       contributors: test.Contributor ?? [],
       functionName: test.FunctionName ?? "",
-      // contributors.mjs reads sourceFunctionFile (and its .md sibling) for git-derived fallbacks.
       sourceFunctionFile: test.File,
       sourceMarkdownFile: test.MarkdownPath ?? "",
       synopsis: help.synopsis ?? "",

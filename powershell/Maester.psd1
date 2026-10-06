@@ -117,11 +117,8 @@
         'Resolve-SPFRecord',
         'Send-MtMail',
         'Send-MtTeamsMessage',
-        'Test-MtCaWIFBlockLegacyAuthentication',
-        'Test-MtCisaDmarcReport',
         'Test-MtConditionalAccessWhatIf',
         'Test-MtConnection',
-        'Test-MtEidscaControl',
         'Update-MaesterTests',
         'Update-MtMaesterApp'
     )

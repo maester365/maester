@@ -10,10 +10,11 @@ two places:
 
 ## How attribution works
 
-1. `website/scripts/contributors.mjs` walks the full git history (following file
-   renames) for each test's source files.
-2. The **original author** is the person who made the first commit; everyone else
-   who touched the test is credited as a **co-contributor**.
+1. Every test declares its credit in its `[MaesterTest]` attribute: `Author` (the GitHub handle of the
+   person who wrote it) and `Contributor` (people who made substantial changes). Add yourself to
+   `Contributor` in the same pull request as your change.
+2. `website/scripts/contributors.mjs` reads those handles from the test catalog. Git history only fills in
+   profile details: display names and the date of a person's first contribution.
 3. Identities are matched to GitHub accounts automatically: GitHub noreply
    addresses resolve directly; other commit emails are resolved once via the
    GitHub API and cached as privacy-preserving hashes in
@@ -39,6 +40,5 @@ Attribution works with zero setup, but you can enrich your profile card:
 
 ## Fixing attribution
 
-If git history credits the wrong person (e.g. a test was contributed via someone
-else's PR), add an override in
-[`attribution-overrides.yml`](./attribution-overrides.yml).
+Credit is wrong or missing? Change `Author` or `Contributor` in the test's `[MaesterTest]` attribute
+(`tests/**/Test.<ID>.ps1`) in a pull request.

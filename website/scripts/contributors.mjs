@@ -20,7 +20,6 @@ const websiteRoot = join(scriptDir, "..");
 const repoRoot = join(websiteRoot, "..");
 const registryPath = join(websiteRoot, "contributors", "contributors.yml");
 const emailAliasesPath = join(websiteRoot, "contributors", "email-aliases.json");
-const overridesPath = join(websiteRoot, "contributors", "attribution-overrides.yml");
 const snapshotPath = join(websiteRoot, "src", "data", "contributors.json");
 const avatarDir = join(websiteRoot, "static", "img", "contributors");
 
@@ -200,7 +199,6 @@ export function computeContributorData(tests, { log = console.log, updateAliases
   }
 
   const registry = loadYaml(registryPath);
-  const overrides = loadYaml(overridesPath);
   const fileHistory = loadGitFileHistory();
   // Machine-maintained cache: sha256(lowercased email) -> GitHub handle.
   // Never edited by hand - unknown emails are resolved via the GitHub API
@@ -314,18 +312,6 @@ export function computeContributorData(tests, { log = console.log, updateAliases
     return profile;
   }
 
-  function historyFor(test) {
-    const files = [];
-    if (test.sourceFunctionFile) {
-      files.push(test.sourceFunctionFile);
-      const mdSibling = test.sourceFunctionFile.replace(/\.ps1$/i, ".md");
-      if (mdSibling !== test.sourceFunctionFile && existsSync(join(repoRoot, mdSibling))) files.push(mdSibling);
-    } else if (test.sourceTestFile) {
-      files.push(test.sourceTestFile);
-    }
-    return files.flatMap((file) => fileHistory.get(file) ?? []);
-  }
-
   // Maester 3.0 native tests declare their credit in the [MaesterTest] attribute (Author, Contributor),
   // seeded once from git and maintained by hand. Those handles are used as-is; git history only
   // supplies profile details (display name, first contribution) for them.
@@ -360,52 +346,20 @@ export function computeContributorData(tests, { log = console.log, updateAliases
 
   const attributions = {};
   for (const test of tests) {
-    if (test.authors?.length > 0) {
-      const ids = [];
-      for (const handle of [...test.authors, ...(test.contributors ?? [])]) {
-        const id = declaredContributor(handle);
-        if (!ids.some((existing) => existing.toLowerCase() === id.toLowerCase())) ids.push(id);
-      }
-      const [author, ...rest] = ids;
-      attributions[test.id] = { author, contributors: rest };
-      contributors.get(author)?.testsAuthored.push(test.id);
-      for (const id of rest) contributors.get(id)?.testsContributed.push(test.id);
-      continue;
+    // Credit comes only from the [MaesterTest] attribute (Author, Contributor); every built-in test declares
+    // an Author, so a test without one is a metadata error rather than something to guess from git.
+    if (!(test.authors?.length > 0)) {
+      throw new Error(`Test ${test.id} declares no Author in its [MaesterTest] attribute.`);
     }
-
-    // Fallback for tests without declared authorship: derive it from git history.
-    const entries = historyFor(test)
-      .filter((entry) => !identityByEmail.get(entry.email)?.skip)
-      .sort((a, b) => a.date.localeCompare(b.date));
-    const seen = new Map(); // id -> { id, commits, firstDate }
-    for (const entry of entries) {
-      const identity = identityByEmail.get(entry.email);
-      if (!identity) continue;
-      const profile = contributorFor(identity);
-      if (!profile.firstContribution || entry.date < profile.firstContribution) profile.firstContribution = entry.date;
-      if (!seen.has(identity.id)) seen.set(identity.id, { id: identity.id, commits: 0, firstDate: entry.date });
-      seen.get(identity.id).commits += 1;
+    const ids = [];
+    for (const handle of [...test.authors, ...(test.contributors ?? [])]) {
+      const id = declaredContributor(handle);
+      if (!ids.some((existing) => existing.toLowerCase() === id.toLowerCase())) ids.push(id);
     }
-
-    let ordered = [...seen.values()];
-    const override = overrides[test.id] ?? overrides.suites?.[test.suite];
-    if (override?.author) {
-      ordered = ordered.filter((item) => item.id.toLowerCase() !== String(override.author).toLowerCase());
-      ordered.unshift({ id: override.author, commits: 0, firstDate: "" });
-      contributorFor({ id: override.author, name: registry[override.author]?.name ?? override.author, github: true });
-    }
-    for (const extra of override?.contributors ?? []) {
-      if (!ordered.some((item) => item.id.toLowerCase() === String(extra).toLowerCase())) {
-        ordered.push({ id: extra, commits: 0, firstDate: "" });
-        contributorFor({ id: extra, name: registry[extra]?.name ?? extra, github: true });
-      }
-    }
-    if (ordered.length === 0) continue;
-
-    const [author, ...rest] = ordered;
-    attributions[test.id] = { author: author.id, contributors: rest.map((item) => item.id) };
-    contributors.get(author.id)?.testsAuthored.push(test.id);
-    for (const item of rest) contributors.get(item.id)?.testsContributed.push(test.id);
+    const [author, ...rest] = ids;
+    attributions[test.id] = { author, contributors: rest };
+    contributors.get(author)?.testsAuthored.push(test.id);
+    for (const id of rest) contributors.get(id)?.testsContributed.push(test.id);
   }
 
   // A profile page, once published, is kept even when no test credits that person any more (the 3.0

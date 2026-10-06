@@ -127,7 +127,7 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Full history so contributor attribution can be derived from git.
+          # Full history so contributor profiles get display names and first-contribution dates from git.
           fetch-depth: 0
           persist-credentials: false
 
@@ -166,6 +166,12 @@ jobs:
       - name: "\U0001F4E6 Install dependencies"
         working-directory: ${{ inputs.working_directory || 'website' }}
         run: npm ci
+
+      # The test docs are generated from the source module (Get-MtTest), which needs this module to import.
+      # Without it the generator keeps the committed pages, so a PR's new or changed tests would not render.
+      - name: Install Microsoft.Graph.Authentication for the test docs generator
+        shell: pwsh
+        run: Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
 
       - name: "\U0001F3D7️ Build website"
         working-directory: ${{ inputs.working_directory || 'website' }}

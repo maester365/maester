@@ -10,6 +10,7 @@ Describe 'Sample' -Tag 'Sample' {
     It 'S.1004: long' -Tag 'LongRunning' { $true | Should -BeTrue }
     It 'S.1005: skipped' { Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Nothing to check'; return }
     It 'FAM.1.<_>: family' -ForEach @('a', 'b', 'c') { $true | Should -BeTrue }
+    It 'S.1006: inconclusive' { Set-ItResult -Inconclusive -Because 'cannot tell' }
 }
 '@ | Set-Content (Join-Path $script:folder 'Sample.Tests.ps1')
     # A stale copy of a 2.x built-in wrapper: never run, no row.
@@ -81,6 +82,13 @@ Describe 'Invoke-Maester selection (Pester provider)' {
             (Get-Row $r 'S.1001').Result | Should -Be 'Passed'
             (Get-Row $r 'S.1002').Result | Should -Be 'Failed'
             (Get-Row $r 'S.1005').Result | Should -Be 'Skipped'
+        }
+
+        It 'Reports a Pester Inconclusive result as Skipped' {
+            $row = Get-Row $r 'S.1006'
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'TestSkipped'
+            @($r.Tests | Where-Object Result -EQ 'Inconclusive') | Should -HaveCount 0
         }
 
         It 'Gives NotRun rows a reason code' {
