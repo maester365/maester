@@ -5,7 +5,7 @@ slug: maester-2-3
 authors: [maesterteam]
 tags: [maester, release, security, entra, m365, agents, azuredevops, activedirectory]
 hide_table_of_contents: false
-date: 2026-10-01
+date: 2026-10-06
 ---
 
 Maester 2.3 is here.
