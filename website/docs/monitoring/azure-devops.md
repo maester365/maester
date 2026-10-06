@@ -35,12 +35,13 @@ Azure DevOps has native integration with Microsoft Entra including single sign o
 - Create a new project to host your Maester tests and Azure Pipeline.
   - [Azure DevOps - Create a project](https://learn.microsoft.com/azure/devops/organizations/projects/create-project)
 
-### Import the Maester Tests repository
+### Create the repository for your pipeline
+
+The built-in Maester tests ship inside the Maester PowerShell module, so you don't need to import or copy any tests. The repository only holds your pipeline definition and, optionally, your own custom tests and `maester-config.json`.
 
 - Select **Repos** from the left-hand menu
-- Select the **Import** button in the **Import a repository** section
-- Enter the URL of the Maester repository `https://github.com/maester365/maester-tests`
-- Select **Import** to import the repository into your Azure DevOps project.
+- In the **Initialize main branch with a README or gitignore** section, select **Initialize** to create the default repository for your project.
+- Optionally, to add your own tests and configuration, clone the repository and run `Install-MaesterTests` in it. This creates a `Custom` folder and a starter `maester-config.json` that you can commit. See [Writing custom tests](../writing-tests/index.mdx) and [Run configuration](../configuration/run-configuration.md).
 
 ## Set up the Azure Pipeline
 
@@ -100,7 +101,7 @@ This empty resource group is required to set up workload identity federation aut
 - Open your Azure DevOps project
 - Select **Pipelines** > **New pipeline**
 - Select **Azure Repos Git** as the location of your code
-- Select the repository where you imported the Maester tests
+- Select the repository you created earlier
 - Select **Starter pipeline**
 - Replace the content of the `azure-pipelines.yml` file with the code below
 - Verify the `azureSubscription` value is set to the service connection you created in the previous step (e.g. `Maester Service Connection`)
@@ -143,18 +144,22 @@ steps:
         # Install Maester
         Install-Module Maester -Force
 
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.TestResult.Enabled = $true
-        $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+        # Configure test results (Maester writes the NUnit XML file, Pester is not required)
+        $PesterConfiguration = @{
+          TestResult = @{
+            Enabled      = $true
+            OutputPath   = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+            OutputFormat = 'NUnitXml'
+          }
+        }
 
-        # Run Maester tests
-        Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+        # Run Maester tests: the built-in tests run from the module, -Path adds any custom tests and maester-config.json in the repository
+        Invoke-Maester -Path '$(System.DefaultWorkingDirectory)' -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
   - publish: $(System.DefaultWorkingDirectory)/test-results
     displayName: Publish Maester Html Report
     artifact: TestResults
   - task: PublishTestResults@2
-    displayName: Publish Pester Test Results
+    displayName: Publish Maester Test Results
     inputs:
       testResultsFormat: "NUnit"
       testResultsFiles: "**/test-results.xml"
@@ -233,18 +238,22 @@ jobs:
             # Install Maester
             Install-Module Maester -Force
 
-            # Configure test results
-            $PesterConfiguration = New-PesterConfiguration
-            $PesterConfiguration.TestResult.Enabled = $true
-            $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+            # Configure test results (Maester writes the NUnit XML file, Pester is not required)
+            $PesterConfiguration = @{
+              TestResult = @{
+                Enabled      = $true
+                OutputPath   = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+                OutputFormat = 'NUnitXml'
+              }
+            }
 
-            # Run Maester tests
-            Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+            # Run Maester tests: the built-in tests run from the module, -Path adds any custom tests and maester-config.json in the repository
+            Invoke-Maester -Path '$(System.DefaultWorkingDirectory)' -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
       - publish: $(System.DefaultWorkingDirectory)/test-results
         displayName: Publish Maester Html Report
         artifact: TestResults
       - task: PublishTestResults@2
-        displayName: Publish Pester Test Results
+        displayName: Publish Maester Test Results
         inputs:
           testResultsFormat: "NUnit"
           testResultsFiles: "**/test-results.xml"
@@ -269,7 +278,7 @@ Client secret authentication is not recommended for long-term automation, and we
 - Open your Azure DevOps project
 - Select **Pipelines** > **New pipeline**
 - Select **Azure Repos Git** as the location of your code
-- Select the repository where you imported the Maester tests
+- Select the repository you created earlier
 - Select **Starter pipeline**
 - Select **Variable** to open the variables editor and add the following variables.
 - In the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
@@ -311,13 +320,17 @@ steps:
       # Install Maester
       Install-Module Maester -Force
 
-      # Configure test results
-      $PesterConfiguration = New-PesterConfiguration
-      $PesterConfiguration.TestResult.Enabled = $true
-      $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+      # Configure test results (Maester writes the NUnit XML file, Pester is not required)
+      $PesterConfiguration = @{
+        TestResult = @{
+          Enabled      = $true
+          OutputPath   = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+          OutputFormat = 'NUnitXml'
+        }
+      }
 
-      # Run Maester tests
-      Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+      # Run Maester tests: the built-in tests run from the module, -Path adds any custom tests and maester-config.json in the repository
+      Invoke-Maester -Path '$(System.DefaultWorkingDirectory)' -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
     env:
       PS_ClientSecret: $(CLIENTSECRET)
     continueOnError: true
@@ -329,7 +342,7 @@ steps:
     inputs:
       testResultsFormat: "NUnit"
       testResultsFiles: "**/test-results.xml"
-    displayName: Publish Pester Test Results
+    displayName: Publish Maester Test Results
 ```
 
 </TabItem>
@@ -404,18 +417,22 @@ jobs:
             # Install Maester
             Install-Module Maester -Force
 
-            # Configure test results
-            $PesterConfiguration = New-PesterConfiguration
-            $PesterConfiguration.TestResult.Enabled = $true
-            $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+            # Configure test results (Maester writes the NUnit XML file, Pester is not required)
+            $PesterConfiguration = @{
+              TestResult = @{
+                Enabled      = $true
+                OutputPath   = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+                OutputFormat = 'NUnitXml'
+              }
+            }
 
-            # Run Maester tests
-            Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+            # Run Maester tests: the built-in tests run from the module, -Path adds any custom tests and maester-config.json in the repository
+            Invoke-Maester -Path '$(System.DefaultWorkingDirectory)' -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
       - publish: $(System.DefaultWorkingDirectory)/test-results
         displayName: Publish Maester Html Report
         artifact: TestResults
       - task: PublishTestResults@2
-        displayName: Publish Pester Test Results
+        displayName: Publish Maester Test Results
         inputs:
           testResultsFormat: "NUnit"
           testResultsFiles: "**/test-results.xml"
@@ -462,17 +479,14 @@ In the **Summary** tab select on any of the errors to view the raw logs from Mae
 
 ## Keeping your Maester tests up to date
 
-The Maester team will add new tests over time. To get the latest updates, use the commands below to update your Azure repository with the latest tests.
+The Maester team adds new tests over time. The built-in tests ship inside the Maester PowerShell module, and the pipelines above run `Install-Module Maester -Force`, so every run uses the latest release and its tests. There is nothing to update in your repository, which only holds your own custom tests.
 
-- Clone your fork of the **maester-tests** from Azure DevOps to your local machine. See [Clone an existing Git repo](https://learn.microsoft.com/azure/devops/repos/git/clone).
-- Update the `Maester` PowerShell module to the latest version and load it.
-- Change to the `maester-tests\tests` directory.
-- Run `Update-MaesterTests`.
+To control when you move to a new release, pin the version instead, for example `Install-Module Maester -RequiredVersion 3.0.0 -Force`, and raise it when you are ready.
 
-```powershell
-cd maester-tests\tests
+:::tip
+If you set up this pipeline with Maester 2.x by importing the `maester-tests` repository, see [Upgrading from 2.x](../upgrading-from-2x.md). The old pipeline keeps working, but you can remove the copied test folders from your repository and keep only your `Custom` folder and `maester-config.json`.
+:::
 
-Update-Module Maester -Force
-Import-Module Maester
-Update-MaesterTests
-```
+:::note
+If your custom tests include [Pester-format tests](../writing-tests/pester-format-tests.md) (`*.Tests.ps1`), add `Install-Module Pester -MinimumVersion 5.7.1 -Force` before `Invoke-Maester`. Pester is not needed for the built-in tests.
+:::

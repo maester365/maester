@@ -690,7 +690,7 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams' -Confirm:$false -Force
+        Install-Module 'Maester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams' -Confirm:$false -Force
     displayName: 'Install required modules'
 
   - task: AzurePowerShell@5
@@ -750,20 +750,17 @@ jobs:
         $date = (Get-Date).ToString("yyyyMMdd-HHmm")
         $FileName = "MaesterReport" + $date + ".zip"
 
-        Write-verbose "Installing Maester tests from GitHub" -verbose
         # Run Maester report
-        md maester-tests
-        cd maester-tests
         $TempOutputFolder = 'temp' + $date
         if (!(Test-Path $TempOutputFolder -PathType Container)) {
             New-Item -ItemType Directory -Force -Path $TempOutputFolder
             New-Item -ItemType File -Force -Path $TempOutputFolder -name "index.html"
         }
-        Install-MaesterTests .\tests
 
         # Invoke Maester for HTML page
+        # The built-in tests run from the Maester module; -Path adds any custom tests and maester-config.json in this repository
         Write-verbose "Running Maester tests" -verbose
-        Invoke-Maester -OutputHtmlFile "$TempOutputFolder/index.html"
+        Invoke-Maester -Path '$(Build.SourcesDirectory)' -OutputHtmlFile "$TempOutputFolder/index.html"
 
         # Create the zip file
         Write-verbose "Compressing Maester results to a zip file for zip-deployment" -verbose
@@ -776,6 +773,10 @@ jobs:
         Publish-AzWebApp -ResourceGroupName $resourceGroupName -Name $appName -ArchivePath $FileName -Force
     displayName: 'Run Maester tests and upload result to web app'
 ```
+
+:::info
+The built-in tests ship inside the Maester module, so the pipeline doesn't download or install any test files. Each run installs the latest Maester module and its tests; to control upgrades, pin a version (for example `Install-Module Maester -RequiredVersion 3.0.0 -Force`). To add your own tests, commit a `Custom` folder (and optionally a `maester-config.json`) to the repository; running `Install-MaesterTests` in your local clone creates both. Add `Pester` (5.7.1 or later) to the installed modules only if you have [Pester-format custom tests](../writing-tests/pester-format-tests.md). If you set this up with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md).
+:::
 
 ## Viewing the Azure Resources
 We can see the resources located in the resource group.
