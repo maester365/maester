@@ -21,7 +21,7 @@
         Severity = 'High',
         Category = 'CISA',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.4.1'),
-        Service = 'Azure',
+        Service = ('Graph', 'Azure'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

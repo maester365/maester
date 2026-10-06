@@ -85,7 +85,7 @@ $__mtBody = {
     param($__mtId, $__mtCommand, $__mtParameters)
     $ErrorActionPreference = 'Continue'
     $WarningPreference = 'Continue'
-    [Maester.Engine.MtSession]::EnterTest($__mtId)
+    $__mtPrevious = [Maester.Engine.MtSession]::EnterTest($__mtId)
     try {
         $__mtReturned = $false
         foreach ($__mtOnce in 1) {
@@ -99,7 +99,7 @@ $__mtBody = {
         }
         if ($__mtReturned) { [Maester.Engine.MtOutcome]::Returned($__mtOutput) }
     } finally {
-        [Maester.Engine.MtSession]::ExitTest()
+        [Maester.Engine.MtSession]::ExitTest($__mtPrevious)
     }
 }
 if ($null -eq $__mtModule) { & $__mtBody $__mtId $__mtCommand $__mtParameters }
@@ -563,7 +563,13 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
                 {
                     result.Status = MtRunStatus.Error;
                     result.Reason = outcome.Error.Exception != null ? outcome.Error.Exception.Message : outcome.Error.ToString();
-                    result.IsParameterBindingError = outcome.Error.Exception is ParameterBindingException;
+                    // Only a failure to bind the test's own parameters is a configuration problem; a binding error
+                    // raised by a command the test calls is a bug in the test (TestError).
+                    var binding = outcome.Error.Exception as ParameterBindingException;
+                    var failed = binding != null && binding.CommandInvocation != null && binding.CommandInvocation.MyCommand != null
+                        ? binding.CommandInvocation.MyCommand.Name : null;
+                    result.IsParameterBindingError = failed != null && result.Command != null &&
+                        string.Equals(failed, result.Command, StringComparison.OrdinalIgnoreCase);
                 }
                 return;
             }

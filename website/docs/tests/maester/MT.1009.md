@@ -1,6 +1,6 @@
 ---
 title: "MT.1009 - At least one Conditional Access policy is configured to block other legacy authentication."
-description: "Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one Conditional Access policy that blocks legacy authentication. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy"
+description: "Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one Conditional Access policy that blocks legacy authentication. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy Remedi…"
 slug: /tests/MT.1009
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1009"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1009 - At least one Conditional Access policy is configured to block other legacy authentication.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -27,6 +28,10 @@ Conditional Access policy that blocks legacy authentication.
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
 
+#### Remediation action
+
+Review the configuration described above.
+
 ## Test Metadata
 
 | Field | Value |
@@ -34,11 +39,13 @@ https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-
 | Test ID | MT.1009 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
+| Category | Maester/Entra |
 | PowerShell test | [Test-MtCaBlockLegacyOtherAuthentication](/docs/commands/Test-MtCaBlockLegacyOtherAuthentication) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1009 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaBlockLegacyOtherAuthentication.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1009.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1009.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1009.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1009.md)

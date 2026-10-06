@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.221 - Mailbox intelligence is enabled in anti-phishing policies.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Mailbox Intelligence checks can provide your users with intelligence on suspicious incoming emails that appear to be from users that they normally communicate with based on their graph.
 
 #### Remediation action
+
 Enable mailbox intelligence in anti-phishing policies.
 
 #### Related Links
@@ -41,9 +42,11 @@ Enable mailbox intelligence in anti-phishing policies.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA221](/docs/commands/Test-ORCA221) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.221 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA221.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA221.ps1`
+- Test: [`tests/orca/Test.ORCA.221.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.221.ps1)
+- Documentation: [`tests/orca/Test.ORCA.221.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.221.md)

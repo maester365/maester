@@ -45,6 +45,8 @@ function Export-MtTestResultXml {
     }
     $cases = @($cases)
 
+    # XmlWriter resolves a relative path against the process folder, not the PowerShell location.
+    $Path = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
     $settings = [System.Xml.XmlWriterSettings]::new()
     $settings.Indent = $true
     $settings.Encoding = [System.Text.UTF8Encoding]::new($false)

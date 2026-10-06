@@ -116,6 +116,9 @@ Describe 'Invoke-Maester selection (Pester provider)' {
             $row.ReasonCode | Should -Be 'PesterNotAvailable'
             $row.Format | Should -Be 'Pester'
             (Get-Row $r 'FAM.1').ReasonCode | Should -Be 'PesterNotAvailable'
+            # Tests the tag filter leaves out (Preview, LongRunning by default) get no row.
+            Get-Row $r 'S.1003' | Should -BeNullOrEmpty
+            Get-Row $r 'S.1004' | Should -BeNullOrEmpty
         }
     }
 

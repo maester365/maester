@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1092"
   - "High"
+  - "Maester/Intune"
   - "Intune"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1092 - Intune APNS certificate should be valid for more than 30 days
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -36,11 +37,13 @@ See the [Microsoft learn instructions to Renew Apple MDM certificate](https://le
 | Test ID | MT.1092 |
 | Severity | High |
 | Suite | Maester |
-| Category | Intune |
+| Category | Maester/Intune |
 | PowerShell test | [Test-MtApplePushNotificationCertificate](/docs/commands/Test-MtApplePushNotificationCertificate) |
+| Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1092 |
 
 ## Source
 
-- Pester test: `tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1`
-- PowerShell source: `powershell/public/maester/intune/Test-MtApplePushNotificationCertificate.ps1`
+- Test: [`tests/Maester/Intune/Test.MT.1092.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1092.ps1)
+- Documentation: [`tests/Maester/Intune/Test.MT.1092.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1092.md)

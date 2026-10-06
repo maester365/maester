@@ -18,3 +18,21 @@ test("classifies standalone CIS levels without capturing overlapping prefixes", 
     assert.equal(tagGroupFor(tag), expectedGroup, tag);
   }
 });
+
+test("classifies Azure DevOps and Active Directory tags", () => {
+  const cases = [
+    ["AZDO", "Azure DevOps"],
+    ["AZDO.1000", "Azure DevOps"],
+    ["AD", "Active Directory"],
+    ["AD.User", "Active Directory"],
+    ["AD-USER-07", "Active Directory"],
+    ["ADMX", "Ungrouped"],
+    ["MT.1060", "Maester"],
+    ["MT1060", "Maester"],
+    ["MTX", "Ungrouped"],
+  ];
+
+  for (const [tag, expectedGroup] of cases) {
+    assert.equal(tagGroupFor(tag), expectedGroup, tag);
+  }
+});

@@ -78,9 +78,10 @@ This test verifies the organization default repository permission only. It does 
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubStrictBasePermission](/docs/commands/Test-MtCisGitHubStrictBasePermission) |
+| Services | GitHub |
 | Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.8, GitHub, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubStrictBasePermission.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubStrictBasePermission.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.3.8.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.8.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.3.8.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.8.md)

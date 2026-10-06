@@ -81,9 +81,11 @@ function Invoke-MtTest {
     if ($tests.Count -eq 0) { Write-Error 'No native tests to run.'; return }
     if ($Parameter -and $tests.Count -ne 1) { Write-Error "-Parameter can be used only when exactly one test is selected; $($tests.Count) are."; return }
 
-    # Inside an Invoke-Maester run the run's config is kept; otherwise it is resolved for this call.
+    # Called by a test during an Invoke-Maester run, the run's config is kept; otherwise it is resolved for
+    # this call (the config a finished run leaves in the session must not apply to a later standalone call).
     $savedConfig = $__MtSession.MaesterConfig
-    $ownsConfig = $null -eq $savedConfig -or $null -ne $Config
+    $insideRun = $null -ne $savedConfig -and -not [string]::IsNullOrEmpty([Maester.Engine.MtSession]::GetCurrentTest())
+    $ownsConfig = -not $insideRun -or $null -ne $Config
     try {
         if ($ownsConfig) {
             $searchPath = if ($Path) { $(if (Test-Path -LiteralPath $Path -PathType Container) { $Path } else { Split-Path $Path -Parent }) } else { (Get-Location).Path }

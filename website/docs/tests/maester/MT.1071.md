@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1071"
   - "Medium"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1071 - At least one Conditional Access policy explicitly includes Azure DevOps.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/massimomazzariol" title="Massimo Mazzariol · Co-contributor"><img src="https://github.com/massimomazzariol.png" alt="Massimo Mazzariol" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/massimomazzariol" title="Massimo Mazzariol · Co-contributor"><img src="https://github.com/massimomazzariol.png" alt="Massimo Mazzariol" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with <a href="/contributors/massimomazzariol">Massimo Mazzariol</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -72,11 +73,13 @@ Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" 
 | Test ID | MT.1071 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | CA |
+| Category | Maester/Entra |
 | PowerShell test | [Test-MtCaAzureDevOps](/docs/commands/Test-MtCaAzureDevOps) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1071 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaAzureDevOps.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1071.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1071.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1071.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1071.md)

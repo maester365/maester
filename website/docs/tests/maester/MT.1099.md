@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1099"
   - "Low"
+  - "Maester/Intune"
   - "Intune"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1099 - Windows Diagnostic Data Processing should be enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -43,11 +44,13 @@ Additional information:
 | Test ID | MT.1099 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Intune |
+| Category | Maester/Intune |
 | PowerShell test | [Test-MtWindowsDataProcessor](/docs/commands/Test-MtWindowsDataProcessor) |
+| Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1099 |
 
 ## Source
 
-- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
-- PowerShell source: `powershell/public/maester/intune/Test-MtWindowsDataProcessor.ps1`
+- Test: [`tests/Maester/Intune/Test.MT.1099.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1099.ps1)
+- Documentation: [`tests/Maester/Intune/Test.MT.1099.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1099.md)

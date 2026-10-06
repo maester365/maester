@@ -1,6 +1,6 @@
 ---
 title: "MT.1045 - Only invited users should be automatically admitted to Teams meetings"
-description: "Only invited users should be automatically admitted to Teams meetings"
+description: "Only invited users should be automatically admitted to Teams meetings. Users who aren’t invited to a meeting shouldn’t be let in automatically, because it increases the risk of data leaks, inappropriate content being shared, or malicious actors joining. If only invited users are automatically admit…"
 slug: /tests/MT.1045
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1045"
   - "Medium"
+  - "Maester/Teams"
   - "Teams"
 ---
 
@@ -17,11 +18,28 @@ keywords:
 
 # MT.1045 - Only invited users should be automatically admitted to Teams meetings
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/svrooij" title="Stephan van Rooij · Co-contributor"><img src="https://github.com/svrooij.png" alt="Stephan van Rooij" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/svrooij" title="Stephan van Rooij · Co-contributor"><img src="https://github.com/svrooij.png" alt="Stephan van Rooij" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Only invited users should be automatically admitted to Teams meetings
+Only invited users should be automatically admitted to Teams meetings.
+
+Users who aren’t invited to a meeting shouldn’t be let in automatically, because it increases the risk of data leaks, inappropriate content being shared, or malicious actors joining. If only invited users are automatically admitted, then users who weren’t invited will be sent to a meeting lobby. The host can then decide whether or not to let them in.
+
+This test checks the `AutoAdmittedUsers` setting of the Global (Org-wide default) Teams meeting policy.
+
+#### Remediation action
+
+1. Open [Meeting policies](https://admin.teams.microsoft.com/policies/meetings) in the Teams admin center.
+2. Select the **Global (Org-wide default)** policy.
+3. Set **Who can bypass the lobby** to **People who were invited**.
+4. Select **Save**.
+
+Or with PowerShell: `Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers InvitedUsers`
+
+#### Related links
+
+* [Manage meeting policies in Microsoft Teams - Microsoft Learn](https://learn.microsoft.com/microsoftteams/meeting-policies-overview)
 
 ## Test Metadata
 
@@ -30,9 +48,12 @@ Only invited users should be automatically admitted to Teams meetings
 | Test ID | MT.1045 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Teams |
+| Category | Maester/Teams |
+| PowerShell test | [Test-MtCheckMT1045](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1045.ps1) |
+| Services | Teams |
 | Tags | Maester, MT.1045, Teams |
 
 ## Source
 
-- Pester test: `tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1`
+- Test: [`tests/Maester/Teams/Test.MT.1045.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1045.ps1)
+- Documentation: [`tests/Maester/Teams/Test.MT.1045.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1045.md)

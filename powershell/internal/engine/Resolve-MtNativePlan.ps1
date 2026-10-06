@@ -142,8 +142,9 @@ function Resolve-MtNativePlan {
         # Timeout: the test's row, then the long-running default, then the run default. 0 means none.
         $timeout = 0
         if ($execution -and $execution.PSObject.Properties['TestTimeoutSeconds'] -and $execution.TestTimeoutSeconds) { $timeout = [int]$execution.TestTimeoutSeconds }
-        if ($t.LongRunning -and $execution -and $execution.PSObject.Properties['LongRunningTimeoutSeconds'] -and $execution.LongRunningTimeoutSeconds) { $timeout = [int]$execution.LongRunningTimeoutSeconds }
-        if ($setting -and $setting.PSObject.Properties['TimeoutSeconds'] -and $setting.TimeoutSeconds) { $timeout = [int]$setting.TimeoutSeconds }
+        # A more specific value set to 0 turns off a broader timeout, so presence (not truthiness) decides.
+        if ($t.LongRunning -and $execution -and $execution.PSObject.Properties['LongRunningTimeoutSeconds'] -and $null -ne $execution.LongRunningTimeoutSeconds) { $timeout = [int]$execution.LongRunningTimeoutSeconds }
+        if ($setting -and $setting.PSObject.Properties['TimeoutSeconds'] -and $null -ne $setting.TimeoutSeconds) { $timeout = [int]$setting.TimeoutSeconds }
         $row.TimeoutSeconds = $timeout
 
         if ($DryRun) { & $set 'NotRun' 'DryRun' 'Dry run: this test would have run.' }

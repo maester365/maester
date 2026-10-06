@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.2.1"
-  - "Unknown"
+  - "Medium"
   - "CISA"
   - "spo"
   - "MS.SHAREPOINT"
@@ -45,13 +45,14 @@ Rationale: Overly permissive default sharing settings increase the risk of unint
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.2.1 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
 | Category | spo |
 | PowerShell test | [Test-MtCisaSpoDefaultSharingScope](/docs/commands/Test-MtCisaSpoDefaultSharingScope) |
+| Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.2.1, MS.SHAREPOINT, MS.SHAREPOINT.2.1 |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoDefaultSharingScope.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoDefaultSharingScope.ps1`
+- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.1.ps1)
+- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.1.md)

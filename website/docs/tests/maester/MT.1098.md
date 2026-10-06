@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1098"
   - "Critical"
+  - "Maester/Intune"
   - "Intune"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1098 - Mobile Threat Defense Connectors should be healthy
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -40,11 +41,13 @@ Additional information:
 | Test ID | MT.1098 |
 | Severity | Critical |
 | Suite | Maester |
-| Category | Intune |
+| Category | Maester/Intune |
 | PowerShell test | [Test-MtMobileThreatDefenseConnectors](/docs/commands/Test-MtMobileThreatDefenseConnectors) |
+| Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1098 |
 
 ## Source
 
-- Pester test: `tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1`
-- PowerShell source: `powershell/public/maester/intune/Test-MtMobileThreatDefenseConnectors.ps1`
+- Test: [`tests/Maester/Intune/Test.MT.1098.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1098.ps1)
+- Documentation: [`tests/Maester/Intune/Test.MT.1098.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1098.md)

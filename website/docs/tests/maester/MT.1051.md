@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1051"
   - "High"
+  - "Maester/Entra"
   - "App"
   - "Entra"
   - "Graph"
@@ -21,7 +22,7 @@ keywords:
 
 # MT.1051 - Apps with high-risk permissions having an indirect path to Global Administrator
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/sebastianclaesson" title="Sebastian Claesson · Co-contributor"><img src="https://github.com/SebastianClaesson.png" alt="Sebastian Claesson" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -92,11 +93,14 @@ To check the applications permissions:
 | Test ID | MT.1051 |
 | Severity | High |
 | Suite | Maester |
-| Category | App |
-| PowerShell test | [Test-MtHighRiskAppPermissions](/docs/commands/Test-MtHighRiskAppPermissions) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCheckMT1051](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1051.ps1) |
+| Services | Graph |
+| Preview | Yes |
+| Long running | Yes |
 | Tags | App, Entra, Graph, LongRunning, Maester, MT.1051, Preview |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtHighRiskAppPermissions.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1051.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1051.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1051.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1051.md)

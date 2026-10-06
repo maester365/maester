@@ -21,7 +21,7 @@ keywords:
 
 # CIS.M365.2.1.11 - (L2) Ensure comprehensive attachment filtering is applied
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -111,9 +111,10 @@ New-MalwareFilterRule @Rule
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
 | PowerShell test | [Test-MtCisAttachmentFilterComprehensive](/docs/commands/Test-MtCisAttachmentFilterComprehensive) |
+| Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.11, L2 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisAttachmentFilterComprehensive.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.11.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.11.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.md)

@@ -80,7 +80,7 @@ function Import-MtPester {
 function New-MtPesterConfiguration {
     <#
     .SYNOPSIS
-    Returns a PesterConfiguration from the caller's -PesterConfiguration (object or hashtable), or a new one.
+    Returns a new PesterConfiguration from the caller's -PesterConfiguration (a copy of the object, or built from the hashtable), or a new one.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in-memory object only.')]
     [CmdletBinding()]
@@ -90,7 +90,11 @@ function New-MtPesterConfiguration {
     )
 
     if ($null -eq $Configuration) { return New-PesterConfiguration }
-    if ($Configuration.GetType().FullName -eq 'PesterConfiguration') { return $Configuration }
+    if ($Configuration.GetType().FullName -eq 'PesterConfiguration') {
+        # A copy: the engine filter must not change the caller's object, which may be reused for the next run.
+        $type = $Configuration.GetType()
+        return $type::Merge($Configuration, $type::Default)
+    }
     if ($Configuration -is [System.Collections.IDictionary]) { return New-PesterConfiguration -Hashtable $Configuration }
     throw '-PesterConfiguration must be a PesterConfiguration object or a hashtable.'
 }

@@ -91,14 +91,6 @@
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
     },
     {
-      "LegacyId": "AADSC",
-      "CurrentId": "retired",
-      "Rule": "manual",
-      "FirstSeenCommit": "fa29e2a789266746a70463e26f3dd57d4b2ff788",
-      "LastSeenCommit": "7de09d69a1bed0a89e3a6524e169c7bb27e4c992",
-      "LastSeenFile": "tests/AADSCAv3/Test-AADSCA.Generated.Tests.ps1"
-    },
-    {
       "LegacyId": "AADSC-AllowGuestsToAccessGroups",
       "CurrentId": "retired",
       "Rule": "retired",
@@ -1163,14 +1155,6 @@
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
-      "LegacyId": "EIDSCA",
-      "CurrentId": "retired",
-      "Rule": "manual",
-      "FirstSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
-      "LastSeenCommit": "a68c42cee92e4c309e25ef3559ade51c20b744a9",
-      "LastSeenFile": "tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1"
-    },
-    {
       "LegacyId": "Ensure MailTips are enabled for end users",
       "CurrentId": "MT.1039",
       "Rule": "title",
@@ -1241,14 +1225,6 @@
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
-    },
-    {
-      "LegacyId": "Exclude",
-      "CurrentId": "retired",
-      "Rule": "manual",
-      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
-      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
-      "LastSeenFile": "tests/Maester/Entra/Test-MtCaEnforceNonPersistentBrowserSession.Tests.ps1"
     },
     {
       "LegacyId": "ID1001",
@@ -1409,14 +1385,6 @@
       "FirstSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
       "LastSeenCommit": "e26e6ae8ddcd1ba7e5b4187a2eac516d3e12322d",
       "LastSeenFile": "tests/Identity/Test-ConditionalAccessBaseline.Tests.ps1"
-    },
-    {
-      "LegacyId": "Include",
-      "CurrentId": "retired",
-      "Rule": "manual",
-      "FirstSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
-      "LastSeenCommit": "5b8dc46a73a82efd966efed8121875d0f67cbd6a",
-      "LastSeenFile": "tests/Maester/Entra/Test-MtCaEnforceNonPersistentBrowserSession.Tests.ps1"
     },
     {
       "LegacyId": "Limit external participants from having control in a Teams meeting",

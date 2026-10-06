@@ -78,9 +78,10 @@ This test verifies the organization-level team creation setting. It does not rev
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubTeamCreationLimited](/docs/commands/Test-MtCisGitHubTeamCreationLimited) |
+| Services | GitHub |
 | Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.2, GitHub, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubTeamCreationLimited.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubTeamCreationLimited.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.3.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.2.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.3.2.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.2.md)

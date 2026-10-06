@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.118.2 - Domains are not being allow listed in an unsafe manner in Transport Rules.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Emails coming from allow listed domains bypass several layers of protection within Exchange Online Protection. If domains are allow listed, they are open to being spoofed from malicious actors.
 
 #### Remediation action
+
 Remove allow listed domains.
 
 #### Related Links
@@ -41,9 +42,10 @@ Remove allow listed domains.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA118_2](/docs/commands/Test-ORCA118_2) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.118.2 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA118_2.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA118_2.ps1`
+- Test: [`tests/orca/Test.ORCA.118.2.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.2.ps1)
+- Documentation: [`tests/orca/Test.ORCA.118.2.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.2.md)

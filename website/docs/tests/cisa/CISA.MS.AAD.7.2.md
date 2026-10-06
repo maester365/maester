@@ -20,7 +20,7 @@ keywords:
 
 # CISA.MS.AAD.7.2 - Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/magnusjak" title="Magnus Jakobsen · Co-contributor"><img src="https://github.com/magnusjak.png" alt="Magnus Jakobsen" /></a><a className="test-byline-avatar" href="/contributors/mrdos010" title="Anas · Co-contributor"><img src="https://github.com/mrdos010.png" alt="Anas" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/mrdos010" title="Anas · Co-contributor"><img src="https://github.com/mrdos010.png" alt="Anas" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,9 +52,10 @@ This policy is based on the ratio below:
 | Suite | CISA |
 | Category | Entra ID Free |
 | PowerShell test | [Test-MtCisaGlobalAdminRatio](/docs/commands/Test-MtCisaGlobalAdminRatio) |
+| Services | Graph |
 | Tags | CISA, CISA.MS.AAD.7.2, Entra ID Free, MS.AAD, MS.AAD.7.2 |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaGlobalAdminRatio.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaGlobalAdminRatio.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.7.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.2.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.7.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.2.md)

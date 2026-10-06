@@ -18,193 +18,240 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 
 | Test ID | Title | Severity | Category |
 | --- | --- | --- | --- |
-| [MT.1001](./MT.1001.md) | At least one Conditional Access policy is configured with device compliance. | Medium | CA |
-| [MT.1002](./MT.1002.md) | App management restrictions on applications and service principals is configured and enabled. | High | App |
-| [MT.1003](./MT.1003.md) | At least one Conditional Access policy is configured with All Apps. | High | CA |
-| [MT.1004](./MT.1004.md) | At least one Conditional Access policy is configured with All Apps and All Users. | High | CA |
-| [MT.1005](./MT.1005.md) | All Conditional Access policies are configured to exclude at least one emergency/break glass account or group. | High | CA |
-| [MT.1006](./MT.1006.md) | At least one Conditional Access policy is configured to require MFA for admins. | High | CA |
-| [MT.1007](./MT.1007.md) | At least one Conditional Access policy is configured to require MFA for all users. | High | CA |
-| [MT.1008](./MT.1008.md) | At least one Conditional Access policy is configured to require MFA for Azure management. | High | CA |
-| [MT.1009](./MT.1009.md) | At least one Conditional Access policy is configured to block other legacy authentication. | High | CA |
-| [MT.1010](./MT.1010.md) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | High | CA |
-| [MT.1011](./MT.1011.md) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | High | CA |
-| [MT.1012](./MT.1012.md) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | High | CA |
-| [MT.1013](./MT.1013.md) | At least one Conditional Access policy is configured to require new password when user risk is high. | High | CA |
-| [MT.1014](./MT.1014.md) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | High | CA |
-| [MT.1015](./MT.1015.md) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Medium | CA |
-| [MT.1016](./MT.1016.md) | At least one Conditional Access policy is configured to require MFA for guest access. | High | CA |
-| [MT.1017](./MT.1017.md) | At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices. | High | CA |
-| [MT.1018](./MT.1018.md) | At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices. | Medium | CA |
-| [MT.1019](./MT.1019.md) | At least one Conditional Access policy is configured to enable application enforced restrictions. | Medium | CA |
-| [MT.1020](./MT.1020.md) | All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them. | High | CA |
-| [MT.1021](./MT.1021.md) | Security Defaults are enabled. | High | CA |
-| [MT.1022](./MT.1022.md) | All users utilizing a P1 license should be licensed. | Medium | CA |
-| [MT.1023](./MT.1023.md) | All users utilizing a P2 license should be licensed. | Medium | CA |
-| [MT.1024](./MT.1024.md) | MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName) | Unknown | Entra |
-| [MT.1025](./MT.1025.md) | No external user with permanent role assignment on Control Plane. | High | Privileged |
-| [MT.1026](./MT.1026.md) | No hybrid user with permanent role assignment on Control Plane. | High | Privileged |
-| [MT.1027](./MT.1027.md) | No Service Principal with Client Secret and permanent role assignment on Control Plane. | High | Privileged |
-| [MT.1028](./MT.1028.md) | No user with mailbox and permanent role assignment on Control Plane. | High | Privileged |
-| [MT.1029](./MT.1029.md) | Stale accounts are not assigned to privileged roles. | High | Privileged |
-| [MT.1030](./MT.1030.md) | Eligible role assignments on Control Plane are in use by administrators. | High | Privileged |
-| [MT.1031](./MT.1031.md) | Privileged role on Control Plane are managed by PIM only. | High | Privileged |
-| [MT.1032](./MT.1032.md) | Limited number of Global Admins are assigned. | High | Privileged |
-| [MT.1033](./MT.1033.md) | MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName)) | Unknown | CA |
-| [MT.1034](./MT.1034.md) | MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName)) | Unknown | CA |
-| [MT.1035](./MT.1035.md) | All security groups assigned to Conditional Access Policies should be protected by RMAU. | High | CA |
-| [MT.1036](./MT.1036.md) | All excluded objects should have a fallback include in another policy. | Medium | CA |
-| [MT.1037](./MT.1037.md) | Only users with Presenter role are allowed to present in Teams meetings | High | Teams |
-| [MT.1038](./MT.1038.md) | Conditional Access policies should not include or exclude deleted groups. | Medium | CA |
-| [MT.1039](./MT.1039.md) | Ensure MailTips are enabled for end users | Low | Exchange |
-| [MT.1041](./MT.1041.md) | Ensure users installing Outlook add-ins is not allowed | High | Exchange |
-| [MT.1042](./MT.1042.md) | Restrict dial-in users from bypassing a meeting lobby | Medium | Teams |
-| [MT.1043](./MT.1043.md) | Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | Medium | Exchange |
-| [MT.1044](./MT.1044.md) | Ensure modern authentication for Exchange Online is enabled | High | Exchange |
-| [MT.1045](./MT.1045.md) | Only invited users should be automatically admitted to Teams meetings | Medium | Teams |
-| [MT.1046](./MT.1046.md) | Restrict anonymous users from joining meetings | Medium | Teams |
-| [MT.1047](./MT.1047.md) | Restrict anonymous users from starting Teams meetings | Medium | Teams |
-| [MT.1048](./MT.1048.md) | Limit external participants from having control in a Teams meeting | Medium | Teams |
-| [MT.1049](./MT.1049.md) | Conditional Access policies for User Risk and Sign-in Risk should be configured separately. | High | CA |
-| [MT.1050](./MT.1050.md) | Apps with high-risk permissions having a direct path to Global Administrator | High | App |
-| [MT.1051](./MT.1051.md) | Apps with high-risk permissions having an indirect path to Global Administrator | High | App |
-| [MT.1052](./MT.1052.md) | At least one Conditional Access policy is targeting the Device Code authentication flow. | High | CA |
-| [MT.1053](./MT.1053.md) | Ensure intune device clean-up rule is configured | Medium | Intune |
-| [MT.1054](./MT.1054.md) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Medium | Intune |
-| [MT.1055](./MT.1055.md) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Medium | Group |
-| [MT.1056](./MT.1056.md) | Ensure that no person has permanent access to all Azure subscriptions at the root scope | High | Privileged |
-| [MT.1057](./MT.1057.md) | Ensure Microsoft 365 Group (and Team) expiration is configured to notify users. | Medium | App |
-| [MT.1058](./MT.1058.md) | Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups. | Medium | App |
-| [MT.1059](./MT.1059.md) | Microsoft Defender for Identity health issues should be resolved | Medium | Defender |
-| [MT.1061](./MT.1061.md) | Device registration MFA control conflicts with Conditional Access policies | Medium | CA |
-| [MT.1062](./MT.1062.md) | Ensure Direct Send is set to be rejected | Medium | Exchange |
-| [MT.1063](./MT.1063.md) | All app registration owners should have MFA registered | High | App |
-| [MT.1064](./MT.1064.md) | Management group creation should be limited to users with explicit write access | High | Azure |
-| [MT.1065](./MT.1065.md) | Soft Delete should be enabled on all Recovery Services Vaults | High | Backup |
-| [MT.1066](./MT.1066.md) | Conditional Access policies should not include or exclude deleted users, groups, or roles. | Medium | CA |
-| [MT.1067](./MT.1067.md) | Authentication methods policies should not reference deleted groups. | Medium | Authentication |
-| [MT.1068](./MT.1068.md) | Restrict non-admin users from creating tenants | Medium | Entra |
-| [MT.1069](./MT.1069.md) | Restrict non-admin users from creating security groups. | Low | Entra |
-| [MT.1070](./MT.1070.md) | Restrict device join to selected users/groups or none. | Medium | Entra |
-| [MT.1071](./MT.1071.md) | At least one Conditional Access policy explicitly includes Azure DevOps. | Medium | CA |
-| [MT.1072](./MT.1072.md) | Conditional Access policies should not use the deprecated Approved Client App grant. | High | CA |
-| [MT.1073](./MT.1073.md) | Soft- and hard-matching of synchronized objects should be blocked. | Medium | Entra |
-| [MT.1074](./MT.1074.md) | Mailboxes should not send outbound mails using the .onmicrosoft.com domain. | Medium | Exchange |
-| [MT.1075](./MT.1075.md) | Third Party Entra Apps should only have explicitly assigned users instead of All Users. | Medium | App |
-| [MT.1076](./MT.1076.md) | MOERA SHOULD NOT be used for sent mail. | High | Exchange |
-| [MT.1077](./MT.1077.md) | App registrations with privileged API permissions should not have owners | Medium | Privileged |
-| [MT.1078](./MT.1078.md) | App registrations with highly privileged directory roles should not have owners | Medium | Privileged |
-| [MT.1079](./MT.1079.md) | Privileged API permissions on service principals should not remain unused | Medium | Privileged |
-| [MT.1080](./MT.1080.md) | Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints | Medium | Privileged |
-| [MT.1081](./MT.1081.md) | Hybrid users should not be assigned Entra ID role assignments | Medium | Privileged |
-| [MT.1083](./MT.1083.md) | Ensure Delicensing Resiliency is enabled | Low | Exchange |
-| [MT.1084](./MT.1084.md) | Seamless Single SignOn should be disabled for all domains in EntraID Connect servers. | High | Entra |
-| [MT.1085](./MT.1085.md) | Pending approvals for Critical Asset Management should not be present | Medium | Entra |
-| [MT.1086](./MT.1086.md) | Devices should not share both critical and non-critical user credentials. | Low | XSPM |
-| [MT.1087](./MT.1087.md) | Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. | High | XSPM |
-| [MT.1088](./MT.1088.md) | Devices with critical credentials should be protected by TPM. | Medium | XSPM |
-| [MT.1089](./MT.1089.md) | Devices with critical credentials should be protected by Credential Guard. | Medium | XSPM |
-| [MT.1090](./MT.1090.md) | Global Administrator role should not be added as local administrator on the device during Microsoft Entra join | Medium | Entra |
-| [MT.1091](./MT.1091.md) | Registering user should not be added as local administrator on the device during Microsoft Entra join | Medium | Entra |
-| [MT.1092](./MT.1092.md) | Intune APNS certificate should be valid for more than 30 days | High | Intune |
-| [MT.1093](./MT.1093.md) | Apple Automated Device Enrollment Tokens should be valid for more than 30 days | High | Intune |
-| [MT.1094](./MT.1094.md) | Apple Volume Purchase Program Tokens should be valid for more than 30 days | High | Intune |
-| [MT.1095](./MT.1095.md) | Android Enterprise Account Connection should be healthy | High | Intune |
-| [MT.1096](./MT.1096.md) | Intune Multi Admin approval should be configured | Medium | Intune |
-| [MT.1097](./MT.1097.md) | Certificate Connectors should be healthy and running supported versions | High | Intune |
-| [MT.1098](./MT.1098.md) | Mobile Threat Defense Connectors should be healthy | Critical | Intune |
-| [MT.1099](./MT.1099.md) | Windows Diagnostic Data Processing should be enabled | Low | Intune |
-| [MT.1100](./MT.1100.md) | Intune Audit Logs should be retained | High | Intune |
-| [MT.1101](./MT.1101.md) | Default Branding Profile should be customized | Low | Intune |
-| [MT.1102](./MT.1102.md) | Windows Feature Update Policy Settings should not reference end of support builds | High | Intune |
-| [MT.1103](./MT.1103.md) | Intune RBAC groups should be protected by Restricted Management Administrative Units or Role Assignable groups | High | Intune |
-| [MT.1105](./MT.1105.md) | MDM Authority should be set to Microsoft Intune | Low | Intune |
-| [MT.1106](./MT.1106.md) | Catalog resources must have valid roles (no stale app roles or deleted SPNs) | Medium | Governance |
-| [MT.1107](./MT.1107.md) | Access packages and catalogs should not reference deleted groups | Medium | Governance |
-| [MT.1108](./MT.1108.md) | Access packages should not have inactive or orphaned assignment policies | Medium | Governance |
-| [MT.1109](./MT.1109.md) | Access package approval workflows must have valid approvers | Medium | Governance |
-| [MT.1110](./MT.1110.md) | No catalog should contain resources without any associated access packages | Medium | Governance |
-| [MT.1111](./MT.1111.md) | High privileged user should be linked to an identity | Low | Privileged |
-| [MT.1112](./MT.1112.md) | Privileged user accounts should not remain enabled when the linked primary account is disabled | Medium | Privileged |
-| [MT.1113](./MT.1113.md) | AI agents should not be shared with broad access control policies | High | AIAgent |
-| [MT.1114](./MT.1114.md) | AI agents should require user authentication | High | AIAgent |
-| [MT.1115](./MT.1115.md) | AI agents should not have risky HTTP configurations | Medium | AIAgent |
-| [MT.1116](./MT.1116.md) | AI agents should not send email with AI-controlled inputs | High | AIAgent |
-| [MT.1117](./MT.1117.md) | Published AI agents should not be dormant | Low | AIAgent |
-| [MT.1118](./MT.1118.md) | AI agents should avoid using author (maker) authentication for tools | Medium | AIAgent |
-| [MT.1119](./MT.1119.md) | AI agents should not have hard-coded credentials in topics | High | AIAgent |
-| [MT.1120](./MT.1120.md) | AI agents should not use MCP server tools without review | Medium | AIAgent |
-| [MT.1121](./MT.1121.md) | AI agents with generative orchestration should have custom instructions | Medium | AIAgent |
-| [MT.1122](./MT.1122.md) | AI agents should not have orphaned ownership | Medium | AIAgent |
-| [MT.1123](./MT.1123.md) | Ensure BitLocker full disk encryption is configured via Intune | High | Intune |
-| [MT.1147](./MT.1147.md) | Do not sync krbtgt_AzureAD to Entra ID | High | Entra |
-| [MT.1148](./MT.1148.md) | Archive Scanning should be enabled | High | Defender |
-| [MT.1149](./MT.1149.md) | Behavior Monitoring should be enabled | High | Defender |
-| [MT.1150](./MT.1150.md) | Cloud Protection should be enabled | High | Defender |
-| [MT.1151](./MT.1151.md) | Email Scanning should be enabled | High | Defender |
-| [MT.1152](./MT.1152.md) | Script Scanning should be enabled | High | Defender |
-| [MT.1153](./MT.1153.md) | Real-time Monitoring should be enabled | High | Defender |
-| [MT.1154](./MT.1154.md) | Full Scan Removable Drives should be enabled | High | Defender |
-| [MT.1155](./MT.1155.md) | Full Scan Mapped Drives should be disabled for performance | High | Defender |
-| [MT.1156](./MT.1156.md) | Scanning Network Files should be enabled | High | Defender |
-| [MT.1157](./MT.1157.md) | CPU Load Factor should be optimized (20-30%) | High | Defender |
-| [MT.1158](./MT.1158.md) | Scan should be scheduled | High | Defender |
-| [MT.1159](./MT.1159.md) | Quick Scan Time configuration is not required | High | Defender |
-| [MT.1160](./MT.1160.md) | Signatures should be checked before scan | High | Defender |
-| [MT.1161](./MT.1161.md) | Cloud Block Level should be High or higher | High | Defender |
-| [MT.1162](./MT.1162.md) | Cloud Extended Timeout should be 30-50 seconds | High | Defender |
-| [MT.1163](./MT.1163.md) | Signature Update Interval should be 1-4 hours | High | Defender |
-| [MT.1164](./MT.1164.md) | PUA Protection should be enabled | High | Defender |
-| [MT.1165](./MT.1165.md) | Network Protection should be enabled | High | Defender |
-| [MT.1166](./MT.1166.md) | Local Admin Merge should be disabled | High | Defender |
-| [MT.1167](./MT.1167.md) | Real-Time Scan Direction should cover both directions | High | Defender |
-| [MT.1168](./MT.1168.md) | Cleaned Malware should be retained for at least 30 days | High | Defender |
-| [MT.1169](./MT.1169.md) | Catch-up Full Scan should be disabled | High | Defender |
-| [MT.1170](./MT.1170.md) | Catch-up Quick Scan should be disabled | High | Defender |
-| [MT.1171](./MT.1171.md) | Sample Submission should send safe samples automatically | High | Defender |
-| [MT.1172](./MT.1172.md) | Unified audit log ingestion is enabled | High | Purview |
-| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot | Medium | Purview |
-| [MT.1174](./MT.1174.md) | Insider Risk Management policy for Risky AI usage is enabled | Medium | Purview |
-| [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location | High | Purview |
-| [MT.1176](./MT.1176.md) | Retention policy is configured for the Microsoft Copilot location | Medium | Purview |
-| [MT.1177](./MT.1177.md) | Ensure LAPS Configuration Policy is properly set | Unknown | Intune |
-| [MT.1178](./MT.1178.md) | Ensure ASR Rules are configured correctly | High | Intune |
-| [MT.1179](./MT.1179.md) | Ensure App Control for Business is enabled | High | Intune |
-| [MT.1180](./MT.1180.md) | Ensure Managed Installer Rules are configured correctly | Medium | Intune |
-| [MT.1181](./MT.1181.md) | Conditional Access policy is present that blocks high agent risk signins | High | CA |
-| [MT.1182](./MT.1182.md) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Unknown | Entra |
-| [MT.1183](./MT.1183.md) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Medium | Entra |
-| [MT.1184](./MT.1184.md) | Conditional Access policy without any target resources configured | Medium | CA |
-| [MT.1185](./MT.1185.md) | Block legacy MSOnline (MSOL) PowerShell module | High | Entra |
-| [MT.1186](./MT.1186.md) | High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users. | High | Entra |
-| [MT.1187](./MT.1187.md) | The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled | Unknown | Entra |
-| [MT.1188](./MT.1188.md) | Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device | Unknown | Entra |
-| [MT.1189](./MT.1189.md) | Groups assigned to Global Secure Access traffic forwarding profiles should not be nested | Unknown | Entra |
-| [MT.1190](./MT.1190.md) | Entra Private Access applications should not use the Default connector group | Unknown | Entra |
-| [MT.1191](./MT.1191.md) | Break-glass accounts should be excluded from the Compliant Network Conditional Access policy | Unknown | Entra |
-| [MT.1192](./MT.1192.md) | Groups assigned to Entra Private Access applications should not be nested | Unknown | Entra |
-| [MT.1193](./MT.1193.md) | Entra Private Access application segments should avoid broad or risky destinations | Unknown | Entra |
-| [MT.1194](./MT.1194.md) | The baseline Global Secure Access security profile should enforce a threat-intelligence floor | Unknown | Entra |
-| [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Unknown | Entra |
-| [MT.1196](./MT.1196.md) | Review who can change attributes used by dynamic group rules | Medium | Entra |
-| [MT.1197](./MT.1197.md) | Dynamic groups should not use the retiring memberOf rule operator | High | Entra |
-| [MT.1198](./MT.1198.md) | App registration certificates should not have excessive validity periods. | Medium | App |
-| [MT.1199](./MT.1199.md) | App registration credentials should not be expired or expiring soon. | Medium | App |
-| [MT.1200](./MT.1200.md) | Agent Identities should have an active Agent Identity Blueprint Principal (Preview) | Medium | Entra |
-| [MT.1201](./MT.1201.md) | Agent Users should have an existing parent Agent Identity (Preview) | Medium | Entra |
-| [MT.1203](./MT.1203.md) | Agent Identity Blueprint Principals should have an existing Blueprint (Preview) | Medium | Entra |
-| [MT.1204](./MT.1204.md) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview) | Medium | Entra |
-| [MT.1205](./MT.1205.md) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview) | Medium | Entra |
-| [MT.1206](./MT.1206.md) | Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview) | Medium | Entra |
-| [MT.1207](./MT.1207.md) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview) | High | Entra |
-| [MT.1208](./MT.1208.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview) | High | Entra |
-| [MT.1209](./MT.1209.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview) | High | Entra |
-| [MT.1210](./MT.1210.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview) | High | Entra |
-| [MT.1211](./MT.1211.md) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview) | High | Entra |
-| [MT.1212](./MT.1212.md) | Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview) | Medium | Entra |
-| [MT.1213](./MT.1213.md) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview) | High | Entra |
-| [MT.1214](./MT.1214.md) | Ensure macOS compliance policy requires System Integrity Protection | Medium | Intune |
-| [MT.1215](./MT.1215.md) | Ensure Gatekeeper restricts macOS app download locations | Medium | Intune |
-| [MT.1216](./MT.1216.md) | Ensure macOS compliance policy requires a Defender machine risk score level | Medium | Intune |
-| [MT.1217](./MT.1217.md) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles | High | Intune |
-| [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview) | High | Entra |
+| [AZDO.1000](./AZDO.1000.md) | Azure DevOps OAuth apps can access resources in your organization through OAuth. | High | Azure DevOps |
+| [AZDO.1001](./AZDO.1001.md) | Identities can connect to your organization's Git repos through SSH. | High | Azure DevOps |
+| [AZDO.1002](./AZDO.1002.md) | Log Audit Events. | High | Azure DevOps |
+| [AZDO.1003](./AZDO.1003.md) | Restrict public projects. | High | Azure DevOps |
+| [AZDO.1004](./AZDO.1004.md) | Additional protections when using public package registries. | High | Azure DevOps |
+| [AZDO.1005](./AZDO.1005.md) | IP Conditional Access policy validation. | High | Azure DevOps |
+| [AZDO.1006](./AZDO.1006.md) | External Users access. | High | Azure DevOps |
+| [AZDO.1007](./AZDO.1007.md) | Team and project administrator are allowed to invite new users. | High | Azure DevOps |
+| [AZDO.1008](./AZDO.1008.md) | Request access to Azure DevOps by e-mail notifications to administrators. | Medium | Azure DevOps |
+| [AZDO.1009](./AZDO.1009.md) | Feedback Collection. | Info | Azure DevOps |
+| [AZDO.1010](./AZDO.1010.md) | Audit streaming. | High | Azure DevOps |
+| [AZDO.1011](./AZDO.1011.md) | Project Resource Limits. | Info | Azure DevOps |
+| [AZDO.1012](./AZDO.1012.md) | Work Items Tags Limits. | Info | Azure DevOps |
+| [AZDO.1013](./AZDO.1013.md) | Organization Owner should not be an individual. | High | Azure DevOps |
+| [AZDO.1014](./AZDO.1014.md) | Anonymous access to pipeline badges. | Medium | Azure DevOps |
+| [AZDO.1015](./AZDO.1015.md) | Limit variables that can be set at queue time. | High | Azure DevOps |
+| [AZDO.1016](./AZDO.1016.md) | Limit job authorization scope to current project for non-release pipelines. | High | Azure DevOps |
+| [AZDO.1017](./AZDO.1017.md) | Limit job authorization scope to current project for classic release pipelines. | High | Azure DevOps |
+| [AZDO.1018](./AZDO.1018.md) | Protect access to repositories in YAML pipelines. | High | Azure DevOps |
+| [AZDO.1019](./AZDO.1019.md) | Stage chooser. | Medium | Azure DevOps |
+| [AZDO.1020](./AZDO.1020.md) | Creation of classic build pipelines. | Medium | Azure DevOps |
+| [AZDO.1021](./AZDO.1021.md) | Creation of classic release pipelines. | Medium | Azure DevOps |
+| [AZDO.1022](./AZDO.1022.md) | Limit building pull requests from forked GitHub repositories. | High | Azure DevOps |
+| [AZDO.1023](./AZDO.1023.md) | Disable Marketplace tasks. | High | Azure DevOps |
+| [AZDO.1024](./AZDO.1024.md) | Disable Node 6 tasks. | Medium | Azure DevOps |
+| [AZDO.1025](./AZDO.1025.md) | Enable shell tasks arguments validation. | High | Azure DevOps |
+| [AZDO.1026](./AZDO.1026.md) | Enable automatic enrollment to Advanced Security for Azure DevOps. | Medium | Azure DevOps |
+| [AZDO.1027](./AZDO.1027.md) | Disable showing Gravatar images for users outside of your enterprise. | Medium | Azure DevOps |
+| [AZDO.1028](./AZDO.1028.md) | Disable creation of TFVC repositories. | Medium | Azure DevOps |
+| [AZDO.1029](./AZDO.1029.md) | Storage Usage Limit. | Medium | Azure DevOps |
+| [AZDO.1030](./AZDO.1030.md) | Project Collection Administrators. | Critical | Azure DevOps |
+| [AZDO.1031](./AZDO.1031.md) | Validate SSH Key Expiration. | High | Azure DevOps |
+| [AZDO.1032](./AZDO.1032.md) | (Tenant) Restrict creation of global Personal Access Tokens. | High | Azure DevOps |
+| [AZDO.1033](./AZDO.1033.md) | (Tenant) Enable automatic revocation of leaked Personal Access Tokens. | Critical | Azure DevOps |
+| [AZDO.1034](./AZDO.1034.md) | (Tenant) Restrict creation of new Azure DevOps organizations. | High | Azure DevOps |
+| [AZDO.1035](./AZDO.1035.md) | (Tenant) Restrict Personal Access Token lifespan. | High | Azure DevOps |
+| [AZDO.1036](./AZDO.1036.md) | (Tenant) Restrict Personal Access Token full scope. | High | Azure DevOps |
+| [AZDO.1037](./AZDO.1037.md) | (Organization) Restrict Personal Access Token creation. | High | Azure DevOps |
+| [AZDO.1038](./AZDO.1038.md) | (Organization) Disallow extensions from accessing resources on the local network. | Medium | Azure DevOps |
+| [AZDO.1039](./AZDO.1039.md) | (Organization) Secret Protection: new repositories enrolled automatically. | Medium | Azure DevOps |
+| [AZDO.1040](./AZDO.1040.md) | (Organization) Secret Protection: existing repositories enrolled. | High | Azure DevOps |
+| [AZDO.1041](./AZDO.1041.md) | (Organization) Secret Protection: push protection blocks secret commits. | High | Azure DevOps |
+| [AZDO.1042](./AZDO.1042.md) | (Organization) Code Security: new repositories enrolled automatically. | Medium | Azure DevOps |
+| [AZDO.1043](./AZDO.1043.md) | (Organization) Code Security: existing repositories enrolled. | Medium | Azure DevOps |
+| [AZDO.1044](./AZDO.1044.md) | (Organization) Code Security: dependency and CodeQL alerts enabled. | Medium | Azure DevOps |
+| [AZDO.1045](./AZDO.1045.md) | (Organization) Copilot code review: allowed for repositories. | Info | Azure DevOps |
+| [MT.1001](./MT.1001.md) | At least one Conditional Access policy is configured with device compliance. | Medium | Maester/Entra |
+| [MT.1002](./MT.1002.md) | App management restrictions on applications and service principals is configured and enabled. | High | Maester/Entra |
+| [MT.1003](./MT.1003.md) | At least one Conditional Access policy is configured with All Apps. | High | Maester/Entra |
+| [MT.1004](./MT.1004.md) | At least one Conditional Access policy is configured with All Apps and All Users. | High | Maester/Entra |
+| [MT.1005](./MT.1005.md) | All Conditional Access policies are configured to exclude at least one emergency/break glass account or group. | High | Maester/Entra |
+| [MT.1006](./MT.1006.md) | At least one Conditional Access policy is configured to require MFA for admins. | High | Maester/Entra |
+| [MT.1007](./MT.1007.md) | At least one Conditional Access policy is configured to require MFA for all users. | High | Maester/Entra |
+| [MT.1008](./MT.1008.md) | At least one Conditional Access policy is configured to require MFA for Azure management. | High | Maester/Entra |
+| [MT.1009](./MT.1009.md) | At least one Conditional Access policy is configured to block other legacy authentication. | High | Maester/Entra |
+| [MT.1010](./MT.1010.md) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | High | Maester/Entra |
+| [MT.1011](./MT.1011.md) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | High | Maester/Entra |
+| [MT.1012](./MT.1012.md) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | High | Maester/Entra |
+| [MT.1013](./MT.1013.md) | At least one Conditional Access policy is configured to require new password when user risk is high. | High | Maester/Entra |
+| [MT.1014](./MT.1014.md) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | High | Maester/Entra |
+| [MT.1015](./MT.1015.md) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Medium | Maester/Entra |
+| [MT.1016](./MT.1016.md) | At least one Conditional Access policy is configured to require MFA for guest access. | High | Maester/Entra |
+| [MT.1017](./MT.1017.md) | At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices. | High | Maester/Entra |
+| [MT.1018](./MT.1018.md) | At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices. | Medium | Maester/Entra |
+| [MT.1019](./MT.1019.md) | At least one Conditional Access policy is configured to enable application enforced restrictions. | Medium | Maester/Entra |
+| [MT.1020](./MT.1020.md) | All Conditional Access policies are configured to exclude Directory/OnPremises synchronization accounts or do not scope them. | High | Maester/Entra |
+| [MT.1021](./MT.1021.md) | Security Defaults are enabled. | High | Maester/Entra |
+| [MT.1022](./MT.1022.md) | All users utilizing a P1 license should be licensed. | Medium | Maester/Entra |
+| [MT.1023](./MT.1023.md) | All users utilizing a P2 license should be licensed. | Medium | Maester/Entra |
+| [MT.1024](./MT.1024.md) | Entra recommendations should be completed. | Medium | Maester/Entra |
+| [MT.1025](./MT.1025.md) | No external user with permanent role assignment on Control Plane. | High | Maester/Entra |
+| [MT.1026](./MT.1026.md) | No hybrid user with permanent role assignment on Control Plane. | High | Maester/Entra |
+| [MT.1027](./MT.1027.md) | No Service Principal with Client Secret and permanent role assignment on Control Plane. | High | Maester/Entra |
+| [MT.1028](./MT.1028.md) | No user with mailbox and permanent role assignment on Control Plane. | High | Maester/Entra |
+| [MT.1029](./MT.1029.md) | Stale accounts are not assigned to privileged roles. | High | Maester/Entra |
+| [MT.1030](./MT.1030.md) | Eligible role assignments on Control Plane are in use by administrators. | High | Maester/Entra |
+| [MT.1031](./MT.1031.md) | Privileged role on Control Plane are managed by PIM only. | High | Maester/Entra |
+| [MT.1032](./MT.1032.md) | Limited number of Global Admins are assigned. | High | Maester/Entra |
+| [MT.1033](./MT.1033.md) | Users should be blocked from using legacy authentication. | High | Maester/Entra |
+| [MT.1034](./MT.1034.md) | Emergency access users should not be blocked. | High | Maester/Entra |
+| [MT.1035](./MT.1035.md) | All security groups assigned to Conditional Access Policies should be protected by RMAU. | High | Maester/Entra |
+| [MT.1036](./MT.1036.md) | All excluded objects should have a fallback include in another policy. | Medium | Maester/Entra |
+| [MT.1037](./MT.1037.md) | Only users with Presenter role are allowed to present in Teams meetings | High | Maester/Teams |
+| [MT.1038](./MT.1038.md) | Conditional Access policies should not include or exclude deleted groups. | Medium | Maester/Entra |
+| [MT.1039](./MT.1039.md) | Ensure MailTips are enabled for end users | Low | Maester/Exchange |
+| [MT.1041](./MT.1041.md) | Ensure users installing Outlook add-ins is not allowed | High | Maester/Exchange |
+| [MT.1042](./MT.1042.md) | Restrict dial-in users from bypassing a meeting lobby | Medium | Maester/Teams |
+| [MT.1043](./MT.1043.md) | Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | Medium | Maester/Exchange |
+| [MT.1044](./MT.1044.md) | Ensure modern authentication for Exchange Online is enabled | High | Maester/Exchange |
+| [MT.1045](./MT.1045.md) | Only invited users should be automatically admitted to Teams meetings | Medium | Maester/Teams |
+| [MT.1046](./MT.1046.md) | Restrict anonymous users from joining meetings | Medium | Maester/Teams |
+| [MT.1047](./MT.1047.md) | Restrict anonymous users from starting Teams meetings | Medium | Maester/Teams |
+| [MT.1048](./MT.1048.md) | Limit external participants from having control in a Teams meeting | Medium | Maester/Teams |
+| [MT.1049](./MT.1049.md) | Conditional Access policies for User Risk and Sign-in Risk should be configured separately. | High | Maester/Entra |
+| [MT.1050](./MT.1050.md) | Apps with high-risk permissions having a direct path to Global Administrator | High | Maester/Entra |
+| [MT.1051](./MT.1051.md) | Apps with high-risk permissions having an indirect path to Global Administrator | High | Maester/Entra |
+| [MT.1052](./MT.1052.md) | At least one Conditional Access policy is targeting the Device Code authentication flow. | High | Maester/Entra |
+| [MT.1053](./MT.1053.md) | Ensure intune device clean-up rule is configured | Medium | Maester/Intune |
+| [MT.1054](./MT.1054.md) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Medium | Maester/Intune |
+| [MT.1055](./MT.1055.md) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Medium | Maester/Entra |
+| [MT.1056](./MT.1056.md) | Ensure that no person has permanent access to all Azure subscriptions at the root scope | High | AzureConfig |
+| [MT.1057](./MT.1057.md) | App registrations should no longer use secrets. | Medium | Maester/Entra |
+| [MT.1058](./MT.1058.md) | Exchange application access policies must be configured. | Medium | Maester/Entra |
+| [MT.1059](./MT.1059.md) | Microsoft Defender for Identity health issues should be resolved | Medium | Defender for Identity health issues |
+| [MT.1060](./MT.1060.md) | Drift folders should match their baseline. | Medium | Maester/Drift |
+| [MT.1061](./MT.1061.md) | Device registration MFA control conflicts with Conditional Access policies. | Medium | Maester/Entra |
+| [MT.1062](./MT.1062.md) | Ensure Direct Send is set to be rejected | Medium | Maester/Exchange |
+| [MT.1063](./MT.1063.md) | All App registration owners should have MFA registered | High | Maester/Entra |
+| [MT.1064](./MT.1064.md) | Ensure that write permissions are required to create new management groups | High | AzureConfig |
+| [MT.1065](./MT.1065.md) | Ensure all Recovery Services Vaults have soft delete enabled | High | AzureConfig |
+| [MT.1066](./MT.1066.md) | Conditional Access policies should not reference non-existent users, groups, or roles. | Medium | Maester/Entra |
+| [MT.1067](./MT.1067.md) | Authentication method policies should not reference non-existent groups. | Medium | Maester/Entra |
+| [MT.1068](./MT.1068.md) | Restrict non-admin users from creating tenants. | Medium | Maester/Entra |
+| [MT.1069](./MT.1069.md) | Restrict non-admin users from creating security groups. | Low | Maester/Entra |
+| [MT.1070](./MT.1070.md) | Restrict device join to selected users/groups or none. | Medium | Maester/Entra |
+| [MT.1071](./MT.1071.md) | At least one Conditional Access policy explicitly includes Azure DevOps. | Medium | Maester/Entra |
+| [MT.1072](./MT.1072.md) | Conditional Access policies should not use the deprecated Approved Client App grant. | High | Maester/Entra |
+| [MT.1073](./MT.1073.md) | Soft- and hard-matching of synchronized objects should be blocked. | Medium | Maester/Entra |
+| [MT.1074](./MT.1074.md) | Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain | Medium | Maester/Exchange |
+| [MT.1075](./MT.1075.md) | Require explicit assignment of Third Party Entra Apps. | Medium | Maester/Entra |
+| [MT.1076](./MT.1076.md) | MOERA SHOULD NOT be used for sent mail | High | Maester/Exchange |
+| [MT.1077](./MT.1077.md) | App registrations with privileged API permissions should not have owners. | Medium | Exposure Management |
+| [MT.1078](./MT.1078.md) | App registrations with highly privileged directory roles should not have owners. | Medium | Exposure Management |
+| [MT.1079](./MT.1079.md) | Privileged API permissions on service principals should not remain unused. | Medium | Exposure Management |
+| [MT.1080](./MT.1080.md) | Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints. | Medium | Exposure Management |
+| [MT.1081](./MT.1081.md) | Hybrid users should not be assigned Entra ID role assignments. | Medium | Exposure Management |
+| [MT.1083](./MT.1083.md) | Ensure Delicensing Resiliency is enabled | Low | Maester/Exchange |
+| [MT.1084](./MT.1084.md) | Microsoft Entra seamless single sign-on should be disabled for all domains in EntraID Connect servers. | High | Maester/Entra |
+| [MT.1085](./MT.1085.md) | Pending approvals for Critical Asset Management should not be present. | Medium | Exposure Management |
+| [MT.1086](./MT.1086.md) | Devices should not share both critical and non-critical user credentials. | Low | Exposure Management |
+| [MT.1087](./MT.1087.md) | Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. | High | Exposure Management |
+| [MT.1088](./MT.1088.md) | Devices with critical credentials should be protected by TPM. | Medium | Exposure Management |
+| [MT.1089](./MT.1089.md) | Devices with critical credentials should be protected by Credential Guard. | Medium | Exposure Management |
+| [MT.1090](./MT.1090.md) | Global Administrator role should not be added as local administrator on the device during Microsoft Entra join | Medium | Maester/Entra |
+| [MT.1091](./MT.1091.md) | Registering user should not be added as local administrator on the device during Microsoft Entra join | Medium | Maester/Entra |
+| [MT.1092](./MT.1092.md) | Intune APNS certificate should be valid for more than 30 days | High | Maester/Intune |
+| [MT.1093](./MT.1093.md) | Apple Automated Device Enrollment Tokens should be valid for more than 30 days | High | Maester/Intune |
+| [MT.1094](./MT.1094.md) | Apple Volume Purchase Program Tokens should be valid for more than 30 days | High | Maester/Intune |
+| [MT.1095](./MT.1095.md) | Android Enterprise account connection should be healthy | High | Maester/Intune |
+| [MT.1096](./MT.1096.md) | Ensure at least one Intune Multi Admin Approval policy is configured | Medium | Maester/Intune |
+| [MT.1097](./MT.1097.md) | Ensure all Intune Certificate Connectors are healthy and running supported versions | High | Maester/Intune |
+| [MT.1098](./MT.1098.md) | Mobile Threat Defense Connectors should be healthy | Critical | Maester/Intune |
+| [MT.1099](./MT.1099.md) | Windows Diagnostic Data Processing should be enabled | Low | Maester/Intune |
+| [MT.1100](./MT.1100.md) | Intune Diagnostic Settings should include Audit Logs | High | Maester/Intune |
+| [MT.1101](./MT.1101.md) | Default Branding Profile should be customized | Low | Maester/Intune |
+| [MT.1102](./MT.1102.md) | Windows Feature Update Policy Settings should not reference end of support builds | High | Maester/Intune |
+| [MT.1103](./MT.1103.md) | Ensure Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable groups | High | Maester/Intune |
+| [MT.1105](./MT.1105.md) | Ensure MDM Authority is set to Intune | Low | Maester/Intune |
+| [MT.1106](./MT.1106.md) | Catalog resources must have valid roles (no stale / removed app roles or SPNs). | Medium | Maester/Entra |
+| [MT.1107](./MT.1107.md) | Access packages and catalogs should not reference deleted groups. | Medium | Maester/Entra |
+| [MT.1108](./MT.1108.md) | Access packages should not reference inactive or orphaned assignment policies. | Medium | Maester/Entra |
+| [MT.1109](./MT.1109.md) | Access package approval workflows must have valid approvers. | Medium | Maester/Entra |
+| [MT.1110](./MT.1110.md) | No catalog should contain resources without any associated access packages. | Medium | Maester/Entra |
+| [MT.1111](./MT.1111.md) | High privileged user should be linked to an identity. | Low | Exposure Management |
+| [MT.1112](./MT.1112.md) | Privileged user accounts should not remain enabled when the linked primary account is disabled. | Medium | Exposure Management |
+| [MT.1113](./MT.1113.md) | AI agents should not be shared with broad access control policies. | High | Copilot Studio Agent Security |
+| [MT.1114](./MT.1114.md) | AI agents should require user authentication. | High | Copilot Studio Agent Security |
+| [MT.1115](./MT.1115.md) | AI agents should not have risky HTTP configurations. | Medium | Copilot Studio Agent Security |
+| [MT.1116](./MT.1116.md) | AI agents should not send email with AI-controlled inputs. | High | Copilot Studio Agent Security |
+| [MT.1117](./MT.1117.md) | Published AI agents should not be dormant. | Low | Copilot Studio Agent Security |
+| [MT.1118](./MT.1118.md) | AI agents should not use author (maker) authentication for connections. | Medium | Copilot Studio Agent Security |
+| [MT.1119](./MT.1119.md) | AI agents should not have hard-coded credentials in topics. | High | Copilot Studio Agent Security |
+| [MT.1120](./MT.1120.md) | AI agents should not use MCP server tools without review. | Medium | Copilot Studio Agent Security |
+| [MT.1121](./MT.1121.md) | AI agents with generative orchestration should have custom instructions. | Medium | Copilot Studio Agent Security |
+| [MT.1122](./MT.1122.md) | AI agents should not have orphaned ownership. | Medium | Copilot Studio Agent Security |
+| [MT.1123](./MT.1123.md) | Ensure BitLocker full disk encryption is configured | High | Maester/Intune |
+| [MT.1147](./MT.1147.md) | Do not sync krbtgt_AzureAD to Entra ID. | High | Maester/Entra |
+| [MT.1148](./MT.1148.md) | Archive Scanning should be enabled. | High | Maester/Defender |
+| [MT.1149](./MT.1149.md) | Behavior Monitoring should be enabled. | High | Maester/Defender |
+| [MT.1150](./MT.1150.md) | Cloud Protection should be enabled. | High | Maester/Defender |
+| [MT.1151](./MT.1151.md) | Email Scanning should be enabled. | High | Maester/Defender |
+| [MT.1152](./MT.1152.md) | Script Scanning should be enabled. | High | Maester/Defender |
+| [MT.1153](./MT.1153.md) | Real-time Monitoring should be enabled. | High | Maester/Defender |
+| [MT.1154](./MT.1154.md) | Full Scan Removable Drives should be enabled. | High | Maester/Defender |
+| [MT.1155](./MT.1155.md) | Full Scan Mapped Drives should be disabled for performance. | High | Maester/Defender |
+| [MT.1156](./MT.1156.md) | Scanning Network Files should be enabled. | High | Maester/Defender |
+| [MT.1157](./MT.1157.md) | CPU Load Factor should be optimized (20-30%). | High | Maester/Defender |
+| [MT.1158](./MT.1158.md) | Scan should be scheduled. | High | Maester/Defender |
+| [MT.1159](./MT.1159.md) | Quick Scan Time configuration is not required. | High | Maester/Defender |
+| [MT.1160](./MT.1160.md) | Signatures should be checked before scan. | High | Maester/Defender |
+| [MT.1161](./MT.1161.md) | Cloud Block Level should be High or higher. | High | Maester/Defender |
+| [MT.1162](./MT.1162.md) | Cloud Extended Timeout should be 30-50 seconds. | High | Maester/Defender |
+| [MT.1163](./MT.1163.md) | Signature Update Interval should be 1-4 hours. | High | Maester/Defender |
+| [MT.1164](./MT.1164.md) | PUA Protection should be enabled. | High | Maester/Defender |
+| [MT.1165](./MT.1165.md) | Network Protection should be enabled. | High | Maester/Defender |
+| [MT.1166](./MT.1166.md) | Local Admin Merge should be disabled. | High | Maester/Defender |
+| [MT.1167](./MT.1167.md) | Real-Time Scan Direction should cover both directions. | High | Maester/Defender |
+| [MT.1168](./MT.1168.md) | Cleaned Malware should be retained for at least 30 days. | High | Maester/Defender |
+| [MT.1169](./MT.1169.md) | Catch-up Full Scan should be disabled. | High | Maester/Defender |
+| [MT.1170](./MT.1170.md) | Catch-up Quick Scan should be disabled. | High | Maester/Defender |
+| [MT.1171](./MT.1171.md) | Sample Submission should send safe samples automatically. | High | Maester/Defender |
+| [MT.1172](./MT.1172.md) | Unified audit log ingestion is enabled. | High | Maester/Purview |
+| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Medium | Maester/Purview |
+| [MT.1174](./MT.1174.md) | Insider Risk Management policy for Risky AI usage is enabled. | Medium | Maester/Purview |
+| [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location. | High | Maester/Purview |
+| [MT.1176](./MT.1176.md) | Retention policy is configured for the Microsoft Copilot location. | Medium | Maester/Purview |
+| [MT.1177](./MT.1177.md) | Ensure LAPS Configuration Policy is properly set. | Medium | Maester/Intune |
+| [MT.1178](./MT.1178.md) | Ensure ASR Rules are configured correctly. | High | Maester/Intune |
+| [MT.1179](./MT.1179.md) | Ensure App Control for Business is enabled. | High | Maester/Intune |
+| [MT.1180](./MT.1180.md) | Ensure Managed Installer Rules are configured correctly. | Medium | Maester/Intune |
+| [MT.1181](./MT.1181.md) | Conditional Access policy is present that blocks high agent risk sign-ins. | High | Maester/Entra |
+| [MT.1182](./MT.1182.md) | Mature DMARC policy SHALL be published for every Entra managed and verified domain. | Medium | Maester/Entra |
+| [MT.1183](./MT.1183.md) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled. | Medium | Maester/Entra |
+| [MT.1184](./MT.1184.md) | Conditional Access policy without any target resources configured. | Medium | Maester/Entra |
+| [MT.1185](./MT.1185.md) | Block legacy MSOnline (MSOL) PowerShell module. | High | Maester/Entra |
+| [MT.1186](./MT.1186.md) | Require explicit assignment of high-privilege first-party Entra Apps. | High | Maester/Entra |
+| [MT.1187](./MT.1187.md) | The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled. | Medium | Maester/Entra |
+| [MT.1188](./MT.1188.md) | Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device. | Medium | Maester/Entra |
+| [MT.1189](./MT.1189.md) | Groups assigned to Global Secure Access traffic forwarding profiles should not be nested. | Medium | Maester/Entra |
+| [MT.1190](./MT.1190.md) | Entra Private Access applications should not use the Default connector group. | Medium | Maester/Entra |
+| [MT.1191](./MT.1191.md) | Break-glass accounts should be excluded from the Compliant Network Conditional Access policy. | Medium | Maester/Entra |
+| [MT.1192](./MT.1192.md) | Groups assigned to Entra Private Access applications should not be nested. | Medium | Maester/Entra |
+| [MT.1193](./MT.1193.md) | Entra Private Access application segments should avoid broad or risky destinations. | Medium | Maester/Entra |
+| [MT.1194](./MT.1194.md) | The baseline Global Secure Access security profile should enforce a threat-intelligence floor. | Medium | Maester/Entra |
+| [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control. | Medium | Maester/Entra |
+| [MT.1196](./MT.1196.md) | Review who can change attributes used by dynamic group rules. | Medium | Maester/Entra |
+| [MT.1197](./MT.1197.md) | Remove memberOf rules. | High | Maester/Entra |
+| [MT.1198](./MT.1198.md) | App registration certificates should not have excessive validity periods. | Medium | Maester/Entra |
+| [MT.1199](./MT.1199.md) | App registration credentials should not be expired or expiring soon. | Medium | Maester/Entra |
+| [MT.1200](./MT.1200.md) | Agent Identities should have an active Agent Identity Blueprint Principal (Preview). | Medium | Maester/Entra |
+| [MT.1201](./MT.1201.md) | Agent Users should have an existing parent Agent Identity (Preview). | Medium | Maester/Entra |
+| [MT.1203](./MT.1203.md) | Agent Identity Blueprint Principals should have an existing Blueprint (Preview). | Medium | Maester/Entra |
+| [MT.1204](./MT.1204.md) | Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview). | Medium | Maester/Entra |
+| [MT.1205](./MT.1205.md) | Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview). | Medium | Maester/Entra |
+| [MT.1206](./MT.1206.md) | Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview). | Medium | Maester/Entra |
+| [MT.1207](./MT.1207.md) | Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview). | High | Maester/Entra |
+| [MT.1208](./MT.1208.md) | Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview). | High | Maester/Entra |
+| [MT.1209](./MT.1209.md) | Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview). | High | Maester/Entra |
+| [MT.1210](./MT.1210.md) | Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview). | High | Maester/Entra |
+| [MT.1211](./MT.1211.md) | Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview). | High | Maester/Entra |
+| [MT.1212](./MT.1212.md) | Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview). | Medium | Maester/Entra |
+| [MT.1213](./MT.1213.md) | Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview). | High | Maester/Entra |
+| [MT.1214](./MT.1214.md) | Ensure macOS compliance policy requires System Integrity Protection. | Medium | Maester/Intune |
+| [MT.1215](./MT.1215.md) | Ensure Gatekeeper restricts macOS app download locations. | Medium | Maester/Intune |
+| [MT.1216](./MT.1216.md) | Ensure macOS compliance policy requires a Defender machine risk score level. | Medium | Maester/Intune |
+| [MT.1217](./MT.1217.md) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles. | High | Maester/Intune |
+| [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | High | Maester/Entra |

@@ -80,9 +80,10 @@ This test verifies the organization setting only. It does not enumerate reposito
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubIssueDeletionLimited](/docs/commands/Test-MtCisGitHubIssueDeletionLimited) |
+| Services | GitHub |
 | Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.4, GitHub, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubIssueDeletionLimited.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubIssueDeletionLimited.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.2.4.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.4.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.2.4.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.4.md)

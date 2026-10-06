@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.100 - Bulk Complaint Level threshold is between 4 and 6.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 The differentiation between bulk and spam can sometimes be subjective. The bulk complaint level is based on the number of complaints from the sender. Decreasing the threshold can decrease the amount of perceived spam received, however, too low may be considered too strict.
 
 #### Remediation action
+
 Set the Bulk Complaint Level threshold to be 6.
 
 #### Related Links
@@ -42,9 +43,10 @@ Set the Bulk Complaint Level threshold to be 6.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA100](/docs/commands/Test-ORCA100) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.100 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA100.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA100.ps1`
+- Test: [`tests/orca/Test.ORCA.100.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.100.ps1)
+- Documentation: [`tests/orca/Test.ORCA.100.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.100.md)

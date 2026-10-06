@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.4.1"
-  - "Unknown"
+  - "Medium"
   - "CIS"
   - "CIS E3 Level 1"
   - "CIS E3"
@@ -24,7 +24,7 @@ keywords:
 
 # CIS.M365.4.1 - (L1) Ensure devices without a compliance policy are marked 'not compliant'
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/korthal-maiyn" title="Christopher Edwards · Co-contributor"><img src="https://github.com/Korthal-Maiyn.png" alt="Christopher Edwards" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/korthal-maiyn" title="Christopher Edwards · Co-contributor"><img src="https://github.com/Korthal-Maiyn.png" alt="Christopher Edwards" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -79,13 +79,15 @@ Invoke-MgGraphRequest -Uri $Uri -Method PATCH -Body $Body
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.4.1 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisDevicesWithoutCompliancePolicyMarked](/docs/commands/Test-MtCisDevicesWithoutCompliancePolicyMarked) |
+| Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.4.1, L1, Security |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisDevicesWithoutCompliancePolicyMarked.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisDevicesWithoutCompliancePolicyMarked.ps1`
+- Test: [`tests/cis/Test.CIS.M365.4.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.4.1.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.4.1.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.4.1.md)

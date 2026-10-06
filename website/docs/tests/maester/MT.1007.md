@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1007"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1007 - At least one Conditional Access policy is configured to require MFA for all users.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -32,11 +33,13 @@ See [Require MFA for all users - Microsoft Learn](https://learn.microsoft.com/en
 | Test ID | MT.1007 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
+| Category | Maester/Entra |
 | PowerShell test | [Test-MtCaMfaForAllUsers](/docs/commands/Test-MtCaMfaForAllUsers) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1007 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaMfaForAllUsers.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1007.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1007.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1007.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1007.md)

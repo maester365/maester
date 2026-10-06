@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.107 - End-user spam notification is enabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Enable End-user Spam notifications to let users manage their own spam-quarantined messages (Release, Block sender, Review). End-user spam notifications contain a list of all spam-quarantined messages that the end-user has received during a time period. Policies that do not apply to a spam policy as either a spam, or bulk action, will appear disabled below.
 
 #### Remediation action
+
 Enable End-user Spam notifications on a quarantine policy.
 
 #### Related Links
@@ -42,9 +43,10 @@ Enable End-user Spam notifications on a quarantine policy.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA107](/docs/commands/Test-ORCA107) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.107 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA107.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA107.ps1`
+- Test: [`tests/orca/Test.ORCA.107.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.107.ps1)
+- Documentation: [`tests/orca/Test.ORCA.107.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.107.md)

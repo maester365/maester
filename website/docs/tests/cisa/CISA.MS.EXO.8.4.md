@@ -20,7 +20,7 @@ keywords:
 
 # CISA.MS.EXO.8.4 - At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -77,9 +77,10 @@ Rationale: Users may inadvertently share sensitive information with others who s
 | Suite | CISA |
 | Category | exchange |
 | PowerShell test | [Test-MtCisaDlpBaselineRule](/docs/commands/Test-MtCisaDlpBaselineRule) |
+| Services | ExchangeOnline, Graph |
 | Tags | CISA, CISA.MS.EXO.8.4, MS.EXO, MS.EXO.8.4 |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaDlpBaselineRule.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaDlpBaselineRule.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.8.4.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.4.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.8.4.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.4.md)

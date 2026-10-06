@@ -40,6 +40,12 @@ function Merge-MtPartitionResult {
             }
         }
     }
+    # A partition that did not select a family reports one NotRun row on the parent ID; drop it when
+    # another partition ran the family's instances.
+    $ranParents = @($byId.Values | Where-Object { $_.Result -ne 'NotRun' -and $_.PSObject.Properties['ParentId'] -and $_.ParentId } | ForEach-Object { [string]$_.ParentId } | Select-Object -Unique)
+    foreach ($parent in $ranParents) {
+        if ($byId.Contains($parent) -and $byId[$parent].Result -eq 'NotRun') { $byId.Remove($parent) }
+    }
     $rows = @($byId.Values) + @($noId)
     $active = @($rows | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name)
     $inactive = @($rows | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name)

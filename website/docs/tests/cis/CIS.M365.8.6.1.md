@@ -21,7 +21,7 @@ keywords:
 
 # CIS.M365.8.6.1 - (L1) Ensure users can report security concerns in Teams
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -107,9 +107,10 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 | Suite | CIS |
 | Category | CIS E5 Level 1 |
 | PowerShell test | [Test-MtCisTeamsReportSecurityConcerns](/docs/commands/Test-MtCisTeamsReportSecurityConcerns) |
+| Services | Teams |
 | Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.8.6.1, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisTeamsReportSecurityConcerns.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisTeamsReportSecurityConcerns.ps1`
+- Test: [`tests/cis/Test.CIS.M365.8.6.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.6.1.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.8.6.1.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.6.1.md)

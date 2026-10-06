@@ -29,11 +29,11 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.1.2.2](./CIS.M365.1.2.2.md) | (L1) Ensure sign-in to shared mailboxes is blocked | High | CIS E3 Level 1 |
 | [CIS.M365.1.3.1](./CIS.M365.1.3.1.md) | (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)' | High | CIS E3 Level 1 |
 | [CIS.M365.1.3.3](./CIS.M365.1.3.3.md) | (L2) Ensure 'External sharing' of calendars is not available | Medium | CIS E3 Level 2 |
-| [CIS.M365.1.3.4](./CIS.M365.1.3.4.md) | (L1) Ensure 'User owned apps and services' is restricted | Unknown | CIS E3 Level 1 |
-| [CIS.M365.1.3.5](./CIS.M365.1.3.5.md) | (L1) Ensure internal phishing protection for Forms is enabled | Unknown | CIS E3 Level 1 |
+| [CIS.M365.1.3.4](./CIS.M365.1.3.4.md) | (L1) Ensure 'User owned apps and services' is restricted | Medium | CIS E3 Level 1 |
+| [CIS.M365.1.3.5](./CIS.M365.1.3.5.md) | (L1) Ensure internal phishing protection for Forms is enabled | Medium | CIS E3 Level 1 |
 | [CIS.M365.1.3.6](./CIS.M365.1.3.6.md) | (L2) Ensure the customer lockbox feature is enabled | High | CIS E5 Level 2 |
-| [CIS.M365.1.3.7](./CIS.M365.1.3.7.md) | (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' | Unknown | CIS E3 Level 2 |
-| [CIS.M365.2.1.1](./CIS.M365.2.1.1.md) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy) | Medium | CIS E5 Level 2 |
+| [CIS.M365.1.3.7](./CIS.M365.1.3.7.md) | (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' | Medium | CIS E3 Level 2 |
+| [CIS.M365.2.1.1](./CIS.M365.2.1.1.md) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy) | Medium | CIS E5 Level 2 |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2.md) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | Medium | CIS E3 Level 1 |
 | [CIS.M365.2.1.3](./CIS.M365.2.1.3.md) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | Medium | CIS E3 Level 1 |
 | [CIS.M365.2.1.4](./CIS.M365.2.1.4.md) | (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy) | High | CIS E5 Level 2 |
@@ -46,24 +46,24 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13.md) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | Medium | CIS E3 Level 1 |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4.md) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | Medium | CIS E5 Level 1 |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1.md) | (L1) Ensure Microsoft 365 audit log search is Enabled | High | CIS E3 Level 1 |
-| [CIS.M365.4.1](./CIS.M365.4.1.md) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | (L1) Ensure users cannot register applications | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3.md) | (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6.md) | (L2) Ensure users are restricted from recovering BitLocker keys | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | (L1) Ensure the admin consent workflow is enabled | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2.md) | (L1) Ensure that guest user access is restricted | Unknown | CIS E3 Level 1 |
-| [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5.md) | (L1) Ensure weak authentication methods are disabled | Unknown | CIS E3 Level 1 |
-| [CIS.M365.6.5.3](./CIS.M365.6.5.3.md) | (L2) Ensure additional storage providers are restricted in Outlook on the web | Unknown | CIS E3 Level 2 |
-| [CIS.M365.7.2.2](./CIS.M365.7.2.2.md) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | Unknown | SharePoint Online |
-| [CIS.M365.7.2.5](./CIS.M365.7.2.5.md) | (L2) Ensure that SharePoint guest users cannot share items they don't own | Unknown | SharePoint Online |
-| [CIS.M365.7.2.7](./CIS.M365.7.2.7.md) | (L1) Ensure link sharing is restricted in SharePoint and OneDrive | Unknown | SharePoint Online |
-| [CIS.M365.7.2.9](./CIS.M365.7.2.9.md) | (L1) Ensure guest access to a site or OneDrive will expire automatically | Unknown | SharePoint Online |
-| [CIS.M365.7.2.11](./CIS.M365.7.2.11.md) | (L1) Ensure the SharePoint default sharing link permission is set | Unknown | SharePoint Online |
-| [CIS.M365.7.3.1](./CIS.M365.7.3.1.md) | (L2) Ensure Office 365 SharePoint infected files are disallowed for download | Unknown | SharePoint Online |
+| [CIS.M365.4.1](./CIS.M365.4.1.md) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | Medium | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | (L1) Ensure users cannot register applications | Medium | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3.md) | (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' | Medium | CIS E3 Level 1 |
+| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6.md) | (L2) Ensure users are restricted from recovering BitLocker keys | Medium | CIS E3 Level 2 |
+| [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | Medium | CIS E3 Level 2 |
+| [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | (L1) Ensure the admin consent workflow is enabled | Medium | CIS E3 Level 1 |
+| [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2.md) | (L1) Ensure that guest user access is restricted | Medium | CIS E3 Level 1 |
+| [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5.md) | (L1) Ensure weak authentication methods are disabled | Medium | CIS E3 Level 1 |
+| [CIS.M365.6.5.3](./CIS.M365.6.5.3.md) | (L2) Ensure additional storage providers are restricted in Outlook on the web | Medium | CIS E3 Level 2 |
+| [CIS.M365.7.2.2](./CIS.M365.7.2.2.md) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | Medium | CIS E3 Level 1 |
+| [CIS.M365.7.2.5](./CIS.M365.7.2.5.md) | (L2) Ensure that SharePoint guest users cannot share items they don't own | Medium | CIS E3 Level 2 |
+| [CIS.M365.7.2.7](./CIS.M365.7.2.7.md) | (L1) Ensure link sharing is restricted in SharePoint and OneDrive | Medium | CIS E3 Level 1 |
+| [CIS.M365.7.2.9](./CIS.M365.7.2.9.md) | (L1) Ensure guest access to a site or OneDrive will expire automatically | Medium | CIS E3 Level 1 |
+| [CIS.M365.7.2.11](./CIS.M365.7.2.11.md) | (L1) Ensure the SharePoint default sharing link permission is set | Medium | CIS E3 Level 1 |
+| [CIS.M365.7.3.1](./CIS.M365.7.3.1.md) | (L2) Ensure Office 365 SharePoint infected files are disallowed for download | Medium | CIS E5 Level 2 |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1.md) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | Medium | CIS E3 Level 2 |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2.md) | (L1) Ensure communication with unmanaged Teams users is disabled | Medium | CIS E3 Level 1 |
-| [CIS.M365.8.2.3](./CIS.M365.8.2.3.md) | (L1) Ensure external Teams users cannot initiate conversations | Unknown | CIS E3 Level 1 |
+| [CIS.M365.8.2.3](./CIS.M365.8.2.3.md) | (L1) Ensure external Teams users cannot initiate conversations | Medium | CIS E3 Level 1 |
 | [CIS.M365.8.4.1](./CIS.M365.8.4.1.md) | (L1) Ensure app permission policies are configured | High | CIS E3 Level 1 |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3.md) | (L1) Ensure only people in my org can bypass the lobby | Medium | CIS E3 Level 1 |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1.md) | (L1) Ensure users can report security concerns in Teams | Medium | CIS E5 Level 1 |

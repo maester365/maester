@@ -37,20 +37,34 @@ namespace Maester.Engine
             return CurrentTests.TryGetValue(rs.Id, out id) ? id : null;
         }
 
-        /// <summary>Marks a test as running on the calling runspace. Called by the engine's invocation script.</summary>
-        public static void EnterTest(string testId)
+        /// <summary>
+        /// Marks a test as running on the calling runspace and returns the test that was running before, if
+        /// any (a test can run another test with Invoke-MtTest). Called by the engine's invocation script.
+        /// </summary>
+        public static string EnterTest(string testId)
         {
             var rs = Runspace.DefaultRunspace;
-            if (rs != null && testId != null) CurrentTests[rs.Id] = testId;
+            if (rs == null || testId == null) return null;
+            string previous;
+            CurrentTests.TryGetValue(rs.Id, out previous);
+            CurrentTests[rs.Id] = testId;
+            return previous;
         }
 
-        /// <summary>Clears the running test of the calling runspace. Called by the engine's invocation script.</summary>
-        public static void ExitTest()
+        /// <summary>Restores the test that was running before EnterTest, or clears it when there was none.</summary>
+        public static void ExitTest(string previousTestId)
         {
             var rs = Runspace.DefaultRunspace;
             if (rs == null) return;
+            if (previousTestId != null) { CurrentTests[rs.Id] = previousTestId; return; }
             string removed;
             CurrentTests.TryRemove(rs.Id, out removed);
+        }
+
+        /// <summary>Clears the running test of the calling runspace.</summary>
+        public static void ExitTest()
+        {
+            ExitTest(null);
         }
 
         /// <summary>Clears per-run state. Called at the start of every engine run.</summary>

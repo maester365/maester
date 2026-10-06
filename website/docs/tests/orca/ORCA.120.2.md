@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.120.2 - Zero Hour Autopurge Enabled for Malware.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Zero Hour Autopurge can assist removing false-negatives post detection from mailboxes. By default, it is enabled.
 
 #### Remediation action
+
 Enable Zero Hour Autopurge.
 
 #### Related Links
@@ -41,9 +42,10 @@ Enable Zero Hour Autopurge.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA120_malware](/docs/commands/Test-ORCA120_malware) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.120.2 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA120_malware.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA120_malware.ps1`
+- Test: [`tests/orca/Test.ORCA.120.2.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.120.2.ps1)
+- Documentation: [`tests/orca/Test.ORCA.120.2.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.120.2.md)

@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.225 - Safe Documents is enabled for Office clients.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Safe Documents can assist protecting files opened in Office appplications. Before a user is allowed to trust a file opened in Office 365 ProPlus using Protected View, the file will be verified by Microsoft Defender for Office 365.
 
 #### Remediation action
+
 Enable Safe Documents for Office clients.
 
 #### Related Links
@@ -42,9 +43,11 @@ Enable Safe Documents for Office clients.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA225](/docs/commands/Test-ORCA225) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.225 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA225.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA225.ps1`
+- Test: [`tests/orca/Test.ORCA.225.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.225.ps1)
+- Documentation: [`tests/orca/Test.ORCA.225.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.225.md)

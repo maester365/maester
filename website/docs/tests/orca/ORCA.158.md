@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.158 - Safe Attachments is enabled for SharePoint and Teams.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Safe Attachments can assist by scanning for zero day malware by using behavioural analysis and sandboxing techniques. These checks suppliment signature definitions.
 
 #### Remediation action
+
 Enable Safe Attachments for SharePoint and Teams.
 
 #### Related Links
@@ -41,9 +42,11 @@ Enable Safe Attachments for SharePoint and Teams.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA158](/docs/commands/Test-ORCA158) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.158 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA158.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA158.ps1`
+- Test: [`tests/orca/Test.ORCA.158.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.158.ps1)
+- Documentation: [`tests/orca/Test.ORCA.158.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.158.md)

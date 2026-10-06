@@ -21,7 +21,7 @@ keywords:
 
 # CIS.M365.2.1.9 - (L1) Ensure that DKIM is enabled for all Exchange Online Domains
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/brianreidc7" title="Brian Reid · Co-contributor"><img src="https://github.com/brianreidc7.png" alt="Brian Reid" /></a><a className="test-byline-avatar" href="/contributors/amlhive-tech" title="Haris Habib · Co-contributor"><img src="https://github.com/amlhive-tech.png" alt="Haris Habib" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -95,9 +95,10 @@ Set-DkimSigningConfig -Identity < domainName > -Enabled $True
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisDkim](/docs/commands/Test-MtCisDkim) |
+| Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.9, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisDkim.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisDkim.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.9.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.9.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.9.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.9.md)

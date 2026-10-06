@@ -62,11 +62,15 @@
         $config = ConvertTo-MtConfigLayer -InputObject $configFile
         $rows = @($config.TestSettings)
         if ($rows.Count -ge 300 -and -not ($rows | Where-Object { $_ -and -not $_.PSObject.Properties['Title'] })) {
+            # The defaults are the severities of the built-in tests (their [MaesterTest] attribute), plus any
+            # row the shipped config still has. A row for a test that no longer exists, with nothing but a
+            # severity, is dropped too.
             $defaults = @{}
+            foreach ($t in @(Get-MtTestCatalog)) { if ($t.Id) { $defaults[[string]$t.Id] = [pscustomobject]@{ Severity = $t.Severity } } }
             foreach ($d in @((Get-MtShippedMaesterConfig).TestSettings)) { if ($d.Id) { $defaults[[string]$d.Id] = $d } }
             $kept = @($rows | Where-Object {
                     $default = $defaults[[string]$_.Id]
-                    -not $default -or $_.Severity -ne $default.Severity -or ($_.PSObject.Properties.Name | Where-Object { $_ -notin 'Id', 'Title', 'Severity' })
+                    ($_.PSObject.Properties.Name | Where-Object { $_ -notin 'Id', 'Title', 'Severity' }) -or ($default -and $_.Severity -ne $default.Severity)
                 } | ForEach-Object {
                     $row = [ordered]@{ Id = $_.Id }
                     foreach ($p in $_.PSObject.Properties) { if ($p.Name -notin 'Id', 'Title') { $row[$p.Name] = $p.Value } }

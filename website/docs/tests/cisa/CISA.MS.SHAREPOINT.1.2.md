@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.1.2"
-  - "Unknown"
+  - "Medium"
   - "CISA"
   - "spo"
   - "MS.SHAREPOINT"
@@ -45,13 +45,14 @@ Rationale: Restricting OneDrive sharing reduces the risk of unauthorized data ex
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.1.2 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
 | Category | spo |
 | PowerShell test | [Test-MtCisaSpoOneDriveSharing](/docs/commands/Test-MtCisaSpoOneDriveSharing) |
+| Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.1.2, MS.SHAREPOINT, MS.SHAREPOINT.1.2 |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoOneDriveSharing.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoOneDriveSharing.ps1`
+- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1)
+- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.md)

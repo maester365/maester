@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1005"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1005 - All Conditional Access policies are configured to exclude at least one emergency/break glass account or group.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/bubbletroubles" title="bubbletroubles · Co-contributor"><img src="https://github.com/bubbletroubles.png" alt="bubbletroubles" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -33,11 +34,13 @@ See [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](h
 | Test ID | MT.1005 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
+| Category | Maester/Entra |
 | PowerShell test | [Test-MtCaEmergencyAccessExists](/docs/commands/Test-MtCaEmergencyAccessExists) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1005 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaEmergencyAccessExists.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1005.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1005.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1005.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1005.md)

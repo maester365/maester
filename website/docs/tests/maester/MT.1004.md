@@ -1,6 +1,6 @@
 ---
 title: "MT.1004 - At least one Conditional Access policy is configured with All Apps and All Users."
-description: "Microsoft recommends creating at least one Conditional Access policy targeting all cloud apps and ideally should be enabled for all users. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app"
+description: "Microsoft recommends creating at least one Conditional Access policy targeting all cloud apps and ideally should be enabled for all users. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app Remediation act…"
 slug: /tests/MT.1004
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1004"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1004 - At least one Conditional Access policy is configured with All Apps and All Users.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with <a href="/contributors/f-bader">Fabian Bader</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -27,6 +28,10 @@ and ideally should be enabled for all users.
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
 
+#### Remediation action
+
+Review the configuration described above.
+
 ## Test Metadata
 
 | Field | Value |
@@ -34,11 +39,12 @@ https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-a
 | Test ID | MT.1004 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaAllAppsExists](/docs/commands/Test-MtCaAllAppsExists) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCheckMT1004](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1004.ps1) |
+| Services | Graph |
 | Tags | CA, Maester, MT.1004 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaAllAppsExists.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1004.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1004.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1004.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1004.md)

@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.3.3"
-  - "Unknown"
+  - "Medium"
   - "CISA"
   - "spo"
   - "MS.SHAREPOINT"
@@ -46,13 +46,14 @@ Rationale: Requiring periodic reauthentication via verification codes ensures th
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.3.3 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
 | Category | spo |
 | PowerShell test | [Test-MtCisaSpoVerificationCodeReauth](/docs/commands/Test-MtCisaSpoVerificationCodeReauth) |
+| Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.3.3, MS.SHAREPOINT, MS.SHAREPOINT.3.3 |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoVerificationCodeReauth.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoVerificationCodeReauth.ps1`
+- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1)
+- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.md)

@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1035"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1035 - All security groups assigned to Conditional Access Policies should be protected by RMAU.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/ptmohr" title="Pascal-Tobias Mohr · Co-contributor"><img src="https://github.com/PTMohr.png" alt="Pascal-Tobias Mohr" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mrdos010" title="Anas · Co-contributor"><img src="https://github.com/mrdos010.png" alt="Anas" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -34,11 +35,13 @@ See [Restricted management administrative units in Microsoft Entra ID - Microsof
 | Test ID | MT.1035 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
+| Category | Maester/Entra |
 | PowerShell test | [Test-MtCaGroupsRestricted](/docs/commands/Test-MtCaGroupsRestricted) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1035 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaGroupsRestricted.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1035.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1035.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1035.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1035.md)

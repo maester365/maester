@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.8.2.3"
-  - "Unknown"
+  - "Medium"
   - "CIS"
   - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
@@ -19,7 +19,7 @@ keywords:
 
 # CIS.M365.8.2.3 - (L1) Ensure external Teams users cannot initiate conversations
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -85,13 +85,14 @@ Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerInbound $false
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.8.2.3 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisCommunicateInitiateExternalTeamsUsers](/docs/commands/Test-MtCisCommunicateInitiateExternalTeamsUsers) |
+| Services | Teams |
 | Tags | CIS, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.2.3 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisCommunicateInitiateExternalTeamsUsers.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisCommunicateInitiateExternalTeamsUsers.ps1`
+- Test: [`tests/cis/Test.CIS.M365.8.2.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.2.3.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.8.2.3.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.2.3.md)

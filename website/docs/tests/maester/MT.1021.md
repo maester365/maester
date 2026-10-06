@@ -1,6 +1,6 @@
 ---
 title: "MT.1021 - Security Defaults are enabled."
-description: "Security Defaults are enabled."
+description: "Security Defaults should be enabled in tenants that are not licensed for Entra ID Premium. Security Defaults provide a baseline of identity protection, including multifactor authentication registration and enforcement and blocking of legacy authentication, for tenants that cannot use Conditional Ac…"
 slug: /tests/MT.1021
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1021"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,11 +18,24 @@ keywords:
 
 # MT.1021 - Security Defaults are enabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/cloud-architekt" title="Thomas Naunheim · Co-contributor"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Co-contributor"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><span className="test-byline-avatar test-byline-more">+5</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 10 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with <a href="/contributors/weycc81">Stefan Wey</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Security Defaults are enabled.
+Security Defaults should be enabled in tenants that are not licensed for Entra ID Premium.
+
+Security Defaults provide a baseline of identity protection, including multifactor authentication registration and enforcement and blocking of legacy authentication, for tenants that cannot use Conditional Access. Tenants with an Entra ID P1 or P2 licence are skipped, because they should configure Conditional Access policies instead.
+
+#### Remediation action
+
+1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a Conditional Access Administrator.
+2. Browse to **Entra ID** > **Overview** > **Properties**.
+3. Select **Manage security defaults**.
+4. Set **Security defaults** to **Enabled** and select **Save**.
+
+#### Related links
+
+* [Security defaults in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/fundamentals/security-defaults)
 
 ## Test Metadata
 
@@ -30,9 +44,12 @@ Security Defaults are enabled.
 | Test ID | MT.1021 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCheckMT1021](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1021.ps1) |
+| Services | Graph |
 | Tags | CA, Maester, MT.1021 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1021.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1021.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1021.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1021.md)

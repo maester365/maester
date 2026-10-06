@@ -48,6 +48,7 @@
 
         if (-not $p.Test.InstanceSource) {
             $__MtSession.NativeTestInfo[$p.Test.Id] = @{ FunctionName = $p.Test.FunctionName; Markdown = $markdown }
+            Clear-MtNativeTestState -Id $p.Test.Id
             $workItems.Add((New-MtNativeWorkItem -PlanRow $p -Id $p.Test.Id -Module $module -Parameters $p.Parameters))
             continue
         }
@@ -58,6 +59,7 @@
         foreach ($instance in $expansion.Instances) {
             $instanceId = "$($p.Test.Id).$($instance.Id)"
             $__MtSession.NativeTestInfo[$instanceId] = @{ FunctionName = $p.Test.FunctionName; Markdown = $markdown }
+            Clear-MtNativeTestState -Id $instanceId
             $parameters = @{} + $p.Parameters
             $parameters['Instance'] = $instance
             $workItems.Add((New-MtNativeWorkItem -PlanRow $p -Id $instanceId -Module $module -Parameters $parameters -Instance $instance))
@@ -82,6 +84,20 @@
         }
     }
     $rows.ToArray()
+}
+
+function Clear-MtNativeTestState {
+    <#
+    .SYNOPSIS
+    Forgets the result detail and return value an earlier run left for a test, so they cannot leak into this run.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Clears in-memory session state only.')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string] $Id
+    )
+    if ($__MtSession.TestResultDetail -and $__MtSession.TestResultDetail.ContainsKey($Id)) { $null = $__MtSession.TestResultDetail.Remove($Id) }
+    if ($__MtSession.NativeReturnValue -and $__MtSession.NativeReturnValue.ContainsKey($Id)) { $null = $__MtSession.NativeReturnValue.Remove($Id) }
 }
 
 function New-MtNativeWorkItem {
@@ -144,7 +160,7 @@ function Expand-MtTestFamily {
     # The source runs as the parent test, so Add-MtTestResultDetail -SkippedBecause in it skips the family
     # (for example when the feature the family enumerates is not enabled in the tenant).
     try {
-        [Maester.Engine.MtSession]::EnterTest($test.Id)
+        $previousTest = [Maester.Engine.MtSession]::EnterTest($test.Id)
         $raw = if ($Module) { & $Module { param($fn) & $fn } $test.InstanceSource } else { & $test.InstanceSource }
         $instances = @($raw | Where-Object { $null -ne $_ })
     } catch {
@@ -153,7 +169,7 @@ function Expand-MtTestFamily {
         }
         return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Error' 'InstanceSourceFailed' "The instance source $($test.InstanceSource) failed: $($_.Exception.Message)") }
     } finally {
-        [Maester.Engine.MtSession]::ExitTest()
+        [Maester.Engine.MtSession]::ExitTest($previousTest)
     }
     if ($instances.Count -eq 0) {
         return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Skipped' 'NoInstances' 'There is nothing in this tenant for this test to check.') }

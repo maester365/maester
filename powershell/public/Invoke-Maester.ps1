@@ -775,8 +775,15 @@
                 $excludedLines = @($pesterFilter.ExcludeLine)
                 $pesterFiles = @(@($testSource.BuiltInFiles) + @($testSource.CustomFiles) | Where-Object { $_ -notin $excludedFiles })
                 if ($pesterFiles.Count -gt 0) {
-                    $nativeRows = @($nativeRows) + @(Get-MtPesterFileInventory -Path $pesterFiles | Where-Object { $_.Line -and "$($_.File):$($_.Line)" -notin $excludedLines } |
-                            ForEach-Object { New-MtPesterUnavailableRow -InventoryRow $_ -Origin $fileOrigin[$_.File] })
+                    # Pester's tag filter, applied to the statically known tags: tests the tags leave out get no row.
+                    $includeTags = @($pesterFilter.Tag | Where-Object { $_ })
+                    $excludeTags = @($pesterFilter.ExcludeTag | Where-Object { $_ })
+                    $tagMatch = { param($tags, $patterns) foreach ($t in @($tags)) { foreach ($pattern in $patterns) { if ($t -like $pattern) { return $true } } }; $false }
+                    $nativeRows = @($nativeRows) + @(Get-MtPesterFileInventory -Path $pesterFiles | Where-Object {
+                            $_.Line -and "$($_.File):$($_.Line)" -notin $excludedLines -and
+                            ($includeTags.Count -eq 0 -or (& $tagMatch $_.Tags $includeTags)) -and
+                            -not ($excludeTags.Count -gt 0 -and (& $tagMatch $_.Tags $excludeTags))
+                        } | ForEach-Object { New-MtPesterUnavailableRow -InventoryRow $_ -Origin $fileOrigin[$_.File] })
                 }
             } else {
                 $pesterResults = $provider.Results

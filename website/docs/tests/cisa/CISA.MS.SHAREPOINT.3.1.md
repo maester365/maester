@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.3.1"
-  - "Unknown"
+  - "Medium"
   - "CISA"
   - "spo"
   - "MS.SHAREPOINT"
@@ -45,13 +45,14 @@ Rationale: Anyone links that do not expire or have excessively long expiration p
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.3.1 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
 | Category | spo |
 | PowerShell test | [Test-MtCisaSpoAnyoneLinkExpiration](/docs/commands/Test-MtCisaSpoAnyoneLinkExpiration) |
+| Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.3.1, MS.SHAREPOINT, MS.SHAREPOINT.3.1 |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoAnyoneLinkExpiration.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoAnyoneLinkExpiration.ps1`
+- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.1.ps1)
+- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.1.md)

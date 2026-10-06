@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.1.3.4"
-  - "Unknown"
+  - "Medium"
   - "CIS"
   - "CIS E3 Level 1"
   - "CIS E3"
@@ -24,7 +24,7 @@ keywords:
 
 # CIS.M365.1.3.4 - (L1) Ensure 'User owned apps and services' is restricted
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -81,13 +81,14 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.1.3.4 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
 | PowerShell test | [Test-MtCisUserOwnedAppsRestricted](/docs/commands/Test-MtCisUserOwnedAppsRestricted) |
+| Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.4, L1, Security |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisUserOwnedAppsRestricted.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisUserOwnedAppsRestricted.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.3.4.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.4.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.3.4.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.4.md)

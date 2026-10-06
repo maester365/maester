@@ -49,9 +49,6 @@ $RepoRoot = (Resolve-Path -Path $RepoRoot).Path
 #region Manual overrides
 # Reviewed by hand. Value is a current ID or 'retired'. Applied before every automatic rule.
 $ManualOverrides = [ordered]@{
-    # One ID shared by every check in the early generated AADSCA/EIDSCA files; no single successor.
-    'AADSC'                                                                                                                        = 'retired'
-    'EIDSCA'                                                                                                                       = 'retired'
     # The original combined high-risk app permission check, later split into MT.1050 (direct) and MT.1051 (indirect).
     'Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.' = 'MT.1050'
     'MT.1050 Apps with high-risk permissions having a direct or indirect path to Global Admin'                                    = 'MT.1050'
@@ -59,8 +56,6 @@ $ManualOverrides = [ordered]@{
     'MT.1050 Apps with high-risk permissions having a direct path to Global Admin'                                                = 'MT.1050'
     'MT.1051 Apps with high-risk permissions having an indirect path to Global Admin'                                             = 'MT.1051'
     # Mock-based unit tests that briefly lived under tests/; they were never security checks.
-    'Exclude'                                                                                                                      = 'retired'
-    'Include'                                                                                                                      = 'retired'
     'MFA for All users should pass even if not targeting guests'                                                                   = 'retired'
     'MFA for All users that excludes any guest type should fail'                                                                   = 'retired'
     'MFA for Guests should pass'                                                                                                   = 'retired'
@@ -68,6 +63,12 @@ $ManualOverrides = [ordered]@{
     'Policy without non persistent browser session should fail'                                                                    = 'retired'
 }
 #endregion Manual overrides
+
+# Historical IDs too generic to identify a Maester test: a user's own test could use them ('EIDSCA: ...'),
+# and a listed ID makes Maester skip, and Update-MaesterTests delete, such a test. Left out of the table.
+# AADSC and EIDSCA were shared by every check of the early generated files; Exclude and Include were
+# mock-based unit tests that briefly lived under tests/.
+$GenericIds = @('AADSC', 'EIDSCA', 'Exclude', 'Include')
 
 # Known prefix renames, applied in order: old prefix -> new prefix.
 $PrefixRenames = @(
@@ -280,6 +281,7 @@ $entries = [System.Collections.Generic.List[object]]::new()
 $review = [System.Collections.Generic.List[string]]::new()
 foreach ($record in $history.Values) {
     if ($currentIds.ContainsKey($record.Id)) { continue }
+    if ($record.Id -in $GenericIds) { continue }
 
     $titleCandidates = [System.Collections.Generic.SortedSet[string]]::new()
     foreach ($t in $record.Titles) { if ($t -and $titleIndex.ContainsKey($t)) { $titleCandidates.UnionWith($titleIndex[$t]) } }

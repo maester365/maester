@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.235 - SPF records is set up for all your custom domains.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 SPF helps validate outbound email sent from your custom domain. Microsoft 365 uses the Sender Policy Framework (SPF) TXT record in DNS to ensure that destination email systems trust messages sent from your custom domain.
 
 #### Remediation action
+
 Set up SPF records to prevent spoofing.
 
 #### Related Links
@@ -40,9 +41,10 @@ Set up SPF records to prevent spoofing.
 | Suite | ORCA |
 | Category | EXO |
 | PowerShell test | [Test-ORCA235](/docs/commands/Test-ORCA235) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.235 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA235.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA235.ps1`
+- Test: [`tests/orca/Test.ORCA.235.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.235.ps1)
+- Documentation: [`tests/orca/Test.ORCA.235.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.235.md)
