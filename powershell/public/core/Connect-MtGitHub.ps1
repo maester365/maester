@@ -120,18 +120,18 @@
 
     # Lazy-load config once if MaesterConfig is not yet set and any config-backed parameter is
     # omitted. This makes the config fallback work when Connect-MtGitHub is called before
-    # Invoke-Maester (the normal pre-run workflow). Get-MtMaesterConfig walks up to 5 parent
+    # Invoke-Maester (the normal pre-run workflow). Resolve-MtRunConfig walks up to 5 parent
     # directories from the given path, so it finds the config from anywhere in the test tree.
     if ($null -eq $__MtSession.MaesterConfig -and (
             [string]::IsNullOrWhiteSpace($Organization) -or
             [string]::IsNullOrWhiteSpace($ApiBaseUri) -or
             [string]::IsNullOrWhiteSpace($ApiVersion))) {
-        $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path (Get-Location).Path
+        $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -WarningAction SilentlyContinue
     }
 
     # Resolve organization (param -> config -> error)
     if ([string]::IsNullOrWhiteSpace($Organization)) {
-        $Organization = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubOrganization'
+        $Organization = Get-MtSetting -Name 'GitHubOrganization'
     }
     if ([string]::IsNullOrWhiteSpace($Organization)) {
         Write-Host "`nNo GitHub organization specified. Provide -Organization or set GitHubOrganization in maester-config.json." -ForegroundColor Red
@@ -145,7 +145,7 @@
     # Resolve ApiBaseUri (param -> config -> default).
     $resolvedApiBaseUri = $ApiBaseUri
     if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) {
-        $configApiBaseUri = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiBaseUri'
+        $configApiBaseUri = Get-MtSetting -Name 'GitHubApiBaseUri'
         if (-not [string]::IsNullOrWhiteSpace($configApiBaseUri)) { $resolvedApiBaseUri = $configApiBaseUri }
     }
     if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) { $resolvedApiBaseUri = 'https://api.github.com' }
@@ -187,7 +187,7 @@
     # the session-clearing logic at the top of this function ran.
     $resolvedApiVersion = $ApiVersion
     if ([string]::IsNullOrWhiteSpace($resolvedApiVersion)) {
-        $configApiVersion = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiVersion'
+        $configApiVersion = Get-MtSetting -Name 'GitHubApiVersion'
         if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $resolvedApiVersion = $configApiVersion }
     }
     # 2022-11-28 is GitHub's initial REST API version and the documented default for

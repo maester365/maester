@@ -604,6 +604,7 @@ function New-MtResultConfig {
     (the attribute's, for native tests) and any keys the user set (design section 9). This keeps the
     report's Config page complete once the module no longer ships a row per test.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in-memory object only.')]
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(

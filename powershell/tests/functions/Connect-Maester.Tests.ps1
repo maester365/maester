@@ -213,7 +213,7 @@ Describe 'Connect-Maester connection summary' {
         Mock Write-MtConnectionSummary -ModuleName Maester { $script:connectionSummaryRows = @($Summary) }
 
         Mock Get-AzContext -ModuleName Maester { [pscustomobject]@{ Account = [pscustomobject]@{ Id = 'admin@contoso.com' } } }
-        Mock Get-MtMaesterConfigGlobalSetting -ModuleName Maester { $null } -ParameterFilter { $SettingName -eq 'DataverseEnvironmentUrl' }
+        Mock Get-MtSetting -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'DataverseEnvironmentUrl' }
         Mock Get-MtDataverseEnvironmentUrl -ModuleName Maester { $null }
         Mock Connect-ExchangeOnline -ModuleName Maester {}
         Mock Get-ConnectionInformation -ModuleName Maester {
@@ -308,7 +308,7 @@ Describe 'Connect-Maester connection summary' {
     }
 
     It 'Records the Dataverse environment when the access token is issued' {
-        Mock Get-MtMaesterConfigGlobalSetting -ModuleName Maester { 'https://org123.crm.dynamics.com' } -ParameterFilter { $SettingName -eq 'DataverseEnvironmentUrl' }
+        Mock Get-MtSetting -ModuleName Maester { 'https://org123.crm.dynamics.com' } -ParameterFilter { $Name -eq 'DataverseEnvironmentUrl' }
         Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = 'token' } }
 
         Connect-Maester -Service Dataverse 6>$null

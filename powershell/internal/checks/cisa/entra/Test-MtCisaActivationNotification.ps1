@@ -27,11 +27,6 @@
         [switch]$GlobalAdminOnly
     )
 
-    if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
     $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
     if (-not $hasLicense) {

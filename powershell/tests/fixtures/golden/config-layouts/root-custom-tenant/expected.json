@@ -55,5 +55,54 @@
         "MT.1005": "Low"
       }
     }
+  ],
+  "Scenarios30": [
+    {
+      "TenantId": null,
+      "ConfigSource": "maester-config.json, Custom/maester-config.json",
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [
+          {
+            "Type": "User",
+            "Id": "c0000000-0000-0000-0000-000000000001"
+          }
+        ],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": "",
+        "GoldenCustomOnly": "custom",
+        "GoldenRootOnly": "root"
+      },
+      "EffectiveSeverity": {
+        "MT.1001": "Critical",
+        "MT.1003": "Low",
+        "MT.1005": "Medium"
+      }
+    },
+    {
+      "TenantId": "11111111-2222-3333-4444-555555555555",
+      "ConfigSource": "maester-config.json, Custom/maester-config.json, maester-config.11111111-2222-3333-4444-555555555555.json",
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [
+          {
+            "Type": "User",
+            "Id": "e0000000-0000-0000-0000-000000000001"
+          }
+        ],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": "",
+        "GoldenCustomOnly": "custom",
+        "GoldenRootOnly": "root",
+        "GoldenTenantOnly": "tenant"
+      },
+      "EffectiveSeverity": {
+        "MT.1001": "Critical",
+        "MT.1003": "Low",
+        "MT.1005": "Low"
+      }
+    }
   ]
 }

@@ -48,5 +48,45 @@
         "MT.1005": "Low"
       }
     }
+  ],
+  "Scenarios30": [
+    {
+      "TenantId": null,
+      "ConfigSource": "defaults",
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": ""
+      },
+      "EffectiveSeverity": {
+        "MT.1001": "Medium",
+        "MT.1003": "High",
+        "MT.1005": "High"
+      }
+    },
+    {
+      "TenantId": "11111111-2222-3333-4444-555555555555",
+      "ConfigSource": "maester-config.11111111-2222-3333-4444-555555555555.json",
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [
+          {
+            "Type": "User",
+            "Id": "e0000000-0000-0000-0000-000000000001"
+          }
+        ],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": "",
+        "GoldenTenantOnly": "tenant"
+      },
+      "EffectiveSeverity": {
+        "MT.1001": "Medium",
+        "MT.1003": "High",
+        "MT.1005": "Low"
+      }
+    }
   ]
 }

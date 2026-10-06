@@ -44,5 +44,39 @@
         "MT.1005": "High"
       }
     }
+  ],
+  "Scenarios30": [
+    {
+      "TenantId": null,
+      "ConfigSource": "defaults",
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": ""
+      },
+      "EffectiveSeverity": {
+        "MT.1001": "Medium",
+        "MT.1003": "High",
+        "MT.1005": "High"
+      }
+    },
+    {
+      "TenantId": "11111111-2222-3333-4444-555555555555",
+      "ConfigSource": "defaults",
+      "GlobalSettings": {
+        "DataverseEnvironmentUrl": "",
+        "EmergencyAccessAccounts": [],
+        "GitHubApiBaseUri": "https://api.github.com",
+        "GitHubApiVersion": "2022-11-28",
+        "GitHubOrganization": ""
+      },
+      "EffectiveSeverity": {
+        "MT.1001": "Medium",
+        "MT.1003": "High",
+        "MT.1005": "High"
+      }
+    }
   ]
 }

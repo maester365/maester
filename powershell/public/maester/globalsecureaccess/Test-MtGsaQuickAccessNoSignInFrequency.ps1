@@ -67,7 +67,7 @@ function Test-MtGsaQuickAccessNoSignInFrequency {
         $quickAccessAppId = $quickAccess.appId
 
         if (-not $AllowedPolicies) {
-            $AllowedPolicies = @(Get-MtMaesterConfigGlobalSetting -SettingName 'GsaQuickAccessSignInFrequencyAllowedPolicies')
+            $AllowedPolicies = @(Get-MtSetting -Name 'GsaQuickAccessSignInFrequencyAllowedPolicies')
         }
         $AllowedPolicies = @($AllowedPolicies | Where-Object { $_ })
 

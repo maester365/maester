@@ -680,34 +680,48 @@ foreach ($MarkdownFile in $MarkdownFiles) {
 # Built-in native tests: validate them, write the catalog, and bundle each test's Markdown by ID
 # (design appendix A.4). The build fails on a schema error, a duplicate ID or function name, a missing
 # .md file or an unknown licence token.
-$CatalogModule = Import-Module (Join-Path $SourceRoot 'Maester.psd1') -Force -PassThru -WarningAction SilentlyContinue -ErrorAction Stop |
-    Where-Object { $_.Name -eq 'Maester' } | Select-Object -First 1
-$CatalogResult = & $CatalogModule {
-    param($TestsRoot)
-    $tests = @(Get-MtNativeTestInventory -Path $TestsRoot -Root $TestsRoot -BuiltIn)
-    $licenseTokens = @((Get-MtLicenseTable).Tokens.Keys)
-    $problems = foreach ($t in $tests) {
-        foreach ($e in $t.Errors) { "$($t.File):$($e.Line): $($e.Message)" }
-        if (-not $t.MarkdownPath) { "$($t.File): the test has no Markdown file." }
-        foreach ($element in @($t.CompatibleLicense)) {
-            foreach ($token in ($element -split '&')) {
-                if ($token -and -not ($licenseTokens | Where-Object { $_ -eq $token })) { "$($t.File): licence token '$token' is not in the licence table." }
-            }
-        }
+# The source module is imported in a separate runspace, so the caller's session (which may itself have
+# Maester loaded, as in the module's own tests) is not changed.
+$CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @() }
+if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); try {
+    $null = $CatalogRunspace.AddScript({
+            param($SourceManifest, $TestsRoot)
+            $module = Import-Module $SourceManifest -Force -PassThru -WarningAction SilentlyContinue -ErrorAction Stop |
+                Where-Object { $_.Name -eq 'Maester' } | Select-Object -First 1
+            & $module {
+                param($TestsRoot)
+                $tests = @(Get-MtNativeTestInventory -Path $TestsRoot -Root $TestsRoot -BuiltIn)
+                $licenseTokens = @((Get-MtLicenseTable).Tokens.Keys)
+                $problems = foreach ($t in $tests) {
+                    foreach ($e in $t.Errors) { "$($t.File):$($e.Line): $($e.Message)" }
+                    if (-not $t.MarkdownPath) { "$($t.File): the test has no Markdown file." }
+                    foreach ($element in @($t.CompatibleLicense)) {
+                        foreach ($token in ($element -split '&')) {
+                            if ($token -and -not ($licenseTokens | Where-Object { $_ -eq $token })) { "$($t.File): licence token '$token' is not in the licence table." }
+                        }
+                    }
+                }
+                $suites = @{}
+                foreach ($manifest in Get-ChildItem -Path $TestsRoot -Filter 'suite.json' -Recurse -File) {
+                    $suite = Get-Content -LiteralPath $manifest.FullName -Raw | ConvertFrom-Json
+                    if ($suite.Id) { $suites[[string]$suite.Id] = $suite }
+                }
+                [pscustomobject]@{
+                    Tests      = $tests
+                    Problems   = @($problems)
+                    Suites     = $suites
+                    Version    = (Get-MtModuleVersion)
+                    GraphScope = @(Get-MtGraphScope)
+                }
+            } $TestsRoot
+        }).AddArgument((Join-Path $SourceRoot 'Maester.psd1')).AddArgument($TestsRoot)
+    $CatalogResult = $CatalogRunspace.Invoke() | Select-Object -Last 1
+    if ($CatalogRunspace.HadErrors -and -not $CatalogResult) {
+        throw "Could not read the built-in native tests: $($CatalogRunspace.Streams.Error | Select-Object -First 1)"
     }
-    $suites = @{}
-    foreach ($manifest in Get-ChildItem -Path $TestsRoot -Filter 'suite.json' -Recurse -File) {
-        $suite = Get-Content -LiteralPath $manifest.FullName -Raw | ConvertFrom-Json
-        if ($suite.Id) { $suites[[string]$suite.Id] = $suite }
-    }
-    [pscustomobject]@{
-        Tests      = $tests
-        Problems   = @($problems)
-        Suites     = $suites
-        Version    = (Get-MtModuleVersion)
-        GraphScope = @(Get-MtGraphScope)
-    }
-} $TestsRoot
+} finally {
+    $CatalogRunspace.Dispose()
+} }
 if ($CatalogResult.Problems.Count -gt 0) {
     throw "Built-in native tests have $($CatalogResult.Problems.Count) problem(s):`n$($CatalogResult.Problems -join "`n")"
 }
@@ -740,7 +754,6 @@ $Catalog = [ordered]@{
 $CatalogPath = Join-Path $OutputRoot 'Maester.TestCatalog.json'
 Set-Utf8BomContent -Path $CatalogPath -Value ($Catalog | ConvertTo-Json -Depth 8)
 Write-Information "   Generated: Maester.TestCatalog.json ($(@($CatalogTests).Count) native tests)" -InformationAction Continue
-Remove-Module -ModuleInfo $CatalogModule -Force -ErrorAction SilentlyContinue
 
 $TestMetadataPath = Join-Path $OutputRoot 'Maester.TestMetadata.json'
 $TestMetadataJson = $TestMetadata | ConvertTo-Json -Depth 3

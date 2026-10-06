@@ -1,16 +1,4 @@
 ﻿Describe "Maester/Entra" -Tag "Maester", "CA" {
-    It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" -Tag "MT.1001" {
-        Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
-    }
-    It "MT.1003: At least one Conditional Access policy is configured with All Apps. See https://maester.dev/docs/tests/MT.1003" -Tag "MT.1003" {
-        Test-MtCaAllAppsExists -SkipCheckAllUsers | Should -Be $true -Because "there is no policy scoped to All Apps"
-    }
-    It "MT.1004: At least one Conditional Access policy is configured with All Apps and All Users. See https://maester.dev/docs/tests/MT.1004" -Tag "MT.1004" {
-        Test-MtCaAllAppsExists | Should -Be $true -Because "there is no policy scoped to All Apps and All Users"
-    }
-    It "MT.1005: All Conditional Access policies are configured to exclude at least one emergency/break glass account or group. See https://maester.dev/docs/tests/MT.1005" -Tag "MT.1005" {
-        Test-MtCaEmergencyAccessExists | Should -Be $true -Because "there is no emergency access account or group present in all enabled policies"
-    }
     It "MT.1006: At least one Conditional Access policy is configured to require MFA for admins. See https://maester.dev/docs/tests/MT.1006" -Tag "MT.1006" {
         Test-MtCaMfaForAdmin | Should -Be $true -Because "there is no policy that requires MFA for admins"
     }
@@ -64,9 +52,6 @@
     }
     It "MT.1038: Conditional Access policies should not include or exclude deleted groups. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038" {
         Test-MtCaReferencedGroupsExist | Should -Be $true -Because "there are one or more policies relying on deleted groups."
-    }
-    It "MT.1049: Conditional Access policies for User Risk and Sign-in Risk should be configured separately. See https://maester.dev/docs/tests/MT.1049" -Tag "MT.1049" {
-        Test-MtCaMisconfiguredIDProtection | Should -Be $false -Because "there is one or more policy with common misconfiguration for ID Protection "
     }
     It "MT.1052: At least one Conditional Access policy is targeting the Device Code authentication flow. See https://maester.dev/docs/tests/MT.1052" -Tag "MT.1052" {
         Test-MtCaDeviceCodeFlow | Should -Be $true -Because "there is no policy that targets the device code authentication flow."

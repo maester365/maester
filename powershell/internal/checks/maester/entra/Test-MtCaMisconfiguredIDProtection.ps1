@@ -19,11 +19,6 @@
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -ne 'P2' ) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
-        return $null
-    }
-
     try {
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
         $policiesResult = New-Object System.Collections.ArrayList

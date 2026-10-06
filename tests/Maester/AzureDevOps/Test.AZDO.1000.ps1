@@ -8,7 +8,6 @@
     https://aka.ms/vstspolicyoauth
     https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/azure-devops-oauth?view=azure-devops
 
-
 .EXAMPLE
     ```
     Test-AzdoThirdPartyAccessViaOauth
@@ -20,6 +19,16 @@
     https://maester.dev/docs/commands/Test-AzdoThirdPartyAccessViaOauth
 #>
 function Test-AzdoThirdPartyAccessViaOauth {
+    [MaesterTest(
+        Id = 'AZDO.1000',
+        Title = 'Azure DevOps OAuth apps can access resources in your organization through OAuth.',
+        Severity = 'High',
+        Category = 'Azure DevOps',
+        Tag = 'AZDO',
+        Service = 'AzureDevOps',
+        Author = 'SebastianClaesson',
+        HelpUrl = 'https://aka.ms/vstspolicyoauth'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

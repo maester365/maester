@@ -24,7 +24,7 @@ function Get-MtSetting {
     #>
     [Alias('Get-MtMaesterConfigGlobalSetting')]
     [CmdletBinding()]
-    [OutputType([object])]
+    [OutputType([object], [object[]])]
     param(
         [Parameter(Mandatory, Position = 0)]
         [Alias('SettingName')]

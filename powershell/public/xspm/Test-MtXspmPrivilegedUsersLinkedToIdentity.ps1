@@ -46,7 +46,7 @@
             } `
         | Sort-Object Classification, AccountDisplayName
 
-    $EmergencyAccessAccounts = Get-MtMaesterConfigGlobalSetting -SettingName 'EmergencyAccessAccounts'
+    $EmergencyAccessAccounts = Get-MtSetting -Name 'EmergencyAccessAccounts'
     if ($EmergencyAccessAccounts -and $EmergencyAccessAccounts.Count -gt 0) {
         Write-Verbose "Excluding Emergency Access Accounts from the test results ..."
         $UnlinkedPrivilegedUsers = $UnlinkedPrivilegedUsers | Where-Object { $_.AccountUpn -notin $EmergencyAccessAccounts.UserPrincipalName }

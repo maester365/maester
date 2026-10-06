@@ -43,6 +43,7 @@ function Get-MtTest {
         [string] $Path
     )
 
+    Write-Verbose "Get-MtTest: Id=$($Id -join ', ') Tag=$($Tag -join ', ') Path=$Path"
     $tests = if ($Path) {
         if (-not (Test-Path -LiteralPath $Path)) { Write-Error "The path '$Path' does not exist."; return }
         $root = if (Test-Path -LiteralPath $Path -PathType Container) { (Resolve-Path -LiteralPath $Path).Path } else { Split-Path (Resolve-Path -LiteralPath $Path).Path -Parent }

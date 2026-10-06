@@ -1,4 +1,4 @@
-Third-party application access via OAuth should be disabled.
+﻿Third-party application access via OAuth should be disabled.
 
 Rationale: Third-party application access should not be used for Azure DevOps.
 
@@ -17,3 +17,6 @@ With the policy disabled, third-party applications can no longer access your Azu
 
 * [Learn - Change application connection & security policies for your organization](https://aka.ms/vstspolicyoauth)
 * [Learn - Use Azure DevOps OAuth 2.0 to create a web app](https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/azure-devops-oauth?view=azure-devops)
+
+<!--- Results --->
+%TestResult%

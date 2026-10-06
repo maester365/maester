@@ -17,7 +17,7 @@
     [CmdletBinding()]
     param ()
 
-    $emergencyAccessAccounts = Get-MtMaesterConfigGlobalSetting -SettingName 'EmergencyAccessAccounts'
+    $emergencyAccessAccounts = Get-MtSetting -Name 'EmergencyAccessAccounts'
     if (-not $emergencyAccessAccounts) {
         return
     }

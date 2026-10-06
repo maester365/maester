@@ -79,7 +79,7 @@ Describe 'Get-MtSupersededTest' {
         $script:result = InModuleScope Maester -Parameters @{ Folder = $script:legacyFolder } {
             $builtIn = @(Get-MtPesterFileInventory -Path @(Get-MtBuiltInPesterFile -BuiltInRoot (Get-MtMaesterTestFolderPath)))
             $custom = @(Get-MtPesterFileInventory -Path $Folder)
-            [pscustomobject]@{ Custom = $custom; Superseded = Get-MtSupersededTest -CustomInventory $custom -BuiltInInventory $builtIn }
+            [pscustomobject]@{ Custom = $custom; Superseded = Get-MtSupersededTest -CustomInventory $custom -BuiltInInventory $builtIn -BuiltInId @(Get-MtTestCatalog | ForEach-Object { $_.Id }) }
         }
     }
 

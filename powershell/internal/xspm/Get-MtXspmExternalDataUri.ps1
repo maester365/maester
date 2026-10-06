@@ -20,7 +20,7 @@
         ArmApiRequests      = 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/main/PrivilegedOperations/ArmApiRequest.csv'
     }
 
-    $ConfiguredUris = Get-MtMaesterConfigGlobalSetting -SettingName 'XspmExternalDataUris' -Verbose:$false
+    $ConfiguredUris = Get-MtSetting -Name 'XspmExternalDataUris' -Verbose:$false
     if ($null -ne $ConfiguredUris) {
         foreach ($Name in @($Uris.Keys)) {
             $HasConfiguredValue = $false

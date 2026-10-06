@@ -57,6 +57,7 @@ function Invoke-MtTest {
         return
     }
 
+    Write-Verbose "Invoke-MtTest: Id=$($Id -join ', ') Path=$Path"
     $tests = [System.Collections.Generic.List[object]]::new()
     if ($Path) {
         if (-not (Test-Path -LiteralPath $Path)) { Write-Error "The path '$Path' does not exist."; return }

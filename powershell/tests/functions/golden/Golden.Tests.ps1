@@ -2,7 +2,7 @@ BeforeDiscovery {
     $script:GoldenRoot = (Resolve-Path "$PSScriptRoot/../../fixtures/golden").Path
     $script:GoldenFiles = @(
         Get-ChildItem -Path $script:GoldenRoot -Recurse -File -Filter '*.json' |
-            Where-Object { $_.Name -in 'tags-and-blocks.json', 'selection.json', 'expected.json' } |
+            Where-Object { $_.Name -in 'selection.json', 'expected.json' } |
             ForEach-Object {
                 @{ RelativePath = $_.FullName.Substring($script:GoldenRoot.Length + 1) -replace '\\', '/' }
             } |
@@ -50,6 +50,40 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
             'If the change is intended, run ./build/golden/Export-MtGoldenFixture.ps1 and commit the result'
             $fresh | Should -Be $committed -Because $because
         }
+    }
+
+    It 'reproduces the 2.x Block and tags of every built-in ID, native or Pester' {
+        # tags-and-blocks.json is the frozen 2.x snapshot. A check migrated to the native format must keep
+        # its Block and the tags -Tag selects on (design section 4); only its file and line change.
+        $fresh = (Get-Content -Path (Join-Path $freshRoot 'tags-and-blocks.json') -Raw | ConvertFrom-Json).Entries
+        $byId = @{}
+        foreach ($e in $fresh) {
+            $key = "$($e.Id)|$($e.Family)"
+            if (-not $byId.ContainsKey($key)) { $byId[$key] = [System.Collections.Generic.List[object]]::new() }
+            $byId[$key].Add($e)
+        }
+        # 2.x dropped the Describe tags of tests nested in a Context; native rows carry them (design section 5.3, item 4).
+        $resultTagChanges = @('MT.1022', 'MT.1023')
+        $problems = foreach ($e in $script:tagsAndBlocks.Entries) {
+            $candidates = $byId["$($e.Id)|$($e.Family)"]
+            if (-not $candidates -or $candidates.Count -eq 0) { "$($e.Id): missing"; continue }
+            # An ID with several entries (a family with several Its) is matched entry by entry on its tags.
+            $wanted = @($e.SelectionTags | Sort-Object -Unique) -join ','
+            $now = $candidates | Where-Object { (@($_.SelectionTags | Sort-Object -Unique) -join ',') -eq $wanted } | Select-Object -First 1
+            if (-not $now) { $now = $candidates[0] }
+            $null = $candidates.Remove($now)
+            if ($now.Block -ne $e.Block) { "$($e.Id): Block '$($e.Block)' is now '$($now.Block)'" }
+            $was = @($e.SelectionTags | Sort-Object -Unique) -join ','
+            $is = @($now.SelectionTags | Sort-Object -Unique) -join ','
+            if ($was -ne $is) { "$($e.Id): selection tags '$was' are now '$is'" }
+            if ($now.Format -ne 'Native' -and $e.Id -notin $resultTagChanges) {
+                $wasResult = @($e.ResultTags | Sort-Object -Unique) -join ','
+                $isResult = @($now.ResultTags | Sort-Object -Unique) -join ','
+                if ($wasResult -ne $isResult) { "$($e.Id): result tags '$wasResult' are now '$isResult'" }
+            }
+        }
+        @($problems) | Should -BeNullOrEmpty
+        @($fresh).Count | Should -Be @($script:tagsAndBlocks.Entries).Count
     }
 
     It 'records every built-in ID once and the five run-time families' {

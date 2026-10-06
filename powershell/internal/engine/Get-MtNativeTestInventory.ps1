@@ -11,7 +11,7 @@ function Get-MtNativeTestInventory {
     error. A built-in root skips its Custom folder.
     #>
     [CmdletBinding()]
-    [OutputType([pscustomobject])]
+    [OutputType([pscustomobject], [object[]])]
     param(
         # Folders or files to scan.
         [Parameter(Mandatory)]
@@ -152,14 +152,14 @@ function Get-MtTestCatalog {
     File, Parameters and MarkdownPath (design appendix A.4). Cached for the session.
     #>
     [CmdletBinding()]
-    [OutputType([pscustomobject])]
+    [OutputType([pscustomobject], [object[]])]
     param(
         # Rebuild the cache.
         [Parameter()]
         [switch] $Refresh
     )
 
-    if ($script:__MtTestCatalog -and -not $Refresh) { return $script:__MtTestCatalog }
+    if ($null -ne $script:__MtTestCatalog -and -not $Refresh) { return $script:__MtTestCatalog }
     $moduleBase = $ExecutionContext.SessionState.Module.ModuleBase
     $catalogFile = Join-Path $moduleBase 'Maester.TestCatalog.json'
     $rows = if (Test-Path -LiteralPath $catalogFile) {

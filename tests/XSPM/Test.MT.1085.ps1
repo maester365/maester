@@ -15,6 +15,15 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtXspmPendingApprovalCriticalAssetManagement
     #>
+    [MaesterTest(
+        Id = 'MT.1085',
+        Title = 'Pending approvals for Critical Asset Management should not be present.',
+        Severity = 'Medium',
+        Category = 'Exposure Management',
+        Tag = ('Entra', 'Graph'),
+        Service = 'Graph',
+        Author = 'Cloud-Architekt'
+    )]
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for pending approvals for Critical Asset Management.')]
     [OutputType([bool])]

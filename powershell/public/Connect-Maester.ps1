@@ -260,7 +260,7 @@
                   $dataverseDiscoveryError = $null
                   try {
                      # Step 1: Determine the Dataverse environment URL (explicit config or auto-discover)
-                     $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
+                     $dataverseUrl = Get-MtSetting -Name 'DataverseEnvironmentUrl'
                      if ([string]::IsNullOrEmpty($dataverseUrl)) {
                         Write-Verbose "No DataverseEnvironmentUrl configured. Auto-discovering via Global Discovery Service."
                         $dataverseUrl = Get-MtDataverseEnvironmentUrl

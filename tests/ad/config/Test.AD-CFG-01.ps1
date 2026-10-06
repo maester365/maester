@@ -15,6 +15,15 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdTombstoneLifetimeConfig
     #>
+    [MaesterTest(
+        Id = 'AD-CFG-01',
+        Title = 'Tombstone lifetime configuration should be retrievable',
+        Severity = 'Info',
+        Category = 'Active Directory - Configuration',
+        Tag = 'AD.Config',
+        Service = 'ActiveDirectory',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

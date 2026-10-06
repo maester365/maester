@@ -64,8 +64,10 @@ Describe 'Resolve-MtRunConfig' {
         }
         $config.GlobalSettings.PSObject.Properties['FromFile'] | Should -BeNullOrEmpty
         $config.TestSettingsHash['MT.1005'].Severity | Should -Be 'Low'
-        # A shipped default severity is still present for a test the config does not mention.
-        $config.TestSettingsHash['MT.1001'].Severity | Should -Not -BeNullOrEmpty
+        # A shipped default severity is still present for a test the config does not mention (while the
+        # shipped file has rows; they are removed as suites migrate to the native format).
+        $shippedRow = InModuleScope Maester { @((Get-MtShippedMaesterConfig).TestSettings) | Where-Object { $_.Id -ne 'MT.1005' } | Select-Object -First 1 }
+        if ($shippedRow) { $config.TestSettingsHash[$shippedRow.Id].Severity | Should -Be $shippedRow.Severity }
         $config.ConfigSource | Should -Be '-Config'
     }
 
@@ -168,7 +170,8 @@ Describe 'Resolve-MtRunConfig' {
         $null = New-Item -ItemType Directory -Path $folder -Force
         $config = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtRunConfig -Path $Folder }
         $config.ConfigSource | Should -Be 'defaults'
-        $config.TestSettingsHash['MT.1001'].Severity | Should -Not -BeNullOrEmpty
+        $shippedCount = InModuleScope Maester { @((Get-MtShippedMaesterConfig).TestSettings).Count }
+        @($config.TestSettings).Count | Should -Be $shippedCount
     }
 }
 

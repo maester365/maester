@@ -62,6 +62,7 @@ function New-MtTest {
         [switch] $Force
     )
 
+    Write-Verbose "New-MtTest: $Id in $Path"
     $schema = Get-MtTestSchema
     if ($Id -notmatch $schema.IdPattern -or $Id.Length -gt $schema.IdMaxLength) {
         Write-Error "'$Id' is not a valid test ID. Use letters and digits separated by dots or dashes, for example CONTOSO.1001."

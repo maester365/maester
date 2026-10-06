@@ -10,11 +10,6 @@
   },
   "TestSettings": [
     {
-      "Id": "AD-CFG-01",
-      "Severity": "Info",
-      "Title": "Tombstone lifetime configuration should be retrievable"
-    },
-    {
       "Id": "AD-CFG-02",
       "Severity": "High",
       "Title": "dSHeuristics count should be retrievable"
@@ -1365,11 +1360,6 @@
       "Title": "(L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)"
     },
     {
-      "Id": "CIS.M365.3.1.1",
-      "Severity": "High",
-      "Title": "(L1) Ensure Microsoft 365 audit log search is Enabled"
-    },
-    {
       "Id": "CIS.M365.8.1.1",
       "Severity": "Medium",
       "Title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services"
@@ -1523,16 +1513,6 @@
       "Id": "CISA.MS.AAD.7.7",
       "Severity": "High",
       "Title": "Eligible and Active highly privileged role assignments SHALL trigger an alert."
-    },
-    {
-      "Id": "CISA.MS.AAD.7.8",
-      "Severity": "High",
-      "Title": "User activation of the Global Administrator role SHALL trigger an alert."
-    },
-    {
-      "Id": "CISA.MS.AAD.7.9",
-      "Severity": "High",
-      "Title": "User activation of other highly privileged roles SHOULD trigger an alert."
     },
     {
       "Id": "CISA.MS.AAD.8.1",
@@ -1985,29 +1965,9 @@
       "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content."
     },
     {
-      "Id": "MT.1001",
-      "Severity": "Medium",
-      "Title": "At least one Conditional Access policy is configured with device compliance."
-    },
-    {
       "Id": "MT.1002",
       "Severity": "High",
       "Title": "App management restrictions on applications and service principals is configured and enabled."
-    },
-    {
-      "Id": "MT.1003",
-      "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured with All Apps."
-    },
-    {
-      "Id": "MT.1004",
-      "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured with All Apps and All Users."
-    },
-    {
-      "Id": "MT.1005",
-      "Severity": "High",
-      "Title": "All Conditional Access policies are configured to exclude at least one emergency/break glass account or group."
     },
     {
       "Id": "MT.1006",
@@ -2255,11 +2215,6 @@
       "Title": "Limit external participants from having control in a Teams meeting"
     },
     {
-      "Id": "MT.1049",
-      "Severity": "High",
-      "Title": "Conditional Access policies for User Risk and Sign-in Risk should be configured separately."
-    },
-    {
       "Id": "MT.1050",
       "Severity": "High",
       "Title": "Apps with high-risk permissions having a direct path to Global Administrator"
@@ -2423,11 +2378,6 @@
       "Id": "MT.1084",
       "Severity": "High",
       "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
-    },
-    {
-      "Id": "MT.1085",
-      "Severity": "Medium",
-      "Title": "Pending approvals for Critical Asset Management should not be present"
     },
     {
       "Id": "MT.1086",
@@ -3207,11 +3157,6 @@
       "Id": "ORCA.1004",
       "Severity": "High",
       "Title": "<URL> filtering policy settings configured."
-    },
-    {
-      "Id": "AZDO.1000",
-      "Severity": "High",
-      "Title": "Azure DevOps OAuth apps can access resources in your organization through OAuth"
     },
     {
       "Id": "AZDO.1001",

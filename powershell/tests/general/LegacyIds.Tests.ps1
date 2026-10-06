@@ -39,6 +39,10 @@ Describe 'Maester.LegacyIds.json' {
                 if ($id) { $null = $script:currentIds.Add($id) }
             }
         }
+        # Checks migrated to the native format are Test.<ID>.ps1 files.
+        foreach ($nativeFile in (Get-ChildItem -Path $testsRoot -Recurse -File -Filter 'Test.*.ps1' | Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' })) {
+            $null = $script:currentIds.Add(($nativeFile.Name -replace '^Test\.', '' -replace '\.ps1$', ''))
+        }
     }
 
     It 'parses as JSON with the expected header' {

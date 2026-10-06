@@ -1,4 +1,4 @@
-function Invoke-MtNativePlan {
+﻿function Invoke-MtNativePlan {
     <#
     .SYNOPSIS
     Runs the native tests of a plan through the engine and returns one result row per test or instance.
@@ -10,6 +10,7 @@ function Invoke-MtNativePlan {
     row with the 2.x fields plus the 3.0 fields (ConvertTo-MtNativeRow). Rows for tests that did not
     run are produced from the plan.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Console progress lines, as Pester writes them')]
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(

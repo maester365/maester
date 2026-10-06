@@ -1,7 +1,11 @@
 function Get-MtMaesterConfig {
     <#
     .SYNOPSIS
-    Reads the Maester config from (usually from the root of the ./tests directory)
+    Reads the Maester config with the Maester 2.x rules.
+
+    .NOTES
+    Maester 3.0 resolves the run config with Resolve-MtRunConfig. This function is kept for the golden
+    2.x snapshots (build/golden/Export-MtGoldenFixture.ps1).
 
     .DESCRIPTION
     This also uses the ./Custom/maester-config.json file if it exists and

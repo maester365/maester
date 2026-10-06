@@ -1,7 +1,10 @@
 ﻿Describe 'Get-MtMaesterConfig' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
-        $maesterTestsPath = Join-Path $PSScriptRoot '../../../tests'
+        # Get-MtMaesterConfig is the Maester 2.x config loader, kept for the golden 2.x snapshots (3.0 uses
+        # Resolve-MtRunConfig). It is tested against a frozen copy of the config file 2.x shipped, because
+        # the migration removes rows from the current one.
+        $maesterTestsPath = Join-Path $PSScriptRoot '../fixtures/golden/shipped-2x'
 
         # Copy default config to test location to ensure it exists for the tests
         $testFolder = Join-Path 'TestDrive:' 'maester-config-tests'

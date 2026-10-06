@@ -48,6 +48,8 @@ param (
 )
 
 $ErrorActionPreference = 'Stop'
+# pwsh -File passes a comma-separated list as one string.
+if ($Id) { $Id = @($Id | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
 $RepoRoot = (Resolve-Path "$PSScriptRoot/../..").Path
 $TestsRoot = Join-Path $RepoRoot 'tests'
 $PowerShellRoot = Join-Path $RepoRoot 'powershell'
@@ -187,6 +189,56 @@ function Get-InferredService {
     $found = foreach ($key in $ServiceInference.Keys) { if ($Text -match $ServiceInference[$key]) { $key } }
     if (-not $found) { return @('Graph') }
     @($found)
+}
+
+function Remove-BlankRun {
+    # Collapses runs of blank lines (left where statements were removed) to one, keeping indentation.
+    param([string] $Text)
+    [regex]::Replace($Text, "\n([ \t]*\r?\n){2,}", "`n`n")
+}
+
+function Get-FunctionAst {
+    param([string] $Text, [string] $Name)
+    $tokens = $null; $errors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseInput($Text, [ref]$tokens, [ref]$errors)
+    if ($errors) { throw "the edited function does not parse: $($errors[0].Message)" }
+    $definition = $ast.EndBlock.Statements | Where-Object { $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $_.Name -eq $Name } | Select-Object -First 1
+    [pscustomobject]@{ Definition = $definition; Tokens = $tokens }
+}
+
+function Remove-OuterTry {
+    # Replaces 'try { body } catch { ... }' with the body, dedented one level. Lines inside multi-line
+    # strings are not touched. Returns $null when the try is not laid out canonically.
+    param([string] $Text, [System.Management.Automation.Language.TryStatementAst] $Try, [object[]] $Tokens)
+    $lines = $Text -split "`n"
+    $tryLine = $Try.Extent.StartLineNumber
+    $bodyEndLine = $Try.Body.Extent.EndLineNumber
+    $endLine = $Try.Extent.EndLineNumber
+    if ($lines[$tryLine - 1].Trim() -notmatch '^try\s*\{$') { return $null }
+    if ($lines[$bodyEndLine - 1].Trim() -notmatch '^\}') { return $null }
+    if ($bodyEndLine -le $tryLine) { return $null }
+    $protected = @{}
+    foreach ($token in $Tokens) {
+        if ($token.Kind -in 'StringLiteral', 'StringExpandable', 'HereStringLiteral', 'HereStringExpandable' -and $token.Extent.EndLineNumber -gt $token.Extent.StartLineNumber) {
+            for ($l = $token.Extent.StartLineNumber + 1; $l -le $token.Extent.EndLineNumber; $l++) { $protected[$l] = $true }
+        }
+    }
+    $tryIndent = $lines[$tryLine - 1].Length - $lines[$tryLine - 1].TrimStart().Length
+    $firstCode = $null
+    for ($l = $tryLine + 1; $l -lt $bodyEndLine; $l++) { if ($lines[$l - 1].Trim()) { $firstCode = $lines[$l - 1]; break } }
+    if ($null -eq $firstCode) { return $null }
+    $amount = ($firstCode.Length - $firstCode.TrimStart().Length) - $tryIndent
+    if ($amount -lt 0) { $amount = 0 }
+    $inner = for ($l = $tryLine + 1; $l -lt $bodyEndLine; $l++) {
+        $line = $lines[$l - 1]
+        if ($protected.ContainsKey($l)) { $line; continue }
+        $strip = 0
+        while ($strip -lt $amount -and $strip -lt $line.Length -and $line[$strip] -eq ' ') { $strip++ }
+        $line.Substring($strip)
+    }
+    $before = if ($tryLine -gt 1) { $lines[0..($tryLine - 2)] } else { @() }
+    $after = if ($endLine -lt $lines.Count) { $lines[$endLine..($lines.Count - 1)] } else { @() }
+    (@($before) + @($inner) + @($after)) -join "`n"
 }
 
 function Format-StringValue { param([string] $Value) "'" + $Value.Replace("'", "''") + "'" }
@@ -368,29 +420,28 @@ foreach ($entry in $entries) {
         if ($otherTopLevel.Count -gt 0) { throw "the function file has top-level statements other than functions; convert by hand" }
         $namedBody = $definition.Body.EndBlock
         $guards = Get-GuardInfo -Body $namedBody
-        $outerTry = Get-OuterTry -Body $namedBody -Guards $guards.Statements
         $services = if ($guards.Services.Count -gt 0) { @($guards.Services) } else { @(Get-InferredService -Text $definition.Extent.Text) }
         if ($guards.Services.Count -eq 0) { $flags.Add("InferredService: $($services -join ', ')") }
-        if (-not $outerTry) { $flags.Add('KeptTry: no canonical outer try/catch to remove') }
         if ($namedBody.Statements | Where-Object { $_ -notin $guards.Statements -and $_.Extent.Text -match 'Get-MtLicenseInformation|Test-MtConnection' -and $_ -isnot [System.Management.Automation.Language.TryStatementAst] }) {
             $flags.Add('KeptGuard: a non-canonical connection or licence check remains in the body')
         }
 
-        # New function text: guards removed, outer try unwrapped, attribute inserted.
+        # New function text, in three passes, each on a fresh parse: guards removed, outer try unwrapped,
+        # attribute inserted (Move mode).
         $text = $function.Text
-        $edits = [System.Collections.Generic.List[object]]::new()
-        foreach ($g in $guards.Statements) { $edits.Add([pscustomobject]@{ Start = $g.Extent.StartOffset; End = $g.Extent.EndOffset; Text = '' }) }
-        if ($outerTry) {
-            $inner = $outerTry.Body.Extent.Text
-            $inner = $inner.Substring(1, $inner.Length - 2).Trim("`r", "`n")
-            $tryIndent = $outerTry.Extent.StartColumnNumber - 1
-            $innerLines = $inner -split "`r?`n"
-            $firstCode = $innerLines | Where-Object { $_.Trim() } | Select-Object -First 1
-            $innerIndent = ($firstCode.Length - $firstCode.TrimStart().Length) - $tryIndent
-            $dedented = (Remove-Indent -Text ($innerLines -join "`n") -Amount ([Math]::Max(0, $innerIndent))).Trim()
-            $dedented = ($dedented -split "`n" | ForEach-Object { if ($_.Trim()) { (' ' * $tryIndent) + $_ } else { '' } }) -join "`n"
-            $edits.Add([pscustomobject]@{ Start = $outerTry.Extent.StartOffset - $tryIndent; End = $outerTry.Extent.EndOffset; Text = $dedented })
+        foreach ($g in ($guards.Statements | Sort-Object { $_.Extent.StartOffset } -Descending)) {
+            $text = $text.Substring(0, $g.Extent.StartOffset) + $text.Substring($g.Extent.EndOffset)
         }
+        $text = Remove-BlankRun $text
+        $reparsed = Get-FunctionAst -Text $text -Name $call.Command
+        $outerTry = Get-OuterTry -Body $reparsed.Definition.Body.EndBlock -Guards @()
+        if ($outerTry) {
+            $unwrapped = Remove-OuterTry -Text $text -Try $outerTry -Tokens $reparsed.Tokens
+            if ($unwrapped) { $text = Remove-BlankRun $unwrapped } else { $outerTry = $null }
+        }
+        if (-not $outerTry -and -not ($flags -like 'KeptTry*')) { $flags.Add('KeptTry: no canonical outer try/catch to remove') }
+        $reparsed = Get-FunctionAst -Text $text -Name $call.Command
+        $definition = $reparsed.Definition
         $paramBlock = $definition.Body.ParamBlock
         $meta = @{
             Id = $entry.Id; Title = $titleInfo.Title; Severity = $severity; Category = $entry.Block; Tag = $tag
@@ -414,17 +465,12 @@ foreach ($entry in $entries) {
             $attributeText = New-AttributeText -Meta $meta -Indent $indent
             $insert = $attributeText.TrimStart() + "`n" + $indent
             if (-not $cmdletBinding) { $insert += "[CmdletBinding()]`n$indent"; $flags.Add('AddedCmdletBinding') }
-            $edits.Add([pscustomobject]@{ Start = $anchor.Extent.StartOffset; End = $anchor.Extent.StartOffset; Text = $insert })
-            foreach ($e in ($edits | Sort-Object Start -Descending)) { $text = $text.Substring(0, $e.Start) + $e.Text + $text.Substring($e.End) }
-            # Blank lines left where guards were removed.
-            $text = [regex]::Replace($text, "(\r?\n[ \t]*){3,}", "`n`n")
+            $text = $text.Substring(0, $anchor.Extent.StartOffset) + $insert + $text.Substring($anchor.Extent.StartOffset)
             $newPs1 = $text
             $helperTarget = $null
         } else {
             # Thin mode: the function becomes an internal helper (guards and outer try removed) and a thin
             # test with a new name calls it with the wrapper's literal arguments.
-            foreach ($e in ($edits | Sort-Object Start -Descending)) { $text = $text.Substring(0, $e.Start) + $e.Text + $text.Substring($e.End) }
-            $text = [regex]::Replace($text, "(\r?\n[ \t]*){3,}", "`n`n")
             $relative = $functionFile.Substring((Join-Path $PowerShellRoot 'public').Length).TrimStart('\', '/')
             $helperTarget = if ($functionFile -like "*$([System.IO.Path]::DirectorySeparatorChar)internal$([System.IO.Path]::DirectorySeparatorChar)*") { $functionFile } else { Join-Path $PowerShellRoot "internal/checks/$relative" }
             $thinName = Get-SafeFunctionName -TestId $entry.Id
@@ -532,6 +578,7 @@ if (-not $ReportPath) {
     $null = New-Item -ItemType Directory -Path $reports -Force
     $ReportPath = Join-Path $reports ("convert-" + $(if ($Suite) { $Suite } else { 'ids' }) + '.json')
 }
+$null = New-Item -ItemType Directory -Path (Split-Path $ReportPath -Parent) -Force
 $report | ConvertTo-Json -Depth 5 | Set-Content -Path $ReportPath -Encoding utf8
 $converted = @($report | Where-Object Converted).Count
 Write-Host "Converted $converted of $($report.Count) check(s). Report: $ReportPath"

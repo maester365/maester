@@ -386,6 +386,25 @@ if ($tagMismatches.Count -gt 0) {
     throw "AST tags differ from Pester-discovered tags for: $($tagMismatches -join ', ')"
 }
 
+# Native tests (Maester 3.0): a migrated check is no longer a Pester It, so its entry comes from the
+# catalog: Block is the attribute's Category and the tags are the effective tag set (suite tags + Id +
+# Tag + Preview/LongRunning), which is what both selection and the result use.
+$nativeCatalog = @(& $maesterModule { Get-MtTestCatalog -Refresh })
+foreach ($t in $nativeCatalog) {
+    $tags = @(Get-UniqueTagSet @($t.EffectiveTag))
+    $entries.Add([ordered]@{
+            Id            = $t.Id
+            Name          = "$($t.Id): $($t.Title)"
+            Block         = $t.Category
+            SelectionTags = $tags
+            ResultTags    = @($t.EffectiveTag)
+            File          = Get-RepoRelativePath $t.File
+            Line          = [int]$t.Line
+            Family        = [bool]$t.InstanceSource
+            Format        = 'Native'
+        })
+}
+
 $entries.Sort([System.Comparison[object]] {
         param($a, $b)
         foreach ($k in 'Id', 'File') {
@@ -425,7 +444,11 @@ $tagsDocument = [ordered]@{
     }
     Entries = $entries.ToArray()
 }
-Write-GoldenFile -Path (Join-Path $OutputPath 'tags-and-blocks.json') -Content (ConvertTo-GoldenJson $tagsDocument)
+# tags-and-blocks.json in the repository is the frozen 2.x snapshot that migrated checks are compared
+# against; it is written only to an explicit -OutputPath (the drift test regenerates it there).
+if ($PSBoundParameters.ContainsKey('OutputPath')) {
+    Write-GoldenFile -Path (Join-Path $OutputPath 'tags-and-blocks.json') -Content (ConvertTo-GoldenJson $tagsDocument)
+}
 #endregion Tags and blocks
 
 #region Selection
@@ -591,7 +614,9 @@ Write-GoldenFile -Path (Join-Path $OutputPath 'selection.json') -Content (Conver
 #endregion Selection
 
 #region Config layouts
-$shippedTestsFolder = $TestsRoot
+# The 2.x scenarios use a frozen copy of the maester-config.json that 2.x shipped: the migration deletes
+# rows from the shipped file as checks move to the native format, and the snapshot must not move with it.
+$shippedTestsFolder = Join-Path $RepoRoot 'powershell/tests/fixtures/golden/shipped-2x'
 & $maesterModule {
     param($Folder)
     $script:__GoldenTestFolder = $Folder
@@ -615,6 +640,8 @@ try {
             $loaded = $verbose | Where-Object { $_ -like 'Loading Maester config from: *' } | Select-Object -First 1
             $custom = $verbose | Where-Object { $_ -like 'Custom config file found at *' } | Select-Object -First 1
             $configFile = if ($loaded) { Get-RepoRelativePath ($loaded -replace '^Loading Maester config from: ', '') } else { $null }
+            # The frozen 2.x copy stands for the file 2.x shipped.
+            if ($configFile -eq 'powershell/tests/fixtures/golden/shipped-2x/maester-config.json') { $configFile = 'tests/maester-config.json' }
             $customFile = if ($custom) { Get-RepoRelativePath (($custom -replace '^Custom config file found at ', '') -replace '\. Merging with main config\.$', '') } else { $null }
 
             $severity = [ordered]@{}
@@ -640,6 +667,33 @@ try {
                 })
         }
 
+        # Maester 3.0: shipped defaults < maester-config.json < Custom/ < tenant file, merged (design section 7.3).
+        $scenarios30 = [System.Collections.Generic.List[object]]::new()
+        foreach ($tenantId in @($null, $GoldenTenantId)) {
+            $result30 = & $maesterModule {
+                param($Path, $TenantId, $TestsRoot, $Ids)
+                $script:__GoldenTestFolder = $TestsRoot
+                $config = Resolve-MtRunConfig -Path $Path -TenantId $TenantId -WarningAction SilentlyContinue
+                $catalog = @{}
+                foreach ($t in @(Get-MtTestCatalog)) { $catalog[$t.Id] = $t }
+                $severity = [ordered]@{}
+                foreach ($id in $Ids) {
+                    $row = $config.TestSettingsHash[$id]
+                    $severity[$id] = if ($row -and $row.Severity) { $row.Severity } elseif ($catalog.ContainsKey($id)) { $catalog[$id].Severity } else { $null }
+                }
+                [pscustomobject]@{ Config = $config; Severity = $severity }
+            } $layout.FullName $tenantId $TestsRoot $GoldenSeverityIds
+            & $maesterModule { param($Folder) $script:__GoldenTestFolder = $Folder } $shippedTestsFolder
+            $globalSettings30 = [ordered]@{}
+            foreach ($name in (Get-SortedString @($result30.Config.GlobalSettings.PSObject.Properties.Name))) { $globalSettings30[$name] = $result30.Config.GlobalSettings.$name }
+            $scenarios30.Add([ordered]@{
+                    TenantId          = $tenantId
+                    ConfigSource      = $result30.Config.ConfigSource
+                    GlobalSettings    = $globalSettings30
+                    EffectiveSeverity = $result30.Severity
+                })
+        }
+
         $expected = [ordered]@{
             _meta     = [ordered]@{
                 Description = 'Maester 2.x golden: which config file(s) Get-MtMaesterConfig picks for this folder. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.'
@@ -648,6 +702,7 @@ try {
                 Notes       = 'The shipped file is the module''s maester-tests/maester-config.json; here Get-MtMaesterTestFolderPath is pointed at the repo tests/ folder, which the build copies there. Paths are repo-relative.'
             }
             Scenarios = $scenarios.ToArray()
+            Scenarios30 = $scenarios30.ToArray()
         }
         Write-GoldenFile -Path (Join-Path $OutputPath "config-layouts/$($layout.Name)/expected.json") -Content (ConvertTo-GoldenJson $expected)
     }
