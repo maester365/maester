@@ -16,6 +16,7 @@ Maester 2.3 is here.
 
 ## Highlights
 
+- **Security hardening** for the report, email, and pipeline output. Please update.
 - **14 Microsoft Entra Agent ID checks** for orphaned, over-privileged, and unowned AI agent identities
 - **CIS Microsoft 365 Foundations Benchmark v7.0.0**, with updated logic and guidance across the CIS checks
 - **4 new Entra ID checks** for dynamic group rules (including the `memberOf` operator Microsoft retires on November 3) and app registration credentials
@@ -24,9 +25,23 @@ Maester 2.3 is here.
 - **Multi-forest Active Directory**, Kerberos (GSSAPI) over SSH for testing AD from Linux and macOS, and severity ratings for the AD checks
 - **A new Affected objects report** that shows every policy, user, app, and group behind your failed checks, plus optional user identity redaction
 - **A rebuilt HTML report** that's about 85% smaller and opens without a single network request
-- **Security hardening** for the report, email, and pipeline output. Please update.
 - **A clearer `Connect-Maester`** that ends with a per-service summary and keeps going when one service fails
 - **More reliable runs**: Graph retries, sovereign cloud fixes, PIM license fallback, and skips that are no longer reported as errors
+
+## Security hardening
+
+A Maester report is built from data in your tenant, and some of that data is controlled by people you don't fully trust. Anyone who can register an app or accept a guest invite can choose a display name.
+
+[Jan-Henrik Damaschke](https://github.com/itpropro) privately reported that a crafted display name could break out of the report's embedded data and run script when the report was opened ([GHSA-65g9-g8h8-qw5g](https://github.com/maester365/maester/security/advisories/GHSA-65g9-g8h8-qw5g)). Thank you for the responsible disclosure. That's fixed, and we went looking for related problems while we were there:
+
+- **Report data** is escaped before it's embedded, so values can no longer end the script block
+- **Markdown injection**: tenant-controlled names are now escaped in 48 checks, so a name can't render as a fake link, a tracking image, or a broken table. As a backstop, the report only renders images that are embedded or hosted on maester.dev
+- **Email alerts**: `Send-MtMail` now HTML-encodes every dynamic value, and `Invoke-Maester` validates `-MailTestResultsUri` before the run starts
+- **GitHub Actions**: token and input handling in our workflows has been tightened
+
+**We recommend everyone update to 2.3, and run `Update-MaesterTests` so your test files pick up the escaping changes too.** If you write custom tests, wrap any tenant-controlled value in `Get-MtSafeMarkdown` before adding it to a result.
+
+Special thanks to [Fabian Bader](/contributors/f-bader) for the email hardening and [Travis McDade](/contributors/thetechgy) for the GitHub Actions hardening.
 
 ## Security checks for Microsoft Entra Agent ID
 
@@ -115,7 +130,7 @@ Until now, Maester's Apple coverage stopped at certificate and token expiry. Fou
 | `MT.1216` | A macOS compliance policy requires a Defender machine risk score |
 | `MT.1217` | macOS LAPS is configured on Automated Device Enrollment profiles |
 
-Each check only counts policies and profiles that are actually assigned. `MT.1217` also flags enrollment profiles that create an admin account without rotating its password, since that gives every Mac the same static local admin password.
+The three compliance checks only count policies that are actually assigned. `MT.1217` looks at every Automated Device Enrollment profile, and flags any that create an admin account without rotating its password, since that gives every Mac the same static local admin password.
 
 On the Windows side, the BitLocker (`MT.1123`) and Attack Surface Reduction (`MT.1178`) checks now detect settings configured through the Settings catalog.
 
@@ -213,21 +228,6 @@ The HTML report has been rebuilt on a much smaller stack. It looks the same, and
 - The result panel slides in more smoothly, the theme toggle is instant, the table no longer jumps when you select a row, and long test IDs are truncated instead of overlapping the title
 
 Special thanks to [Jan-Henrik Damaschke](https://github.com/itpropro) for the rebuild.
-
-## Security hardening
-
-A Maester report is built from data in your tenant, and some of that data is controlled by people you don't fully trust. Anyone who can register an app or accept a guest invite can choose a display name.
-
-[Jan-Henrik Damaschke](https://github.com/itpropro) privately reported that a crafted display name could break out of the report's embedded data and run script when the report was opened ([GHSA-65g9-g8h8-qw5g](https://github.com/maester365/maester/security/advisories/GHSA-65g9-g8h8-qw5g)). Thank you for the responsible disclosure. That's fixed, and we went looking for related problems while we were there:
-
-- **Report data** is escaped before it's embedded, so values can no longer end the script block
-- **Markdown injection**: tenant-controlled names are now escaped in 48 checks, so a name can't render as a fake link, a tracking image, or a broken table. As a backstop, the report only renders images that are embedded or hosted on maester.dev
-- **Email alerts**: `Send-MtMail` now HTML-encodes every dynamic value, and `Invoke-Maester` validates `-MailTestResultsUri` before the run starts
-- **GitHub Actions**: token and input handling in our workflows has been tightened
-
-**We recommend everyone update to 2.3, and run `Update-MaesterTests` so your test files pick up the escaping changes too.** If you write custom tests, wrap any tenant-controlled value in `Get-MtSafeMarkdown` before adding it to a result.
-
-Special thanks to [Fabian Bader](/contributors/f-bader) for the email hardening and [Travis McDade](/contributors/thetechgy) for the GitHub Actions hardening.
 
 ## A clearer `Connect-Maester`
 
