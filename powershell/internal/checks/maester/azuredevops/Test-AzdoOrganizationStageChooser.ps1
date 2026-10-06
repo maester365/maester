@@ -25,11 +25,6 @@ function Test-AzdoOrganizationStageChooser {
 
     Write-Verbose "Running Test-AzdoOrganizationStageChooser"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $settings = Get-ADOPSOrganizationPipelineSettings
 
     if ($settings -eq 'AccessDeniedException') {

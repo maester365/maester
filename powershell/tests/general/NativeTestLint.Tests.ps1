@@ -84,3 +84,18 @@ Describe 'Native built-in test <Name>' -ForEach $NativeFiles {
         if ($windowsOnly) { @($script:test.Platform) | Should -Contain 'Windows' }
     }
 }
+
+# The check helpers in internal/checks run inside a native test, so the engine has already checked the
+# test's Service before they are called.
+Describe 'Check helpers' {
+    It 'Do not check their own connection' {
+        $root = (Resolve-Path "$PSScriptRoot/../../internal/checks").Path
+        $calls = @(Get-ChildItem -Path $root -Recurse -File -Filter '*.ps1' | ForEach-Object {
+                $ast = [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$null, [ref]$null)
+                $file = $_.Name
+                $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'Test-MtConnection' }, $true) |
+                    ForEach-Object { "$($file): $($_.Extent.Text)" }
+            })
+        $calls | Should -BeNullOrEmpty -Because 'declare the service in the calling test''s Service property instead'
+    }
+}

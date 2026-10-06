@@ -28,11 +28,6 @@ function Test-AzdoAllowTeamAdminsInvitationsAccessToken {
 
     Write-Verbose "Running Test-AzdoAllowTeamAdminsInvitationsAccessToken"
 
-    if (-not (Test-MtConnection AzureDevOps)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-        return $null
-    }
-
     $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User' -Force
     $Policy = $PrivacyPolicies.policy | where-object -property name -eq 'Policy.AllowTeamAdminsInvitationsAccessToken'
     $result = $Policy.effectiveValue

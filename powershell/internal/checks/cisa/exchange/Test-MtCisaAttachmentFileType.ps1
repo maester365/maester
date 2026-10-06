@@ -18,14 +18,6 @@
     [OutputType([bool])]
     param()
 
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-        return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
-
     $policies = Get-MtExo -Request MalwareFilterPolicy
 
     $fileFilter = $policies | Where-Object { `
