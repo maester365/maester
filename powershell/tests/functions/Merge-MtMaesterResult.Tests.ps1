@@ -240,7 +240,7 @@ Describe 'Merge-MtMaesterResult -SameRun' {
                 CurrentVersion = $Catalog
                 CatalogVersion = $Catalog
                 RunMetadata    = [PSCustomObject]@{ RunId = $RunId }
-                Selection      = [PSCustomObject]@{ BuiltIn = 'All'; UnknownIds = @(); Superseded = @() }
+                Selection      = [PSCustomObject]@{ BuiltIn = 'All'; UnknownIds = @(); Superseded = @(); IncludeTag = @(); ExcludeTag = @('Preview'); DryRun = $false }
                 Tests          = $Rows
                 Blocks         = @()
                 EndOfJson      = 'EndOfJson'
@@ -267,6 +267,8 @@ Describe 'Merge-MtMaesterResult -SameRun' {
         $m.Partitions | Should -HaveCount 2
         ($m.Blocks | Where-Object Name -EQ 'Exchange').FailedCount | Should -Be 1
         ($m.PSObject.Properties.Name)[-1] | Should -Be 'EndOfJson'
+        $m.Selection.ExcludeTag | Should -Be @('Preview')
+        $m.Selection.DryRun | Should -BeFalse
     }
 
     It 'Refuses partitions of different runs or catalog versions' {

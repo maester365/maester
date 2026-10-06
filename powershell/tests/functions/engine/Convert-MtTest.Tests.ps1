@@ -112,4 +112,19 @@ Describe "Custom" {
         $null = InModuleScope Maester -Parameters @{ P = $script:folder } { Convert-MtTest -Path $P -WhatIf }
         Join-Path $script:folder 'Test.CONTOSO.3.ps1' | Should -Not -Exist
     }
+
+    It 'Runs the converted native test instead of the Pester test with the same ID' {
+        'Describe "C" { It "CONTOSO.4: Inline" { $true | Should -Be $true } }' | Set-Content (Join-Path $script:folder 'C.Tests.ps1')
+        $null = Invoke-Convert -Path $script:folder
+        $out = Join-Path $TestDrive 'native-wins.json'
+        $manifest = (Resolve-Path "$PSScriptRoot/../../../Maester.psd1").Path
+        $command = "Import-Module '$manifest' -WarningAction SilentlyContinue; `$null = Invoke-Maester -Path '$($script:folder)' -SkipBuiltIn -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -OutputJsonFile '$out' -WarningAction SilentlyContinue"
+        $null = pwsh -NoProfile -NonInteractive -Command $command 2>&1
+        $result = Get-Content $out -Raw | ConvertFrom-Json
+        $rows = @($result.Tests | Where-Object Id -EQ 'CONTOSO.4')
+        $rows | Should -HaveCount 1
+        $rows[0].Format | Should -Be 'Native'
+        $rows[0].Result | Should -Be 'Passed'
+        ($result.Selection.Superseded | Where-Object Id -EQ 'CONTOSO.4').MatchedBy | Should -Be 'NativeTest'
+    }
 }

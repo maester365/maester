@@ -87,10 +87,15 @@ function Merge-MtPartitionResult {
     $merged.TotalCount = $rows.Count
     $merged.ExecutedAt = ($Results | ForEach-Object { $_.ExecutedAt } | Sort-Object | Select-Object -First 1)
     if ($longest) { $merged.TotalDuration = $longest.ToString('hh\:mm\:ss\.fff') }
+    $selections = @($Results | ForEach-Object { if ($_.PSObject.Properties['Selection'] -and $_.Selection) { $_.Selection } })
     $merged.Selection = [pscustomobject]@{
         BuiltIn    = if ($first.PSObject.Properties['Selection'] -and $first.Selection) { $first.Selection.BuiltIn } else { 'All' }
         UnknownIds = $unknownIds
         Superseded = @($Results | ForEach-Object { if ($_.PSObject.Properties['Selection'] -and $_.Selection) { $_.Selection.Superseded } } | Where-Object { $_ })
+        # Partitions usually share the tag filter and differ by test IDs; the union shows every tag that applied.
+        IncludeTag = @($selections | ForEach-Object { if ($_.PSObject.Properties['IncludeTag']) { $_.IncludeTag } } | Where-Object { $_ } | Select-Object -Unique)
+        ExcludeTag = @($selections | ForEach-Object { if ($_.PSObject.Properties['ExcludeTag']) { $_.ExcludeTag } } | Where-Object { $_ } | Select-Object -Unique)
+        DryRun     = [bool]($selections | Where-Object { $_.PSObject.Properties['DryRun'] -and $_.DryRun })
     }
     $merged.Partitions = @($partitions)
     $merged.Tests = $rows

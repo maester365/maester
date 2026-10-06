@@ -80,9 +80,7 @@ Vulnerabilities in the low range typically have very little impact on an organiz
 
 ## Customizing Severity Levels
 
-Maester allows you to customize the severity levels of the out-of-the-box Maester tests. You can do this by creating a custom configuration file and specifying the severity levels for each test. This allows you to tailor the severity levels to your specific needs and requirements.
-
-To customize severity levels, create a file named `maester-config.json` in your `./tests/Custom` folder.
+Every Maester test declares its default severity in its `[MaesterTest]` attribute. You can override it per test in your `maester-config.json` (or `Custom/maester-config.json`, or a tenant file; see the [overview](./overview.md)). This allows you to tailor the severity levels to your specific needs and requirements.
 
 Provide the severity levels for the tests you want to customize using the format below:
 
@@ -109,23 +107,29 @@ The available severity levels are:
 - `Low`
 - `Info`
 
+For a test that produces one result per item (such as `MT.1024`), a row on an item's ID (`MT.1024.<suffix>`) wins over a row on the test's ID.
+
 ### Finding Test IDs
 
 To find the ID of a test you want to customize:
 
-1. Run `Invoke-Maester` and look at the test output
+1. Run `Get-MtTest | Format-Table Id, Title, Severity` (no tenant connection needed)
 2. Check the [Tests Overview](/docs/tests/) documentation
-3. Look at the test file source code in the Maester repository
+3. Look at the `Id` column of a Maester report
 
 ### Defining Severity Levels for Custom Tests
 
-In addition to defining severity levels in `./tests/Custom/maester-config.json`, you can also use the `-Tag` parameter in the `Describe` or `It` block of your Pester tests.
+A [native custom test](../writing-tests/index.mdx) sets its default with the `Severity` property of its attribute:
 
-The tag needs to be in the format of `Severity:<SeverityLevel>`.
+```powershell
+[MaesterTest(Id = 'CONTOSO.1001', Title = 'My custom test', Severity = 'High', Service = 'Graph')]
+```
+
+A [Pester-format custom test](../writing-tests/pester-format-tests.md) can use a tag in the format `Severity:<SeverityLevel>` on its `Describe` or `It` block:
 
 ```powershell
 Describe 'My Custom Test' {
-    It 'Cus.1001: My custom test' -Tag 'Severity:High' {
+    It 'CONTOSO.1002: My custom test' -Tag 'Severity:High' {
         # Your test code here
     }
 }
@@ -135,14 +139,12 @@ Describe 'My Custom Test' {
 
 If a severity level is defined in multiple places, the following precedence order applies (highest to lowest):
 
-1. `./tests/Custom/maester-config.json` (highest priority)
-2. `-Tag` parameter in the test file
-3. Main `./tests/maester-config.json` (lowest priority)
+1. A `TestSettings` row in your configuration (the tenant file wins over `Custom/maester-config.json`, which wins over `maester-config.json`)
+2. The test's own severity: the `Severity` in its `[MaesterTest]` attribute, or the `Severity:` tag of a Pester-format test
+3. A severity the test reports at run time (used by tests whose severity depends on what they find)
 
-:::warning Important
-Avoid editing the `maester-config.json` file in the `./tests` root folder. Any changes you make to this file will be overwritten when you update the Maester tests.
-
-Always use the `./tests/Custom/maester-config.json` file for customizing severity levels.
+:::note Upgrading from 2.x
+Maester 2.x shipped a `maester-config.json` with a severity row for every test. If you still have a copy of that file, its rows override the severities the tests now carry, including corrections made in later releases. Keep only the rows you changed.
 :::
 
 ## Complete Example

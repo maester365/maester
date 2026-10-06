@@ -2,16 +2,19 @@
 title: Installation guide
 ---
 
-- Install the **Maester** PowerShell module, Pester, and the out-of-the-box tests.
+Maester needs **PowerShell 7.4 or later** on Windows, Linux or macOS. Windows PowerShell 5.1 is not supported.
+
+- Install the **Maester** PowerShell module and prepare a folder for your configuration and custom tests.
 
 ```powershell
-Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -SkipPublisherCheck -Force -Scope CurrentUser
 Install-Module Maester -Scope CurrentUser
 
 md maester-tests
 cd maester-tests
 Install-MaesterTests
 ```
+
+The built-in tests ship inside the module, so `Install-MaesterTests` does not copy any tests. It creates a `Custom` folder for your own tests and a starter `maester-config.json`.
 
 - Sign into your Microsoft 365 tenant and run the tests.
 
@@ -20,9 +23,19 @@ Connect-Maester
 Invoke-Maester
 ```
 
+:::note Pester
+Maester 3.0 does not need Pester. Install it only if you have custom tests written in the Pester format (`*.Tests.ps1`), see [Pester-format tests](writing-tests/pester-format-tests.md):
+
+```powershell
+Install-Module Pester -MinimumVersion 5.7.1 -SkipPublisherCheck -Force -Scope CurrentUser
+```
+:::
+
+Upgrading from Maester 2.x? See [Upgrading from 2.x](upgrading-from-2x.md).
+
 ## Invoke-Maester
 
-To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester configuration, see the [Invoke-Maester](commands/Invoke-Maester.mdx) documentation.
+To learn more about the `Invoke-Maester` cmdlet including how to filter tests, see the [Invoke-Maester](commands/Invoke-Maester.mdx) documentation and the [run configuration reference](configuration/run-configuration.md).
 
 ## Optional modules and permissions
 

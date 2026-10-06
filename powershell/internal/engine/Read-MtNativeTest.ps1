@@ -315,10 +315,17 @@ function Read-MtTestParameter {
     # Description: a comment directly above the parameter, else .PARAMETER help.
     $description = $null
     $start = $ParameterAst.Extent.StartOffset
-    $previous = $Tokens | Where-Object { $_.Extent.EndOffset -le $start -and $_.Kind -ne 'NewLine' } | Select-Object -Last 1
-    if ($previous -and $previous.Kind -eq 'Comment' -and $previous.Extent.EndLineNumber -ge $ParameterAst.Extent.StartLineNumber - 1) {
-        $description = ($previous.Text -replace '^<#|#>$', '' -replace '^#\s?', '').Trim()
+    # Consecutive # lines directly above the parameter form one description.
+    $before = @($Tokens | Where-Object { $_.Extent.EndOffset -le $start -and $_.Kind -ne 'NewLine' })
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $expectedLine = $ParameterAst.Extent.StartLineNumber - 1
+    for ($i = $before.Count - 1; $i -ge 0; $i--) {
+        $token = $before[$i]
+        if ($token.Kind -ne 'Comment' -or $token.Extent.EndLineNumber -lt $expectedLine) { break }
+        $lines.Insert(0, ($token.Text -replace '^<#|#>$', '' -replace '^#\s?', '').Trim())
+        $expectedLine = $token.Extent.StartLineNumber - 1
     }
+    if ($lines.Count -gt 0) { $description = (($lines | Where-Object { $_ }) -join ' ').Trim() }
     if (-not $description) {
         # A comment between the attributes and the variable: [Parameter()] # Description. [switch] $Name
         $inside = $Tokens | Where-Object { $_.Kind -eq 'Comment' -and $_.Extent.StartOffset -ge $start -and $_.Extent.EndOffset -le $ParameterAst.Name.Extent.StartOffset } | Select-Object -Last 1

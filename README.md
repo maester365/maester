@@ -27,7 +27,7 @@ Maester is an open source **PowerShell-based test automation framework** designe
 ## Key Features
 
 - **Automated Testing**: Maester provides a comprehensive set of automated tests to ensure the security of your Microsoft 365 setup.
-- **Customizable**: Tailor Maester to your specific needs by adding custom Pester tests.
+- **Customizable**: Tailor Maester to your specific needs with your own tests, per-tenant configuration and test parameters.
 - **Formatted Results**: Export results in CSV, Excel, HTML, JSON, or Markdown format.
 - **Notifications**: Send notification of results to email, Teams, or Slack.
 - **CI/CD Workflows**: Run Maester in a GitHub, Azure DevOps, or GitLab pipeline.
@@ -39,13 +39,13 @@ Maester is an open source **PowerShell-based test automation framework** designe
 
 ### Installation
 
+Maester needs PowerShell 7.4 or later on Windows, Linux or macOS.
+
 ```powershell
 Install-Module -Name Maester -Scope CurrentUser
 ```
 
-### Installing Maester Tests
-
-Run the following commands to install the Maester tests under your home directory. Pester will be installed if needed.
+The built-in tests ship inside the module. Optionally, prepare a folder for your configuration and your own tests:
 
 ```powershell
 md ~/maester-tests
@@ -55,13 +55,18 @@ Install-MaesterTests
 
 ## Running Maester
 
-To run the tests in this folder run the following PowerShell commands. To learn more see [maester.dev](https://maester.dev).
-
 ```powershell
-cd ~/maester-tests
 Connect-Maester
 Invoke-Maester
 ```
+
+To also run the custom tests and configuration in a folder, pass it with `-Path` (or run from that folder):
+
+```powershell
+Invoke-Maester -Path ~/maester-tests
+```
+
+To learn more see [maester.dev](https://maester.dev).
 
 ### Running Maester in a National Cloud Environment
 
@@ -80,16 +85,25 @@ Connect-Maester -Environment USGov
 
 ## Keeping your Maester tests up to date
 
-The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.
-
-- Update the `Maester` PowerShell module to the latest version and load it.
-- Use `Update-MaesterTests` to update the test files in the folder where you have installed them.
+The Maester team will add new tests over time. The tests ship inside the module, so updating the module updates the tests:
 
 ```powershell
 Update-Module Maester -Force
-Import-Module Maester
-Update-MaesterTests -Path ~/maester-tests
 ```
+
+Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrote in 2.x are no longer used. Remove them with `Update-MaesterTests -Path ~/maester-tests`, and see [Upgrading from 2.x](https://maester.dev/docs/upgrading-from-2x) for everything else that changed.
+
+## Writing your own tests
+
+A Maester test is two files: `Test.<ID>.ps1`, a PowerShell function with a `[MaesterTest(...)]` attribute, and `Test.<ID>.md` with its description and remediation steps.
+
+```powershell
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph   # scaffold Custom/Test.CONTOSO.1001.*
+Get-MtTest -Path ./Custom                                                            # validate, no tenant needed
+Invoke-MtTest -Path ./Custom/Test.CONTOSO.1001.ps1                                   # run one test
+```
+
+Custom tests written for 2.x with Pester still run when Pester 5.7.1 or later is installed, and `Convert-MtTest` converts them. See [Writing native tests](https://maester.dev/docs/writing-tests).
 
 ## Use as GitHub action
 
@@ -113,8 +127,12 @@ Maester's source code lives in the `powershell/` and `tests/` folders. To produc
 ```
 
 This builds and validates the module, unloads any other Maester module, and
-imports the local build into the current PowerShell session. Run its packaged
-tests with `Invoke-Maester -Path ./module/maester-tests`.
+imports the local build into the current PowerShell session. Run `Invoke-Maester`
+to run the built-in tests from the local build.
+
+From a source checkout you can also import `./powershell/Maester.psd1` directly: it loads the native tests from
+`./tests` and the committed engine DLL, so no build and no .NET SDK are needed unless you change the engine in
+`src/Maester.Engine`.
 
 After changing the report, use `./build/Build-LocalMaester.ps1 -BuildReport` to
 build and embed the report template before building and importing the module.

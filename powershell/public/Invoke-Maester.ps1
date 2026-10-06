@@ -635,18 +635,18 @@
         foreach ($i in $superseded.Items) { $supersededKeys["$($i.File):$($i.Line)"] = $true }
         $customInventory = @($customInventory | Where-Object { -not $supersededKeys.ContainsKey("$($_.File):$($_.Line)") })
 
-        # A custom native test and a custom Pester test with the same ID: neither runs (DuplicateId).
+        # A custom native test and a custom Pester test with the same ID (for example after Convert-MtTest):
+        # the native test runs and the Pester test is superseded (design section 12.1).
         $nativeCustomIds = @{}
         foreach ($t in $nativeCustom) { if ($t.Id) { $nativeCustomIds[$t.Id] = $t } }
         $duplicates = @($customInventory | Where-Object { $_.Id -and $nativeCustomIds.ContainsKey($_.Id) })
         foreach ($d in $duplicates) {
             $pesterFilter.ExcludeLine = @(@($pesterFilter.ExcludeLine) + "$($d.File):$($d.Line)" | Where-Object { $_ })
-            $nativeCustomIds[$d.Id].Errors.Add([pscustomobject]@{ Code = 'DuplicateId'; Message = "A Pester test has the same ID: $($d.File), line $($d.Line)."; Line = 1 })
         }
         if ($duplicates.Count -gt 0) {
             $duplicateKeys = @{}
             foreach ($d in $duplicates) { $duplicateKeys["$($d.File):$($d.Line)"] = $true }
-            $superseded.Items = @($superseded.Items) + @($duplicates | ForEach-Object { [pscustomobject]@{ Id = $_.Id; File = $_.File; Line = $_.Line; MatchedBy = 'DuplicateId' } })
+            $superseded.Items = @($superseded.Items) + @($duplicates | ForEach-Object { [pscustomobject]@{ Id = $_.Id; File = $_.File; Line = $_.Line; MatchedBy = 'NativeTest' } })
             $customInventory = @($customInventory | Where-Object { -not $duplicateKeys.ContainsKey("$($_.File):$($_.Line)") })
         }
     }

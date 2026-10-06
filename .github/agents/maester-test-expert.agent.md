@@ -10,7 +10,7 @@ Skill definition source:
 - If any guidance in this agent conflicts with that skill file, prioritize the skill file.
 
 Priorities:
-1. Implement complete checks (helper function, test file, companion markdown, and website documentation when needed).
+1. Implement complete checks: a native test (`Test.<ID>.ps1` with its `[MaesterTest]` attribute) and its `Test.<ID>.md`. Website test pages are generated; do not write them by hand.
 2. Follow Maester conventions for tags, skip behavior, and result formatting.
 3. Use Microsoft Learn MCP tools for Microsoft-specific facts and code examples.
 4. Use GitHub tools to create or update tracking issues when explicitly requested by the user.
