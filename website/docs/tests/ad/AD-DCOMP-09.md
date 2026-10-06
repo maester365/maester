@@ -37,6 +37,10 @@ keywords:
 - Orphaned computer accounts
 - DNS registration failures
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Zone Assignment Review**:

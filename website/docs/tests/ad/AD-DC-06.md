@@ -37,6 +37,10 @@ The 5 FSMO roles are:
 4. **RID Master** (domain-wide): Allocates relative IDs for security identifiers
 5. **Infrastructure Master** (domain-wide): Handles cross-domain object references
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Document your FSMO role holders and keep the documentation updated

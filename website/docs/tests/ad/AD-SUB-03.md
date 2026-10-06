@@ -32,6 +32,10 @@ Catch-all subnets (overly broad IP ranges) can cause:
 
 Common catch-all subnets include 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Replace catch-all subnets with specific, appropriately-sized subnets

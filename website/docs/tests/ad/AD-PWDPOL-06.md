@@ -31,6 +31,10 @@ Account lockout duration is a critical control for preventing brute-force attack
 
 A lockout duration of at least 30 minutes provides adequate protection against automated attacks while minimizing help desk calls. Setting it to 0 (until administrator unlocks) provides maximum security but requires administrative overhead.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Configure the account lockout duration to at least **30 minutes** for automatic unlock, or set to **0** for manual unlock only (maximum security).

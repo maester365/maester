@@ -1,6 +1,6 @@
 ---
 title: "AD-CFG-15 - Enrollment CA certificate details should be retrievable"
-description: "Enrollment-capable CA certificates include validity periods and other critical properties. Expired or invalid CA certificates can break certificate issuance and domain authentication flows. In addition, unexpected certificate replacements (e.g., unknown thumbprints) can indicate PKI tampering. Secu…"
+description: "Enrollment-capable CA certificates include validity periods and other critical properties. Expired or invalid CA certificates can break certificate issuance and domain authentication flows. In addition, unexpected certificate replacements (e.g., unknown thumbprints) can indicate PKI tampering. Cont…"
 slug: /tests/AD-CFG-15
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,6 +24,10 @@ keywords:
 ## Overview
 
 Enrollment-capable CA certificates include validity periods and other critical properties. Expired or invalid CA certificates can break certificate issuance and domain authentication flows. In addition, unexpected certificate replacements (e.g., unknown thumbprints) can indicate PKI tampering.
+
+#### Control Type
+
+**Operational**
 
 #### Security Recommendation
 - Monitor CA certificate expiration and rotate certificates through an approved operational process.

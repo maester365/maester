@@ -31,6 +31,10 @@ Monitoring the *count* of KDS root keys helps identify:
 - Missing keys that prevent proper gMSA key derivation
 - Unexpected additional keys that could indicate misconfiguration or unauthorized changes
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Ensure KDS root keys are deployed according to your Microsoft recommended procedures.
 - Validate the expected number of keys for your environment (e.g., per forest/role) and alert on deviations.

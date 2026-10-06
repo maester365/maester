@@ -32,6 +32,10 @@ Inter-forest trusts (external trusts) connect different Active Directory forests
 
 Intra-forest trusts (within the same forest) generally have stronger security guarantees because they share a common schema and configuration.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - **Minimize External Trusts**: Only create inter-forest trusts when absolutely necessary

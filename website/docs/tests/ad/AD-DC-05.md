@@ -37,6 +37,10 @@ Concentrating all 5 FSMO roles on a single DC creates a single point of failure.
 - **Disaster recovery**: All critical roles are in one location
 - **Maintenance**: Updates to the FSMO holder require careful planning
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Consider distributing FSMO roles across multiple domain controllers for redundancy:

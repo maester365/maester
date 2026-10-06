@@ -29,6 +29,10 @@ Highly privileged accounts with old passwords are prime targets for password spr
 - **Control validation**: Supports verification of password rotation practices.
 - **Exception tracking**: Highlights accounts with non-expiring privileged credentials.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Rotate passwords for privileged accounts on a defined schedule.

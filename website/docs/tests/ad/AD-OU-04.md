@@ -30,6 +30,10 @@ keywords:
   - Impact Group Policy: Empty OUs with linked GPOs may still be processed during policy refresh
 - While empty OUs don't pose a direct security risk, they indicate opportunities for directory cleanup and maintenance. Regular cleanup of empty OUs helps maintain an organized, efficient directory structure.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Periodically review and clean up empty Organizational Units:

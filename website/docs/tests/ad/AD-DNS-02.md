@@ -30,6 +30,10 @@ DNS zones that contain only SOA (Start of Authority) and NS (Name Server) record
 - **Might be unnecessary**: Adding complexity without providing value
 - **Can cause confusion**: Administrators may assume these zones are actively used
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review zones with only SOA/NS records and either:

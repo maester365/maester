@@ -42,6 +42,10 @@ Knowing your schema version is important for:
 - **Upgrade planning**: Determining if schema updates are needed
 - **Security**: Newer schema versions support enhanced security features
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Keep your schema version current with your domain functional level:

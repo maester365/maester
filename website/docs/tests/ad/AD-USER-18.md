@@ -29,6 +29,10 @@ The `ScriptPath` attribute can launch scripts automatically during user sign-in.
 - **Legacy dependency detection**: Helps identify environments still relying on older sign-in automation
 - **Review priority**: Highlights scripts and shares that may need access hardening or modernization
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review every configured logon script for business need and secure coding practices

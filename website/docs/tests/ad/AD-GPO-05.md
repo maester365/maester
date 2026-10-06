@@ -31,6 +31,10 @@ artifacts that can create operational overhead and increase risk.
 - **Operational complexity**: GPO sprawl makes it harder to reason about what policies actually apply.
 - **Maintenance hygiene**: Tracking unlinked GPOs supports safe cleanup and ongoing policy governance.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review the returned unlinked GPOs and consider removing those that are no longer needed.

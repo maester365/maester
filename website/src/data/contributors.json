@@ -440,7 +440,7 @@
         "ORCA.233.1"
       ],
       "initials": "MS",
-      "recentCommits": 5
+      "recentCommits": 6
     },
     {
       "id": "Cloud-Architekt",
@@ -9565,7 +9565,7 @@
       "path": "/docs/next/tests/AD-DCD-04"
     },
     "AD-DCOMP-01": {
-      "title": "Computers with unconstrained delegation count should be retrievable",
+      "title": "Computers with unconstrained delegation count should be investigated",
       "path": "/docs/next/tests/AD-DCOMP-01"
     },
     "AD-DCOMP-02": {
@@ -9573,7 +9573,7 @@
       "path": "/docs/next/tests/AD-DCOMP-02"
     },
     "AD-DCOMP-03": {
-      "title": "Non-DC computers with constrained delegation count should be retrievable",
+      "title": "Non-DC computers with constrained delegation count should be investigated",
       "path": "/docs/next/tests/AD-DCOMP-03"
     },
     "AD-DCOMP-04": {
@@ -9601,7 +9601,7 @@
       "path": "/docs/next/tests/AD-DCOMP-09"
     },
     "AD-DFSR-01": {
-      "title": "DFS-R subscription count should be retrievable",
+      "title": "All domain controllers should have DFS-R subscriptions",
       "path": "/docs/next/tests/AD-DFSR-01"
     },
     "AD-DNS-01": {
@@ -9865,11 +9865,11 @@
       "path": "/docs/next/tests/AD-GPOL-06"
     },
     "AD-GPOREP-01": {
-      "title": "GPOs without permissions count should be retrievable",
+      "title": "No GPOs should be missing permissions",
       "path": "/docs/next/tests/AD-GPOREP-01"
     },
     "AD-GPOREP-02": {
-      "title": "GPOs without permissions details should be retrievable",
+      "title": "No GPOs should be missing permissions",
       "path": "/docs/next/tests/AD-GPOREP-02"
     },
     "AD-GPOREP-03": {
@@ -9921,27 +9921,27 @@
       "path": "/docs/next/tests/AD-GPOREP-14"
     },
     "AD-GPOREP-15": {
-      "title": "GPO version mismatch count should be retrievable",
+      "title": "No GPOs should have version mismatches",
       "path": "/docs/next/tests/AD-GPOREP-15"
     },
     "AD-GPOREP-16": {
-      "title": "GPO version mismatch details should be retrievable",
+      "title": "No GPOs should have version mismatches",
       "path": "/docs/next/tests/AD-GPOREP-16"
     },
     "AD-GPOREP-17": {
-      "title": "GPO Cpassword found count should be retrievable",
+      "title": "No GPOs should contain a cpassword",
       "path": "/docs/next/tests/AD-GPOREP-17"
     },
     "AD-GPOREP-18": {
-      "title": "GPO Cpassword found details should be retrievable",
+      "title": "No GPOs should contain a cpassword",
       "path": "/docs/next/tests/AD-GPOREP-18"
     },
     "AD-GPOREP-19": {
-      "title": "GPO default password found count should be retrievable",
+      "title": "No GPOs should contain a default password",
       "path": "/docs/next/tests/AD-GPOREP-19"
     },
     "AD-GPOREP-20": {
-      "title": "GPO default password found details should be retrievable",
+      "title": "No GPOs should contain a default password",
       "path": "/docs/next/tests/AD-GPOREP-20"
     },
     "AD-GPOS-01": {
@@ -10089,7 +10089,7 @@
       "path": "/docs/next/tests/AD-PWDPOL-07"
     },
     "AD-REPL-01": {
-      "title": "Disabled replication connection count should be retrievable",
+      "title": "No replication connections should be disabled",
       "path": "/docs/next/tests/AD-REPL-01"
     },
     "AD-REPL-02": {
@@ -10105,7 +10105,7 @@
       "path": "/docs/next/tests/AD-ROOTDSE-02"
     },
     "AD-ROOTDSE-03": {
-      "title": "Root DSE synchronized status should be retrievable",
+      "title": "Root DSE should be synchronized",
       "path": "/docs/next/tests/AD-ROOTDSE-03"
     },
     "AD-SCH-01": {
@@ -10125,7 +10125,7 @@
       "path": "/docs/next/tests/AD-SCH-04"
     },
     "AD-SCH-05": {
-      "title": "LAPS installation status should be retrievable",
+      "title": "LAPS should be installed in Active Directory",
       "path": "/docs/next/tests/AD-SCH-05"
     },
     "AD-SITE-01": {
@@ -10253,11 +10253,11 @@
       "path": "/docs/next/tests/AD-TRUST-02"
     },
     "AD-TRUST-03": {
-      "title": "Trust quarantined count should be retrievable",
+      "title": "Trust quarantined count should be investigated",
       "path": "/docs/next/tests/AD-TRUST-03"
     },
     "AD-TRUST-04": {
-      "title": "Trust non-quarantined details should be retrievable",
+      "title": "Trusts should not have weak SID filtering",
       "path": "/docs/next/tests/AD-TRUST-04"
     },
     "AD-TRUST-05": {
@@ -10385,7 +10385,7 @@
       "path": "/docs/next/tests/AD-USER-28"
     },
     "AD-USER-29": {
-      "title": "User delegation details should be retrievable",
+      "title": "No users should be configured for unconstrained delegation",
       "path": "/docs/next/tests/AD-USER-29"
     },
     "CIS.GH.1.2.2": {

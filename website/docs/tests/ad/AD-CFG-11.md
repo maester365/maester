@@ -25,6 +25,10 @@ keywords:
 
 DHCP servers registered in Active Directory are authorized to provide IP addresses to clients. If unauthorized DHCP servers are registered (or legitimate servers are removed), clients may receive incorrect network settings, experience instability, or be exposed to man-in-the-middle attacks via rogue DHCP.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Maintain a strict allowlist of approved DHCP servers and ensure only those servers are registered in AD.
 - Remove stale/unneeded DHCP server registrations as part of routine hygiene.

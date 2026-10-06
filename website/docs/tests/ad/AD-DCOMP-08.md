@@ -37,6 +37,10 @@ keywords:
 - Disjoint namespaces require special configuration
 - External DNS zones for perimeter networks
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Validate Zone Configuration**:

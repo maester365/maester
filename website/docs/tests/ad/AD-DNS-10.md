@@ -36,6 +36,10 @@ Incorrect SOA settings can cause:
 - Inconsistent data across servers
 - Administrative confusion
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Ensure primary server values point to valid, secured DNS servers

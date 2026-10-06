@@ -29,6 +29,10 @@ Non-inherited ACEs represent explicit access assignments applied directly to dir
 - **Misconfiguration detection**: Direct permissions are more likely to diverge from baseline inheritance
 - **Review prioritization**: Objects with many explicit ACEs deserve closer security review
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Review why explicit permissions were added instead of relying on inheritance

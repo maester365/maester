@@ -32,6 +32,10 @@ For security assessments, this matters because inheritance blocking can create *
 - Security baselines can become inconsistent across the directory.
 - “Sticky” configurations at lower levels can persist unnoticed.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - **Review blocked inheritance regularly**: confirm each OU blocking inheritance has a documented business/technical justification.

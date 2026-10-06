@@ -29,6 +29,10 @@ User accounts with `ServicePrincipalName` values are typically used as service a
 - **Service account discovery**: Helps inventory service identities in the domain
 - **Hardening priority**: Supports review of password hygiene, delegation, and logon restrictions
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Review every user account with an SPN and confirm it is a legitimate service account

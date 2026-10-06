@@ -30,6 +30,10 @@ The AdminCount attribute is a critical Active Directory security marker that ind
 - **Audit targets**: Groups requiring enhanced monitoring due to their administrative nature
 - **Delegation challenges**: Groups that cannot receive permissions through normal inheritance
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review all groups with AdminCount set to ensure they still require elevated privileges

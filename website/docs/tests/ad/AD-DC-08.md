@@ -33,6 +33,10 @@ Understanding the operating system distribution across your domain controllers h
 
 Domain controllers running end-of-life operating systems are a critical security risk as they no longer receive security updates, making them vulnerable to known exploits.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 **Upgrade domain controllers running end-of-life operating systems immediately.**

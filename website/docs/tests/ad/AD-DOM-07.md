@@ -35,6 +35,10 @@ Valid NetBIOS names should:
 - Contain only alphanumeric characters and: !@#$%^&'()_-.+{}~
 - Not contain: \ / : * ? " < > |
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 - **Use Simple Names**: Stick to alphanumeric characters for maximum compatibility

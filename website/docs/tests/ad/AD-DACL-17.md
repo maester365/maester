@@ -29,6 +29,10 @@ Inherited object type GUIDs define which descendant object classes an inheritabl
 - **Privilege impact analysis**: Broad inheritance can extend powerful rights to many child objects
 - **Configuration review**: Distinct inherited object types reveal the variety of object classes affected by delegations
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Review inherited ACEs that target sensitive descendant object classes

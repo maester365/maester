@@ -1,6 +1,6 @@
 ---
 title: "AD-GPOS-08 - GPO owner distinct count should be retrievable"
-description: "GPO owner distinct count should be retrievable"
+description: "Counts the number of distinct GPO owners. Why This Test Matters - Operational control: assesses diversity of GPO owners which can highlight unusual configurations or omissions. Control Type **Operational** Security Recommendation - If many owners are identical or blank, review GPO creation practice…"
 slug: /tests/AD-GPOS-08
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -23,7 +23,29 @@ keywords:
 
 ## Overview
 
-GPO owner distinct count should be retrievable
+#### Test-MtAdGpoOwnerDistinctCount
+
+ Counts the number of distinct GPO owners.
+
+#### Why This Test Matters
+- Operational control: assesses diversity of GPO owners which can highlight unusual configurations or omissions.
+
+#### Control Type
+
+**Operational**
+
+#### Security Recommendation
+- If many owners are identical or blank, review GPO creation practices to ensure proper ownership.
+
+#### How the Test Works
+- Retrieves GPO state, extracts Owner fields, computes distinct non-empty owners, and reports the count.
+
+#### Related Tests
+- `Test-MtAdGpoOwnerDetails` - summarizes owners per GPOs.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 ## Test Metadata
 

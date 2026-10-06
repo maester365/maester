@@ -30,6 +30,10 @@ Detailed information about incorrect root server configurations is essential for
 - **Security incident response**: Unexpected changes may indicate compromise or attack
 - **Compliance documentation**: Detailed records support audit requirements
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 When incorrect root server IPs are detected:

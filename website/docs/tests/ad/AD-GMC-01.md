@@ -30,6 +30,10 @@ Understanding which groups have members versus empty groups provides valuable in
 - **Audit Scope**: Focus security reviews on groups that actually grant access to resources
 - **Directory Cleanup**: Identify candidates for decommissioning or consolidation
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review group membership to identify:
