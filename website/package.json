@@ -30,6 +30,7 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@iconify/react": "^6.0.2",
     "@mdx-js/react": "^3.1.1",
+    "@mermaid-js/layout-elk": "^0.1.9",
     "clsx": "^2.1.1",
     "posthog-docusaurus": "^2.0.5",
     "prism-react-renderer": "^2.1.0",
