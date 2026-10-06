@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Lists details of non-quarantined trusts in Active Directory."
+description: "Lists details of trusts with weak SID filtering in Active Directory."
 id: Test-MtAdTrustNonQuarantinedDetails
 title: Test-MtAdTrustNonQuarantinedDetails
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Lists details of non-quarantined trusts in Active Directory.
+Lists details of trusts with weak SID filtering in Active Directory.
 
 ## SYNTAX
 
@@ -20,11 +20,14 @@ Test-MtAdTrustNonQuarantinedDetails [-ProgressAction <ActionPreference>] [<Commo
 
 ## DESCRIPTION
 
-This test retrieves detailed information about trusts that are not quarantined
-(SID filtering disabled).
-Non-quarantined trusts may be vulnerable to SID history
-attacks where malicious SIDs can be used to elevate privileges across trust boundaries.
-This test helps identify trusts that may need additional security controls.
+This test retrieves detailed information about external and forest trusts that have weak
+SID filtering.
+For external trusts, weakness means the QUARANTINED_DOMAIN bit (0x4) is not set.
+For forest trusts, weakness means the TREAT_AS_EXTERNAL bit (0x40) is set (SID history enabled).
+Intra-forest (parent-child) trusts are excluded because they do not support quarantine.
+MIT Kerberos realm trusts are also excluded as SID filtering does not apply to them.
+
+Trust classification is derived from the trustAttributes LDAP attribute and trustType.
 
 ## EXAMPLES
 
@@ -34,8 +37,8 @@ This test helps identify trusts that may need additional security controls.
 Test-MtAdTrustNonQuarantinedDetails
 ```
 
-Returns $true if trust data is accessible, $false otherwise.
-The test result includes details of non-quarantined trusts.
+Returns $true if all evaluated trusts have strong SID filtering, $false if any are weak.
+The test result includes details of trusts with weak SID filtering.
 
 ## PARAMETERS
 
