@@ -494,7 +494,7 @@ export default function AffectedObjectsPage() {
                                 type="button"
                                 onClick={() => { openCheck(o, c.id) }}
                                 title="Show the check result"
-                                className="grid min-h-9 w-full grid-cols-[68px_84px_minmax(0,1fr)] items-center gap-3 border-t border-gray-200 py-1.5 pl-12 pr-4 text-left first:border-t-0 hover:bg-gray-100 lg:grid-cols-[68px_84px_150px_minmax(0,1fr)] dark:border-zinc-800 dark:hover:bg-zinc-800/60"
+                                className="grid min-h-9 w-full grid-cols-[68px_84px_minmax(0,1fr)] items-center gap-3 border-t border-gray-200 py-1.5 pl-12 pr-4 text-left first:border-t-0 hover:bg-gray-100 lg:grid-cols-[68px_84px_13rem_minmax(0,1fr)] dark:border-zinc-800 dark:hover:bg-zinc-800/60"
                             >
                                 <span>
                                     <SeverityPill severity={c.severity} />
@@ -504,7 +504,7 @@ export default function AffectedObjectsPage() {
                                         {statusMark[c.status]} {c.result || "Unknown"}
                                     </Pill>
                                 </span>
-                                <span className="font-mono text-xs text-gray-500 dark:text-zinc-400">{c.id}</span>
+                                <span className="block min-w-0 truncate font-mono text-xs text-gray-500 dark:text-zinc-400" title={c.id}>{c.id}</span>
                                 <span className="col-span-3 text-sm leading-snug text-gray-800 lg:col-span-1 dark:text-zinc-200">{c.title}</span>
                             </button>
                         ))}
