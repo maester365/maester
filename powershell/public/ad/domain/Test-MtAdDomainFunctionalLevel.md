@@ -4,6 +4,10 @@ The domain functional level determines which Active Directory features are avail
 - **Windows Server 2012 R2+**: Provides access to claims-based authentication and compound authentication
 - **Security Posture**: Running at lower functional levels means missing modern security features that protect against contemporary attack vectors
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Aim to maintain your domain at the highest functional level supported by your domain controllers. Before raising the functional level:

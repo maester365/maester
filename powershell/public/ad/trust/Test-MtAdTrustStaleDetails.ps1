@@ -84,9 +84,13 @@
         $testResultMarkdown = "Found $staleCount stale trust(s). These trusts should be reviewed and removed if the target domain is no longer accessible or needed.`n`n%TestResult%"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($totalCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

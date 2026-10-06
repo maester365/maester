@@ -41,7 +41,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
     $found = $gpoReportsArray | Where-Object { [bool]$_.CpasswordFound }
     $foundCount = @($found).Count
 
-    $testResult = $true
+    $testResult = $foundCount -eq 0
 
     $table = "| GPO Name | CpasswordFound | DefaultPasswordFound |" + "`n"
     $table += '| --- | --- | --- |' + "`n"

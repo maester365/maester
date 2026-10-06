@@ -5,6 +5,10 @@ UPN (User Principal Name) suffixes are a critical component of Active Directory 
 - **Security Assessment**: Unnecessary or unauthorized UPN suffixes could indicate misconfiguration or security risks
 - **Compliance**: Some compliance frameworks require visibility into all authentication namespaces
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review configured UPN suffixes to ensure:

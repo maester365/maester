@@ -2,6 +2,10 @@ Group Policy Objects (GPOs) created a long time ago can be a sign of policy grow
 
 Tracking the count of GPOs created before 2020 helps you quickly identify areas that may benefit from review and modernization.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - **Review legacy GPOs regularly**: Older GPOs are more likely to include security configurations that are no longer aligned to current best practices.

@@ -5,6 +5,8 @@ Describe "Active Directory - Forest" -Tag "AD", "AD.Forest", "AD-FORS-03" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "SPN suffix data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

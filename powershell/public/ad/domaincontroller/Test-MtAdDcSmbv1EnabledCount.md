@@ -7,6 +7,10 @@ SMBv1 (Server Message Block version 1) is an outdated protocol with significant 
 
 Domain controllers with SMBv1 enabled pose a critical security risk as they are high-value targets for attackers.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Disable SMBv1 on all domain controllers immediately.**

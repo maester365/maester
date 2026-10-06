@@ -5,6 +5,8 @@ Describe "Active Directory - Password Policy" -Tag "AD", "AD.PasswordPolicy", "A
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "fine-grained password policy data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

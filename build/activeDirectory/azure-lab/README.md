@@ -599,6 +599,74 @@ Before declaring E2E validation complete, the following hard requirements **must
 
 ---
 
+## Streamlined Test Execution (Plan 06+)
+
+For rapid validation of Maester AD test changes against the lab, use the helper scripts instead of manual SSH commands:
+
+### `Run-LabADTests.ps1` (PowerShell)
+
+Builds the module from source, retrieves credentials via managed identity, copies the module to the Windows runner, executes tests against all domains, and retrieves reports.
+
+```powershell
+# Full run — build module, test all domains, retrieve reports
+./build/activeDirectory/azure-lab/Run-LabADTests.ps1
+
+# Re-run without rebuilding (faster iteration)
+./build/activeDirectory/azure-lab/Run-LabADTests.ps1 -SkipBuild
+
+# Test only root domain
+./build/activeDirectory/azure-lab/Run-LabADTests.ps1 -Domains RootForest
+
+# Custom evidence directory
+./build/activeDirectory/azure-lab/Run-LabADTests.ps1 -EvidenceDir ./my-evidence
+```
+
+### `Run-LabADTests.sh` (Bash wrapper)
+
+Same functionality via bash for environments where pwsh is the entry point:
+
+```bash
+./build/activeDirectory/azure-lab/Run-LabADTests.sh
+./build/activeDirectory/azure-lab/Run-LabADTests.sh --skip-build --domains RootForest
+```
+
+### What the scripts do
+
+1. **Build** — Runs `./build/Build-LocalMaester.ps1` to compile the current source tree
+2. **Authenticate** — Uses `az login --identity` to access the Key Vault defined in `LabConfig.json`
+3. **Retrieve secrets** — Gets runner admin password and domain reader credentials
+4. **Deploy module** — Copies the built module to `C:\MaesterDev` on the Windows runner via SSH/scp
+5. **Execute** — Runs `Invoke-Maester -Tag AD` against each domain with explicit credentials over LDAPS
+6. **Collect** — Retrieves all report formats (`.html`, `.json`, `.md`, `-summary.md`) back to the local evidence directory
+7. **Summarize** — Parses JSON reports and prints a status count table
+
+### Prerequisites for helper scripts
+
+- Azure CLI (`az`) with managed identity access to the lab's Key Vault
+- `sshpass` (for password-based SSH to the Windows runner)
+- `pwsh` (PowerShell 7)
+- `LabConfig.json` present in the same directory as the script
+
+### Evidence structure
+
+After running, the evidence directory contains:
+
+```
+evidence/lab-run-YYYYMMDD-HHMMSS/
+├── RootForest/
+│   ├── RootForest.html
+│   ├── RootForest.json
+│   ├── RootForest.md
+│   └── RootForest-summary.md
+├── ChildDomain/
+│   └── ...
+├── SeparateForest/
+│   └── ...
+└── summary.json
+```
+
+---
+
 ## Examples
 
 ### Full deployment
@@ -645,3 +713,13 @@ Before declaring E2E validation complete, the following hard requirements **must
   3. Reboot again to complete the promotion
 - Each Maester AD test run should still target exactly one endpoint at a time;
   this lab only automates the infrastructure.
+
+### Troubleshooting `Run-LabADTests.ps1`
+
+| Symptom | Cause | Solution |
+|---|---|---|
+| SSH command times out after 10-15 minutes | Default automation timeout is too short for 270 tests | Increase timeout to 1800s (30 min) or run one domain at a time: `./Run-LabADTests.ps1 -Domains RootForest` |
+| "No JSON report retrieved" warning | Remote test execution was killed mid-run | Check SSH timeout. The script prints progress timestamps — if the last line is not "TEST EXECUTION COMPLETE", the process was interrupted. |
+| Child domain shows all "NotRun" | Connection succeeded but tests never started | Same as timeout — child domain tests take ~8-10 minutes. Ensure adequate timeout. |
+| "Connection failed" for separate forest | Credentials or DNS issue | Verify `LabConfig.json` has correct forest credentials. The separate forest has no trust — explicit credentials over LDAPS are required and validated. |
+| Module build fails locally | Missing prerequisites | Run `./build/Build-LocalMaester.ps1` directly to see the error. Ensure PowerShell 7 and all build dependencies are installed. |

@@ -9,6 +9,10 @@ The tombstone lifetime determines how long deleted Active Directory objects are 
 - **180 days**: Default for forests created on Windows Server 2003 SP1 and later
 - **60 days**: Default for older forests (Windows 2000/2003 RTM)
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 - **Minimum 180 Days**: Maintain at least 180 days for adequate recovery time

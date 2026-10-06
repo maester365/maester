@@ -3,6 +3,8 @@ Describe "Active Directory - Configuration" -Tag "AD", "AD.Config", "AD-CFG-23" 
         $result = Test-MtAdSmtpSiteLinksCount
         if ($null -ne $result) {
             $result | Should -Be $true -Because "SMTP site link data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

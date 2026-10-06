@@ -50,7 +50,7 @@
     $neverLoggedOn = ($staleEnabledComputers | Where-Object { $null -eq $_.lastLogonDate } | Measure-Object).Count
     $notLoggedIn180Days = $staleCount - $neverLoggedOn
 
-    $testResult = $true
+    $testResult = $staleCount -eq 0
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

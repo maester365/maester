@@ -6,6 +6,10 @@ Monitoring NTAuth certificate *count* helps detect:
 - Unauthorized or accidental additions of NTAuth trust anchors
 - Drift away from your approved CA list
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Treat the NTAuth store as security-critical: only add CAs that are explicitly approved.
 - Review NTAuth changes immediately; require change ticket + CA validation before trusting new certificates.

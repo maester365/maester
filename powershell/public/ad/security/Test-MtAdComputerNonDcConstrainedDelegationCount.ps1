@@ -82,7 +82,7 @@
     $testResultMarkdown = "Non-DC computers with constrained delegation have been identified. These should be reviewed to ensure they are necessary and properly configured.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerNonDcConstrainedDelegationCount"
 
     return $testResult

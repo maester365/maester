@@ -5,6 +5,8 @@ Describe "Active Directory - Forest" -Tag "AD", "AD.Forest", "AD-FORS-04" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "cross-forest reference data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

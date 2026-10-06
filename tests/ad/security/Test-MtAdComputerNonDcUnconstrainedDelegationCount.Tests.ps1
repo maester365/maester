@@ -5,6 +5,8 @@ Describe "Active Directory - Security Accounts" -Tag "AD", "AD.Security", "AD-DC
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "non-DC computers with unconstrained delegation represent a critical security risk"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

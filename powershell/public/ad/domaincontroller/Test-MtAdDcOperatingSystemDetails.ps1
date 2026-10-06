@@ -67,7 +67,11 @@
     }
 
     $testResultMarkdown = "Domain controller operating system distribution has been analyzed across $dcCount DC(s).`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($dcCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

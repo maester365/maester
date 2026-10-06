@@ -5,6 +5,10 @@ Disabled GPO links represent a potential security and operational concern in Act
 - **Audit Challenges**: Disabled links create confusion during security audits about which policies are actually enforced
 - **Compliance Risks**: Unintentionally disabled links can result in non-compliance with security baselines
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Regularly review disabled GPO links and either:

@@ -7,6 +7,10 @@ Active Directory sites represent the physical topology of your network and are f
 
 Understanding the number and distribution of sites helps assess whether your Active Directory topology accurately reflects your physical network infrastructure.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Ensure that:

@@ -40,7 +40,7 @@ function Test-MtAdGpoCpasswordFoundCount {
     $totalCount = $gpoReportsArray.Count
     $cpasswordCount = @($gpoReportsArray | Where-Object { [bool]$_.CpasswordFound }).Count
 
-    $testResult = $true
+    $testResult = $cpasswordCount -eq 0
     $cpasswordPercentage = if ($totalCount -gt 0) { [Math]::Round(($cpasswordCount / $totalCount) * 100, 2) } else { 0 }
 
     $result = "| Metric | Value |" + "`n"

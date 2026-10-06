@@ -52,6 +52,6 @@
     $testResultMarkdown = "Active Directory DACL identities were analyzed. $distinctUnresolvedSidCount unresolved SID reference(s) were found across $($unresolvedEntries.Count) ACE(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

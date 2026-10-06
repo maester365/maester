@@ -5,6 +5,8 @@ Describe "Active Directory - Printer" -Tag "AD", "AD.Printer", "AD-PRINT-01" {
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "printer data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

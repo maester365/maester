@@ -10,6 +10,10 @@ The KRBTGT account should:
 - Never have interactive logons
 - Only be used internally by the KDC service
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Never enable the KRBTGT account**:

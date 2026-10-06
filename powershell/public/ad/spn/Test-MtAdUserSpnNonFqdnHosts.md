@@ -7,6 +7,10 @@ User account SPNs with non-FQDN hosts can cause:
 
 Since user accounts with SPNs are already high-value targets, ensuring proper FQDN configuration is essential.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review and fix non-FQDN user SPNs:

@@ -87,9 +87,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test groups ExtendedRight allow ACEs by ObjectType GUID.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
+    if ($breakdown.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightDetails"
     return $testResult
 }

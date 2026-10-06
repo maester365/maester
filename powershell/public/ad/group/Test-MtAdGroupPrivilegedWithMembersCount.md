@@ -15,6 +15,10 @@ Well-known privileged groups include:
 - **Print Operators (RID 550)**: Can manage print queues
 - **Backup Operators (RID 551)**: Can bypass file system security for backup
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Implement strict controls for privileged groups:

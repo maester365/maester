@@ -41,7 +41,7 @@ function Test-MtAdGpoVersionMismatchDetails {
     $mismatched = $gpoReportsArray | Where-Object { [bool]$_.HasVersionMismatch }
     $mismatchCount = @($mismatched).Count
 
-    $testResult = $true
+    $testResult = $mismatchCount -eq 0
 
     $table = "| GPO Name | HasVersionMismatch |" + "`n"
     $table += '| --- | --- |' + "`n"

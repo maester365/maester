@@ -5,6 +5,10 @@ Non-auto-generated (manual) replication connections bypass the Knowledge Consist
 - **Operational Debt**: Accumulated manual connections from past troubleshooting may no longer be needed
 - **Security Risk**: Undocumented connections may hide unauthorized replication paths
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Prefer auto-generated connections for standard replication topology

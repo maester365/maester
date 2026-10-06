@@ -69,7 +69,7 @@
     $testResultMarkdown = "Computers with unconstrained delegation have been identified. This configuration allows services to impersonate users to any service.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerUnconstrainedDelegationCount"
 
     return $testResult

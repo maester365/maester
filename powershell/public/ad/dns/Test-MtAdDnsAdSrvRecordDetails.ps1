@@ -83,7 +83,11 @@
         }
 
         $testResultMarkdown = "Active Directory DNS SRV record details have been analyzed. $adSrvCount AD DS SRV records were found.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($adSrvCount -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve DNS SRV record data. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
     }

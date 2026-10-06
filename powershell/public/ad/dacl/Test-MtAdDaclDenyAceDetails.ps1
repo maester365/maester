@@ -60,9 +60,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL deny-ACE details have been compiled. The results are grouped by object and identity reference for review.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($denyGroupCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclDenyAceDetails"
     return $testResult
 }

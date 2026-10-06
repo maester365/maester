@@ -4,6 +4,10 @@ The `AdminCount` attribute is commonly set on protected and privileged accounts.
 - **Delegation impact**: Protected accounts behave differently from standard users
 - **Security review**: Helps identify users that warrant stronger monitoring and change control
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review each account with `AdminCount = 1` to confirm it still requires elevated protections

@@ -53,9 +53,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Built-in administrator style account last logon data was retrieved from Active Directory.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($builtInAdminUsers.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserBuiltInAdminLastLogonDetails"
 
     return $testResult

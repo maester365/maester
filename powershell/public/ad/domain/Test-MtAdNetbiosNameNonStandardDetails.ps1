@@ -96,7 +96,11 @@
         }
 
         $testResultMarkdown = "NetBIOS name compliance details have been retrieved.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($totalNames -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve NetBIOS name information. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

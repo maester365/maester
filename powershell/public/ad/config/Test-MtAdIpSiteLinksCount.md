@@ -6,6 +6,10 @@ This test helps answer:
 - Are there the expected number of IP site links?
 - Is replication configuration moving away from the preferred transport?
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Ensure replication uses IP-based transports wherever possible.
 - Keep firewall rules tight between domain controllers and validate required ports/paths.

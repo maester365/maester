@@ -1,8 +1,10 @@
 Describe "Active Directory - Users" -Tag "AD", "AD.User", "AD-USER-25" {
-    It "AD-USER-25: Built-in administrator password age details should be retrievable" {
+    It "AD-USER-25: Built-in administrator password age details should be investigated" {
         $result = Test-MtAdUserBuiltInAdminPasswordAgeDetails
         if ($null -ne $result) {
             $result | Should -Be $true -Because "built-in administrator password age data should be accessible"
+        } else {
+            Set-ItResult -Skipped -Because "Active Directory data could not be retrieved"
         }
     }
 }

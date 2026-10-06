@@ -77,7 +77,7 @@
     $testResultMarkdown = "Detailed operating system distribution has been analyzed. Review for unsupported or end-of-life systems.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerOperatingSystemDetails"
 
     return $testResult

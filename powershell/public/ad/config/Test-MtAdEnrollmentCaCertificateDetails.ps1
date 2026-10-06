@@ -96,7 +96,11 @@
         }
 
         $testResultMarkdown = "Active Directory enrollment Enterprise CAs have been analyzed for certificate validity dates.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($caCount -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory configuration data for EnterpriseCAs. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
