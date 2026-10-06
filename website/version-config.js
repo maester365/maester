@@ -1,4 +1,4 @@
 module.exports = {
-  previewVersion: "2.2.1-preview",
-  currentVersion: "2.2.0",
+  previewVersion: "2.3.1-preview",
+  currentVersion: "2.3.0",
 };
