@@ -1,5 +1,5 @@
 ---
-title: "Introducing Maester 2.3 🚀"
+title: "Maester 2.3: From AI Agents to Affected Objects"
 description: A new Affected objects report, security checks for Microsoft Entra Agent ID, the CIS Microsoft 365 Foundations Benchmark v7.0.0, macOS and Azure DevOps Advanced Security coverage, multi-forest Active Directory, a much smaller report, and security hardening across the module.
 slug: maester-2-3
 authors: [maesterteam]
@@ -339,6 +339,20 @@ Invoke-Maester -Tag "CIS"
 ```
 
 Maester now tests the agents you're deploying, the Macs and repositories they run on, and itself, and shows you exactly which objects each failure affects. Go check the agent identities in your tenant before someone else does.
+
+## A sneak peek at Maester 3.0
+
+While 2.3 was coming together, we started on something much bigger: a rewrite of how Maester discovers and runs tests. It's still early, and the details may change, but here's where it's heading:
+
+- **A native test engine.** Maester 3.0 runs its checks itself instead of through Pester. Pester becomes optional, and your existing custom Pester tests keep working alongside the native ones. There's also a converter if you want to move them over.
+- **Built-in tests ship inside the module.** No more copying hundreds of test files into your repo or keeping them up to date with `Update-MaesterTests`. Your tests folder only holds your own tests and configuration.
+- **The engine handles connections and licences.** Each check declares which services and licences it needs, and the engine decides whether to run or skip it, with a consistent reason.
+- **More control over each run.** Pick tests by ID, preview a run with `-DryRun`, and keep your settings in a single run configuration file.
+- **Ready for parallel runs.** 3.0 still runs one test at a time, but it's built so a later release can run tests in parallel.
+
+One heads-up: Maester 3.0 will need PowerShell 7.4 or later. If you're still on Windows PowerShell 5.1, now is a good time to plan the move.
+
+It's a big change under the hood, and it gives us the room to build what's next without fighting the framework. You can follow along, and share your feedback, in the [Maester 3.0 RFC](https://github.com/maester365/maester/discussions/2050).
 
 ## Thank you to our Maester Cloud supporters
 
