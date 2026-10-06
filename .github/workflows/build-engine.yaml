@@ -77,9 +77,14 @@ jobs:
       - name: Install Microsoft.Graph.Authentication and remove Pester from the runner
         shell: pwsh
         run: |
-          Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Repository PSGallery -Force
-          Get-Module -ListAvailable -Name Pester -All | ForEach-Object { Split-Path $_.ModuleBase -Parent } | Sort-Object -Unique |
-              ForEach-Object { Write-Host "Removing $_"; sudo rm -rf $_ }
+          Install-Module Microsoft.Graph.Authentication -RequiredVersion 2.41.0 -Scope CurrentUser -Repository PSGallery -Force
+          # Delete only Pester folders: <Modules>/Pester or <Modules>/Pester/<version>.
+          Get-Module -ListAvailable -Name Pester -All | ForEach-Object {
+              $folder = $_.ModuleBase
+              if ((Split-Path $folder -Leaf) -ne 'Pester') { $folder = Split-Path $folder -Parent }
+              if ((Split-Path $folder -Leaf) -ne 'Pester') { throw "Unexpected Pester location: $($_.ModuleBase)" }
+              $folder
+          } | Sort-Object -Unique | ForEach-Object { Write-Host "Removing $_"; sudo rm -rf -- $_ }
 
       - name: Run Maester without Pester
         shell: pwsh

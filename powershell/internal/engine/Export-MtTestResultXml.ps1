@@ -38,7 +38,10 @@ function Export-MtTestResultXml {
         elseif ($row.Result -eq 'Failed') { 'The test failed.' } else { $null }
         $seconds = 0.0
         try { $seconds = [timespan]::Parse([string]$row.Duration, [System.Globalization.CultureInfo]::InvariantCulture).TotalSeconds } catch { $seconds = 0.0 }
-        [pscustomobject]@{ Block = [string]$row.Block; Name = "$($row.Block).$($row.Name)"; Outcome = $outcome; Message = $message; Seconds = $seconds; Result = $row.Result }
+        [pscustomobject]@{
+            Block = ConvertTo-MtXmlSafeString $row.Block; Name = ConvertTo-MtXmlSafeString "$($row.Block).$($row.Name)"
+            Outcome = $outcome; Message = ConvertTo-MtXmlSafeString $message; Seconds = $seconds; Result = $row.Result
+        }
     }
     $cases = @($cases)
 
@@ -173,4 +176,31 @@ function Export-MtTestResultXml {
     } finally {
         $writer.Dispose()
     }
+}
+
+function ConvertTo-MtXmlSafeString {
+    <#
+    .SYNOPSIS
+    Removes characters XML 1.0 cannot hold (control characters, lone surrogates) from text written to the XML file.
+
+    .DESCRIPTION
+    Test names and messages can carry tenant data or error text. XmlWriter throws on a character such as
+    U+0001, which would stop every report of the run from being written.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Position = 0)] [AllowNull()] [object] $Value
+    )
+    if ($null -eq $Value) { return '' }
+    $text = [string]$Value
+    $builder = [System.Text.StringBuilder]::new($text.Length)
+    for ($i = 0; $i -lt $text.Length; $i++) {
+        $c = $text[$i]
+        if ([char]::IsHighSurrogate($c) -and $i + 1 -lt $text.Length -and [char]::IsLowSurrogate($text[$i + 1])) {
+            $null = $builder.Append($c).Append($text[$i + 1]); $i++; continue
+        }
+        if ([System.Xml.XmlConvert]::IsXmlChar($c)) { $null = $builder.Append($c) }
+    }
+    $builder.ToString()
 }

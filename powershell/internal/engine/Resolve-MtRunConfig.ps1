@@ -62,8 +62,18 @@ function Resolve-MtRunConfig {
         $discoveryPath = if ($Path) { $Path } else { (Get-Location).Path }
         $resolved = Get-MtShippedMaesterConfig
         $found = @(Find-MtConfigFile -Path $discoveryPath -TenantId $TenantId)
+        $discoveryResolved = Resolve-Path -LiteralPath $discoveryPath -ErrorAction SilentlyContinue
+        $discoveryFull = $(if ($discoveryResolved) { $discoveryResolved.ProviderPath } else { $discoveryPath }).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
         foreach ($file in $found) {
             $layer = ConvertTo-MtConfigLayer -InputObject $file.Path
+            Write-Verbose "Using Maester config file: $($file.Path)"
+            # A file in a parent folder applies to every run below it. Say so when it changes what runs or
+            # what the tenant is assumed to have, so a stray or planted file cannot quietly reduce coverage.
+            $outside = -not ([System.IO.Path]::GetFullPath($file.Path)).StartsWith($discoveryFull, [System.StringComparison]::OrdinalIgnoreCase)
+            $sensitive = @('Selection', 'Environment', 'Output' | Where-Object { $layer.PSObject.Properties[$_] })
+            if ($outside -and $sensitive.Count -gt 0) {
+                Write-Warning "The Maester config file '$($file.Path)' is outside '$discoveryPath' and sets $($sensitive -join ', '). Check that it is meant to apply to this run, or pass the config with -Config."
+            }
             if ($file.Kind -eq 'Root') { Test-MtShippedConfigCopy -Config $layer -Path $file.Path }
             if ($file.Kind -eq 'Tenant') { Write-MtTenantMergeWarning -Tenant $layer -Found $found }
             $resolved = Merge-MtConfigLayer -Base $resolved -Overlay $layer

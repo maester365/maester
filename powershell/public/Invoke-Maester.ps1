@@ -113,7 +113,7 @@
     .EXAMPLE
     Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
 
-    Shows what would run, and why every other test would not, without running anything. Each test that would have run is reported as NotRun with reason DryRun.
+    Shows what would run, and why every other test would not, without running any test. Each test that would have run is reported as NotRun with reason DryRun. Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
 
     .EXAMPLE
     Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
@@ -272,6 +272,7 @@
 
         # Work out which tests would run, and why the others would not, without running any test.
         # Each test that would have run is reported as NotRun with reason DryRun.
+        # Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
         [switch] $DryRun,
 
         # Run only the custom tests under -Path. The tests that ship with Maester always run otherwise.
@@ -709,6 +710,21 @@
     $outputSection = if ($runConfig.PSObject.Properties['Output']) { $runConfig.Output } else { $null }
     if ($outputSection -and $outputSection.PSObject.Properties['TestResult'] -and $outputSection.TestResult -and $outputSection.TestResult.Path) {
         $xmlRequest = @{ Path = [string]$outputSection.TestResult.Path; Format = $(if ($outputSection.TestResult.Format) { [string]$outputSection.TestResult.Format } else { 'NUnitXml' }) }
+        # A config file found by folder discovery (possibly in a parent folder) must not choose where
+        # Maester writes: only a relative path that stays under the current folder is accepted from it.
+        # -Config and MAESTER_CONFIG are the caller's own choice and may name any path.
+        $explicitConfig = $PSBoundParameters.ContainsKey('Config') -or -not [string]::IsNullOrWhiteSpace($env:MAESTER_CONFIG)
+        if (-not $explicitConfig) {
+            $base = [System.IO.Path]::GetFullPath((Get-Location -PSProvider FileSystem).ProviderPath)
+            $full = [System.IO.Path]::GetFullPath((Join-Path $base $xmlRequest.Path))
+            $prefix = $base.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+            if ([System.IO.Path]::IsPathRooted($xmlRequest.Path) -or -not $full.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+                Write-Warning "Output.TestResult.Path '$($xmlRequest.Path)' in $($runConfig.ConfigSource) is outside the current folder; no XML test result file is written. Use a relative path, or pass the config with -Config."
+                $xmlRequest = $null
+            } else {
+                $xmlRequest.Path = $full
+            }
+        }
     } elseif (Get-MtPesterOption -Configuration $PesterConfiguration -Name 'TestResult.Enabled') {
         $resultPath = Get-MtPesterOption -Configuration $PesterConfiguration -Name 'TestResult.OutputPath'
         $resultFormat = Get-MtPesterOption -Configuration $PesterConfiguration -Name 'TestResult.OutputFormat'
@@ -796,11 +812,6 @@
 
         $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects -RunContext $runContext -NativeRows $nativeRows -NativeDuration $nativeTimer.Elapsed
 
-        if ($xmlRequest -and -not $DryRun) {
-            $errorsAsFailures = $outputSection -and $outputSection.PSObject.Properties['ErrorsAsFailures'] -and [bool]$outputSection.ErrorsAsFailures
-            Export-MtTestResultXml -MaesterResults $maesterResults -Path $xmlRequest.Path -Format $xmlRequest.Format -ErrorsAsFailures:$errorsAsFailures
-        }
-
         # 'AllOutputs' redacts every generated output, 'HtmlOnly' leaves the machine readable
         # exports intact so findings can still be traced back to the real objects.
         $redactNonHtml = $RedactUserIdentity -eq 'AllOutputs'
@@ -822,6 +833,17 @@
             $exportResults = $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue |
                 ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements -JsonEncoded |
                     ConvertFrom-Json
+        }
+
+        # The XML file follows -RedactUserIdentity AllOutputs like the other machine-readable exports. A
+        # failure here must not stop the HTML, JSON and Markdown reports from being written.
+        if ($xmlRequest -and -not $DryRun) {
+            $errorsAsFailures = $outputSection -and $outputSection.PSObject.Properties['ErrorsAsFailures'] -and [bool]$outputSection.ErrorsAsFailures
+            try {
+                Export-MtTestResultXml -MaesterResults $exportResults -Path $xmlRequest.Path -Format $xmlRequest.Format -ErrorsAsFailures:$errorsAsFailures -ErrorAction Stop
+            } catch {
+                Write-Warning "The XML test result file '$($xmlRequest.Path)' could not be written: $($_.Exception.Message)"
+            }
         }
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
