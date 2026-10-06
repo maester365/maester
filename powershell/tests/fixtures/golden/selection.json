@@ -21,7 +21,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 428,
+      "SelectedCount": 429,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -180,6 +180,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
@@ -617,7 +618,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 384,
+      "SelectedCount": 385,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -776,6 +777,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
@@ -1022,7 +1024,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 443,
+      "SelectedCount": 444,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -1183,6 +1185,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
@@ -1488,7 +1491,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 443,
+      "SelectedCount": 444,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -1648,6 +1651,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
@@ -1952,7 +1956,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 471,
+      "SelectedCount": 472,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -2114,6 +2118,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
@@ -2644,7 +2649,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 384,
+      "SelectedCount": 385,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -2803,6 +2808,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
@@ -3055,7 +3061,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 427,
+      "SelectedCount": 428,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -3217,6 +3223,7 @@
         "CISA.MS.EXO.4.1",
         "CISA.MS.EXO.4.2",
         "CISA.MS.EXO.4.3",
+        "CISA.MS.EXO.4.4",
         "CISA.MS.EXO.5.1",
         "CISA.MS.EXO.6.1",
         "CISA.MS.EXO.6.2",
