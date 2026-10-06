@@ -71,7 +71,7 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtTenantCreationRestricted](/docs/commands/Test-MtTenantCreationRestricted) |
+| PowerShell test | [Test-MtTenantCreationRestricted](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1068.ps1) |
 | Services | Graph |
 | Tags | Entra, Maester, MT.1068 |
 

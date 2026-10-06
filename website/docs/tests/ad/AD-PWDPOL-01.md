@@ -64,7 +64,7 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdPasswordHistoryCount](/docs/commands/Test-MtAdPasswordHistoryCount) |
+| PowerShell test | [Test-MtAdPasswordHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-PWDPOL-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-PWDPOL-01, AD.PasswordPolicy |
 

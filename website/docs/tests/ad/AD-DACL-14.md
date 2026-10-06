@@ -54,7 +54,7 @@ This test reads `$adState.DaclEntries` and counts entries where `IsInherited` is
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclNonInheritedAceCount](/docs/commands/Test-MtAdDaclNonInheritedAceCount) |
+| PowerShell test | [Test-MtAdDaclNonInheritedAceCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-14.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-14, AD.DACL |
 

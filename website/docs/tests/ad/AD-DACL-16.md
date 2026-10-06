@@ -54,7 +54,7 @@ This test reads `$adState.DaclEntries`, filters unresolved `IdentityReference` v
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclUnresolvedSidDetails](/docs/commands/Test-MtAdDaclUnresolvedSidDetails) |
+| PowerShell test | [Test-MtAdDaclUnresolvedSidDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-16.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-16, AD.DACL |
 

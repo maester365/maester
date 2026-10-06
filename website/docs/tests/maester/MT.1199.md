@@ -56,7 +56,7 @@ Both credential types are reported. Certificates are the recommended alternative
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationCredentialExpiry](/docs/commands/Test-MtAppRegistrationCredentialExpiry) |
+| PowerShell test | [Test-MtAppRegistrationCredentialExpiry](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1199.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | App, Entra, Graph, LongRunning, Maester, MT.1199 |

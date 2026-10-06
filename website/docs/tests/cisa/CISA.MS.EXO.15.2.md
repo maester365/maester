@@ -55,8 +55,9 @@ Rationale: URLs in emails may direct users to download and run malware. Scanning
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaSafeLinkDownloadScan](/docs/commands/Test-MtCisaSafeLinkDownloadScan) |
+| PowerShell test | [Test-MtCisaSafeLinkDownloadScan](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.15.2.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | CISA, CISA.MS.EXO.15.2, MS.EXO, MS.EXO.15.2 |
 
 ## Source

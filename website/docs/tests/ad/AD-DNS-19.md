@@ -62,7 +62,7 @@ This test provides detailed information about each network with a reverse lookup
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsReverseZoneNetworkDetails](/docs/commands/Test-MtAdDnsReverseZoneNetworkDetails) |
+| PowerShell test | [Test-MtAdDnsReverseZoneNetworkDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-19.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-19, AD.DNS |
 

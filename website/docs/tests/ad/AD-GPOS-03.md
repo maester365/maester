@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoWmiFilterDetails](/docs/commands/Test-MtAdGpoWmiFilterDetails) |
+| PowerShell test | [Test-MtAdGpoWmiFilterDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOS-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOS-03, AD.GPOState |
 

@@ -60,7 +60,7 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerSidHistoryCount](/docs/commands/Test-MtAdComputerSidHistoryCount) |
+| PowerShell test | [Test-MtAdComputerSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-05, AD.Computer |
 

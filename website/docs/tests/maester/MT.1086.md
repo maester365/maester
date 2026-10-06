@@ -38,7 +38,7 @@ Analyze the devices shown in the output, and investigate the accounts present on
 | Severity | Low |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts](/docs/commands/Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts) |
+| PowerShell test | [Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1086.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Device, LongRunning, MT.1086, XSPM |

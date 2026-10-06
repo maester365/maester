@@ -51,7 +51,7 @@ When active, Azure DevOps enforces that keys with expired expiration dates immed
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoValidateSshKeyExpiration](/docs/commands/Test-AzdoValidateSshKeyExpiration) |
+| PowerShell test | [Test-AzdoValidateSshKeyExpiration](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1031.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies](https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies) |
 | Tags | AZDO, AZDO.1031 |

@@ -69,7 +69,7 @@ This test queries the SMB server configuration on each domain controller to chec
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcSmbv1EnabledCount](/docs/commands/Test-MtAdDcSmbv1EnabledCount) |
+| PowerShell test | [Test-MtAdDcSmbv1EnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DC-02, AD.DomainController |
 

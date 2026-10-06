@@ -58,7 +58,7 @@ This test extracts the first three octets from all IPv4 subnets and counts the d
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSubnetFirstThreeOctetsCount](/docs/commands/Test-MtAdSubnetFirstThreeOctetsCount) |
+| PowerShell test | [Test-MtAdSubnetFirstThreeOctetsCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SUB-10, AD.Site |
 

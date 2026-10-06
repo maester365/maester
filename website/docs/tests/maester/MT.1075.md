@@ -39,7 +39,7 @@ Open all app service principals below and set 'Assignment required?' to Yes. Ass
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtServicePrincipalsForAllUsers](/docs/commands/Test-MtServicePrincipalsForAllUsers) |
+| PowerShell test | [Test-MtServicePrincipalsForAllUsers](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1075.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | App, Entra, Graph, LongRunning, Maester, MT.1075 |

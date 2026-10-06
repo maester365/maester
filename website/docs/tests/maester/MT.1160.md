@@ -45,7 +45,7 @@ Scans with outdated signatures may miss recent threats and zero-day attacks, lea
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeSignatureBeforeScan](/docs/commands/Test-MtMdeSignatureBeforeScan) |
+| PowerShell test | [Test-MtMdeSignatureBeforeScan](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1160.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1160 |
 

@@ -68,7 +68,7 @@ Set-CsTeamsAppPermissionPolicy -Identity Global -GlobalCatalogAppsType AllowedAp
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisThirdPartyAndCustomApps](/docs/commands/Test-MtCisThirdPartyAndCustomApps) |
+| PowerShell test | [Test-MtCisThirdPartyAndCustomApps](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.4.1.ps1) |
 | Services | Teams |
 | Tags | CIS, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.4.1 |
 

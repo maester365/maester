@@ -48,7 +48,7 @@ Rationale: Anyone links that do not expire or have excessively long expiration p
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoAnyoneLinkExpiration](/docs/commands/Test-MtCisaSpoAnyoneLinkExpiration) |
+| PowerShell test | [Test-MtCisaSpoAnyoneLinkExpiration](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.1.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.3.1, MS.SHAREPOINT, MS.SHAREPOINT.3.1 |
 

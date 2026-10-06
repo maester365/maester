@@ -62,7 +62,7 @@ roles aren't included in the assessment.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintOpenAccess](/docs/commands/Test-MtEntraAgentBlueprintOpenAccess) |
+| PowerShell test | [Test-MtEntraAgentBlueprintOpenAccess](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1212.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Tags | Entra, Graph, Maester, MT.1212, Preview, Severity:Medium |

@@ -48,7 +48,7 @@ The test queries the AD NTAuth certificate container, counts the number of confi
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdNtAuthCertificatesCount](/docs/commands/Test-MtAdNtAuthCertificatesCount) |
+| PowerShell test | [Test-MtAdNtAuthCertificatesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-21.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-21, AD.Config |
 

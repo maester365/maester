@@ -60,7 +60,7 @@ Note: Not all computer accounts will have this attribute, depending on how they 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerCreatorSidCount](/docs/commands/Test-MtAdComputerCreatorSidCount) |
+| PowerShell test | [Test-MtAdComputerCreatorSidCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-03, AD.Computer |
 

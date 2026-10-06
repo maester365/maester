@@ -61,7 +61,7 @@ The result should be `True`.
 | Severity | Low |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoMailTip](/docs/commands/Test-MtExoMailTip) |
+| PowerShell test | [Test-MtExoMailTip](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1039.ps1) |
 | Services | ExchangeOnline |
 | Tags | Exchange, Maester, MT.1039 |
 

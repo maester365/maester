@@ -41,7 +41,7 @@ Learn more: [Create and edit custom instructions](https://learn.microsoft.com/mi
 | Severity | Medium |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentMissingInstructions](/docs/commands/Test-MtAIAgentMissingInstructions) |
+| PowerShell test | [Test-MtAIAgentMissingInstructions](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1121.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1121 |
 

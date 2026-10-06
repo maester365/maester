@@ -45,7 +45,7 @@ Disabled email scanning allows malware to enter through Exchange message queues.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeEmailScanning](/docs/commands/Test-MtMdeEmailScanning) |
+| PowerShell test | [Test-MtMdeEmailScanning](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1151.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1151 |
 

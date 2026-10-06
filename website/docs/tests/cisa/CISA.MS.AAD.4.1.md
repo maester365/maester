@@ -49,8 +49,9 @@ Follow the configuration instructions unique to the products and integration pat
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaDiagnosticSettings](/docs/commands/Test-MtCisaDiagnosticSettings) |
+| PowerShell test | [Test-MtCisaDiagnosticSettings](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.4.1.ps1) |
 | Services | Graph, Azure |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.4.1, Entra ID P1, MS.AAD, MS.AAD.4.1 |
 
 ## Source

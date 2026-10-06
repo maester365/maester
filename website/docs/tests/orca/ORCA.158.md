@@ -41,7 +41,7 @@ Enable Safe Attachments for SharePoint and Teams.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA158](/docs/commands/Test-ORCA158) |
+| PowerShell test | [Test-ORCA158](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.158.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.158 |

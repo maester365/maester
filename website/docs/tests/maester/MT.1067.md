@@ -66,7 +66,7 @@ To fix the issue:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtAuthenticationPolicyReferencedObjectsExist](/docs/commands/Test-MtAuthenticationPolicyReferencedObjectsExist) |
+| PowerShell test | [Test-MtAuthenticationPolicyReferencedObjectsExist](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1067.ps1) |
 | Services | Graph |
 | Tags | Authentication, Maester, MT.1067 |
 

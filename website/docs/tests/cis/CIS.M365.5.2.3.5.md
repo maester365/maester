@@ -91,7 +91,7 @@ Update-MgPolicyAuthenticationMethodPolicy -AuthenticationMethodConfigurations $p
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisWeakAuthenticationMethodsDisabled](/docs/commands/Test-MtCisWeakAuthenticationMethodsDisabled) |
+| PowerShell test | [Test-MtCisWeakAuthenticationMethodsDisabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.2.3.5.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.2.3.5, L1, Security |
 

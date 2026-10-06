@@ -38,7 +38,7 @@ See the [Microsoft learn instructions to Renew Apple MDM certificate](https://le
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtApplePushNotificationCertificate](/docs/commands/Test-MtApplePushNotificationCertificate) |
+| PowerShell test | [Test-MtApplePushNotificationCertificate](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1092.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1092 |

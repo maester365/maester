@@ -41,7 +41,7 @@ Learn more: [Use MCP servers in Copilot Studio](https://learn.microsoft.com/micr
 | Severity | Medium |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentMcpTools](/docs/commands/Test-MtAIAgentMcpTools) |
+| PowerShell test | [Test-MtAIAgentMcpTools](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1120.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1120 |
 

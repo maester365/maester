@@ -65,7 +65,7 @@ Update-MgPolicyAuthorizationPolicy -BodyParameter $params
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraMsolPowerShellBlocked](/docs/commands/Test-MtEntraMsolPowerShellBlocked) |
+| PowerShell test | [Test-MtEntraMsolPowerShellBlocked](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1185.ps1) |
 | Services | Graph |
 | Tags | Entra, Maester, MT.1185 |
 

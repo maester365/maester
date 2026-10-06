@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaEnforceNonPersistentBrowserSession](/docs/commands/Test-MtCaEnforceNonPersistentBrowserSession) |
+| PowerShell test | [Test-MtCaEnforceNonPersistentBrowserSession](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1017.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1017 |

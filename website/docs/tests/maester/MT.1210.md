@@ -57,7 +57,7 @@ This check inspects all Agent Users in the tenant and verifies that they do not 
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentUserExcessiveAccess](/docs/commands/Test-MtEntraAgentUserExcessiveAccess) |
+| PowerShell test | [Test-MtEntraAgentUserExcessiveAccess](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1210.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

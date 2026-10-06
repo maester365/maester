@@ -52,7 +52,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, groups entries by `Ide
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclIdentityAceDistribution](/docs/commands/Test-MtAdDaclIdentityAceDistribution) |
+| PowerShell test | [Test-MtAdDaclIdentityAceDistribution](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-08, AD.DACL |
 

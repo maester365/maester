@@ -40,7 +40,7 @@ Review the configuration described above.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaDeviceComplianceAdminsExists](/docs/commands/Test-MtCaDeviceComplianceAdminsExists) |
+| PowerShell test | [Test-MtCaDeviceComplianceAdminsExists](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1014 |

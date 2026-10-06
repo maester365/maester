@@ -42,7 +42,7 @@ Configure Anti-spoofing protection action to Move message to the recipients' Jun
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA112](/docs/commands/Test-ORCA112) |
+| PowerShell test | [Test-ORCA112](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.112.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.112 |

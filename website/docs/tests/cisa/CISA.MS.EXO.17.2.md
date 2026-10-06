@@ -48,7 +48,7 @@ To set up Microsoft Purview Audit (Premium), see [Set up Microsoft Purview Audit
 | Severity | Medium |
 | Suite | CISA |
 | Category | Deprecated |
-| PowerShell test | [Test-MtCisaAuditLogPremium](/docs/commands/Test-MtCisaAuditLogPremium) |
+| PowerShell test | [Test-MtCisaAuditLogPremium](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.17.2.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.EXO.17.2, Deprecated, MS.EXO, MS.EXO.17.2 |
 

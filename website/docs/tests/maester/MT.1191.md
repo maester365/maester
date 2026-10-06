@@ -47,8 +47,9 @@ Every Compliant Network enforcement policy must therefore exclude all break-glas
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaCompliantNetworkBreakGlassExcluded](/docs/commands/Test-MtGsaCompliantNetworkBreakGlassExcluded) |
+| PowerShell test | [Test-MtGsaCompliantNetworkBreakGlassExcluded](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1191.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | CA, Entra, Maester, MT.1191, Preview |
 

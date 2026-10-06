@@ -53,7 +53,7 @@ This test counts user objects whose distinguished names indicate they are beneat
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserInContainerCount](/docs/commands/Test-MtAdUserInContainerCount) |
+| PowerShell test | [Test-MtAdUserInContainerCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-19.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-19, AD.User |
 

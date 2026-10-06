@@ -48,7 +48,7 @@ The test inspects AD configuration for CRL distribution point entries, counts th
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdCrlDistributionPointsCount](/docs/commands/Test-MtAdCrlDistributionPointsCount) |
+| PowerShell test | [Test-MtAdCrlDistributionPointsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-20.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-20, AD.Config |
 

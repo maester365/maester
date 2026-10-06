@@ -72,7 +72,7 @@ This test retrieves the KRBTGT account and:
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdKrbtgtNonStandardUacCount](/docs/commands/Test-MtAdKrbtgtNonStandardUacCount) |
+| PowerShell test | [Test-MtAdKrbtgtNonStandardUacCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-KRBTGT-03, AD.Security |
 

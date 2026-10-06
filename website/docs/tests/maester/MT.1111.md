@@ -49,7 +49,7 @@ Review the accounts in the Identity inventory of Microsoft Defender portal and a
 | Severity | Low |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmPrivilegedUsersLinkedToIdentity](/docs/commands/Test-MtXspmPrivilegedUsersLinkedToIdentity) |
+| PowerShell test | [Test-MtXspmPrivilegedUsersLinkedToIdentity](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1111.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

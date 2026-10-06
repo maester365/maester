@@ -53,7 +53,7 @@ Rationale: Limiting which domains can be invited to create guest accounts in the
 | Severity | Medium |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaCrossTenantInboundDefault](/docs/commands/Test-MtCisaCrossTenantInboundDefault) |
+| PowerShell test | [Test-MtCisaCrossTenantInboundDefault](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.3.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.8.3, Entra ID Free, MS.AAD, MS.AAD.8.3 |
 

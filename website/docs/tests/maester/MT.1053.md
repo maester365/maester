@@ -52,8 +52,9 @@ To enable device clean-up rules:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtManagedDeviceCleanupSettings](/docs/commands/Test-MtManagedDeviceCleanupSettings) |
+| PowerShell test | [Test-MtManagedDeviceCleanupSettings](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1053.ps1) |
 | Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1053 |
 
 ## Source

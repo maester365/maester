@@ -40,7 +40,7 @@ Remove mail flow rules which bypass Safe Attachments.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA189](/docs/commands/Test-ORCA189) |
+| PowerShell test | [Test-ORCA189](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.189.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.189 |

@@ -53,7 +53,7 @@ A small, well-managed PCA group reduces the risk of malicious or accidental chan
 | Severity | Critical |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoProjectCollectionAdministrator](/docs/commands/Test-AzdoProjectCollectionAdministrator) |
+| PowerShell test | [Test-AzdoProjectCollectionAdministrator](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1030.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions](https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions) |
 | Tags | AZDO, AZDO.1030 |

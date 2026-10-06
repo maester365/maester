@@ -59,7 +59,7 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintCredentialHygiene](/docs/commands/Test-MtEntraAgentBlueprintCredentialHygiene) |
+| PowerShell test | [Test-MtEntraAgentBlueprintCredentialHygiene](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1208.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

@@ -70,7 +70,7 @@ Set-SharingPolicy -Identity "Default Sharing Policy" -Enabled $False
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisCalendarSharing](/docs/commands/Test-MtCisCalendarSharing) |
+| PowerShell test | [Test-MtCisCalendarSharing](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.3.ps1) |
 | Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.3, L2 |
 

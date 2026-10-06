@@ -59,7 +59,7 @@ This test retrieves all computer objects from Active Directory, extracts their S
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdComputerSpnServiceClassCount](/docs/commands/Test-MtAdComputerSpnServiceClassCount) |
+| PowerShell test | [Test-MtAdComputerSpnServiceClassCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-01, AD.SPN |
 

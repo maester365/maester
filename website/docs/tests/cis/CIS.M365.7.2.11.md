@@ -74,7 +74,7 @@ Set-SPOTenant -DefaultLinkPermission View
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisSpoDefaultSharingLinkPermission](/docs/commands/Test-MtCisSpoDefaultSharingLinkPermission) |
+| PowerShell test | [Test-MtCisSpoDefaultSharingLinkPermission](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.7.2.11.ps1) |
 | Services | SharePointOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.7.2.11, L1, OneDrive, SharePoint Online |
 

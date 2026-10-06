@@ -41,7 +41,7 @@ Configure enhanced filtering on connectors when email path is not direct to EOP.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA233_1](/docs/commands/Test-ORCA233_1) |
+| PowerShell test | [Test-ORCA233_1](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.233.1 |
 

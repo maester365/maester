@@ -52,7 +52,7 @@ This test retrieves `$adState.DaclEntries`, filters for entries whose `ObjectDN`
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclConflictObjectDetails](/docs/commands/Test-MtAdDaclConflictObjectDetails) |
+| PowerShell test | [Test-MtAdDaclConflictObjectDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-04, AD.DACL |
 

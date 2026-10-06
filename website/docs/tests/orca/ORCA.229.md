@@ -41,7 +41,7 @@ Remove allow listing on domains in Anti-phishing policy.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA229](/docs/commands/Test-ORCA229) |
+| PowerShell test | [Test-ORCA229](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.229.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.229 |

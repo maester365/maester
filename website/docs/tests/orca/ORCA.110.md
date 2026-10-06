@@ -41,7 +41,7 @@ Disable notifying internal senders of malware detection.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA110](/docs/commands/Test-ORCA110) |
+| PowerShell test | [Test-ORCA110](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.110.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.110 |
 

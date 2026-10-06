@@ -39,7 +39,7 @@ Open all app registrations below and remove the secrets.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationsWithSecrets](/docs/commands/Test-MtAppRegistrationsWithSecrets) |
+| PowerShell test | [Test-MtAppRegistrationsWithSecrets](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1057.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | App, Entra, Graph, LongRunning, Maester, MT.1057 |

@@ -41,7 +41,7 @@ Review the details of risk and exposure score on the related [device page from t
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmExposedCredentialsForPrivilegedUsers](/docs/commands/Test-MtXspmExposedCredentialsForPrivilegedUsers) |
+| PowerShell test | [Test-MtXspmExposedCredentialsForPrivilegedUsers](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1080.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Entra, EntraOps, Graph, LongRunning, MT.1080, Privileged, XSPM |

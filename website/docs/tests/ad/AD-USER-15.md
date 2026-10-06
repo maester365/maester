@@ -53,7 +53,7 @@ This test counts user objects where the `Manager` attribute contains a non-empty
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserManagerSetCount](/docs/commands/Test-MtAdUserManagerSetCount) |
+| PowerShell test | [Test-MtAdUserManagerSetCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-15.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-15, AD.User |
 

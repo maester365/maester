@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaEnforceSignInFrequency](/docs/commands/Test-MtCaEnforceSignInFrequency) |
+| PowerShell test | [Test-MtCaEnforceSignInFrequency](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1018.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1018 |

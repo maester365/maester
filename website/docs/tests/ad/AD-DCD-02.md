@@ -66,7 +66,7 @@ This test retrieves all domain controllers and checks their configured LDAPS (SS
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcNonStandardLdapsPortCount](/docs/commands/Test-MtAdDcNonStandardLdapsPortCount) |
+| PowerShell test | [Test-MtAdDcNonStandardLdapsPortCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DCD-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCD-02, AD.DomainController |
 

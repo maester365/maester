@@ -54,7 +54,7 @@ This test queries AD configuration for the dSHeuristics setting(s) and reports a
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdDsHeuristicsCount](/docs/commands/Test-MtAdDsHeuristicsCount) |
+| PowerShell test | [Test-MtAdDsHeuristicsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-02, AD.Config |
 

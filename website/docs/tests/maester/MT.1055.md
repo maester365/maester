@@ -46,7 +46,7 @@ Follow the link below to restrict Microsoft 365 Group creation to approved users
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGroupCreationRestricted](/docs/commands/Test-MtGroupCreationRestricted) |
+| PowerShell test | [Test-MtGroupCreationRestricted](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1055.ps1) |
 | Services | Graph |
 | Tags | Group, Maester, MT.1055 |
 

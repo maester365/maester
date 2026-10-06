@@ -119,8 +119,9 @@ New-AntiPhishRule -Name $params.Name -AntiPhishPolicy $params.Name -RecipientDom
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E5 Level 1 |
-| PowerShell test | [Test-MtCisSafeAntiPhishingPolicy](/docs/commands/Test-MtCisSafeAntiPhishingPolicy) |
+| PowerShell test | [Test-MtCisSafeAntiPhishingPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.7.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.7, L1 |
 
 ## Source

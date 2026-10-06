@@ -48,7 +48,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserWorkstationRestrictionCount](/docs/commands/Test-MtAdUserWorkstationRestrictionCount) |
+| PowerShell test | [Test-MtAdUserWorkstationRestrictionCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-10, AD.User |
 

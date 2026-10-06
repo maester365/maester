@@ -41,7 +41,7 @@ Learn more: [Configure data policies for agents](https://learn.microsoft.com/mic
 | Severity | High |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentEmailExfiltration](/docs/commands/Test-MtAIAgentEmailExfiltration) |
+| PowerShell test | [Test-MtAIAgentEmailExfiltration](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1116.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1116 |
 

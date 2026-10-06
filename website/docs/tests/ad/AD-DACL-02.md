@@ -52,7 +52,7 @@ This test retrieves `$adState.DaclEntries`, filters entries where `ObjectClass` 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclOuObjectCount](/docs/commands/Test-MtAdDaclOuObjectCount) |
+| PowerShell test | [Test-MtAdDaclOuObjectCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-02, AD.DACL |
 

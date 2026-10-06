@@ -59,7 +59,7 @@ keywords:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Organizational Units |
-| PowerShell test | [Test-MtAdOuAtDomainRootCount](/docs/commands/Test-MtAdOuAtDomainRootCount) |
+| PowerShell test | [Test-MtAdOuAtDomainRootCount](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-OU-02, AD.OU |
 

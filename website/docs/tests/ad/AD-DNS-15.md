@@ -56,7 +56,7 @@ This test identifies zones with names containing " CNF:" or "..InProgress-" pref
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsDuplicateZoneCount](/docs/commands/Test-MtAdDnsDuplicateZoneCount) |
+| PowerShell test | [Test-MtAdDnsDuplicateZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-15.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-15, AD.DNS |
 

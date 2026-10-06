@@ -53,7 +53,7 @@ This test counts user objects whose `SamAccountName` or `Name` matches common se
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserKnownServiceAccountCount](/docs/commands/Test-MtAdUserKnownServiceAccountCount) |
+| PowerShell test | [Test-MtAdUserKnownServiceAccountCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-20.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-20, AD.User |
 

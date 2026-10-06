@@ -50,7 +50,7 @@ Disable creation of TFVC repositories. You can still see and work on TFVC reposi
 | Severity | Medium |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo](/docs/commands/Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo) |
+| PowerShell test | [Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1028.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects](https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects) |
 | Tags | AZDO, AZDO.1028 |

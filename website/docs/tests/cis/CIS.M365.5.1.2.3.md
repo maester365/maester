@@ -71,7 +71,7 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $params
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisCreateTenantDisallowed](/docs/commands/Test-MtCisCreateTenantDisallowed) |
+| PowerShell test | [Test-MtCisCreateTenantDisallowed](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.2.3.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.2.3, L1, Security |
 

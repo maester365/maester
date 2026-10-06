@@ -41,7 +41,7 @@ Learn more: [Agent Registry in the Microsoft 365 admin center](https://learn.mic
 | Severity | Medium |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentOrphaned](/docs/commands/Test-MtAIAgentOrphaned) |
+| PowerShell test | [Test-MtAIAgentOrphaned](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1122.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1122 |
 

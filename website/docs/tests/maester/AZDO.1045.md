@@ -69,7 +69,7 @@ This check is tagged `Preview` because GitHub Copilot code review is in limited 
 | Severity | Info |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationCopilotCodeReview](/docs/commands/Test-AzdoOrganizationCopilotCodeReview) |
+| PowerShell test | [Test-AzdoOrganizationCopilotCodeReview](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1045.ps1) |
 | Services | AzureDevOps |
 | Preview | Yes |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops](https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops) |

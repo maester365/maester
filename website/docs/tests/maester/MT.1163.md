@@ -45,7 +45,7 @@ Infrequent signature updates reduce detection of the latest threats, leaving end
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeSignatureUpdateInterval](/docs/commands/Test-MtMdeSignatureUpdateInterval) |
+| PowerShell test | [Test-MtMdeSignatureUpdateInterval](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1163.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1163 |
 

@@ -65,7 +65,7 @@ This test analyzes all trust objects and identifies those where `IntraForest` is
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustInterForestCount](/docs/commands/Test-MtAdTrustInterForestCount) |
+| PowerShell test | [Test-MtAdTrustInterForestCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-02, AD.Trust |
 

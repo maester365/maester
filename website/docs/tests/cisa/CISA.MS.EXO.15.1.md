@@ -55,8 +55,9 @@ Rationale: Users may be directed to malicious websites via links in email. Block
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaSafeLink](/docs/commands/Test-MtCisaSafeLink) |
+| PowerShell test | [Test-MtCisaSafeLink](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.15.1.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | CISA, CISA.MS.EXO.15.1, MS.EXO, MS.EXO.15.1 |
 
 ## Source

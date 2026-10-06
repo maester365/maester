@@ -54,7 +54,7 @@ This test reads `$adState.DaclEntries`, filters out the all-zero `InheritedObjec
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclInheritedObjectTypeDetails](/docs/commands/Test-MtAdDaclInheritedObjectTypeDetails) |
+| PowerShell test | [Test-MtAdDaclInheritedObjectTypeDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-18.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-18, AD.DACL |
 

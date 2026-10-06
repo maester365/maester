@@ -59,7 +59,7 @@ az role assignment delete --role "User Access Administrator" --assignee adminnam
 | Severity | High |
 | Suite | Maester |
 | Category | AzureConfig |
-| PowerShell test | [Test-MtUserAccessAdmin](/docs/commands/Test-MtUserAccessAdmin) |
+| PowerShell test | [Test-MtUserAccessAdmin](https://github.com/maester365/maester/blob/main/tests/Maester/Azure/Test.MT.1056.ps1) |
 | Services | Azure |
 | Tags | Azure, Maester, MT.1056, Privileged |
 

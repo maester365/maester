@@ -63,7 +63,7 @@ This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoUnlinkedTargetCount](/docs/commands/Test-MtAdGpoUnlinkedTargetCount) |
+| PowerShell test | [Test-MtAdGpoUnlinkedTargetCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOL-03, AD.GPO |
 

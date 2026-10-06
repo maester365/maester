@@ -48,7 +48,7 @@ The krbtgt_AzureAD account is a sensitive identity used by Microsoft's cloud ser
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtKrbtgtAzureADNotSynced](/docs/commands/Test-MtKrbtgtAzureADNotSynced) |
+| PowerShell test | [Test-MtKrbtgtAzureADNotSynced](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1147.ps1) |
 | Services | Graph |
 | Tags | Entra, Graph, Hybrid, Maester, MT.1147 |
 

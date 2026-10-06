@@ -42,7 +42,7 @@ Enable common attachment type filter.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA205](/docs/commands/Test-ORCA205) |
+| PowerShell test | [Test-ORCA205](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.205.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.205 |
 

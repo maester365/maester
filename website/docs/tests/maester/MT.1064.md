@@ -48,7 +48,7 @@ To enable the requirement for write permissions:
 | Severity | High |
 | Suite | Maester |
 | Category | AzureConfig |
-| PowerShell test | [Test-MtManagementGroupWriteRequirement](/docs/commands/Test-MtManagementGroupWriteRequirement) |
+| PowerShell test | [Test-MtManagementGroupWriteRequirement](https://github.com/maester365/maester/blob/main/tests/Maester/Azure/Test.MT.1064.ps1) |
 | Services | Azure |
 | Tags | Azure, Maester, MT.1064 |
 

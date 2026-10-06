@@ -58,7 +58,7 @@ This test identifies IPv6 subnets with overly broad prefixes (/48 or smaller).
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSubnetIpv6CatchAllCount](/docs/commands/Test-MtAdSubnetIpv6CatchAllCount) |
+| PowerShell test | [Test-MtAdSubnetIpv6CatchAllCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SUB-05, AD.Site |
 

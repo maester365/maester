@@ -53,7 +53,7 @@ To disable automatic forwarding to external domains:
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaAutoExternalForwarding](/docs/commands/Test-MtCisaAutoExternalForwarding) |
+| PowerShell test | [Test-MtCisaAutoExternalForwarding](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.1.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.1.1, MS.EXO, MS.EXO.1.1 |
 

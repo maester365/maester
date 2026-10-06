@@ -90,7 +90,7 @@ escalation path. The check evaluates the following permissions:
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentHighRiskGraphPermissions](/docs/commands/Test-MtEntraAgentHighRiskGraphPermissions) |
+| PowerShell test | [Test-MtEntraAgentHighRiskGraphPermissions](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1223.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

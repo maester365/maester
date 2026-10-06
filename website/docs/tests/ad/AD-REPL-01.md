@@ -61,7 +61,7 @@ This test retrieves all Active Directory replication connections and counts:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdDisabledReplicationConnectionCount](/docs/commands/Test-MtAdDisabledReplicationConnectionCount) |
+| PowerShell test | [Test-MtAdDisabledReplicationConnectionCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-REPL-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-REPL-01, AD.Replication |
 

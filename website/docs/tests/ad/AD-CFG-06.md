@@ -51,7 +51,7 @@ This test reads LDAP query policy configuration from AD and produces a count/vis
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdLdapQueryPolicyCount](/docs/commands/Test-MtAdLdapQueryPolicyCount) |
+| PowerShell test | [Test-MtAdLdapQueryPolicyCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-06, AD.Config |
 

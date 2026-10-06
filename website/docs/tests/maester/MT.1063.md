@@ -52,7 +52,7 @@ Register MFA for all app registration owners listed. Use Conditional Access poli
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationOwnersWithoutMFA](/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA) |
+| PowerShell test | [Test-MtAppRegistrationOwnersWithoutMFA](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1063.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | App, Entra, LongRunning, Maester, MT.1063 |

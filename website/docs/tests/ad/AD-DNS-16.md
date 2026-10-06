@@ -57,7 +57,7 @@ This test counts reverse lookup zones (zones ending in .in-addr.arpa for IPv4 an
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsReverseZoneCount](/docs/commands/Test-MtAdDnsReverseZoneCount) |
+| PowerShell test | [Test-MtAdDnsReverseZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-16.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-16, AD.DNS |
 

@@ -70,7 +70,7 @@ The test passes if **at least one App Control for Business policy is in Enforce 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtIntuneManagedInstallerRules](/docs/commands/Test-MtIntuneManagedInstallerRules) |
+| PowerShell test | [Test-MtIntuneManagedInstallerRules](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1180.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1180 |

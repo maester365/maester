@@ -57,7 +57,7 @@ Certificates that have already expired can no longer be used to authenticate and
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationCertificateLifetime](/docs/commands/Test-MtAppRegistrationCertificateLifetime) |
+| PowerShell test | [Test-MtAppRegistrationCertificateLifetime](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1198.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | App, Entra, Graph, LongRunning, Maester, MT.1198 |

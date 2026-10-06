@@ -66,7 +66,7 @@ This test analyzes schema objects and groups them by creation year, providing:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Schema |
-| PowerShell test | [Test-MtAdSchemaModificationYearDetails](/docs/commands/Test-MtAdSchemaModificationYearDetails) |
+| PowerShell test | [Test-MtAdSchemaModificationYearDetails](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SCH-02, AD.Schema |
 

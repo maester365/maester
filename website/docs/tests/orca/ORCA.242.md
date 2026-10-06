@@ -40,7 +40,7 @@ Enable important protection alerts that are responsible for AIR activities.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA242](/docs/commands/Test-ORCA242) |
+| PowerShell test | [Test-ORCA242](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.242.ps1) |
 | Services | ExchangeOnline, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.242 |

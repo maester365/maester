@@ -59,7 +59,7 @@ This test retrieves all Active Directory optional features and counts:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdOptionalFeatureCount](/docs/commands/Test-MtAdOptionalFeatureCount) |
+| PowerShell test | [Test-MtAdOptionalFeatureCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-FEAT-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FEAT-01, AD.Replication |
 

@@ -61,7 +61,7 @@ This test retrieves detailed information about enabled optional features:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdOptionalFeatureEnabledDetails](/docs/commands/Test-MtAdOptionalFeatureEnabledDetails) |
+| PowerShell test | [Test-MtAdOptionalFeatureEnabledDetails](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-FEAT-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FEAT-02, AD.Replication |
 

@@ -45,7 +45,7 @@ Insufficient cloud timeout may prevent thorough analysis of suspicious files, al
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeCloudExtendedTimeout](/docs/commands/Test-MtMdeCloudExtendedTimeout) |
+| PowerShell test | [Test-MtMdeCloudExtendedTimeout](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1162.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1162 |
 

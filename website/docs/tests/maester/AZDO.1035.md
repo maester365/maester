@@ -68,7 +68,7 @@ When enabled, newly created or renewed PATs will have a maximum lifespan (in day
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoRestrictPersonalAccessTokenLifespan](/docs/commands/Test-AzdoRestrictPersonalAccessTokenLifespan) |
+| PowerShell test | [Test-AzdoRestrictPersonalAccessTokenLifespan](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1035.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan) |
 | Tags | AZDO, AZDO.1035 |

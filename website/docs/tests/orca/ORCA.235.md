@@ -40,7 +40,7 @@ Set up SPF records to prevent spoofing.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA235](/docs/commands/Test-ORCA235) |
+| PowerShell test | [Test-ORCA235](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.235.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.235 |
 

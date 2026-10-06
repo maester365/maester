@@ -60,7 +60,7 @@ This test counts SRV records used by Active Directory Domain Services, including
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsAdSrvRecordCount](/docs/commands/Test-MtAdDnsAdSrvRecordCount) |
+| PowerShell test | [Test-MtAdDnsAdSrvRecordCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-11.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-11, AD.DNS |
 

@@ -45,7 +45,7 @@ Keeping the tag count below the limit ensures responsive work item searches and 
 | Severity | Info |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoResourceUsageWorkItemTag](/docs/commands/Test-AzdoResourceUsageWorkItemTag) |
+| PowerShell test | [Test-AzdoResourceUsageWorkItemTag](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1012.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops) |
 | Tags | AZDO, AZDO.1012 |

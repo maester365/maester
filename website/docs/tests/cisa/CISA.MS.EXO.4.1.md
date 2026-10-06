@@ -54,7 +54,7 @@ If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaDmarcRecordExist](/docs/commands/Test-MtCisaDmarcRecordExist) |
+| PowerShell test | [Test-MtCisaDmarcRecordExist](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.4.1, MS.EXO, MS.EXO.4.1 |
 

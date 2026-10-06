@@ -59,7 +59,7 @@ keywords:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Organizational Units |
-| PowerShell test | [Test-MtAdOuStaleCount](/docs/commands/Test-MtAdOuStaleCount) |
+| PowerShell test | [Test-MtAdOuStaleCount](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-OU-03, AD.OU |
 

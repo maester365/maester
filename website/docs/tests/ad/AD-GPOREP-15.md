@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoVersionMismatchCount](/docs/commands/Test-MtAdGpoVersionMismatchCount) |
+| PowerShell test | [Test-MtAdGpoVersionMismatchCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-15.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-15, AD.GPOState |
 

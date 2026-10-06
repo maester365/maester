@@ -110,7 +110,7 @@ New-MalwareFilterRule @Rule
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisAttachmentFilterComprehensive](/docs/commands/Test-MtCisAttachmentFilterComprehensive) |
+| PowerShell test | [Test-MtCisAttachmentFilterComprehensive](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.ps1) |
 | Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.11, L2 |
 

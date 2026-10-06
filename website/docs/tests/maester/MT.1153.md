@@ -45,7 +45,7 @@ Disabled real-time monitoring allows malware to execute without immediate detect
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeRealtimeMonitoring](/docs/commands/Test-MtMdeRealtimeMonitoring) |
+| PowerShell test | [Test-MtMdeRealtimeMonitoring](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1153.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1153 |
 

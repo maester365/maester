@@ -52,8 +52,9 @@ If Microsoft Authenticator is in use, configure Authenticator to display context
 | Severity | Medium |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaAuthenticatorContext](/docs/commands/Test-MtCisaAuthenticatorContext) |
+| PowerShell test | [Test-MtCisaAuthenticatorContext](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.3.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.3, Entra ID P1, MS.AAD, MS.AAD.3.3 |
 
 ## Source

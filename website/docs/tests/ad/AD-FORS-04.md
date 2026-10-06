@@ -59,7 +59,7 @@ This test retrieves cross-forest reference information from the forest configura
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdCrossForestReferencesCount](/docs/commands/Test-MtAdCrossForestReferencesCount) |
+| PowerShell test | [Test-MtAdCrossForestReferencesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FORS-04, AD.Forest |
 

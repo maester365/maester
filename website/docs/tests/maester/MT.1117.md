@@ -41,7 +41,7 @@ Learn more: [Delete agents programmatically](https://learn.microsoft.com/microso
 | Severity | Low |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentDormant](/docs/commands/Test-MtAIAgentDormant) |
+| PowerShell test | [Test-MtAIAgentDormant](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1117.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1117 |
 

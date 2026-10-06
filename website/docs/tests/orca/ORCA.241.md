@@ -41,7 +41,7 @@ Enable first contact safety tips to highlight suspicious messages to users.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA241](/docs/commands/Test-ORCA241) |
+| PowerShell test | [Test-ORCA241](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.241.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.241 |

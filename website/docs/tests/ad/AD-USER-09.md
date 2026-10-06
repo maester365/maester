@@ -48,7 +48,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserPasswordNotRequiredCount](/docs/commands/Test-MtAdUserPasswordNotRequiredCount) |
+| PowerShell test | [Test-MtAdUserPasswordNotRequiredCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-09.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-09, AD.User |
 

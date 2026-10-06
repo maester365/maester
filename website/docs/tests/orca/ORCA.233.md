@@ -41,7 +41,7 @@ Send mail directly to EOP or configure enhanced filtering.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA233](/docs/commands/Test-ORCA233) |
+| PowerShell test | [Test-ORCA233](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.233 |
 

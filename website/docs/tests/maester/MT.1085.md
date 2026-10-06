@@ -43,7 +43,7 @@ More details are available in the Microsoft Learn article: "[Add assets to prede
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmPendingApprovalCriticalAssetManagement](/docs/commands/Test-MtXspmPendingApprovalCriticalAssetManagement) |
+| PowerShell test | [Test-MtXspmPendingApprovalCriticalAssetManagement](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1085.ps1) |
 | Services | Graph |
 | Tags | Entra, Graph, MT.1085, XSPM |
 

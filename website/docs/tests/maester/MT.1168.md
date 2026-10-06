@@ -45,7 +45,7 @@ Short retention may impact forensic analysis and threat investigation.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeRetainCleanedMalware](/docs/commands/Test-MtMdeRetainCleanedMalware) |
+| PowerShell test | [Test-MtMdeRetainCleanedMalware](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1168.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1168 |
 

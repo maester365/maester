@@ -49,7 +49,7 @@ Rationale: SMTP AUTH is not used or needed by modern email clients. Therefore, d
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaSmtpAuthentication](/docs/commands/Test-MtCisaSmtpAuthentication) |
+| PowerShell test | [Test-MtCisaSmtpAuthentication](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.5.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.5.1, MS.EXO, MS.EXO.5.1 |
 

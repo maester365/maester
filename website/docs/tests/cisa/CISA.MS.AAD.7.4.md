@@ -57,8 +57,9 @@ Note: Exceptions to this policy are:
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaPermanentRoleAssignment](/docs/commands/Test-MtCisaPermanentRoleAssignment) |
+| PowerShell test | [Test-MtCisaPermanentRoleAssignment](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.4.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | CISA, CISA.MS.AAD.7.4, Entra ID P2, MS.AAD, MS.AAD.7.4 |
 
 ## Source

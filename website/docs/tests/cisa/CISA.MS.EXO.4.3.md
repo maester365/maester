@@ -51,7 +51,7 @@ Rationale: Email spoofing attempts are not inherently visible to domain owners. 
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaDmarcAggregateCisa](/docs/commands/Test-MtCisaDmarcAggregateCisa) |
+| PowerShell test | [Test-MtCisaDmarcAggregateCisa](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.3.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.4.3, MS.EXO, MS.EXO.4.3 |
 

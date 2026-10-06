@@ -51,7 +51,7 @@ Auditing is enabled for the organization. Refresh the page to see Auditing appea
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoLogAuditEvent](/docs/commands/Test-AzdoLogAuditEvent) |
+| PowerShell test | [Test-AzdoLogAuditEvent](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1002.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing](https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing) |
 | Tags | AZDO, AZDO.1002 |

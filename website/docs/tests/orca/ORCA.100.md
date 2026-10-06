@@ -42,7 +42,7 @@ Set the Bulk Complaint Level threshold to be 6.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA100](/docs/commands/Test-ORCA100) |
+| PowerShell test | [Test-ORCA100](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.100.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.100 |
 

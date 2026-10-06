@@ -54,7 +54,7 @@ When you sign in to the web portal of a Microsoft Entra ID-backed organization, 
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoEnforceAADConditionalAccess](/docs/commands/Test-AzdoEnforceAADConditionalAccess) |
+| PowerShell test | [Test-AzdoEnforceAADConditionalAccess](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1005.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops](https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops) |
 | Tags | AZDO, AZDO.1005 |

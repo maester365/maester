@@ -55,7 +55,7 @@ With the new behavior, any versions from the public registry will be blocked and
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoArtifactsExternalPackageProtectionToken](/docs/commands/Test-AzdoArtifactsExternalPackageProtectionToken) |
+| PowerShell test | [Test-AzdoArtifactsExternalPackageProtectionToken](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1004.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/](https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/) |
 | Tags | AZDO, AZDO.1004 |

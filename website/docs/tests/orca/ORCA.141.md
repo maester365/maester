@@ -41,7 +41,7 @@ Change bulk action to move messages to junk mail folder.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA141](/docs/commands/Test-ORCA141) |
+| PowerShell test | [Test-ORCA141](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.141.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.141 |
 

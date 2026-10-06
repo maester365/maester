@@ -40,7 +40,7 @@ Additional information:
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtIntuneRbacGroupsProtected](/docs/commands/Test-MtIntuneRbacGroupsProtected) |
+| PowerShell test | [Test-MtIntuneRbacGroupsProtected](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1103.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM, INTUNE_A |
 | Tags | Intune, Maester, MT.1103 |

@@ -84,7 +84,7 @@ Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerAccess $false
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisCommunicateWithUnmanagedTeamsUsers](/docs/commands/Test-MtCisCommunicateWithUnmanagedTeamsUsers) |
+| PowerShell test | [Test-MtCisCommunicateWithUnmanagedTeamsUsers](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.2.2.ps1) |
 | Services | Teams |
 | Tags | CIS, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.2.2 |
 

@@ -49,7 +49,7 @@ Well-known security principals are built-in identities with special meaning in A
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdWellKnownSecurityPrincipalsCount](/docs/commands/Test-MtAdWellKnownSecurityPrincipalsCount) |
+| PowerShell test | [Test-MtAdWellKnownSecurityPrincipalsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-10, AD.Config |
 

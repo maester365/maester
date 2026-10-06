@@ -50,7 +50,7 @@ Refer to Microsoft documentation when creating policies to ensure correct target
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaAgentRiskBlockPolicy](/docs/commands/Test-MtCaAgentRiskBlockPolicy) |
+| PowerShell test | [Test-MtCaAgentRiskBlockPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1181.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1181 |
 

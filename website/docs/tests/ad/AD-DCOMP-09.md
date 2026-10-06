@@ -77,7 +77,7 @@ This test provides detailed analysis:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerDnsZoneDetails](/docs/commands/Test-MtAdComputerDnsZoneDetails) |
+| PowerShell test | [Test-MtAdComputerDnsZoneDetails](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-09.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-09, AD.Security |
 

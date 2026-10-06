@@ -53,7 +53,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserDelegationAllowedCount](/docs/commands/Test-MtAdUserDelegationAllowedCount) |
+| PowerShell test | [Test-MtAdUserDelegationAllowedCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-05, AD.User |
 

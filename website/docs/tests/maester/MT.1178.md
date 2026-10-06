@@ -85,7 +85,7 @@ ASR rules can be configured from either **Endpoint security** > **Attack surface
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtIntuneASRRules](/docs/commands/Test-MtIntuneASRRules) |
+| PowerShell test | [Test-MtIntuneASRRules](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1178.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1178 |

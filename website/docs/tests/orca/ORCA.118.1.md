@@ -41,7 +41,7 @@ Remove allow listing on domains.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA118_1](/docs/commands/Test-ORCA118_1) |
+| PowerShell test | [Test-ORCA118_1](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.118.1 |
 

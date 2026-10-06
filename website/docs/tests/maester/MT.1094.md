@@ -36,7 +36,7 @@ See the [Microsoft learn instructions to Renew Apple VPP token](https://learn.mi
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtAppleVolumePurchaseProgramToken](/docs/commands/Test-MtAppleVolumePurchaseProgramToken) |
+| PowerShell test | [Test-MtAppleVolumePurchaseProgramToken](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1094.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1094 |

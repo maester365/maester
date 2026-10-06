@@ -41,7 +41,7 @@ Configure external tags to highlight emails which are sent from external.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA240](/docs/commands/Test-ORCA240) |
+| PowerShell test | [Test-ORCA240](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.240.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.240 |
 

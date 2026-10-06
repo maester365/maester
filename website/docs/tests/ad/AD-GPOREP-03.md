@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoNoAuthenticatedUsersCount](/docs/commands/Test-MtAdGpoNoAuthenticatedUsersCount) |
+| PowerShell test | [Test-MtAdGpoNoAuthenticatedUsersCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-03, AD.GPOState |
 

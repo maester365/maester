@@ -53,7 +53,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserKerberosDesOnlyCount](/docs/commands/Test-MtAdUserKerberosDesOnlyCount) |
+| PowerShell test | [Test-MtAdUserKerberosDesOnlyCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-06, AD.User |
 

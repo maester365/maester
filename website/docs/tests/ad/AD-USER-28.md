@@ -54,7 +54,7 @@ This test counts user accounts with either `TrustedForDelegation` or `TrustedToA
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserDelegationConfiguredCount](/docs/commands/Test-MtAdUserDelegationConfiguredCount) |
+| PowerShell test | [Test-MtAdUserDelegationConfiguredCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-28.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-28, AD.User |
 

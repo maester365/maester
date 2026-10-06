@@ -46,8 +46,9 @@ To create one or more custom audit retention policies, if the default retention 
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaAuditLogRetention](/docs/commands/Test-MtCisaAuditLogRetention) |
+| PowerShell test | [Test-MtCisaAuditLogRetention](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.17.3.ps1) |
 | Services | Graph |
+| Compatible licenses | M365_ADVANCED_AUDITING |
 | Tags | CISA, CISA.MS.EXO.17.3, MS.EXO, MS.EXO.17.3 |
 
 ## Source

@@ -61,7 +61,7 @@ This test counts DFS-R subscription objects and reports:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdDfsrSubscriptionCount](/docs/commands/Test-MtAdDfsrSubscriptionCount) |
+| PowerShell test | [Test-MtAdDfsrSubscriptionCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-DFSR-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DFSR-01, AD.Replication |
 

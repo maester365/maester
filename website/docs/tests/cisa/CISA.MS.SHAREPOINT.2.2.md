@@ -48,7 +48,7 @@ Rationale: Setting the default permission to View reduces the risk of accidental
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoDefaultSharingPermission](/docs/commands/Test-MtCisaSpoDefaultSharingPermission) |
+| PowerShell test | [Test-MtCisaSpoDefaultSharingPermission](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.2.2, MS.SHAREPOINT, MS.SHAREPOINT.2.2 |
 

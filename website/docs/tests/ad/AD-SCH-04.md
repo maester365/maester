@@ -68,7 +68,7 @@ This test retrieves detailed information from the schema container including:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Schema |
-| PowerShell test | [Test-MtAdSchemaVersionDetails](/docs/commands/Test-MtAdSchemaVersionDetails) |
+| PowerShell test | [Test-MtAdSchemaVersionDetails](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SCH-04, AD.Schema |
 

@@ -59,7 +59,7 @@ This test retrieves all Active Directory sites using `Get-ADReplicationSite` and
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSiteTotalCount](/docs/commands/Test-MtAdSiteTotalCount) |
+| PowerShell test | [Test-MtAdSiteTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SITE-01, AD.Site |
 

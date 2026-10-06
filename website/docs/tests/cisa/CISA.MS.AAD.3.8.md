@@ -54,8 +54,9 @@ Create a Conditional Access policy requiring a user to be on a managed device wh
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaManagedDeviceRegistration](/docs/commands/Test-MtCisaManagedDeviceRegistration) |
+| PowerShell test | [Test-MtCisaManagedDeviceRegistration](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.8.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.8, Entra ID P1, MS.AAD, MS.AAD.3.8 |
 
 ## Source

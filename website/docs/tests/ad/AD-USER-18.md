@@ -53,7 +53,7 @@ This test counts user objects where the `ScriptPath` attribute contains a non-em
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserScriptPathCount](/docs/commands/Test-MtAdUserScriptPathCount) |
+| PowerShell test | [Test-MtAdUserScriptPathCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-18.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-18, AD.User |
 

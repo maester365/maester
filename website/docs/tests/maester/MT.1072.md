@@ -40,7 +40,7 @@ After March 2026, Microsoft will stop enforcing require approved client app cont
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaApprovedClientApp](/docs/commands/Test-MtCaApprovedClientApp) |
+| PowerShell test | [Test-MtCaApprovedClientApp](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1072.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1072 |
 

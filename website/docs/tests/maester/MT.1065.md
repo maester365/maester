@@ -50,7 +50,7 @@ Note: New vaults typically have soft delete enabled by default.
 | Severity | High |
 | Suite | Maester |
 | Category | AzureConfig |
-| PowerShell test | [Test-MtVaultSoftDelete](/docs/commands/Test-MtVaultSoftDelete) |
+| PowerShell test | [Test-MtVaultSoftDelete](https://github.com/maester365/maester/blob/main/tests/Maester/Azure/Test.MT.1065.ps1) |
 | Services | Azure |
 | Tags | Azure, Backup, Maester, MT.1065 |
 

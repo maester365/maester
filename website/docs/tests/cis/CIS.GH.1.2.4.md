@@ -79,7 +79,7 @@ This test verifies the organization setting only. It does not enumerate reposito
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubIssueDeletionLimited](/docs/commands/Test-MtCisGitHubIssueDeletionLimited) |
+| PowerShell test | [Test-MtCisGitHubIssueDeletionLimited](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.4.ps1) |
 | Services | GitHub |
 | Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.4, GitHub, L1 |
 

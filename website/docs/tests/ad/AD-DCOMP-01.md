@@ -74,7 +74,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 | Severity | Critical |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerUnconstrainedDelegationCount](/docs/commands/Test-MtAdComputerUnconstrainedDelegationCount) |
+| PowerShell test | [Test-MtAdComputerUnconstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-01, AD.Security |
 

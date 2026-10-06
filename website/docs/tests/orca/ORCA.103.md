@@ -41,7 +41,7 @@ Set RecipientLimitExternalPerHour to 500, RecipientLimitInternalPerHour to 1000,
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA103](/docs/commands/Test-ORCA103) |
+| PowerShell test | [Test-ORCA103](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.103.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.103 |
 

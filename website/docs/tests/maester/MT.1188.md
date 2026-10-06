@@ -50,8 +50,9 @@ This check evaluates application coverage only; it does not evaluate whether the
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppCompliantDevice](/docs/commands/Test-MtGsaPrivateAccessAppCompliantDevice) |
+| PowerShell test | [Test-MtGsaPrivateAccessAppCompliantDevice](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1188.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | CA, Entra, Maester, MT.1188, Preview |
 

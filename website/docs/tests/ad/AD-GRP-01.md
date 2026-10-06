@@ -59,7 +59,7 @@ This test retrieves all group objects from Active Directory and counts:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Groups |
-| PowerShell test | [Test-MtAdGroupAdminCount](/docs/commands/Test-MtAdGroupAdminCount) |
+| PowerShell test | [Test-MtAdGroupAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GRP-01, AD.Group |
 

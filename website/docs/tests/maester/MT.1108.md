@@ -80,8 +80,9 @@ The test validates:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntitlementManagementInactivePolicies](/docs/commands/Test-MtEntitlementManagementInactivePolicies) |
+| PowerShell test | [Test-MtEntitlementManagementInactivePolicies](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1108.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | AccessPackages, Entra, Governance, Maester, MT.1108 |
 
 ## Source

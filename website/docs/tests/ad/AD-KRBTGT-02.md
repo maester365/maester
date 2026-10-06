@@ -70,7 +70,7 @@ This test retrieves the KRBTGT account and checks:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdKrbtgtLastLogon](/docs/commands/Test-MtAdKrbtgtLastLogon) |
+| PowerShell test | [Test-MtAdKrbtgtLastLogon](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-KRBTGT-02, AD.Security |
 

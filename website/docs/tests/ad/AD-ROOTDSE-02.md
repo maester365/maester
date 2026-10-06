@@ -64,7 +64,7 @@ This test retrieves detailed information about each supported SASL mechanism:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdSupportedSaslMechanismDetails](/docs/commands/Test-MtAdSupportedSaslMechanismDetails) |
+| PowerShell test | [Test-MtAdSupportedSaslMechanismDetails](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-ROOTDSE-02, AD.Replication |
 

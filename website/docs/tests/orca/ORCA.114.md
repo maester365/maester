@@ -41,7 +41,7 @@ Remove IP addresses from IP allow list.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA114](/docs/commands/Test-ORCA114) |
+| PowerShell test | [Test-ORCA114](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.114.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.114 |
 

@@ -41,7 +41,7 @@ Check your malware filter policies for duplicate rules. Some policies and settin
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA232](/docs/commands/Test-ORCA232) |
+| PowerShell test | [Test-ORCA232](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.232.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.232 |
 

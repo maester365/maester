@@ -60,7 +60,7 @@ This test examines the `primaryGroupId` attribute of all enabled computer accoun
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerNonStandardGroup](/docs/commands/Test-MtAdComputerNonStandardGroup) |
+| PowerShell test | [Test-MtAdComputerNonStandardGroup](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-04, AD.Computer |
 

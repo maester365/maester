@@ -53,7 +53,7 @@ This test lists built-in administrator style accounts and reports `PasswordLastS
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserBuiltInAdminPasswordAgeDetails](/docs/commands/Test-MtAdUserBuiltInAdminPasswordAgeDetails) |
+| PowerShell test | [Test-MtAdUserBuiltInAdminPasswordAgeDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-25.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-25, AD.User |
 

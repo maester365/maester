@@ -55,7 +55,7 @@ Rationale: In M365, group owners and team owners can consent to applications acc
 | Severity | High |
 | Suite | CISA |
 | Category | Deprecated |
-| PowerShell test | [Test-MtCisaAppGroupOwnerConsent](/docs/commands/Test-MtCisaAppGroupOwnerConsent) |
+| PowerShell test | [Test-MtCisaAppGroupOwnerConsent](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.4.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.5.4, Deprecated, Entra ID Free, MS.AAD, MS.AAD.5.4 |
 

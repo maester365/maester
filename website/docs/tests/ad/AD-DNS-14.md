@@ -57,7 +57,7 @@ This test identifies DNS zones that contain zero resource records of any type.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsEmptyZoneCount](/docs/commands/Test-MtAdDnsEmptyZoneCount) |
+| PowerShell test | [Test-MtAdDnsEmptyZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-14.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-14, AD.DNS |
 

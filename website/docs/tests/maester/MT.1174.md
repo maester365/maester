@@ -61,7 +61,7 @@ The test passes when at least one Insider Risk policy with an AI-related scenari
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Purview |
-| PowerShell test | [Test-MtPurviewAiInsiderRiskPolicy](/docs/commands/Test-MtPurviewAiInsiderRiskPolicy) |
+| PowerShell test | [Test-MtPurviewAiInsiderRiskPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Purview/Test.MT.1174.ps1) |
 | Services | Graph |
 | Tags | Maester, MT.1174, Purview |
 

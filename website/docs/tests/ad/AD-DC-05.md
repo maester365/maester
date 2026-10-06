@@ -67,7 +67,7 @@ This test identifies which domain controllers hold FSMO roles and counts how man
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcAllFsmoRolesCount](/docs/commands/Test-MtAdDcAllFsmoRolesCount) |
+| PowerShell test | [Test-MtAdDcAllFsmoRolesCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DC-05, AD.DomainController |
 

@@ -49,7 +49,7 @@ Enrollment templates represent which certificate templates are available for use
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdEnrollmentTemplatesCount](/docs/commands/Test-MtAdEnrollmentTemplatesCount) |
+| PowerShell test | [Test-MtAdEnrollmentTemplatesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-14.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-14, AD.Config |
 

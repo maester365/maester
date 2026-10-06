@@ -38,8 +38,9 @@ Additional information about Feature Update Policies: [Microsoft learn - Feature
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtFeatureUpdatePolicy](/docs/commands/Test-MtFeatureUpdatePolicy) |
+| PowerShell test | [Test-MtFeatureUpdatePolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1102.ps1) |
 | Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1102 |
 
 ## Source

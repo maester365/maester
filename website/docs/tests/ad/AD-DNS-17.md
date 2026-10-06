@@ -56,7 +56,7 @@ This test identifies zones with names that do not comply with RFC standards for 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsNonStandardZoneCount](/docs/commands/Test-MtAdDnsNonStandardZoneCount) |
+| PowerShell test | [Test-MtAdDnsNonStandardZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-17.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-17, AD.DNS |
 

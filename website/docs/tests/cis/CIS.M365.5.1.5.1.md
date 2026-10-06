@@ -62,7 +62,7 @@ If user consent is disabled, previous consent grants will still be honored but a
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisEnsureUserConsentToAppsDisallowed](/docs/commands/Test-MtCisEnsureUserConsentToAppsDisallowed) |
+| PowerShell test | [Test-MtCisEnsureUserConsentToAppsDisallowed](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.5.1.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.5.1.5.1, L2, Security |
 

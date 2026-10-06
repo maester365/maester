@@ -41,7 +41,7 @@ Change Spam action to move message to Junk Email Folder.
 | Severity | Low |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA139](/docs/commands/Test-ORCA139) |
+| PowerShell test | [Test-ORCA139](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.139.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.139 |
 

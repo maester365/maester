@@ -58,7 +58,7 @@ This test provides detailed information about each zone delegation, including:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsZoneDelegationDetails](/docs/commands/Test-MtAdDnsZoneDelegationDetails) |
+| PowerShell test | [Test-MtAdDnsZoneDelegationDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-09.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-09, AD.DNS |
 

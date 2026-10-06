@@ -45,7 +45,7 @@ Inappropriate CPU load settings may impact system performance or reduce scan eff
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeCpuLoadFactor](/docs/commands/Test-MtMdeCpuLoadFactor) |
+| PowerShell test | [Test-MtMdeCpuLoadFactor](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1157.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1157 |
 

@@ -53,7 +53,7 @@ This test counts user objects where the `AdminCount` attribute equals `1`.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserAdminCountCount](/docs/commands/Test-MtAdUserAdminCountCount) |
+| PowerShell test | [Test-MtAdUserAdminCountCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-11.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-11, AD.User |
 

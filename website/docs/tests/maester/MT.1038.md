@@ -42,7 +42,7 @@ To fix this issue:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaReferencedGroupsExist](/docs/commands/Test-MtCaReferencedGroupsExist) |
+| PowerShell test | [Test-MtCaReferencedGroupsExist](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1038 |
 

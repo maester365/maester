@@ -52,7 +52,7 @@ Rationale: Configuring an admin consent workflow reduces the risk of the previou
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaAppAdminConsent](/docs/commands/Test-MtCisaAppAdminConsent) |
+| PowerShell test | [Test-MtCisaAppAdminConsent](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.3.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.5.3, Entra ID Free, MS.AAD, MS.AAD.5.3 |
 

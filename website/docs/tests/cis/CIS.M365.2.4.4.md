@@ -69,7 +69,7 @@ Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E5 Level 1 |
-| PowerShell test | [Test-MtCisZAP](/docs/commands/Test-MtCisZAP) |
+| PowerShell test | [Test-MtCisZAP](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.4.4.ps1) |
 | Services | Teams |
 | Compatible licenses | THREAT_INTELLIGENCE |
 | Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.2.4.4, L1 |

@@ -59,7 +59,7 @@ Foreign Blueprint Principals and their child Agent Identities must not be assign
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentForeignPrivileged](/docs/commands/Test-MtEntraAgentForeignPrivileged) |
+| PowerShell test | [Test-MtEntraAgentForeignPrivileged](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1207.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

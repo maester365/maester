@@ -61,7 +61,7 @@ This test retrieves the current domain functional level from Active Directory an
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdDomainFunctionalLevel](/docs/commands/Test-MtAdDomainFunctionalLevel) |
+| PowerShell test | [Test-MtAdDomainFunctionalLevel](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-01, AD.Domain |
 

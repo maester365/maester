@@ -53,7 +53,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaBlockExecutable](/docs/commands/Test-MtCisaBlockExecutable) |
+| PowerShell test | [Test-MtCisaBlockExecutable](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.9.5.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.9.5, MS.EXO, MS.EXO.9.5 |
 

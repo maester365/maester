@@ -63,7 +63,7 @@ To approve requests, a reviewer must be a Global Administrator, Cloud Applicatio
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisAdminConsentWorkflowEnabled](/docs/commands/Test-MtCisAdminConsentWorkflowEnabled) |
+| PowerShell test | [Test-MtCisAdminConsentWorkflowEnabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.5.2.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.5.2, L1, Security |
 

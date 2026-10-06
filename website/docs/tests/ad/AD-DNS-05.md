@@ -56,7 +56,7 @@ This test counts DNS records that have timestamps (dynamic) versus those without
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsDynamicRecordCount](/docs/commands/Test-MtAdDnsDynamicRecordCount) |
+| PowerShell test | [Test-MtAdDnsDynamicRecordCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-05, AD.DNS |
 

@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoNoPermissionsCount](/docs/commands/Test-MtAdGpoNoPermissionsCount) |
+| PowerShell test | [Test-MtAdGpoNoPermissionsCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-01, AD.GPOState |
 

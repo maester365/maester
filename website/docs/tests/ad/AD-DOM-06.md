@@ -57,7 +57,7 @@ This test checks each domain name label against RFC 1123 standards and provides 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdDomainNameNonStandardDetails](/docs/commands/Test-MtAdDomainNameNonStandardDetails) |
+| PowerShell test | [Test-MtAdDomainNameNonStandardDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-06, AD.Domain |
 

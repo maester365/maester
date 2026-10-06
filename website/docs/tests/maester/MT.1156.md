@@ -45,7 +45,7 @@ Disabled network file scanning creates attack vectors through shared files.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeNetworkFileScanning](/docs/commands/Test-MtMdeNetworkFileScanning) |
+| PowerShell test | [Test-MtMdeNetworkFileScanning](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1156.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1156 |
 

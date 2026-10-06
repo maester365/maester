@@ -64,7 +64,7 @@ The test passes when **all** of the following are true:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Purview |
-| PowerShell test | [Test-MtPurviewAiSensitivityLabelsForFiles](/docs/commands/Test-MtPurviewAiSensitivityLabelsForFiles) |
+| PowerShell test | [Test-MtPurviewAiSensitivityLabelsForFiles](https://github.com/maester365/maester/blob/main/tests/Maester/Purview/Test.MT.1173.ps1) |
 | Services | SecurityCompliance |
 | Tags | Maester, MT.1173, Purview |
 

@@ -41,7 +41,7 @@ Set Safe attachments unknown malware response to block messages.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA124](/docs/commands/Test-ORCA124) |
+| PowerShell test | [Test-ORCA124](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.124.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.124 |

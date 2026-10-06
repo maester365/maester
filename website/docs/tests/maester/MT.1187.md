@@ -53,8 +53,9 @@ Enabling the Microsoft 365 profile unlocks:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaM365ProfileEnabled](/docs/commands/Test-MtGsaM365ProfileEnabled) |
+| PowerShell test | [Test-MtGsaM365ProfileEnabled](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1187.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | Entra, Maester, MT.1187, Preview |
 

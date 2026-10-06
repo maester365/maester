@@ -42,7 +42,7 @@ Apply a Safe Links policy to every domain.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA226](/docs/commands/Test-ORCA226) |
+| PowerShell test | [Test-ORCA226](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.226.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.226 |

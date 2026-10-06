@@ -41,7 +41,7 @@ Enable Authenticated Receive Chain (ARC) trusted sealers for domains not pointed
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA243](/docs/commands/Test-ORCA243) |
+| PowerShell test | [Test-ORCA243](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.243.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.243 |
 

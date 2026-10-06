@@ -42,7 +42,7 @@ Enable End-user Spam notifications on a quarantine policy.
 | Severity | Low |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA107](/docs/commands/Test-ORCA107) |
+| PowerShell test | [Test-ORCA107](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.107.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.107 |
 

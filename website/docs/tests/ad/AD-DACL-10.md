@@ -52,7 +52,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclPrivilegedAllowAceDetails](/docs/commands/Test-MtAdDaclPrivilegedAllowAceDetails) |
+| PowerShell test | [Test-MtAdDaclPrivilegedAllowAceDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-10, AD.DACL |
 

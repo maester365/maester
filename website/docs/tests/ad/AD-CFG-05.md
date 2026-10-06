@@ -51,7 +51,7 @@ This test enumerates AD partitions/paths and reports which ones have Recycle Bin
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdRecycleBinEnabledPaths](/docs/commands/Test-MtAdRecycleBinEnabledPaths) |
+| PowerShell test | [Test-MtAdRecycleBinEnabledPaths](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-05, AD.Config |
 

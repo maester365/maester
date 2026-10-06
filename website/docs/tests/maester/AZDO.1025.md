@@ -57,7 +57,7 @@ This validation applies to the arguments parameter in the following specific tas
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation](/docs/commands/Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation) |
+| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1025.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation](https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation) |
 | Tags | AZDO, AZDO.1025 |

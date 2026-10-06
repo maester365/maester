@@ -45,7 +45,7 @@ Enabled catchup scans may cause performance issues on mobile devices.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeCatchupFullScan](/docs/commands/Test-MtMdeCatchupFullScan) |
+| PowerShell test | [Test-MtMdeCatchupFullScan](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1169.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1169 |
 

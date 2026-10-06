@@ -60,7 +60,7 @@ The 90-day threshold is a common security baseline, though your organization may
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerDormantCount](/docs/commands/Test-MtAdComputerDormantCount) |
+| PowerShell test | [Test-MtAdComputerDormantCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-02, AD.Computer |
 

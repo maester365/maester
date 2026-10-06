@@ -41,7 +41,7 @@ Set the anti-spam policy to mark bulk mail as spam.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA101](/docs/commands/Test-ORCA101) |
+| PowerShell test | [Test-ORCA101](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.101.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.101 |
 

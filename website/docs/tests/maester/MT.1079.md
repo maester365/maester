@@ -41,7 +41,7 @@ Review the findings in the [Applications inventory](https://learn.microsoft.com/
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmAppRegWithPrivilegedUnusedPermissions](/docs/commands/Test-MtXspmAppRegWithPrivilegedUnusedPermissions) |
+| PowerShell test | [Test-MtXspmAppRegWithPrivilegedUnusedPermissions](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1079.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Entra, EntraOps, Graph, LongRunning, MT.1079, Privileged, XSPM |

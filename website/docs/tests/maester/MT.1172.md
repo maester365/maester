@@ -58,7 +58,7 @@ The test passes if `Get-AdminAuditLogConfig` returns `UnifiedAuditLogIngestionEn
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Purview |
-| PowerShell test | [Test-MtPurviewAuditLogIngestion](/docs/commands/Test-MtPurviewAuditLogIngestion) |
+| PowerShell test | [Test-MtPurviewAuditLogIngestion](https://github.com/maester365/maester/blob/main/tests/Maester/Purview/Test.MT.1172.ps1) |
 | Services | ExchangeOnline |
 | Tags | Maester, MT.1172, Purview |
 

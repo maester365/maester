@@ -74,7 +74,7 @@ This test lists all privileged groups (those with adminCount = 1 or well-known R
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Members |
-| PowerShell test | [Test-MtAdGroupPrivilegedWithMembersDetails](/docs/commands/Test-MtAdGroupPrivilegedWithMembersDetails) |
+| PowerShell test | [Test-MtAdGroupPrivilegedWithMembersDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-11.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GMC-11, AD.GMC, AD.Group |
 

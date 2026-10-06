@@ -54,7 +54,7 @@ It then filters all GPOs where the `CreationTime` is earlier than **January 1st,
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoCreatedBefore2020Count](/docs/commands/Test-MtAdGpoCreatedBefore2020Count) |
+| PowerShell test | [Test-MtAdGpoCreatedBefore2020Count](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPO-02, AD.GPO |
 

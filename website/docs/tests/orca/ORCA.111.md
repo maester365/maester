@@ -42,7 +42,7 @@ Enable unauthenticated sender tagging in Anti-phishing policy.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA111](/docs/commands/Test-ORCA111) |
+| PowerShell test | [Test-ORCA111](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.111.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.111 |

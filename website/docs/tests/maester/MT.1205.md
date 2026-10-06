@@ -59,7 +59,7 @@ This check audits all Agent Identity Blueprints and Blueprint Principals to veri
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentSponsor](/docs/commands/Test-MtEntraAgentSponsor) |
+| PowerShell test | [Test-MtEntraAgentSponsor](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1205.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

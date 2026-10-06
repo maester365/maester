@@ -45,7 +45,7 @@ A low cloud block level reduces proactive threat blocking capabilities, allowing
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeCloudBlockLevel](/docs/commands/Test-MtMdeCloudBlockLevel) |
+| PowerShell test | [Test-MtMdeCloudBlockLevel](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1161.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1161 |
 

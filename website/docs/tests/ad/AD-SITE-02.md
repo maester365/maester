@@ -59,7 +59,7 @@ This test compares the list of sites with domain controllers against all sites i
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSiteWithoutDcCount](/docs/commands/Test-MtAdSiteWithoutDcCount) |
+| PowerShell test | [Test-MtAdSiteWithoutDcCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SITE-02, AD.Site |
 

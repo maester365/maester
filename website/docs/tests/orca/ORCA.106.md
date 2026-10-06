@@ -42,7 +42,7 @@ Configure the Quarantine retention period to 30 days.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA106](/docs/commands/Test-ORCA106) |
+| PowerShell test | [Test-ORCA106](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.106.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.106 |
 

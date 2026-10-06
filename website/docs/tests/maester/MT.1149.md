@@ -45,7 +45,7 @@ Disabled behavior monitoring reduces ability to detect zero-day threats and adva
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeBehaviorMonitoring](/docs/commands/Test-MtMdeBehaviorMonitoring) |
+| PowerShell test | [Test-MtMdeBehaviorMonitoring](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1149.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1149 |
 

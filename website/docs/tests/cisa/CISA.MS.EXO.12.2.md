@@ -53,7 +53,7 @@ To modify the connection filters, follow the instructions found in Use the Micro
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaAntiSpamSafeList](/docs/commands/Test-MtCisaAntiSpamSafeList) |
+| PowerShell test | [Test-MtCisaAntiSpamSafeList](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.12.2.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.12.2, MS.EXO, MS.EXO.12.2 |
 

@@ -51,7 +51,7 @@ This test inspects AD authentication policy configuration and reports a count/vi
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdAuthNPolicyConfigCount](/docs/commands/Test-MtAdAuthNPolicyConfigCount) |
+| PowerShell test | [Test-MtAdAuthNPolicyConfigCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-08, AD.Config |
 

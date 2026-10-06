@@ -75,7 +75,7 @@ This test analyzes computer objects in Active Directory and:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerOperatingSystemCount](/docs/commands/Test-MtAdComputerOperatingSystemCount) |
+| PowerShell test | [Test-MtAdComputerOperatingSystemCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-04, AD.Security |
 

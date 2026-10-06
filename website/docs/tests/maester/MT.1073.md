@@ -66,7 +66,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/direc
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraIDConnectSyncSoftHardMatching](/docs/commands/Test-MtEntraIDConnectSyncSoftHardMatching) |
+| PowerShell test | [Test-MtEntraIDConnectSyncSoftHardMatching](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1073.ps1) |
 | Services | Graph |
 | Tags | Entra, Graph, Hybrid, Maester, MT.1073 |
 

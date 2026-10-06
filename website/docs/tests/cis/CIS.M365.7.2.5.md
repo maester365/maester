@@ -73,7 +73,7 @@ Set-SPOTenant -PreventExternalUsersFromResharing $True
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisSpoGuestCannotShareUnownedItem](/docs/commands/Test-MtCisSpoGuestCannotShareUnownedItem) |
+| PowerShell test | [Test-MtCisSpoGuestCannotShareUnownedItem](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.7.2.5.ps1) |
 | Services | SharePointOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.7.2.5, L2, OneDrive, SharePoint Online |
 

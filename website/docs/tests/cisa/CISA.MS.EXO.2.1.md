@@ -52,7 +52,7 @@ Rationale: Failing to maintain an accurate list of authorized IP addresses may r
 | Severity | Medium |
 | Suite | CISA |
 | Category | Deprecated |
-| PowerShell test | [Test-MtCisaSpfRestriction](/docs/commands/Test-MtCisaSpfRestriction) |
+| PowerShell test | [Test-MtCisaSpfRestriction](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.1.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.EXO.2.1, Deprecated, MS.EXO, MS.EXO.2.1 |
 

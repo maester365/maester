@@ -50,7 +50,7 @@ Only those variables explicitly marked as "Settable at queue time" can be set at
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationLimitVariablesAtQueueTime](/docs/commands/Test-AzdoOrganizationLimitVariablesAtQueueTime) |
+| PowerShell test | [Test-AzdoOrganizationLimitVariablesAtQueueTime](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1015.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time](https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time) |
 | Tags | AZDO, AZDO.1015 |

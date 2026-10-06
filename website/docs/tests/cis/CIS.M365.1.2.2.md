@@ -80,7 +80,7 @@ $MBX | ForEach-Object { Update-MgUser -UserId $_.ExternalDirectoryObjectId -Acco
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisSharedMailboxSignIn](/docs/commands/Test-MtCisSharedMailboxSignIn) |
+| PowerShell test | [Test-MtCisSharedMailboxSignIn](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.2.2.ps1) |
 | Services | ExchangeOnline, Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.2.2, L1 |
 

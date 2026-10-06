@@ -57,7 +57,7 @@ This test reports Agent Identity Blueprints that allow all delegated scopes or a
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintAllAllowedInheritance](/docs/commands/Test-MtEntraAgentBlueprintAllAllowedInheritance) |
+| PowerShell test | [Test-MtEntraAgentBlueprintAllAllowedInheritance](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1211.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

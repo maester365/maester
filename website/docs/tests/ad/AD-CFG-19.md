@@ -50,7 +50,7 @@ The test enumerates intermediate CA certificates in the AD configuration context
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdIntermediateCaDetails](/docs/commands/Test-MtAdIntermediateCaDetails) |
+| PowerShell test | [Test-MtAdIntermediateCaDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-19.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-19, AD.Config |
 

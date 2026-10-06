@@ -50,7 +50,7 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaMfaForAdmin](/docs/commands/Test-MtCaMfaForAdmin) |
+| PowerShell test | [Test-MtCaMfaForAdmin](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1006.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1006 |

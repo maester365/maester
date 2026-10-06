@@ -57,7 +57,7 @@ keywords:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Organizational Units |
-| PowerShell test | [Test-MtAdOuOverlappingNameCount](/docs/commands/Test-MtAdOuOverlappingNameCount) |
+| PowerShell test | [Test-MtAdOuOverlappingNameCount](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-OU-01, AD.OU |
 

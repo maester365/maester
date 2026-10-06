@@ -59,7 +59,7 @@ This test retrieves the allowed DNS suffixes configuration from the domain using
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdAllowedDnsSuffixesCount](/docs/commands/Test-MtAdAllowedDnsSuffixesCount) |
+| PowerShell test | [Test-MtAdAllowedDnsSuffixesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOMS-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOMS-01, AD.Domain |
 

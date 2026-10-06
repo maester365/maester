@@ -54,8 +54,9 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaRequireActivationApproval](/docs/commands/Test-MtCisaRequireActivationApproval) |
+| PowerShell test | [Test-MtCisaRequireActivationApproval](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.6.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | CISA, CISA.MS.AAD.7.6, Entra ID P2, MS.AAD, MS.AAD.7.6 |
 
 ## Source

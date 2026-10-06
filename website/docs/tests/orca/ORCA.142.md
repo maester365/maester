@@ -41,7 +41,7 @@ Change Phish action to Quarantine message.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA142](/docs/commands/Test-ORCA142) |
+| PowerShell test | [Test-ORCA142](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.142.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.142 |
 

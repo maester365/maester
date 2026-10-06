@@ -53,7 +53,7 @@ This test counts user objects where the `ServicePrincipalName` attribute contain
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserSpnSetCount](/docs/commands/Test-MtAdUserSpnSetCount) |
+| PowerShell test | [Test-MtAdUserSpnSetCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-14.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-14, AD.User |
 

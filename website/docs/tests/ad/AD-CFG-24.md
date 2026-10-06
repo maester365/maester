@@ -51,7 +51,7 @@ The test queries AD site link configuration entries using IP as the replication 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdIpSiteLinksCount](/docs/commands/Test-MtAdIpSiteLinksCount) |
+| PowerShell test | [Test-MtAdIpSiteLinksCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-24.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-24, AD.Config |
 

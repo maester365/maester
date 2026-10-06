@@ -61,7 +61,7 @@ This test checks the Root DSE isSynchronized attribute and reports:
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdRootDseSynchronizedStatus](/docs/commands/Test-MtAdRootDseSynchronizedStatus) |
+| PowerShell test | [Test-MtAdRootDseSynchronizedStatus](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-ROOTDSE-03, AD.Replication |
 

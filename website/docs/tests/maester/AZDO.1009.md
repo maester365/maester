@@ -47,7 +47,7 @@ Enable the policy to allow Microsoft to collect feedback.
 | Severity | Info |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoFeedbackCollection](/docs/commands/Test-AzdoFeedbackCollection) |
+| PowerShell test | [Test-AzdoFeedbackCollection](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1009.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/ADOPrivacyPolicy](https://aka.ms/ADOPrivacyPolicy) |
 | Tags | AZDO, AZDO.1009 |

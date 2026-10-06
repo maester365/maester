@@ -95,7 +95,7 @@ Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtAppManagementPolicyEnabled](/docs/commands/Test-MtAppManagementPolicyEnabled) |
+| PowerShell test | [Test-MtAppManagementPolicyEnabled](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.ps1) |
 | Services | Graph |
 | Tags | App, Maester, MT.1002 |
 

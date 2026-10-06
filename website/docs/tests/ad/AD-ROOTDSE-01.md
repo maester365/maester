@@ -58,7 +58,7 @@ This test retrieves the Root DSE and counts:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Replication |
-| PowerShell test | [Test-MtAdSupportedSaslMechanismCount](/docs/commands/Test-MtAdSupportedSaslMechanismCount) |
+| PowerShell test | [Test-MtAdSupportedSaslMechanismCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-ROOTDSE-01, AD.Replication |
 

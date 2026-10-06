@@ -67,7 +67,7 @@ This test only applies to organizations that use the separate GitHub Secret Prot
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationSecretProtectionEnrollment](/docs/commands/Test-AzdoOrganizationSecretProtectionEnrollment) |
+| PowerShell test | [Test-AzdoOrganizationSecretProtectionEnrollment](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1040.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding) |
 | Tags | AZDO, AZDO.1040 |

@@ -48,7 +48,7 @@ The test enumerates KDS root keys present in AD (or the module’s KDS configura
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdKdsRootKeysCount](/docs/commands/Test-MtAdKdsRootKeysCount) |
+| PowerShell test | [Test-MtAdKdsRootKeysCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-22.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-22, AD.Config |
 

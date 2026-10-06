@@ -41,7 +41,7 @@ Review the results from this check and verify whether it is legitimate for the p
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity](/docs/commands/Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity) |
+| PowerShell test | [Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1112.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

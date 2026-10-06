@@ -46,8 +46,9 @@ The baseline is the only place that protects **non-client / remote-network** tra
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaBaselineThreatIntelligenceEnforced](/docs/commands/Test-MtGsaBaselineThreatIntelligenceEnforced) |
+| PowerShell test | [Test-MtGsaBaselineThreatIntelligenceEnforced](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1194.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | Entra, Maester, MT.1194, Preview |
 

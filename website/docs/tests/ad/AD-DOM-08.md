@@ -57,7 +57,7 @@ This test checks each NetBIOS name for length compliance (1-15 characters) and i
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdNetbiosNameNonStandardDetails](/docs/commands/Test-MtAdNetbiosNameNonStandardDetails) |
+| PowerShell test | [Test-MtAdNetbiosNameNonStandardDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-08, AD.Domain |
 

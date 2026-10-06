@@ -45,7 +45,7 @@ Disabled script scanning allows malicious PowerShell, JavaScript, and VBScript e
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeScriptScanning](/docs/commands/Test-MtMdeScriptScanning) |
+| PowerShell test | [Test-MtMdeScriptScanning](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1152.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1152 |
 

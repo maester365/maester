@@ -49,7 +49,7 @@ Trusted root CAs act as the trust anchors for an entire PKI trust chain. If an a
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdTrustedRootCaCount](/docs/commands/Test-MtAdTrustedRootCaCount) |
+| PowerShell test | [Test-MtAdTrustedRootCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-16.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-16, AD.Config |
 

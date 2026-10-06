@@ -67,7 +67,7 @@ When enabled, new PATs must be associated with a single Azure DevOps organizatio
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoDisableGlobalPATCreation](/docs/commands/Test-AzdoDisableGlobalPATCreation) |
+| PowerShell test | [Test-AzdoDisableGlobalPATCreation](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1032.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy) |
 | Tags | AZDO, AZDO.1032 |

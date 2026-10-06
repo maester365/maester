@@ -79,7 +79,7 @@ This test filters trust objects where `Quarantined` is `$false` and displays:
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustNonQuarantinedDetails](/docs/commands/Test-MtAdTrustNonQuarantinedDetails) |
+| PowerShell test | [Test-MtAdTrustNonQuarantinedDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-04, AD.Trust |
 

@@ -64,7 +64,7 @@ This test provides a detailed breakdown of:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerDelegationDetails](/docs/commands/Test-MtAdComputerDelegationDetails) |
+| PowerShell test | [Test-MtAdComputerDelegationDetails](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-10, AD.Computer |
 

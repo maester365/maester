@@ -41,7 +41,7 @@ Learn more: [Use environment variables in Power Platform](https://learn.microsof
 | Severity | High |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentHardCodedCredentials](/docs/commands/Test-MtAIAgentHardCodedCredentials) |
+| PowerShell test | [Test-MtAIAgentHardCodedCredentials](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1119.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1119 |
 

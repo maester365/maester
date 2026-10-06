@@ -49,7 +49,7 @@ Enrollment-capable CA certificates include validity periods and other critical p
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdEnrollmentCaCertificateDetails](/docs/commands/Test-MtAdEnrollmentCaCertificateDetails) |
+| PowerShell test | [Test-MtAdEnrollmentCaCertificateDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-15.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-15, AD.Config |
 

@@ -45,7 +45,7 @@ An irregular scan schedule may miss persistent threats on managed devices, allow
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeScheduleScanDay](/docs/commands/Test-MtMdeScheduleScanDay) |
+| PowerShell test | [Test-MtMdeScheduleScanDay](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1158.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1158 |
 

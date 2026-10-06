@@ -92,7 +92,7 @@ Results are sorted by last validation date (oldest first).
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustStaleDetails](/docs/commands/Test-MtAdTrustStaleDetails) |
+| PowerShell test | [Test-MtAdTrustStaleDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-07, AD.Trust |
 

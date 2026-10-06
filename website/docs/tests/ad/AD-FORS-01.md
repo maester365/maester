@@ -55,7 +55,7 @@ This test retrieves the UPN suffixes configured at the forest level using the `G
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdUpnSuffixesCount](/docs/commands/Test-MtAdUpnSuffixesCount) |
+| PowerShell test | [Test-MtAdUpnSuffixesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FORS-01, AD.Forest |
 

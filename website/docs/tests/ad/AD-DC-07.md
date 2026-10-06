@@ -71,7 +71,7 @@ This test retrieves the OperatingSystem attribute from all domain controllers an
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcOperatingSystemCount](/docs/commands/Test-MtAdDcOperatingSystemCount) |
+| PowerShell test | [Test-MtAdDcOperatingSystemCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DC-07, AD.DomainController |
 

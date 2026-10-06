@@ -57,7 +57,7 @@ This test retrieves all domain controllers and counts the unique sites that cont
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcSiteCoverageCount](/docs/commands/Test-MtAdDcSiteCoverageCount) |
+| PowerShell test | [Test-MtAdDcSiteCoverageCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DC-01, AD.DomainController |
 

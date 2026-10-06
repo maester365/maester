@@ -60,7 +60,7 @@ Processes can vary depending on use of PowerShell, AD MMCs, or Exchange Manageme
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoMoeraMailActivity](/docs/commands/Test-MtExoMoeraMailActivity) |
+| PowerShell test | [Test-MtExoMoeraMailActivity](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1076.ps1) |
 | Services | Graph |
 | Tags | Exchange, Maester, MT.1076 |
 

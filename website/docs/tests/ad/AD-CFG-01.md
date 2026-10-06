@@ -51,7 +51,7 @@ This test retrieves the environment’s configured tombstone lifetime value from
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdTombstoneLifetimeConfig](/docs/commands/Test-MtAdTombstoneLifetimeConfig) |
+| PowerShell test | [Test-MtAdTombstoneLifetimeConfig](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-01, AD.Config |
 

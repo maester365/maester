@@ -55,7 +55,7 @@ This test retrieves all DNS zones and counts those that contain resource records
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsZoneCount](/docs/commands/Test-MtAdDnsZoneCount) |
+| PowerShell test | [Test-MtAdDnsZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-01, AD.DNS |
 

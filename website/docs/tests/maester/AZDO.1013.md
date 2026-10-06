@@ -49,7 +49,7 @@ Ensure that the owner is not a regular user.
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationOwner](/docs/commands/Test-AzdoOrganizationOwner) |
+| PowerShell test | [Test-AzdoOrganizationOwner](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1013.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops) |
 | Tags | AZDO, AZDO.1013 |

@@ -53,7 +53,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserNoPreAuthCount](/docs/commands/Test-MtAdUserNoPreAuthCount) |
+| PowerShell test | [Test-MtAdUserNoPreAuthCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-07, AD.User |
 

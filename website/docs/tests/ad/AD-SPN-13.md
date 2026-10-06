@@ -66,7 +66,7 @@ This test identifies domain administrator accounts and provides detailed informa
 | Severity | Critical |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnDomainAdminDetails](/docs/commands/Test-MtAdUserSpnDomainAdminDetails) |
+| PowerShell test | [Test-MtAdUserSpnDomainAdminDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-13.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-13, AD.SPN |
 

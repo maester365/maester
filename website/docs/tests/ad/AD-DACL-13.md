@@ -54,7 +54,7 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightIdentity](/docs/commands/Test-MtAdDaclPrivilegedExtendedRightIdentity) |
+| PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightIdentity](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-13.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-13, AD.DACL |
 

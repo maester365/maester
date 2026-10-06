@@ -47,7 +47,7 @@ Enable the policy to stop building from GitHub repositories.
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTriggerPullRequestGitHubRepository](/docs/commands/Test-AzdoOrganizationTriggerPullRequestGitHubRepository) |
+| PowerShell test | [Test-AzdoOrganizationTriggerPullRequestGitHubRepository](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1022.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks](https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks) |
 | Tags | AZDO, AZDO.1022 |

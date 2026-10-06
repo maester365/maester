@@ -74,8 +74,9 @@ Common scenarios detected:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntitlementManagementOrphanedResources](/docs/commands/Test-MtEntitlementManagementOrphanedResources) |
+| PowerShell test | [Test-MtEntitlementManagementOrphanedResources](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1110.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | AccessPackages, Entra, Governance, Maester, MT.1110 |
 
 ## Source

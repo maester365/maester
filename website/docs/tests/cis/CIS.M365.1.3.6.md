@@ -71,8 +71,9 @@ Set-OrganizationConfig -CustomerLockBoxEnabled $true
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E5 Level 2 |
-| PowerShell test | [Test-MtCisCustomerLockBox](/docs/commands/Test-MtCisCustomerLockBox) |
+| PowerShell test | [Test-MtCisCustomerLockBox](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.6.ps1) |
 | Services | ExchangeOnline |
+| Compatible licenses | LOCKBOX_ENTERPRISE |
 | Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.6, L2 |
 
 ## Source

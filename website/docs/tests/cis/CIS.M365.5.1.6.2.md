@@ -91,7 +91,7 @@ Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisEnsureGuestAccessRestricted](/docs/commands/Test-MtCisEnsureGuestAccessRestricted) |
+| PowerShell test | [Test-MtCisEnsureGuestAccessRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.6.2.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.6.2, L1, Security |
 

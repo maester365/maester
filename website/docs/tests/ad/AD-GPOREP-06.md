@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoNoDomainComputersCount](/docs/commands/Test-MtAdGpoNoDomainComputersCount) |
+| PowerShell test | [Test-MtAdGpoNoDomainComputersCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-06, AD.GPOState |
 

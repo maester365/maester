@@ -73,7 +73,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisEnsureBitLockerKeyRecoveryRestricted](/docs/commands/Test-MtCisEnsureBitLockerKeyRecoveryRestricted) |
+| PowerShell test | [Test-MtCisEnsureBitLockerKeyRecoveryRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.4.6.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.5.1.4.6, L2, Security |
 

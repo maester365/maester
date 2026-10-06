@@ -62,7 +62,7 @@ The result should be `True`.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoModernAuth](/docs/commands/Test-MtExoModernAuth) |
+| PowerShell test | [Test-MtExoModernAuth](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1044.ps1) |
 | Services | ExchangeOnline |
 | Tags | Exchange, Maester, MT.1044 |
 

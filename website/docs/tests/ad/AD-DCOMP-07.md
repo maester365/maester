@@ -77,7 +77,7 @@ This test counts computers with and without the `dNSHostName` attribute populate
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerDnsHostNameCount](/docs/commands/Test-MtAdComputerDnsHostNameCount) |
+| PowerShell test | [Test-MtAdComputerDnsHostNameCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-07, AD.Security |
 

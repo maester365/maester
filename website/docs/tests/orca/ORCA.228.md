@@ -41,7 +41,7 @@ Remove allow listing on senders in Anti-phishing policy.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA228](/docs/commands/Test-ORCA228) |
+| PowerShell test | [Test-ORCA228](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.228.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.228 |

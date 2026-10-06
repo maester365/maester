@@ -59,7 +59,7 @@ This check queries all active directory role assignments to identify Agent Ident
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentDirectoryRoles](/docs/commands/Test-MtEntraAgentDirectoryRoles) |
+| PowerShell test | [Test-MtEntraAgentDirectoryRoles](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1209.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

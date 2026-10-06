@@ -67,7 +67,7 @@ This test retrieves all domain controllers and identifies which are configured a
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcReadOnlyCount](/docs/commands/Test-MtAdDcReadOnlyCount) |
+| PowerShell test | [Test-MtAdDcReadOnlyCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DCD-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCD-03, AD.DomainController |
 

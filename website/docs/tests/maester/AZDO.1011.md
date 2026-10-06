@@ -45,7 +45,7 @@ Keeping your project count well below the limit prevents service errors and keep
 | Severity | Info |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoResourceUsageProject](/docs/commands/Test-AzdoResourceUsageProject) |
+| PowerShell test | [Test-AzdoResourceUsageProject](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1011.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops) |
 | Tags | AZDO, AZDO.1011 |

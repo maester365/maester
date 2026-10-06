@@ -50,7 +50,7 @@ Enterprise Certification Authorities (CAs) issue certificates for domain authent
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdEnterpriseCaCount](/docs/commands/Test-MtAdEnterpriseCaCount) |
+| PowerShell test | [Test-MtAdEnterpriseCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-12.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-12, AD.Config |
 

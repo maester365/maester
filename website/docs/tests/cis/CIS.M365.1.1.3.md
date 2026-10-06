@@ -83,7 +83,7 @@ Note: When tallying the number of Global Administrators, Partner relationships (
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisGlobalAdminCount](/docs/commands/Test-MtCisGlobalAdminCount) |
+| PowerShell test | [Test-MtCisGlobalAdminCount](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.3.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.1.3, L1 |
 

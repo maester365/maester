@@ -51,7 +51,7 @@ Rationale: Sharing information outside the organization via SharePoint increases
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoSharing](/docs/commands/Test-MtCisaSpoSharing) |
+| PowerShell test | [Test-MtCisaSpoSharing](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.1.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.1.1, MS.SHAREPOINT, MS.SHAREPOINT.1.1 |
 

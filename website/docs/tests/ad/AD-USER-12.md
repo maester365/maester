@@ -58,7 +58,7 @@ This test counts user objects where `primaryGroupId` is populated and not equal 
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserNonStandardPrimaryGroupCount](/docs/commands/Test-MtAdUserNonStandardPrimaryGroupCount) |
+| PowerShell test | [Test-MtAdUserNonStandardPrimaryGroupCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-12.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-12, AD.User |
 

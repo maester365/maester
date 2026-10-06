@@ -51,7 +51,7 @@ Configure password policies to set passwords to never expire.
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaPasswordExpiration](/docs/commands/Test-MtCisaPasswordExpiration) |
+| PowerShell test | [Test-MtCisaPasswordExpiration](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.6.1.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.6.1, Entra ID Free, MS.AAD, MS.AAD.6.1 |
 

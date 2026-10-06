@@ -65,7 +65,7 @@ This test retrieves the tombstone lifetime from the Directory Service configurat
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdTombstoneLifetime](/docs/commands/Test-MtAdTombstoneLifetime) |
+| PowerShell test | [Test-MtAdTombstoneLifetime](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FOR-03, AD.Forest |
 

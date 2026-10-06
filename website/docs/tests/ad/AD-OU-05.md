@@ -66,7 +66,7 @@ This test retrieves all Organizational Units from Active Directory and:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Organizational Units |
-| PowerShell test | [Test-MtAdOuEmptyDetails](/docs/commands/Test-MtAdOuEmptyDetails) |
+| PowerShell test | [Test-MtAdOuEmptyDetails](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-OU-05, AD.OU |
 

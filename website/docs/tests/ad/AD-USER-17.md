@@ -53,7 +53,7 @@ This test counts user objects where the `ProfilePath` attribute contains a non-e
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserProfilePathCount](/docs/commands/Test-MtAdUserProfilePathCount) |
+| PowerShell test | [Test-MtAdUserProfilePathCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-17.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-17, AD.User |
 

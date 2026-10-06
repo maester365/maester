@@ -101,8 +101,9 @@ Stale resources detected:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntitlementManagementValidResourceRoles](/docs/commands/Test-MtEntitlementManagementValidResourceRoles) |
+| PowerShell test | [Test-MtEntitlementManagementValidResourceRoles](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1106.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | AccessPackages, Entra, Governance, Maester, MT.1106 |
 
 ## Source

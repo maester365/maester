@@ -42,8 +42,9 @@ Additional information:
 | Severity | Low |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtMdmAuthority](/docs/commands/Test-MtMdmAuthority) |
+| PowerShell test | [Test-MtMdmAuthority](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1105.ps1) |
 | Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1105 |
 
 ## Source

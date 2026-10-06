@@ -45,7 +45,7 @@ Local admin policy override allows privilege escalation to bypass security contr
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeDisableLocalAdminMerge](/docs/commands/Test-MtMdeDisableLocalAdminMerge) |
+| PowerShell test | [Test-MtMdeDisableLocalAdminMerge](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1166.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1166 |
 

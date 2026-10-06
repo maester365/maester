@@ -40,7 +40,7 @@ Review the configuration described above.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaBlockLegacyOtherAuthentication](/docs/commands/Test-MtCaBlockLegacyOtherAuthentication) |
+| PowerShell test | [Test-MtCaBlockLegacyOtherAuthentication](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1009.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1009 |

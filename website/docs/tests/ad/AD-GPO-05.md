@@ -64,7 +64,7 @@ The table is intended to support quick review during GPO cleanup and maintenance
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoUnlinkedDetails](/docs/commands/Test-MtAdGpoUnlinkedDetails) |
+| PowerShell test | [Test-MtAdGpoUnlinkedDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPO-05, AD.GPO |
 

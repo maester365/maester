@@ -61,7 +61,7 @@ Set-OrganizationConfig -EndUserMailNotificationForDelayedDelicensingEnabled:$tru
 | Severity | Low |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoDelicensingResiliency](/docs/commands/Test-MtExoDelicensingResiliency) |
+| PowerShell test | [Test-MtExoDelicensingResiliency](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.ps1) |
 | Services | ExchangeOnline, Graph |
 | Tags | Exchange, Maester, MT.1083 |
 

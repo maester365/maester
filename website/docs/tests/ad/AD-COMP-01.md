@@ -57,7 +57,7 @@ The test returns informational results to help you assess the scope of disabled 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerDisabledCount](/docs/commands/Test-MtAdComputerDisabledCount) |
+| PowerShell test | [Test-MtAdComputerDisabledCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-01, AD.Computer |
 

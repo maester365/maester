@@ -55,7 +55,7 @@ This test identifies DNS zones that contain only SOA and NS records, with no A, 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsZonesWithOnlySoaNs](/docs/commands/Test-MtAdDnsZonesWithOnlySoaNs) |
+| PowerShell test | [Test-MtAdDnsZonesWithOnlySoaNs](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-02, AD.DNS |
 

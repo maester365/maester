@@ -56,7 +56,7 @@ It filters GPOs where `ModificationTime` is earlier than `2020-01-01` and calcul
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoChangedBefore2020Count](/docs/commands/Test-MtAdGpoChangedBefore2020Count) |
+| PowerShell test | [Test-MtAdGpoChangedBefore2020Count](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPO-03, AD.GPO |
 

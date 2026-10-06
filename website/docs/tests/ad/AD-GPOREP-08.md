@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoDenyAceDetails](/docs/commands/Test-MtAdGpoDenyAceDetails) |
+| PowerShell test | [Test-MtAdGpoDenyAceDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-08, AD.GPOState |
 

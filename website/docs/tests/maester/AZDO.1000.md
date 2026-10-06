@@ -50,7 +50,7 @@ With the policy disabled, third-party applications can no longer access your Azu
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoThirdPartyAccessViaOauth](/docs/commands/Test-AzdoThirdPartyAccessViaOauth) |
+| PowerShell test | [Test-AzdoThirdPartyAccessViaOauth](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1000.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/vstspolicyoauth](https://aka.ms/vstspolicyoauth) |
 | Tags | AZDO, AZDO.1000 |

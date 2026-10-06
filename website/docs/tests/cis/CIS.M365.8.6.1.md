@@ -106,7 +106,7 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E5 Level 1 |
-| PowerShell test | [Test-MtCisTeamsReportSecurityConcerns](/docs/commands/Test-MtCisTeamsReportSecurityConcerns) |
+| PowerShell test | [Test-MtCisTeamsReportSecurityConcerns](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.6.1.ps1) |
 | Services | Teams |
 | Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.8.6.1, L1 |
 

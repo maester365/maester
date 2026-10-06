@@ -46,8 +46,9 @@ This limitation applies only to app assignment. Conditional Access scoping does 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppAssignmentNotNested](/docs/commands/Test-MtGsaPrivateAccessAppAssignmentNotNested) |
+| PowerShell test | [Test-MtGsaPrivateAccessAppAssignmentNotNested](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1192.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | Entra, Maester, MT.1192, Preview |
 

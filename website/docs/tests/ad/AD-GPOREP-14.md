@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoEnforcementCount](/docs/commands/Test-MtAdGpoEnforcementCount) |
+| PowerShell test | [Test-MtAdGpoEnforcementCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-14.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-14, AD.GPOState |
 

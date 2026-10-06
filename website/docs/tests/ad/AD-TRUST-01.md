@@ -63,7 +63,7 @@ This test retrieves all trust objects from Active Directory using `Get-ADTrust` 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustTotalCount](/docs/commands/Test-MtAdTrustTotalCount) |
+| PowerShell test | [Test-MtAdTrustTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-01, AD.Trust |
 

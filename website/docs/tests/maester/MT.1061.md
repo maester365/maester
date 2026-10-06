@@ -46,7 +46,7 @@ When a Conditional Access policy is configured with the **Register or join devic
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtDeviceRegistrationMfaConflict](/docs/commands/Test-MtDeviceRegistrationMfaConflict) |
+| PowerShell test | [Test-MtDeviceRegistrationMfaConflict](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1061.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1061 |
 

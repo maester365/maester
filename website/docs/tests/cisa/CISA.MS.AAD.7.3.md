@@ -48,7 +48,7 @@ Rationale: Many privileged administrative users do not need unfettered access to
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaCloudGlobalAdmin](/docs/commands/Test-MtCisaCloudGlobalAdmin) |
+| PowerShell test | [Test-MtCisaCloudGlobalAdmin](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.3.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.7.3, Entra ID Free, MS.AAD, MS.AAD.7.3 |
 

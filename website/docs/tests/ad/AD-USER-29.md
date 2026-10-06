@@ -54,7 +54,7 @@ This test lists each user with `TrustedForDelegation` or `TrustedToAuthForDelega
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserDelegationDetails](/docs/commands/Test-MtAdUserDelegationDetails) |
+| PowerShell test | [Test-MtAdUserDelegationDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-29.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-29, AD.User |
 

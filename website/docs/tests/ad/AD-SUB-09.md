@@ -58,7 +58,7 @@ This test extracts the first two octets from all IPv4 subnets and counts the dis
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSubnetFirstTwoOctetsCount](/docs/commands/Test-MtAdSubnetFirstTwoOctetsCount) |
+| PowerShell test | [Test-MtAdSubnetFirstTwoOctetsCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-09.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SUB-09, AD.Site |
 

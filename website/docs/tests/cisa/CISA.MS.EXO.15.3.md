@@ -55,8 +55,9 @@ Rationale: Users may click on malicious links in emails, leading to compromise o
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaSafeLinkClickTracking](/docs/commands/Test-MtCisaSafeLinkClickTracking) |
+| PowerShell test | [Test-MtCisaSafeLinkClickTracking](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.15.3.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | CISA, CISA.MS.EXO.15.3, MS.EXO, MS.EXO.15.3 |
 
 ## Source

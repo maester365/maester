@@ -69,7 +69,7 @@ Change primary usage of the .onmicrosoft.com domain for mailboxes.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtLimitOnMicrosoftDomainUsage](/docs/commands/Test-MtLimitOnMicrosoftDomainUsage) |
+| PowerShell test | [Test-MtLimitOnMicrosoftDomainUsage](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1074.ps1) |
 | Services | ExchangeOnline, Graph |
 | Tags | Exchange, Maester, MT.1074 |
 

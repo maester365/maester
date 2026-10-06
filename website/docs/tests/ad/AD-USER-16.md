@@ -53,7 +53,7 @@ This test counts user objects where the `HomeDirectory` attribute contains a non
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserHomeDirectoryCount](/docs/commands/Test-MtAdUserHomeDirectoryCount) |
+| PowerShell test | [Test-MtAdUserHomeDirectoryCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-16.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-16, AD.User |
 

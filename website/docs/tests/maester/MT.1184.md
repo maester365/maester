@@ -46,7 +46,7 @@ An untargeted policy gives a false sense of security: it looks like active prote
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaUntargetedPolicy](/docs/commands/Test-MtCaUntargetedPolicy) |
+| PowerShell test | [Test-MtCaUntargetedPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1184.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1184 |
 

@@ -52,7 +52,7 @@ This test retrieves the set of enabled AD optional feature flags and reports the
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdOptionalFeaturesCount](/docs/commands/Test-MtAdOptionalFeaturesCount) |
+| PowerShell test | [Test-MtAdOptionalFeaturesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-04, AD.Config |
 

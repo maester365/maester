@@ -74,7 +74,7 @@ The result should return no assignments.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoOutlookAddin](/docs/commands/Test-MtExoOutlookAddin) |
+| PowerShell test | [Test-MtExoOutlookAddin](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1041.ps1) |
 | Services | ExchangeOnline |
 | Tags | Exchange, Maester, MT.1041 |
 

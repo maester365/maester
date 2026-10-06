@@ -41,7 +41,7 @@ Turn off Advanced Spam filter (ASF) options in Anti-Spam filter policies.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA102](/docs/commands/Test-ORCA102) |
+| PowerShell test | [Test-ORCA102](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.102.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.102 |
 

@@ -41,7 +41,7 @@ Remove exclusions from the built-in protection policies.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA239](/docs/commands/Test-ORCA239) |
+| PowerShell test | [Test-ORCA239](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.239.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.239 |

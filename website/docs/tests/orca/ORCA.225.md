@@ -42,7 +42,7 @@ Enable Safe Documents for Office clients.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA225](/docs/commands/Test-ORCA225) |
+| PowerShell test | [Test-ORCA225](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.225.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.225 |

@@ -82,7 +82,7 @@ Provides counts and lists affected computers.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerStaleEnabledCount](/docs/commands/Test-MtAdComputerStaleEnabledCount) |
+| PowerShell test | [Test-MtAdComputerStaleEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-06, AD.Security |
 

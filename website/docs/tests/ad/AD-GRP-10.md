@@ -68,7 +68,7 @@ The test provides counts and percentages to understand the distribution of group
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Groups |
-| PowerShell test | [Test-MtAdGroupUniversalCount](/docs/commands/Test-MtAdGroupUniversalCount) |
+| PowerShell test | [Test-MtAdGroupUniversalCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GRP-10, AD.Group |
 

@@ -49,7 +49,7 @@ Rationale: By only allowing an authorized group of individuals to invite externa
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaGuestInvitation](/docs/commands/Test-MtCisaGuestInvitation) |
+| PowerShell test | [Test-MtCisaGuestInvitation](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.2.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.8.2, Entra ID Free, MS.AAD, MS.AAD.8.2 |
 

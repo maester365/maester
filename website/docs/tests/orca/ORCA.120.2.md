@@ -41,7 +41,7 @@ Enable Zero Hour Autopurge.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA120_malware](/docs/commands/Test-ORCA120_malware) |
+| PowerShell test | [Test-ORCA120_malware](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.120.2.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.120.2 |
 

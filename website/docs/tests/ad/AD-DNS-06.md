@@ -52,7 +52,7 @@ This test identifies DNS zones that contain records beyond the default SOA and N
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsZonesWithRecordsCount](/docs/commands/Test-MtAdDnsZonesWithRecordsCount) |
+| PowerShell test | [Test-MtAdDnsZonesWithRecordsCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-06, AD.DNS |
 

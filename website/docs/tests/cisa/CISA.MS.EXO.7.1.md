@@ -78,7 +78,7 @@ To create a mail flow rule to produce external sender warnings:
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaExternalSenderWarning](/docs/commands/Test-MtCisaExternalSenderWarning) |
+| PowerShell test | [Test-MtCisaExternalSenderWarning](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.7.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.7.1, MS.EXO, MS.EXO.7.1 |
 

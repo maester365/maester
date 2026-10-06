@@ -41,7 +41,7 @@ Enable Safe Links policy action for unknown potentially malicious URLs in office
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA238](/docs/commands/Test-ORCA238) |
+| PowerShell test | [Test-ORCA238](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.238.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.238 |

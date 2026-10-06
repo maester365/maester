@@ -61,7 +61,7 @@ This test checks all domain names in the forest against RFC 1123 naming standard
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdDomainNameStandardCompliance](/docs/commands/Test-MtAdDomainNameStandardCompliance) |
+| PowerShell test | [Test-MtAdDomainNameStandardCompliance](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-05, AD.Domain |
 

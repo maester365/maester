@@ -50,7 +50,7 @@ Apply checks and approvals when accessing repositories from YAML pipelines. Also
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationProtectAccessToRepository](/docs/commands/Test-AzdoOrganizationProtectAccessToRepository) |
+| PowerShell test | [Test-AzdoOrganizationProtectAccessToRepository](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1018.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access](https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access) |
 | Tags | AZDO, AZDO.1018 |

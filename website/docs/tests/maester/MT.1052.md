@@ -45,7 +45,7 @@ Configure a Conditional Access policy to block the Device Code authentication fl
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaDeviceCodeFlow](/docs/commands/Test-MtCaDeviceCodeFlow) |
+| PowerShell test | [Test-MtCaDeviceCodeFlow](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1052.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1052 |
 

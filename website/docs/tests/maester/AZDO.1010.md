@@ -57,7 +57,7 @@ Audit streams represent a pipeline that flows audit events from your Azure DevOp
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoAuditStream](/docs/commands/Test-AzdoAuditStream) |
+| PowerShell test | [Test-AzdoAuditStream](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1010.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops) |
 | Tags | AZDO, AZDO.1010 |

@@ -60,7 +60,7 @@ This test provides detailed information about each AD DS SRV record, including:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsAdSrvRecordDetails](/docs/commands/Test-MtAdDnsAdSrvRecordDetails) |
+| PowerShell test | [Test-MtAdDnsAdSrvRecordDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-12.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-12, AD.DNS |
 

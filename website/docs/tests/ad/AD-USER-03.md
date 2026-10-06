@@ -52,7 +52,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserPasswordNeverExpiresCount](/docs/commands/Test-MtAdUserPasswordNeverExpiresCount) |
+| PowerShell test | [Test-MtAdUserPasswordNeverExpiresCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-03, AD.User |
 

@@ -45,7 +45,7 @@ Restricted sample submission reduces threat intelligence and protection quality.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeSubmitSamplesConsent](/docs/commands/Test-MtMdeSubmitSamplesConsent) |
+| PowerShell test | [Test-MtMdeSubmitSamplesConsent](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1171.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1171 |
 

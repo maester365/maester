@@ -63,7 +63,7 @@ New-AzRoleAssignment -ObjectId $UserId -RoleDefinitionName 'Intune Diagnostic Se
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtIntuneDiagnosticSettings](/docs/commands/Test-MtIntuneDiagnosticSettings) |
+| PowerShell test | [Test-MtIntuneDiagnosticSettings](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1100.ps1) |
 | Services | Azure |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1100 |

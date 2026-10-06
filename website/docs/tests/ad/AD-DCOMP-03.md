@@ -75,7 +75,7 @@ This test counts non-DC computers with the `TrustedToAuthForDelegation` flag ena
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerNonDcConstrainedDelegationCount](/docs/commands/Test-MtAdComputerNonDcConstrainedDelegationCount) |
+| PowerShell test | [Test-MtAdComputerNonDcConstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-03, AD.Security |
 

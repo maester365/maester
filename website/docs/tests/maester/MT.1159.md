@@ -45,7 +45,7 @@ Not required - Quick scans are replaced by real-time protection, so this setting
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeQuickScanTime](/docs/commands/Test-MtMdeQuickScanTime) |
+| PowerShell test | [Test-MtMdeQuickScanTime](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1159.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1159 |
 

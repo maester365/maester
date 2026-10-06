@@ -106,7 +106,7 @@ Test-ApplicationAccessPolicy -Identity user@contoso.com -AppId $AppID
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtSpExchangeAppAccessPolicy](/docs/commands/Test-MtSpExchangeAppAccessPolicy) |
+| PowerShell test | [Test-MtSpExchangeAppAccessPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1058.ps1) |
 | Services | Graph, ExchangeOnline |
 | Long running | Yes |
 | Tags | App, Entra, Graph, LongRunning, Maester, MT.1058 |

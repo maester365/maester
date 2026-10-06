@@ -60,7 +60,7 @@ This test compares discovered user SPN service classes against a database of kno
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnUnknownCount](/docs/commands/Test-MtAdUserSpnUnknownCount) |
+| PowerShell test | [Test-MtAdUserSpnUnknownCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-09.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-09, AD.SPN |
 

@@ -55,7 +55,7 @@ This test reviews AD user objects and flags accounts whose `SamAccountName` or `
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserKnownServiceAccountDetails](/docs/commands/Test-MtAdUserKnownServiceAccountDetails) |
+| PowerShell test | [Test-MtAdUserKnownServiceAccountDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-21.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-21, AD.User |
 

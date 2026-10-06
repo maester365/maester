@@ -63,7 +63,7 @@ It then:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoLinkedCount](/docs/commands/Test-MtAdGpoLinkedCount) |
+| PowerShell test | [Test-MtAdGpoLinkedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOL-01, AD.GPO |
 

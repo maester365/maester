@@ -57,7 +57,7 @@ This test analyzes reverse lookup zone names to extract and count unique network
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsReverseZoneNetworkCount](/docs/commands/Test-MtAdDnsReverseZoneNetworkCount) |
+| PowerShell test | [Test-MtAdDnsReverseZoneNetworkCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-18.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-18, AD.DNS |
 

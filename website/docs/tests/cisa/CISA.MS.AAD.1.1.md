@@ -47,8 +47,9 @@ Follow the guide below to create a Conditional Access policy that blocks legacy 
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaBlockLegacyAuth](/docs/commands/Test-MtCisaBlockLegacyAuth) |
+| PowerShell test | [Test-MtCisaBlockLegacyAuth](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.1.1.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.1.1, Entra ID P1, MS.AAD, MS.AAD.1.1 |
 
 ## Source

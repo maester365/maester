@@ -40,7 +40,7 @@ Set up the required selector DNS records in order to support DKIM.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA108_1](/docs/commands/Test-ORCA108_1) |
+| PowerShell test | [Test-ORCA108_1](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.108.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.108.1 |
 

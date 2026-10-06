@@ -56,8 +56,9 @@ Reviewed, accepted exceptions can be **allow-listed** by policy id or display na
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaQuickAccessNoSignInFrequency](/docs/commands/Test-MtGsaQuickAccessNoSignInFrequency) |
+| PowerShell test | [Test-MtGsaQuickAccessNoSignInFrequency](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1195.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | CA, Entra, Maester, MT.1195, Preview |
 

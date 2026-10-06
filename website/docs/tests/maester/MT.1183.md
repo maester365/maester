@@ -67,7 +67,7 @@ Update-MgDirectoryOnPremiseSynchronization `
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked](/docs/commands/Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked) |
+| PowerShell test | [Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1183.ps1) |
 | Services | Graph |
 | Tags | Entra, Graph, Hybrid, Maester, MT.1183 |
 

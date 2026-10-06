@@ -62,7 +62,7 @@ For performance reasons, the test analyzes the first 50 groups.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Members |
-| PowerShell test | [Test-MtAdGroupMemberForeignSidCount](/docs/commands/Test-MtAdGroupMemberForeignSidCount) |
+| PowerShell test | [Test-MtAdGroupMemberForeignSidCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GMC-06, AD.Group |
 

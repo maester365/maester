@@ -65,7 +65,7 @@ This test retrieves all group objects from Active Directory and:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Groups |
-| PowerShell test | [Test-MtAdGroupStaleCount](/docs/commands/Test-MtAdGroupStaleCount) |
+| PowerShell test | [Test-MtAdGroupStaleCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GRP-03, AD.Group |
 

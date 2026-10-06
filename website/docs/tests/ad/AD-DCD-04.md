@@ -71,7 +71,7 @@ The test provides different guidance based on whether the forest is single-domai
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcNonGlobalCatalogCount](/docs/commands/Test-MtAdDcNonGlobalCatalogCount) |
+| PowerShell test | [Test-MtAdDcNonGlobalCatalogCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DCD-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCD-04, AD.DomainController |
 

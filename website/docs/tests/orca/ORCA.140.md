@@ -41,7 +41,7 @@ Change High Confidence Spam action to Quarantine message.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA140](/docs/commands/Test-ORCA140) |
+| PowerShell test | [Test-ORCA140](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.140.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.140 |
 

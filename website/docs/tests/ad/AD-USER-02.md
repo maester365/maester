@@ -53,7 +53,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserDormantEnabledCount](/docs/commands/Test-MtAdUserDormantEnabledCount) |
+| PowerShell test | [Test-MtAdUserDormantEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-02, AD.User |
 

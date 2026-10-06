@@ -54,7 +54,7 @@ When counting the number of users assigned to the Global Administrator role, **c
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaGlobalAdminCount](/docs/commands/Test-MtCisaGlobalAdminCount) |
+| PowerShell test | [Test-MtCisaGlobalAdminCount](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.1.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.7.1, Entra ID Free, MS.AAD, MS.AAD.7.1 |
 

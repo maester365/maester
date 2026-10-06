@@ -65,7 +65,7 @@ keywords:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Organizational Units |
-| PowerShell test | [Test-MtAdOuEmptyCount](/docs/commands/Test-MtAdOuEmptyCount) |
+| PowerShell test | [Test-MtAdOuEmptyCount](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-OU-04, AD.OU |
 

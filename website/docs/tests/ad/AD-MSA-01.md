@@ -81,7 +81,7 @@ This test counts managed service accounts in Active Directory and categorizes th
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdManagedServiceAccountCount](/docs/commands/Test-MtAdManagedServiceAccountCount) |
+| PowerShell test | [Test-MtAdManagedServiceAccountCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-MSA-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-MSA-01, AD.Security |
 

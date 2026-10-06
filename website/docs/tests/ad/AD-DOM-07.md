@@ -60,7 +60,7 @@ This test validates NetBIOS names against standard naming conventions, checking 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdNetbiosNameStandardCompliance](/docs/commands/Test-MtAdNetbiosNameStandardCompliance) |
+| PowerShell test | [Test-MtAdNetbiosNameStandardCompliance](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-07, AD.Domain |
 

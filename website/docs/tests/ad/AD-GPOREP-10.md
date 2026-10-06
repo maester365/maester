@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoNoApplyGroupPolicyAceCount](/docs/commands/Test-MtAdGpoNoApplyGroupPolicyAceCount) |
+| PowerShell test | [Test-MtAdGpoNoApplyGroupPolicyAceCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-10, AD.GPOState |
 

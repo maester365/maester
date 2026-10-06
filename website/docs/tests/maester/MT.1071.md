@@ -74,7 +74,7 @@ Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaAzureDevOps](/docs/commands/Test-MtCaAzureDevOps) |
+| PowerShell test | [Test-MtCaAzureDevOps](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1071.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1071 |

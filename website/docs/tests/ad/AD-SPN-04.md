@@ -60,7 +60,7 @@ This test analyzes all computer SPNs, compares service classes against a known d
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdComputerSpnUnknownDetails](/docs/commands/Test-MtAdComputerSpnUnknownDetails) |
+| PowerShell test | [Test-MtAdComputerSpnUnknownDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-04, AD.SPN |
 

@@ -42,7 +42,7 @@ Apply a Safe Attachments policy to every domain.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA227](/docs/commands/Test-ORCA227) |
+| PowerShell test | [Test-ORCA227](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.227.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.227 |

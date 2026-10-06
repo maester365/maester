@@ -74,7 +74,7 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisTeamsLobbyBypass](/docs/commands/Test-MtCisTeamsLobbyBypass) |
+| PowerShell test | [Test-MtCisTeamsLobbyBypass](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.5.3.ps1) |
 | Services | Teams |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.5.3, L1 |
 

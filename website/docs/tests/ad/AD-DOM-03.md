@@ -55,7 +55,7 @@ This test retrieves all domain controllers from Active Directory and counts them
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdDomainControllerCount](/docs/commands/Test-MtAdDomainControllerCount) |
+| PowerShell test | [Test-MtAdDomainControllerCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-03, AD.Domain |
 

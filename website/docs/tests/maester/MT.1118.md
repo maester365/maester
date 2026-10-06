@@ -41,7 +41,7 @@ Learn more: [Configure user authentication in Copilot Studio](https://learn.micr
 | Severity | Medium |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentAuthorAuthentication](/docs/commands/Test-MtAIAgentAuthorAuthentication) |
+| PowerShell test | [Test-MtAIAgentAuthorAuthentication](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1118.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1118 |
 

@@ -66,7 +66,7 @@ This test checks for the presence of LAPS schema attributes (ms-Mcs-AdmPwd) to d
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Schema |
-| PowerShell test | [Test-MtAdLapsInstalledStatus](/docs/commands/Test-MtAdLapsInstalledStatus) |
+| PowerShell test | [Test-MtAdLapsInstalledStatus](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SCH-05, AD.Schema |
 

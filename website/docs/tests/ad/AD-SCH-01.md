@@ -65,7 +65,7 @@ This test retrieves all schema objects and analyzes their creation dates to iden
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Schema |
-| PowerShell test | [Test-MtAdSchemaModificationYearCount](/docs/commands/Test-MtAdSchemaModificationYearCount) |
+| PowerShell test | [Test-MtAdSchemaModificationYearCount](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SCH-01, AD.Schema |
 

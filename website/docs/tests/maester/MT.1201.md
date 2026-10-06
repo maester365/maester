@@ -72,7 +72,7 @@ That makes it harder to tell why the account exists and whether it should still 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentUserOrphaned](/docs/commands/Test-MtEntraAgentUserOrphaned) |
+| PowerShell test | [Test-MtEntraAgentUserOrphaned](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1201.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Tags | Entra, Graph, Maester, MT.1201, Preview, Severity:Medium |

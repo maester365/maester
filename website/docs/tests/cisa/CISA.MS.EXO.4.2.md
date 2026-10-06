@@ -47,7 +47,7 @@ Rationale: Of the three policy options (i.e., none, quarantine, and reject), rej
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaDmarcRecordReject](/docs/commands/Test-MtCisaDmarcRecordReject) |
+| PowerShell test | [Test-MtCisaDmarcRecordReject](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.2.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.4.2, MS.EXO, MS.EXO.4.2 |
 

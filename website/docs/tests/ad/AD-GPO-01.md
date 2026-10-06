@@ -58,7 +58,7 @@ This test retrieves all Group Policy Objects from Active Directory and counts th
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoTotalCount](/docs/commands/Test-MtAdGpoTotalCount) |
+| PowerShell test | [Test-MtAdGpoTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPO-01, AD.GPO |
 

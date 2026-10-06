@@ -61,7 +61,7 @@ This check reviews interactive, delegated, and application sign-in activity. It 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentInactive](/docs/commands/Test-MtEntraAgentInactive) |
+| PowerShell test | [Test-MtEntraAgentInactive](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1206.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

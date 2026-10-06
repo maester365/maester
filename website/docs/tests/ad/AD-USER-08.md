@@ -48,7 +48,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserNeverLoggedInCount](/docs/commands/Test-MtAdUserNeverLoggedInCount) |
+| PowerShell test | [Test-MtAdUserNeverLoggedInCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-08, AD.User |
 

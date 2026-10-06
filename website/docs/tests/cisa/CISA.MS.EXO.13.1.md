@@ -51,7 +51,7 @@ Mailbox auditing can be managed from the [Exchange Online PowerShell module](htt
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaMailboxAuditing](/docs/commands/Test-MtCisaMailboxAuditing) |
+| PowerShell test | [Test-MtCisaMailboxAuditing](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.13.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.13.1, MS.EXO, MS.EXO.13.1 |
 

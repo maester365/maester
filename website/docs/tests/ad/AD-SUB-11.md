@@ -58,7 +58,7 @@ This test identifies subnets that have no site association (SiteObject is null).
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSubnetWithoutSiteCount](/docs/commands/Test-MtAdSubnetWithoutSiteCount) |
+| PowerShell test | [Test-MtAdSubnetWithoutSiteCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-11.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SUB-11, AD.Site |
 

@@ -76,7 +76,7 @@ This test provides detailed analysis including:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerOperatingSystemDetails](/docs/commands/Test-MtAdComputerOperatingSystemDetails) |
+| PowerShell test | [Test-MtAdComputerOperatingSystemDetails](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-05, AD.Security |
 

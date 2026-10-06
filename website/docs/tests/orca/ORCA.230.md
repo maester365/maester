@@ -43,7 +43,7 @@ Check your anti-phishing policies for duplicate rules. Some policies and setting
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA230](/docs/commands/Test-ORCA230) |
+| PowerShell test | [Test-ORCA230](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.230.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.230 |

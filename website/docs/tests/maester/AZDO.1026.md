@@ -52,7 +52,7 @@ Newly created projects have Advanced Security enabled upon creation.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject](/docs/commands/Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject) |
+| PowerShell test | [Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1026.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding) |
 | Tags | AZDO, AZDO.1026 |

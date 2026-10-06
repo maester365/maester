@@ -45,7 +45,7 @@ Disabled PUA protection allows Shadow IT and potentially unwanted applications t
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdePuaProtection](/docs/commands/Test-MtMdePuaProtection) |
+| PowerShell test | [Test-MtMdePuaProtection](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1164.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1164 |
 

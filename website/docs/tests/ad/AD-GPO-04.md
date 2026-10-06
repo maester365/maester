@@ -61,7 +61,7 @@ This test retrieves Active Directory Group Policy state data using `Get-MtADGpoS
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoUnlinkedCount](/docs/commands/Test-MtAdGpoUnlinkedCount) |
+| PowerShell test | [Test-MtAdGpoUnlinkedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPO-04, AD.GPO |
 

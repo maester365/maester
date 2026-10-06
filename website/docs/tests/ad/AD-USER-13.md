@@ -58,7 +58,7 @@ This test counts user objects where the `SIDHistory` attribute contains one or m
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserSidHistoryCount](/docs/commands/Test-MtAdUserSidHistoryCount) |
+| PowerShell test | [Test-MtAdUserSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-13.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-13, AD.User |
 

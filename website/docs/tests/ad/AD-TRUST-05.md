@@ -80,7 +80,7 @@ This test retrieves all trust properties and displays:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustDetails](/docs/commands/Test-MtAdTrustDetails) |
+| PowerShell test | [Test-MtAdTrustDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-05, AD.Trust |
 

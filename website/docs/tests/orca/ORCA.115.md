@@ -42,7 +42,7 @@ Enable Mailbox intelligence based impersonation protection in anti-phishing poli
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA115](/docs/commands/Test-ORCA115) |
+| PowerShell test | [Test-ORCA115](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.115.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.115 |

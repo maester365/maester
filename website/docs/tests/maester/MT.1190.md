@@ -44,8 +44,9 @@ Newly installed Microsoft Entra private network connectors automatically join th
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup](/docs/commands/Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup) |
+| PowerShell test | [Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1190.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | Entra, Maester, MT.1190, Preview |
 

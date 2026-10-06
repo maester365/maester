@@ -54,7 +54,7 @@ This test reads `$adState.DaclEntries` and looks for entries whose `IdentityRefe
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclUnresolvedSidCount](/docs/commands/Test-MtAdDaclUnresolvedSidCount) |
+| PowerShell test | [Test-MtAdDaclUnresolvedSidCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-15.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-15, AD.DACL |
 

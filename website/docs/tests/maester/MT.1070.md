@@ -95,7 +95,7 @@ Update-MgPolicyDeviceRegistrationPolicy -BodyParameter $params
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraDeviceJoinRestricted](/docs/commands/Test-MtEntraDeviceJoinRestricted) |
+| PowerShell test | [Test-MtEntraDeviceJoinRestricted](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1070.ps1) |
 | Services | Graph |
 | Tags | Device, Entra, Maester, MT.1070 |
 

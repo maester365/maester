@@ -68,7 +68,7 @@ This test retrieves the objectVersion attribute from the schema container to det
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Schema |
-| PowerShell test | [Test-MtAdSchemaVersionEntryCount](/docs/commands/Test-MtAdSchemaVersionEntryCount) |
+| PowerShell test | [Test-MtAdSchemaVersionEntryCount](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SCH-03, AD.Schema |
 

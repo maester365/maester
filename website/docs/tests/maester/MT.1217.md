@@ -67,7 +67,7 @@ To view or rotate a password, an administrator needs a [custom Intune role](http
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtMacOSLAPSConfiguration](/docs/commands/Test-MtMacOSLAPSConfiguration) |
+| PowerShell test | [Test-MtMacOSLAPSConfiguration](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1217.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1217 |

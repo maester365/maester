@@ -71,8 +71,9 @@ For any deleted groups found, the test attempts to retrieve the group name from 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntitlementManagementDeletedGroups](/docs/commands/Test-MtEntitlementManagementDeletedGroups) |
+| PowerShell test | [Test-MtEntitlementManagementDeletedGroups](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1107.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | AccessPackages, Entra, Governance, Maester, MT.1107 |
 
 ## Source

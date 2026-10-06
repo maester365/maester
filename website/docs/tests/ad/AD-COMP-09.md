@@ -59,7 +59,7 @@ This test counts computers with different delegation configurations:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerDelegationCount](/docs/commands/Test-MtAdComputerDelegationCount) |
+| PowerShell test | [Test-MtAdComputerDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-09.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-09, AD.Computer |
 

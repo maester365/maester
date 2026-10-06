@@ -42,7 +42,7 @@ Do not let users click through safe links to original URL.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA113](/docs/commands/Test-ORCA113) |
+| PowerShell test | [Test-ORCA113](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.113.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.113 |

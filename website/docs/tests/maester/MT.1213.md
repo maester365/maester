@@ -55,7 +55,7 @@ This test reports Agent Identity Blueprints with a wildcard redirect URI or a no
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintRedirectUriHygiene](/docs/commands/Test-MtEntraAgentBlueprintRedirectUriHygiene) |
+| PowerShell test | [Test-MtEntraAgentBlueprintRedirectUriHygiene](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1213.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Tags | Entra, Graph, Maester, MT.1213, Preview, Severity:High |

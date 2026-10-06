@@ -52,7 +52,7 @@ To fix this issue:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaReferencedObjectsExist](/docs/commands/Test-MtCaReferencedObjectsExist) |
+| PowerShell test | [Test-MtCaReferencedObjectsExist](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1066.ps1) |
 | Services | Graph |
 | Tags | CA, Maester, MT.1066 |
 

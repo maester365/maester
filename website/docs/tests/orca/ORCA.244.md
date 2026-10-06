@@ -41,7 +41,7 @@ Configure anti-phish policy to honor sending domains DMARC configuration.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA244](/docs/commands/Test-ORCA244) |
+| PowerShell test | [Test-ORCA244](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.244.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.244 |
 

@@ -83,7 +83,7 @@ The test returns:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustStaleCount](/docs/commands/Test-MtAdTrustStaleCount) |
+| PowerShell test | [Test-MtAdTrustStaleCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-06, AD.Trust |
 

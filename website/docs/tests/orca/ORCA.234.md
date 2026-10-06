@@ -42,7 +42,7 @@ Do not let usres click through Protected View if Safe Documents identified the f
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA234](/docs/commands/Test-ORCA234) |
+| PowerShell test | [Test-ORCA234](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.234.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.234 |

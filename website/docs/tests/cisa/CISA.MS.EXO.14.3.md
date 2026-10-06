@@ -53,7 +53,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaSpamBypass](/docs/commands/Test-MtCisaSpamBypass) |
+| PowerShell test | [Test-MtCisaSpamBypass](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.14.3.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.14.3, MS.EXO, MS.EXO.14.3 |
 

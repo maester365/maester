@@ -45,7 +45,7 @@ Review the configuration described above.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoComputerSettingsDisabledDetails](/docs/commands/Test-MtAdGpoComputerSettingsDisabledDetails) |
+| PowerShell test | [Test-MtAdGpoComputerSettingsDisabledDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOS-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOS-05, AD.GPOState |
 

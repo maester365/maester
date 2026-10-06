@@ -60,7 +60,7 @@ This test retrieves all sites and subnets, identifies sites with no subnet assoc
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSiteWithoutSubnetDetails](/docs/commands/Test-MtAdSiteWithoutSubnetDetails) |
+| PowerShell test | [Test-MtAdSiteWithoutSubnetDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SITE-05, AD.Site |
 

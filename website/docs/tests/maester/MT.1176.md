@@ -66,7 +66,7 @@ The test passes when at least one enabled Microsoft Purview retention policy tar
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Purview |
-| PowerShell test | [Test-MtPurviewAiRetentionPolicy](/docs/commands/Test-MtPurviewAiRetentionPolicy) |
+| PowerShell test | [Test-MtPurviewAiRetentionPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Purview/Test.MT.1176.ps1) |
 | Services | SecurityCompliance, ExchangeOnline |
 | Tags | Maester, MT.1176, Purview |
 

@@ -62,7 +62,7 @@ This check audits all Agent Identities, Blueprint Principals, and Blueprints in 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentOwner](/docs/commands/Test-MtEntraAgentOwner) |
+| PowerShell test | [Test-MtEntraAgentOwner](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1204.ps1) |
 | Services | Graph |
 | Preview | Yes |
 | Long running | Yes |

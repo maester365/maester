@@ -66,7 +66,7 @@ This test retrieves the current machine account quota value from Active Director
 | Severity | Low |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdMachineAccountQuota](/docs/commands/Test-MtAdMachineAccountQuota) |
+| PowerShell test | [Test-MtAdMachineAccountQuota](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-02, AD.Domain |
 

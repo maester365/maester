@@ -53,7 +53,7 @@ This test returns non-system users whose names match attacker-attractive terms a
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserHoneyPotDetails](/docs/commands/Test-MtAdUserHoneyPotDetails) |
+| PowerShell test | [Test-MtAdUserHoneyPotDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-27.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-27, AD.User |
 

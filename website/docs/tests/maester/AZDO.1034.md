@@ -61,7 +61,7 @@ When enabled, only users on the allowlist (or Azure DevOps Administrators as per
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationCreationRestriction](/docs/commands/Test-AzdoOrganizationCreationRestriction) |
+| PowerShell test | [Test-AzdoOrganizationCreationRestriction](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1034.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy](https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy) |
 | Tags | AZDO, AZDO.1034 |

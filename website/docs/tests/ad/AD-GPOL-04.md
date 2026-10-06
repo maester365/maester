@@ -57,7 +57,7 @@ This test retrieves Active Directory GPO state from `Get-MtADGpoState` (using `$
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy |
-| PowerShell test | [Test-MtAdGpoEnforcedCount](/docs/commands/Test-MtAdGpoEnforcedCount) |
+| PowerShell test | [Test-MtAdGpoEnforcedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOL-04, AD.GPO |
 

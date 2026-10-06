@@ -76,7 +76,7 @@ Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisPasswordExpiry](/docs/commands/Test-MtCisPasswordExpiry) |
+| PowerShell test | [Test-MtCisPasswordExpiry](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.1.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.1, L1 |
 

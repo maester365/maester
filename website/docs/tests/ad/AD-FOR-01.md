@@ -62,7 +62,7 @@ This test retrieves the current forest functional level from Active Directory al
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdForestFunctionalLevel](/docs/commands/Test-MtAdForestFunctionalLevel) |
+| PowerShell test | [Test-MtAdForestFunctionalLevel](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FOR-01, AD.Forest |
 

@@ -68,7 +68,7 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdPasswordReversibleEncryption](/docs/commands/Test-MtAdPasswordReversibleEncryption) |
+| PowerShell test | [Test-MtAdPasswordReversibleEncryption](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-PWDPOL-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-PWDPOL-05, AD.PasswordPolicy |
 

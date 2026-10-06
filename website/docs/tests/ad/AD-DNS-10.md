@@ -60,7 +60,7 @@ This test retrieves SOA record details for each zone, including primary server, 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsSoaDetails](/docs/commands/Test-MtAdDnsSoaDetails) |
+| PowerShell test | [Test-MtAdDnsSoaDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-10, AD.DNS |
 

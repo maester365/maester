@@ -48,7 +48,7 @@ This test retrieves cached Active Directory user data from `Get-MtADDomainState`
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserDisabledCount](/docs/commands/Test-MtAdUserDisabledCount) |
+| PowerShell test | [Test-MtAdUserDisabledCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-01, AD.User |
 

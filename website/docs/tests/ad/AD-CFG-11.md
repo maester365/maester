@@ -49,7 +49,7 @@ DHCP servers registered in Active Directory are authorized to provide IP address
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdRegisteredDhcpServersCount](/docs/commands/Test-MtAdRegisteredDhcpServersCount) |
+| PowerShell test | [Test-MtAdRegisteredDhcpServersCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-11.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-11, AD.Config |
 

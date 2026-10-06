@@ -101,7 +101,7 @@ To verify that Seamless SSO has been successfully disabled in your environment, 
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraIDConnectSsso](/docs/commands/Test-MtEntraIDConnectSsso) |
+| PowerShell test | [Test-MtEntraIDConnectSsso](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1084.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2 |
 | Tags | Entra, Graph, Hybrid, Maester, MT.1084 |

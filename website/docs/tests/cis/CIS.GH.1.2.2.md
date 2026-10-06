@@ -84,7 +84,7 @@ This test uses the granular repository creation fields because GitHub is replaci
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubRepositoryCreationLimited](/docs/commands/Test-MtCisGitHubRepositoryCreationLimited) |
+| PowerShell test | [Test-MtCisGitHubRepositoryCreationLimited](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.2.ps1) |
 | Services | GitHub |
 | Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.2, GitHub, L1 |
 

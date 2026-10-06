@@ -52,8 +52,9 @@ Note: While CISA recommends blocking, the [Microsoft recommendation](https://lea
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaBlockHighRiskSignIn](/docs/commands/Test-MtCisaBlockHighRiskSignIn) |
+| PowerShell test | [Test-MtCisaBlockHighRiskSignIn](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.3.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2 |
 | Tags | CISA, CISA.MS.AAD.2.3, Entra ID P2, MS.AAD, MS.AAD.2.3 |
 
 ## Source

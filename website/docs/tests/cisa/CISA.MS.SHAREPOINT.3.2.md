@@ -48,7 +48,7 @@ Rationale: Allowing edit permissions on Anyone links increases the risk of unaut
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoAnyoneLinkPermission](/docs/commands/Test-MtCisaSpoAnyoneLinkPermission) |
+| PowerShell test | [Test-MtCisaSpoAnyoneLinkPermission](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.3.2, MS.SHAREPOINT, MS.SHAREPOINT.3.2 |
 

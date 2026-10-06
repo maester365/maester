@@ -41,7 +41,7 @@ Additional information:
 | Severity | Low |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtTenantCustomization](/docs/commands/Test-MtTenantCustomization) |
+| PowerShell test | [Test-MtTenantCustomization](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1101.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1101 |

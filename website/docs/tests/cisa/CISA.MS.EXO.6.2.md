@@ -52,7 +52,7 @@ To restrict sharing with all domains:
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaCalendarSharing](/docs/commands/Test-MtCisaCalendarSharing) |
+| PowerShell test | [Test-MtCisaCalendarSharing](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.6.2.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.6.2, MS.EXO, MS.EXO.6.2 |
 

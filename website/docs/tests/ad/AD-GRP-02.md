@@ -62,7 +62,7 @@ keywords:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Groups |
-| PowerShell test | [Test-MtAdGroupInContainerCount](/docs/commands/Test-MtAdGroupInContainerCount) |
+| PowerShell test | [Test-MtAdGroupInContainerCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GRP-02, AD.Group |
 

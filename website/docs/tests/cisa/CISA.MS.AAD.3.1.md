@@ -49,8 +49,9 @@ Create a Conditional Access policy enforcing phishing-resistant MFA for all user
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaPhishResistant](/docs/commands/Test-MtCisaPhishResistant) |
+| PowerShell test | [Test-MtCisaPhishResistant](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.1.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.1, Entra ID P1, MS.AAD, MS.AAD.3.1 |
 
 ## Source

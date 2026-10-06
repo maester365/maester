@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoNoAuthenticatedUsersDetails](/docs/commands/Test-MtAdGpoNoAuthenticatedUsersDetails) |
+| PowerShell test | [Test-MtAdGpoNoAuthenticatedUsersDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-04, AD.GPOState |
 

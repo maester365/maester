@@ -47,7 +47,7 @@ Remove ownership and replace it (if necessary) by using [object-level role assig
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmAppRegWithPrivilegedApiAndOwners](/docs/commands/Test-MtXspmAppRegWithPrivilegedApiAndOwners) |
+| PowerShell test | [Test-MtXspmAppRegWithPrivilegedApiAndOwners](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1077.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Entra, EntraOps, Graph, LongRunning, MT.1077, Privileged, XSPM |

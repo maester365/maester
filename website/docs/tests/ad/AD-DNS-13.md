@@ -54,7 +54,7 @@ This test counts DNSSEC trust anchor records configured in the TrustAnchors zone
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsDnssecRecordCount](/docs/commands/Test-MtAdDnsDnssecRecordCount) |
+| PowerShell test | [Test-MtAdDnsDnssecRecordCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-13.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-13, AD.DNS |
 

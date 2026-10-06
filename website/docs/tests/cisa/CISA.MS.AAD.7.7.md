@@ -58,8 +58,9 @@ Rationale: Closely monitor assignment of the highest privileged roles for signs 
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaAssignmentNotification](/docs/commands/Test-MtCisaAssignmentNotification) |
+| PowerShell test | [Test-MtCisaAssignmentNotification](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.7.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | CISA, CISA.MS.AAD.7.7, Entra ID P2, MS.AAD, MS.AAD.7.7 |
 
 ## Source

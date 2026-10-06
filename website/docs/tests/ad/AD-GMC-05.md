@@ -61,7 +61,7 @@ For performance reasons, the test analyzes the first 50 groups and limits displa
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Members |
-| PowerShell test | [Test-MtAdGroupMemberTrustDetails](/docs/commands/Test-MtAdGroupMemberTrustDetails) |
+| PowerShell test | [Test-MtAdGroupMemberTrustDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GMC-05, AD.Group |
 

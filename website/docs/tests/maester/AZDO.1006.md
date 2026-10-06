@@ -46,7 +46,7 @@ Disable the "External guest access" policy to prevent external guest access if t
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoExternalGuestAccess](/docs/commands/Test-AzdoExternalGuestAccess) |
+| PowerShell test | [Test-AzdoExternalGuestAccess](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1006.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access](https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access) |
 | Tags | AZDO, AZDO.1006 |

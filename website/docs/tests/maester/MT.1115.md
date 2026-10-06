@@ -41,7 +41,7 @@ Learn more: [Configure data policies for agents](https://learn.microsoft.com/mic
 | Severity | Medium |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentRiskyHttpConfig](/docs/commands/Test-MtAIAgentRiskyHttpConfig) |
+| PowerShell test | [Test-MtAIAgentRiskyHttpConfig](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1115.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1115 |
 

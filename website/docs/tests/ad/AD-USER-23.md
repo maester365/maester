@@ -53,7 +53,7 @@ This test returns enabled user accounts that match the built-in administrator RI
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserBuiltInAdminEnabledDetails](/docs/commands/Test-MtAdUserBuiltInAdminEnabledDetails) |
+| PowerShell test | [Test-MtAdUserBuiltInAdminEnabledDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-23.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-23, AD.User |
 

@@ -59,7 +59,7 @@ Remediation will require first identifying the privileged accounts that are sync
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisCloudAdmin](/docs/commands/Test-MtCisCloudAdmin) |
+| PowerShell test | [Test-MtCisCloudAdmin](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.1.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.1.1, L1 |
 

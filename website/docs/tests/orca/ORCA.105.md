@@ -42,7 +42,7 @@ Enable Safe Links Synchronous URL detonation.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA105](/docs/commands/Test-ORCA105) |
+| PowerShell test | [Test-ORCA105](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.105.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.105 |

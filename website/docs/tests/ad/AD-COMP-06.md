@@ -58,7 +58,7 @@ This test identifies enabled computer accounts where the Distinguished Name cont
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerInDefaultContainer](/docs/commands/Test-MtAdComputerInDefaultContainer) |
+| PowerShell test | [Test-MtAdComputerInDefaultContainer](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-06, AD.Computer |
 

@@ -57,7 +57,7 @@ This test retrieves the complete list of UPN suffixes configured at the forest l
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdUpnSuffixesDetails](/docs/commands/Test-MtAdUpnSuffixesDetails) |
+| PowerShell test | [Test-MtAdUpnSuffixesDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FORS-02, AD.Forest |
 

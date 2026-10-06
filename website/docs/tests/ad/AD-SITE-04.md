@@ -58,7 +58,7 @@ This test analyzes subnet-to-site associations to identify sites that have no su
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSiteWithoutSubnetCount](/docs/commands/Test-MtAdSiteWithoutSubnetCount) |
+| PowerShell test | [Test-MtAdSiteWithoutSubnetCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SITE-04, AD.Site |
 

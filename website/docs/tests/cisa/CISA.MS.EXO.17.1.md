@@ -50,7 +50,7 @@ To enable auditing via the Microsoft Purview compliance portal:
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaAuditLog](/docs/commands/Test-MtCisaAuditLog) |
+| PowerShell test | [Test-MtCisaAuditLog](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.17.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.17.1, MS.EXO, MS.EXO.17.1 |
 

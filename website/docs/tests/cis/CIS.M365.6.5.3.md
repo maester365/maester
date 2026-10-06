@@ -74,7 +74,7 @@ AdditionalStorageProvidersAvailable : True
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisExoAdditionalStorageProvider](/docs/commands/Test-MtCisExoAdditionalStorageProvider) |
+| PowerShell test | [Test-MtCisExoAdditionalStorageProvider](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.6.5.3.ps1) |
 | Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.6.5.3, L2, Security |
 

@@ -41,7 +41,7 @@ Create [dedicated privileged users](https://learn.microsoft.com/microsoft-365/en
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmHybridUsersWithAssignedEntraIdRoles](/docs/commands/Test-MtXspmHybridUsersWithAssignedEntraIdRoles) |
+| PowerShell test | [Test-MtXspmHybridUsersWithAssignedEntraIdRoles](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1081.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Entra, EntraOps, Graph, LongRunning, MT.1081, Privileged, XSPM |

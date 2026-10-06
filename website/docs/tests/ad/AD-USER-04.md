@@ -53,7 +53,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserReversibleEncryptionCount](/docs/commands/Test-MtAdUserReversibleEncryptionCount) |
+| PowerShell test | [Test-MtAdUserReversibleEncryptionCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-04, AD.User |
 

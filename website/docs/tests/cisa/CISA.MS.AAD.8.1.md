@@ -48,7 +48,7 @@ Rationale: Limiting the amount of object information available to guest users in
 | Severity | Medium |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaGuestUserAccess](/docs/commands/Test-MtCisaGuestUserAccess) |
+| PowerShell test | [Test-MtCisaGuestUserAccess](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.1.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.8.1, Entra ID Free, MS.AAD, MS.AAD.8.1 |
 

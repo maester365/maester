@@ -56,7 +56,7 @@ This test compares configured root server IP addresses against the official IANA
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsRootServerIncorrectCount](/docs/commands/Test-MtAdDnsRootServerIncorrectCount) |
+| PowerShell test | [Test-MtAdDnsRootServerIncorrectCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-03, AD.DNS |
 

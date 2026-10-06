@@ -51,7 +51,7 @@ To restrict sharing with all domains:
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaContactSharing](/docs/commands/Test-MtCisaContactSharing) |
+| PowerShell test | [Test-MtCisaContactSharing](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.6.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.6.1, MS.EXO, MS.EXO.6.1 |
 

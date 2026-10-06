@@ -51,7 +51,7 @@ Users can no longer use SSH to connect to Azure DevOps.
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoSSHAuthentication](/docs/commands/Test-AzdoSSHAuthentication) |
+| PowerShell test | [Test-AzdoSSHAuthentication](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1001.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/vstspolicyssh](https://aka.ms/vstspolicyssh) |
 | Tags | AZDO, AZDO.1001 |

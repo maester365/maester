@@ -51,7 +51,7 @@ This policy is based on the ratio below:
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaGlobalAdminRatio](/docs/commands/Test-MtCisaGlobalAdminRatio) |
+| PowerShell test | [Test-MtCisaGlobalAdminRatio](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.2.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.7.2, Entra ID Free, MS.AAD, MS.AAD.7.2 |
 

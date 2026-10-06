@@ -45,7 +45,7 @@ Disabled cloud protection reduces real-time threat detection and response capabi
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeCloudProtection](/docs/commands/Test-MtMdeCloudProtection) |
+| PowerShell test | [Test-MtMdeCloudProtection](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1150.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1150 |
 

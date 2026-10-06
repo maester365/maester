@@ -66,7 +66,7 @@ This test retrieves the current FSMO role holders from the domain and forest obj
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcFsmoRoleHolderDetails](/docs/commands/Test-MtAdDcFsmoRoleHolderDetails) |
+| PowerShell test | [Test-MtAdDcFsmoRoleHolderDetails](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DC-06, AD.DomainController |
 

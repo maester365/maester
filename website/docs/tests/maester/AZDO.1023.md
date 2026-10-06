@@ -50,7 +50,7 @@ With this enabled, pipelines will not use tasks installed from the Marketplace. 
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask](/docs/commands/Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask) |
+| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1023.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution](https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution) |
 | Tags | AZDO, AZDO.1023 |

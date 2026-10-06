@@ -63,7 +63,7 @@ The gPLink attribute is checked to determine if any GPOs are linked to each OU.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Policy Links |
-| PowerShell test | [Test-MtAdGpoLinkedOUCount](/docs/commands/Test-MtAdGpoLinkedOUCount) |
+| PowerShell test | [Test-MtAdGpoLinkedOUCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOL-06, AD.GPO |
 

@@ -41,7 +41,7 @@ Enable Safe Links between internal users.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA179](/docs/commands/Test-ORCA179) |
+| PowerShell test | [Test-ORCA179](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.179.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.179 |

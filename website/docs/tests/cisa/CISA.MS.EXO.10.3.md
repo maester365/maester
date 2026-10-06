@@ -55,7 +55,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaMalwareZap](/docs/commands/Test-MtCisaMalwareZap) |
+| PowerShell test | [Test-MtCisaMalwareZap](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.10.3.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.10.3, MS.EXO, MS.EXO.10.3 |
 

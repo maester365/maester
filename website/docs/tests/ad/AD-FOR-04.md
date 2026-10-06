@@ -66,7 +66,7 @@ This test checks the optional features in Active Directory to determine if the R
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdRecycleBinStatus](/docs/commands/Test-MtAdRecycleBinStatus) |
+| PowerShell test | [Test-MtAdRecycleBinStatus](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FOR-04, AD.Forest |
 

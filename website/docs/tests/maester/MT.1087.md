@@ -48,7 +48,7 @@ Review the devices in the list and either patch the severities, or make sure to 
 | Severity | High |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmPublicRemotelyExploitableHighExposureDevices](/docs/commands/Test-MtXspmPublicRemotelyExploitableHighExposureDevices) |
+| PowerShell test | [Test-MtXspmPublicRemotelyExploitableHighExposureDevices](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1087.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Device, LongRunning, MT.1087, XSPM |

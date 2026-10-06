@@ -41,7 +41,7 @@ Safety Tips should be enabled.
 | Severity | Info |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA143](/docs/commands/Test-ORCA143) |
+| PowerShell test | [Test-ORCA143](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.143.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.143 |
 

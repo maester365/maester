@@ -52,7 +52,7 @@ This test retrieves `$adState.DaclEntries`, filters entries where `AccessControl
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclDenyAceCount](/docs/commands/Test-MtAdDaclDenyAceCount) |
+| PowerShell test | [Test-MtAdDaclDenyAceCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-05.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-05, AD.DACL |
 

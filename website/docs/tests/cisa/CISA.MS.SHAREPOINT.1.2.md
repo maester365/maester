@@ -48,7 +48,7 @@ Rationale: Restricting OneDrive sharing reduces the risk of unauthorized data ex
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoOneDriveSharing](/docs/commands/Test-MtCisaSpoOneDriveSharing) |
+| PowerShell test | [Test-MtCisaSpoOneDriveSharing](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.1.2, MS.SHAREPOINT, MS.SHAREPOINT.1.2 |
 

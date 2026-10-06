@@ -49,7 +49,7 @@ With the policy enabled, users cannot create new Personal Access Tokens unless e
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoDisablePATCreation](/docs/commands/Test-AzdoDisablePATCreation) |
+| PowerShell test | [Test-AzdoDisablePATCreation](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1037.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops) |
 | Tags | AZDO, AZDO.1037 |

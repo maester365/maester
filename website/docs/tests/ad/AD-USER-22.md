@@ -55,7 +55,7 @@ This test counts user objects whose SID ends in `-500` or are marked as `isCriti
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserBuiltInAdminCount](/docs/commands/Test-MtAdUserBuiltInAdminCount) |
+| PowerShell test | [Test-MtAdUserBuiltInAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-22.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-22, AD.User |
 

@@ -41,7 +41,7 @@ Enable mailbox intelligence in anti-phishing policies.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA221](/docs/commands/Test-ORCA221) |
+| PowerShell test | [Test-ORCA221](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.221.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.221 |

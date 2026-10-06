@@ -64,7 +64,7 @@ This test groups all enabled computers by their parent container and calculates:
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerPerOUAverage](/docs/commands/Test-MtAdComputerPerOUAverage) |
+| PowerShell test | [Test-MtAdComputerPerOUAverage](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-08, AD.Computer |
 

@@ -60,7 +60,7 @@ This test analyzes all enabled computer accounts and counts the distinct organiz
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Computer Objects |
-| PowerShell test | [Test-MtAdComputerOUCount](/docs/commands/Test-MtAdComputerOUCount) |
+| PowerShell test | [Test-MtAdComputerOUCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-COMP-07, AD.Computer |
 

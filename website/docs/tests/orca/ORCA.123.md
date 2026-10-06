@@ -41,7 +41,7 @@ Enable Unusual Characters Safety Tips so that users can receive visible indicati
 | Severity | Info |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA123](/docs/commands/Test-ORCA123) |
+| PowerShell test | [Test-ORCA123](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.123.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.123 |

@@ -65,7 +65,7 @@ The test provides counts and percentages to understand the distribution of group
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Groups |
-| PowerShell test | [Test-MtAdGroupDomainLocalCount](/docs/commands/Test-MtAdGroupDomainLocalCount) |
+| PowerShell test | [Test-MtAdGroupDomainLocalCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GRP-08, AD.Group |
 

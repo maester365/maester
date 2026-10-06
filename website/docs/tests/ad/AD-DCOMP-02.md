@@ -79,7 +79,7 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 | Severity | Critical |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
-| PowerShell test | [Test-MtAdComputerNonDcUnconstrainedDelegationCount](/docs/commands/Test-MtAdComputerNonDcUnconstrainedDelegationCount) |
+| PowerShell test | [Test-MtAdComputerNonDcUnconstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DCOMP-02, AD.Security |
 

@@ -60,7 +60,7 @@ This test analyzes all user SPNs, identifies unknown service classes, and provid
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnUnknownDetails](/docs/commands/Test-MtAdUserSpnUnknownDetails) |
+| PowerShell test | [Test-MtAdUserSpnUnknownDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-10.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-10, AD.SPN |
 

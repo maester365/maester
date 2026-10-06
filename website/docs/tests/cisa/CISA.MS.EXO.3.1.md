@@ -61,7 +61,7 @@ We recommend doing this for **\*onmicrosoft.com** domains.
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaDkim](/docs/commands/Test-MtCisaDkim) |
+| PowerShell test | [Test-MtCisaDkim](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.3.1.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.3.1, MS.EXO, MS.EXO.3.1 |
 

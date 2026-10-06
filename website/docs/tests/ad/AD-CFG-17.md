@@ -50,7 +50,7 @@ The test enumerates trusted root CA certificates configured for AD (or in the mo
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdTrustedRootCaDetails](/docs/commands/Test-MtAdTrustedRootCaDetails) |
+| PowerShell test | [Test-MtAdTrustedRootCaDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-17.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-17, AD.Config |
 

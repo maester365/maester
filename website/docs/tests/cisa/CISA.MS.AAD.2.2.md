@@ -47,8 +47,9 @@ Follow the guide below to configure Entra ID Protection to send a regularly moni
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaNotifyHighRisk](/docs/commands/Test-MtCisaNotifyHighRisk) |
+| PowerShell test | [Test-MtCisaNotifyHighRisk](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.2.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2 |
 | Tags | CISA, CISA.MS.AAD.2.2, Entra ID P2, MS.AAD, MS.AAD.2.2 |
 
 ## Source

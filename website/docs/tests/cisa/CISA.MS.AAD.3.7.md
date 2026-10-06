@@ -54,8 +54,9 @@ Create a Conditional Access policy requiring a user's device to be either Micros
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaManagedDevice](/docs/commands/Test-MtCisaManagedDevice) |
+| PowerShell test | [Test-MtCisaManagedDevice](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.7.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.7, Entra ID P1, MS.AAD, MS.AAD.3.7 |
 
 ## Source

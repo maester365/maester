@@ -54,7 +54,7 @@ This policy is only applicable if the external sharing slider on the admin page 
 | Severity | High |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoSharingAllowedDomain](/docs/commands/Test-MtCisaSpoSharingAllowedDomain) |
+| PowerShell test | [Test-MtCisaSpoSharingAllowedDomain](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.3.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.1.3, MS.SHAREPOINT, MS.SHAREPOINT.1.3 |
 

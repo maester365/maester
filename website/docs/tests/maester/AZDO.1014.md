@@ -50,7 +50,7 @@ Users outside of your organization cannot query information regarding your proje
 | Severity | Medium |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationBadgesArePrivate](/docs/commands/Test-AzdoOrganizationBadgesArePrivate) |
+| PowerShell test | [Test-AzdoOrganizationBadgesArePrivate](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1014.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository](https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository) |
 | Tags | AZDO, AZDO.1014 |

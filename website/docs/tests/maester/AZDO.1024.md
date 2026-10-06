@@ -51,7 +51,7 @@ With this enabled, pipelines will fail if they utilize a task with a Node 6 exec
 | Severity | Medium |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsDisableNode6Task](/docs/commands/Test-AzdoOrganizationTaskRestrictionsDisableNode6Task) |
+| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsDisableNode6Task](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1024.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents](https://learn.microsoft.com/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents) |
 | Tags | AZDO, AZDO.1024 |

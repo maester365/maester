@@ -68,7 +68,7 @@ The result should return no rules.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoSetScl](/docs/commands/Test-MtExoSetScl) |
+| PowerShell test | [Test-MtExoSetScl](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.ps1) |
 | Services | ExchangeOnline |
 | Tags | Exchange, Maester, MT.1043 |
 

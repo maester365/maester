@@ -52,7 +52,7 @@ This test retrieves `$adState.DaclEntries`, searches for `CNF` within `ObjectDN`
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclConflictObjectCount](/docs/commands/Test-MtAdDaclConflictObjectCount) |
+| PowerShell test | [Test-MtAdDaclConflictObjectCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-03, AD.DACL |
 

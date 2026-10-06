@@ -54,8 +54,9 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaMailboxIntelligence](/docs/commands/Test-MtCisaMailboxIntelligence) |
+| PowerShell test | [Test-MtCisaMailboxIntelligence](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.11.3.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | CISA, CISA.MS.EXO.11.3, MS.EXO, MS.EXO.11.3 |
 
 ## Source

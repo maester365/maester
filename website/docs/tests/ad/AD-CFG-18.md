@@ -52,7 +52,7 @@ The test queries AD configuration for intermediate CA entries and returns the nu
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdIntermediateCaCount](/docs/commands/Test-MtAdIntermediateCaCount) |
+| PowerShell test | [Test-MtAdIntermediateCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-18.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-18, AD.Config |
 

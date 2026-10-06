@@ -58,7 +58,7 @@ This test counts subnets that use IPv6 address format (containing colons).
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSubnetIpv6Count](/docs/commands/Test-MtAdSubnetIpv6Count) |
+| PowerShell test | [Test-MtAdSubnetIpv6Count](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SUB-04, AD.Site |
 

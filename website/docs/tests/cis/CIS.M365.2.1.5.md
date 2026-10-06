@@ -73,8 +73,9 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E5 Level 2 |
-| PowerShell test | [Test-MtCisSafeAttachmentsAtpPolicy](/docs/commands/Test-MtCisSafeAttachmentsAtpPolicy) |
+| PowerShell test | [Test-MtCisSafeAttachmentsAtpPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.5.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.5, L2 |
 
 ## Source

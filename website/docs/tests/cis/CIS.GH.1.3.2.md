@@ -77,7 +77,7 @@ This test verifies the organization-level team creation setting. It does not rev
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubTeamCreationLimited](/docs/commands/Test-MtCisGitHubTeamCreationLimited) |
+| PowerShell test | [Test-MtCisGitHubTeamCreationLimited](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.2.ps1) |
 | Services | GitHub |
 | Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.2, GitHub, L1 |
 

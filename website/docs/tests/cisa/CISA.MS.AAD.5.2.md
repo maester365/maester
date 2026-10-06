@@ -50,7 +50,7 @@ Rationale: Limiting applications consent to only specific privileged users reduc
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaAppUserConsent](/docs/commands/Test-MtCisaAppUserConsent) |
+| PowerShell test | [Test-MtCisaAppUserConsent](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.2.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.AAD.5.2, Entra ID Free, MS.AAD, MS.AAD.5.2 |
 

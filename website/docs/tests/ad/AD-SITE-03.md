@@ -59,7 +59,7 @@ This test retrieves all sites and domain controllers, then identifies and lists 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSiteWithoutDcDetails](/docs/commands/Test-MtAdSiteWithoutDcDetails) |
+| PowerShell test | [Test-MtAdSiteWithoutDcDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SITE-03, AD.Site |
 

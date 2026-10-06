@@ -59,7 +59,7 @@ For performance reasons, the test analyzes members from the first 50 groups and 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Group Members |
-| PowerShell test | [Test-MtAdGroupMemberAccountTypeCount](/docs/commands/Test-MtAdGroupMemberAccountTypeCount) |
+| PowerShell test | [Test-MtAdGroupMemberAccountTypeCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GMC-02, AD.Group |
 

@@ -58,7 +58,7 @@ When enabled, Azure DevOps will automatically revoke any PATs detected as leaked
 | Severity | Critical |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation](/docs/commands/Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation) |
+| PowerShell test | [Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1033.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens) |
 | Tags | AZDO, AZDO.1033 |

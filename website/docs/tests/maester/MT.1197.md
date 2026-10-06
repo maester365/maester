@@ -64,7 +64,7 @@ migration.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtDynamicGroupMemberOfRule](/docs/commands/Test-MtDynamicGroupMemberOfRule) |
+| PowerShell test | [Test-MtDynamicGroupMemberOfRule](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1197.ps1) |
 | Services | Graph |
 | Tags | Entra, Maester, MT.1197 |
 

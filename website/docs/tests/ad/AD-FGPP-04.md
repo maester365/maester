@@ -71,7 +71,7 @@ This test retrieves all fine-grained password policies using `Get-ADFineGrainedP
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdFineGrainedPolicyAppliesTo](/docs/commands/Test-MtAdFineGrainedPolicyAppliesTo) |
+| PowerShell test | [Test-MtAdFineGrainedPolicyAppliesTo](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FGPP-04, AD.PasswordPolicy |
 

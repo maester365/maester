@@ -49,8 +49,9 @@ If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator 
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaWeakFactor](/docs/commands/Test-MtCisaWeakFactor) |
+| PowerShell test | [Test-MtCisaWeakFactor](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.5.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.5, Entra ID P1, MS.AAD, MS.AAD.3.5 |
 
 ## Source

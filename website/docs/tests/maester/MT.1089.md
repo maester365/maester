@@ -38,7 +38,7 @@ Investigate the related devices and the steps that need to be taken in order to 
 | Severity | Medium |
 | Suite | Maester |
 | Category | Exposure Management |
-| PowerShell test | [Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices](/docs/commands/Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices) |
+| PowerShell test | [Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1089.ps1) |
 | Services | Graph |
 | Long running | Yes |
 | Tags | Device, LongRunning, MT.1089, XSPM |

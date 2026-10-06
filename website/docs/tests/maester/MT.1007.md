@@ -34,7 +34,7 @@ See [Require MFA for all users - Microsoft Learn](https://learn.microsoft.com/en
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaMfaForAllUsers](/docs/commands/Test-MtCaMfaForAllUsers) |
+| PowerShell test | [Test-MtCaMfaForAllUsers](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1007.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1007 |

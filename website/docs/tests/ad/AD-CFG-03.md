@@ -49,7 +49,7 @@ This test inspects the SPN mapping configuration exposed by AD, extracts the con
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdSpnMappings](/docs/commands/Test-MtAdSpnMappings) |
+| PowerShell test | [Test-MtAdSpnMappings](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-03, AD.Config |
 

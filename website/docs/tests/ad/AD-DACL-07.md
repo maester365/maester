@@ -52,7 +52,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, extracts unique `Ident
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclDistinctIdentityCount](/docs/commands/Test-MtAdDaclDistinctIdentityCount) |
+| PowerShell test | [Test-MtAdDaclDistinctIdentityCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-07, AD.DACL |
 

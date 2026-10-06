@@ -51,8 +51,9 @@ Entra Private Access application segments should target specific destinations. B
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppSegmentHygiene](/docs/commands/Test-MtGsaPrivateAccessAppSegmentHygiene) |
+| PowerShell test | [Test-MtGsaPrivateAccessAppSegmentHygiene](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1193.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | Entra, Maester, MT.1193, Preview |
 

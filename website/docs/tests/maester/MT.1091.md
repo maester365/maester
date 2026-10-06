@@ -43,7 +43,7 @@ To remediate existing devices, you need to create an Intune account policy, over
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtDeviceRegistrationLocalAdminsRegisteringUser](/docs/commands/Test-MtDeviceRegistrationLocalAdminsRegisteringUser) |
+| PowerShell test | [Test-MtDeviceRegistrationLocalAdminsRegisteringUser](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1091.ps1) |
 | Services | Graph |
 | Tags | Device, Entra, Maester, MT.1091 |
 

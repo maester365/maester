@@ -41,7 +41,7 @@ Configure domain impersonation action to Quarantine.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA222](/docs/commands/Test-ORCA222) |
+| PowerShell test | [Test-ORCA222](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.222.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.222 |

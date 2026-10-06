@@ -52,8 +52,9 @@ Rationale: Provisioning users to privileged roles within a PAM system enables en
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaUnmanagedRoleAssignment](/docs/commands/Test-MtCisaUnmanagedRoleAssignment) |
+| PowerShell test | [Test-MtCisaUnmanagedRoleAssignment](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.5.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | CISA, CISA.MS.AAD.7.5, Entra ID P2, MS.AAD, MS.AAD.7.5 |
 
 ## Source

@@ -45,7 +45,7 @@ Disabled network protection allows web-based threats and malicious IP connection
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeNetworkProtection](/docs/commands/Test-MtMdeNetworkProtection) |
+| PowerShell test | [Test-MtMdeNetworkProtection](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1165.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1165 |
 

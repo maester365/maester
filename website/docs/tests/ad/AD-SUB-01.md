@@ -58,7 +58,7 @@ This test retrieves all Active Directory subnets using `Get-ADReplicationSubnet`
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Sites and Subnets |
-| PowerShell test | [Test-MtAdSubnetTotalCount](/docs/commands/Test-MtAdSubnetTotalCount) |
+| PowerShell test | [Test-MtAdSubnetTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SUB-01, AD.Site |
 

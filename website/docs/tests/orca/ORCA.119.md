@@ -41,7 +41,7 @@ Enable Similar Domains Safety Tips so that users can receive visible indication 
 | Severity | Info |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA119](/docs/commands/Test-ORCA119) |
+| PowerShell test | [Test-ORCA119](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.119.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.119 |

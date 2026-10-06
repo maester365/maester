@@ -52,7 +52,7 @@ This test retrieves `$adState.DaclEntries`, extracts the `ObjectDN` value from e
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclDistinctObjectCount](/docs/commands/Test-MtAdDaclDistinctObjectCount) |
+| PowerShell test | [Test-MtAdDaclDistinctObjectCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-01.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-01, AD.DACL |
 

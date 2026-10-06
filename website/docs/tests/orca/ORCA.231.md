@@ -41,7 +41,7 @@ Check your anti-spam policies for duplicate rules. Some policies and settings ma
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA231](/docs/commands/Test-ORCA231) |
+| PowerShell test | [Test-ORCA231](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.231.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.231 |
 

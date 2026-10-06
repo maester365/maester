@@ -41,7 +41,7 @@ Learn more: [Control how agents are shared](https://learn.microsoft.com/microsof
 | Severity | High |
 | Suite | Maester |
 | Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentBroadSharing](/docs/commands/Test-MtAIAgentBroadSharing) |
+| PowerShell test | [Test-MtAIAgentBroadSharing](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1113.ps1) |
 | Services | Graph |
 | Tags | AIAgent, CopilotStudio, Maester, MT.1113 |
 

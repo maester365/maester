@@ -49,7 +49,7 @@ Certificate templates define which certificate types can be issued and under wha
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Configuration |
-| PowerShell test | [Test-MtAdCertificateTemplatesCount](/docs/commands/Test-MtAdCertificateTemplatesCount) |
+| PowerShell test | [Test-MtAdCertificateTemplatesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-13.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-CFG-13, AD.Config |
 

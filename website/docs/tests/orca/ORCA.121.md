@@ -41,7 +41,7 @@ Change filter policy action to support Zero Hour Auto Purge.
 | Severity | Low |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA121](/docs/commands/Test-ORCA121) |
+| PowerShell test | [Test-ORCA121](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.121.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.121 |
 

@@ -72,7 +72,7 @@ will be blocked for users who are not on the allowlist.
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoRestrictFullScopePersonalAccessToken](/docs/commands/Test-AzdoRestrictFullScopePersonalAccessToken) |
+| PowerShell test | [Test-AzdoRestrictFullScopePersonalAccessToken](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1036.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy) |
 | Tags | AZDO, AZDO.1036 |

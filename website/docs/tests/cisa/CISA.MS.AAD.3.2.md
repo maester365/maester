@@ -49,8 +49,9 @@ If phishing-resistant MFA has not been enforced for all users yet, create a Cond
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaMfa](/docs/commands/Test-MtCisaMfa) |
+| PowerShell test | [Test-MtCisaMfa](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.2.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.2, Entra ID P1, MS.AAD, MS.AAD.3.2 |
 
 ## Source

@@ -42,7 +42,7 @@ Enable anti-spoofing protection in Anti-phishing policy.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA180](/docs/commands/Test-ORCA180) |
+| PowerShell test | [Test-ORCA180](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.180.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.180 |

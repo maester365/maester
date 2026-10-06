@@ -55,7 +55,7 @@ If SPF is configured, you will see a response resembling `v=spf1 include:spf.pro
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaSpfDirective](/docs/commands/Test-MtCisaSpfDirective) |
+| PowerShell test | [Test-MtCisaSpfDirective](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.2.ps1) |
 | Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.2.2, MS.EXO, MS.EXO.2.2 |
 

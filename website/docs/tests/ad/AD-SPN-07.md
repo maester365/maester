@@ -59,7 +59,7 @@ This test retrieves all user objects with SPNs, extracts the service class from 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnServiceClassCount](/docs/commands/Test-MtAdUserSpnServiceClassCount) |
+| PowerShell test | [Test-MtAdUserSpnServiceClassCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-07, AD.SPN |
 

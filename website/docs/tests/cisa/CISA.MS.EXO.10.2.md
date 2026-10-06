@@ -55,7 +55,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaMalwareAction](/docs/commands/Test-MtCisaMalwareAction) |
+| PowerShell test | [Test-MtCisaMalwareAction](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.10.2.ps1) |
 | Services | Graph |
 | Tags | CISA, CISA.MS.EXO.10.2, MS.EXO, MS.EXO.10.2 |
 

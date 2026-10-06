@@ -88,7 +88,7 @@ Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerInbound $false
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisCommunicateInitiateExternalTeamsUsers](/docs/commands/Test-MtCisCommunicateInitiateExternalTeamsUsers) |
+| PowerShell test | [Test-MtCisCommunicateInitiateExternalTeamsUsers](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.2.3.ps1) |
 | Services | Teams |
 | Tags | CIS, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.2.3 |
 

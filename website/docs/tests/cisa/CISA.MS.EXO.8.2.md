@@ -76,8 +76,9 @@ Rationale: Users may inadvertently share sensitive information with others who s
 | Severity | Medium |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaDlpPii](/docs/commands/Test-MtCisaDlpPii) |
+| PowerShell test | [Test-MtCisaDlpPii](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.2.ps1) |
 | Services | ExchangeOnline, Graph |
+| Compatible licenses | EXCHANGE_DLP |
 | Tags | CISA, CISA.MS.EXO.8.2, MS.EXO, MS.EXO.8.2 |
 
 ## Source

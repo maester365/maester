@@ -41,7 +41,7 @@ Enable Similar Users Safety Tips so that users can receive visible indication on
 | Severity | Info |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA224](/docs/commands/Test-ORCA224) |
+| PowerShell test | [Test-ORCA224](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.224.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.224 |

@@ -54,7 +54,7 @@ This test counts NS records that represent delegations (where the record name is
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DNS Infrastructure |
-| PowerShell test | [Test-MtAdDnsZoneDelegationCount](/docs/commands/Test-MtAdDnsZoneDelegationCount) |
+| PowerShell test | [Test-MtAdDnsZoneDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DNS-08, AD.DNS |
 

@@ -67,7 +67,7 @@ The test passes if **at least one LAPS policy** meets **all** of the criteria ab
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtIntuneLAPSConfiguration](/docs/commands/Test-MtIntuneLAPSConfiguration) |
+| PowerShell test | [Test-MtIntuneLAPSConfiguration](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1177.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1177 |

@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Active Directory |
 | Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoDefaultPasswordFoundCount](/docs/commands/Test-MtAdGpoDefaultPasswordFoundCount) |
+| PowerShell test | [Test-MtAdGpoDefaultPasswordFoundCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-19.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GPOREP-19, AD.GPOState |
 

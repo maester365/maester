@@ -47,7 +47,7 @@ Enable the policy to restrict the job authorization scope.
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline](/docs/commands/Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline) |
+| PowerShell test | [Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1016.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope](https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope) |
 | Tags | AZDO, AZDO.1016 |

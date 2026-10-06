@@ -54,7 +54,7 @@ This test reads `$adState.DaclEntries`, filters for `InheritedObjectType` GUIDs 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - DACL |
-| PowerShell test | [Test-MtAdDaclInheritedObjectTypeCount](/docs/commands/Test-MtAdDaclInheritedObjectTypeCount) |
+| PowerShell test | [Test-MtAdDaclInheritedObjectTypeCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-17.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DACL-17, AD.DACL |
 

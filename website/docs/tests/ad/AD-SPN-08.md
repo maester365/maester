@@ -59,7 +59,7 @@ This test analyzes all user SPNs, groups them by service class, and provides a c
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnServiceClassUsage](/docs/commands/Test-MtAdUserSpnServiceClassUsage) |
+| PowerShell test | [Test-MtAdUserSpnServiceClassUsage](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-08.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-08, AD.SPN |
 

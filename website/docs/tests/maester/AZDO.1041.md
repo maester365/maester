@@ -62,7 +62,7 @@ This test only applies to organizations that use the separate GitHub Secret Prot
 | Severity | High |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationSecretProtectionPushProtection](/docs/commands/Test-AzdoOrganizationSecretProtectionPushProtection) |
+| PowerShell test | [Test-AzdoOrganizationSecretProtectionPushProtection](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1041.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-secret-scanning](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-secret-scanning) |
 | Tags | AZDO, AZDO.1041 |

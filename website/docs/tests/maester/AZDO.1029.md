@@ -47,7 +47,7 @@ Rationale: The storage limit should not be reached; hitting it blocks artifact p
 | Severity | Medium |
 | Suite | Maester |
 | Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationStorageUsage](/docs/commands/Test-AzdoOrganizationStorageUsage) |
+| PowerShell test | [Test-AzdoOrganizationStorageUsage](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1029.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops](https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops) |
 | Tags | AZDO, AZDO.1029 |

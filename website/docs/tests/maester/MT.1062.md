@@ -61,7 +61,7 @@ The result should be `True`.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoRejectDirectSend](/docs/commands/Test-MtExoRejectDirectSend) |
+| PowerShell test | [Test-MtExoRejectDirectSend](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1062.ps1) |
 | Services | ExchangeOnline |
 | Tags | Exchange, Maester, MT.1062 |
 

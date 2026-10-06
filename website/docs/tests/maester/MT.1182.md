@@ -56,7 +56,7 @@ If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtDomainsDmarcRecordMaturity](/docs/commands/Test-MtDomainsDmarcRecordMaturity) |
+| PowerShell test | [Test-MtDomainsDmarcRecordMaturity](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1182.ps1) |
 | Services | Graph |
 | Tags | Entra, Maester, MT.1182 |
 

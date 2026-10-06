@@ -65,7 +65,7 @@ This test identifies domain administrator accounts (using the well-known RID 500
 | Severity | Critical |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnDomainAdminCount](/docs/commands/Test-MtAdUserSpnDomainAdminCount) |
+| PowerShell test | [Test-MtAdUserSpnDomainAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-12.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-12, AD.SPN |
 

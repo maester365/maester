@@ -75,7 +75,7 @@ Set-HostedConnectionFilterPolicy -Identity Default -IPAllowList @{}
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisHostedConnectionFilterPolicy](/docs/commands/Test-MtCisHostedConnectionFilterPolicy) |
+| PowerShell test | [Test-MtCisHostedConnectionFilterPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.12.ps1) |
 | Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.12, L1 |
 

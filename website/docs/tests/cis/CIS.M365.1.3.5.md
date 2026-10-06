@@ -74,7 +74,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisFormsPhishingProtectionEnabled](/docs/commands/Test-MtCisFormsPhishingProtectionEnabled) |
+| PowerShell test | [Test-MtCisFormsPhishingProtectionEnabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.5.ps1) |
 | Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.5, L1, Security |
 

@@ -49,7 +49,7 @@ Rationale: Requiring periodic reauthentication via verification codes ensures th
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoVerificationCodeReauth](/docs/commands/Test-MtCisaSpoVerificationCodeReauth) |
+| PowerShell test | [Test-MtCisaSpoVerificationCodeReauth](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.3.3, MS.SHAREPOINT, MS.SHAREPOINT.3.3 |
 

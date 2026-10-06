@@ -41,7 +41,7 @@ Set up DKIM signing to sign your emails.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA108](/docs/commands/Test-ORCA108) |
+| PowerShell test | [Test-ORCA108](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.108.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.108 |
 

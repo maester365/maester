@@ -42,7 +42,7 @@ Change Mailbox intelligence based impersonation protection action to move messag
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA116](/docs/commands/Test-ORCA116) |
+| PowerShell test | [Test-ORCA116](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.116.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.116 |

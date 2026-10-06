@@ -56,7 +56,7 @@ This test retrieves all domains from the Active Directory forest and counts them
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Forest |
-| PowerShell test | [Test-MtAdForestDomainCount](/docs/commands/Test-MtAdForestDomainCount) |
+| PowerShell test | [Test-MtAdForestDomainCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FOR-02, AD.Forest |
 

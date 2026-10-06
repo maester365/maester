@@ -39,7 +39,7 @@ Review the configuration described above.
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtCaBlockUnknownOrUnsupportedDevicePlatform](/docs/commands/Test-MtCaBlockUnknownOrUnsupportedDevicePlatform) |
+| PowerShell test | [Test-MtCaBlockUnknownOrUnsupportedDevicePlatform](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1015.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1015 |

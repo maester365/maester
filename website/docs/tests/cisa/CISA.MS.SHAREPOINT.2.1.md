@@ -48,7 +48,7 @@ Rationale: Overly permissive default sharing settings increase the risk of unint
 | Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoDefaultSharingScope](/docs/commands/Test-MtCisaSpoDefaultSharingScope) |
+| PowerShell test | [Test-MtCisaSpoDefaultSharingScope](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.1.ps1) |
 | Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.2.1, MS.SHAREPOINT, MS.SHAREPOINT.2.1 |
 

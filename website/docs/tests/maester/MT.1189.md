@@ -44,8 +44,9 @@ Global Secure Access traffic forwarding profiles (Microsoft 365, Internet, and P
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaForwardingProfileAssignmentNotNested](/docs/commands/Test-MtGsaForwardingProfileAssignmentNotNested) |
+| PowerShell test | [Test-MtGsaForwardingProfileAssignmentNotNested](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1189.ps1) |
 | Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Preview | Yes |
 | Tags | Entra, Maester, MT.1189, Preview |
 

@@ -60,7 +60,7 @@ This test retrieves all user objects from Active Directory, extracts their SPNs,
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnTotalCount](/docs/commands/Test-MtAdUserSpnTotalCount) |
+| PowerShell test | [Test-MtAdUserSpnTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-06.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-06, AD.SPN |
 

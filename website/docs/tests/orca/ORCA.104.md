@@ -41,7 +41,7 @@ Change High Confidence Phish action to Quarantine message.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA104](/docs/commands/Test-ORCA104) |
+| PowerShell test | [Test-ORCA104](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.104.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.104 |
 

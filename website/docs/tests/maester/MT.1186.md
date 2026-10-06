@@ -69,7 +69,7 @@ A first-party application can still be used even when its service principal is n
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Entra |
-| PowerShell test | [Test-MtHighPrivilegeServicePrincipalsForAllUsers](/docs/commands/Test-MtHighPrivilegeServicePrincipalsForAllUsers) |
+| PowerShell test | [Test-MtHighPrivilegeServicePrincipalsForAllUsers](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1186.ps1) |
 | Services | Graph |
 | Tags | App, Entra, Graph, Maester, MT.1186 |
 

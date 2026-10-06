@@ -63,7 +63,7 @@ This test retrieves the RID available pool from Active Directory and calculates 
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Domain |
-| PowerShell test | [Test-MtAdRidsRemaining](/docs/commands/Test-MtAdRidsRemaining) |
+| PowerShell test | [Test-MtAdRidsRemaining](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-04.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-DOM-04, AD.Domain |
 

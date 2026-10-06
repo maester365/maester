@@ -45,7 +45,7 @@ Full scan on mapped drives can cause significant performance issues.
 | Severity | High |
 | Suite | Maester |
 | Category | Maester/Defender |
-| PowerShell test | [Test-MtMdeMappedDriveScanning](/docs/commands/Test-MtMdeMappedDriveScanning) |
+| PowerShell test | [Test-MtMdeMappedDriveScanning](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1155.ps1) |
 | Services | Graph |
 | Tags | Defender, Maester, MT.1155 |
 

@@ -65,7 +65,7 @@ The test provides counts and percentages to understand the proportion of securit
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Groups |
-| PowerShell test | [Test-MtAdGroupSecurityCount](/docs/commands/Test-MtAdGroupSecurityCount) |
+| PowerShell test | [Test-MtAdGroupSecurityCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-07.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-GRP-07, AD.Group |
 

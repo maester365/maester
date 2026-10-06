@@ -68,7 +68,7 @@ This test checks the `Quarantined` property of each trust object. When `Quaranti
 | Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Trusts |
-| PowerShell test | [Test-MtAdTrustQuarantinedCount](/docs/commands/Test-MtAdTrustQuarantinedCount) |
+| PowerShell test | [Test-MtAdTrustQuarantinedCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-03.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-TRUST-03, AD.Trust |
 

@@ -58,7 +58,7 @@ This test parses all user SPNs and checks if the host portion contains a dot (in
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - SPN Analysis |
-| PowerShell test | [Test-MtAdUserSpnNonFqdnHosts](/docs/commands/Test-MtAdUserSpnNonFqdnHosts) |
+| PowerShell test | [Test-MtAdUserSpnNonFqdnHosts](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-11.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-SPN-11, AD.SPN |
 

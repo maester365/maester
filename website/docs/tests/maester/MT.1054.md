@@ -50,7 +50,7 @@ To change the built-in device compliance policy:
 | Severity | Medium |
 | Suite | Maester |
 | Category | Maester/Intune |
-| PowerShell test | [Test-MtDeviceComplianceSettings](/docs/commands/Test-MtDeviceComplianceSettings) |
+| PowerShell test | [Test-MtDeviceComplianceSettings](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1054.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1054 |

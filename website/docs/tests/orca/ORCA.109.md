@@ -42,7 +42,7 @@ Remove allow listing on senders.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA109](/docs/commands/Test-ORCA109) |
+| PowerShell test | [Test-ORCA109](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.109.ps1) |
 | Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.109 |
 

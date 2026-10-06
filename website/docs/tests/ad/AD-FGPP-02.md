@@ -71,7 +71,7 @@ The test reports the variety of settings across all policies.
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdFineGrainedPolicyValueCount](/docs/commands/Test-MtAdFineGrainedPolicyValueCount) |
+| PowerShell test | [Test-MtAdFineGrainedPolicyValueCount](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-02.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-FGPP-02, AD.PasswordPolicy |
 

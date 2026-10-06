@@ -53,7 +53,7 @@ This test counts non-system user accounts whose names match attractive terms suc
 | Severity | Info |
 | Suite | Active Directory |
 | Category | Active Directory - Users |
-| PowerShell test | [Test-MtAdUserHoneyPotCount](/docs/commands/Test-MtAdUserHoneyPotCount) |
+| PowerShell test | [Test-MtAdUserHoneyPotCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-26.ps1) |
 | Services | ActiveDirectory |
 | Tags | AD, AD-USER-26, AD.User |
 
