@@ -285,7 +285,6 @@ export function Sidebar() {
           label="View"
           isActive={isViewActive}
           isCollapsed={isCollapsed}
-          defaultOpen={true}
         >
           <SubNavItem
             href="/view/markdown"
