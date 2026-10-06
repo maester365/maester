@@ -176,7 +176,7 @@ function Get-MtPesterSelectionPlan {
                     continue
                 }
                 if ($r.Tags -contains 'LongRunning' -and -not $Selection.IncludeLongRunning -and
-                    -not (@($Selection.Tag) | Where-Object { $_ -in 'LongRunning', 'CAWhatIf', 'Full' })) {
+                    -not (@($Selection.Tag) | Where-Object { $_ -in 'LongRunning', 'CAWhatIf' })) {
                     $reasons[$r.Key] = New-MtSelectionReason -ReasonCode 'LongRunning' -Detail 'Long-running test. Use -IncludeLongRunning or name its ID to run it.'
                     continue
                 }

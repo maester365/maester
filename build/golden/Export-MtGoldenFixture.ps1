@@ -491,8 +491,6 @@ $selectionCases = @(
     [ordered]@{ Name = 'IncludeLongRunning'; Parameters = [ordered]@{ IncludeLongRunning = $true } }
     [ordered]@{ Name = 'IncludePreview'; Parameters = [ordered]@{ IncludePreview = $true } }
     [ordered]@{ Name = 'IncludeLongRunning IncludePreview'; Parameters = [ordered]@{ IncludeLongRunning = $true; IncludePreview = $true } }
-    [ordered]@{ Name = 'Tag All'; Parameters = [ordered]@{ Tag = @('All') } }
-    [ordered]@{ Name = 'Tag Full'; Parameters = [ordered]@{ Tag = @('Full') } }
     [ordered]@{ Name = 'Tag CIS E3 Level 1'; Parameters = [ordered]@{ Tag = @('CIS E3 Level 1') } }
     [ordered]@{ Name = 'Tag MT.1068'; Parameters = [ordered]@{ Tag = @('MT.1068') } }
     [ordered]@{ Name = 'Tag CA IncludeLongRunning (help example)'; Parameters = [ordered]@{ Tag = @('CA'); IncludeLongRunning = $true } }

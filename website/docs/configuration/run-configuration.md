@@ -159,8 +159,8 @@ Rules:
 - Every test's ID is also one of its tags, so `-Tag MT.1068` keeps working.
 - Preview tests are left out unless `IncludePreview` is set or any `Tag` is given. Long-running tests are left out
   unless `IncludeLongRunning` is set or `Tag` contains `LongRunning` or `CAWhatIf`.
-- The tags `All` and `Full` are deprecated aliases of `IncludePreview` and `IncludeLongRunning` (in 2.x they
-  selected nothing). Maester warns when you use them.
+- The tags `All` and `Full` were removed in 3.0 (in 2.x they were deprecated and selected nothing). Using
+  them stops the run; use `IncludePreview` and `IncludeLongRunning` instead.
 - Active Directory tests run only after `Connect-Maester -Service ActiveDirectory`, whatever the selection says.
 - In `DefaultAction: Skip` mode, a row with only `Severity` or `Parameters` does not admit a test, and admission
   is only the first gate: tag, preview and long-running rules still apply. A row on a family's parent ID or on

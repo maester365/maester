@@ -433,17 +433,12 @@
     $IncludeLongRunning = [switch]$selection.IncludeLongRunning
     $autoExcludedTag = [System.Collections.Generic.List[string]]::new()
 
-    # The deprecated 'All' and 'Full' tags are aliases of -IncludePreview and -IncludeLongRunning.
-    # No test carries them, so in 2.x they selected nothing.
-    $DeprecatedTags = @('All', 'Full')
-    $UsedDeprecatedTags = $DeprecatedTags | Where-Object { $Tag -contains $_ -or $ExcludeTag -contains $_ }
-    if ($UsedDeprecatedTags) {
-        Write-Warning "The 'All' and 'Full' tags are deprecated and will be removed in a future release. Use -IncludePreview instead of 'All' and -IncludeLongRunning instead of 'Full'."
+    # 'All' and 'Full' were deprecated in 2.x (where they selected nothing, because no test carries them)
+    # and are removed in 3.0. Stop with the replacement instead of running an empty or unexpected selection.
+    $removedTags = @(@($Tag) + @($ExcludeTag) | Where-Object { $_ -in 'All', 'Full' } | Select-Object -Unique)
+    if ($removedTags.Count -gt 0) {
+        throw "The '$($removedTags -join "' and '")' tag$(if ($removedTags.Count -gt 1) { 's were' } else { ' was' }) removed in Maester 3.0. Use -IncludePreview instead of 'All' and -IncludeLongRunning instead of 'Full' (or Selection.IncludePreview / Selection.IncludeLongRunning in maester-config.json)."
     }
-    if ('All' -in $Tag) { $IncludePreview = [switch]$true; $selection.IncludePreview = $true }
-    if ('Full' -in $Tag) { $IncludeLongRunning = [switch]$true; $selection.IncludeLongRunning = $true }
-    $Tag = @($Tag | Where-Object { $_ -notin $DeprecatedTags })
-    $selection.Tag = $Tag
 
     $isMail = $null -ne $MailRecipient
 
@@ -500,7 +495,7 @@
     }
 
     # Exclude LongRunning tests unless: $IncludeLongRunning is present, or LongRunning is in $Tag, or CAWhatIf is in $Tag.
-    if ( (-not $IncludeLongRunning.IsPresent) -and 'LongRunning' -notin $Tag -and 'Full' -notin $Tag -and 'CAWhatIf' -notin $Tag ) {
+    if ( (-not $IncludeLongRunning.IsPresent) -and 'LongRunning' -notin $Tag -and 'CAWhatIf' -notin $Tag ) {
         $ExcludeTag += 'LongRunning'
         $autoExcludedTag.Add('LongRunning')
         Write-Verbose 'Excluding LongRunning tests. Use -IncludeLongRunning to include them.'

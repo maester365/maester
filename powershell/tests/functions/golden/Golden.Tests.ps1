@@ -116,12 +116,11 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         $entry.ResultTags | Should -Not -Contain 'CA'
     }
 
-    It 'records the 3.0 selection fixes: -Tag All and -Tag Full are the include switches, PesterConfiguration ExcludeTag is honoured' {
-        # 2.x selected nothing for 'All' and 'Full' and discarded a caller's Filter.ExcludeTag (design section 7.1).
+    It 'records the 3.0 selection fix: a PesterConfiguration ExcludeTag is honoured' {
+        # 2.x discarded a caller's Filter.ExcludeTag (design section 7.1). The 'All' and 'Full' tags, which
+        # selected nothing in 2.x, were removed in 3.0 and stop the run (see Invoke-Maester.Tests.ps1).
         $cases = @{}
         foreach ($c in $script:selection.Cases) { $cases[$c.Name] = $c }
-        $cases['Tag All'].SelectedCount | Should -Be $cases['IncludePreview'].SelectedCount
-        $cases['Tag Full'].SelectedCount | Should -Be $cases['IncludeLongRunning'].SelectedCount
         $cases['PesterConfiguration Filter.ExcludeTag EIDSCA'].Filter.ExcludeTag | Should -Contain 'EIDSCA'
         $cases['PesterConfiguration Filter.ExcludeTag EIDSCA'].SelectedCount | Should -Be $cases['ExcludeTag EIDSCA'].SelectedCount
     }

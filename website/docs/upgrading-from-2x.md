@@ -118,8 +118,9 @@ New `Invoke-Maester` parameters:
 
 Every existing parameter stays. Changed behaviour:
 
-- **`-Tag All` and `-Tag Full`** selected nothing in 2.x, because no test carries those tags. They are now
-  deprecated aliases for `-IncludePreview` and `-IncludeLongRunning`, with a warning.
+- **`-Tag All` and `-Tag Full` are removed.** They were deprecated in 2.x and selected nothing, because no
+  test carries those tags. Using them now stops the run with an error: use `-IncludePreview` instead of
+  `All` and `-IncludeLongRunning` instead of `Full`.
 - **`-PesterConfiguration`** accepts a `[PesterConfiguration]` object or a hashtable, and its `Run.Path`,
   `Filter.Tag`, `Filter.ExcludeTag` and `TestResult` options apply to native tests too. Its `Filter.ExcludeTag`
   is now added to the default exclusions; 2.x discarded it whenever Preview or long-running tests were excluded
