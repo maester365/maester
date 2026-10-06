@@ -70,7 +70,8 @@ Describe 'Invoke-Maester selection (Pester provider)' {
 
         It 'Writes result schema 2.1 with the additive fields' {
             $r.SchemaVersion | Should -Be '2.1'
-            $r.CatalogVersion | Should -Not -BeNullOrEmpty
+            $r.CatalogVersion | Should -BeOfType [string]
+            $r.CatalogVersion | Should -Match '^\d+\.\d+'
             $r.Selection.BuiltIn | Should -Be 'None'
             @($r.Selection.UnknownIds).Count | Should -Be 0
             (Get-Row $r 'S.1001').Format | Should -Be 'Pester'

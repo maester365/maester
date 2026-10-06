@@ -2,6 +2,8 @@ import { useTenant } from "@/context/TenantContext"
 import { Divider } from "@/components/Divider"
 import { useState } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
+import RunConfiguration from "@/components/RunConfiguration"
+import { hasRunConfiguration } from "@/lib/resultSchema"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ConfigSection({ title, config }: { title: string; config: any }) {
@@ -80,6 +82,14 @@ export default function SystemPage() {
       </h1>
 
       <div className="space-y-8">
+        {/* Run configuration (result schema 2.1 and later) */}
+        {hasRunConfiguration(testResults) && (
+          <>
+            <RunConfiguration results={testResults} />
+            <Divider />
+          </>
+        )}
+
         {/* Invoke Command */}
         <section>
           <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">

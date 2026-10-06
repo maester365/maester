@@ -30,6 +30,11 @@ export default function HomePage() {
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           {tenantName} • {testDateLocal}
         </p>
+        {testResults.Selection?.DryRun && (
+          <p className="mt-3 inline-block rounded-md bg-amber-500/10 px-3 py-1.5 text-sm text-amber-700 ring-1 ring-inset ring-amber-500/20 dark:text-amber-400">
+            Dry run: no tests were executed. The results list the tests this run would have included.
+          </p>
+        )}
       </div>
 
       {/* Test Summary */}

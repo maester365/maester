@@ -575,7 +575,8 @@
         MaesterConfig     = New-MtResultConfig -RunConfig $__MtSession.MaesterConfig -Rows $mtTests -NativeRows $NativeRows
         # Additive in result schema 2.1.
         SchemaVersion     = '2.1'
-        CatalogVersion    = $currentVersion
+        # A string: CurrentVersion keeps its 2.x shape ([version] serialised as an object).
+        CatalogVersion    = [string]$currentVersion
         TenantContext     = if ($RunContext -and $RunContext.TenantContext) { $RunContext.TenantContext } else { $null }
         RunMetadata       = if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Metadata']) { $__MtSession.MaesterConfig.Metadata } else { $null }
         Selection         = [PSCustomObject]@{

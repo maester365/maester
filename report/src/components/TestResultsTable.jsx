@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from "@/lib/router";
 import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
 import { compareDefaultTestResults } from "@/lib/testSort";
 import { allSelectableStatus, defaultSelectedStatus } from "@/lib/testStatus";
+import { getParentId, getReasonInfo } from "@/lib/resultSchema";
+import { FormatBadge, ReasonBadge } from "./ResultBadges";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
@@ -16,7 +18,8 @@ function testMatchesSearch(item, searchQuery) {
 
   const normalizedSearchQuery = searchQuery.toLowerCase();
   return (item.Id && item.Id.toLowerCase().includes(normalizedSearchQuery)) ||
-    (item.Title && item.Title.toLowerCase().includes(normalizedSearchQuery));
+    (item.Title && item.Title.toLowerCase().includes(normalizedSearchQuery)) ||
+    (item.ParentId && String(item.ParentId).toLowerCase().includes(normalizedSearchQuery));
 }
 
 export default function TestResultsTable(props) {
@@ -30,6 +33,7 @@ export default function TestResultsTable(props) {
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
+  const [selectedReason, setSelectedReason] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
@@ -79,9 +83,10 @@ export default function TestResultsTable(props) {
     return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) &&
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
       (selectedTag.length === 0 || (item.Tag || []).some(tag => selectedTag.includes(tag))) &&
+      (selectedReason.length === 0 || selectedReason.includes(item.ReasonCode)) &&
       matchesSeverity &&
       matchesSearch;
-  }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedSeverity]);
+  }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedSeverity, selectedReason]);
 
   useEffect(() => {
     if (!linkedTestResult || props.isPrintView) return;
@@ -119,6 +124,10 @@ export default function TestResultsTable(props) {
       setSelectedSeverity([]);
     }
 
+    if (selectedReason.length > 0 && !selectedReason.includes(linkedTestResult.ReasonCode)) {
+      setSelectedReason([]);
+    }
+
     if (searchQuery && !testMatchesSearch(linkedTestResult, searchQuery)) {
       setSearchQuery("");
     }
@@ -129,6 +138,7 @@ export default function TestResultsTable(props) {
     props.isPrintView,
     searchQuery,
     selectedBlock,
+    selectedReason,
     selectedSeverity,
     selectedStatus,
     selectedTag,
@@ -248,6 +258,11 @@ export default function TestResultsTable(props) {
   const status = allSelectableStatus;
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
   const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
+  // Reason codes come with result schema 2.1; 2.x results have none, so the filter and column stay hidden.
+  const uniqueReasons = [...new Set(testResults.Tests.map((t) => t.ReasonCode).filter(Boolean))]
+    .sort((a, b) => getReasonInfo(a).label.localeCompare(getReasonInfo(b).label));
+  const hasReasons = uniqueReasons.length > 0;
+  const filterWidth = hasReasons ? "w-1/3" : "w-1/2";
 
   // Create a sortable header cell
   const SortableHeader = ({ column, label, className }) => {
@@ -307,7 +322,7 @@ export default function TestResultsTable(props) {
               value={selectedBlock}
               onValueChange={setSelectedBlock}
               placeholder="Category"
-              className="w-1/2"
+              className={filterWidth}
             >
               {testResults.Blocks
                 .sort((a, b) => a.Name > b.Name ? 1 : -1)
@@ -322,7 +337,7 @@ export default function TestResultsTable(props) {
               value={selectedTag}
               onValueChange={setSelectedTag}
               placeholder="Tag"
-              className="w-1/2"
+              className={filterWidth}
             >
               {uniqueTags
                 .sort((a, b) => a > b ? 1 : -1)
@@ -332,6 +347,21 @@ export default function TestResultsTable(props) {
                   </MultiSelectItem>
                 ))}
             </MultiSelect>
+
+            {hasReasons && (
+              <MultiSelect
+                value={selectedReason}
+                onValueChange={setSelectedReason}
+                placeholder="Reason"
+                className={filterWidth}
+              >
+                {uniqueReasons.map((code) => (
+                  <MultiSelectItem key={code} value={code}>
+                    {getReasonInfo(code).label}
+                  </MultiSelectItem>
+                ))}
+              </MultiSelect>
+            )}
           </Flex>
         </>
       )}
@@ -343,6 +373,7 @@ export default function TestResultsTable(props) {
             <SortableHeader column="Title" label="Title" className="text-left w-full" />
             <SortableHeader column="Severity" label="Severity" className="text-center whitespace-nowrap" />
             <SortableHeader column="Status" label="Status" className="text-center whitespace-nowrap" />
+            {hasReasons && <TableHeaderCell className="text-left whitespace-nowrap">Reason</TableHeaderCell>}
           </TableRow>
         </TableHead>
 
@@ -351,6 +382,13 @@ export default function TestResultsTable(props) {
             // These are used for the single dialog navigation logic
             const hasPrevious = index > 0;
             const hasNext = index < filteredSortedData.length - 1;
+            const parentId = getParentId(item);
+            const rowMeta = (item.Format || parentId) && (
+              <span className="mt-1 flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                <FormatBadge format={item.Format} />
+                {parentId && <span title="This row is an instance of a test family">Instance of {parentId}</span>}
+              </span>
+            );
 
             return (<TableRow
               key={`${item.Index}-${item.Id || index}`}
@@ -369,11 +407,17 @@ export default function TestResultsTable(props) {
               </TableCell>
               <TableCell className="whitespace-normal">
                 {props.isPrintView ? (
+                  <>
                   <a href={`#${item.Id}`} className="text-left font-medium outline-hidden text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors block">
                     <span className="whitespace-normal text-sm">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
                   </a>
+                  {rowMeta}
+                </>
                 ) : (
-                  <span className="whitespace-normal text-sm text-zinc-700 dark:text-zinc-200">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                  <>
+                    <span className="whitespace-normal text-sm text-zinc-700 dark:text-zinc-200">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                    {rowMeta}
+                  </>
                 )}
               </TableCell>
               <TableCell className="text-center">
@@ -382,6 +426,11 @@ export default function TestResultsTable(props) {
               <TableCell className="text-center">
                 <StatusLabel Result={item.Result} />
               </TableCell>
+              {hasReasons && (
+                <TableCell className="text-left">
+                  <ReasonBadge code={item.ReasonCode} detail={item.ReasonDetail} />
+                </TableCell>
+              )}
             </TableRow>
             );
           })}
