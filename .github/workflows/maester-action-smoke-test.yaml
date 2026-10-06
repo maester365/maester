@@ -354,10 +354,10 @@ jobs:
           $tests = @($results.Tests)
           $executedTests = @($tests | Where-Object Result -ne 'NotRun')
           $completedTests = @(
-              $tests | Where-Object Result -In @('Passed', 'Failed')
+              $tests | Where-Object Result -In @('Passed', 'Failed', 'Investigate')
           )
           $unexpectedResults = @(
-              $tests | Where-Object Result -NotIn @('Passed', 'Failed', 'Skipped', 'NotRun')
+              $tests | Where-Object Result -NotIn @('Passed', 'Failed', 'Investigate', 'Skipped', 'NotRun')
           )
 
           if ([int]$env:TESTS_TOTAL -le 0 -or
@@ -366,7 +366,13 @@ jobs:
               throw "Maester result counts are inconsistent (action=$($env:TESTS_TOTAL), JSON=$($results.TotalCount), tests=$($tests.Count))."
           }
           if ($unexpectedResults.Count -gt 0 -or [int]$results.ErrorCount -ne 0) {
-              throw "Maester did not complete normally (unexpected results=$($unexpectedResults.Count), errors=$($results.ErrorCount)). Check OIDC trust and Graph application permissions."
+              $unexpectedSummary = ($unexpectedResults |
+                  Select-Object -First 10 |
+                  ForEach-Object { "$($_.Id)=$($_.Result)" }) -join ', '
+              if ($unexpectedResults.Count -gt 10) {
+                  $unexpectedSummary += ", ... ($($unexpectedResults.Count - 10) more)"
+              }
+              throw "Maester did not complete normally (unexpected results=$($unexpectedResults.Count), errors=$($results.ErrorCount)). Unexpected: [$unexpectedSummary]. If many tests errored, check OIDC trust and Graph application permissions."
           }
 
           if ($env:RUN_TYPE -eq 'quick') {
