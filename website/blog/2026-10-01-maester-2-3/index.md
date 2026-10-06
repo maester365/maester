@@ -16,13 +16,13 @@ Maester 2.3 is here.
 
 ## Highlights
 
-- **A new Affected objects report** that shows every policy, user, app, and group behind your failed checks, plus optional user identity redaction
 - **14 Microsoft Entra Agent ID checks** for orphaned, over-privileged, and unowned AI agent identities
 - **CIS Microsoft 365 Foundations Benchmark v7.0.0**, with updated logic and guidance across the CIS checks
 - **4 new Entra ID checks** for dynamic group rules and app registration credentials
 - **4 macOS checks** for Intune compliance and enrollment
 - **7 Azure DevOps checks** for GitHub Advanced Security Secret Protection, Code Security, and Copilot code review
 - **Multi-forest Active Directory**, Kerberos (GSSAPI) over SSH for testing AD from Linux and macOS, and severity ratings for the AD checks
+- **A new Affected objects report** that shows every policy, user, app, and group behind your failed checks, plus optional user identity redaction
 - **A rebuilt HTML report** that's about 85% smaller and opens without a single network request
 - **Security hardening** for the report, email, and pipeline output. Please update.
 - **A clearer `Connect-Maester`** that ends with a per-service summary and keeps going when one service fails
@@ -182,6 +182,8 @@ Special thanks to [Thomas Naunheim](/contributors/cloud-architekt) for building 
 ## A smaller, faster report
 
 The HTML report has been rebuilt on a much smaller stack. It looks the same, and filters, search, deep links, keyboard navigation, and multi-tenant reports all work as before, but:
+
+![Bar charts comparing report size: the report app drops from 2.24 MB in Maester 2.2 to 335 kB in 2.3, and a real 764-test report is 40% smaller](./img/report-size.svg)
 
 - The report app is **about 85% smaller** (2.24 MB down to 335 kB)
 - The favicon is embedded, so a report opens with **no network requests at all**. That helps when you open reports offline, send them by email, or host them behind a strict Content Security Policy
