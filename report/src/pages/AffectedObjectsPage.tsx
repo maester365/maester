@@ -1,5 +1,5 @@
-import { lazy, Suspense, useCallback, useMemo, useState, type ReactNode } from "react"
-import { ChevronRight, ExternalLink, Layers, ListChevronsDownUp, ListChevronsUpDown, X } from "lucide-react"
+import { lazy, Suspense, useCallback, useMemo, useState, type CSSProperties, type ReactNode } from "react"
+import { ChevronRight, ExternalLink, FunnelX, Layers, ListChevronsDownUp, ListChevronsUpDown } from "lucide-react"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"
 import { useTenant } from "@/context/TenantContext"
 import { Card, TextInput } from "@/components/ui/report"
@@ -175,13 +175,11 @@ export default function AffectedObjectsPage() {
 
     const [tab, setTab] = useState<TabId>("referenced")
     const [search, setSearch] = useState("")
-    const [tileFilter, setTileFilter] = useState<Set<string>>(new Set())
+    const [typeTab, setTypeTab] = useState<string | null>(null)
     const [severityFilter, setSeverityFilter] = useState<Set<string>>(new Set())
     const [resultFilter, setResultFilter] = useState<"All" | "Failed" | "Passed">("All")
-    const [grouped, setGrouped] = useState(false)
     const [sort, setSort] = useState<{ column: SortColumn; direction: 1 | -1 } | null>(null)
     const [open, setOpen] = useState<Set<string>>(new Set())
-    const [closedGroups, setClosedGroups] = useState<Set<string>>(new Set())
 
     const [sheetTests, setSheetTests] = useState<TestResult[]>([])
     const [sheetIndex, setSheetIndex] = useState(-1)
@@ -248,8 +246,8 @@ export default function AffectedObjectsPage() {
     // Referenced objects group by type; run-level reads span dozens of endpoints, so they group by area.
     const groupKey = useCallback((o: AffectedObject) => (isReferencedTab ? o.info.name : o.info.area), [isReferencedTab])
 
-    // Default order: Conditional Access policies, then users, then everything else; each by the
-    // most severe failed check, then the number of failed checks.
+    // Tile order: Conditional Access policies, then users, then everything else; each by the most
+    // severe failed check, then the number of failed checks.
     const byPriority = useCallback(
         (a: AffectedObject, b: AffectedObject) =>
             (affectedObjectTypePriority[a.info.name] ?? 2) - (affectedObjectTypePriority[b.info.name] ?? 2) ||
@@ -260,6 +258,10 @@ export default function AffectedObjectsPage() {
             a.label.localeCompare(b.label),
         []
     )
+    // Default row order: the severity shown in the Severity column (Critical first), then the most
+    // failed checks. Ties keep the report's order (Array.prototype.sort is stable).
+    const bySeverity = (a: AffectedObject, b: AffectedObject) =>
+        (b.failSeverity || b.maxSeverity) - (a.failSeverity || a.maxSeverity) || b.failed - a.failed
 
     const groups = useMemo(() => {
         const map = new Map<string, { count: number; failed: number; info: AffectedObjectTypeInfo; first: AffectedObject }>()
@@ -279,10 +281,8 @@ export default function AffectedObjectsPage() {
         )
     }, [scoped, groupKey, byPriority, isReferencedTab])
 
-    const activeTiles = useMemo(
-        () => new Set([...tileFilter].filter((name) => groups.some(([key]) => key === name))),
-        [tileFilter, groups]
-    )
+    // The type tiles act as tabs: null is "All objects".
+    const activeType = typeTab !== null && groups.some(([key]) => key === typeTab) ? typeTab : null
 
     // With a severity or result filter on, a row shows only the checks that match it.
     const visibleChecks = useCallback(
@@ -300,7 +300,7 @@ export default function AffectedObjectsPage() {
     const rows = useMemo(() => {
         const term = search.trim().toLowerCase()
         const compare = (a: AffectedObject, b: AffectedObject) => {
-            if (!sort) return byPriority(a, b)
+            if (!sort) return bySeverity(a, b)
             let result: number
             switch (sort.column) {
                 case "type":
@@ -310,17 +310,17 @@ export default function AffectedObjectsPage() {
                     result = a.label.localeCompare(b.label)
                     break
                 case "severity":
-                    result = a.failSeverity - b.failSeverity || a.maxSeverity - b.maxSeverity
+                    result = -bySeverity(a, b)
                     break
                 case "checks":
                     result = a.failed - b.failed || a.checks.length - b.checks.length
                     break
             }
-            return sort.direction * result || byPriority(a, b)
+            return sort.direction * result || bySeverity(a, b)
         }
         return scoped
             .filter((o) => {
-                if (activeTiles.size > 0 && !activeTiles.has(groupKey(o))) return false
+                if (activeType !== null && groupKey(o) !== activeType) return false
                 if (
                     term &&
                     ![o.info.name, o.label, o.record.Id, o.record.Type, ...o.checks.flatMap((c) => [c.id, c.title])]
@@ -332,7 +332,7 @@ export default function AffectedObjectsPage() {
                 return !isReferencedTab || visibleChecks(o).length > 0
             })
             .sort(compare)
-    }, [scoped, search, activeTiles, groupKey, visibleChecks, sort, byPriority, isReferencedTab])
+    }, [scoped, search, activeType, groupKey, visibleChecks, sort, isReferencedTab])
 
     const toggleIn = <T,>(set: Set<T>, value: T) => {
         const next = new Set(set)
@@ -365,7 +365,7 @@ export default function AffectedObjectsPage() {
 
     const switchTab = (next: TabId) => {
         setTab(next)
-        setTileFilter(new Set())
+        setTypeTab(null)
         setSeverityFilter(new Set())
         setResultFilter("All")
         setSort(null)
@@ -373,7 +373,7 @@ export default function AffectedObjectsPage() {
     }
 
     const resetAll = () => {
-        setTileFilter(new Set())
+        setTypeTab(null)
         setSeverityFilter(new Set())
         setResultFilter("All")
         setSearch("")
@@ -382,7 +382,7 @@ export default function AffectedObjectsPage() {
 
     const rowKeys = isReferencedTab ? rows.map((o) => o.key) : []
     const allOpen = rowKeys.length > 0 && rowKeys.every((key) => open.has(key))
-    const hasFilters = activeTiles.size > 0 || severityFilter.size > 0 || resultFilter !== "All" || search !== "" || sort !== null
+    const hasFilters = activeType !== null || severityFilter.size > 0 || resultFilter !== "All" || search !== "" || sort !== null
     const columnCount = isReferencedTab ? 5 : 4
 
     if (records.length === 0) {
@@ -487,14 +487,20 @@ export default function AffectedObjectsPage() {
             </tr>,
             isReferencedTab && isOpen ? (
                 <tr key={`${o.key}-checks`} className="border-b border-gray-200 bg-gray-50/60 dark:border-zinc-800 dark:bg-zinc-900/40">
-                    <td colSpan={columnCount} className="p-0">
+                    <td
+                        colSpan={columnCount}
+                        className="p-0"
+                        // Size the id column to this object's longest id (mono text-xs is ~0.46rem a
+                        // character), capped so very long data-driven ids truncate instead.
+                        style={{ "--id-col": `${Math.min(26, Math.max(...checks.map((c) => c.id.length))) * 0.46}rem` } as CSSProperties}
+                    >
                         {checks.map((c) => (
                             <button
                                 key={c.id}
                                 type="button"
                                 onClick={() => { openCheck(o, c.id) }}
                                 title="Show the check result"
-                                className="grid min-h-9 w-full grid-cols-[68px_84px_minmax(0,1fr)] items-center gap-3 border-t border-gray-200 py-1.5 pl-12 pr-4 text-left first:border-t-0 hover:bg-gray-100 lg:grid-cols-[68px_84px_150px_minmax(0,1fr)] dark:border-zinc-800 dark:hover:bg-zinc-800/60"
+                                className="grid min-h-9 w-full grid-cols-[68px_84px_minmax(0,1fr)] items-center gap-3 border-t border-gray-200 py-1.5 pl-12 pr-4 text-left first:border-t-0 hover:bg-gray-100 lg:grid-cols-[68px_84px_var(--id-col)_minmax(0,1fr)] dark:border-zinc-800 dark:hover:bg-zinc-800/60"
                             >
                                 <span>
                                     <SeverityPill severity={c.severity} />
@@ -504,7 +510,7 @@ export default function AffectedObjectsPage() {
                                         {statusMark[c.status]} {c.result || "Unknown"}
                                     </Pill>
                                 </span>
-                                <span className="font-mono text-xs text-gray-500 dark:text-zinc-400">{c.id}</span>
+                                <span className="block min-w-0 truncate font-mono text-xs text-gray-500 dark:text-zinc-400" title={c.id}>{c.id}</span>
                                 <span className="col-span-3 text-sm leading-snug text-gray-800 lg:col-span-1 dark:text-zinc-200">{c.title}</span>
                             </button>
                         ))}
@@ -512,43 +518,6 @@ export default function AffectedObjectsPage() {
                 </tr>
             ) : null,
         ]
-    }
-
-    const groupedRows = () => {
-        const byGroup = new Map<string, AffectedObject[]>()
-        for (const o of rows) {
-            const key = groupKey(o)
-            const list = byGroup.get(key)
-            if (list) list.push(o)
-            else byGroup.set(key, [o])
-        }
-        return groups.flatMap(([name, group]) => {
-            const list = byGroup.get(name)
-            if (!list) return []
-            const closed = closedGroups.has(name)
-            const failed = list.filter((o) => o.failed).length
-            return [
-                <tr
-                    key={`group-${name}`}
-                    className="cursor-pointer border-b border-gray-200 bg-gray-50 dark:border-zinc-800 dark:bg-zinc-900"
-                    onClick={() => { setClosedGroups(toggleIn(closedGroups, name)) }}
-                    aria-expanded={!closed}
-                >
-                    <td colSpan={columnCount} className="px-3 py-2">
-                        <div className="flex items-center gap-2.5 text-sm font-semibold text-gray-900 dark:text-zinc-100">
-                            <ChevronRight className={cn("h-4 w-4 text-gray-400 transition-transform", !closed && "rotate-90")} />
-                            <TypeIcon info={group.info} size={18} />
-                            {name}
-                            <span className="text-xs font-normal text-gray-500 dark:text-zinc-400">{list.length}</span>
-                            {isReferencedTab && failed > 0 && (
-                                <span className="text-xs font-normal text-red-600 dark:text-red-400">{failed} with failed checks</span>
-                            )}
-                        </div>
-                    </td>
-                </tr>,
-                ...(closed ? [] : list.flatMap(renderRow)),
-            ]
-        })
     }
 
     return (
@@ -583,31 +552,50 @@ export default function AffectedObjectsPage() {
                 ))}
             </div>
 
-            <div className="mb-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
-                {groups.map(([name, group]) => (
-                    <button
-                        key={name}
-                        type="button"
-                        aria-pressed={activeTiles.has(name)}
-                        title={`Show only ${name}`}
-                        onClick={() => { setTileFilter(toggleIn(tileFilter, name)) }}
-                        className={cn(
-                            "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
-                            activeTiles.has(name)
-                                ? "border-orange-500 bg-orange-50 dark:border-orange-600 dark:bg-orange-950"
-                                : "border-gray-200 bg-white hover:border-orange-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-orange-800"
-                        )}
-                    >
-                        <TypeIcon info={group.info} size={28} />
-                        <span className="min-w-0">
-                            <span className="block text-xl font-semibold leading-tight text-gray-900 dark:text-white">{group.count}</span>
-                            <span className="block truncate text-xs text-gray-500 dark:text-zinc-400">{name}</span>
-                            {isReferencedTab && group.failed > 0 && (
-                                <span className="block text-[11px] text-red-600 dark:text-red-400">{group.failed} with failed checks</span>
+            <div role="tablist" aria-label="Object type" className="mb-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
+                {[
+                    {
+                        key: null,
+                        name: "All objects",
+                        count: scoped.length,
+                        failed: scoped.filter((o) => o.failed).length,
+                        icon: <Layers className="h-7 w-7 shrink-0 text-orange-500" aria-hidden />,
+                    },
+                    ...groups.map(([name, group]) => ({
+                        key: name,
+                        name,
+                        count: group.count,
+                        failed: group.failed,
+                        icon: <TypeIcon info={group.info} size={28} />,
+                    })),
+                ].map(({ key, name, count, failed, icon }) => {
+                    const selected = activeType === key
+                    return (
+                        <button
+                            key={name}
+                            type="button"
+                            role="tab"
+                            aria-selected={selected}
+                            title={key === null ? "Show all objects" : `Show only ${name}`}
+                            onClick={() => { setTypeTab(key); setOpen(new Set()) }}
+                            className={cn(
+                                "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left transition-colors",
+                                selected
+                                    ? "border-orange-500 bg-orange-50 dark:border-orange-600 dark:bg-orange-950"
+                                    : "border-gray-200 bg-white hover:border-orange-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-orange-800"
                             )}
-                        </span>
-                    </button>
-                ))}
+                        >
+                            {icon}
+                            <span className="min-w-0">
+                                <span className="block text-xl font-semibold leading-tight text-gray-900 dark:text-white">{count}</span>
+                                <span className="block truncate text-xs text-gray-500 dark:text-zinc-400">{name}</span>
+                                {isReferencedTab && failed > 0 && (
+                                    <span className="block text-[11px] text-red-600 dark:text-red-400">{failed} with failed checks</span>
+                                )}
+                            </span>
+                        </button>
+                    )
+                })}
             </div>
 
             <Card className="p-0">
@@ -641,9 +629,6 @@ export default function AffectedObjectsPage() {
                             />
                         </>
                     )}
-                    <ToggleButton on={grouped} onClick={() => { setGrouped(!grouped) }} icon={Layers}>
-                        Group by {isReferencedTab ? "type" : "area"}
-                    </ToggleButton>
                     {isReferencedTab && (
                         <ToggleButton
                             onClick={() => { setOpen(allOpen ? new Set() : new Set([...open, ...rowKeys])) }}
@@ -652,30 +637,23 @@ export default function AffectedObjectsPage() {
                             {allOpen ? "Collapse all" : "Expand all"}
                         </ToggleButton>
                     )}
+                    {hasFilters && (
+                        <button
+                            type="button"
+                            onClick={resetAll}
+                            title="Clear filters and sort"
+                            aria-label="Clear filters and sort"
+                            className="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-md border border-orange-300 bg-orange-50 text-orange-600 hover:border-orange-500 hover:bg-orange-100 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-400 dark:hover:border-orange-600 dark:hover:bg-orange-900"
+                        >
+                            <FunnelX className="h-4 w-4" />
+                        </button>
+                    )}
                 </div>
 
-                {/* hasFilters covers a custom sort, so without it the priority hint is the only content. */}
-                {(hasFilters || isReferencedTab) && (
-                    <div className="flex flex-wrap items-center gap-2 px-4 pt-2 text-xs">
-                        {[...activeTiles].map((name) => (
-                            <span key={name} className="inline-flex h-5 items-center gap-1 rounded bg-orange-50 px-1.5 text-orange-600 dark:bg-orange-950 dark:text-orange-400">
-                                {name}
-                                <button type="button" aria-label={`Remove ${name} filter`} onClick={() => { setTileFilter(toggleIn(tileFilter, name)) }}>
-                                    <X className="h-3 w-3" />
-                                </button>
-                            </span>
-                        ))}
-                        {hasFilters && (
-                            <button type="button" onClick={resetAll} className="text-gray-500 hover:text-orange-600 dark:text-zinc-400">
-                                Reset filters and sort
-                            </button>
-                        )}
-                        {isReferencedTab && !sort && (
-                            <span className="text-gray-400 dark:text-zinc-500">
-                                Sorted by priority: Conditional Access policies, then users, then other objects, each by their most severe failed check.
-                            </span>
-                        )}
-                    </div>
+                {isReferencedTab && !sort && (
+                    <p className="px-4 pt-2 text-xs text-gray-400 dark:text-zinc-500">
+                        Sorted by severity (Critical first), then by the number of failed checks.
+                    </p>
                 )}
 
                 <table className="w-full table-fixed border-collapse">
@@ -714,8 +692,6 @@ export default function AffectedObjectsPage() {
                                     No objects match the current filters.
                                 </td>
                             </tr>
-                        ) : grouped ? (
-                            groupedRows()
                         ) : (
                             rows.flatMap(renderRow)
                         )}
