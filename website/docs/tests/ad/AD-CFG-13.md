@@ -1,6 +1,6 @@
 ---
 title: "AD-CFG-13 - Certificate templates count should be retrievable"
-description: "Certificate templates define which certificate types can be issued and under what conditions. Overly permissive or unexpected templates can allow broader enrollment than intended, enabling privilege escalation through misconfigured enrollment permissions, risky EKUs, or unintended autoenrollment. S…"
+description: "Certificate templates define which certificate types can be issued and under what conditions. Overly permissive or unexpected templates can allow broader enrollment than intended, enabling privilege escalation through misconfigured enrollment permissions, risky EKUs, or unintended autoenrollment. C…"
 slug: /tests/AD-CFG-13
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,6 +24,10 @@ keywords:
 ## Overview
 
 Certificate templates define which certificate types can be issued and under what conditions. Overly permissive or unexpected templates can allow broader enrollment than intended, enabling privilege escalation through misconfigured enrollment permissions, risky EKUs, or unintended autoenrollment.
+
+#### Control Type
+
+**Operational**
 
 #### Security Recommendation
 - Establish and document the set of approved certificate templates for each CA.

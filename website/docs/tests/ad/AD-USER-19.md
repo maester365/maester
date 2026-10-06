@@ -29,6 +29,10 @@ Users are easier to manage when placed in organizational units (OUs) that align 
 - **Policy design impact**: OUs are the preferred structure for policy and lifecycle management
 - **Default placement visibility**: Helps identify accounts still living in `CN=Users` or similar container paths
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Move standard user accounts from container paths into appropriate OUs

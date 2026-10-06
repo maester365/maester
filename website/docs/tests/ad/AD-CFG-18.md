@@ -32,6 +32,10 @@ A sudden change in the number of intermediate CAs can indicate:
 
 Monitoring the *count* helps you detect unexpected additions/removals quickly, before they result in trust failures or broadened trust.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Maintain an approved list of intermediate CA thumbprints/subjects and treat deviations as security-relevant events.
 - Investigate and remediate any intermediate CA entries that were not deployed through your change management process.

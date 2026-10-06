@@ -29,6 +29,10 @@ Enabled built-in administrator style accounts provide immediate opportunities fo
 - **Account validation**: Confirms which sensitive accounts remain active.
 - **Operational control**: Supports decisions to disable or tightly restrict use.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Disable built-in administrator accounts when not required.

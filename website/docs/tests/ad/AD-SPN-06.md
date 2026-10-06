@@ -32,6 +32,10 @@ User accounts with Service Principal Names (SPNs) are high-value targets for att
 
 Understanding the scope of user SPNs helps assess your Kerberoasting attack surface.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Minimize user accounts with SPNs:

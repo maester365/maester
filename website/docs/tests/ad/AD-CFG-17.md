@@ -29,6 +29,10 @@ This test focuses on the *details* of trusted root CAs, including certificate va
 - Expired root certificates that can break trust and authentication flows
 - Unexpected/unauthorized root certificates that broaden your trust boundaries
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Verify each trusted root CA certificate matches your approved public key infrastructure (PKI) inventory.
 - Remove (or revoke and clean up) any trusted root CA entries that are not explicitly authorized.

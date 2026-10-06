@@ -30,6 +30,10 @@ SID History is an attribute used during domain migrations to maintain access to 
 - **Directory bloat**: Unnecessary data in the directory that complicates troubleshooting
 - **Audit complexity**: Makes it harder to determine effective permissions
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review computers with SID History to determine if the migration is complete

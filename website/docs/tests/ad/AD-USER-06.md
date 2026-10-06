@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-06 - DES-only Kerberos user count should be retrievable"
-description: "DES is an obsolete Kerberos encryption type with known cryptographic weakness. Accounts limited to DES-only support should be considered legacy debt and prioritized for cleanup. Security Recommendation Move DES-only accounts to stronger Kerberos encryption types such as AES and eliminate dependenci…"
+description: "DES is an obsolete Kerberos encryption type with known cryptographic weakness. Accounts limited to DES-only support should be considered legacy debt and prioritized for cleanup. Control Type **Detective** Security Recommendation Move DES-only accounts to stronger Kerberos encryption types such as A…"
 slug: /tests/AD-USER-06
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,6 +24,10 @@ keywords:
 ## Overview
 
 DES is an obsolete Kerberos encryption type with known cryptographic weakness. Accounts limited to DES-only support should be considered legacy debt and prioritized for cleanup.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

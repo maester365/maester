@@ -29,6 +29,10 @@ Every DACL ACE references a security principal. Tracking the number of distinct 
 - **Review Prioritization**: Security teams can focus on identities that appear repeatedly across sensitive objects.
 - **Baseline Tracking**: Repeated measurement makes it easier to spot growth in delegated access over time.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Keep delegation models simple and intentional. Prefer group-based administration over direct assignment to many individual accounts or SIDs.

@@ -36,6 +36,10 @@ keywords:
 - Mixed Windows and Linux environments
 - Workstations running outdated client OS versions
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Standardize Operating Systems**:

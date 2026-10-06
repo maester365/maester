@@ -32,6 +32,10 @@ SMBv3.1.1 is the latest version of the Server Message Block protocol and include
 
 Having SMBv3.1.1 enabled ensures your domain controllers can support the most secure SMB communications.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Enable SMBv3.1.1 on all domain controllers running Windows Server 2016 or later to ensure maximum SMB security.

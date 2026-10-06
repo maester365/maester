@@ -25,6 +25,10 @@ keywords:
 
 Well-known security principals are built-in identities with special meaning in Active Directory (for example, principals that Windows and AD components rely on for system behavior). Unexpected changes to these principals can indicate tampering, malicious SID/object replacement, or unauthorized directory modification.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Validate that only the expected well-known principals exist (default is **27** for typical configurations).
 - Restrict permissions to the container(s) holding well-known principals so only AD administrators can modify them.

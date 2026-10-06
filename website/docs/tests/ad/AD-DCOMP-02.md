@@ -33,6 +33,10 @@ keywords:
 
 **The target count for this test should ALWAYS be ZERO.**
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 1. **Immediate Action Required**:

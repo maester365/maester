@@ -32,6 +32,10 @@ Dynamic DNS allows clients to register and update their own DNS records. While c
 
 Understanding the ratio of dynamic to static records helps assess the security and hygiene of your DNS environment.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Enable secure dynamic updates only (require authentication)

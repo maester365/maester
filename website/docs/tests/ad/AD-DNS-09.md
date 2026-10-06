@@ -30,6 +30,10 @@ Detailed information about DNS delegations is essential for:
 - **Incident response**: Quickly identifying affected delegations during incidents
 - **Compliance documentation**: Maintaining records of DNS infrastructure
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review delegation details regularly and:

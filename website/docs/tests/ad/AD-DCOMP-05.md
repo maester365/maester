@@ -36,6 +36,10 @@ keywords:
 - Service pack levels may be mandated
 - Documentation of OS landscape is often required
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Maintain Current Service Packs**:

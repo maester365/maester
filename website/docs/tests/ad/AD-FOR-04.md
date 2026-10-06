@@ -34,6 +34,10 @@ The Active Directory Recycle Bin provides significant advantages over traditiona
 - Forest functional level of Windows Server 2008 R2 or higher
 - Must be explicitly enabled (not enabled by default)
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Enable the Recycle Bin** if your forest functional level supports it:

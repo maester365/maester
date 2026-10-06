@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-10 - Workstation-restricted user count should be retrievable"
-description: "Restricting where a user can log on can reduce exposure for privileged, administrative, or sensitive accounts. Measuring how often workstation restrictions are used helps assess adoption of this hardening control. Security Recommendation Consider applying workstation restrictions to privileged and…"
+description: "Restricting where a user can log on can reduce exposure for privileged, administrative, or sensitive accounts. Measuring how often workstation restrictions are used helps assess adoption of this hardening control. Control Type **Detective** Security Recommendation Consider applying workstation rest…"
 slug: /tests/AD-USER-10
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,6 +24,10 @@ keywords:
 ## Overview
 
 Restricting where a user can log on can reduce exposure for privileged, administrative, or sensitive accounts. Measuring how often workstation restrictions are used helps assess adoption of this hardening control.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

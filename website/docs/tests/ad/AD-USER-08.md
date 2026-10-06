@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-08 - Never-logged-in enabled user count should be retrievable"
-description: "Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose. Security Recommendation Investigate enabled accounts with no recorded logon act…"
+description: "Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose. Control Type **Detective** Security Recommendation Investigate enabled accounts…"
 slug: /tests/AD-USER-08
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,6 +24,10 @@ keywords:
 ## Overview
 
 Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

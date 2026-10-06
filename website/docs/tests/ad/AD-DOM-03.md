@@ -30,6 +30,10 @@ Understanding the number and distribution of domain controllers in your domain i
  * **Site Coverage**: Verifying that all sites have appropriate DC coverage for local authentication
  * **Capacity Planning**: Determining if additional DCs are needed based on user and computer growth
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
  * **Minimum Redundancy**: Maintain at least 2 DCs per domain for fault tolerance

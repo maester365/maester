@@ -29,6 +29,10 @@ The machine account quota (ms-DS-MachineAccountQuota) attribute controls how man
 - **Lateral Movement**: Joined computers can be used as pivot points for further attacks
 - **Resource Exhaustion**: Excessive computer accounts can clutter the directory and complicate management
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Consider reducing the machine account quota to 0 and using alternative methods for computer joins:

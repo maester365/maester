@@ -32,6 +32,10 @@ Detailed visibility into Kerberos delegation configurations is essential for sec
 
 Computers with unconstrained delegation should be treated as high-value targets requiring enhanced monitoring and protection.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 For each computer with delegation enabled:

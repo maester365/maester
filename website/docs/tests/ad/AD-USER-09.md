@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-09 - Password-not-required user count should be retrievable"
-description: "Accounts that do not require passwords are a severe security weakness. Even if rarely used, they represent a misconfiguration that can undermine core authentication protections. Security Recommendation Investigate every account with `PasswordNotRequired` set. Require passwords, rotate credentials,…"
+description: "Accounts that do not require passwords are a severe security weakness. Even if rarely used, they represent a misconfiguration that can undermine core authentication protections. Control Type **Detective** Security Recommendation Investigate every account with `PasswordNotRequired` set. Require pass…"
 slug: /tests/AD-USER-09
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,6 +24,10 @@ keywords:
 ## Overview
 
 Accounts that do not require passwords are a severe security weakness. Even if rarely used, they represent a misconfiguration that can undermine core authentication protections.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

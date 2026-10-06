@@ -71,9 +71,9 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-DACL-17](./AD-DACL-17.md) | Inherited object type count should be retrievable | Info | AD.DACL |
 | [AD-DACL-18](./AD-DACL-18.md) | Inherited object type details should be retrievable | Info | AD.DACL |
 | [AD-DC-01](./AD-DC-01.md) | DC site coverage count should be retrievable | Info | AD.DomainController |
-| [AD-DC-02](./AD-DC-02.md) | SMBv1 should be disabled on all domain controllers | Unknown | AD.DomainController |
+| [AD-DC-02](./AD-DC-02.md) | SMBv1 should be disabled on all domain controllers | Critical | AD.DomainController |
 | [AD-DC-03](./AD-DC-03.md) | SMBv3.1.1 enabled count should be retrievable | Info | AD.DomainController |
-| [AD-DC-04](./AD-DC-04.md) | SMB signing should be enabled on all domain controllers | Unknown | AD.DomainController |
+| [AD-DC-04](./AD-DC-04.md) | SMB signing should be enabled on all domain controllers | High | AD.DomainController |
 | [AD-DC-05](./AD-DC-05.md) | DCs with all FSMO roles count should be retrievable | Info | AD.DomainController |
 | [AD-DC-06](./AD-DC-06.md) | FSMO role holder details should be retrievable | Info | AD.DomainController |
 | [AD-DC-07](./AD-DC-07.md) | DC operating system count should be retrievable | High | AD.DomainController |
@@ -82,16 +82,16 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-DCD-02](./AD-DCD-02.md) | DC non-standard LDAPS port count should be retrievable | Info | AD.DomainController |
 | [AD-DCD-03](./AD-DCD-03.md) | Read-only domain controller count should be retrievable | Info | AD.DomainController |
 | [AD-DCD-04](./AD-DCD-04.md) | Non-Global Catalog DC count should be retrievable | Info | AD.DomainController |
-| [AD-DCOMP-01](./AD-DCOMP-01.md) | Computers with unconstrained delegation count should be retrievable | Critical | AD.Security |
+| [AD-DCOMP-01](./AD-DCOMP-01.md) | Computers with unconstrained delegation count should be investigated | Info | AD.Security |
 | [AD-DCOMP-02](./AD-DCOMP-02.md) | Non-DC computers should not have unconstrained delegation | Critical | AD.Security |
-| [AD-DCOMP-03](./AD-DCOMP-03.md) | Non-DC computers with constrained delegation count should be retrievable | High | AD.Security |
+| [AD-DCOMP-03](./AD-DCOMP-03.md) | Non-DC computers with constrained delegation count should be investigated | Info | AD.Security |
 | [AD-DCOMP-04](./AD-DCOMP-04.md) | Computer operating system count should be retrievable | Info | AD.Security |
 | [AD-DCOMP-05](./AD-DCOMP-05.md) | Computer operating system details should be retrievable | Info | AD.Security |
 | [AD-DCOMP-06](./AD-DCOMP-06.md) | Stale enabled computer count should be retrievable | Medium | AD.Security |
 | [AD-DCOMP-07](./AD-DCOMP-07.md) | Computer DNS host name count should be retrievable | Info | AD.Security |
 | [AD-DCOMP-08](./AD-DCOMP-08.md) | Computer DNS zone count should be retrievable | Info | AD.Security |
 | [AD-DCOMP-09](./AD-DCOMP-09.md) | Computer DNS zone details should be retrievable | Info | AD.Security |
-| [AD-DFSR-01](./AD-DFSR-01.md) | DFS-R subscription count should be retrievable | Info | AD.Replication |
+| [AD-DFSR-01](./AD-DFSR-01.md) | All domain controllers should have DFS-R subscriptions | High | AD.Replication |
 | [AD-DNS-01](./AD-DNS-01.md) | DNS zone count should be retrievable | Info | AD.DNS |
 | [AD-DNS-02](./AD-DNS-02.md) | Zones with only SOA/NS records should be retrievable | Info | AD.DNS |
 | [AD-DNS-03](./AD-DNS-03.md) | Root servers with incorrect IPs should be retrievable | Info | AD.DNS |
@@ -157,8 +157,8 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-GPOL-04](./AD-GPOL-04.md) | Enforced GPO link count should be retrievable | Unknown | AD.GPO |
 | [AD-GPOL-05](./AD-GPOL-05.md) | GPO blocked inheritance count should be compliant | Unknown | AD.GPO |
 | [AD-GPOL-06](./AD-GPOL-06.md) | GPO linked OU count should be retrievable | Info | AD.GPO |
-| [AD-GPOREP-01](./AD-GPOREP-01.md) | GPOs without permissions count should be retrievable | Unknown | AD.GPOState |
-| [AD-GPOREP-02](./AD-GPOREP-02.md) | GPOs without permissions details should be retrievable | Unknown | AD.GPOState |
+| [AD-GPOREP-01](./AD-GPOREP-01.md) | No GPOs should be missing permissions | Medium | AD.GPOState |
+| [AD-GPOREP-02](./AD-GPOREP-02.md) | No GPOs should be missing permissions | Medium | AD.GPOState |
 | [AD-GPOREP-03](./AD-GPOREP-03.md) | GPOs without authenticated users count should be retrievable | Unknown | AD.GPOState |
 | [AD-GPOREP-04](./AD-GPOREP-04.md) | GPOs without authenticated users details should be retrievable | Unknown | AD.GPOState |
 | [AD-GPOREP-05](./AD-GPOREP-05.md) | GPOs without enterprise domain controllers count should be retrievable | Unknown | AD.GPOState |
@@ -171,12 +171,12 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-GPOREP-12](./AD-GPOREP-12.md) | GPO disabled link count should be retrievable | Info | AD.GPOState |
 | [AD-GPOREP-13](./AD-GPOREP-13.md) | GPO disabled link details should be retrievable | Info | AD.GPOState |
 | [AD-GPOREP-14](./AD-GPOREP-14.md) | GPO enforcement count should be retrievable | Info | AD.GPOState |
-| [AD-GPOREP-15](./AD-GPOREP-15.md) | GPO version mismatch count should be retrievable | Info | AD.GPOState |
-| [AD-GPOREP-16](./AD-GPOREP-16.md) | GPO version mismatch details should be retrievable | Info | AD.GPOState |
-| [AD-GPOREP-17](./AD-GPOREP-17.md) | GPO Cpassword found count should be retrievable | Unknown | AD.GPOState |
-| [AD-GPOREP-18](./AD-GPOREP-18.md) | GPO Cpassword found details should be retrievable | Unknown | AD.GPOState |
-| [AD-GPOREP-19](./AD-GPOREP-19.md) | GPO default password found count should be retrievable | Unknown | AD.GPOState |
-| [AD-GPOREP-20](./AD-GPOREP-20.md) | GPO default password found details should be retrievable | Unknown | AD.GPOState |
+| [AD-GPOREP-15](./AD-GPOREP-15.md) | No GPOs should have version mismatches | High | AD.GPOState |
+| [AD-GPOREP-16](./AD-GPOREP-16.md) | No GPOs should have version mismatches | High | AD.GPOState |
+| [AD-GPOREP-17](./AD-GPOREP-17.md) | No GPOs should contain a cpassword | Critical | AD.GPOState |
+| [AD-GPOREP-18](./AD-GPOREP-18.md) | No GPOs should contain a cpassword | Critical | AD.GPOState |
+| [AD-GPOREP-19](./AD-GPOREP-19.md) | No GPOs should contain a default password | High | AD.GPOState |
+| [AD-GPOREP-20](./AD-GPOREP-20.md) | No GPOs should contain a default password | High | AD.GPOState |
 | [AD-GPOS-01](./AD-GPOS-01.md) | GPO state total count should be retrievable | Info | AD.GPOState |
 | [AD-GPOS-02](./AD-GPOS-02.md) | WMI filter count should be retrievable | Info | AD.GPOState |
 | [AD-GPOS-03](./AD-GPOS-03.md) | WMI filter details should be compliant | Info | AD.GPOState |
@@ -198,7 +198,7 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-GRP-10](./AD-GRP-10.md) | Universal group count should be retrievable | Info | AD.Group |
 | [AD-KRBTGT-01](./AD-KRBTGT-01.md) | KRBTGT password last set should be retrievable | High | AD.Security |
 | [AD-KRBTGT-02](./AD-KRBTGT-02.md) | KRBTGT last logon should be retrievable | Info | AD.Security |
-| [AD-KRBTGT-03](./AD-KRBTGT-03.md) | KRBTGT should have standard UAC settings (disabled account) | Unknown | AD.Security |
+| [AD-KRBTGT-03](./AD-KRBTGT-03.md) | KRBTGT should have standard UAC settings (disabled account) | High | AD.Security |
 | [AD-MSA-01](./AD-MSA-01.md) | Managed service account count should be retrievable | Info | AD.Security |
 | [AD-OU-01](./AD-OU-01.md) | OU overlapping name count should be retrievable | Info | AD.OU |
 | [AD-OU-02](./AD-OU-02.md) | OU at domain root count should be retrievable | Info | AD.OU |
@@ -213,16 +213,16 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-PWDPOL-05](./AD-PWDPOL-05.md) | Password reversible encryption status should be retrievable | Info | AD.PasswordPolicy |
 | [AD-PWDPOL-06](./AD-PWDPOL-06.md) | Account lockout duration should be retrievable | Info | AD.PasswordPolicy |
 | [AD-PWDPOL-07](./AD-PWDPOL-07.md) | Account lockout threshold should be retrievable | Info | AD.PasswordPolicy |
-| [AD-REPL-01](./AD-REPL-01.md) | Disabled replication connection count should be retrievable | Info | AD.Replication |
+| [AD-REPL-01](./AD-REPL-01.md) | No replication connections should be disabled | High | AD.Replication |
 | [AD-REPL-02](./AD-REPL-02.md) | Non-auto replication connection count should be retrievable | Info | AD.Replication |
 | [AD-ROOTDSE-01](./AD-ROOTDSE-01.md) | Supported SASL mechanism count should be retrievable | Info | AD.Replication |
 | [AD-ROOTDSE-02](./AD-ROOTDSE-02.md) | Supported SASL mechanism details should be retrievable | Info | AD.Replication |
-| [AD-ROOTDSE-03](./AD-ROOTDSE-03.md) | Root DSE synchronized status should be retrievable | Unknown | AD.Replication |
+| [AD-ROOTDSE-03](./AD-ROOTDSE-03.md) | Root DSE should be synchronized | High | AD.Replication |
 | [AD-SCH-01](./AD-SCH-01.md) | Schema modification year count should be retrievable | Info | AD.Schema |
 | [AD-SCH-02](./AD-SCH-02.md) | Schema modification year details should be retrievable | Info | AD.Schema |
 | [AD-SCH-03](./AD-SCH-03.md) | Schema version entry count should be retrievable | Info | AD.Schema |
 | [AD-SCH-04](./AD-SCH-04.md) | Schema version details should be retrievable | Info | AD.Schema |
-| [AD-SCH-05](./AD-SCH-05.md) | LAPS installation status should be retrievable | Unknown | AD.Schema |
+| [AD-SCH-05](./AD-SCH-05.md) | LAPS should be installed in Active Directory | Medium | AD.Schema |
 | [AD-SITE-01](./AD-SITE-01.md) | Site total count should be retrievable | Info | AD.Site |
 | [AD-SITE-02](./AD-SITE-02.md) | Sites without domain controllers count should be retrievable | Info | AD.Site |
 | [AD-SITE-03](./AD-SITE-03.md) | Sites without domain controllers details should be retrievable | Info | AD.Site |
@@ -254,8 +254,8 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-SUB-11](./AD-SUB-11.md) | Subnets without site associations count should be retrievable | Info | AD.Site |
 | [AD-TRUST-01](./AD-TRUST-01.md) | Trust total count should be retrievable | Info | AD.Trust |
 | [AD-TRUST-02](./AD-TRUST-02.md) | Trust inter-forest count should be retrievable | Info | AD.Trust |
-| [AD-TRUST-03](./AD-TRUST-03.md) | Trust quarantined count should be retrievable | High | AD.Trust |
-| [AD-TRUST-04](./AD-TRUST-04.md) | Trust non-quarantined details should be retrievable | High | AD.Trust |
+| [AD-TRUST-03](./AD-TRUST-03.md) | Trust quarantined count should be investigated | Info | AD.Trust |
+| [AD-TRUST-04](./AD-TRUST-04.md) | Trusts should not have weak SID filtering | High | AD.Trust |
 | [AD-TRUST-05](./AD-TRUST-05.md) | Trust configuration details should be retrievable | Info | AD.Trust |
 | [AD-TRUST-06](./AD-TRUST-06.md) | Trust stale count should be retrievable | Info | AD.Trust |
 | [AD-TRUST-07](./AD-TRUST-07.md) | Trust stale details should be retrievable | Info | AD.Trust |
@@ -287,4 +287,4 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-USER-26](./AD-USER-26.md) | Honey pot user count should be retrievable | Info | AD.User |
 | [AD-USER-27](./AD-USER-27.md) | Honey pot user details should be retrievable | Info | AD.User |
 | [AD-USER-28](./AD-USER-28.md) | User delegation configured count should be retrievable | Info | AD.User |
-| [AD-USER-29](./AD-USER-29.md) | User delegation details should be retrievable | Info | AD.User |
+| [AD-USER-29](./AD-USER-29.md) | No users should be configured for unconstrained delegation | High | AD.User |

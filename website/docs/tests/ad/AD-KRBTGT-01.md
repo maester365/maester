@@ -30,6 +30,10 @@ keywords:
 - **Persistent Access**: Attackers can maintain access even after password changes if they create forged tickets with long lifetimes
 - **Domain-Wide Impact**: A single compromised KRBTGT affects the entire domain
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 1. **Rotate KRBTGT password regularly**:

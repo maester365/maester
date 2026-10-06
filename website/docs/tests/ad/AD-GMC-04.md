@@ -29,6 +29,10 @@ keywords:
 - **Security Boundaries**: Understanding where external access is granted helps maintain security boundaries
 - **Audit Trail**: Trust members should be regularly reviewed for continued necessity
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly audit trust members:

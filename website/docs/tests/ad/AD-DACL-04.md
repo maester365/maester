@@ -29,6 +29,10 @@ High-level counts are useful, but remediation usually requires object-level deta
 - **Supports cleanup validation** by exposing object class and DN
 - **Quantifies ACE volume** on each conflict object
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review each listed conflict object, confirm why it exists, and determine whether it is still needed. If an object is obsolete, validate dependencies and permissions before cleanup.
