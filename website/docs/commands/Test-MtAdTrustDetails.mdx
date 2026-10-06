@@ -25,7 +25,8 @@ in Active Directory.
 Trust details include target domain, trust direction,
 trust type, SID filtering status, and whether the trust is within the same
 forest.
-This information is essential for security audits and trust management.
+Properties are derived from the LDAP trustAttributes bitmask and
+trustType numeric values.
 
 ## EXAMPLES
 
@@ -36,7 +37,7 @@ Test-MtAdTrustDetails
 ```
 
 Returns $true if trust data is accessible, $false otherwise.
-The test result includes detailed trust configuration information.
+The test result includes detailed trust configuration information with SID filtering classification.
 
 ## PARAMETERS
 

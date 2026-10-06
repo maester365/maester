@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Counts the number of quarantined trusts in Active Directory."
+description: "Counts the number of trusts with strong SID filtering in Active Directory."
 id: Test-MtAdTrustQuarantinedCount
 title: Test-MtAdTrustQuarantinedCount
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Counts the number of quarantined trusts in Active Directory.
+Counts the number of trusts with strong SID filtering in Active Directory.
 
 ## SYNTAX
 
@@ -20,11 +20,14 @@ Test-MtAdTrustQuarantinedCount [-ProgressAction <ActionPreference>] [<CommonPara
 
 ## DESCRIPTION
 
-This test retrieves the count of quarantined (SID filtering enabled) trusts in Active Directory.
-Quarantined trusts have SID filtering enabled, which prevents malicious SID history from being
-used to elevate privileges across the trust boundary.
-This is a critical security control for
-inter-forest trusts.
+This test retrieves the count of external and forest trusts that have strong
+SID filtering.
+For external trusts, strength means the QUARANTINED_DOMAIN bit (0x4) is set.
+For forest trusts, strength means the TREAT_AS_EXTERNAL bit (0x40) is not set (SID history disabled).
+Intra-forest (parent-child) trusts are excluded because they do not support quarantine.
+MIT Kerberos realm trusts are also excluded as SID filtering does not apply to them.
+
+Trust classification is derived from the trustAttributes LDAP attribute and trustType.
 
 ## EXAMPLES
 
@@ -35,7 +38,7 @@ Test-MtAdTrustQuarantinedCount
 ```
 
 Returns $true if trust data is accessible, $false otherwise.
-The test result includes the count of quarantined trusts.
+The test result includes the count of trusts with strong SID filtering.
 
 ## PARAMETERS
 
