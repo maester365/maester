@@ -21,6 +21,7 @@
         Category = 'Maester/Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
+        CompatibleLicense = 'INTUNE_A',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'l-gosling')
     )]
@@ -30,11 +31,6 @@
     param()
 
     Write-Verbose 'Testing device clean-up rule configuration'
-    if (-not (Get-MtLicenseInformation -Product Intune)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
-        return $null
-    }
-
     $deviceCleanupSettings = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/managedDeviceCleanupRules' -ApiVersion beta
     if ((-not $deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) -or ($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays -eq 0)) {
         $testResultMarkdown = 'No Intune device clean-up rule is configured.'

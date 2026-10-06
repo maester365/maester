@@ -21,18 +21,13 @@
         Category = 'CISA',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.2.1'),
         Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM_P2',
         Author = 'soulemike',
         Contributor = 'merill'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    if($EntraIDPlan -ne "P2"){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
-        return $null
-    }
 
     $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 

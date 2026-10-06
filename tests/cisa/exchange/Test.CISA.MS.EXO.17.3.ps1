@@ -21,6 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.17.3'),
         Service = 'Graph',
+        CompatibleLicense = 'M365_ADVANCED_AUDITING',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]
@@ -33,9 +34,6 @@
         return $null
     }elseif(!(Test-MtConnection SecurityCompliance)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }elseif($null -eq (Get-MtLicenseInformation -Product AdvAudit)){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedAdvAudit
         return $null
     }
 

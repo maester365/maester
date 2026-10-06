@@ -21,19 +21,13 @@
         Category = 'CISA',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.7.5'),
         Service = 'Graph',
+        CompatibleLicense = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',
         Contributor = 'michaelmsonne'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
-    if (-not $pim) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
-        return $null
-    }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
     $roleAssignments = @()

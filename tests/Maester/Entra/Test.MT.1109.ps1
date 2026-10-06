@@ -38,19 +38,13 @@
         Category = 'Maester/Entra',
         Tag = ('AccessPackages', 'Entra', 'Governance', 'Maester'),
         Service = 'Graph',
+        CompatibleLicense = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'nicowyss',
         Contributor = 'JeanPhilippeGeorge'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
-    if (-not $hasLicense) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
-        return $null
-    }
 
     # Get all access packages
     $accessPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta

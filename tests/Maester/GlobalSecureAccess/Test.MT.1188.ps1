@@ -29,6 +29,7 @@
         Tag = ('CA', 'Entra', 'Maester'),
         Preview,
         Service = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM',
         Author = 'crmhh'
     )]
     [CmdletBinding()]
@@ -39,11 +40,6 @@
 
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
-    if ((Get-MtLicenseInformation -Product EntraID) -eq 'Free') {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
         return $null
     }
 

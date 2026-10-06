@@ -21,6 +21,7 @@
         Category = 'Maester/Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
+        CompatibleLicense = 'INTUNE_A',
         Author = 'nicolonsky'
     )]
     [CmdletBinding()]
@@ -29,11 +30,6 @@
     param()
 
     Write-Verbose 'Testing Multi Admin Approval Policy configuration'
-    if (-not (Get-MtLicenseInformation -Product Intune)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
-        return $null
-    }
-
     Write-Verbose 'Retrieving Intune Multi Admin Approval Policies status...'
     $approvalPolicies = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/operationApprovalPolicies' -ApiVersion beta
     $testResultMarkdown = ''

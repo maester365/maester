@@ -44,6 +44,19 @@ Describe 'Native built-in test <Name>' -ForEach $NativeFiles {
         $guards | Should -BeNullOrEmpty -Because 'the Service property makes the engine skip the test when the service is not connected'
     }
 
+    It 'Does not check its own licence' {
+        # Tests whose licence need is not one CompatibleLicense list for every run (a family where only some
+        # instances need a premium licence) keep their own check.
+        $allowed = @(
+            'MT.1024' # Entra recommendations: only the premium recommendation instances need Entra ID P2.
+        )
+        if ($script:test.Id -in $allowed) { return }
+        $text = $script:function.Body.Extent.Text
+        $call = [regex]::Match($text, '\bGet-MtLicenseInformation\b')
+        $skip = if ($call.Success) { [regex]::Match($text.Substring($call.Index), '-SkippedBecause\s+[''"]?NotLicensed\w*') }
+        $skip.Success | Should -BeFalse -Because 'CompatibleLicense makes the engine skip the test when the tenant is not licensed; add the ID to the allow-list only when the licence need varies by instance or the result branches on the plan'
+    }
+
     It 'Does not catch every exception only to report -SkippedBecause Error' {
         # A catch that handles a specific case (403 -> NotAuthorized, then Error otherwise) is fine.
         $catches = @($script:function.Body.FindAll({

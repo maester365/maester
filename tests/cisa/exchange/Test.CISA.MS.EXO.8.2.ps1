@@ -21,6 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.8.2'),
         Service = ('ExchangeOnline', 'Graph'),
+        CompatibleLicense = 'EXCHANGE_DLP',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]
@@ -33,9 +34,6 @@
         return $null
     }elseif(!(Test-MtConnection SecurityCompliance)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }elseif($null -eq (Get-MtLicenseInformation -Product ExoDlp)){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedExoDlp
         return $null
     }
 
