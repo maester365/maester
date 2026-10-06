@@ -153,6 +153,16 @@ A second tab, **Data touched**, lists everything the run read, grouped by area: 
 
 The same list is also saved next to your results as `<name>-affected-objects.json`, and as a CSV when you use `-ExportCsv`, so you can feed it into your own tooling. Nothing is collected unless you pass the switch.
 
+Running Maester from the [GitHub Action](/docs/monitoring/github)? Set `include_affected_objects: true` and the report and JSON file are included in the uploaded results:
+
+```yaml
+- uses: maester365/maester-action@main
+  with:
+    tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+    client_id: ${{ secrets.AZURE_CLIENT_ID }}
+    include_affected_objects: true
+```
+
 ### Redact user identities
 
 Sharing a report outside your security team? `-RedactUserIdentity` replaces user display names, UPNs, and object IDs with a stable token:
