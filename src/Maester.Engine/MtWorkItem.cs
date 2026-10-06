@@ -18,10 +18,13 @@ namespace Maester.Engine
         public Hashtable Parameters { get; set; }
 
         /// <summary>
-        /// Name of the module whose scope the command is invoked in, so that private functions and the
-        /// module's own state are used. Overrides the cmdlet's -ModuleName. Custom native tests each run
-        /// in their own dynamic module.
+        /// Module whose scope the command is invoked in, so that private functions and the module's own
+        /// state are used. Overrides the cmdlet's -Module. Custom native tests each run in their own
+        /// dynamic module, which cannot be found by name, so the module object is passed.
         /// </summary>
+        public PSModuleInfo Module { get; set; }
+
+        /// <summary>Name of the module to invoke the command in, when no Module object is given (pool lanes).</summary>
         public string ModuleName { get; set; }
 
         /// <summary>'Main' runs nested on the caller's runspace; 'Pool' may run on a worker runspace.</summary>

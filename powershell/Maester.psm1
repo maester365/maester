@@ -17,6 +17,8 @@ $__MtSession = @{
 	GraphCache             = @{}
 	GraphBaseUri           = $null
 	TestResultDetail       = @{}
+	NativeTestInfo         = @{}                 # Native tests of the current run: ID -> function name and Markdown
+	NativeReturnValue      = @{}                 # Native tests of the current run: ID -> what the test returned
 	Connections            = @()
 	DnsCache               = @()
 	ExoCache               = @{}
@@ -53,6 +55,23 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 		$errorMessage = "Failed to import function from '$($script.FullName)': $($_.Exception.Message)"
 		$importErrors += $errorMessage
 		Write-Warning $errorMessage
+	}
+}
+
+# Source checkout: the built-in native tests (tests/**/Test.*.ps1) are module source and are defined
+# in module scope. The build concatenates them into Maester.psm1 instead.
+$builtInTestRoot = Join-Path $PSScriptRoot '../tests'
+if (Test-Path -LiteralPath $builtInTestRoot) {
+	$builtInTestRoot = (Resolve-Path -LiteralPath $builtInTestRoot).Path
+	$customTestFolder = (Join-Path $builtInTestRoot 'Custom') + [System.IO.Path]::DirectorySeparatorChar
+	foreach ($testFile in @(Get-ChildItem -Path $builtInTestRoot -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue)) {
+		if ($testFile.FullName.StartsWith($customTestFolder, [System.StringComparison]::OrdinalIgnoreCase)) { continue }
+		try {
+			. $testFile.FullName
+		} catch {
+			$importErrors += "Failed to import built-in test '$($testFile.FullName)': $($_.Exception.Message)"
+			Write-Warning $importErrors[-1]
+		}
 	}
 }
 

@@ -545,6 +545,8 @@
         Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
     }
 
+    # The exclusions before any ID-based lifting: native selection applies exact-ID lifting per test itself.
+    $nativeExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ })
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
     # If DriftRoot is specified, set the environment variable for drift tests.
@@ -584,6 +586,33 @@
     foreach ($f in $testSource.BuiltInFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $testSource.BuiltInRoot -BuiltIn -Cache $originCache }
     foreach ($f in $testSource.CustomFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $testSource.CustomRoot -Cache $originCache }
 
+    # Native tests: the built-in catalog, and custom Test.<ID>.ps1 files under the custom root.
+    Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering native tests...' -Force
+    $nativeBuiltIn = if ($SkipBuiltIn) { @() } else { @(Get-MtTestCatalog) }
+    $catalogIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($t in @(Get-MtTestCatalog)) { if ($t.Id) { $null = $catalogIds.Add($t.Id) } }
+    $nativeCustom = @()
+    if ($testSource.CustomRoot) {
+        $resolvedBuiltInRoot = [System.IO.Path]::GetFullPath($testSource.BuiltInRoot).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+        $customNativeFiles = @(Get-ChildItem -LiteralPath $testSource.CustomRoot -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue |
+                ForEach-Object { $_.FullName } |
+                Where-Object { -not $_.StartsWith($resolvedBuiltInRoot, [System.StringComparison]::OrdinalIgnoreCase) -or $_ -like '*[\/]Custom[\/]*' })
+        if ($customNativeFiles.Count -gt 0) {
+            $nativeCustom = @(Get-MtNativeTestInventory -Path $customNativeFiles -Root $testSource.CustomRoot)
+            # A custom native test with a built-in ID is not loaded; the built-in runs (design section 8).
+            $shadowing = @($nativeCustom | Where-Object { $_.Id -and $catalogIds.Contains($_.Id) })
+            if ($shadowing.Count -gt 0) {
+                Write-Warning ("These custom tests have the ID of a test that ships with Maester and were not run: $(($shadowing | ForEach-Object { $_.Id }) -join ', '). " +
+                    'To change a built-in test, set its parameters in the config, or copy it under your own ID and disable the built-in.')
+                $nativeCustom = @($nativeCustom | Where-Object { -not ($_.Id -and $catalogIds.Contains($_.Id)) })
+            }
+            $reserved = @($nativeCustom | Where-Object { $id = $_.Id; $id -and ((Get-MtTestSchema).ReservedPrefixes | Where-Object { $id.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) })
+            if ($reserved.Count -gt 0) {
+                Write-Warning "These custom tests use an ID prefix that belongs to the tests shipped with Maester: $(($reserved | ForEach-Object { $_.Id }) -join ', '). Use your own prefix, for example CONTOSO."
+            }
+        }
+    }
+
     # Stale copies of 2.x built-in wrappers under the custom root are not run (design section 8).
     $builtInInventory = $null
     $customInventory = @()
@@ -592,7 +621,7 @@
         Write-MtProgress -Activity 'Starting Maester' -Status 'Checking custom tests...' -Force
         $builtInInventory = @(Get-MtPesterFileInventory -Path @(Get-MtBuiltInPesterFile -BuiltInRoot $testSource.BuiltInRoot))
         $customInventory = @(Get-MtPesterFileInventory -Path $testSource.CustomFiles)
-        $superseded = Get-MtSupersededTest -CustomInventory $customInventory -BuiltInInventory $builtInInventory
+        $superseded = Get-MtSupersededTest -CustomInventory $customInventory -BuiltInInventory $builtInInventory -BuiltInId @($catalogIds)
         if ($superseded.ExcludeFiles.Count -gt 0) {
             $pesterConfig.Run.ExcludePath = @(@($pesterConfig.Run.ExcludePath.Value) + $superseded.ExcludeFiles | Where-Object { $_ })
         }
@@ -609,6 +638,21 @@
         $supersededKeys = @{}
         foreach ($i in $superseded.Items) { $supersededKeys["$($i.File):$($i.Line)"] = $true }
         $customInventory = @($customInventory | Where-Object { -not $supersededKeys.ContainsKey("$($_.File):$($_.Line)") })
+
+        # A custom native test and a custom Pester test with the same ID: neither runs (DuplicateId).
+        $nativeCustomIds = @{}
+        foreach ($t in $nativeCustom) { if ($t.Id) { $nativeCustomIds[$t.Id] = $t } }
+        $duplicates = @($customInventory | Where-Object { $_.Id -and $nativeCustomIds.ContainsKey($_.Id) })
+        foreach ($d in $duplicates) {
+            $pesterConfig.Filter.ExcludeLine = @(@($pesterConfig.Filter.ExcludeLine.Value) + "$($d.File):$($d.Line)" | Where-Object { $_ })
+            $nativeCustomIds[$d.Id].Errors.Add([pscustomobject]@{ Code = 'DuplicateId'; Message = "A Pester test has the same ID: $($d.File), line $($d.Line)."; Line = 1 })
+        }
+        if ($duplicates.Count -gt 0) {
+            $duplicateKeys = @{}
+            foreach ($d in $duplicates) { $duplicateKeys["$($d.File):$($d.Line)"] = $true }
+            $superseded.Items = @($superseded.Items) + @($duplicates | ForEach-Object { [pscustomobject]@{ Id = $_.Id; File = $_.File; Line = $_.Line; MatchedBy = 'DuplicateId' } })
+            $customInventory = @($customInventory | Where-Object { -not $duplicateKeys.ContainsKey("$($_.File):$($_.Line)") })
+        }
     }
 
     # Stage 5: ID-based selection and config admission. Pester selects by tag only, so tests that
@@ -630,6 +674,16 @@
         if ($plan.LiftLongRunning -and $autoExcludedTag -contains 'LongRunning') {
             $pesterConfig.Filter.ExcludeTag = @($pesterConfig.Filter.ExcludeTag.Value | Where-Object { $_ -ne 'LongRunning' })
         }
+    }
+
+    # IDs named in the selection or the config that match no test, Pester or native (never wildcards or
+    # instances of a declared family).
+    if ($needsIdSelection) {
+        $nativeAll = @($nativeBuiltIn) + @($nativeCustom)
+        $plan.UnknownIds = @($plan.UnknownIds | Where-Object {
+                $id = $_
+                -not ($nativeAll | Where-Object { $_.Id -eq $id -or ($_.InstanceSource -and $id -like "$($_.Id).*") })
+            })
         if ($plan.UnknownIds.Count -gt 0) {
             $unknownMessage = "These test IDs match no test: $($plan.UnknownIds -join ', ')"
             switch ($selection.OnUnknownId) {
@@ -643,6 +697,35 @@
         $pesterConfig.Run.SkipRun = $true
     }
 
+    # Stages 2, 5 and 6 for native tests: the tenant context, then selection and applicability.
+    $nativeTests = @($nativeBuiltIn) + @($nativeCustom)
+    $neededServices = @($nativeTests | ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
+    Write-MtProgress -Activity 'Starting Maester' -Status 'Reading the tenant context...' -Force
+    $tenantContext = Get-MtTenantContext -Service $(if ($neededServices) { $neededServices } else { @('Graph') }) -Environment $(if ($runConfig.PSObject.Properties['Environment']) { $runConfig.Environment } else { $null })
+    $nativePlan = @()
+    if ($nativeTests.Count -gt 0) {
+        $nativePlan = @(Resolve-MtNativePlan -Test $nativeTests -Selection $selection -RunConfig $runConfig -TenantContext $tenantContext `
+                -IncludeTag @($pesterConfig.Filter.Tag.Value | Where-Object { $_ }) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -DryRun:$DryRun)
+    }
+
+    # CI test results (NUnit/JUnit XML): Maester writes one file for native and Pester rows, requested
+    # through Output.TestResult in the config or a caller's PesterConfiguration.TestResult (appendix A.2).
+    $xmlRequest = $null
+    $outputSection = if ($runConfig.PSObject.Properties['Output']) { $runConfig.Output } else { $null }
+    if ($outputSection -and $outputSection.PSObject.Properties['TestResult'] -and $outputSection.TestResult -and $outputSection.TestResult.Path) {
+        $xmlRequest = @{ Path = [string]$outputSection.TestResult.Path; Format = $(if ($outputSection.TestResult.Format) { [string]$outputSection.TestResult.Format } else { 'NUnitXml' }) }
+    } elseif ($pesterConfig.TestResult.Enabled.Value) {
+        $xmlRequest = @{ Path = [string]$pesterConfig.TestResult.OutputPath.Value; Format = [string]$pesterConfig.TestResult.OutputFormat.Value }
+    }
+    if ($xmlRequest) {
+        if ($xmlRequest.Format -in 'NUnitXml', 'NUnit2.5', 'JUnitXml') {
+            $pesterConfig.TestResult.Enabled = $false
+        } else {
+            Write-Warning "Maester writes test results as NUnitXml or JUnitXml. $($xmlRequest.Format) is left to Pester and holds only the Pester-format tests."
+            $xmlRequest = $null
+        }
+    }
+
     $runContext = [PSCustomObject]@{
         Selection       = $selection
         Plan            = $plan
@@ -652,27 +735,34 @@
         AutoExcludedTag = @($autoExcludedTag)
         FileOrigin      = $fileOrigin
         Superseded      = $superseded
-        TenantContext   = [PSCustomObject]@{
-            TenantId    = $configTenantId
-            Environment = if (Test-MtConnection Graph) { (Get-MgContext).Environment } else { $null }
-            Connections = @($__MtSession.Connections)
-        }
+        TenantContext   = $tenantContext
     }
 
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
     # Capture is for this run's tests only; later ad-hoc Add-MtTestResultDetail calls must not collect.
     $__MtSession.IncludeAffectedObjects = $collectAffectedObjects
+    $nativeRows = @()
+    $nativeTimer = [System.Diagnostics.Stopwatch]::StartNew()
+    $pesterResults = $null
     try {
-        $pesterResults = Invoke-Pester -Configuration $pesterConfig
+        # Stage 7: native tests first, then one Invoke-Pester call if the plan has Pester files.
+        if ($nativePlan.Count -gt 0) {
+            Write-MtProgress -Activity 'Running tests' -Status "$(@($nativePlan | Where-Object Disposition -EQ 'Run').Count) native test(s)" -Force
+            $nativeRows = @(Invoke-MtNativePlan -Plan $nativePlan -RunConfig $runConfig -Selection $selection -Verbosity $Verbosity)
+        }
+        $nativeTimer.Stop()
+        if ($pesterRunPath.Count -gt 0) {
+            $pesterResults = Invoke-Pester -Configuration $pesterConfig
+        }
     } finally {
         $__MtSession.IncludeAffectedObjects = $false
     }
     $null = Remove-MtForeignModule
 
-    if ($pesterResults) {
+    if ($pesterResults -or $nativeRows.Count -gt 0) {
 
-        Write-MtProgress -Activity 'Processing test results' -Status "$($pesterResults.TotalCount) test(s)" -Force
+        Write-MtProgress -Activity 'Processing test results' -Status "$(@($pesterResults.Tests).Count + $nativeRows.Count) test(s)" -Force
 
         # Build the Invoke-Maester command string from bound parameters
         $invokeMaesterCommand = "Invoke-Maester"
@@ -692,7 +782,12 @@
             }
         }
 
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects -RunContext $runContext
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects -RunContext $runContext -NativeRows $nativeRows -NativeDuration $nativeTimer.Elapsed
+
+        if ($xmlRequest -and -not $DryRun) {
+            $errorsAsFailures = $outputSection -and $outputSection.PSObject.Properties['ErrorsAsFailures'] -and [bool]$outputSection.ErrorsAsFailures
+            Export-MtTestResultXml -MaesterResults $maesterResults -Path $xmlRequest.Path -Format $xmlRequest.Format -ErrorsAsFailures:$errorsAsFailures
+        }
 
         # 'AllOutputs' redacts every generated output, 'HtmlOnly' leaves the machine readable
         # exports intact so findings can still be traced back to the real objects.
@@ -819,7 +914,7 @@
             Get-IsNewMaesterVersionAvailable | Out-Null
         }
 
-        Write-MtProgress -Activity '🔥 Completed tests' -Status "Total $($pesterResults.TotalCount) " -Completed -Force # Clear progress bar.
+        Write-MtProgress -Activity '🔥 Completed tests' -Status "Total $($maesterResults.TotalCount) " -Completed -Force # Clear progress bar.
     }
     Reset-MtProgressView
     if ($PassThru) {

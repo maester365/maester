@@ -15,6 +15,8 @@ function Clear-ModuleVariable {
     Clear-MtGraphCache
     $__MtSession.GraphBaseUri = $null
     $__MtSession.TestResultDetail = @{}
+    $__MtSession.NativeTestInfo = @{}
+    $__MtSession.NativeReturnValue = @{}
     $__MtSession.MaesterConfig = $null
     $__MtSession.AdminPortalUrl = @{}
     Clear-MtDnsCache

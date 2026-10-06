@@ -30,7 +30,7 @@
     $removed = [System.Collections.Generic.List[string]]::new()
     if ($candidates.Count -gt 0) {
         $inventory = @(Get-MtPesterFileInventory -Path $candidates)
-        $superseded = Get-MtSupersededTest -CustomInventory $inventory -BuiltInInventory $builtInInventory
+        $superseded = Get-MtSupersededTest -CustomInventory $inventory -BuiltInInventory $builtInInventory -BuiltInId @(Get-MtTestCatalog | ForEach-Object { $_.Id })
         foreach ($file in $superseded.ExcludeFiles) {
             if ($PSCmdlet.ShouldProcess($file, 'Remove copy of a built-in Maester test')) {
                 Remove-Item -LiteralPath $file -Force

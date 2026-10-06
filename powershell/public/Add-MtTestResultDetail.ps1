@@ -77,7 +77,8 @@
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
             'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
-            'NotLicensedCustomerLockbox', 'NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory', 'NotConnectedActiveDirectoryDNS', 'NotConnectedGitHub', 'NotConnectedSharePoint', 'NotLicensedEntraIDP2OrGovernance'
+            'NotLicensedCustomerLockbox', 'NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory', 'NotConnectedActiveDirectoryDNS', 'NotConnectedGitHub', 'NotConnectedSharePoint', 'NotLicensedEntraIDP2OrGovernance',
+            'NotApplicable'
         )]
         [string] $SkippedBecause,
 
@@ -100,11 +101,19 @@
         [string] $Severity
     )
 
-    # Skipping a test throws (Set-ItResult -Skipped). When a test function skips from inside a try block,
-    # its own catch intercepts that throw and reports it here as an error. The original skip detail is
-    # already recorded, so re-raise the skip instead of overwriting it with an error result.
+    # Under the native engine (Maester 3.0) the engine tells us which test is running; under Pester the
+    # test is identified by its It name.
+    $nativeTestId = [Maester.Engine.MtSession]::GetCurrentTest()
+    $isNative = -not [string]::IsNullOrEmpty($nativeTestId)
+    if ($isNative -and -not $PSBoundParameters.ContainsKey('TestName')) { $TestName = $nativeTestId }
+
+    # Skipping a test throws (Set-ItResult -Skipped under Pester, the MaesterTestSkipped record under the
+    # native engine). When a test function skips from inside a try block, its own catch intercepts that
+    # throw and reports it here as an error. The original skip detail is already recorded, so re-raise
+    # the skip instead of overwriting it with an error result.
     if ($SkippedBecause -eq 'Error' -and $SkippedError -is [System.Management.Automation.ErrorRecord] -and
-        $SkippedError.FullyQualifiedErrorId -in @('PesterTestSkipped', 'PesterTestInconclusive', 'PesterTestPending')) {
+        ($SkippedError.FullyQualifiedErrorId -in @('PesterTestSkipped', 'PesterTestInconclusive', 'PesterTestPending') -or
+        $SkippedError.FullyQualifiedErrorId -like "$([Maester.Engine.MtSession]::SkipErrorId)*")) {
         throw $SkippedError
     }
 
@@ -139,7 +148,11 @@
         $callerFrame = if ($callStack.Count -gt 1) { $callStack[1] } else { $null }
         $callerName = if ($callerFrame) { $callerFrame.Command } else { $null }
         $callerFile = if ($callerFrame) { $callerFrame.ScriptName } else { $null }
-        $metadata = Get-MtTestResultTemplate -CommandName $callerName -SourceFile $callerFile
+        $metadata = if ($isNative) {
+            Get-MtTestResultTemplate -TestId $nativeTestId -CommandName $callerName -SourceFile $callerFile
+        } else {
+            Get-MtTestResultTemplate -CommandName $callerName -SourceFile $callerFile
+        }
 
         if ($metadata) {
             $mdResult = $metadata.Result
@@ -185,12 +198,12 @@
         }
     }
 
-    if ([string]::IsNullOrEmpty($TestTitle)) {
+    if ([string]::IsNullOrEmpty($TestTitle) -and -not $isNative) {
         # If no test title is provided, use the test name
         $TestTitle = $____Pester.CurrentTest.ExpandedName
     }
 
-    if ([string]::IsNullOrEmpty($Severity)) {
+    if ([string]::IsNullOrEmpty($Severity) -and -not $isNative) {
         # Check if the test has a severity tag using the internal helper function
         try {
             $Severity = Get-MtPesterTagValue -TagName 'Severity'
@@ -200,11 +213,14 @@
         }
     }
 
-    try {
-        $Service = Get-MtPesterTagValue -TagName 'Service'
-    } catch {
-        Write-Warning "Failed to get service tag: $($_.Exception.Message)"
-        $Service = ''
+    $Service = ''
+    if (-not $isNative) {
+        try {
+            $Service = Get-MtPesterTagValue -TagName 'Service'
+        } catch {
+            Write-Warning "Failed to get service tag: $($_.Exception.Message)"
+            $Service = ''
+        }
     }
 
     # Handle Investigate status separately from Skipped
@@ -241,6 +257,14 @@
 
     if ($SkippedBecause) {
         #This needs to be set at the end.
+        if ($isNative) {
+            # Ends the test, as Set-ItResult does under Pester. The engine recognises the error ID and
+            # reports the test as skipped (or as an error for -SkippedBecause Error).
+            $skipRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new("Skipped: $SkippedReason"), [Maester.Engine.MtSession]::SkipErrorId,
+                [System.Management.Automation.ErrorCategory]::NotSpecified, $SkippedBecause)
+            throw $skipRecord
+        }
         Set-ItResult -Skipped -Because $SkippedReason
     }
 }

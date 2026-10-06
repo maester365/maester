@@ -31,6 +31,7 @@ function Get-MtSkippedReason {
         "NotLicensedMdoP1" { "This test is for tenants that are licensed for Defender for Office 365 Plan 1. See [Microsoft Defender for Office 365 service description](https://learn.microsoft.com/office365/servicedescriptions/office-365-advanced-threat-protection-service-description)"; break }
         "NotLicensedAdvAudit" { "This test is for tenants that are licensed for Advanced Audit. See [Learn about auditing solutions in Microsoft Purview](https://learn.microsoft.com/purview/audit-solutions-overview#licensing-requirements)"; break }
         "LicensedEntraIDPremium" { "This test is for tenants that are not licensed for any Entra ID Premium license. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break }
+        "NotApplicable" { "This test does not apply to this tenant."; break }
         "NotSupported" { "This test relies on capabilities not currently available (e.g., cmdlets that are not available on all platforms, Resolve-DnsName)"; break }
         "NotSupportedAppPermission" { "This test relies on Graph APIs that don't support application permissions. Re-run Maester with a user signed in to view the results for this test."; break }
         "LimitedPermissions" { "This test relies on privileged (i.e., ReadWrite) permissions."; break }

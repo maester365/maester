@@ -11,6 +11,14 @@ function Get-MtTestResultTemplate {
         [string] $SourceFile
     )
 
+    # Native tests (Maester 3.0): the engine records each running test's Markdown file by ID.
+    if ($TestId -and $__MtSession.NativeTestInfo -and $__MtSession.NativeTestInfo.ContainsKey($TestId)) {
+        $info = $__MtSession.NativeTestInfo[$TestId]
+        if ($info.Markdown) {
+            return [PSCustomObject]@{ CommandName = $info.FunctionName; Description = $info.Markdown.Description; Result = $info.Markdown.Result }
+        }
+    }
+
     $candidateNames = [System.Collections.Generic.List[string]]::new()
 
     # EIDSCA tests use one public dispatcher, so their implementation command is

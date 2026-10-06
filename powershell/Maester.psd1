@@ -67,10 +67,10 @@
         'Get-MailAuthenticationRecord', 'Get-MtADDacls', 'Get-MtADDomainState', 'Get-MtADGpoState', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
         'Get-MtAzureManagementGroup', 'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtExoThreatPolicyMalware',
         'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRegistrableDomain', 'Get-MtRole',
-        'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession', 'Get-MtSpo', 'Get-MtTestInventory', 'Get-MtUser',
+        'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession', 'Get-MtSetting', 'Get-MtSpo', 'Get-MtTenantContext', 'Get-MtTest', 'Get-MtTestInventory', 'Get-MtUser',
         'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType', 'Import-MtMaesterResult',
         'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
-        'Invoke-MtGraphRequest', 'Invoke-MtGraphSecurityQuery', 'Merge-MtMaesterResult', 'New-MtMaesterApp', 'Resolve-SPFRecord',
+        'Invoke-MtGraphRequest', 'Invoke-MtGraphSecurityQuery', 'Invoke-MtTest', 'Merge-MtMaesterResult', 'New-MtMaesterApp', 'New-MtTest', 'Resolve-SPFRecord',
         'Send-MtMail', 'Send-MtTeamsMessage', 'Test-AzdoAllowExtensionsLocalNetworkAccess', 'Test-AzdoAllowRequestAccessToken',
         'Test-AzdoAllowTeamAdminsInvitationsAccessToken', 'Test-AzdoArtifactsExternalPackageProtectionToken',
         'Test-AzdoAuditStream', 'Test-AzdoDisableGlobalPATCreation', 'Test-AzdoDisablePATCreation',
@@ -343,7 +343,8 @@
     AliasesToExport      = @(
         'Invoke-MtMaester',
         'Connect-MtGraph', 'Connect-MtMaester',
-        'Disconnect-MtGraph', 'Disconnect-MtMaester'
+        'Disconnect-MtGraph', 'Disconnect-MtMaester',
+        'Get-MtMaesterConfigGlobalSetting'
     )
 
     # List of all modules packaged with this module

@@ -407,7 +407,13 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             ps.RunspacePool = _pool;
             // A pool runspace has its own module instance, found by name.
             object module = Module != null ? (object)Module.Name : null;
-            AddInvocation(ps, item, module);
+            var invocation = item;
+            if (item.Module != null)
+            {
+                // A module object belongs to the caller's runspace; a worker finds its own instance by name.
+                invocation = new MtWorkItem { Id = item.Id, Command = item.Command, Parameters = item.Parameters, ModuleName = item.Module.Name };
+            }
+            AddInvocation(ps, invocation, module);
             ps.Commands.Commands[0].MergeMyResults(PipelineResultTypes.All, PipelineResultTypes.Output);
             var output = new PSDataCollection<PSObject>();
             _inFlight[item] = ps;
@@ -494,7 +500,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
 
         private static void AddInvocation(PowerShell ps, MtWorkItem item, object defaultModule)
         {
-            object module = item.ModuleName != null ? (object)item.ModuleName : defaultModule;
+            object module = item.Module != null ? (object)item.Module : item.ModuleName != null ? (object)item.ModuleName : defaultModule;
             ps.AddScript(InvocationScript, useLocalScope: false)
               .AddArgument(item.Id)
               .AddArgument(module)

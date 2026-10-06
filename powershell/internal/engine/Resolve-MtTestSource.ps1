@@ -76,7 +76,8 @@ function Resolve-MtTestSource {
                 ForEach-Object { $_.FullName } | Where-Object { -not $allBuiltIn.Contains($_) } | Sort-Object)
     }
 
-    if ($SkipBuiltIn -and -not $errorMessage -and $customFiles.Count -eq 0) {
+    $customNativeCount = if ($customRoot) { @(Get-ChildItem -LiteralPath $customRoot -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue).Count } else { 0 }
+    if ($SkipBuiltIn -and -not $errorMessage -and $customFiles.Count -eq 0 -and $customNativeCount -eq 0) {
         $errorMessage = if ($customRoot) { "No test files found in '$customRoot'." } else { 'No custom tests to run. Pass the folder that holds them with -Path.' }
     }
 
@@ -158,11 +159,16 @@ function Get-MtSupersededTest {
         # Inventory rows of the built-in files.
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
-        [object[]] $BuiltInInventory
+        [object[]] $BuiltInInventory,
+
+        # IDs of the built-in native tests.
+        [Parameter()]
+        [string[]] $BuiltInId = @()
     )
 
     $builtInIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     foreach ($r in $BuiltInInventory) { if ($r.Id) { $null = $builtInIds.Add($r.Id) } }
+    foreach ($id in $BuiltInId) { if ($id) { $null = $builtInIds.Add($id) } }
 
     $legacy = Get-MtLegacyIdTable
     $legacyIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)

@@ -5,9 +5,18 @@
     #>
     [CmdletBinding()]
     param(
-        # The Pester test results returned from Invoke-Pester -PassThru
-        [Parameter(Mandatory = $true)]
+        # The Pester test results returned from Invoke-Pester -PassThru. Omitted when the run had no Pester tests.
+        [Parameter(Mandatory = $false)]
+        [AllowNull()]
         [psobject] $PesterResults,
+
+        # Result rows of the native tests (Invoke-MtNativePlan).
+        [Parameter(Mandatory = $false)]
+        [object[]] $NativeRows = @(),
+
+        # Wall-clock duration of the native tests.
+        [Parameter(Mandatory = $false)]
+        [timespan] $NativeDuration = [timespan]::Zero,
 
         # Optional output files information
         [Parameter(Mandatory = $false)]
@@ -36,6 +45,13 @@
     )
 
     $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
+    if ($null -eq $PesterResults) {
+        # No Pester tests in this run: an empty Pester result keeps the rest of the conversion unchanged.
+        $PesterResults = [PSCustomObject]@{
+            Tests = @(); Containers = @(); Result = 'Passed'; ExecutedAt = (Get-Date)
+            Duration = [timespan]::Zero; UserDuration = [timespan]::Zero; DiscoveryDuration = [timespan]::Zero; FrameworkDuration = [timespan]::Zero
+        }
+    }
 
     function GetTenantName() {
         if (Test-MtConnection Graph) {
@@ -407,6 +423,17 @@
         }
         $mtTests += $mtTestInfo
     }
+
+    # Native rows join the Pester rows, sorted the way 2.x sorts: Passed and Failed first, then the rest, each by name.
+    if ($NativeRows.Count -gt 0) {
+        $allRows = @($mtTests) + @($NativeRows)
+        $active = @($allRows | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name)
+        $inactive = @($allRows | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name)
+        $mtTests = @($active) + @($inactive)
+        $testIndex = 0
+        foreach ($row in $mtTests) { $testIndex++; $row.Index = $testIndex }
+    }
+
     # Count all Passed, Failed, Skipped, Error, Investigate, NotRun and Total results
     $Recount = [PSCustomObject]@{
         FailedCount      = 0
@@ -451,6 +478,47 @@
             }
         }
     }
+    # Native tests: one block per category.
+    foreach ($category in @($NativeRows | ForEach-Object { $_.Block } | Where-Object { $_ } | Select-Object -Unique)) {
+        if ($mtBlocks | Where-Object { $_.Name -eq $category }) {
+            $existing = $mtBlocks | Where-Object { $_.Name -eq $category } | Select-Object -First 1
+            foreach ($counter in 'Failed', 'Passed', 'Error', 'Investigate', 'Skipped', 'NotRun') {
+                $existing."$($counter)Count" = @($mtTests | Where-Object { $_.Result -eq $counter -and $_.Block -eq $category }).Count
+            }
+            $existing.TotalCount = @($mtTests | Where-Object { $_.Block -eq $category }).Count
+            continue
+        }
+        $blockRows = @($mtTests | Where-Object { $_.Block -eq $category })
+        $mtBlocks += [PSCustomObject]@{
+            Name             = $category
+            Result           = if ($blockRows | Where-Object { $_.Result -eq 'Failed' }) { 'Failed' } else { 'Passed' }
+            FailedCount      = @($blockRows | Where-Object { $_.Result -eq 'Failed' }).Count
+            PassedCount      = @($blockRows | Where-Object { $_.Result -eq 'Passed' }).Count
+            ErrorCount       = @($blockRows | Where-Object { $_.Result -eq 'Error' }).Count
+            InvestigateCount = @($blockRows | Where-Object { $_.Result -eq 'Investigate' }).Count
+            SkippedCount     = @($blockRows | Where-Object { $_.Result -eq 'Skipped' }).Count
+            NotRunCount      = @($blockRows | Where-Object { $_.Result -eq 'NotRun' }).Count
+            TotalCount       = $blockRows.Count
+            Tag              = @($blockRows | ForEach-Object { $_.Tag } | Select-Object -Unique)
+        }
+    }
+
+    # Top-level Result (design section 5.3, item 7): Failed if any row failed, the Pester run failed, or
+    # the engine itself raised an Error row. A test that threw fails the run only with ErrorsAsFailures.
+    $engineErrorCodes = 'InvalidMetadata', 'InvalidConfiguration', 'InvalidInstanceId', 'DuplicateId', 'LoadFailed',
+    'InstanceSourceFailed', 'RequiresNewerMaester', 'ForeignModuleLoaded', 'PesterNotAvailable'
+    $errorsAsFailures = $false
+    if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Output'] -and $__MtSession.MaesterConfig.Output -and
+        $__MtSession.MaesterConfig.Output.PSObject.Properties['ErrorsAsFailures']) {
+        $errorsAsFailures = [bool]$__MtSession.MaesterConfig.Output.ErrorsAsFailures
+    }
+    $runResult = $PesterResults.Result
+    if ($NativeRows.Count -gt 0 -or $errorsAsFailures) {
+        $failed = $PesterResults.Result -eq 'Failed' -or
+            ($NativeRows | Where-Object { $_.Result -eq 'Failed' -or ($_.Result -eq 'Error' -and $_.ReasonCode -in $engineErrorCodes) }) -or
+            ($errorsAsFailures -and ($mtTests | Where-Object { $_.Result -eq 'Error' }))
+        $runResult = if ($failed) { 'Failed' } else { 'Passed' }
+    }
 
     # Consolidated inventory of all objects referenced by the run (RelatedObjects,
     # result markdown deep links and the session request caches). Never fail the
@@ -473,7 +541,7 @@
     }
 
     $mtTestResults = [PSCustomObject][ordered]@{
-        Result            = $PesterResults.Result
+        Result            = $runResult
         FailedCount       = $Recount.FailedCount
         PassedCount       = $Recount.PassedCount
         ErrorCount        = $Recount.ErrorCount
@@ -482,8 +550,8 @@
         NotRunCount       = $Recount.NotRunCount
         TotalCount        = $Recount.TotalCount
         ExecutedAt        = GetFormattedDate($PesterResults.ExecutedAt)
-        TotalDuration     = $PesterResults.Duration.ToString($timeSpanFormat)
-        UserDuration      = $PesterResults.UserDuration.ToString($timeSpanFormat)
+        TotalDuration     = ($PesterResults.Duration + $NativeDuration).ToString($timeSpanFormat)
+        UserDuration      = ($PesterResults.UserDuration + $NativeDuration).ToString($timeSpanFormat)
         DiscoveryDuration = $PesterResults.DiscoveryDuration.ToString($timeSpanFormat)
         FrameworkDuration = $PesterResults.FrameworkDuration.ToString($timeSpanFormat)
         TenantId          = $tenantId
@@ -498,7 +566,7 @@
         InvokeCommand     = $InvokeMaesterCommand
         MgContext         = GetMgContextInfo
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
-        MaesterConfig     = $__MtSession.MaesterConfig
+        MaesterConfig     = New-MtResultConfig -RunConfig $__MtSession.MaesterConfig -Rows $mtTests -NativeRows $NativeRows
         # Additive in result schema 2.1.
         SchemaVersion     = '2.1'
         CatalogVersion    = $currentVersion
@@ -524,4 +592,46 @@
     }
 
     return $mtTestResults
+}
+
+function New-MtResultConfig {
+    <#
+    .SYNOPSIS
+    Returns the effective run config as recorded in the result, with TestSettings synthesised per test.
+
+    .DESCRIPTION
+    TestSettings holds one row per test in the run: Id, Title, the effective Severity, DefaultSeverity
+    (the attribute's, for native tests) and any keys the user set (design section 9). This keeps the
+    report's Config page complete once the module no longer ships a row per test.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter()] [AllowNull()] [object] $RunConfig,
+        [Parameter()] [AllowEmptyCollection()] [object[]] $Rows = @(),
+        [Parameter()] [AllowEmptyCollection()] [object[]] $NativeRows = @()
+    )
+
+    if ($null -eq $RunConfig) { return $null }
+    if ($NativeRows.Count -eq 0) { return $RunConfig }
+
+    $copy = [pscustomobject]@{}
+    foreach ($p in $RunConfig.PSObject.Properties) {
+        if ($p.Name -in 'TestSettings', 'TestSettingsHash') { continue }
+        $copy | Add-Member -NotePropertyName $p.Name -NotePropertyValue $p.Value
+    }
+    $catalog = @{}
+    foreach ($t in @(Get-MtTestCatalog)) { if ($t.Id) { $catalog[$t.Id] = $t } }
+    $settings = foreach ($row in $Rows) {
+        $entry = [ordered]@{ Id = $row.Id; Title = $row.Title; Severity = $row.Severity }
+        $default = if ($row.ParentId -and $catalog.ContainsKey($row.ParentId)) { $catalog[$row.ParentId].Severity } elseif ($catalog.ContainsKey($row.Id)) { $catalog[$row.Id].Severity } else { $null }
+        if ($default) { $entry.DefaultSeverity = $default }
+        $user = if ($RunConfig.TestSettingsHash -and $RunConfig.TestSettingsHash.ContainsKey($row.Id)) { $RunConfig.TestSettingsHash[$row.Id] } else { $null }
+        if ($user) {
+            foreach ($p in $user.PSObject.Properties) { if ($p.Name -notin 'Id', 'Title', 'Severity') { $entry[$p.Name] = $p.Value } }
+        }
+        [pscustomobject]$entry
+    }
+    $copy | Add-Member -NotePropertyName TestSettings -NotePropertyValue @($settings)
+    $copy
 }
