@@ -5,6 +5,10 @@
 - **Computer Accounts**: Service accounts and system access requirements
 - **Foreign Security Principals**: Cross-domain and cross-forest access
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review account type distributions to identify:

@@ -6,6 +6,10 @@
 
 Without Recycle Bin enabled for the right partitions, deleted objects may be **irrecoverable** once tombstone/purge timelines are exceeded.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 - Enable Recycle Bin for all partitions that store security-critical objects (for example, identity data in domains/NCs you manage).
 - Ensure your recovery playbooks explicitly reference Recycle Bin vs. tombstone recovery.

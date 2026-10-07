@@ -33,6 +33,10 @@ Root DNS server hints are essential for external DNS resolution. Incorrect root 
 
 The root server IP addresses are maintained by IANA and change very infrequently. Any deviation from the official addresses should be investigated immediately.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Verify root server hints against the official IANA list

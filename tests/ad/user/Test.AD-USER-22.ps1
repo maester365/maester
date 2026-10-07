@@ -17,7 +17,7 @@
     #>
     [MaesterTest(
         Id = 'AD-USER-22',
-        Title = 'Built-in administrator account count should be retrievable',
+        Title = 'Built-in administrator account count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Users',
         Tag = 'AD.User',
@@ -63,7 +63,7 @@
     $testResultMarkdown = "Active Directory built-in administrator style accounts were counted.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserBuiltInAdminCount"
 
     return $testResult

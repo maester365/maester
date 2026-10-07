@@ -6,6 +6,10 @@
  * **Compliance**: Many compliance frameworks require documentation and monitoring of cross-forest access
  * **Risk Assessment**: Unknown or unexpected cross-forest references could indicate security compromise or misconfiguration
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 If cross-forest references exist:

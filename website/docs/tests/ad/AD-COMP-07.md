@@ -33,6 +33,10 @@ The organizational structure of computer accounts reflects your Active Directory
 
 A single flat structure (few OUs) or excessive fragmentation (many OUs with few computers) both indicate potential management challenges.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Design an OU structure that supports:

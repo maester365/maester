@@ -17,7 +17,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-USER-25',
-        Title = 'Built-in administrator password age details should be retrievable',
+        Title = 'Built-in administrator password age details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Users',
         Tag = 'AD.User',
@@ -62,9 +62,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Built-in administrator style account password age data was retrieved from Active Directory.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($builtInAdminUsers.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserBuiltInAdminPasswordAgeDetails"
 
     return $testResult

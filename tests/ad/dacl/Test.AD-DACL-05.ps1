@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-05',
-        Title = 'Deny ACE count should be retrievable',
+        Title = 'Deny ACE count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -61,7 +61,7 @@
     $testResultMarkdown = "Active Directory DACL data has been reviewed for deny authorizations. $denyAceCount deny ACE(s) were identified across $affectedObjects object(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclDenyAceCount"
     return $testResult
 }

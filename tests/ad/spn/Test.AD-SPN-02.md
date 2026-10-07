@@ -7,6 +7,10 @@
 
 Services with SPNs are targets for Kerberoasting attacks, so knowing which services exist helps prioritize security efforts.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review the service class breakdown regularly:

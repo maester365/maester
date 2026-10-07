@@ -31,6 +31,10 @@ keywords:
 - Potential security gaps: Stale OUs may have outdated permissions or Group Policy links
 - While stale OUs don't pose a direct security threat, they contribute to directory sprawl and can make administration more complex. They may also retain old permissions or Group Policy settings that are no longer appropriate.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 - Regularly review OUs that haven't been modified in several years:
 - Verify whether the OU is still needed for its original purpose

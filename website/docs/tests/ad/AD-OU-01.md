@@ -31,6 +31,10 @@ keywords:
 - Audit confusion: Security audits and compliance reports become harder to interpret when OU names are ambiguous
 - While Active Directory technically allows duplicate OU names (as long as they're in different locations), this practice should be minimized to reduce operational risk.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Review OUs with duplicate names and consider renaming them to be more descriptive and unique. Use naming conventions that incorporate location, function, or department to make OU names unambiguous. For example:
 

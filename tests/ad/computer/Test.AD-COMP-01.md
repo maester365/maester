@@ -5,6 +5,10 @@
 - **Maintain directory cleanliness**: Simplify auditing and compliance reporting
 - **Avoid stale data**: Ensure Group Policy and software deployment targets are accurate
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Regularly review disabled computer accounts and delete those that are permanently decommissioned. Consider establishing a process where disabled computers are automatically deleted after a defined retention period (e.g., 30-90 days).

@@ -6,6 +6,10 @@
 
 **This setting should never be enabled** in a production environment. If legacy applications require it, consider alternative authentication methods or application modernization.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Disable reversible encryption immediately** unless you have a documented, approved exception for a specific legacy application.

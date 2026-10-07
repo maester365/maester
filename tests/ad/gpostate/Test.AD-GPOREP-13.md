@@ -1,9 +1,27 @@
-﻿This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-then returns a markdown table listing all GPO reports whose DisabledLinks value is greater than 0.
+#### Test-MtAdGpoDisabledLinkDetails
 
-#### Remediation action
+ Returns details of GPOs with disabled GPO links.
 
-Review the configuration described above.
+#### Why This Test Matters
+- Detective control: checks for GPOs with disabled links to identify potential misconfigurations that could affect policy delivery.
+- Disabled links can lead to unexpected policy application gaps.
+
+#### Control Type
+
+**Operational**
+
+#### Security Recommendation
+- Review and re-enable intentional GPO links or remove unused GPOs to restore intended policy application.
+
+#### How the Test Works
+- Retrieves GPO state via Get-MtADGpoState, filters GPOReports for DisabledLinks greater than 0, and renders a Markdown table with the results.
+
+#### Related Tests
+- `Test-MtAdGpoDisabledLinkCount` - Count of disabled links across GPOs.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 <!--- Results --->
 %TestResult%

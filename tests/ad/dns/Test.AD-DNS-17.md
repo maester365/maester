@@ -7,6 +7,10 @@
 
 Standard DNS names should contain only letters, numbers, and hyphens.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Use only RFC-compliant names for DNS zones

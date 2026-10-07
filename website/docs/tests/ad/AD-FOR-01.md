@@ -31,6 +31,10 @@ The forest functional level determines which Active Directory features are avail
 - **Global Features**: Some features require forest-wide consistency to function
 - **Security Posture**: Running at lower levels means missing modern security features
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Aim to maintain your forest at the highest functional level supported by all domain controllers:

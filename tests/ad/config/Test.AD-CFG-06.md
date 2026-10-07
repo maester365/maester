@@ -6,6 +6,10 @@
 
 This test helps ensure your directory query surface is bounded, making it harder for both accidental misconfigurations and malicious users to overwhelm AD.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Set LDAP query policies to enforce practical limits aligned with your operational needs.
 - Ensure policies are applied consistently across relevant directory contexts/partitions.

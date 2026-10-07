@@ -5,6 +5,10 @@
 - **Service Migration**: SPN suffixes enable service migration between domains without changing service configurations
 - **Security Assessment**: Understanding SPN suffix configuration helps identify potential Kerberos authentication attack surfaces
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review SPN suffix configuration regularly:

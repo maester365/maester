@@ -1,5 +1,9 @@
 ﻿Accounts that do not require Kerberos pre-authentication are directly exposed to AS-REP roasting. Attackers can request offline-crackable material without first proving knowledge of the password.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Require pre-authentication for all accounts unless there is a justified exception. Review and remove legacy settings that disable this protection.

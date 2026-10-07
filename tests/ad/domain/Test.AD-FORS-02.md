@@ -5,6 +5,10 @@
  * **Security Boundaries**: Understanding configured UPN suffixes helps identify potential authentication attack surfaces
  * **Operational Continuity**: During domain migrations or consolidations, UPN suffix management ensures user authentication continuity
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Based on the UPN suffix details retrieved:

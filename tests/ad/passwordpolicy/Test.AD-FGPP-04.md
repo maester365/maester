@@ -7,6 +7,10 @@
 
 A policy that doesn't apply to anyone is wasted configuration. A policy that applies to the wrong users can create security gaps or usability issues.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Ensure your fine-grained password policies are applied correctly:

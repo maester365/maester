@@ -37,6 +37,10 @@ Missing or incorrect SRV records can prevent:
 - Group Policy application
 - Service discovery
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Monitor SRV record counts for unexpected changes

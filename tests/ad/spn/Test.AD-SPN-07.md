@@ -7,6 +7,10 @@
 
 User accounts with database or application service SPNs are particularly sensitive.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review service classes on user accounts:

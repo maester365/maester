@@ -7,6 +7,10 @@
 
 Microsoft recommends migrating from FRS to DFS-R for all domains. A count of DFS-R subscriptions compared to DC count shows migration coverage.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Migrate all domains from FRS to DFS-R if not already done

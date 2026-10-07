@@ -13,9 +13,9 @@
     "@remixicon/react": "^4.9.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.4.16",
-    "lucide-react": "^1.48.0",
-    "marked": "^18.0.11",
-    "preact": "^10.29.8",
+    "lucide-react": "^1.50.0",
+    "marked": "^18.0.14",
+    "preact": "^11.0.0",
     "react": "npm:@preact/compat@^18.3.2",
     "react-dom": "npm:@preact/compat@^18.3.2",
     "tailwind-merge": "^3.7.0"
@@ -24,12 +24,12 @@
     "@preact/preset-vite": "^2.10.6",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "tailwindcss": "~4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.3.1",
+    "vite": "^8.3.2",
     "vite-plugin-singlefile": "^2.3.3"
   },
   "engines": {

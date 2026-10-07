@@ -38,6 +38,10 @@ keywords:
 - Configuration errors during domain join
 - Incomplete computer account setup
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Ensure Proper Configuration**:

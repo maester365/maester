@@ -24,8 +24,8 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-01',
-        Title = 'Computers with unconstrained delegation count should be retrievable',
-        Severity = 'Critical',
+        Title = 'Computers with unconstrained delegation count should be investigated',
+        Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
         Service = 'ActiveDirectory',
@@ -78,7 +78,7 @@
     $testResultMarkdown = "Computers with unconstrained delegation have been identified. This configuration allows services to impersonate users to any service.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerUnconstrainedDelegationCount"
 
     return $testResult

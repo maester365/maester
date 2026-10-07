@@ -7,6 +7,10 @@
 
 Every site that should be used for client location must have at least one subnet assigned.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Assign appropriate subnets to all production sites

@@ -7,6 +7,10 @@
 
 Understanding the number and distribution of sites helps assess whether your Active Directory topology accurately reflects your physical network infrastructure.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Ensure that:

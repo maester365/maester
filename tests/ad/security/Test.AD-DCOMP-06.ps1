@@ -24,7 +24,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-06',
-        Title = 'Stale enabled computer count should be retrievable',
+        Title = 'No enabled computers should be stale for 180 days or more',
         Severity = 'Medium',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -59,7 +59,7 @@
     $neverLoggedOn = ($staleEnabledComputers | Where-Object { $null -eq $_.lastLogonDate } | Measure-Object).Count
     $notLoggedIn180Days = $staleCount - $neverLoggedOn
 
-    $testResult = $true
+    $testResult = $staleCount -eq 0
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

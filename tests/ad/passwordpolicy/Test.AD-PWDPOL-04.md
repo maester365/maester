@@ -6,6 +6,10 @@
 
 Complexity alone is not sufficient—length is equally important. The best approach combines both: long passwords (14+ characters) with complexity requirements.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Enable password complexity requirements** to ensure passwords contain characters from at least three of these categories:

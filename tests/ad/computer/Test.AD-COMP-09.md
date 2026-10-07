@@ -5,6 +5,10 @@
 - **Protocol transition**: Allows S4U2Self/S4U2Proxy operations that can be exploited
 - **Lateral movement**: Attackers can abuse delegation for privilege escalation and lateral movement
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - **Minimize unconstrained delegation**: Use it only when absolutely necessary, and never on tier 0 systems

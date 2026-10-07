@@ -33,6 +33,10 @@ A detailed breakdown of SPN service classes on user accounts enables:
 
 Database and application services on user accounts pose the highest Kerberoasting risk.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Based on service class usage:

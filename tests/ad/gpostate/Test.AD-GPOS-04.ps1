@@ -25,7 +25,7 @@ function Test-MtAdGpoSettingsDisabledCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOS-04',
-        Title = 'Disabled GPO settings count should be retrievable',
+        Title = 'Disabled GPO settings count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -91,7 +91,7 @@ function Test-MtAdGpoSettingsDisabledCount {
     $testResultMarkdown = "Active Directory GPOs have been analyzed for disabled settings. $disabledCount out of $totalCount GPO(s) have disabled settings (GpoStatus 0, 1, or 2).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoSettingsDisabledCount"
     return $testResult
 }

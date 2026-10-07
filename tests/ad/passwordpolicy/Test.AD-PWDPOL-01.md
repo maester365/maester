@@ -6,6 +6,10 @@
 
 The recommended minimum of 24 remembered passwords ensures that users cannot reuse passwords within a reasonable timeframe, forcing them to create truly unique passwords.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Configure the password history count to at least **24** (Microsoft and CIS recommendation). This prevents users from reusing their last 24 passwords, significantly reducing the risk of password reuse attacks.

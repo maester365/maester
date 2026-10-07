@@ -23,7 +23,7 @@
     #>
     [MaesterTest(
         Id = 'AD-KRBTGT-02',
-        Title = 'KRBTGT last logon should be retrievable',
+        Title = 'KRBTGT last logon should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -66,7 +66,7 @@
     $testResultMarkdown = "KRBTGT account last logon information retrieved. This service account should not have interactive logons.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdKrbtgtLastLogon"
 
     return $testResult

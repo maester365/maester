@@ -6,6 +6,10 @@
 - **Attack Surface**: Each computer with constrained delegation expands the attack surface
 - **Legacy Protocol**: Some implementations may fall back to less secure methods
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Minimize Usage**:

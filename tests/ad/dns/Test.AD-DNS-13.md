@@ -5,6 +5,10 @@
 - **Compliance**: Some regulations require DNSSEC deployment
 - **Trust establishment**: Trust anchors enable validation chains
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Deploy DNSSEC for all externally-facing DNS zones

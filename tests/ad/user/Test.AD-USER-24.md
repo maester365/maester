@@ -4,6 +4,10 @@
 - **Stale privilege cleanup**: Dormant privileged accounts should be reviewed or disabled.
 - **Incident response**: Last logon data helps reconstruct privileged account activity.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Investigate interactive or unexpected usage of RID 500 accounts.

@@ -7,6 +7,10 @@
 
 User accounts are preferred targets for Kerberoasting, making unknown SPNs on these accounts particularly concerning.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Investigate all unknown SPNs on user accounts:

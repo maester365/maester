@@ -37,6 +37,10 @@ Using non-standard LDAPS ports can cause issues with:
 - Applications hardcoded to use port 636
 - Network security monitoring and compliance auditing
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 1. **Use standard ports where possible**: Port 636 is the industry standard for LDAPS and should be used unless there's a specific requirement

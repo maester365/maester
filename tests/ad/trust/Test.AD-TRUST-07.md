@@ -12,6 +12,10 @@ Stale trusts often accumulate over time as:
 - Network restructuring leaves orphaned connections
 - Test environments are removed without cleanup
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 **Investigation Process:**

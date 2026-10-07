@@ -2,6 +2,10 @@
 
 This can be a powerful mechanism for security baselines, but it also increases the chance that a critical policy unintentionally becomes “sticky” across the domain.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - **Enforced GPOs override inheritance blocking**: any configuration enforced at a higher scope can still apply even if child OUs attempt to disable inheritance.

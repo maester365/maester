@@ -30,6 +30,10 @@ keywords:
 - Clients receiving **unexpected service identity** resolution
 - Increased exposure to **credential forwarding / downgrade-style** scenarios if legacy behavior is unintentionally permitted
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Keep SPN mappings **as minimal as possible**—only those required for supported legacy interoperability.
 - Periodically review and remove stale mappings tied to retired hostnames/services.

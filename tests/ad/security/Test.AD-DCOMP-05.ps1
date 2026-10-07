@@ -25,7 +25,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-DCOMP-05',
-        Title = 'Computer operating system details should be retrievable',
+        Title = 'Computer operating system details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -86,7 +86,7 @@
     $testResultMarkdown = "Detailed operating system distribution has been analyzed. Review for unsupported or end-of-life systems.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerOperatingSystemDetails"
 
     return $testResult

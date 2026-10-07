@@ -4,6 +4,10 @@
 - **Access control review**: Highlights centralized storage paths that may contain sensitive data
 - **Modernization planning**: Helps quantify remaining on-premises file service dependencies
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review home directory locations for proper ACLs and ownership controls

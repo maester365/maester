@@ -24,7 +24,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-FEAT-02',
-        Title = 'Optional feature enabled details should be retrievable',
+        Title = 'Optional feature enabled details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
@@ -65,9 +65,13 @@
     }
 
     $testResultMarkdown = "Active Directory optional feature details have been retrieved. Enabled features extend AD functionality.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($enabledCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

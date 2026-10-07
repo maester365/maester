@@ -1,9 +1,26 @@
-﻿This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-then counts how many returned GPO reports indicate a cpassword was found.
+#### Test-MtAdGpoCpasswordFoundCount
 
-#### Remediation action
+ Counts the number of GPOs that contain a cpassword.
 
-Review the configuration described above.
+#### Why This Test Matters
+- Detective control: counts GPOs containing a cpassword which indicates potential credential exposure.
+
+#### Control Type
+
+**Detective**
+
+#### Security Recommendation
+- Review cpassword occurrences and rotate credentials or secure storage as needed.
+
+#### How the Test Works
+- Retrieves GPO state, filters for CpasswordFound, and reports totals and percentage of GPOs with cpasswords.
+
+#### Related Tests
+- `Test-MtAdGpoCpasswordFoundDetails`.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 <!--- Results --->
 %TestResult%

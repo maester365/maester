@@ -6,6 +6,10 @@
 
 Knowing which optional features are available helps administrators understand the full capabilities of their Active Directory environment and identify opportunities to enhance security.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Enable the Active Directory Recycle Bin if not already enabled

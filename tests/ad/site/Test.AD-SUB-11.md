@@ -7,6 +7,10 @@
 
 Orphaned subnets should be either assigned to sites or removed.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Assign orphaned subnets to appropriate sites

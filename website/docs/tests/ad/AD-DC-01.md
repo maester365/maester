@@ -36,6 +36,10 @@ Sites without domain controllers may indicate:
 - Misconfigured site topology
 - Missing DCs in satellite offices
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review your site topology regularly to ensure all locations have adequate DC coverage. Consider placing at least one DC in each major geographic location to ensure authentication resilience.

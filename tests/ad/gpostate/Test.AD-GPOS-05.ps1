@@ -26,7 +26,7 @@ function Test-MtAdGpoComputerSettingsDisabledDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOS-05',
-        Title = 'Computer disabled GPO settings details should be compliant',
+        Title = 'Computer disabled GPO settings details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -104,7 +104,7 @@ Review these GPOs to ensure computer-side policy delivery is intentionally disab
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoComputerSettingsDisabledDetails"
     return $testResult
 }

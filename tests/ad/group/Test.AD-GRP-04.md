@@ -8,6 +8,10 @@
 
 However, not all groups need managers. Built-in groups, system groups, and highly privileged groups (like Domain Admins) should typically be managed only by IT administrators.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Assign managers to business-purpose groups (department groups, project teams, etc.)

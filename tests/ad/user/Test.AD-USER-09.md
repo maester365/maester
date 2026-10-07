@@ -1,5 +1,9 @@
 ﻿Accounts that do not require passwords are a severe security weakness. Even if rarely used, they represent a misconfiguration that can undermine core authentication protections.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Investigate every account with `PasswordNotRequired` set. Require passwords, rotate credentials, and validate that no workflow depends on this unsafe configuration.

@@ -11,6 +11,10 @@ In a **multi-domain forest**, proper Global Catalog placement is critical:
 - Too few GCs can cause authentication delays and failures
 - Too many GCs can increase replication traffic
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Single-domain forests**: Configure all DCs as Global Catalogs

@@ -20,7 +20,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-SPN-10',
-        Title = 'User SPN unknown service class details should be retrievable',
+        Title = 'User SPN unknown service class details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
         Tag = 'AD.SPN',
@@ -127,12 +127,16 @@
         }
 
         $testResultMarkdown = "Active Directory user SPN unknown service class details.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($unknownCount -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

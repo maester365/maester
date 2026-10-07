@@ -96,7 +96,11 @@
         }
 
         $testResultMarkdown = "Active Directory DNS zone record details have been analyzed. $totalZones zones contain $totalRecords records.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($totalZones -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve DNS zone data. Ensure the target domain controller is reachable and the management session can access the MicrosoftDNS WMI namespace."
     }

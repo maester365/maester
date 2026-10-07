@@ -4,6 +4,10 @@
 - **Hardening prioritization**: Supports focused review of passwords, SPNs, and delegation
 - **Monitoring alignment**: Makes it easier to target logon, privilege, and usage monitoring
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review accounts matching known service account naming patterns for proper ownership and documentation

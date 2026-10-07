@@ -5,6 +5,10 @@
 - **Configuration complexity**: Each delegation adds management overhead
 - **Potential hijacking**: Unauthorized delegations could redirect traffic
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Audit all zone delegations regularly

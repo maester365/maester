@@ -7,6 +7,10 @@
 
 A high number of global groups typically indicates well-organized user role management.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Optimize global group usage:

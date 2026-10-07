@@ -7,6 +7,10 @@
 
 Unknown SPNs on privileged user accounts represent the highest risk.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 For each unknown user SPN:

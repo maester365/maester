@@ -78,7 +78,11 @@
         }
 
         $testResultMarkdown = "Active Directory schema modification details by year. Schema changes occurred across $yearCount different years.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($yearCount -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory schema information. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

@@ -29,8 +29,8 @@
     #>
     [MaesterTest(
         Id = 'AD-DFSR-01',
-        Title = 'DFS-R subscription count should be retrievable',
-        Severity = 'Info',
+        Title = 'All domain controllers should have DFS-R subscriptions',
+        Severity = 'High',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
@@ -56,7 +56,7 @@
     $domainControllers = $adState.DomainControllers
     $dcCount = ($domainControllers | Measure-Object).Count
 
-    $testResult = $true
+    $testResult = $subscriptionCount -eq $dcCount
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

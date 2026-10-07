@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-02 - Dormant enabled user count should be retrievable"
-description: "Enabled user accounts that have not logged on for more than 90 days are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target. Security Recommendation Investigate dormant enabled accounts an…"
+description: "Enabled user accounts that have not logged on for more than 90 days are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target. Control Type **Detective** Security Recommendation Investigate…"
 slug: /tests/AD-USER-02
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,6 +25,10 @@ keywords:
 ## Overview
 
 Enabled user accounts that have not logged on for more than 90 days are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

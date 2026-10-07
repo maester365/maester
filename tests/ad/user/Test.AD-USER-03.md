@@ -1,5 +1,9 @@
 ﻿Passwords that never expire reduce credential hygiene and increase the blast radius of password theft. While some service accounts may require non-expiring credentials, they should be rare, controlled, and closely monitored.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Minimize the use of non-expiring passwords. Where legacy constraints require them, migrate to managed service accounts, vaulting, or other compensating controls.

@@ -4,6 +4,10 @@
 - Cause authentication and directory access **inconsistencies** across clients
 - Increase the likelihood of **unsafe fallback behaviors** when clients interact with AD
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Confirm dSHeuristics is set according to your domain’s **hardening baseline** (and any guidance for your forest/domain functional level).
 - Avoid “trial-and-error” changes; instead, validate configuration changes in a controlled test window.

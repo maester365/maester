@@ -37,6 +37,10 @@ keywords:
 - **Standalone MSA**: For use on a single computer (legacy, largely replaced by gMSA)
 - **Group MSA (gMSA)**: Can be used across multiple computers, preferred solution
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Use gMSAs Where Possible**:

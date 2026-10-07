@@ -19,7 +19,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOREP-02',
-        Title = 'GPOs without permissions details should be retrievable',
+        Title = 'No GPOs should be missing permissions',
         Severity = 'Medium',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',

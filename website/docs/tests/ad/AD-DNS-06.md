@@ -31,6 +31,10 @@ Zones with non-default records (beyond SOA and NS) are actively used for DNS res
 - **Plan maintenance**: Active zones require more careful change management
 - **Audit compliance**: Verify only authorized zones are in use
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review zones with non-default records to ensure they are all necessary and properly secured. Verify that zone contents align with authorized services and applications.

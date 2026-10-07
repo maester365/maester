@@ -7,6 +7,10 @@
 
 Replication connections should normally be enabled to ensure consistent directory data across all domain controllers.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Regularly review disabled replication connections

@@ -33,6 +33,10 @@ Detailed information about public IP subnet usage helps:
 
 Each public IP subnet should be reviewed for proper isolation and business justification.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 For each public IP subnet:

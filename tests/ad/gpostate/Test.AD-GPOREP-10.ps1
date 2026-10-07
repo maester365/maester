@@ -19,7 +19,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-10',
-        Title = 'GPO no-apply Group Policy ACE count should be retrievable',
+        Title = 'GPO no-apply Group Policy ACE count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -61,7 +61,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     $testResultMarkdown = "Active Directory GPOs have been analyzed for Apply Group Policy permissions. $noApplyAceCount out of $gpoCount GPO(s) are missing the required ACE.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoNoApplyGroupPolicyAceCount"
     return $testResult
 }

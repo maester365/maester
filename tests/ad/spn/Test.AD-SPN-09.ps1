@@ -20,7 +20,7 @@
     #>
     [MaesterTest(
         Id = 'AD-SPN-09',
-        Title = 'User SPN unknown service class count should be retrievable',
+        Title = 'User SPN unknown service class count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
         Tag = 'AD.SPN',
@@ -117,7 +117,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

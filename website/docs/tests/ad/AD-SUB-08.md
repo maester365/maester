@@ -33,6 +33,10 @@ Analyzing subnet distribution by first octet provides:
 
 Common patterns include using 10.x for corporate, 172.x for datacenters, etc.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Document the IP addressing scheme and first octet allocation

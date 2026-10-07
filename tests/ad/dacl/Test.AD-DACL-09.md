@@ -4,6 +4,10 @@
 - **WriteDacl / WriteOwner**: Enables permission tampering or ownership takeover.
 - **ExtendedRight**: May allow sensitive control-access operations depending on object type.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Limit privileged rights to tightly controlled administrative groups. Investigate unexpected identities or objects that accumulate these permissions.

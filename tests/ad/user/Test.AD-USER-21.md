@@ -5,6 +5,10 @@
 - **Credential hygiene**: Check for non-expiring passwords and stale patterns.
 - **Inventory accuracy**: Confirm naming standards are applied consistently.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Maintain a defined naming standard for service accounts.

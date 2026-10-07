@@ -13,6 +13,10 @@
 - Test systems that are no longer in use
 - Hardware refreshes where old accounts remain
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 1. **Regular Review Process**:

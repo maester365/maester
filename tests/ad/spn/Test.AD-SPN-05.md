@@ -5,6 +5,10 @@
 - **Cross-domain problems**: Non-FQDNs may not work across domain trusts
 - **Configuration drift**: Indicates inconsistent SPN registration practices
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review SPNs with non-FQDN hosts:

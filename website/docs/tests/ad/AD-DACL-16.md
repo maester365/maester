@@ -30,6 +30,10 @@ Knowing which directory objects contain orphaned SID ACEs helps target cleanup w
 - **Audit clarity**: Makes manual DACL review easier during privileged access assessments
 - **Change tracking**: Helps confirm whether decommissioned identities still linger on important objects
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Remove orphaned ACEs after confirming the referenced SID is no longer valid

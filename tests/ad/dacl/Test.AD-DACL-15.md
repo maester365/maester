@@ -4,6 +4,10 @@
 - **Operational hygiene**: Orphaned SID references make permissions harder to review and audit
 - **Migration validation**: Unresolved SIDs can reveal accounts that were not fully remapped or retired
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Investigate unresolved SID ACEs and determine whether they can be removed

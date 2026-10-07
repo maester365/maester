@@ -7,6 +7,10 @@
 
 These zones should be investigated and resolved to ensure consistent DNS behavior.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Investigate all duplicate/conflict zones immediately

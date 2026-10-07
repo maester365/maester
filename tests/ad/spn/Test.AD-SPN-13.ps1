@@ -20,7 +20,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-SPN-13',
-        Title = 'User SPN domain admin details should be retrievable',
+        Title = 'No domain admin accounts should have SPNs configured',
         Severity = 'Critical',
         Category = 'Active Directory - SPN Analysis',
         Tag = 'AD.SPN',
@@ -82,8 +82,8 @@
     $adminsWithSpns = ($domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalDomainAdmins = ($domainAdmins | Measure-Object).Count
 
-    # Test passes if we successfully retrieved SPN data
-    $testResult = $true
+    # Test passes if no domain admin accounts have SPNs configured
+    $testResult = $totalAdminSpns -eq 0
 
     # Generate markdown results
     if ($testResult) {
@@ -117,7 +117,11 @@
         }
 
         $testResultMarkdown = "Active Directory domain administrator SPN detailed analysis.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        if ($totalAdminSpns -gt 0) {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        } else {
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+        }
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }

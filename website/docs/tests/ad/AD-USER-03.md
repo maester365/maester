@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-03 - Non-expiring password user count should be retrievable"
-description: "Passwords that never expire reduce credential hygiene and increase the blast radius of password theft. While some service accounts may require non-expiring credentials, they should be rare, controlled, and closely monitored. Security Recommendation Minimize the use of non-expiring passwords. Where…"
+description: "Passwords that never expire reduce credential hygiene and increase the blast radius of password theft. While some service accounts may require non-expiring credentials, they should be rare, controlled, and closely monitored. Control Type **Detective** Security Recommendation Minimize the use of non…"
 slug: /tests/AD-USER-03
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,6 +25,10 @@ keywords:
 ## Overview
 
 Passwords that never expire reduce credential hygiene and increase the blast radius of password theft. While some service accounts may require non-expiring credentials, they should be rare, controlled, and closely monitored.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

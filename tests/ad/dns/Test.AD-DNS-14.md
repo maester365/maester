@@ -7,6 +7,10 @@
 
 Empty zones add administrative overhead without providing value and may confuse administrators.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Audit empty zones regularly

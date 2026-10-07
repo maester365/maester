@@ -4,6 +4,10 @@
 - **Computer Membership**: Computers in groups may indicate service accounts or special access requirements
 - **Foreign Principals**: External domain members represent trust relationships that extend beyond the local domain
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Monitor group membership composition:

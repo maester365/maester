@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-01 - Disabled user count should be retrievable"
-description: "Disabled user accounts are expected during offboarding, investigations, and staged deprovisioning. Tracking their volume helps identify stale objects that should be deleted, reduces directory clutter, and supports lifecycle governance. Security Recommendation Review disabled user accounts regularly…"
+description: "Disabled user accounts are expected during offboarding, investigations, and staged deprovisioning. Tracking their volume helps identify stale objects that should be deleted, reduces directory clutter, and supports lifecycle governance. Control Type **Detective** Security Recommendation Review disab…"
 slug: /tests/AD-USER-01
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,6 +25,10 @@ keywords:
 ## Overview
 
 Disabled user accounts are expected during offboarding, investigations, and staged deprovisioning. Tracking their volume helps identify stale objects that should be deleted, reduces directory clutter, and supports lifecycle governance.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

@@ -30,6 +30,10 @@ When deny ACEs exist, administrators need to know exactly which identities are d
 - **Supports delegated access reviews**
 - **Helps identify concentrated deny patterns** that deserve validation
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review each deny ACE grouping to confirm it reflects an intentional control. Focus especially on privileged objects, administrative groups, and OUs used for delegation.

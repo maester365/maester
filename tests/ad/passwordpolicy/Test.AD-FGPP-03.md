@@ -7,6 +7,10 @@
 
 This detailed view complements the value count by showing the actual settings rather than just the number of variations.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 When reviewing fine-grained password policy settings, ensure:

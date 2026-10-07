@@ -26,7 +26,7 @@
     #>
     [MaesterTest(
         Id = 'AD-REPL-02',
-        Title = 'Non-auto replication connection count should be retrievable',
+        Title = 'Non-auto replication connection count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
@@ -67,7 +67,7 @@
     $testResultMarkdown = "Active Directory replication connections have been analyzed. Manual connections bypass automatic topology optimization and should be documented.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

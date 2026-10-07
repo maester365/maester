@@ -7,6 +7,10 @@
 
 Identifying unknown SPNs allows security teams to investigate and validate whether these services are legitimate and properly secured.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 When unknown SPN service classes are identified:

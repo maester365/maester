@@ -7,6 +7,10 @@
 
 Common SPN service classes include HOST, HTTP, LDAP, MSSQLSvc, and CIFS. Unexpected service classes may warrant investigation.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly audit SPN configurations to ensure:

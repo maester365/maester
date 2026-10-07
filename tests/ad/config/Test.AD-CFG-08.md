@@ -6,6 +6,10 @@
 
 Because authentication to domain controllers is a critical trust boundary, this test focuses on ensuring policies are explicitly configured and managed.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Ensure authentication policies are configured to restrict DC access to **authorized systems** and approved authentication behaviors.
 - Use change control: treat authentication policy changes as security-critical.

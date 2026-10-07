@@ -32,6 +32,10 @@ Understanding which Active Directory optional features are enabled and their sco
 
 Enabled optional features represent additional capabilities that can enhance security but also increase the attack surface if not properly managed.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Enable Recycle Bin at the forest level if not already enabled

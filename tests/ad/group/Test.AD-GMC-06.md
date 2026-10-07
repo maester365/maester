@@ -5,6 +5,10 @@
 - **Cross-Forest Access**: Forest trusts may introduce SIDs from entirely different forests
 - **Security Auditing**: Foreign SIDs should be tracked as they bypass some local security checks
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Monitor and audit foreign SIDs carefully:

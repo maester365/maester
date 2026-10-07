@@ -36,6 +36,10 @@ Tracking schema modification years helps:
 - **Troubleshooting**: Correlate issues with schema change timeframes
 - **Planning**: Identify when the directory was last updated
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 While schema modifications are normal and necessary, they should be:

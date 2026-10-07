@@ -21,7 +21,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOREP-11',
-        Title = 'GPO no-apply Group Policy ACE details should be retrievable',
+        Title = 'GPO no-apply Group Policy ACE details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -64,7 +64,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     $testResultMarkdown = "GPO apply permissions were analyzed. $($noApplyAceReports.Count) GPO(s) are missing the required ACE.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoNoApplyGroupPolicyAceDetails"
     return $testResult
 }

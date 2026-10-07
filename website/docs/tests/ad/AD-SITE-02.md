@@ -33,6 +33,10 @@ Sites without domain controllers may indicate:
 
 Sites without DCs should be carefully evaluated to ensure they represent intentional design decisions rather than configuration gaps.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 For sites without domain controllers:

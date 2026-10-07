@@ -24,8 +24,8 @@
     #>
     [MaesterTest(
         Id = 'AD-REPL-01',
-        Title = 'Disabled replication connection count should be retrievable',
-        Severity = 'Info',
+        Title = 'No replication connections should be disabled',
+        Severity = 'High',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
@@ -49,7 +49,7 @@
     $disabledConnections = $replicationConnections | Where-Object { $_.Enabled -eq $false }
     $disabledCount = ($disabledConnections | Measure-Object).Count
 
-    $testResult = $true
+    $testResult = $disabledCount -eq 0
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

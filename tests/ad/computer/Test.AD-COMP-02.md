@@ -5,6 +5,10 @@
 - **Lateral movement**: Compromised dormant accounts can be used to move laterally within the network
 - **Compliance issues**: Many security frameworks require identification and remediation of stale accounts
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Establish a process to:

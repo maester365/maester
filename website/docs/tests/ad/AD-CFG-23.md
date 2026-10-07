@@ -32,6 +32,10 @@ Monitoring SMTP site link *count* helps detect:
 - Unexpected SMTP replication configuration (often a sign of misconfiguration or old legacy settings being retained)
 - Potential exposure of replication paths through email-based infrastructure
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Prefer RPC/IP (or other supported modern transports) and remove unnecessary SMTP site links.
 - If SMTP must remain (legacy reasons), ensure you have strong network controls, hardened mail flow paths, and strict access rules.

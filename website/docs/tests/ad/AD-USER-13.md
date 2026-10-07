@@ -30,6 +30,10 @@ keywords:
 - **Trust boundary review**: Helps spot cross-domain access dependencies
 - **Permission cleanup**: Supports least-privilege remediation after migrations
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review users with `SIDHistory` to confirm ongoing business need

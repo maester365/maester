@@ -23,7 +23,7 @@
     #>
     [MaesterTest(
         Id = 'AD-KRBTGT-01',
-        Title = 'KRBTGT password last set should be retrievable',
+        Title = 'KRBTGT password age should not exceed 180 days',
         Severity = 'High',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -55,7 +55,9 @@
     $passwordLastSet = $krbtgt.PasswordLastSet
     $daysSinceChange = if ($passwordLastSet) { (Get-Date) - $passwordLastSet } else { $null }
 
-    $testResult = $true
+    $passwordAgeDays = if ($daysSinceChange) { [Math]::Round($daysSinceChange.TotalDays, 0) } else { [int]::MaxValue }
+    $maxAge = 180
+    $testResult = $passwordAgeDays -le $maxAge
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

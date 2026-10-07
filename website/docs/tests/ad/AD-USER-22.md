@@ -30,6 +30,10 @@ Built-in and critical administrator-related accounts are among the most sensitiv
 - **Detection support**: Helps validate whether renamed administrator accounts still exist.
 - **Tier-0 review**: Critical system objects warrant extra monitoring and protection.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Minimize use of built-in administrator accounts.

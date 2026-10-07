@@ -1,5 +1,9 @@
 ﻿Enrollment templates represent which certificate templates are available for users/computers to request through AD-integrated enrollment. If unnecessary or risky templates are available for enrollment, an attacker may enroll for certificates that enable authentication, code-signing abuse, or access to privileged resources.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Keep the enrollment template set minimal and aligned with your approved PKI strategy.
 - Validate enrollment permissions and autoenrollment settings for each template that is enabled.

@@ -7,6 +7,10 @@
 
 The number of reverse zones indicates network coverage for reverse resolution.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Maintain reverse zones for all internal networks

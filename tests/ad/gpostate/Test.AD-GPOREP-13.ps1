@@ -20,7 +20,7 @@ function Test-MtAdGpoDisabledLinkDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOREP-13',
-        Title = 'GPO disabled link details should be retrievable',
+        Title = 'GPO disabled link details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -74,7 +74,7 @@ function Test-MtAdGpoDisabledLinkDetails {
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoDisabledLinkDetails"
     return $testResult
 }

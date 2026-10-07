@@ -4,6 +4,10 @@
 - **Delegation review**: Helps validate whether inherited permissions are narrowly or broadly applied
 - **Troubleshooting support**: Useful when investigating unexpected effective permissions on child objects
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Review heavily used inherited object type targets for overly broad delegations

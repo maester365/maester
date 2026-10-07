@@ -19,8 +19,8 @@ function Test-MtAdGpoDefaultPasswordFoundCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-19',
-        Title = 'GPO default password found count should be retrievable',
-        Severity = 'Medium',
+        Title = 'No GPOs should contain a default password',
+        Severity = 'High',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
@@ -49,7 +49,7 @@ function Test-MtAdGpoDefaultPasswordFoundCount {
     $totalCount = $gpoReportsArray.Count
     $defaultPasswordCount = @($gpoReportsArray | Where-Object { [bool]$_.DefaultPasswordFound }).Count
 
-    $testResult = $true
+    $testResult = $defaultPasswordCount -eq 0
     $defaultPasswordPercentage = if ($totalCount -gt 0) { [Math]::Round(($defaultPasswordCount / $totalCount) * 100, 2) } else { 0 }
 
     $result = "| Metric | Value |" + "`n"

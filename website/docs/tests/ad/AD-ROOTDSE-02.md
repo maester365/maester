@@ -37,6 +37,10 @@ Common mechanisms and their security levels:
 - **EXTERNAL**: TLS client certificate authentication
 - **DIGEST-MD5**: Less secure, often disabled in hardened environments
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Use Kerberos (GSSAPI) as the primary authentication mechanism

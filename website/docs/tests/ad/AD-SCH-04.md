@@ -36,6 +36,10 @@ Understanding schema details helps with:
 - **Documentation**: Maintaining accurate AD documentation
 - **Security**: Detecting unauthorized schema modifications
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Protect your schema with these practices:

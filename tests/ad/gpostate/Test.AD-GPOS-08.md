@@ -1,9 +1,26 @@
-﻿This test retrieves Active Directory GPO state data using Get-MtADGpoState and counts the number of
-distinct (non-empty) Owner values found across returned GPO objects.
+#### Test-MtAdGpoOwnerDistinctCount
 
-#### Remediation action
+ Counts the number of distinct GPO owners.
 
-Review the configuration described above.
+#### Why This Test Matters
+- Operational control: assesses diversity of GPO owners which can highlight unusual configurations or omissions.
+
+#### Control Type
+
+**Operational**
+
+#### Security Recommendation
+- If many owners are identical or blank, review GPO creation practices to ensure proper ownership.
+
+#### How the Test Works
+- Retrieves GPO state, extracts Owner fields, computes distinct non-empty owners, and reports the count.
+
+#### Related Tests
+- `Test-MtAdGpoOwnerDetails` - summarizes owners per GPOs.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 <!--- Results --->
 %TestResult%

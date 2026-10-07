@@ -35,6 +35,10 @@ Without FGPPs, all users in the domain are subject to the same password policy, 
 - Too weak a policy for privileged accounts, or
 - Too restrictive a policy for regular users, leading to workarounds
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Consider implementing fine-grained password policies for:

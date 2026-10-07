@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-02',
-        Title = 'OU DACL entry count should be retrievable',
+        Title = 'OU DACL entry count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -61,7 +61,7 @@
     $testResultMarkdown = "Active Directory DACL data has been filtered to Organizational Unit objects. $ouDaclEntryCount DACL entr$(if ($ouDaclEntryCount -eq 1) { 'y' } else { 'ies' }) were found across $distinctOuObjectCount OU object(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclOuObjectCount"
     return $testResult
 }

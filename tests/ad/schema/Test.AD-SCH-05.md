@@ -12,6 +12,10 @@ Without LAPS, organizations commonly face these risks:
 - **Credential stuffing**: Shared passwords reused across multiple systems
 - **Compliance failures**: Many frameworks require unique local admin passwords
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Deploy LAPS across your entire domain:

@@ -4,6 +4,10 @@
 - **Migration residue**: Legacy migrations and scripted provisioning may leave unusual values behind
 - **Access clarity**: Atypical primary groups make account analysis more complex
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review users whose `PrimaryGroupId` is not `513`

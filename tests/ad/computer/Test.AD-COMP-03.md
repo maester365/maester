@@ -5,6 +5,10 @@
 - **Security monitoring**: Detecting unusual computer creation patterns that may indicate compromise
 - **Compliance**: Meeting requirements for tracking resource creation in the directory
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Computer account creation should be tightly controlled:

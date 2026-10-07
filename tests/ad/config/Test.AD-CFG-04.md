@@ -6,6 +6,10 @@
 
 In particular, features that improve recovery (such as those related to the Recycle Bin) directly impact resilience during incidents.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Ensure critical recoverability features (notably **Recycle Bin**) are enabled for the partitions that contain important identity data.
 - Treat optional feature changes as **security configuration changes**: use a change control process, test first, and validate after enabling/disabling.

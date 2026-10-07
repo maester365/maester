@@ -6,6 +6,10 @@
 
 A minimum of 14 characters aligns with current NIST guidelines and provides significantly better security than the traditional 8-character minimum. Passphrases (multiple words strung together) are an excellent way to achieve length while maintaining memorability.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Configure the minimum password length to at least **14 characters** (NIST SP 800-63B recommendation). Consider:

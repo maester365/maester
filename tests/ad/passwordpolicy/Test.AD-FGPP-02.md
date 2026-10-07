@@ -7,6 +7,10 @@
 
 Having multiple distinct values indicates you're using FGPPs to differentiate security requirements. Having identical values across all policies may indicate unnecessary duplication.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review your fine-grained password policies to ensure:

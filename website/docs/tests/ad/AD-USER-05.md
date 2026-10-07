@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-05 - Delegation-enabled user count should be retrievable"
-description: "Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement. Security Recommendation Limit delegation to only the accounts that need it,…"
+description: "Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement. Control Type **Detective** Security Recommendation Limit delegation to only…"
 slug: /tests/AD-USER-05
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,6 +25,10 @@ keywords:
 ## Overview
 
 Delegation-capable user accounts can impersonate users to downstream services. If these accounts are over-privileged or poorly protected, they can become valuable pivot points for privilege escalation and lateral movement.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

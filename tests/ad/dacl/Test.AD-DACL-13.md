@@ -4,6 +4,10 @@
 - **Delegation review**: Extended rights are often assigned during admin delegation and may persist longer than intended
 - **Exposure visibility**: Grouping by identity shows which principals hold high-impact rights across the directory
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Review every identity granted privileged extended rights

@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-15',
-        Title = 'Unresolved SID count should be retrievable',
+        Title = 'Unresolved SID count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -61,6 +61,6 @@
     $testResultMarkdown = "Active Directory DACL identities were analyzed. $distinctUnresolvedSidCount unresolved SID reference(s) were found across $($unresolvedEntries.Count) ACE(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

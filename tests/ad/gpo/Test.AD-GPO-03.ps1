@@ -21,7 +21,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GPO-03',
-        Title = 'GPO stale-before-2020 count should be retrievable',
+        Title = 'GPO stale-before-2020 count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Policy',
         Tag = 'AD.GPO',
@@ -76,7 +76,7 @@
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

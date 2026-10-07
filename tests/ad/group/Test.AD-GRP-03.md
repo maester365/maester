@@ -11,6 +11,10 @@ Stale groups pose particular risks because:
 - They might grant access to resources that should be restricted
 - Their purpose may be forgotten, making them difficult to audit
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Establish a regular review process for groups that haven't been modified recently

@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-07',
-        Title = 'Distinct DACL identity count should be retrievable',
+        Title = 'Distinct DACL identity count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -78,7 +78,7 @@
     $testResultMarkdown = "This informational test summarizes how many unique identities are present across collected DACL ACEs.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclDistinctIdentityCount"
     return $testResult
 }

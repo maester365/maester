@@ -21,7 +21,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-SCH-05',
-        Title = 'LAPS installation status should be retrievable',
+        Title = 'LAPS should be installed in Active Directory',
         Severity = 'Medium',
         Category = 'Active Directory - Schema',
         Tag = 'AD.Schema',

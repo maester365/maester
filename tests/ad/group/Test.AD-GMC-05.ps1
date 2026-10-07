@@ -22,7 +22,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GMC-05',
-        Title = 'Trust members details by group should be retrievable',
+        Title = 'Trust members details by group should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
         Tag = 'AD.Group',
@@ -134,7 +134,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group member data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

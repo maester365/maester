@@ -21,7 +21,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-TRUST-07',
-        Title = 'Trust stale details should be retrievable',
+        Title = 'Trust stale details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Trusts',
         Tag = 'AD.Trust',
@@ -93,9 +93,13 @@
         $testResultMarkdown = "Found $staleCount stale trust(s). These trusts should be reviewed and removed if the target domain is no longer accessible or needed.`n`n%TestResult%"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($totalCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

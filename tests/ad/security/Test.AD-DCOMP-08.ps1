@@ -24,7 +24,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-08',
-        Title = 'Computer DNS zone count should be retrievable',
+        Title = 'Computer DNS zone count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -88,7 +88,7 @@
     $testResultMarkdown = "DNS zone distribution has been analyzed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerDnsZoneCount"
 
     return $testResult

@@ -5,6 +5,10 @@
 - **DNS Hygiene**: Prevents DNS namespace pollution from computers with non-standard or unexpected DNS suffixes
 - **Compliance**: Some security frameworks require control over which DNS namespaces can participate in the domain
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Consider configuring allowed DNS suffixes to enhance security:

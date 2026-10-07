@@ -7,6 +7,10 @@
 
 Each site without a DC represents a potential single point of failure for authentication in that location.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 For each site without a DC:

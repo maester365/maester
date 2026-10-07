@@ -33,6 +33,10 @@ Empty groups that are not privileged (no adminCount) represent directory clutter
 - **Operational efficiency**: Simplifies group management and reduces confusion
 - **Potential risks**: Empty groups could be populated unexpectedly
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Implement a regular cleanup process:

@@ -1,15 +1,26 @@
-﻿This test retrieves Active Directory GPO state data using Get-MtADGpoState and counts how many
-returned GPOs have GpoStatus values indicating disabled settings.
+#### Test-MtAdGpoSettingsDisabledCount
 
-GpoStatus mapping:
-- 0 = AllDisabled
-- 1 = UserDisabled
-- 2 = ComputerDisabled
-- 3 = AllEnabled
+ Counts GPOs where settings are disabled (AllDisabled, UserDisabled, or ComputerDisabled).
 
-#### Remediation action
+#### Why This Test Matters
+- Detective control: checks how many GPOs have disabled settings (AllDisabled, UserDisabled, ComputerDisabled).
 
-Review the configuration described above.
+#### Control Type
+
+**Operational**
+
+#### Security Recommendation
+- Review disabled settings to confirm they are intentional and document exceptions if needed.
+
+#### How the Test Works
+- Counts GPOs whose GpoStatus maps to a disabled state and reports totals and ratios.
+
+#### Related Tests
+- `Test-MtAdGpoAllSettingsDisabledDetails` and `Test-MtAdGpoSettingsDisabledCount`.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 <!--- Results --->
 %TestResult%

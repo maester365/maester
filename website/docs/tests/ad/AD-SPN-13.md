@@ -33,6 +33,10 @@ Detailed visibility into domain admin SPNs is critical for security incident res
 
 Any SPN on a domain admin account is a critical finding requiring immediate action.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 **Immediate actions required:**

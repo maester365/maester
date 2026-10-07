@@ -19,7 +19,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-DACL-10',
-        Title = 'Privileged allow ACE details should be retrievable',
+        Title = 'Privileged allow ACE details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -128,9 +128,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
+    if ($objectBreakdown.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceDetails"
     return $testResult
 }

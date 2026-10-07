@@ -18,7 +18,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-USER-21',
-        Title = 'Known service account details should be retrievable',
+        Title = 'Known service account details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Users',
         Tag = 'AD.User',
@@ -106,9 +106,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory users were reviewed for known service account naming patterns.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($serviceAccountCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserKnownServiceAccountDetails"
 
     return $testResult

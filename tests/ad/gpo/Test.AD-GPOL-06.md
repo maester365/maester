@@ -5,6 +5,10 @@
 - **Security Gaps**: OUs without GPO links may rely solely on domain-level policies, potentially missing OU-specific security controls
 - **Policy Management**: Provides visibility into how broadly GPOs are deployed across the directory structure
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review OUs without GPO links to ensure:

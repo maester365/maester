@@ -25,8 +25,8 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-03',
-        Title = 'Non-DC computers with constrained delegation count should be retrievable',
-        Severity = 'High',
+        Title = 'Non-DC computers with constrained delegation count should be investigated',
+        Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
         Service = 'ActiveDirectory',
@@ -91,7 +91,7 @@
     $testResultMarkdown = "Non-DC computers with constrained delegation have been identified. These should be reviewed to ensure they are necessary and properly configured.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerNonDcConstrainedDelegationCount"
 
     return $testResult

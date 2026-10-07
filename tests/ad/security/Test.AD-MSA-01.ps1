@@ -26,7 +26,7 @@
     #>
     [MaesterTest(
         Id = 'AD-MSA-01',
-        Title = 'Managed service account count should be retrievable',
+        Title = 'Managed service account count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -93,7 +93,7 @@
     $testResultMarkdown = "Managed service accounts provide automatic password management and improved security for service accounts.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdManagedServiceAccountCount"
 
     return $testResult

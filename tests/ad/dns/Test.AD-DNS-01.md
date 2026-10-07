@@ -5,6 +5,10 @@
 - **Service distribution**: Multiple zones may indicate delegated or distributed services
 - **Security posture**: Unused or empty zones may represent configuration drift
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly audit DNS zones to ensure they are all necessary and properly configured. Remove unused zones and verify that zone delegation follows your organization's security policies.

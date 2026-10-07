@@ -20,8 +20,8 @@ function Test-MtAdGpoVersionMismatchDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOREP-16',
-        Title = 'GPO version mismatch details should be retrievable',
-        Severity = 'Info',
+        Title = 'No GPOs should have version mismatches',
+        Severity = 'High',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
@@ -50,7 +50,7 @@ function Test-MtAdGpoVersionMismatchDetails {
     $mismatched = $gpoReportsArray | Where-Object { [bool]$_.HasVersionMismatch }
     $mismatchCount = @($mismatched).Count
 
-    $testResult = $true
+    $testResult = $mismatchCount -eq 0
 
     $table = "| GPO Name | HasVersionMismatch |" + "`n"
     $table += '| --- | --- |' + "`n"

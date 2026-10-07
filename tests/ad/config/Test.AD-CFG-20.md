@@ -6,6 +6,10 @@ Monitoring the *count* of CRL distribution points helps detect:
 - Missing distribution points after CA configuration changes
 - Unexpected additions (potentially pointing to untrusted or incorrect publishing locations)
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Ensure CRL distribution points are configured to reliable, access-controlled endpoints.
 - Validate that all intended distribution points are present and reachable from relying-party networks.

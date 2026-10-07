@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-SPN-12',
-        Title = 'User SPN domain admin count should be retrievable',
+        Title = 'No domain admin accounts should have SPNs configured',
         Severity = 'Critical',
         Category = 'Active Directory - SPN Analysis',
         Tag = 'AD.SPN',
@@ -69,8 +69,8 @@
     $adminsWithSpns = ($domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalDomainAdmins = ($domainAdmins | Measure-Object).Count
 
-    # Test passes if we successfully retrieved SPN data
-    $testResult = $true
+    # Test passes if no domain admin accounts have SPNs configured
+    $testResult = $totalAdminSpns -eq 0
 
     # Generate markdown results
     if ($testResult) {

@@ -33,6 +33,10 @@ Detailed visibility into empty non-privileged groups enables effective cleanup:
 - **Cleanup planning**: Provides data needed for maintenance windows
 - **Audit trail**: Documents what was empty before cleanup
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Before removing empty groups:

@@ -33,6 +33,10 @@ Global groups are the most commonly used group type for organizing users in Acti
 
 A high number of global groups typically indicates well-organized user role management.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Optimize global group usage:

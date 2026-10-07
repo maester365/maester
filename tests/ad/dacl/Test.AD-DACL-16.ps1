@@ -20,7 +20,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-DACL-16',
-        Title = 'Unresolved SID details should be retrievable',
+        Title = 'Unresolved SID details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -76,8 +76,12 @@
 
     $testResult = $true
     $testResultMarkdown = "Active Directory DACL entries were analyzed for orphaned SID references. $($objectGroups.Count) object(s) contain unresolved SID ACEs.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    if ($objectGroups.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

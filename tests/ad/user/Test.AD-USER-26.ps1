@@ -17,7 +17,7 @@
     #>
     [MaesterTest(
         Id = 'AD-USER-26',
-        Title = 'Honey pot user count should be retrievable',
+        Title = 'Honey pot user count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Users',
         Tag = 'AD.User',
@@ -86,7 +86,7 @@
     $testResultMarkdown = "Active Directory users were reviewed for potential honey pot naming patterns.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserHoneyPotCount"
 
     return $testResult

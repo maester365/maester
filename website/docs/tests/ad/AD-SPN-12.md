@@ -33,6 +33,10 @@ Domain administrator accounts with SPNs represent the **highest possible Kerbero
 
 **Zero domain admin accounts should have SPNs configured.**
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 If domain admin accounts have SPNs:

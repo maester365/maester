@@ -1,6 +1,6 @@
 ---
 title: "AD-USER-04 - Reversible encryption user count should be retrievable"
-description: "Reversible password encryption is effectively equivalent to storing passwords in a decryptable form. Accounts configured this way create serious exposure if the directory or credential material is compromised. Security Recommendation Disable reversible password encryption unless it is required for…"
+description: "Reversible password encryption is effectively equivalent to storing passwords in a decryptable form. Accounts configured this way create serious exposure if the directory or credential material is compromised. Control Type **Detective** Security Recommendation Disable reversible password encryption…"
 slug: /tests/AD-USER-04
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,6 +25,10 @@ keywords:
 ## Overview
 
 Reversible password encryption is effectively equivalent to storing passwords in a decryptable form. Accounts configured this way create serious exposure if the directory or credential material is compromised.
+
+#### Control Type
+
+**Detective**
 
 #### Security Recommendation
 

@@ -7,6 +7,10 @@
 
 Understanding which networks have reverse zones is essential for comprehensive DNS management.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review reverse zone network details regularly:

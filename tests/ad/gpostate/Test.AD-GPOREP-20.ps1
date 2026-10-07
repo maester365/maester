@@ -20,8 +20,8 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOREP-20',
-        Title = 'GPO default password found details should be retrievable',
-        Severity = 'Medium',
+        Title = 'No GPOs should contain a default password',
+        Severity = 'High',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
@@ -50,7 +50,7 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     $found = $gpoReportsArray | Where-Object { [bool]$_.DefaultPasswordFound }
     $foundCount = @($found).Count
 
-    $testResult = $true
+    $testResult = $foundCount -eq 0
 
     $table = "| GPO Name | DefaultPasswordFound | CpasswordFound |" + "`n"
     $table += '| --- | --- | --- |' + "`n"

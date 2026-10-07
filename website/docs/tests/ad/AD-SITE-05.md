@@ -33,6 +33,10 @@ Sites without subnets represent incomplete configuration that can lead to:
 
 Identifying and resolving these configuration gaps ensures the site topology functions correctly.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 For each site without subnets:

@@ -7,6 +7,10 @@
 
 Distribution groups cannot be used for access control—they are purely for email functionality.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review distribution groups to:

@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-TRUST-01',
-        Title = 'Trust total count should be retrievable',
+        Title = 'Trust total count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Trusts',
         Tag = 'AD.Trust',
@@ -62,7 +62,7 @@
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

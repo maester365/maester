@@ -7,6 +7,10 @@
 
 SRV records contain priority and weight values that control client behavior. Understanding these values helps ensure optimal and secure service location.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review SRV record details regularly:

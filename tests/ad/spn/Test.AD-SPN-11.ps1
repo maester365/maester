@@ -20,7 +20,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-SPN-11',
-        Title = 'User SPN non-FQDN hosts should be retrievable',
+        Title = 'User SPN non-FQDN hosts should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
         Tag = 'AD.SPN',
@@ -112,7 +112,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

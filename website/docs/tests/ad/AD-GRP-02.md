@@ -35,6 +35,10 @@ keywords:
 - **Poor organization**: Containers lack the hierarchical flexibility of OUs
 - **Security risks**: Default containers like CN=Users are well-known targets
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Move all groups from default containers (CN=Users, CN=Builtin) to appropriate OUs

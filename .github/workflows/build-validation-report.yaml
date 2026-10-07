@@ -48,7 +48,7 @@ jobs:
       # The reporter is gated on artifact detection, so PRs without path-filtered file
       # changes skip this step entirely. fail-on-error is set to false so parsing
       # problems in an existing artifact report neutral instead of failing the job.
-      - uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
+      - uses: dorny/test-reporter@d1b5dff021aa968b288b02285a8bf47471c5928a # v3.2.0
         if: steps.test-results.outputs.found == 'true'
         with:
           artifact: test-results-Windows

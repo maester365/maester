@@ -10,6 +10,10 @@
 - **Password Flags**: DONT_EXPIRE_PASSWORD could prevent required rotations
 - **Tampering Indicator**: Non-standard UAC may suggest malicious modification
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 1. **Maintain standard UAC (514)**:

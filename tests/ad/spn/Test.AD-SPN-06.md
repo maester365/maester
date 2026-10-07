@@ -7,6 +7,10 @@
 
 Understanding the scope of user SPNs helps assess your Kerberoasting attack surface.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Minimize user accounts with SPNs:

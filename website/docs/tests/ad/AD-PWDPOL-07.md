@@ -32,6 +32,10 @@ Account lockout threshold is one of the most important defenses against brute-fo
 
 A threshold of 5 or fewer failed attempts provides strong protection while allowing for the occasional user mistake. Setting it to 0 (never lock out) removes this critical protection entirely.
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 Configure the account lockout threshold to **5 or fewer failed attempts**. Never disable account lockout (threshold = 0) as this removes critical protection against brute-force attacks.

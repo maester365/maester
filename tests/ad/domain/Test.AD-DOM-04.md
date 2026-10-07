@@ -4,6 +4,10 @@
  * **Business Impact**: New users, groups, or computers could not be created
  * **Recovery Complexity**: RID pool exhaustion requires complex forest recovery procedures
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Monitor RID consumption regularly:

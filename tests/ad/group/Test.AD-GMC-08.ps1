@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GMC-08',
-        Title = 'Empty non-privileged group count should be retrievable',
+        Title = 'Empty non-privileged group count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
         Tag = ('AD.GMC', 'AD.Group'),
@@ -90,6 +90,6 @@
         $testResultMarkdown = "Unable to retrieve group data."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

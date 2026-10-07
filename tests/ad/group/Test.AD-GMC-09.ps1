@@ -19,7 +19,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GMC-09',
-        Title = 'Empty non-privileged group details should be retrievable',
+        Title = 'Empty non-privileged group details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
         Tag = ('AD.GMC', 'AD.Group'),
@@ -98,6 +98,6 @@
 
     $testResultMarkdown = $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

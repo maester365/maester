@@ -5,6 +5,10 @@
 - **Potential issues**: Unusual record distributions may indicate problems
 - **Resource planning**: Understanding record counts helps capacity planning
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review zones with unusually high record counts for:

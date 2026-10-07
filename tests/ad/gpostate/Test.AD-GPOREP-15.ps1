@@ -19,8 +19,8 @@ function Test-MtAdGpoVersionMismatchCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-15',
-        Title = 'GPO version mismatch count should be retrievable',
-        Severity = 'Info',
+        Title = 'No GPOs should have version mismatches',
+        Severity = 'High',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
@@ -49,7 +49,7 @@ function Test-MtAdGpoVersionMismatchCount {
     $totalCount = $gpoReportsArray.Count
     $mismatchCount = @($gpoReportsArray | Where-Object { [bool]$_.HasVersionMismatch }).Count
 
-    $testResult = $true
+    $testResult = $mismatchCount -eq 0
     $mismatchPercentage = if ($totalCount -gt 0) { [Math]::Round(($mismatchCount / $totalCount) * 100, 2) } else { 0 }
 
     $result = "| Metric | Value |" + "`n"

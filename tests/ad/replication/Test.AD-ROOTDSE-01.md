@@ -6,6 +6,10 @@
 
 The default count is typically 4 mechanisms (GSSAPI, GSS-SPNEGO, EXTERNAL, DIGEST-MD5), though this may vary by configuration.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Prefer Kerberos (GSSAPI) for authentication when possible

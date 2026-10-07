@@ -6,6 +6,10 @@
 - **Compliance Scope**: Determining the scope of compliance assessments
 - **Disaster Recovery**: Planning recovery procedures across all domains
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - **Minimize Domains**: Fewer domains reduce complexity and attack surface

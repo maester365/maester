@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-11',
-        Title = 'Privileged extended right count should be retrievable',
+        Title = 'Privileged extended right count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -71,7 +71,7 @@
     $testResultMarkdown = "This informational test counts allow ACEs that grant the ExtendedRight permission.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightCount"
     return $testResult
 }

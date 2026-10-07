@@ -5,6 +5,10 @@
 - **Document Exceptions**: Record non-compliant names and their specific issues
 - **Prevent Problems**: Address issues before they cause application failures
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 When non-compliant NetBIOS names are identified:

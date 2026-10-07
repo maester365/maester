@@ -26,7 +26,7 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOS-06',
-        Title = 'User disabled GPO settings details should be compliant',
+        Title = 'User disabled GPO settings details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -103,7 +103,7 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoUserSettingsDisabledDetails"
     return $testResult
 }

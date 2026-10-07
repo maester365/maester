@@ -10,6 +10,10 @@ Understanding your RODC deployment helps ensure:
 - Proper credential caching policies
 - Compliance with security standards for branch office infrastructure
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 1. **Deploy RODCs in branch offices**: Use RODCs instead of writable DCs in locations with limited physical security

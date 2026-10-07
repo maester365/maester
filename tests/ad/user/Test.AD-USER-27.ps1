@@ -17,7 +17,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-USER-27',
-        Title = 'Honey pot user details should be retrievable',
+        Title = 'Honey pot user details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Users',
         Tag = 'AD.User',
@@ -97,9 +97,13 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Potential honey pot style Active Directory users were reviewed in detail.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($potentialHoneyPots.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdUserHoneyPotDetails"
 
     return $testResult

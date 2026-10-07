@@ -23,7 +23,7 @@
     #>
     [MaesterTest(
         Id = 'AD-FEAT-01',
-        Title = 'Optional feature count should be retrievable',
+        Title = 'Optional feature count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
@@ -59,7 +59,7 @@
     $testResultMarkdown = "Active Directory optional features have been enumerated. These features extend AD capabilities beyond base functionality.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

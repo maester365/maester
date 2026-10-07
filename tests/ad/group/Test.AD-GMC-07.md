@@ -5,6 +5,10 @@
 - **Access control**: Reveals who has access to resources from outside the domain
 - **Cleanup opportunities**: May highlight groups that can be cleaned up after domain migrations
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review foreign security principals:

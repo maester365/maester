@@ -30,6 +30,10 @@ The `ProfilePath` attribute is commonly associated with roaming profiles and cen
 - **Data exposure review**: Highlights centralized storage paths that may require tighter controls
 - **Operational dependency mapping**: Helps quantify reliance on older desktop management models
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review profile share permissions and access paths

@@ -33,6 +33,10 @@ Empty DNS zones (zones with no resource records) may indicate:
 
 Empty zones add administrative overhead without providing value and may confuse administrators.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Audit empty zones regularly

@@ -7,6 +7,10 @@
 
 High numbers of domain local groups may indicate resource-specific access patterns.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Follow Microsoft's AGDLP/AGUDLP best practices:

@@ -24,7 +24,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-07',
-        Title = 'Computer DNS host name count should be retrievable',
+        Title = 'Computer DNS host name count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -86,7 +86,7 @@
     $testResultMarkdown = "DNS host name configuration has been analyzed. DNS host names are required for proper Kerberos authentication.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerDnsHostNameCount"
 
     return $testResult

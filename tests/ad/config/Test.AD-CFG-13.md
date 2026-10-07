@@ -1,5 +1,9 @@
 ﻿Certificate templates define which certificate types can be issued and under what conditions. Overly permissive or unexpected templates can allow broader enrollment than intended, enabling privilege escalation through misconfigured enrollment permissions, risky EKUs, or unintended autoenrollment.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Establish and document the set of approved certificate templates for each CA.
 - Review template permissions (who can enroll, who can manage) and enrollment constraints at least quarterly.

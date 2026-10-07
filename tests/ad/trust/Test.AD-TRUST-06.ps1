@@ -21,7 +21,7 @@
     #>
     [MaesterTest(
         Id = 'AD-TRUST-06',
-        Title = 'Trust stale count should be retrievable',
+        Title = 'Trust stale count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Trusts',
         Tag = 'AD.Trust',
@@ -80,7 +80,7 @@
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

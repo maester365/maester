@@ -131,7 +131,7 @@ function Resolve-SPFRecord {
                         }
                     }
                 } else {
-                    Write-Error 'For non-Windows platforms, please install DnsClient-PS module: Install-Module DnsClient-PS -Scope CurrentUser'
+                    Write-Verbose 'For non-Windows platforms, please install DnsClient-PS module: Install-Module DnsClient-PS -Scope CurrentUser'
                     return
                 }
             }

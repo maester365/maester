@@ -20,8 +20,8 @@ function Test-MtAdGpoCpasswordFoundDetails {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GPOREP-18',
-        Title = 'GPO Cpassword found details should be retrievable',
-        Severity = 'Medium',
+        Title = 'No GPOs should contain a cpassword',
+        Severity = 'Critical',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
@@ -50,7 +50,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
     $found = $gpoReportsArray | Where-Object { [bool]$_.CpasswordFound }
     $foundCount = @($found).Count
 
-    $testResult = $true
+    $testResult = $foundCount -eq 0
 
     $table = "| GPO Name | CpasswordFound | DefaultPasswordFound |" + "`n"
     $table += '| --- | --- | --- |' + "`n"

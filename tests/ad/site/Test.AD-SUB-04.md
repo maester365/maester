@@ -7,6 +7,10 @@
 
 Understanding IPv6 subnet deployment helps assess the organization's IPv6 readiness.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Define IPv6 subnets for all locations where IPv6 is deployed

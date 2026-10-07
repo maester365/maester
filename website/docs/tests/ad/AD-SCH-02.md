@@ -37,6 +37,10 @@ Unexpected spikes in schema modifications may indicate:
 - Improper testing procedures
 - Lack of change control
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Establish monitoring for schema changes:

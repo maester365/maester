@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-17',
-        Title = 'Inherited object type count should be retrievable',
+        Title = 'Inherited object type count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -65,7 +65,7 @@
     $testResultMarkdown = "Active Directory DACL inheritance targets were analyzed. $distinctInheritedObjectTypeCount distinct inherited object type GUID(s) were referenced across $($filteredEntries.Count) ACE(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclInheritedObjectTypeCount"
     return $testResult
 }

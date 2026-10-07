@@ -8,6 +8,10 @@
 
 High numbers of universal groups may indicate a complex multi-domain environment or potential replication optimization opportunities.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Use universal groups strategically:

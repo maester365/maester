@@ -33,6 +33,10 @@ Understanding the distribution density of computers across OUs helps identify:
 
 The average, minimum, and maximum computers per OU provide metrics for assessing organizational efficiency.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Aim for a balanced OU structure that:

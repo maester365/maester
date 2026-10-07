@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-01',
-        Title = 'Distinct DACL object count should be retrievable',
+        Title = 'Distinct DACL object count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -67,7 +67,7 @@
     $testResultMarkdown = "Active Directory DACL data has been analyzed. $distinctObjectCount distinct object(s) have one or more DACL entries available for review.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclDistinctObjectCount"
     return $testResult
 }

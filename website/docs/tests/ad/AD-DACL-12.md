@@ -30,6 +30,10 @@ Extended rights are most useful when you can see which specific `ObjectType` val
 - **Delegation Review**: Helps correlate control-access permissions with documented administration patterns.
 - **Change Tracking**: Makes it easier to compare extended-right usage over time.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Document the purpose of delegated extended rights and review object types with high counts or unexpected identity coverage.

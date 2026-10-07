@@ -30,6 +30,10 @@ Conflict objects with `CNF` markers typically originate from replication or nami
 - **Helps identify cleanup candidates**
 - **Provides context** for unexpected objects appearing in permission reviews
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Investigate conflict objects and confirm whether they are expected remnants, still referenced, or safe to clean up. Review their permissions before remediation to understand any delegated access that may still exist.

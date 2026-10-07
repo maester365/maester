@@ -30,6 +30,10 @@ Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but
 - **Accidental exposure**: An unlinked GPO can be mistakenly linked later, suddenly applying unknown settings to users or computers.
 - **Harder incident investigation**: Policy behavior becomes harder to reason about when unused GPOs remain in the environment.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 After verification, **remove unlinked GPOs** to reduce risk and simplify policy management:

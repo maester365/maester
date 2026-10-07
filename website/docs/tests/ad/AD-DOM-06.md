@@ -31,6 +31,10 @@ This test provides detailed information about non-compliant domain names, helpin
 - **Document Exceptions**: Create records of non-compliant names for audit purposes
 - **Prevent Future Issues**: Ensure new domains follow naming standards
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 When non-compliant domain names are identified:

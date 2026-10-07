@@ -30,6 +30,10 @@ Knowing which identities appear most frequently in DACLs helps identify central 
 - **Permission Hygiene**: Distribution data helps distinguish expected administrative groups from unusual direct assignments.
 - **Operational Review**: Repeated counts per identity make it easier to validate changes after cleanup or redesign.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review identities with unusually high ACE counts. Confirm they are expected administrative groups and not stale accounts, orphaned SIDs, or overly broad delegated principals.

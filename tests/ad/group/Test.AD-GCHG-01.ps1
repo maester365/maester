@@ -24,7 +24,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GCHG-01',
-        Title = 'Average group membership changes per year should be retrievable',
+        Title = 'Average group membership changes per year should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Changes',
         Tag = ('AD.GCHG', 'AD.Group'),
@@ -146,6 +146,6 @@
 
     $testResultMarkdown = $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

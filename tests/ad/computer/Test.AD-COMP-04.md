@@ -10,6 +10,10 @@ The standard primary groups for computers are:
 - **516** - Domain Controllers (DC computer accounts)
 - **521** - Read-only Domain Controllers (RODC computer accounts)
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review computers with non-standard primary groups to understand why they deviate

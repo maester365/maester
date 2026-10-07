@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-14',
-        Title = 'Non-inherited ACE count should be retrievable',
+        Title = 'Non-inherited ACE count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -56,7 +56,7 @@
     $testResultMarkdown = "Active Directory DACL inheritance was analyzed. $($nonInheritedEntries.Count) ACE(s) are explicitly assigned and not inherited.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclNonInheritedAceCount"
     return $testResult
 }

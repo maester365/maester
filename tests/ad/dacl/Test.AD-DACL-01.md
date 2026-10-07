@@ -4,6 +4,10 @@
 - **Provides a baseline** for comparing later DACL metrics
 - **Helps validate collection breadth** when reviewing AD permission visibility
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Use this count as a baseline metric when reviewing DACL analysis. Unexpectedly low counts can indicate collection gaps, limited visibility, or an unexpectedly small review scope.

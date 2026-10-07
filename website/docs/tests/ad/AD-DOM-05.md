@@ -37,6 +37,10 @@ RFC standards require domain names to:
 - Not exceed 63 characters per label
 - Not end with a hyphen
 
+#### Control Type
+
+**Preventive**
+
 #### Security Recommendation
 
 - **Avoid Non-Standard Characters**: Don't use underscores, spaces, or special characters in domain names

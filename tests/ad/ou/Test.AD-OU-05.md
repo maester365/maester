@@ -7,6 +7,10 @@
 
 The detailed list enables targeted cleanup efforts rather than broad, unfocused maintenance activities.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Use this detailed information to conduct a systematic review of empty OUs:

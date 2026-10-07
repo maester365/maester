@@ -33,6 +33,10 @@ keywords:
 - **Trust dependencies**: Hidden dependencies on domains that may no longer exist
 - Groups with SID History are particularly concerning because they often control access to resources, and the SID History may grant access to users or groups from the source domain.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Review all groups with SID History to determine if migration is complete

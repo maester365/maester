@@ -19,7 +19,7 @@ function Test-MtAdGpoEnforcementCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-14',
-        Title = 'GPO enforcement count should be retrievable',
+        Title = 'GPO enforcement count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -62,7 +62,7 @@ function Test-MtAdGpoEnforcementCount {
     $testResultMarkdown = "Active Directory GPOs have been analyzed for enforced links. $enforcedCount out of $totalCount GPO(s) have enforced link(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoEnforcementCount"
     return $testResult
 }

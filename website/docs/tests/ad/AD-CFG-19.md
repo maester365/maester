@@ -30,6 +30,10 @@ This test concentrates on *intermediate CA details* (including certificate valid
 - Expired or soon-to-expire intermediate CAs that will break certificate chains
 - Unexpected/unauthorized intermediates that expand who can issue certificates
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Confirm each intermediate CA certificate is part of your approved PKI hierarchy.
 - Remove unauthorized intermediates and ensure only valid chain-building intermediates are retained.

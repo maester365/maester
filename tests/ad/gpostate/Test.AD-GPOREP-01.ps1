@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-01',
-        Title = 'GPOs without permissions count should be retrievable',
+        Title = 'No GPOs should be missing permissions',
         Severity = 'Medium',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',

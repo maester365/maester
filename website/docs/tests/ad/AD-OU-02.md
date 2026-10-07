@@ -31,6 +31,10 @@ keywords:
 - Organizational alignment: The OU structure should reflect your organization's logical structure
 - A well-designed OU hierarchy typically has fewer root-level OUs with meaningful nested structures beneath them, rather than many OUs all at the root level.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Consider implementing a hierarchical OU structure that:

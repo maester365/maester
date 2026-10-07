@@ -1,5 +1,9 @@
 ﻿Enrollment-capable CA certificates include validity periods and other critical properties. Expired or invalid CA certificates can break certificate issuance and domain authentication flows. In addition, unexpected certificate replacements (e.g., unknown thumbprints) can indicate PKI tampering.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Monitor CA certificate expiration and rotate certificates through an approved operational process.
 - Validate certificate thumbprints/subjects/issuers against your known-good CA configuration.

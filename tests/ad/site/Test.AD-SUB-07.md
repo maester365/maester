@@ -7,6 +7,10 @@
 
 Each public IP subnet should be reviewed for proper isolation and business justification.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 For each public IP subnet:

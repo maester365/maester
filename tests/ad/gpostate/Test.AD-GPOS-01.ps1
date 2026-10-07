@@ -19,7 +19,7 @@ function Test-MtAdGpoStateTotalCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOS-01',
-        Title = 'GPO state total count should be retrievable',
+        Title = 'GPO state total count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
@@ -58,7 +58,7 @@ function Test-MtAdGpoStateTotalCount {
     $testResultMarkdown = "Active Directory GPO state has been analyzed. The domain contains $totalCount GPO(s) (state view).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdGpoStateTotalCount"
     return $testResult
 }

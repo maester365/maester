@@ -8,6 +8,10 @@
 
 Running outdated operating systems on domain controllers poses security risks as they may not receive security patches.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Standardize on a supported Windows Server version for all DCs

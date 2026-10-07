@@ -20,7 +20,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GPOL-01',
-        Title = 'GPO linked count should be retrievable',
+        Title = 'GPO linked count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Policy',
         Tag = 'AD.GPO',
@@ -86,6 +86,6 @@
     $testResultMarkdown = "Active Directory Group Policy Objects have been analyzed. The domain contains $totalCount GPO(s); $linkedCount GPO(s) are linked and active across at least one scope (domain, OU, or site).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

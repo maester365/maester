@@ -6,6 +6,10 @@
 
 Proper limits reduce the impact of both **misuse** and **mistakes**, improving DC resilience during incidents.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Review the default query policy and ensure it matches your organization’s acceptable performance envelope.
 - Keep defaults conservative, then selectively allow exceptions only where required.

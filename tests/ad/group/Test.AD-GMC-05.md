@@ -5,6 +5,10 @@
 - **Trust Management**: Groups with many trust members may indicate over-reliance on external access
 - **Compliance**: Some compliance frameworks require documentation of cross-domain access
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Perform detailed review of groups containing trust members:

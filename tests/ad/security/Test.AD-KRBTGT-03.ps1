@@ -29,7 +29,7 @@
     [MaesterTest(
         Id = 'AD-KRBTGT-03',
         Title = 'KRBTGT should have standard UAC settings (disabled account)',
-        Severity = 'Medium',
+        Severity = 'High',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
         Service = 'ActiveDirectory',

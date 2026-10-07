@@ -1,5 +1,9 @@
 ﻿Restricting where a user can log on can reduce exposure for privileged, administrative, or sensitive accounts. Measuring how often workstation restrictions are used helps assess adoption of this hardening control.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 Consider applying workstation restrictions to privileged and high-value accounts where operationally feasible. Review configured restrictions periodically to ensure they remain accurate.

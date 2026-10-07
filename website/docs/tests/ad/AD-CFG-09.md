@@ -26,6 +26,10 @@ keywords:
 
 AD-based activation objects are used by Windows for volume activation and related discovery workflows. If these objects are created, deleted, or altered without authorization, it can indicate licensing/tampering activity and may also reflect broader Active Directory compromise or unauthorized configuration changes.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 - Treat activation-object changes as security-relevant change-management events.
 - Restrict who can create/modify activation objects (least privilege) and remove unnecessary write permissions.

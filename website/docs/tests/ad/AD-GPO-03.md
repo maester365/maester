@@ -1,6 +1,6 @@
 ---
 title: "AD-GPO-03 - GPO stale-before-2020 count should be retrievable"
-description: "Group Policy Objects (GPOs) that have not been modified for a long time can become \"stale\". Stale GPOs may contain outdated security configurations, which can create security gaps if they no longer match your current security baselines. Security Recommendation Regularly review GPOs that have not ch…"
+description: "Group Policy Objects (GPOs) that have not been modified for a long time can become \"stale\". Stale GPOs may contain outdated security configurations, which can create security gaps if they no longer match your current security baselines. Control Type **Operational** Security Recommendation Regularly…"
 slug: /tests/AD-GPO-03
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -27,6 +27,10 @@ keywords:
 Group Policy Objects (GPOs) that have not been modified for a long time can become "stale".
 Stale GPOs may contain outdated security configurations, which can create security gaps
 if they no longer match your current security baselines.
+
+#### Control Type
+
+**Operational**
 
 #### Security Recommendation
 

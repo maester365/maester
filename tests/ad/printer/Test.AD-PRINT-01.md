@@ -12,6 +12,10 @@ Understanding your printer publishing configuration helps:
 - **Documentation**: Maintain accurate inventory of printing resources
 - **Compliance**: Some regulations require tracking of printing infrastructure
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Secure your printing infrastructure:

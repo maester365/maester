@@ -18,8 +18,8 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-USER-29',
-        Title = 'User delegation details should be retrievable',
-        Severity = 'Info',
+        Title = 'No users should be configured for unconstrained delegation',
+        Severity = 'High',
         Category = 'Active Directory - Users',
         Tag = 'AD.User',
         Service = 'ActiveDirectory',
@@ -63,7 +63,8 @@
             }
         } | Sort-Object SamAccountName)
 
-    $testResult = $true
+    $unconstrainedDelegationCount = (@($delegatedUsers | Where-Object { $_.TrustedForDelegation -eq $true }) | Measure-Object).Count
+    $testResult = $unconstrainedDelegationCount -eq 0
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -88,7 +89,11 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($delegatedUsers.Count -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     Write-Verbose "Completed Test-MtAdUserDelegationDetails"

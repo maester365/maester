@@ -28,7 +28,7 @@
     #>
     [MaesterTest(
         Id = 'AD-ROOTDSE-01',
-        Title = 'Supported SASL mechanism count should be retrievable',
+        Title = 'Supported SASL mechanism count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
@@ -65,7 +65,7 @@
     $testResultMarkdown = "Active Directory supported SASL mechanisms have been enumerated. These mechanisms define available authentication protocols.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

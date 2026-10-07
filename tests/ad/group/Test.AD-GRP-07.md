@@ -7,6 +7,10 @@
 
 Security groups can be assigned permissions to resources, unlike distribution groups.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Establish governance around security groups:

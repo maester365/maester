@@ -19,8 +19,8 @@ function Test-MtAdGpoCpasswordFoundCount {
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-17',
-        Title = 'GPO Cpassword found count should be retrievable',
-        Severity = 'Medium',
+        Title = 'No GPOs should contain a cpassword',
+        Severity = 'Critical',
         Category = 'Active Directory - GPO State',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
@@ -49,7 +49,7 @@ function Test-MtAdGpoCpasswordFoundCount {
     $totalCount = $gpoReportsArray.Count
     $cpasswordCount = @($gpoReportsArray | Where-Object { [bool]$_.CpasswordFound }).Count
 
-    $testResult = $true
+    $testResult = $cpasswordCount -eq 0
     $cpasswordPercentage = if ($totalCount -gt 0) { [Math]::Round(($cpasswordCount / $totalCount) * 100, 2) } else { 0 }
 
     $result = "| Metric | Value |" + "`n"

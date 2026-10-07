@@ -4,6 +4,10 @@
 - **Data quality insight**: Shows how complete identity metadata is across the domain
 - **Operational control**: Helps identify where HR or provisioning integrations may be incomplete
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Populate manager data for workforce identities where appropriate

@@ -28,8 +28,8 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-ROOTDSE-03',
-        Title = 'Root DSE synchronized status should be retrievable',
-        Severity = 'Medium',
+        Title = 'Root DSE should be synchronized',
+        Severity = 'High',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',

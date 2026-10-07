@@ -1,15 +1,26 @@
-﻿This test retrieves Active Directory GPO state data using Get-MtADGpoState and returns a markdown
-table listing GPOs with GpoStatus indicating user settings are disabled.
+#### Test-MtAdGpoUserSettingsDisabledDetails
 
-GpoStatus mapping:
-- 0 = AllDisabled
-- 1 = UserDisabled
-- 2 = ComputerDisabled
-- 3 = AllEnabled
+ Returns details of GPOs where user settings are disabled.
 
-#### Remediation action
+#### Why This Test Matters
+- Detective control: looks for GPOs where user settings are disabled, which can impact user policy delivery.
 
-Review the configuration described above.
+#### Control Type
+
+**Operational**
+
+#### Security Recommendation
+- Review user-disabled GPOs and confirm whether disabling is intentional per policy.
+
+#### How the Test Works
+- Gets GPO state, filters for reports where the UserDisabled status is true and renders a details table including display name and status.
+
+#### Related Tests
+- `Test-MtAdGpoUserSettingsDisabledDetails` (self reference for template clarity).
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 <!--- Results --->
 %TestResult%

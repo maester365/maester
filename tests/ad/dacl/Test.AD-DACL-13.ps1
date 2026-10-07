@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-13',
-        Title = 'Privileged extended right identities should be retrievable',
+        Title = 'Privileged extended right identities should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -115,7 +115,7 @@
     $testResultMarkdown = "Active Directory DACL entries were analyzed for privileged extended rights. $($identityGroups.Count) identity reference(s) have at least one privileged extended right ACE.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightIdentity"
     return $testResult
 }

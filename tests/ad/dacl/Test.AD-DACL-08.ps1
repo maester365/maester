@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-08',
-        Title = 'DACL ACE distribution per identity should be retrievable',
+        Title = 'DACL ACE distribution per identity should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -83,7 +83,7 @@
 
     $testResultMarkdown = "This informational test shows how DACL ACEs are distributed across identities.`n`n$summary`n$table"
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclIdentityAceDistribution"
     return $testResult
 }

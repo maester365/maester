@@ -7,6 +7,10 @@
 
 Trusts allow users from one domain to access resources in another. While necessary for multi-domain environments, unnecessary or misconfigured trusts can create security vulnerabilities.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - **Inventory**: Maintain an inventory of all trust relationships and their purposes

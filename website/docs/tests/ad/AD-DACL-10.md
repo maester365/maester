@@ -30,6 +30,10 @@ A count alone does not show where powerful ACEs are applied. Grouping privileged
 - **Delegation Validation**: Makes it easier to confirm whether privileged rights are intentional.
 - **Attack Path Awareness**: Sensitive permissions on administrative objects can enable escalation.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review objects with privileged allow ACEs and confirm the assigned identities and rights are justified. Reduce direct assignments where possible and prefer auditable group-based delegation.

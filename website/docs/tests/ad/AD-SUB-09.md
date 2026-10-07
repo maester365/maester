@@ -33,6 +33,10 @@ Understanding /16 network distribution helps:
 
 Each /16 represents a major network segment (65,534 hosts).
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Document the purpose of each /16 network block

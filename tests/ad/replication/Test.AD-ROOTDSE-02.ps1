@@ -30,7 +30,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-ROOTDSE-02',
-        Title = 'Supported SASL mechanism details should be retrievable',
+        Title = 'Supported SASL mechanism details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Replication',
         Tag = 'AD.Replication',
@@ -78,9 +78,13 @@
     }
 
     $testResultMarkdown = "Active Directory SASL mechanism details have been retrieved. These mechanisms determine available authentication protocols.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($mechanismCount -gt 0) {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", ""
+    }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

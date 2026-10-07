@@ -31,6 +31,10 @@ Understanding the total number of Group Policy Objects (GPOs) in your Active Dir
 - **Security Complexity**: More GPOs mean more potential attack surfaces if any contain misconfigurations
 - **Audit Requirements**: Compliance frameworks often require understanding of policy scope and distribution
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly audit your GPO inventory and consolidate redundant or overlapping policies. Consider:

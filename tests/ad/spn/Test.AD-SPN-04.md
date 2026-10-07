@@ -7,6 +7,10 @@
 
 This granular visibility is essential for maintaining SPN hygiene and security.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 For each unknown SPN service class discovered:

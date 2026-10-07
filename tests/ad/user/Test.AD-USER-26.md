@@ -4,6 +4,10 @@
 - **Naming hygiene**: Identifies user names likely to draw attacker attention.
 - **Access review**: Confirms whether these accounts are intentional and documented.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 - Document whether identified accounts are real users, service accounts, or deception assets.

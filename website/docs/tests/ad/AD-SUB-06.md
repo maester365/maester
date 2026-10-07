@@ -33,6 +33,10 @@ Using public IP addresses internally can cause:
 
 RFC1918 private ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) should be used for internal networks.
 
+#### Control Type
+
+**Detective**
+
 #### Security Recommendation
 
 - Use RFC1918 private IP ranges for internal networks

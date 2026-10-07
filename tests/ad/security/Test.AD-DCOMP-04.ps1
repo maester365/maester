@@ -24,7 +24,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-04',
-        Title = 'Computer operating system count should be retrievable',
+        Title = 'Computer operating system count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
         Tag = 'AD.Security',
@@ -79,7 +79,7 @@
     $testResultMarkdown = "Domain computer operating system diversity has been analyzed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerOperatingSystemCount"
 
     return $testResult

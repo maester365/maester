@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-09',
-        Title = 'Privileged allow ACE count should be retrievable',
+        Title = 'Privileged allow ACE count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
         Tag = 'AD.DACL',
@@ -89,7 +89,7 @@
     $testResultMarkdown = "This informational test counts allow ACEs that grant high-impact Active Directory rights.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceCount"
     return $testResult
 }

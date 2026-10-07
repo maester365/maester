@@ -21,7 +21,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GMC-04',
-        Title = 'Trust members count should be retrievable',
+        Title = 'Trust members count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
         Tag = 'AD.Group',
@@ -118,7 +118,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group member data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

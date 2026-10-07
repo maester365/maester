@@ -4,6 +4,10 @@
 - **Delegation Mapping**: Counting these ACEs helps you understand how broadly control-access permissions are assigned.
 - **Scope Awareness**: Distinct `ObjectType` values show how granular or broad the delegation is.
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Review principals granted extended rights and verify that those delegations are necessary, documented, and limited to the smallest practical scope.

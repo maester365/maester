@@ -19,7 +19,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-GMC-07',
-        Title = 'Foreign SID details by domain should be retrievable',
+        Title = 'Foreign SID details by domain should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
         Tag = ('AD.GMC', 'AD.Group'),
@@ -119,6 +119,6 @@
         $testResultMarkdown = "Unable to retrieve foreign security principal data."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }
