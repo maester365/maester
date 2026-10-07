@@ -24,7 +24,8 @@ The design in one page:
   manifest, one or more 3.0 test suites (the same `Test.<ID>.ps1` + `.md` files and
   `suite.json` the built-ins use), and optionally a **connector**: the code that signs
   in to a platform Maester does not know about, such as Google Workspace or Okta.
-  Section 4.
+  Pack test IDs are `MP.<code>.<number>` (`MP.CNT.0001`), with the code reserved by a
+  pull request that checks itself and merges on its own. Section 4.
 - **Install from GitHub, pinned.** `Install-MtPack contoso/maester-google-workspace`
   resolves the latest release to a commit, downloads it, validates it without running
   any of it, shows its risk level and what it reaches, and asks for approval. It
@@ -178,11 +179,11 @@ maester-google-workspace/            (a GitHub repository)
     GoogleWorkspace.ps1              the connector (section 6)
   tests/
     suite.json                       a 3.0 suite: tags, category, help URL template
-    Test.GWS.1001.ps1
-    Test.GWS.1001.md
+    Test.MP.CNT.0001.ps1
+    Test.MP.CNT.0001.md
     admin/
-      Test.GWS.2001.ps1
-      Test.GWS.2001.md
+      Test.MP.CNT.0101.ps1
+      Test.MP.CNT.0101.md
   helpers/
     Invoke-GwsRequest.ps1            functions the tests and the connector share
   .github/workflows/pack-scan.yml    optional: runs the index's scanners on every push (section 9.6)
@@ -209,7 +210,7 @@ fixed. Everything is static data; nothing in it runs.
   "Homepage": "https://github.com/contoso/maester-google-workspace",
   "Support": "https://github.com/contoso/maester-google-workspace/issues",
   "RequiresMaester": "3.1",
-  "TestIdPrefix": "GWS",
+  "Code": "CNT",
   "Suites": ["tests"],
   "Helpers": ["helpers"],
   "Connectors": [
@@ -237,9 +238,8 @@ fixed. Everything is static data; nothing in it runs.
 - **`Id`** is `<publisher>.<name>`, lower case. `Publisher` must match the GitHub owner
   for a listed pack (section 9.2). `maester` and `maester365` are reserved for official
   packs.
-- **`TestIdPrefix`** is the prefix every test ID in the pack must start with. Built-in
-  prefixes (MT, CIS, CISA, EIDSCA, ORCA, AZDO, XSPM, AD and the rest) are reserved, and
-  the index gives a prefix to the first listed pack that claims it.
+- **`Code`** is the pack's reserved two- or three-letter code. Every test ID in the
+  pack is `MP.<Code>.<number>`, for example `MP.CNT.0001` (section 4.5).
 - **`Uses`** declares what the pack reaches: the services its tests list, extra
   Microsoft Graph scopes, network hosts outside the declared services, and PowerShell
   Gallery modules. It drives the install prompt, the scans (anything the code reaches
@@ -304,6 +304,65 @@ On each row: `Source` is `Custom` (the closed list consumers already understand,
 field is filled with the pack `Id`, version and commit. The report groups and filters
 by `Package`; nothing else in the report changes.
 
+### 4.5 Test IDs: `MP.<code>.<number>`
+
+Built-in IDs are unique because the build checks them, and custom tests only have to be
+unique in one tenant's folder. Pack tests are written by publishers who do not know
+each other and installed side by side, so they get their own namespace:
+
+- **Every pack test ID starts with `MP.`** ("Maester Pack"), then the pack's code,
+  then a number: `MP.CNT.0001`. A four-digit number is recommended; any segments the
+  3.0 ID grammar allows may follow the code (`MP.CNT.GMAIL.01`). `New-MtTest` picks the
+  next free number in a pack. From an ID alone, anyone can tell that the test comes from
+  a pack, and which one.
+- **`MP.` is a reserved prefix**, like `MT.` and `CIS.`. No built-in uses it, a custom
+  test that uses it gets the reserved-prefix warning, and a pack test that does not use
+  it fails validation. So a pack can never supply a built-in ID.
+- **A code belongs to one pack**, is two or three letters (A to Z, case-insensitive),
+  and is never reassigned: IDs are keys in user configs and result history. A publisher
+  with several packs reserves a code for each.
+
+**Reserving a code** is a pull request to `maester365/packs-index` that adds one file,
+`codes/CNT.json`:
+
+```json
+{
+  "Code": "CNT",
+  "Pack": "github.com/contoso/maester-google-workspace",
+  "Services": ["GoogleWorkspace"]
+}
+```
+
+A workflow on the pull request checks that:
+
+1. the code is two or three letters and not taken, retired, or on the reserved list
+   (built-in suite names such as `MT`, `CIS` and `AD`, `MS`-style names that look
+   official, and offensive words);
+2. **the repository already declares it**: the pack's `maester-pack.json` on its default
+   branch has `"Code": "CNT"`. Only someone who can push to the repository can do that,
+   so nobody can reserve a code for someone else's pack, and no GitHub permissions
+   lookup is needed;
+3. the service names are not taken, and the pack's connectors declare them;
+4. the owner account is older than 30 days, and the owner has reserved no other code
+   that day.
+
+When every check passes, the pull request merges itself and the reservation is
+recorded with the repository's numeric owner and repository IDs, so it survives
+renames. Maintainers step in only for disputes, such as a vendor asking for a code or
+service name that matches its brand, and can release a reservation that no listed
+pack has used yet.
+
+**What the code guards at each stage:**
+
+- **Listing:** the indexer lists a version only if every test ID is `MP.<code>.*` with
+  the code reserved for that pack.
+- **Install:** `Install-MtPack` refuses a pack whose IDs clash with an installed pack
+  or a custom test in the project, naming both. An unlisted pack whose code is not
+  reserved installs with a warning that its IDs may clash later.
+- **Run:** the 3.0 rule still backs this up: two non-built-in tests with the same ID
+  give `DuplicateId` error rows and neither runs, so nothing silently replaces another
+  test.
+
 ## 5. Installing, updating and running
 
 ### 5.1 Commands
@@ -355,7 +414,7 @@ PS> Install-MtPack contoso/maester-google-workspace
   Publisher   contoso   ★ Microsoft MVP   ✔ GitHub-verified organisation
   Risk        LOW: text files only; every scan passed
               packs.maester.dev/contoso/maester-google-workspace/security
-  Adds        42 tests (GWS.*) and the "Google Workspace" connector
+  Adds        42 tests (MP.CNT.*) and the "Google Workspace" connector
   Reaches     Google Workspace: admin.googleapis.com, oauth2.googleapis.com
   Microsoft   none declared
 
@@ -525,9 +584,10 @@ gate gives `Skipped`/`ServiceNotConnected` (or `NotRun`/`OptInServiceNotConnecte
 when the connector says `OptIn`), and `ServiceNotRegistered` covers a test whose pack
 is missing.
 
-- **Service names** are unique across built-ins and listed connectors; the index gives
-  a name to the first listed pack that claims it, and a pack can also use another
-  pack's service by depending on it. Two installed packs that provide the same service
+- **Service names** are unique across built-ins and listed connectors. A pack reserves
+  the service names its connectors provide in the same pull request that reserves its
+  code (section 4.5), and a pack can also use another pack's service by depending on
+  it. Two installed packs that provide the same service
   are an install-time error naming both.
 - **Parameter kinds** (3.0 section 3.4): a pack can add kinds under its own prefix
   (`GoogleWorkspace.OrgUnit`) for test parameters, so a UI can offer a picker.
@@ -649,8 +709,8 @@ row; the leaderboard has a risk filter.
 ### 7.4 Curation by pull request
 
 The index repository holds what people decide, as reviewable commits: blocklist
-entries and advisories, the official list, featured packs, and disputes over test ID
-prefixes and service names. A "Request indexing" link opens an issue there that the
+entries and advisories, the official list, featured packs, **pack code and service
+name reservations** (section 4.5), and disputes over them. A "Request indexing" link opens an issue there that the
 indexer picks up, for publishers who want a listing before anyone installs.
 
 ### 7.5 Keeping the cost near zero
@@ -694,8 +754,8 @@ decision; the measures below make inflation expensive and visible.
   installs from ten distinct hashed IPs that day. A scheduled job looks for bursts from
   few networks (Cloudflare gives the client's network, ASN, on every request) or sudden
   spikes on a new pack, freezes the pack's rank and opens an issue.
-- **Junk listings.** A listing needs a valid manifest, a tagged release, at least one
-  test or a connector, and an owner account older than 30 days. An owner gets at most
+- **Junk listings.** A listing needs a valid manifest, a reserved code, a tagged
+  release, at least one test or a connector, and an owner account older than 30 days. An owner gets at most
   one new pack listed a day. A pack whose digest matches another pack is marked a
   duplicate and hidden. Names and IDs close to existing ones are flagged, and
   `maester`/`maester365` are reserved.
@@ -732,7 +792,7 @@ rebuilds every page on every change. maester.dev's navigation gets a
 | `/` | **Leaderboard** | Search; All time / Trending / New tabs; filters by platform (the services connectors provide, plus Microsoft 365 add-ons), risk level and badge; rows with rank, icon, pack, `owner/repo`, badges, risk, platform, tests, an 8-week sparkline and installs; a "How listing works" panel and a publish link |
 | `/{owner}/{repo}[/{folder}]` | **Pack** | Header with badges, risk level, publisher, description and platforms; install box with PowerShell, maester-action and lock file tabs; tabs: **Overview** (the README, sanitised), **Tests** (ID, title, severity, service, each linking to its page), **Connector** (what it connects to, how to sign in, the settings table with secret markers and environment variable names, what it needs on the platform), **Security** (risk level and why, every compiled file with hash and signer, each scan's result, declared `Uses` against what was found, repository signals, repository ID, advisories), **Versions** (tag, commit, date, digest, risk level, changes to `Uses`); a sidebar with installs, version, first seen, last release, licence, required Maester version, GitHub stars and "Report this pack" |
 | `/{owner}/{repo}/tests/{id}` | **Test** | The test's Markdown (description, remediation) and its attribute data |
-| `/{owner}` | **Publisher** | Badges, packs, security contact, claimed prefixes and services |
+| `/{owner}` | **Publisher** | Badges, packs, security contact, reserved codes and service names |
 | `/official`, `/platform/{service}`, `/category/{slug}` | **Lists** | Filtered leaderboards |
 | `/advisories[/{id}]` | **Advisories** | Blocked packs and versions, what happened, what to do |
 | `/publish` | **Publishing guide** | The steps of section 10.3, the rules of section 4.3, risk levels and badges |
@@ -773,6 +833,7 @@ limits what one bad pack can do.
 | Bait and switch | Harmless until popular, then a malicious update | As above, plus the update shows what changed in `Uses` and in risk level |
 | Hidden code | A compiled library or an encoded blob that scanners cannot read (Trail of Bits got past three skill scanners this way) | Such content always makes the pack High risk, named file by file, with explicit consent to install |
 | Impersonation and typosquatting | `maester365-cis`, `micros0ft.entra` | Reserved names; pack ID must start with the GitHub owner; similarity flags; badges come from GitHub and the MVP directory, not from the pack |
+| Faking a built-in result | A pack defines `MT.1001` and always returns `$true`, so the report shows a built-in control as passed | Pack test IDs must start with `MP.`; a built-in ID can never come from a pack (section 4.5) |
 | Repository takeover | Owner renames or deletes the repo; someone re-creates the old name | The index and lock file record GitHub's numeric repository ID; a changed ID freezes the listing and fails restores |
 | Fake installs | Inflating installs to push a pack up the leaderboard | Section 7.6; popularity never changes a risk level or a badge |
 | Code that runs on load | `using module`, class definitions, top-level statements | Function-only files are a validation rule (section 4.3); no install scripts exist |
@@ -945,7 +1006,7 @@ Find-MtPack google
 Install-MtPack contoso/maester-google-workspace      # prompt as in section 5.3
 Get-MtConnector GoogleWorkspace                      # settings and how to get a key
 Connect-Maester -Service Graph, GoogleWorkspace      # browser sign-in for both
-Invoke-Maester                                       # built-ins and GWS.* in one report
+Invoke-Maester                                       # built-ins and MP.CNT.* in one report
 ```
 
 ### 10.2 The same in CI
@@ -958,13 +1019,15 @@ PR description.
 
 ### 10.3 A publisher creates and lists a pack
 
-1. `New-MtPack -Id contoso.google-workspace -Service GoogleWorkspace` scaffolds the
+1. `New-MtPack -Id contoso.google-workspace -Code CNT -Service GoogleWorkspace` scaffolds the
    repository: manifest, suite, a sample test, a connector skeleton, README, and the
    `pack-scan` workflow.
 2. They write tests with the same `New-MtTest`, `Invoke-MtTest` and `Get-MtTest` they
    would use for custom tests, and run `Test-MtPack` until it is clean.
-3. They push and tag `v1.0.0`, ideally with GitHub's immutable releases turned on.
-4. Installing it once (`Install-MtPack contoso/... -AllowUnlisted`) sends the install
+3. They reserve a code with a pull request to the index repository (section 4.5);
+   the checks run and it merges on its own when they pass.
+4. They push and tag `v1.0.0`, ideally with GitHub's immutable releases turned on.
+5. Installing it once (`Install-MtPack contoso/... -AllowUnlisted`) sends the install
    event; the index validates and scans the tag, and the pack is listed, usually within
    the hour. No form and no approval queue. "Request indexing" does the same without an
    install.
@@ -984,7 +1047,8 @@ goes red; the pack's page shows the advisory and the install command is removed.
 | Pack loader | Read `maester-pack.json`; load suites, helpers and connectors into one private module per pack; fill `Package` on rows | 1 |
 | Install | `Install-`, `Restore-`, `Update-`, `Uninstall-`, `Get-MtPack`; GitHub archive download without git; digest; lock file; store; risk acceptance | 1 |
 | Config | `Packs`, `Connections` and `PackPolicy` sections in the 3.0 config schema and resolver | 1 |
-| Validation | `Test-MtPack` (section 4.3 rules, local scans and risk level); `New-MtPack` scaffold; a template repository | 1 |
+| Validation | `Test-MtPack` (section 4.3 rules, the `MP.<code>` ID rule, local scans and risk level); `New-MtPack` scaffold; a template repository | 1 |
+| Test schema | `MP.` added to the reserved prefixes, so custom tests written before packs ship get the warning; this one line can land in 3.0 | 1 (or 3.0) |
 | Connectors | Layered service registry; `Set-`/`Get-`/`Clear-MtConnectionState`; `Get-MtConnector`; `Connect-Maester -Service` opened up with `-ServiceSetting`; `Disconnect-Maester`, `Test-MtConnection`, `Get-MtTenantContext` dispatch to connectors; `Renew` before tests | 1 |
 | Report | `Package` filter and group; remote images stripped for pack rows | 1 |
 | maester-action | `restore_packs` input; pack environment variables passed through | 1 |
@@ -1060,6 +1124,8 @@ the signing key.
   the risk filter can hide them.
 - The **MVP badge** uses the undocumented MVP directory API as best-effort.
 - The **first official pack is Google Workspace**.
+- **Pack test IDs are `MP.<code>.<number>`**, with a two- or three-letter code per pack
+  reserved by a pull request to the index repository (section 4.5).
 
 ### Still open
 
