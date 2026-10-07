@@ -24,8 +24,8 @@ The design in one page:
   manifest, one or more 3.0 test suites (the same `Test.<ID>.ps1` + `.md` files and
   `suite.json` the built-ins use), and optionally a **connector**: the code that signs
   in to a platform Maester does not know about, such as Google Workspace or Okta.
-  Pack test IDs are `MP.<code>.<number>` (`MP.CNT.0001`), with the code reserved by a
-  pull request that checks itself and merges on its own. Section 4.
+  Pack test IDs are `MP.<code>.<number>` (`MP.CNT.0001`); a repository claims its
+  code the first time it is indexed, first come, first served. Section 4.
 - **Install from GitHub, pinned.** `Install-MtPack contoso/maester-google-workspace`
   resolves the latest release to a commit, downloads it, validates it without running
   any of it, shows its risk level and what it reaches, and asks for approval. It
@@ -238,8 +238,8 @@ fixed. Everything is static data; nothing in it runs.
 - **`Id`** is `<publisher>.<name>`, lower case. `Publisher` must match the GitHub owner
   for a listed pack (section 9.2). `maester` and `maester365` are reserved for official
   packs.
-- **`Code`** is the pack's reserved two- or three-letter code. Every test ID in the
-  pack is `MP.<Code>.<number>`, for example `MP.CNT.0001` (section 4.5).
+- **`Code`** is the repository's code, two to five letters or digits. Every test ID in
+  the pack is `MP.<Code>.<number>`, for example `MP.CNT.0001` (section 4.5).
 - **`Uses`** declares what the pack reaches: the services its tests list, extra
   Microsoft Graph scopes, network hosts outside the declared services, and PowerShell
   Gallery modules. It drives the install prompt, the scans (anything the code reaches
@@ -310,55 +310,57 @@ Built-in IDs are unique because the build checks them, and custom tests only hav
 unique in one tenant's folder. Pack tests are written by publishers who do not know
 each other and installed side by side, so they get their own namespace:
 
-- **Every pack test ID starts with `MP.`** ("Maester Pack"), then the pack's code,
-  then a number: `MP.CNT.0001`. A four-digit number is recommended; any segments the
-  3.0 ID grammar allows may follow the code (`MP.CNT.GMAIL.01`). `New-MtTest` picks the
-  next free number in a pack. From an ID alone, anyone can tell that the test comes from
-  a pack, and which one.
+- **Every pack test ID starts with `MP.`** ("Maester Pack"), then the repository's
+  code, then a number: `MP.CNT.0001`. A four-digit number is recommended; any segments
+  the 3.0 ID grammar allows may follow the code (`MP.CNT.GMAIL.01`). `New-MtTest` picks
+  the next free number. From an ID alone, anyone can tell that the test comes from a
+  pack, and which one.
 - **`MP.` is a reserved prefix**, like `MT.` and `CIS.`. No built-in uses it, a custom
   test that uses it gets the reserved-prefix warning, and a pack test that does not use
   it fails validation. So a pack can never supply a built-in ID.
-- **A code belongs to one pack**, is two or three letters (A to Z, case-insensitive),
-  and is never reassigned: IDs are keys in user configs and result history. A publisher
-  with several packs reserves a code for each.
+- **A code is two to five characters**, letters and digits, starting with a letter,
+  compared case-insensitively and written in capitals: `CNT`, `OKTA`, `AWS1`.
 
-**Reserving a code** is a pull request to `maester365/packs-index` that adds one file,
-`codes/CNT.json`:
+**Claiming a code: first index wins.** There is no reservation step. The pack's
+manifest declares `"Code": "CNT"`, and the first time the indexer sees that repository
+(after an install or a "Request indexing"), it claims the code for it if the code is
+free and the version passes validation. "Request indexing" works on the default branch
+before any release, so a publisher can claim a code the day they pick it. The claim
+is recorded against GitHub's numeric repository ID, so it survives renames and
+transfers, and published in the index as `codes.json`.
 
-```json
-{
-  "Code": "CNT",
-  "Pack": "github.com/contoso/maester-google-workspace",
-  "Services": ["GoogleWorkspace"]
-}
-```
-
-A workflow on the pull request checks that:
-
-1. the code is two or three letters and not taken, retired, or on the reserved list
-   (built-in suite names such as `MT`, `CIS` and `AD`, `MS`-style names that look
-   official, and offensive words);
-2. **the repository already declares it**: the pack's `maester-pack.json` on its default
-   branch has `"Code": "CNT"`. Only someone who can push to the repository can do that,
-   so nobody can reserve a code for someone else's pack, and no GitHub permissions
-   lookup is needed;
-3. the service names are not taken, and the pack's connectors declare them;
-4. the owner account is older than 30 days, and the owner has reserved no other code
-   that day.
-
-When every check passes, the pull request merges itself and the reservation is
-recorded with the repository's numeric owner and repository IDs, so it survives
-renames. Maintainers step in only for disputes, such as a vendor asking for a code or
-service name that matches its brand, and can release a reservation that no listed
-pack has used yet.
+- **One code per repository, permanently.** A repository holds exactly one code, and
+  a code belongs to exactly one repository. A repository with several pack folders
+  shares its code across them, and the indexer checks that IDs are unique across the
+  folders. A repository cannot switch codes on its own, because its IDs are keys in
+  users' configs and result history; a maintainer can move it in a dispute, and the
+  old code is then retired, never reassigned.
+- **Checking a code is free** before using it: `Find-MtPack -Code CNT` and
+  packs.maester.dev/codes/CNT show whether it is available, held (and by which
+  repository) or reserved. `Test-MtPack` warns when the manifest's code is already
+  held by another repository. Availability is not a reservation: the claim happens at
+  first index.
+- **Reserved codes** cannot be claimed: built-in suite names (`MT`, `CIS`, `CISA`,
+  `AD`, `AZDO`, `ORCA`, `EIDSCA`, `XSPM`), names that look official (`MS`, `MSFT`,
+  `MAESTER`), and offensive words. Vendors' product names are not reserved; a vendor
+  that wants its own name can raise a dispute while the code has no listed pack.
+- **Against squatting:** a claim needs a version that passes validation, from an owner
+  account older than 30 days; an owner claims at most one code a day (the same limit
+  as new packs); and a claim that never reaches a listed release within 90 days is
+  released.
+- **Connector service names** are claimed the same way, at the same first index:
+  each service a pack's connectors provide must be free or already held by that
+  repository.
 
 **What the code guards at each stage:**
 
-- **Listing:** the indexer lists a version only if every test ID is `MP.<code>.*` with
-  the code reserved for that pack.
+- **Index:** a version is listed only if every test ID is `MP.<code>.*` with the code
+  held by that repository. A version whose code is held by another repository is
+  recorded as "code taken", and the publisher changes the code before anyone can list
+  it.
 - **Install:** `Install-MtPack` refuses a pack whose IDs clash with an installed pack
   or a custom test in the project, naming both. An unlisted pack whose code is not
-  reserved installs with a warning that its IDs may clash later.
+  held by it installs with a warning that its IDs may clash later.
 - **Run:** the 3.0 rule still backs this up: two non-built-in tests with the same ID
   give `DuplicateId` error rows and neither runs, so nothing silently replaces another
   test.
@@ -369,7 +371,7 @@ pack has used yet.
 
 | Command | What it does |
 | --- | --- |
-| `Find-MtPack [-Query] [-Service] [-MaximumRisk]` | Searches the Maester Packs index. |
+| `Find-MtPack [-Query] [-Service] [-MaximumRisk] [-Code]` | Searches the Maester Packs index; `-Code` shows whether a code is available, held or reserved. |
 | `Install-MtPack <source> [-Version] [-Scope Project\|User]` | Resolves, downloads, validates, shows the approval prompt, and records the pack in config and lock file. |
 | `Restore-MtPack` | Installs exactly what the lock file says, checking every digest; no prompts. Used by CI and maester-action. |
 | `Update-MtPack [<id>] [-Version]` | Moves to a newer tag; shows what changed and asks again if the pack now uses more. |
@@ -584,8 +586,8 @@ gate gives `Skipped`/`ServiceNotConnected` (or `NotRun`/`OptInServiceNotConnecte
 when the connector says `OptIn`), and `ServiceNotRegistered` covers a test whose pack
 is missing.
 
-- **Service names** are unique across built-ins and listed connectors. A pack reserves
-  the service names its connectors provide in the same pull request that reserves its
+- **Service names** are unique across built-ins and listed connectors. A repository
+  claims the service names its connectors provide at its first index, as it claims its
   code (section 4.5), and a pack can also use another pack's service by depending on
   it. Two installed packs that provide the same service
   are an install-time error naming both.
@@ -690,8 +692,8 @@ serve install counts, and (once the index is too big for one file) search.
    before anyone installs it.
 5. **Publish.** The workflow commits the listings to the index repository (a public
    history of every listing and takedown), builds the static site, and deploys it with
-   `wrangler`: pages, `index.json` (signed), per-pack JSON and `blocklist.json`
-   (signed).
+   `wrangler`: pages, `index.json` (signed), per-pack JSON, `codes.json` (who holds
+   each code and service name) and `blocklist.json` (signed).
 6. **Show.** Pages fetch install counts from `/api/v1/stats` (edge-cached for five
    minutes). `Find-MtPack` reads `index.json` and searches it locally.
 
@@ -709,8 +711,8 @@ row; the leaderboard has a risk filter.
 ### 7.4 Curation by pull request
 
 The index repository holds what people decide, as reviewable commits: blocklist
-entries and advisories, the official list, featured packs, **pack code and service
-name reservations** (section 4.5), and disputes over them. A "Request indexing" link opens an issue there that the
+entries and advisories, the official list, featured packs, and disputes over codes
+and service names (section 4.5). A "Request indexing" link opens an issue there that the
 indexer picks up, for publishers who want a listing before anyone installs.
 
 ### 7.5 Keeping the cost near zero
@@ -754,7 +756,7 @@ decision; the measures below make inflation expensive and visible.
   installs from ten distinct hashed IPs that day. A scheduled job looks for bursts from
   few networks (Cloudflare gives the client's network, ASN, on every request) or sudden
   spikes on a new pack, freezes the pack's rank and opens an issue.
-- **Junk listings.** A listing needs a valid manifest, a reserved code, a tagged
+- **Junk listings.** A listing needs a valid manifest, a code the repository holds, a tagged
   release, at least one test or a connector, and an owner account older than 30 days. An owner gets at most
   one new pack listed a day. A pack whose digest matches another pack is marked a
   duplicate and hidden. Names and IDs close to existing ones are flagged, and
@@ -792,7 +794,7 @@ rebuilds every page on every change. maester.dev's navigation gets a
 | `/` | **Leaderboard** | Search; All time / Trending / New tabs; filters by platform (the services connectors provide, plus Microsoft 365 add-ons), risk level and badge; rows with rank, icon, pack, `owner/repo`, badges, risk, platform, tests, an 8-week sparkline and installs; a "How listing works" panel and a publish link |
 | `/{owner}/{repo}[/{folder}]` | **Pack** | Header with badges, risk level, publisher, description and platforms; install box with PowerShell, maester-action and lock file tabs; tabs: **Overview** (the README, sanitised), **Tests** (ID, title, severity, service, each linking to its page), **Connector** (what it connects to, how to sign in, the settings table with secret markers and environment variable names, what it needs on the platform), **Security** (risk level and why, every compiled file with hash and signer, each scan's result, declared `Uses` against what was found, repository signals, repository ID, advisories), **Versions** (tag, commit, date, digest, risk level, changes to `Uses`); a sidebar with installs, version, first seen, last release, licence, required Maester version, GitHub stars and "Report this pack" |
 | `/{owner}/{repo}/tests/{id}` | **Test** | The test's Markdown (description, remediation) and its attribute data |
-| `/{owner}` | **Publisher** | Badges, packs, security contact, reserved codes and service names |
+| `/{owner}` | **Publisher** | Badges, packs, security contact, the codes and service names their repositories hold |
 | `/official`, `/platform/{service}`, `/category/{slug}` | **Lists** | Filtered leaderboards |
 | `/advisories[/{id}]` | **Advisories** | Blocked packs and versions, what happened, what to do |
 | `/publish` | **Publishing guide** | The steps of section 10.3, the rules of section 4.3, risk levels and badges |
@@ -1024,8 +1026,8 @@ PR description.
    `pack-scan` workflow.
 2. They write tests with the same `New-MtTest`, `Invoke-MtTest` and `Get-MtTest` they
    would use for custom tests, and run `Test-MtPack` until it is clean.
-3. They reserve a code with a pull request to the index repository (section 4.5);
-   the checks run and it merges on its own when they pass.
+3. They check the code is free (`Find-MtPack -Code CNT`) and click "Request indexing"
+   to claim it straight away, or let the first install claim it (section 4.5).
 4. They push and tag `v1.0.0`, ideally with GitHub's immutable releases turned on.
 5. Installing it once (`Install-MtPack contoso/... -AllowUnlisted`) sends the install
    event; the index validates and scans the tag, and the pack is listed, usually within
@@ -1124,8 +1126,9 @@ the signing key.
   the risk filter can hide them.
 - The **MVP badge** uses the undocumented MVP directory API as best-effort.
 - The **first official pack is Google Workspace**.
-- **Pack test IDs are `MP.<code>.<number>`**, with a two- or three-letter code per pack
-  reserved by a pull request to the index repository (section 4.5).
+- **Pack test IDs are `MP.<code>.<number>`**, with a two- to five-character code per
+  repository, claimed at the repository's first index, first come, first served; no
+  reservation pull request (section 4.5).
 
 ### Still open
 
