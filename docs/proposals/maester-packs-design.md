@@ -823,8 +823,12 @@ same text appears in five places:
   with the same messages;
 - **the install prompt** of an unlisted pack.
 
-The index does not open issues or post statuses on publishers' repositories: that would
-need write access to them.
+By default the index does not open issues on publishers' repositories, so it never
+becomes noise in someone else's tracker. (Anyone can open an issue on a public
+repository with issues turned on, but a GitHub App can only do so where it is
+installed, so this would need a bot account.) A publisher who wants issues can opt in
+with `"Notify": "Issues"` in the manifest; the index then opens one issue per version
+that is not listed, blocked or disputed.
 
 | Reason | What the publisher sees (examples) | Fix |
 | --- | --- | --- |
