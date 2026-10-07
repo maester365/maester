@@ -10,7 +10,8 @@
 > of the design review of 2026-10-07. This document supersedes 3.0 section 12.2, which
 > still names `maester-package.json` and a pull-request registry. Section 14 lists what
 > is still open; section 15 lists what is not yet verified. A readable overview for
-> pack builders is in [maester-packs-overview.html](maester-packs-overview.html).
+> pack builders is in [maester-packs-overview.html](maester-packs-overview.html), also
+> online at <https://claude.ai/artifact/CDT84TzmKnuW1fD2A32EK5>.
 
 ## 1. Summary
 
