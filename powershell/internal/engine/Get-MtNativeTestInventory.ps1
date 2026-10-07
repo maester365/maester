@@ -108,6 +108,10 @@ function Complete-MtNativeTest {
             HelpUrl      = $helpUrl
             Format       = 'Native'
         }) -Force
+    # The skip text for a test that returns $null without saying why, when the suite has its own wording.
+    if ($Suite -and $Suite.PSObject.Properties['NoResultReason'] -and $Suite.NoResultReason) {
+        $Test | Add-Member -NotePropertyName NoResultReason -NotePropertyValue ([string]$Suite.NoResultReason) -Force
+    }
     $Test
 }
 

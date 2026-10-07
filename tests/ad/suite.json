@@ -6,5 +6,6 @@
     "AD"
   ],
   "IdPattern": "^AD-",
-  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}"
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "NoResultReason": "Active Directory data could not be retrieved"
 }

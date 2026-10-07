@@ -100,6 +100,27 @@ Describe 'Code review fixes' {
     }
 }
 
+Describe 'Skip text for a test that returns no result' {
+    It 'Uses the suite''s NoResultReason' {
+        $folder = Join-Path $TestDrive 'noresult'
+        $file = New-TestFile -Folder $folder -Id 'CONTOSO.20' -Body 'return $null'
+        @{ Id = 'CONTOSO'; Source = 'Custom'; NoResultReason = 'Directory data could not be retrieved' } | ConvertTo-Json | Set-Content (Join-Path $folder 'suite.json')
+        $row = Invoke-MtTest -Path $file
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonDetail | Should -Be 'Directory data could not be retrieved'
+        $row.ResultDetail.TestResult | Should -Be 'Skipped. Directory data could not be retrieved'
+    }
+
+    It 'Falls back to the generic text without one' {
+        $file = New-TestFile -Folder (Join-Path $TestDrive 'noresult-generic') -Id 'CONTOSO.21' -Body 'return $null'
+        (Invoke-MtTest -Path $file).ReasonDetail | Should -Be 'The test returned no result.'
+    }
+
+    It 'Gives the Active Directory tests the 2.x wording' {
+        (Get-MtTest -Id 'AD-TRUST-03').NoResultReason | Should -Be 'Active Directory data could not be retrieved'
+    }
+}
+
 Describe 'Update-MaesterTests on a 2.x config copy' {
     It 'Keeps only rows that differ from the built-in severities' {
         $folder = Join-Path $TestDrive 'update'

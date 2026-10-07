@@ -320,7 +320,10 @@ function ConvertTo-MtNativeRow {
             switch ($kind) {
                 'True' { $result = 'Passed'; $reasonCode = $null; $reasonDetail = $null }
                 'False' { $result = 'Failed'; $reasonCode = $null; $reasonDetail = $null }
-                'Null' { $result = 'Skipped'; $reasonCode = 'NoResult'; $reasonDetail = 'The test returned no result.' }
+                'Null' {
+                    $result = 'Skipped'; $reasonCode = 'NoResult'
+                    $reasonDetail = if ($test.PSObject.Properties['NoResultReason'] -and $test.NoResultReason) { $test.NoResultReason } else { 'The test returned no result.' }
+                }
                 default {
                     $result = 'Error'; $reasonCode = 'InvalidReturn'
                     $reasonDetail = if ($kind -eq 'Multiple') { 'The test returned more than one value; it must return $true or $false.' } else { "The test returned $($RunResult.ReturnValue.GetType().Name); it must return `$true or `$false." }

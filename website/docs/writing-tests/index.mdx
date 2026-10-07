@@ -525,6 +525,7 @@ A `suite.json` in a test folder sets what is true for every test in it (and its 
 | `DefaultCategory` | The `Category` of tests that do not set one. |
 | `HelpUrlTemplate` | The `HelpUrl` of tests that do not set one; `{Id}` is replaced. |
 | `RequiresMaester` | Tests in the folder need at least this Maester version. On an older version each one is an `Error` row with reason `RequiresNewerMaester`. |
+| `NoResultReason` | The skip text shown when a test returns `$null` without calling `Add-MtTestResultDetail`. Defaults to "The test returned no result." |
 
 A single file can state the same with `#Requires -Modules @{ ModuleName = 'Maester'; ModuleVersion = '3.1' }`.
 
