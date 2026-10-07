@@ -1220,7 +1220,7 @@ a code review.
 | Badge | Means | Source |
 | --- | --- | --- |
 | **Official** | Published in the maester365 organisation and reviewed like built-in checks | The repository owner |
-| **Microsoft MVP** | The GitHub account that owns the repository is listed on a current, public Microsoft MVP profile | A weekly sync from the public MVP profile directory, matching the GitHub link MVPs add to their profile (the same unauthenticated endpoints the newsletter project already syncs) |
+| **Microsoft MVP** | The GitHub account that owns the repository is listed on a current, public Microsoft MVP profile | A weekly sync from the public MVP profile directory (the unauthenticated endpoints behind mvp.microsoft.com), matching the GitHub link MVPs add to their profile |
 | **GitHub-verified organisation** | The owning organisation has verified its domain with GitHub | GitHub's organisation API (`is_verified`) |
 
 The MVP badge is best-effort, as decided: the directory API is undocumented, and the
