@@ -500,7 +500,7 @@ publisher.
 | --- | --- |
 | `Find-MtPack [-Query] [-Service] [-MaximumRisk] [-Code]` | Searches the Maester Packs index; `-Code` shows whether a code is available, held or reserved. |
 | `Install-MtPack <source> [-Version] [-Scope Project\|User]` | Resolves, downloads, validates, shows the approval prompt, and records the pack in config and lock file. |
-| `Restore-MtPack [-Source <folder>]` | Installs exactly what the lock file says, checking every digest; no prompts. Used by CI and maester-action. Falls back to the Maester Packs archive mirror when GitHub no longer has a version (section 7.2), or reads a `Save-MtPack` bundle. |
+| `Restore-MtPack [-Source <folder>]` | Installs exactly what the lock file says, checking every digest; no prompts. Used by CI and maester-action. A pack GitHub no longer serves is skipped with a warning (section 5.5); `-Source` reads a `Save-MtPack` bundle instead of GitHub. |
 | `Save-MtPack -Path <folder>` | Writes the locked packs, their Gallery modules, their listings and the current blocklist into a folder, for vendoring into a repository or carrying into an air-gapped network. |
 | `Update-MtPack [<id>] [-Version]` | Moves to a newer tag; shows what changed and asks again if the pack now uses more. |
 | `Uninstall-MtPack <id>` | Removes it from config and lock file. |
@@ -528,7 +528,7 @@ quickly. Nothing is sent to the index for a download that needed a token.
   ```
 
 - **`maester-packs.lock.json`** sits next to it and pins each pack, and every pack it
-  requires, to a commit; the numeric repository and owner IDs and the publisher at
+  requires, to a commit; records the test IDs each pack provides; the numeric repository and owner IDs and the publisher at
   approval; the content digest; the risk level and scan result at install time and the
   risk level the user accepted; the approved `Uses` block; and the hashes of the whole
   Gallery module closure. Committing it is how a team reviews what runs in CI.
@@ -619,6 +619,16 @@ Selection works as for built-ins (`-Tag`, `-TestId`, config `Selection`), and
 pack tests like any other. A pack that fails to load gives one `Error` row per test
 with reason `PackLoadFailed` rather than stopping the run.
 
+**A pack that is no longer on GitHub is skipped, and the run continues.** If the
+repository was deleted or made private, or the release was removed, and the
+digest-verified copy is not already in the local store, Maester does not fail. It skips that
+pack, its tests (whose IDs the lock file records) appear as `NotRun` rows with reason
+`PackUnavailable`, and the report shows a warning naming the pack, the version and what
+GitHub returned. A copy that fails its digest check is never run either; it is skipped
+the same way, with a warning that the files changed. Maester Packs keeps no copies of
+publishers' repositories. Teams that need restores to work whatever happens to a
+repository commit a `Save-MtPack` bundle and restore from it with `-Source`.
+
 **A run with packs only** (Google Workspace, say, and no Microsoft 365 connection) uses
 `-SkipBuiltIn`, so the report is not filled with skipped built-in checks. With no Graph
 connection there is no tenant ID, so 3.0's tenant-specific config layer is skipped,
@@ -637,10 +647,10 @@ maester-action restores from the committed lock file:
     MAESTER_CNT_GOOGLEWORKSPACE_CREDENTIAL: ${{ secrets.GWS_SERVICE_ACCOUNT_JSON }}
 ```
 
-Nothing is resolved in CI: a lock file entry that is missing, changed or blocked fails
-the step with a clear message. A version GitHub no longer serves (the repository was
-deleted or made private, or the tag removed) is restored from the archive mirror if it
-was listed, or from a `Save-MtPack` bundle committed to the repository.
+Nothing is resolved in CI: the lock file decides what runs. A pack GitHub no longer
+serves, or whose files fail the digest check, is skipped with a warning in the report
+and the run continues (section 5.5); a blocked pack gives `NotRun` rows with the
+advisory (section 9.8).
 
 ### 5.7 Which commits can be installed
 
@@ -660,6 +670,7 @@ on the pack's page and in `Get-MtPack`.
 | **Deprecated** | The publisher: `"Deprecated": { "Message": "...", "Replacement": "owner/repo" }` in the manifest of a new version | Shown with the message and the replacement; installs and updates warn |
 | **Yanked version** | The publisher: `"Yanked": [{ "Version": "1.1.0", "Reason": "..." }]` in a later version's manifest | Not offered for install or update; lock files that pin it still restore, with a warning. For mistakes, not malice |
 | **Archived** | GitHub: the repository is archived | Labelled "Archived: no longer maintained"; still installable |
+| **Gone** | GitHub: the repository was deleted or made private, or the release removed | Shown as "No longer available"; runs skip it with a warning (section 5.5) |
 | **Delisted** | The publisher (`"Listed": false`, or a request) or the index (failing, or a legal takedown, section 9.10) | Hidden and not installable from the index; copies already installed keep running |
 | **Blocked** | Maintainers, for malice (section 9.8) | Never loads anywhere |
 
@@ -871,12 +882,11 @@ later script.
                                      │
        GitHub Actions in maester365/packs-index (public repository: free minutes)
          scan job (untrusted, no secrets): fetch ▶ check ▶ validate ▶ scan ▶ listing
-         publish job (protected environment): sign ▶ mirror ▶ build site ▶ deploy
-                                     │  wrangler deploy, R2 upload
+         publish job (protected environment): sign ▶ build site ▶ deploy
+                                     │  wrangler deploy
                                      ▼
  Browser, Find-MtPack ◀── packs.maester.dev
                            static assets: pages, index.json, codes.json, blocklist.json
-                           R2: archive mirror of listed versions
                            Worker: /api/v1/stats, /api/v1/search, /api/v1/events
 ```
 
@@ -930,15 +940,11 @@ no token that can write to GitHub.
    before anyone installs it.
 5. **Publish job (privileged).** A separate job, in a protected GitHub environment
    that only the default branch can use, takes the scan job's artifact. It is the only
-   job with secrets: the index signing key, the R2 and Cloudflare tokens, and a GitHub
+   job with secrets: the index signing key, the Cloudflare token, and a GitHub
    App allowed to push to one data branch. It:
    - commits listings to the `listings` branch. Repository rulesets let only that App
      write there and let nobody, the App included, push to `main`, where people's
      decisions (blocklist, disputes, official list) arrive by reviewed pull request;
-   - stores each listed version's archive in Cloudflare R2, keyed by digest, so
-     restores keep working if the repository disappears. Publishers grant this in the
-     terms of listing (section 9.10); a pack whose licence or publisher forbids it is
-     marked "Not mirrored";
    - signs `index.json` with the online index key (section 9.8), builds the static
      site and deploys it with `wrangler`: pages, `index.json`, per-pack JSON,
      `codes.json` (who holds each code and service name) and the current
@@ -977,7 +983,6 @@ is only ever data to the indexer (section 7.2).
 | Indexing, scanning, site build, deploy | GitHub Actions in a public repository | Standard GitHub-hosted runners are free for public repositories | Never, on standard runners |
 | Malware checks for binaries | ClamAV in the workflow; optional VirusTotal hash lookups | VirusTotal's public API: 500 lookups a day, non-commercial use | A paid malware service, if ever needed |
 | AI-assisted review (optional) | GitHub Models from the workflow | Free rate-limited tier | A paid model API, if quality needs it |
-| Archive mirror of listed versions | Cloudflare R2 | 10 GB stored, 1 million writes and 10 million reads a month, no download (egress) fees | US$0.015 per GB-month beyond 10 GB |
 | Domain | packs.maester.dev on the existing Cloudflare zone | — | Nothing new |
 
 What keeps it there:
@@ -1301,9 +1306,9 @@ applies at install, restore and run.
   numeric IDs) or digests.
 - `RequireFreshBlocklist` makes a run fail instead of continuing when no current
   blocklist can be fetched (section 9.8).
-- `Index` can point at an internal mirror. The index, the blocklist and the mirrored
-  archives are static files, so an organisation, or an air-gapped network, can host a
-  copy; `Save-MtPack` bundles cover the packs themselves.
+- `Index` can point at an internal mirror. The index and the blocklist are static
+  files, so an organisation, or an air-gapped network, can host a copy; `Save-MtPack`
+  bundles cover the packs themselves.
 
 ### 9.8 Revocation
 
@@ -1360,13 +1365,12 @@ Before the public launch the site needs policies, written with legal advice:
 
 - **Terms of listing** for publishers, which apply when a pack is listed: the
   publisher has the right to publish what is in the repository; it grants Maester Packs
-  a licence to display its listing, README and test documentation, and to mirror its
-  release archives for restores; no malware, no deception, no collecting data the pack
+  a licence to display its listing, README and test documentation; no malware, no deception, no collecting data the pack
   does not need; and the project may delist or block a pack. A publisher that does not
   agree uses `"Listed": false` (section 4.2) or asks to be delisted; installing directly
   from the repository still works.
 - **Repositories with no licence** are listed with metadata, the test catalog and a
-  short README excerpt only, and are not mirrored, since nothing grants more.
+  short README excerpt only, since nothing grants more.
 - **Trademark and copyright complaints** have their own process and form, separate from
   security takedowns: a complaint delists the pack (installed copies keep running) while
   it is resolved, and a counter-notice can restore it. Only security problems use the
@@ -1451,13 +1455,13 @@ goes red; the pack's page shows the advisory and the install command is removed.
 | Report | A Packs section grouped by pack with publisher, badges, risk and its own pass rate; headline score without pack rows; remote images stripped for pack rows | 1 |
 | maester-action | `restore_packs` input; pack environment variables passed through | 1 |
 | Pack API | The published list of commands, schemas and contracts packs may rely on, and the deprecation policy | 1 |
-| Index client | `Find-MtPack`; signed index verification; archive mirror fallback; install event | 2 |
+| Index client | `Find-MtPack`; signed index verification; install event | 2 |
 | Isolation | Container partitions per pack for hosts that can run containers | 3 |
 | Built-in connectors | GitHub and Active Directory on the connector contract | later |
 
 Outside the module (phase 2): the `maester365/packs-index` repository with its split
 scan and publish workflows, rulesets and scanners; the `maester365/pack-scan` reusable
-action; the Worker and D1 database; the R2 archive mirror; the static site; the MVP
+action; the Worker and D1 database; the static site; the MVP
 directory and brand-list syncs; the signing keys and their custody; and the terms of
 listing.
 
@@ -1475,7 +1479,7 @@ listing.
    browser sign-in and a service account; the licence of any code reused needs
    checking.
 2. **Phase 2, Maester Packs.** The Worker and D1, the index workflows and scanners,
-   the R2 archive mirror, risk levels and badges, the signed index, `Find-MtPack`,
+   risk levels and badges, the signed index, `Find-MtPack`,
    packs.maester.dev, the terms of listing and the privacy notice, and the claim window
    for codes used during phase 1 (section 4.5). The public launch waits for the
    blocklist, the cooldown, the risk levels, the indexer's split jobs and the terms,
@@ -1539,8 +1543,9 @@ listing.
 - **The design review of 2026-10-07 is applied in full**: commits must belong to the
   named repository (5.7); one loader gate and no passing as built-ins (4.4);
   namespaced connector service names (6.3); permissions packs need (6.6); the blocklist
-  in phase 1, with freshness and key hierarchy (9.8, 12); the split indexer and archive
-  mirror (7.2); lifecycle states (5.8); numeric IDs and the ID ledger (4.2, 4.5); the
+  in phase 1, with freshness and key hierarchy (9.8, 12); the split indexer (7.2);
+  packs that disappear from GitHub are skipped with a warning, with no copies kept by
+  Maester Packs (5.5); lifecycle states (5.8); numeric IDs and the ID ledger (4.2, 4.5); the
   pack API (4.7); locked-down Windows (9.11); and terms and takedowns (9.10).
 - maester365's own code is **`MAES`**.
 
@@ -1549,7 +1554,7 @@ listing.
 - **Setup you would own:** the GitHub App the publish job uses to write the
   `listings` branch; the offline root and blocklist signing keys and the publish job's
   index key; the rulesets and protected environment on `maester365/packs-index`; the
-  Cloudflare account, zone settings, R2 bucket and Worker secrets; and the terms of
+  Cloudflare account, zone settings and Worker secrets; and the terms of
   listing and privacy notice, with legal advice.
 
 ## 15. Not yet verified
@@ -1575,8 +1580,6 @@ listing.
   the likely one), and its cost against the anonymous rate limit.
 - **Signing key custody:** where the offline root and blocklist keys live and who
   holds them, and how the publish job's index key is protected.
-- **R2 and the terms of listing:** that mirroring under the terms is enough for
-  repositories with permissive licences, and how proprietary packs opt out.
 - **The `MissingScope` gate:** reading granted scopes and roles reliably from delegated
   and app-only tokens across clouds.
 - **The skills.sh mechanics** are taken from its public CLI source (commit `958f4b7`)
