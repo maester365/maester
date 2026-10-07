@@ -28,10 +28,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-if (-not $OutputPath) { $OutputPath = Join-Path $repoRoot 'website' '.generated' 'test-catalog.json' }
+$repoRoot = (Resolve-Path (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..')).Path
+if (-not $OutputPath) { $OutputPath = Join-Path -Path $repoRoot -ChildPath 'website' -AdditionalChildPath '.generated', 'test-catalog.json' }
 
-Import-Module (Join-Path $repoRoot 'powershell' 'Maester.psd1') -Force -WarningAction SilentlyContinue
+Import-Module (Join-Path -Path $repoRoot -ChildPath 'powershell' -AdditionalChildPath 'Maester.psd1') -Force -WarningAction SilentlyContinue
 
 function ConvertTo-RepoPath {
     param([string] $Path)
@@ -84,4 +84,4 @@ $json = $json.Replace("`r`n", "`n") + "`n"
 $outDir = Split-Path $OutputPath -Parent
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }
 [System.IO.File]::WriteAllText([System.IO.Path]::GetFullPath($OutputPath), $json, [System.Text.UTF8Encoding]::new($false))
-Write-Host "Exported $(@($catalog).Count) built-in tests to $(ConvertTo-RepoPath $OutputPath)."
+Write-Information -InformationAction Continue "Exported $(@($catalog).Count) built-in tests to $(ConvertTo-RepoPath $OutputPath)."

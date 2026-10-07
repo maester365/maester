@@ -1,4 +1,4 @@
-# Legacy Pester fixture: BeforeDiscovery builds data, -ForEach and -TestCases expand it.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Pester shares the variable between blocks.')] param() # Legacy Pester fixture: BeforeDiscovery builds data, -ForEach and -TestCases expand it.
 # The ID of each instance is built at discovery time, so 3.0 can select it as a family only.
 BeforeDiscovery {
     $apps = @(

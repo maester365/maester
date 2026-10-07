@@ -1,4 +1,4 @@
-# Legacy Pester fixture: a stale copy of the 2024-style family wrapper for MT.1024. The ID
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Pester shares the variable between blocks.')] param() # Legacy Pester fixture: a stale copy of the 2024-style family wrapper for MT.1024. The ID
 # is built at discovery time, so there is no static ID; 3.0 supersedes it because the
 # literal start of the It name is a built-in family's parent ID and a dot ("MT.1024.").
 # Fixture-only change: when Graph is not available, discovery falls back to inline data so

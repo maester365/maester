@@ -2,6 +2,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force -WarningAction SilentlyContinue
 
     function New-TestFile {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
         param([string] $Folder, [string] $Id, [string] $Body, [string] $Extra = '')
         $null = New-Item -ItemType Directory -Path $Folder -Force
         $name = 'Test-' + ($Id -replace '[^A-Za-z0-9]', '')

@@ -1,4 +1,4 @@
-# Legacy Pester fixture: plain Describe/It with "ID: Title" names, tags with spaces, Should assertions.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Pester shares the variable between blocks.')] param() # Legacy Pester fixture: plain Describe/It with "ID: Title" names, tags with spaces, Should assertions.
 # Data is inline, so the file runs without a tenant.
 Describe "Contoso Baseline" -Tag "Contoso", "Contoso Baseline", "Entra ID P1" {
     BeforeAll {

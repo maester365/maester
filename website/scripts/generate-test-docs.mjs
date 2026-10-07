@@ -197,7 +197,7 @@ function unique(values) {
 function normalizeMarkdown(markdown) {
   return markdown
     // Test.<ID>.md files are saved with a UTF-8 BOM; it would otherwise leak into the page text.
-    .replace(/^﻿/, "")
+    .replace(/^\uFEFF/, "")
     // extractSection() below rejoins split lines with plain "\n"; leaving CRLF
     // here would make that rejoined text byte-different from this string, so
     // the duplicate-section .includes() guards in renderTestPage() would never
@@ -271,6 +271,7 @@ function loadCatalog() {
     const path = resolve(process.cwd(), explicit);
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is supplied by the caller (CI workflow or developer)
     if (!existsSync(path)) throw new Error(`Test catalog not found at ${path}. Run build/docs/Export-MtTestCatalogForDocs.ps1 first.`);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- same caller-supplied path as above
     return JSON.parse(readFileSync(path, "utf8")).Tests;
   }
 

@@ -3,6 +3,7 @@ BeforeAll {
     $script:fixtures = (Resolve-Path "$PSScriptRoot/../../fixtures/error-paths").Path
 
     function New-NativeTestFile {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
         param([string] $Folder, [string] $Id, [string] $Body = '$true', [string] $Attribute = '', [string] $Param = '', [switch] $NoMarkdown)
         $null = New-Item -ItemType Directory -Path $Folder -Force
         $name = 'Test-' + ($Id -replace '[^A-Za-z0-9]', '')

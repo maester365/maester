@@ -9,6 +9,7 @@ BeforeAll {
     }
 
     function New-GeneratorOutput {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
         param([string] $Root)
         $paths = @{
             TestPath                = Join-Path $Root 'tests'

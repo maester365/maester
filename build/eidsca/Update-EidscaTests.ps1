@@ -196,7 +196,7 @@ function GetCompareOperator($RecommendedValue) {
 
 function GetPageTitle($uri) {
     $uri = ConvertTo-LanguageNeutralMicrosoftUrl -Content $uri
-    $isValidUri = ($uri -as [System.URI]).AbsoluteURI -ne $null
+    $isValidUri = $null -ne ($uri -as [System.URI]).AbsoluteURI
 
     $title = ''
     if ($isValidUri) {
@@ -696,9 +696,9 @@ foreach ($control in $aadsc) {
         $nativeOutput = ConvertTo-LanguageNeutralMicrosoftUrl -Content $nativeOutput
 
         $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
-        CreateFile $PowerShellFunctionsPath "$psFunctionName.ps1" $psOutput
-        CreateFile $TestPath "Test.$($controlItem.CheckId).ps1" $nativeOutput
-        CreateFile $TestPath "Test.$($controlItem.CheckId).md" $markdownOutput
+        CreateFile -folderPath $PowerShellFunctionsPath -fileName "$psFunctionName.ps1" -content $psOutput
+        CreateFile -folderPath $TestPath -fileName "Test.$($controlItem.CheckId).ps1" -content $nativeOutput
+        CreateFile -folderPath $TestPath -fileName "Test.$($controlItem.CheckId).md" -content $markdownOutput
     }
 }
 

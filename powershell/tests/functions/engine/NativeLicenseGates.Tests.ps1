@@ -29,7 +29,9 @@ BeforeDiscovery {
 BeforeAll {
     Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force -WarningAction SilentlyContinue
 
-    function New-Config([string[]] $Licenses) {
+    function New-Config {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+        param([string[]] $Licenses)
         $services = [pscustomobject]@{ Graph = $true; ExchangeOnline = $true; SecurityCompliance = $true; Teams = $true }
         [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = $Licenses; Services = $services } }
     }

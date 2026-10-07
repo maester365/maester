@@ -27,7 +27,7 @@ namespace Maester.Engine
     /// </summary>
     [Cmdlet(VerbsLifecycle.Invoke, "MtEngineRun")]
     [OutputType(typeof(MtRunResult))]
-    public sealed class InvokeMtEngineRunCommand : PSCmdlet
+    public sealed class InvokeMtEngineRunCommand : PSCmdlet, IDisposable
     {
         [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true)]
         public MtWorkItem[] WorkItem { get; set; }
@@ -192,7 +192,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
                 // A Write* call throws this once the host marked the pipeline as stopping (a real Ctrl+C).
                 // It can arrive before StopProcessing has run, so cancel here too.
                 _cts.Cancel();
-                foreach (var kv in _inFlight) { try { kv.Value.BeginStop(null, null); } catch { } }
+                foreach (var kv in _inFlight) { BestEffort(() => kv.Value.BeginStop(null, null)); }
                 throw;
             }
             finally
@@ -235,10 +235,10 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             if (_summary != null) _summary.StopRequested = true;
             _cts.Cancel();
             var main = _currentMain;
-            if (main != null) { try { main.BeginStop(null, null); } catch { } }
+            if (main != null) { BestEffort(() => main.BeginStop(null, null)); }
             foreach (var kv in _inFlight)
             {
-                try { kv.Value.BeginStop(null, null); } catch { }
+                BestEffort(() => kv.Value.BeginStop(null, null));
             }
         }
 
@@ -247,7 +247,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
         private void Post(bool started, MtWorkItem item, MtRunResult result)
         {
             try { _events.Add(new EngineEvent { Started = started, Item = item, Result = result }); }
-            catch (InvalidOperationException) { }
+            catch (InvalidOperationException) { /* The queue was completed or disposed (an abandoned runspace finished after the run): nobody reads the event. */ }
         }
 
         private void DrainEvents()
@@ -326,7 +326,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
                     timer = new Timer(_ =>
                     {
                         Interlocked.Exchange(ref fired, 1);
-                        try { ps.BeginStop(null, null); } catch { }
+                        BestEffort(() => ps.BeginStop(null, null));
                     }, null, TimeSpan.FromSeconds(timeoutSec), Timeout.InfiniteTimeSpan);
                 }
                 ps.Invoke(null, output);
@@ -378,7 +378,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             _pool = null;
             // Close() waits for every runspace to stop. A runspace stuck in a blocking .NET call cannot be
             // interrupted on .NET Core, so the wait is bounded and the runspace is abandoned otherwise.
-            var closeTask = Task.Run(() => { try { pool.Close(); pool.Dispose(); } catch { } });
+            var closeTask = Task.Run(() => BestEffort(() => { pool.Close(); pool.Dispose(); }));
             closeTask.Wait(TimeSpan.FromMilliseconds(StopGraceMs));
         }
 
@@ -457,23 +457,24 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
                     timedOut = !ct.IsCancellationRequested;
                     result.Duration = sw.Elapsed;
                     var stopSw = Stopwatch.StartNew();
-                    try { ps.BeginStop(null, null); } catch { }
+                    BestEffort(() => ps.BeginStop(null, null));
                     // Script code honours a stop within milliseconds; a blocking .NET call does not, and nothing
                     // on .NET Core can interrupt it. Report at the deadline and replace the runspace.
                     var done = await Task.WhenAny(invokeTask, Task.Delay(Math.Min(StopGraceMs, 250))).ConfigureAwait(false) == invokeTask;
                     if (done)
                     {
                         result.StopLagMs = (int)stopSw.Elapsed.TotalMilliseconds;
-                        try { await invokeTask.ConfigureAwait(false); } catch { }
+                        try { await invokeTask.ConfigureAwait(false); }
+                        catch (Exception) { /* The test was stopped; its outcome is already recorded, so the stop exception is expected. */ }
                     }
                     else
                     {
                         stuck = true;
                         result.StopLagMs = -1;
                         Interlocked.Increment(ref _abandoned);
-                        try { _pool.SetMaxRunspaces(_pool.GetMaxRunspaces() + 1); } catch { }
+                        BestEffort(() => _pool.SetMaxRunspaces(_pool.GetMaxRunspaces() + 1));
                         var psCopy = ps;
-                        var ignored = invokeTask.ContinueWith(_ => { try { psCopy.Dispose(); } catch { } });
+                        var ignored = invokeTask.ContinueWith(_ => BestEffort(() => psCopy.Dispose()));
                     }
                 }
             }
@@ -498,6 +499,23 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
 
         // ------------------------------------------------------------------ helpers
 
+        /// <summary>
+        /// Runs a stop or cleanup call whose failure must not change the run: the runspace or pool may already
+        /// be closed or broken, and the test's own outcome has been recorded.
+        /// </summary>
+        private static void BestEffort(Action action)
+        {
+            try { action(); }
+            catch (Exception) { /* Best effort by design; see the summary. */ }
+        }
+
+        /// <summary>Called by PowerShell when the pipeline ends.</summary>
+        public void Dispose()
+        {
+            _cts.Dispose();
+            _events.Dispose();
+        }
+
         private static void AddInvocation(PowerShell ps, MtWorkItem item, object defaultModule)
         {
             object module = item.Module != null ? (object)item.Module : item.ModuleName != null ? (object)item.ModuleName : defaultModule;
@@ -518,12 +536,12 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
                 {
                     var pso = merged[i];
                     var b = pso == null ? null : pso.BaseObject;
-                    if (b is MtOutcome) outcome = (MtOutcome)b;
-                    else if (b is WarningRecord) result.Warnings.Add((WarningRecord)b);
-                    else if (b is InformationRecord) result.Information.Add((InformationRecord)b);
-                    else if (b is VerboseRecord) result.Verbose.Add((VerboseRecord)b);
-                    else if (b is DebugRecord) result.Debug.Add((DebugRecord)b);
-                    else if (b is ErrorRecord) result.Errors.Add((ErrorRecord)b);
+                    if (b is MtOutcome mo) outcome = mo;
+                    else if (b is WarningRecord wr) result.Warnings.Add(wr);
+                    else if (b is InformationRecord ir) result.Information.Add(ir);
+                    else if (b is VerboseRecord vr) result.Verbose.Add(vr);
+                    else if (b is DebugRecord dr) result.Debug.Add(dr);
+                    else if (b is ErrorRecord er) result.Errors.Add(er);
                     // Anything else is output of the invocation script itself, not of the test. Ignore it.
                 }
             }
@@ -587,9 +605,9 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             if (output.Count == 0) return MtReturnKind.Null;
             if (output.Count > 1) return MtReturnKind.Multiple;
             var o = output[0];
-            var b = o is PSObject ? ((PSObject)o).BaseObject : o;
+            var b = o is PSObject pso ? pso.BaseObject : o;
             if (b == null) return MtReturnKind.Null;
-            if (b is bool) return (bool)b ? MtReturnKind.True : MtReturnKind.False;
+            if (b is bool flag) return flag ? MtReturnKind.True : MtReturnKind.False;
             return MtReturnKind.NonBoolean;
         }
 

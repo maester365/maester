@@ -1,4 +1,4 @@
-Describe 'Merge-MtMaesterResult' {
+﻿Describe 'Merge-MtMaesterResult' {
     BeforeAll {
         $tenant1 = [PSCustomObject]@{
             TenantId       = 'tenant-1-id'
@@ -230,6 +230,7 @@ Describe 'Merge-MtMaesterResult' {
 Describe 'Merge-MtMaesterResult -SameRun' {
     BeforeAll {
         function New-Partial {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
             param([object[]] $Rows, [string] $RunId = 'run-1', [string] $Catalog = '3.0.0', [string] $Duration = '00:00:10.000')
             [PSCustomObject][ordered]@{
                 Result         = if ($Rows | Where-Object Result -EQ 'Failed') { 'Failed' } else { 'Passed' }
@@ -246,12 +247,12 @@ Describe 'Merge-MtMaesterResult -SameRun' {
                 EndOfJson      = 'EndOfJson'
             }
         }
-        function New-Row { param($Id, $Result, $Block = 'Maester') [PSCustomObject]@{ Index = 0; Id = $Id; Name = "${Id}: test"; Result = $Result; Block = $Block } }
+        function New-Row { [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')] param($Id, $Result, $Block = 'Maester') [PSCustomObject]@{ Index = 0; Id = $Id; Name = "${Id}: test"; Result = $Result; Block = $Block } }
     }
 
     It 'Keeps the row that ran over the NotRun row of another partition' {
-        $a = New-Partial -Rows @((New-Row 'MT.1001' 'Passed'), (New-Row 'MT.1002' 'NotRun'), (New-Row 'MT.1003' 'NotRun'))
-        $b = New-Partial -Rows @((New-Row 'MT.1001' 'NotRun'), (New-Row 'MT.1002' 'Failed' 'Exchange'), (New-Row 'MT.1003' 'NotRun')) -Duration '00:00:30.000'
+        $a = New-Partial -Rows @((New-Row -Id 'MT.1001' -Result 'Passed'), (New-Row -Id 'MT.1002' -Result 'NotRun'), (New-Row -Id 'MT.1003' -Result 'NotRun'))
+        $b = New-Partial -Rows @((New-Row -Id 'MT.1001' -Result 'NotRun'), (New-Row -Id 'MT.1002' -Result 'Failed' -Block 'Exchange'), (New-Row -Id 'MT.1003' -Result 'NotRun')) -Duration '00:00:30.000'
         $m = Merge-MtMaesterResult -MaesterResults $a, $b -SameRun
         $m.PSObject.Properties.Name | Should -Not -Contain 'Tenants'
         $m.Tests | Should -HaveCount 3
@@ -272,8 +273,8 @@ Describe 'Merge-MtMaesterResult -SameRun' {
     }
 
     It 'Refuses partitions of different runs or catalog versions' {
-        $a = New-Partial -Rows @(New-Row 'MT.1001' 'Passed')
-        { Merge-MtMaesterResult -MaesterResults $a, (New-Partial -Rows @(New-Row 'MT.1001' 'Passed') -RunId 'run-2') -SameRun } | Should -Throw '*RunId*'
-        { Merge-MtMaesterResult -MaesterResults $a, (New-Partial -Rows @(New-Row 'MT.1001' 'Passed') -Catalog '3.1.0') -SameRun } | Should -Throw '*catalog*'
+        $a = New-Partial -Rows @(New-Row -Id 'MT.1001' -Result 'Passed')
+        { Merge-MtMaesterResult -MaesterResults $a, (New-Partial -Rows @(New-Row -Id 'MT.1001' -Result 'Passed') -RunId 'run-2') -SameRun } | Should -Throw '*RunId*'
+        { Merge-MtMaesterResult -MaesterResults $a, (New-Partial -Rows @(New-Row -Id 'MT.1001' -Result 'Passed') -Catalog '3.1.0') -SameRun } | Should -Throw '*catalog*'
     }
 }

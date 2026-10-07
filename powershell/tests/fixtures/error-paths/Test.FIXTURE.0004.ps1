@@ -10,7 +10,7 @@
         Category = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
-    [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly', '', Justification = 'Error-path fixture.')][CmdletBinding()]
     [OutputType([bool])]
     param()
 

@@ -31,10 +31,10 @@ if (Get-Module -Name Pester) { throw 'Pester was loaded.' }
 $result = Get-Content $out -Raw | ConvertFrom-Json
 $native = @($result.Tests | Where-Object Format -EQ 'Native')
 $pester = @($result.Tests | Where-Object Id -EQ 'CONTOSO.1')
-Write-Host "Rows: $($result.Tests.Count); native: $($native.Count)"
+Write-Output "Rows: $($result.Tests.Count); native: $($native.Count)"
 if ($native.Count -eq 0) { throw 'No native test produced a row.' }
 if ($pester.Count -ne 1 -or $pester[0].Result -ne 'Error' -or $pester[0].ReasonCode -ne 'PesterNotAvailable') {
     throw "The Pester-format test was not reported as PesterNotAvailable: $($pester | ConvertTo-Json -Depth 3 -Compress)"
 }
 Remove-Item -Recurse -Force $work
-Write-Host 'Maester runs without Pester.'
+Write-Output 'Maester runs without Pester.'

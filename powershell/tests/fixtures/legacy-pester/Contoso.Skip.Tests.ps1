@@ -1,4 +1,4 @@
-# Legacy Pester fixture: -Skip with a literal and with an expression.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Pester shares the variable between blocks.')] param() # Legacy Pester fixture: -Skip with a literal and with an expression.
 BeforeDiscovery {
     $featureEnabled = $false
 }

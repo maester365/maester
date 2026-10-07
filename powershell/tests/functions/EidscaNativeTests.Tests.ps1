@@ -14,6 +14,7 @@ Describe 'EIDSCA native tests' {
         Mock -ModuleName Maester Add-MtTestResultDetail {}
 
         function New-DirectorySetting {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
             param([hashtable] $Values)
             [pscustomobject]@{ values = @($Values.GetEnumerator() | ForEach-Object { [pscustomobject]@{ name = $_.Key; value = $_.Value } }) }
         }
