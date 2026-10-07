@@ -4,9 +4,7 @@ export async function loadReportData(): Promise<unknown> {
   const embedded = document.getElementById(reportDataElementId)?.textContent?.trim()
 
   if (import.meta.env.DEV) {
-    const { testResults } = await import("@/lib/testResults")
-    const { applyDevSample } = await import("@/lib/devSampleSchema21")
-    return applyDevSample(testResults, new URLSearchParams(window.location.search).get("sample"))
+    return (await import("@/lib/testResults")).testResults
   }
 
   if (!embedded) {

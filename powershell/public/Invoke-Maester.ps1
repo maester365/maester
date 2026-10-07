@@ -410,7 +410,7 @@
     }
     foreach ($message in $testSource.Messages) {
         if ($message.Level -eq 'Warning') { Write-Warning $message.Text }
-        elseif (-not $NonInteractive.IsPresent) { Write-Information $message.Text -InformationAction Continue }
+        else { Write-Verbose $message.Text }
     }
 
     # A caller's PesterConfiguration filter takes part in selection: Filter.Tag is the include set when
