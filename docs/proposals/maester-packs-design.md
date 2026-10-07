@@ -6,8 +6,10 @@
 > are applied: the names (*pack*, *Maester Packs*), the domain (packs.maester.dev),
 > hosting on Cloudflare with GitHub Actions doing the indexing and scanning, compiled
 > code allowed behind a High risk level, packs running in-process in v1, no publisher
-> verification programme in v1, and the recommendations of section 14. Section 14
-> lists what is still open; section 15 lists what is not yet verified.
+> verification programme in v1, the recommendations of section 14, and every finding
+> of the design review of 2026-10-07. This document supersedes 3.0 section 12.2, which
+> still names `maester-package.json` and a pull-request registry. Section 14 lists what
+> is still open; section 15 lists what is not yet verified.
 
 ## 1. Summary
 
@@ -50,9 +52,11 @@ The design in one page:
   pack (overview, tests, connector, security, versions), publisher pages and a
   publishing guide. Section 8 and the mockup canvas.
 - **Security is designed in, because packs run with admin tokens.** No code runs at
-  install. Every version is pinned and digest-checked on every load. Updates are
-  explicit, a new release waits out a 72-hour cooldown, and a pack that reaches more
-  needs new approval. Every version is scanned and given a **risk level**: Low (text
+  install. Every version is pinned to a commit that must belong to the named
+  repository, and every path that loads pack code checks its digest and the blocklist
+  first. Updates are explicit, a new release waits out a 72-hour cooldown, and a pack
+  that reaches more needs new approval. Pack results are shown apart from the built-in
+  checks and can never pass as them. Every version is scanned and given a **risk level**: Low (text
   only, clean), Medium (findings to read), High (compiled code or anything that cannot
   be scanned: install only if you trust the publisher), or Blocked. **Badges** say who
   published it: Official, Microsoft MVP, GitHub-verified organisation. A signed
@@ -210,13 +214,15 @@ fixed. Everything is static data; nothing in it runs.
   "License": "MIT",
   "Homepage": "https://github.com/contoso/maester-google-workspace",
   "Support": "https://github.com/contoso/maester-google-workspace/issues",
-  "RequiresMaester": "3.1",
+  "SecurityContact": "security@contoso.com",
+  "RequiresMaester": ">=3.1 <4.0",
   "Code": "CNT",
   "Suites": ["tests"],
   "Helpers": ["helpers"],
   "Connectors": [
     {
-      "Service": "GoogleWorkspace",
+      "Service": "CNT.GoogleWorkspace",
+      "Platform": "GoogleWorkspace",
       "DisplayName": "Google Workspace",
       "File": "connectors/GoogleWorkspace.ps1",
       "Connect": "Connect-GwsService",
@@ -227,8 +233,9 @@ fixed. Everything is static data; nothing in it runs.
     }
   ],
   "Uses": {
-    "Services": ["GoogleWorkspace"],
+    "Services": ["CNT.GoogleWorkspace"],
     "GraphScopes": [],
+    "TenantWrites": [],
     "Network": ["admin.googleapis.com", "oauth2.googleapis.com", "www.googleapis.com"],
     "Modules": []
   },
@@ -238,33 +245,61 @@ fixed. Everything is static data; nothing in it runs.
 
 - **`Id`** is `<publisher>.<name>`, lower case. `Publisher` must match the GitHub owner
   for a listed pack (section 9.2). `maester` and `maester365` are reserved for official
-  packs.
+  packs. Underneath the readable names, the index, the lock file and organisation
+  policy key everything to GitHub's numeric owner and repository IDs, so a renamed
+  owner keeps its packs (the old `Id` stays as an alias) and someone who re-registers a
+  deleted name inherits nothing. A repository that moves to another owner gets the new
+  owner's `Id` and `Publisher`, and every installer approves it again (section 5.4).
+- **`SecurityContact`** is where reports about the pack go; the publisher page shows
+  it, and a listed pack must have one.
 - **`Code`** is the publisher's code, two to five letters or digits, held by the GitHub
   user or organisation that owns the repository. Every test ID in the pack is
   `MP.<Code>.<number>`, for example `MP.CNT.0001` (section 4.5).
 - **`Uses`** declares what the pack reaches: the services its tests list, extra
-  Microsoft Graph scopes, network hosts outside the declared services, and PowerShell
-  Gallery modules. It drives the install prompt, the scans (anything the code reaches
+  Microsoft Graph scopes and any tenant writes (section 6.6), network hosts outside the
+  declared services, and PowerShell Gallery modules. It drives the install prompt, the scans (anything the code reaches
   that is not declared fails validation) and, once packs can be isolated, what a
   pack's container gets (section 9.4).
 - **`Uses.Modules`** pins PowerShell Gallery modules by exact version, for example a
-  Google API client. They are installed with `Install-PSResource -RequiredVersion`,
-  which runs nothing at install. Their package hash goes into the lock file and is
-  checked on restore, because PowerShell does not check a module's signature when it
-  loads it.
-- **`Requires`** names other packs this one needs, by `Id` and minimum version, most
-  often a **connector pack**:
+  Google API client. They are saved with `Save-PSResource -Version` into the pack store,
+  not the user's module folder, so they never shadow the modules Maester itself loads,
+  and they are imported by path. Saving runs nothing. The lock file pins the whole
+  dependency closure, every module and version with its package hash, and restore
+  checks them, because outside AllSigned PowerShell does not check a module's signature
+  when it loads it. A module is rated like any other content (section 9.6): one that
+  ships compiled code makes the pack High risk. Modules whose assemblies conflict with
+  the Microsoft Graph, Exchange Online or Az modules are flagged by the scans.
+- **`Requires`** names other packs this one needs, by source, `Id` and version range,
+  most often a **connector pack**:
 
   ```json
-  "Requires": { "Packs": [ { "Id": "contoso.google-workspace-connector", "MinVersion": "1.0" } ] }
+  "Requires": { "Packs": [ { "Source": "contoso/maester-gws-connector",
+                             "Id": "contoso.gws-connector", "Version": ">=1.0 <2.0" } ] }
   ```
 
   A pack can ship its own connector, as above, or depend on one, as Powerpipe mods
   depend on Steampipe plugins. The split is recommended when several test packs target
   one platform: one connector, one sign-in, one service name, reviewed once.
-  `Install-MtPack` installs required packs with their own prompts.
-- Unknown keys are ignored with a warning, as for `suite.json`. `RequiresMaester`
-  works as in 3.0: an older Maester gives each test a `RequiresNewerMaester` row.
+  - A connector pack lists in `Exports` the helper functions it shares (for example
+    `Invoke-GwsRequest`). A pack that requires it can call those functions and read the
+    connection state of the services it declares in `Uses.Services`, and nothing else
+    of the connector pack.
+  - `Source` lets phase 1, which has no index, find the required pack; the index checks
+    that `Source` and `Id` agree.
+  - `Install-MtPack` installs required packs with their own prompts, and the lock file
+    records the whole dependency closure, each pinned like a top-level pack. A project
+    has one version of each pack: ranges that cannot all be met are an install error
+    naming the packs, and cycles are refused. `Uninstall-MtPack` refuses to remove a
+    pack another installed pack requires, unless both go.
+- **`Listed: false`** keeps a public pack out of Maester Packs entirely; installing it
+  directly still works (section 9.10).
+- **Unknown keys:** an unknown top-level key is ignored with a warning, as for
+  `suite.json`. An unknown key inside `Uses`, `Connectors`, `Requires` or `Permissions`
+  makes this Maester refuse the pack, because those keys describe what the pack can
+  reach, and an older client that ignored one would leave it out of the install prompt.
+- **`RequiresMaester`** accepts a version range. An older Maester gives each test a
+  `RequiresNewerMaester` row, as in 3.0; a Maester newer than the range warns, and the
+  index marks the pack as untested with that version (section 4.7).
 
 ### 4.3 What a pack may contain
 
@@ -282,7 +317,9 @@ be listed. Validation rules, which a listed pack must pass:
 - Every service, network host, Graph scope and Gallery module the scannable code
   reaches is declared in `Uses`. Undeclared reach in code we can read is a validation
   failure: the publisher declares it, or the version is not listed.
-- No symbolic links; at most 50 MB per pack and 20 MB per file.
+- No symbolic links, no paths that differ only in case (they unpack differently on
+  Windows, macOS and Linux and would make the digest ambiguous), at most 50 MB per pack
+  and 20 MB per file.
 
 **Compiled and unscannable content** (`.dll`, `.exe`, `.so`, `.dylib`, compiled
 Python, archives, encoded or obfuscated blobs) is allowed, because some publishers
@@ -293,18 +330,40 @@ reviewed. Malware checks look up hashes only; files are never uploaded to a
 third-party service, so proprietary binaries are not shared. A pack without a licence
 file is shown as "No licence".
 
-### 4.4 How pack tests run
+### 4.4 How pack code loads and runs
 
-A pack is loaded the way 3.0 loads a custom folder (3.0 section 5.1): one private
-module per pack containing its helpers, connector and test functions. It can call
-Maester's exported commands and nothing private. Its tests go through the same
-engine: static discovery, the same gates, the same parameter binding and config
-overrides, the same result rows.
+**One gate for all pack code.** Every path that loads a pack's code goes through one
+loader: `Invoke-Maester`, `Invoke-MtTest`, `Connect-Maester`, `Disconnect-Maester`,
+`Test-MtConnection` and `Get-MtTenantContext`. Before any pack file runs, the loader
+checks the files against the digest in the lock file, the repository's numeric ID,
+the organisation's policy and the blocklist (section 9.8). A pack that fails any check
+does not load, wherever it was called from. Commands that only read metadata
+(`Get-MtPack`, `Get-MtConnector`, `Find-MtPack`) read the manifest and the AST and run
+nothing.
 
-On each row: `Source` is `Custom` (the closed list consumers already understand, as
-3.0 appendix A.6 planned), `Suite` is the suite's `Id`, and the reserved `Package`
-field is filled with the pack `Id`, version and commit. The report groups and filters
-by `Package`; nothing else in the report changes.
+**One private module per pack.** 3.0 loads each custom test file into its own private
+module (3.0 section 5.1); a pack's helpers, connector and tests are loaded together
+into one private module, so its tests can call its helpers. Function names must
+therefore be unique within a pack (validation reports `DuplicateFunctionName`). Files
+are loaded by path, never through `[scriptblock]::Create`, so execution policy and
+App Control apply to them (section 9.11). The module can call Maester's exported
+commands and nothing private. Its tests go through the same engine as every other test:
+static discovery, the same gates, the same parameter binding and config overrides.
+
+**A pack can never pass as a built-in check.**
+
+- `Source` on every pack row is `Custom`, whatever the pack's `suite.json` says (the
+  closed list consumers already understand, as 3.0 appendix A.6 planned). The reserved
+  `Package` field carries the pack `Id`, version and commit.
+- A suite `Id` in a pack must start with the pack's code (`CNT`, `CNT.Admin`).
+- **Reserved tags** cannot be set by a pack, on a test or in a `suite.json`: the
+  built-in suite and source names (`Maester`, `MT`, `CIS`, `CISA`, `EIDSCA`, `ORCA`,
+  `AD`, `AZDO`, `XSPM`) and their categories. So `-Tag CIS` never selects pack code.
+  Functional tags such as `Preview` and `LongRunning` stay available.
+- **The report shows packs apart.** Pack results appear in their own section, one group
+  per pack with its publisher, badges and risk level, and each pack has its own pass
+  rate. The headline score counts built-in and custom tests only, so a pack that always
+  passes cannot inflate it.
 
 ### 4.5 Test IDs: `MP.<code>.<number>`
 
@@ -357,14 +416,23 @@ number of codes small.
 - **Against squatting:** one code per owner, ever; a claim needs a version that passes
   validation, from an owner account older than 30 days; and a claim whose owner never
   reaches a listed release within 90 days is released.
-- **Connector service names** are claimed by the owner the same way, at the same first
-  index: each service a pack's connectors provide must be free or already held by that
-  owner.
+- **IDs are never reused.** The index keeps a ledger, per owner, of every ID it has
+  ever listed and the title it had. A version that brings back a removed ID for a
+  different check is not listed (`IdReused`), so an ID in someone's config or history
+  always means the same check.
+- **The official code.** Packs from the maester365 organisation use `MAES`
+  (`MP.MAES.0001`), reserved for it.
+- **Before the index exists** (phase 1), publishers pick codes with no one to claim
+  them from. `Test-MtPack` ships a snapshot of the reserved list so they avoid brands
+  from the start. When the index opens, codes used by public packs that had a GitHub
+  release before launch are claimed for their owners first, in order of that release's
+  publish date, before new claims are accepted.
 
 **What the code guards at each stage:**
 
 - **Index:** a version is listed only if every test ID is `MP.<code>.*` with the code
-  its owner holds and no ID is used by the owner's other packs. Otherwise it is not
+  its owner holds, no ID is used by the owner's other packs, and no ID comes back with
+  a new meaning. Otherwise it is not
   listed, and the publisher is told exactly why and how to fix it (section 7.7).
 - **Install:** `Install-MtPack` refuses a pack whose IDs clash with an installed pack
   or a custom test in the project, naming both. An unlisted pack installs with the
@@ -384,7 +452,7 @@ maintained public lists rather than one we curate by hand:
 | --- | --- | --- |
 | **Simple Icons** (`simple-icons/simple-icons`, the brand list behind most developer sites' logos) | 3,400+ technology and consumer brands: every brand name and alias that fits a code once reduced to letters and digits (`Okta`, `Zoom`, `Slack`, `Cisco`, `Meta`, `Box`, `AWS`, `GCP`) | CC0 (public domain) |
 | **S&P 500 constituents** (`datasets/s-and-p-500-companies`) | The stock tickers of major companies, which are exactly the 2 to 5 letter codes a brand would choose (`MSFT`, `GOOG`, `AMZN`, `CRM`, `PANW`, `CRWD`) | ODC-PDDL (public domain) |
-| **Our own short list** in the index repository | Built-in suite names (`MT`, `CIS`, `CISA`, `AD`, `AZDO`, `ORCA`, `EIDSCA`, `XSPM`), names that look official (`MS`, `MSFT`, `MAESTER`), product acronyms the lists miss (`M365`, `O365`, `GWS`, `AAD`), and offensive words | — |
+| **Our own short list** in the index repository | Built-in suite names (`MT`, `CIS`, `CISA`, `AD`, `AZDO`, `ORCA`, `EIDSCA`, `XSPM`), names that look official (`MS`, `MSFT`, `MAESTER`), `MAES` (assigned to maester365), product acronyms the lists miss (`M365`, `O365`, `GWS`, `AAD`), and offensive words | — |
 
 A code is blocked when it equals an entry, or an entry followed by one digit (`OKTA1`),
 after reducing both to capital letters and digits. Brand names may still appear in the
@@ -398,9 +466,31 @@ domain, or email from that domain. The assignment is a reviewed commit in the in
 repository that maps the code to the organisation's numeric owner ID, and the pack is
 then listed with that code like any other.
 
+The same lists protect **connector service names** (section 6.3): a bare platform name
+such as `Okta` or `GoogleWorkspace` is reserved for an official or brand-assigned
+connector, and community connectors use their publisher's code as a namespace
+(`CNT.GoogleWorkspace`).
+
 A code someone already holds is not taken away when a new brand joins the lists,
 because its IDs are already in users' configs. A brand can raise a dispute over a held
 code that has no listed pack yet.
+
+### 4.7 What packs can rely on
+
+Packs call Maester's public commands, so those commands become a contract with every
+publisher.
+
+- **The pack API** is a published list: the exported commands and parameters packs may
+  call (`Invoke-MtGraphRequest`, `Add-MtTestResultDetail`, `Get-MtConnectionState` and
+  the rest), the `[MaesterTest]` attribute schema, the manifest schema and the connector
+  contract. Anything not on the list is not part of it, and `Test-MtPack` warns when a
+  pack uses it.
+- **Changes follow semantic versioning.** Something on the list is deprecated in one
+  minor release, with a warning when a pack uses it, and removed only in the next major.
+- **The index re-checks listed packs** against each new Maester release, statically:
+  a pack that calls a command or parameter the release removed is marked "Not
+  compatible with Maester 4.0" on its page and in `Find-MtPack`, and its publisher is
+  told through the status page (section 7.7).
 
 ## 5. Installing, updating and running
 
@@ -410,7 +500,8 @@ code that has no listed pack yet.
 | --- | --- |
 | `Find-MtPack [-Query] [-Service] [-MaximumRisk] [-Code]` | Searches the Maester Packs index; `-Code` shows whether a code is available, held or reserved. |
 | `Install-MtPack <source> [-Version] [-Scope Project\|User]` | Resolves, downloads, validates, shows the approval prompt, and records the pack in config and lock file. |
-| `Restore-MtPack` | Installs exactly what the lock file says, checking every digest; no prompts. Used by CI and maester-action. |
+| `Restore-MtPack [-Source <folder>]` | Installs exactly what the lock file says, checking every digest; no prompts. Used by CI and maester-action. Falls back to the Maester Packs archive mirror when GitHub no longer has a version (section 7.2), or reads a `Save-MtPack` bundle. |
+| `Save-MtPack -Path <folder>` | Writes the locked packs, their Gallery modules, their listings and the current blocklist into a folder, for vendoring into a repository or carrying into an air-gapped network. |
 | `Update-MtPack [<id>] [-Version]` | Moves to a newer tag; shows what changed and asks again if the pack now uses more. |
 | `Uninstall-MtPack <id>` | Removes it from config and lock file. |
 | `Get-MtPack [<id>]` | Installed packs with version, risk level, badges, whether an update or a block applies. |
@@ -419,7 +510,10 @@ code that has no listed pack yet.
 
 `<source>` is `owner/repo`, `owner/repo/<folder>`, a GitHub URL, `owner/repo@v1.2.0`
 or `@<commit>`, or a local folder for development (never recorded as installable from
-anywhere else).
+anywhere else). Downloads use `GH_TOKEN` or `GITHUB_TOKEN` when set, sent to GitHub's
+own hosts only: private repositories need it, and it avoids GitHub's limit of 60
+anonymous API requests an hour, which a company network behind one address reaches
+quickly. Nothing is sent to the index for a download that needed a token.
 
 ### 5.2 Where things go
 
@@ -433,15 +527,23 @@ anywhere else).
   ]
   ```
 
-- **`maester-packs.lock.json`** sits next to it and pins each pack to a commit, its
-  content digest (SHA-256 over the sorted file list and file hashes), its risk level and scan
-  result at install time, the risk level the user accepted, the approved `Uses` block, and the hashes of any Gallery
-  modules. Committing it is how a team reviews what runs in CI.
+- **`maester-packs.lock.json`** sits next to it and pins each pack, and every pack it
+  requires, to a commit; the numeric repository and owner IDs and the publisher at
+  approval; the content digest; the risk level and scan result at install time and the
+  risk level the user accepted; the approved `Uses` block; and the hashes of the whole
+  Gallery module closure. Committing it is how a team reviews what runs in CI.
+- **The digest** is SHA-256 over the sorted list of paths and file hashes. A
+  PowerShell file's Authenticode signature block is left out of its hash, so an
+  organisation can sign reviewed packs (section 9.11) without breaking the lock file.
 - **The store** is a cache keyed by digest under `~/.maester/packs/`. Files are
   written read-only, and the digest is checked again every time the pack loads, so a
   modified file stops the pack from running instead of running modified code.
-- Without a project folder the user scope is used (`~/.maester/maester-config.json`
-  and its lock file), as `npx skills add -g` installs globally.
+- **Which lock file applies**, in order: `-PackLock <path>`; `MAESTER_PACK_LOCK`; the
+  lock file next to the `maester-config.json` that 3.0's config discovery resolved; and
+  only when there is no project config at all, the user scope
+  (`~/.maester/maester-config.json` and its lock file), as `npx skills add -g` installs
+  globally. A host that passes `-Config` as an object passes `-PackLock` too.
+  `Connect-Maester` and every other command find installed connectors the same way.
 
 ### 5.3 The install prompt
 
@@ -452,7 +554,7 @@ PS> Install-MtPack contoso/maester-google-workspace
   Source      github.com/contoso/maester-google-workspace @ 3f9c2e1 (tag v1.2.0)
   Publisher   contoso   ★ Microsoft MVP   ✔ GitHub-verified organisation
   Risk        LOW: text files only; every scan passed
-              packs.maester.dev/contoso/maester-google-workspace/security
+              packs.maester.dev/p/contoso/maester-google-workspace/security
   Adds        42 tests (MP.CNT.*) and the "Google Workspace" connector
   Reaches     Google Workspace: admin.googleapis.com, oauth2.googleapis.com
   Microsoft   none declared
@@ -468,6 +570,13 @@ A **High** risk pack shows why and asks for more than a keypress:
               lib/Contoso.Gws.Client.dll  412 KB  signed by Contoso Ltd  no malware match
   Only install this if you trust the publisher. Type the pack ID to confirm:
 ```
+
+Everything in the prompt that comes from the pack (name, description, file names, the
+signer, connector output) has control and bidirectional-text characters removed and
+is capped in length, and the lines Maester writes itself (Risk, Reaches, Microsoft and
+the question) come last. So text in a pack cannot redraw the Risk line or hide what
+follows. The same cleaning applies to `Find-MtPack`, `Get-MtPack` and connector
+output in `Connect-Maester`.
 
 Without a console (scripts, CI), `-AcceptRisk Medium` or `-AcceptRisk High` is
 required for those levels. The lock file records the accepted level, and
@@ -485,15 +594,21 @@ it indexed.
 `Update-MtPack` never runs on its own and `Invoke-Maester` never updates a pack. It
 shows the version change, the number of changed files, and any change to `Uses`, to
 connectors or to the risk level. If the pack now reaches more than was approved (a new
-service, scope, host or module) or its risk level rose, the user approves again, as browsers do for
-extensions that ask for new permissions. `Get-MtPack` and the start of an
+service, scope, host or module), its risk level rose, or the repository moved to
+another owner, the user approves again, as browsers do for extensions that ask for new
+permissions. It also lists the test IDs the update adds and removes, and calls out
+removed IDs that the user's config refers to (in `TestSettings` or `Selection`) and
+added ones that a `DefaultAction` of `Skip` or `OnUnknownId` will treat differently. `Get-MtPack` and the start of an
 `Invoke-Maester` run mention available updates in one line.
 
 **Release cooldown.** `Update-MtPack` and `Install-MtPack` without a version pick the
 newest release that is at least 72 hours old and has passed its scans; a newer one is
 shown but needs `-Version` or `-IncludeRecent`. Most malicious releases from a hijacked
 account are found within that window (ChainDrop, section 3.1). The window is a policy
-setting.
+setting. Its clock is the time the index first saw the release, or in phase 1 the
+`published_at` time GitHub records for the release. Commit and tag dates are not used,
+because anyone can forge them. A lightweight tag with no GitHub release has no
+trustworthy date, so the prompt says the cooldown could not be applied.
 
 ### 5.5 Running
 
@@ -504,6 +619,12 @@ Selection works as for built-ins (`-Tag`, `-TestId`, config `Selection`), and
 pack tests like any other. A pack that fails to load gives one `Error` row per test
 with reason `PackLoadFailed` rather than stopping the run.
 
+**A run with packs only** (Google Workspace, say, and no Microsoft 365 connection) uses
+`-SkipBuiltIn`, so the report is not filled with skipped built-in checks. With no Graph
+connection there is no tenant ID, so 3.0's tenant-specific config layer is skipped,
+and the report header shows the connected services from `TenantContext` instead of a
+Microsoft 365 tenant.
+
 ### 5.6 maester-action and CI
 
 maester-action restores from the committed lock file:
@@ -513,11 +634,34 @@ maester-action restores from the committed lock file:
   with:
     restore_packs: true            # runs Restore-MtPack against the lock file in the repo
   env:
-    MAESTER_GOOGLEWORKSPACE_CREDENTIAL: ${{ secrets.GWS_SERVICE_ACCOUNT_JSON }}
+    MAESTER_CNT_GOOGLEWORKSPACE_CREDENTIAL: ${{ secrets.GWS_SERVICE_ACCOUNT_JSON }}
 ```
 
 Nothing is resolved in CI: a lock file entry that is missing, changed or blocked fails
-the step with a clear message.
+the step with a clear message. A version GitHub no longer serves (the repository was
+deleted or made private, or the tag removed) is restored from the archive mirror if it
+was listed, or from a `Save-MtPack` bundle committed to the repository.
+
+### 5.7 Which commits can be installed
+
+GitHub serves any commit in a repository's fork network under the original
+repository's name, so `contoso/x@<commit>`, or a lock file edited in a pull request,
+could otherwise install an attacker's fork while showing contoso's name and badges.
+At install, restore and index time, the commit must be reachable from a tag or branch
+of the named repository itself, checked through GitHub's API. A tag that later points
+at a different commit than when it was first seen is recorded and shown as a warning
+on the pack's page and in `Get-MtPack`.
+
+### 5.8 Lifecycle
+
+| State | Set by | What happens |
+| --- | --- | --- |
+| **Listed** | The index | Shown, ranked, installable |
+| **Deprecated** | The publisher: `"Deprecated": { "Message": "...", "Replacement": "owner/repo" }` in the manifest of a new version | Shown with the message and the replacement; installs and updates warn |
+| **Yanked version** | The publisher: `"Yanked": [{ "Version": "1.1.0", "Reason": "..." }]` in a later version's manifest | Not offered for install or update; lock files that pin it still restore, with a warning. For mistakes, not malice |
+| **Archived** | GitHub: the repository is archived | Labelled "Archived: no longer maintained"; still installable |
+| **Delisted** | The publisher (`"Listed": false`, or a request) or the index (failing, or a legal takedown, section 9.10) | Hidden and not installable from the index; copies already installed keep running |
+| **Blocked** | Maintainers, for malice (section 9.8) | Never loads anywhere |
 
 ## 6. Connectors: hooking into Connect-Maester
 
@@ -584,7 +728,9 @@ function Get-GwsServiceContext {
   they also become the environment allowlist of the pack's container. A connector can fall back to its platform's
   standard variables, the way Steampipe plugins do.
 - **`Set-`, `Get-` and `Clear-MtConnectionState`** are new public commands. The state
-  is held per service and per pack: a pack's code gets only its own connector's state.
+  is held per service and per pack: a pack's code gets only the state of its own
+  connectors and of the services it declares from a connector pack it requires
+  (section 4.2).
   In-process this is a guard against mistakes, not a security boundary; isolation
   (section 9.4) makes it one later.
 
@@ -592,18 +738,24 @@ function Get-GwsServiceContext {
 
 ```powershell
 Connect-Maester -Service Graph, GoogleWorkspace
-Connect-Maester -Service GoogleWorkspace -ServiceSetting @{
-    GoogleWorkspace = @{ AdminEmail = 'admin@contoso.com'; Credential = $key }
+Connect-Maester -Service CNT.GoogleWorkspace -ServiceSetting @{
+    'CNT.GoogleWorkspace' = @{ AdminEmail = 'admin@contoso.com'; Credential = $key }
 }
 ```
 
 1. `-Service` is no longer a fixed `ValidateSet`. It accepts built-in names and the
    services of installed connectors, with tab completion for both and a clear error
-   for an unknown name. `-Service All` keeps its 3.0 meaning and does not include
-   connectors; they are always named, like `ActiveDirectory` and `GitHub` today.
+   for an unknown name. A platform name (`GoogleWorkspace`) resolves to the one
+   installed connector for that platform; if two installed connectors serve it, the
+   full service name is required and the error lists both. `-Service All` keeps its
+   3.0 meaning and does not include connectors; they are always named, like
+   `ActiveDirectory` and `GitHub` today.
 2. Settings for each connector are gathered in this order, last wins: the config
    file's `Connections.<Service>` section (non-secret values only),
-   environment variables `MAESTER_<SERVICE>_<SETTING>`, then `-ServiceSetting`.
+   environment variables `MAESTER_<SERVICE>_<SETTING>` (dots become underscores:
+   `MAESTER_CNT_GOOGLEWORKSPACE_CREDENTIAL`), then `-ServiceSetting`. Because the
+   service name carries the publisher's code, one publisher's connector can never
+   receive the environment secrets meant for another's.
    A secret setting (`[securestring]`, `[pscredential]`, or a name ending in
    `Secret`, `Key`, `Token` or `Credential`) is refused from the config file. Values can
    reference a SecretManagement vault: `"Credential": "vault:GwsKey"`.
@@ -611,25 +763,32 @@ Connect-Maester -Service GoogleWorkspace -ServiceSetting @{
    `Google Workspace  Connected  contoso.com (C01abc)`, or `Failed` with the error
    summary, or `Not installed` when no installed pack provides the service.
 4. `Disconnect-Maester` calls each connector's `Disconnect`. `Test-MtConnection
-   -Service GoogleWorkspace` and `Get-MtTenantContext` call `Test` and `Describe`.
+   -Service CNT.GoogleWorkspace` and `Get-MtTenantContext` call `Test` and `Describe`.
 
 ### 6.3 What the engine does with it
 
 The 3.0 service registry (`assets/MaesterServiceRegistry.psd1`) becomes layered: the
 built-in entries, then one entry per installed connector with `Probe` pointing at the
 connector's `Test` function. Everything 3.0 already does with a service then works for
-pack services unchanged: `[MaesterTest(Service = 'GoogleWorkspace')]` validates, the
+pack services unchanged: `[MaesterTest(Service = 'CNT.GoogleWorkspace')]` validates, the
 gate gives `Skipped`/`ServiceNotConnected` (or `NotRun`/`OptInServiceNotConnected`
 when the connector says `OptIn`), and `ServiceNotRegistered` covers a test whose pack
 is missing.
 
-- **Service names** are unique across built-ins and listed connectors. The publisher
-  claims the service names its connectors provide at its first index, as it claims its
-  code (section 4.5), and a pack can also use another pack's service by depending on
-  it. Two installed packs that provide the same service
-  are an install-time error naming both.
-- **Parameter kinds** (3.0 section 3.4): a pack can add kinds under its own prefix
-  (`GoogleWorkspace.OrgUnit`) for test parameters, so a UI can offer a picker.
+- **Service names.** A community connector's service is `<code>.<Name>`
+  (`CNT.GoogleWorkspace`), so it is unique because the code is, and nobody can squat a
+  platform: whoever wrote the first Okta connector does not become the connector every
+  Okta pack must use and does not receive every user's `MAESTER_OKTA_*` secrets. A bare
+  platform name (`GoogleWorkspace`, `Okta`) is reserved for an official connector from
+  maester365 or one assigned to the brand itself (section 4.6). Each connector also
+  declares its `Platform`, which drives the site's platform filter and the
+  `Connect-Maester` shortcut above. Names are 3 to 40 letters and digits, starting with
+  a letter, plus the one dot after the code. `All`, `None`, `EOP`, `Pack`, `Packs`,
+  `Telemetry`, `Maester` and every built-in service name and alias are reserved, so no
+  service's environment variables can collide with Maester's own (`MAESTER_PACK_POLICY`,
+  `MAESTER_TELEMETRY_OPTOUT`). A pack uses another pack's service by requiring it.
+- **Parameter kinds** (3.0 section 3.4): a pack can add kinds under its service name
+  (`CNT.GoogleWorkspace.OrgUnit`) for test parameters, so a UI can offer a picker.
 - **Licences and editions:** `CompatibleLicense` stays Microsoft-specific. A connector
   reports its platform's edition in `Describe`; until a generic edition gate exists, a
   test that needs a higher edition skips itself with `Add-MtTestResultDetail
@@ -675,6 +834,32 @@ the engine renews tokens between tests. Tests run one at a time, so a token is n
 swapped in the middle of one. A pack that must stay in the main session for a very
 long run sets `Packs[].Isolation = "InProcess"` in config, if the policy allows it.
 
+### 6.6 Microsoft permissions a pack needs
+
+A pack that tests Microsoft 365 more deeply may need Graph scopes Maester does not ask
+for. Without them its tests would get a 403 and turn into `Error` rows; added
+carelessly, they would erode the read-only identity that section 9.4 relies on, because
+consent given to the shared Microsoft Graph PowerShell app stays on that app for every
+later script.
+
+- **`Uses.GraphScopes`** lists them, and the install prompt shows them.
+- **Nothing is requested silently.** `Connect-Maester -IncludePackScopes` adds the
+  scopes of installed packs, listing each pack and scope before signing in, and
+  `Get-MtGraphScope -IncludePackScopes` returns the same list. For unattended runs with
+  an app registration, `Install-MtPack` prints the permissions to grant, and
+  `Update-MtMaesterApp` can add them to the Maester app, the recommended identity, so
+  consent never lands on the shared Graph PowerShell app.
+- **A missing scope is a skip, not an error.** Before a pack's tests run, the engine
+  compares its declared scopes with the current token. A test whose pack needs a scope
+  the token lacks is `Skipped` with reason `MissingScope`, naming the scope.
+- **Writes are declared and expensive.** `Uses.TenantWrites` lists every change a pack
+  can make to a tenant (`Graph: PATCH /policies/...`, `ExchangeOnline: Set-*`). Any
+  write scope or declared tenant write makes the pack **High** risk, and the scans fail
+  a pack whose code writes without declaring it.
+- Exchange Online, Teams, SharePoint and Azure have no per-scope consent: a pack that
+  lists those services gets the session with whatever roles the signed-in identity has,
+  and the prompt says so.
+
 ## 7. Discovery, the index and hosting
 
 ### 7.1 Architecture
@@ -682,20 +867,23 @@ long run sets `Packs[].Isolation = "InProcess"` in config, if the policy allows 
 ```text
  Install-MtPack ──install event──▶ Worker  packs.maester.dev/api/v1/events
                                      │  dedupe, rate limit ─▶ D1 (daily installs, queue)
-                                     │  repository_dispatch, throttled per repository
-                                     ▼
+                                     ▲  queue read with a read-only key
+                                     │
        GitHub Actions in maester365/packs-index (public repository: free minutes)
-         fetch ▶ validate ▶ scan ▶ risk level ▶ listing JSON ▶ static site build
-                                     │  wrangler deploy
+         scan job (untrusted, no secrets): fetch ▶ check ▶ validate ▶ scan ▶ listing
+         publish job (protected environment): sign ▶ mirror ▶ build site ▶ deploy
+                                     │  wrangler deploy, R2 upload
                                      ▼
  Browser, Find-MtPack ◀── packs.maester.dev
-                           static assets: pages, index.json, blocklist.json, per-pack JSON
+                           static assets: pages, index.json, codes.json, blocklist.json
+                           R2: archive mirror of listed versions
                            Worker: /api/v1/stats, /api/v1/search, /api/v1/events
 ```
 
 Everything that can be a static file is one, because Cloudflare serves static assets
 free and without limit. The Worker does only three things: accept install events,
-serve install counts, and (once the index is too big for one file) search.
+serve install counts, and (once the index is too big for one file) search. It holds
+no token that can write to GitHub.
 
 ### 7.2 From install to listing
 
@@ -703,36 +891,62 @@ serve install counts, and (once the index is too big for one file) search.
    GitHub API says the repository is public, the client posts an event to
    `/api/v1/events`: source (`github.com/owner/repo`), folder, commit, pack `Id`,
    Maester version, a random installation ID, and whether it ran in CI. It is fire and
-   forget with a two-second timeout. `Restore-MtPack` sends a lighter event that counts
-   as "active in CI", not as an install.
+   forget with a two-second timeout. `Restore-MtPack` sends a lighter event, at most
+   one per restore, that counts as "active in CI", not as an install.
 2. **Worker.** Checks the event's shape, applies a per-client rate limit, and writes
    at most one row per pack, installation and day, and one per pack, hashed IP and day
-   (section 7.6). If the repository or commit is new, it adds it to a queue table and
-   fires a `repository_dispatch` at the index repository, at most once per repository
-   every ten minutes, with a GitHub App token scoped to that one repository.
-3. **Index.** A workflow in the public `maester365/packs-index` repository runs on
-   that dispatch and every 30 minutes on a schedule. For each queued repository and
-   commit, **ignoring everything the client claimed except the repository name**, it:
-   - looks the repository up through the GitHub API (numeric ID, public, owner account
-     age, tags, organisation verification);
-   - downloads the archive for the commit itself and computes the digest. The digest is
-     the cache key: the same content is never scanned twice;
-   - runs validation and every scan (section 9.6) and assigns the risk level;
-   - writes the listing: manifest, README, test catalog (read statically, as 3.0's
-     catalog is), connector settings, `Uses`, scan results, binaries, risk level,
-     badges, digest.
+   (section 7.6). If the repository or commit is new, it adds it to a queue table.
+   Triggering a workflow directly (`repository_dispatch`) would need a GitHub token
+   with write access to the index repository inside the Worker, so it does not; the
+   index workflow reads the queue instead.
+3. **Scan job (untrusted).** A workflow in the public `maester365/packs-index`
+   repository runs every ten minutes and reads the queue through the Worker with a
+   read-only key. Its scan job has **no secrets and a read-only `GITHUB_TOKEN`**,
+   because it handles hostile input: archives, manifests, README files and the text of
+   "Request indexing" issues. Untrusted values reach scripts only through environment
+   variables, are checked against strict patterns (a repository name is
+   `^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$`), and are never pasted into a workflow expression
+   such as `${{ github.event.issue.title }}`, the classic injection route. For each
+   queued repository and commit, **ignoring everything the client claimed except the
+   repository name**, it:
+   - looks the repository up through the GitHub API (numeric IDs, public, owner
+     account age, tags, organisation verification) and checks that the commit is
+     reachable from a tag or branch of that repository (section 5.7);
+   - downloads the archive for the commit itself, refusing archives over the size or
+     file-count limits, with paths that escape the folder, links, or a suspicious
+     compression ratio, and computes the digest;
+   - runs validation and every scan (section 9.6) with a time limit per scan, and
+     assigns the risk level. Results are cached by digest **and scanner version**, so
+     the same content is not scanned twice by the same scanners, and every listed
+     version is scanned again when the scanners or malware signatures change;
+   - writes the listing as a build artifact: manifest, README, test catalog (read
+     statically, as 3.0's catalog is), connector settings, `Uses`, scan results,
+     binaries, risk level, badges, digest.
 
    A version that fails is recorded with its reasons and not listed; the publisher
    sees why (section 7.7).
 4. **New versions.** The scheduled run also asks GitHub, in one GraphQL query per
    batch, for new release tags on listed repositories, so a new version is scanned
    before anyone installs it.
-5. **Publish.** The workflow commits the listings to the index repository (a public
-   history of every listing and takedown), builds the static site, and deploys it with
-   `wrangler`: pages, `index.json` (signed), per-pack JSON, `codes.json` (who holds
-   each code and service name) and `blocklist.json` (signed).
+5. **Publish job (privileged).** A separate job, in a protected GitHub environment
+   that only the default branch can use, takes the scan job's artifact. It is the only
+   job with secrets: the index signing key, the R2 and Cloudflare tokens, and a GitHub
+   App allowed to push to one data branch. It:
+   - commits listings to the `listings` branch. Repository rulesets let only that App
+     write there and let nobody, the App included, push to `main`, where people's
+     decisions (blocklist, disputes, official list) arrive by reviewed pull request;
+   - stores each listed version's archive in Cloudflare R2, keyed by digest, so
+     restores keep working if the repository disappears. Publishers grant this in the
+     terms of listing (section 9.10); a pack whose licence or publisher forbids it is
+     marked "Not mirrored";
+   - signs `index.json` with the online index key (section 9.8), builds the static
+     site and deploys it with `wrangler`: pages, `index.json`, per-pack JSON,
+     `codes.json` (who holds each code and service name) and the current
+     `blocklist.json`, which is signed separately and offline.
 6. **Show.** Pages fetch install counts from `/api/v1/stats` (edge-cached for five
    minutes). `Find-MtPack` reads `index.json` and searches it locally.
+
+All third-party actions in the index workflows are pinned to full commit SHAs.
 
 ### 7.3 Ranking
 
@@ -750,7 +964,8 @@ row; the leaderboard has a risk filter.
 The index repository holds what people decide, as reviewable commits: blocklist
 entries and advisories, the official list, featured packs, and disputes over codes
 and service names (section 4.5). A "Request indexing" link opens an issue there that the
-indexer picks up, for publishers who want a listing before anyone installs.
+indexer picks up, for publishers who want a listing before anyone installs. Issue text
+is only ever data to the indexer (section 7.2).
 
 ### 7.5 Keeping the cost near zero
 
@@ -762,6 +977,7 @@ indexer picks up, for publishers who want a listing before anyone installs.
 | Indexing, scanning, site build, deploy | GitHub Actions in a public repository | Standard GitHub-hosted runners are free for public repositories | Never, on standard runners |
 | Malware checks for binaries | ClamAV in the workflow; optional VirusTotal hash lookups | VirusTotal's public API: 500 lookups a day, non-commercial use | A paid malware service, if ever needed |
 | AI-assisted review (optional) | GitHub Models from the workflow | Free rate-limited tier | A paid model API, if quality needs it |
+| Archive mirror of listed versions | Cloudflare R2 | 10 GB stored, 1 million writes and 10 million reads a month, no download (egress) fees | US$0.015 per GB-month beyond 10 GB |
 | Domain | packs.maester.dev on the existing Cloudflare zone | — | Nothing new |
 
 What keeps it there:
@@ -769,10 +985,12 @@ What keeps it there:
 - Static first: the Worker never renders a page.
 - One D1 write per deduplicated install; repeated events are ignored inserts, which
   write nothing.
-- The CLI sends one event per install, never one per run.
+- The CLI sends one event per install and a lighter one per CI restore, never one per
+  test run.
 - Search runs in the client over `index.json` until that file is too large.
 - Counts are edge-cached for five minutes, so most page views never reach D1.
-- A digest is scanned once; only new commits cost workflow time, and that time is free.
+- A digest is scanned once per scanner version; only new commits and scanner updates
+  cost workflow time, and that time is free.
 - On the free plan, going over a limit fails the request rather than billing; the CLI
   ignores a failed event. Move to Workers Paid when the daily request limit is reached
   regularly, and set a usage notification there.
@@ -837,7 +1055,10 @@ that is not listed, blocked or disputed.
 | `CodeReserved` | `OKTA` is reserved for the brand Okta (Simple Icons). If you represent Okta, contact us to have it assigned. | Pick another code, or ask for the brand's code (section 4.6) |
 | `CodeMissing` | `maester-pack.json` has no `Code`. | Add one |
 | `DuplicateTestId` | `MP.CNT.0001` is already used by contoso/maester-okta. | Renumber, or add a segment per pack (`MP.CNT.GWS.0001`) |
-| `ServiceTaken` | The service name `GoogleWorkspace` is held by maester365. | Depend on that connector pack, or rename the service |
+| `ServiceReserved` | `GoogleWorkspace` is reserved for an official or brand-assigned connector. | Name yours `CNT.GoogleWorkspace`, or require the official connector pack |
+| `IdReused` | `MP.CNT.0012` was "Gmail forwarding is off" in 1.0.0 and is now "Drive sharing is limited". | Give the new check a new number |
+| `CommitNotInRepository` | Commit `9f1e2d3` is not reachable from any tag or branch of contoso/maester-okta (it may come from a fork). | Tag the release in the repository itself |
+| `NotCompatible` | Calls `Get-MtExoMailboxAudit`, which Maester 4.0 removed. | Update the pack; listed as compatible up to 3.x until then |
 | `InvalidPack` | `tests/Test.MP.CNT.0004.ps1:12`: a statement outside a function runs when the file loads. | Fix the file and line named |
 | `UndeclaredReach` | `connectors/GoogleWorkspace.ps1:40` calls `api.example.com`, which `Uses.Network` does not declare. | Declare it, or remove the call |
 | `DuplicateContent` | Same content as fabrikam/okta-pack (digest `sha256:91c4…`). | Publish your own work |
@@ -847,7 +1068,10 @@ that is not listed, blocked or disputed.
 | `Blocked` | Blocked: advisory MPA-2026-0003. | See the advisory; appeal in the index repository |
 
 A repository the index cannot see (private, or not found) has no status page, and
-`Test-MtPack -Remote` says so.
+`Test-MtPack -Remote` says so. Every status page also has a JSON form, and the index
+publishes feeds of new advisories and of status changes per publisher
+(`/feeds/advisories.json`, `/feeds/p/{owner}.json`), so publishers and organisations
+can watch without polling pages.
 
 ## 8. The site: packs.maester.dev
 
@@ -869,19 +1093,35 @@ rebuilds every page on every change. maester.dev's navigation gets a
 | URL | Page | Shows |
 | --- | --- | --- |
 | `/` | **Leaderboard** | Search; All time / Trending / New tabs; filters by platform (the services connectors provide, plus Microsoft 365 add-ons), risk level and badge; rows with rank, icon, pack, `owner/repo`, badges, risk, platform, tests, an 8-week sparkline and installs; a "How listing works" panel and a publish link |
-| `/{owner}/{repo}[/{folder}]` | **Pack** | Header with badges, risk level, publisher, description and platforms; install box with PowerShell, maester-action and lock file tabs; tabs: **Overview** (the README, sanitised), **Tests** (ID, title, severity, service, each linking to its page), **Connector** (what it connects to, how to sign in, the settings table with secret markers and environment variable names, what it needs on the platform), **Security** (risk level and why, every compiled file with hash and signer, each scan's result, declared `Uses` against what was found, repository signals, repository ID, advisories), **Versions** (tag, commit, date, digest, risk level, changes to `Uses`); a sidebar with installs, version, first seen, last release, licence, required Maester version, GitHub stars and "Report this pack" |
-| `/{owner}/{repo}/tests/{id}` | **Test** | The test's Markdown (description, remediation) and its attribute data |
-| `/{owner}` | **Publisher** | Badges, the code and service names the publisher holds, packs, security contact |
+| `/p/{owner}/{repo}`, or `/p/{owner}/{repo}/pack/{folder}` for one pack in a multi-pack repository | **Pack** | Header with badges, risk level, publisher, description and platforms; install box with PowerShell, maester-action and lock file tabs; tabs: **Overview** (the README, sanitised), **Tests** (ID, title, severity, service, each linking to its page), **Connector** (what it connects to, how to sign in, the settings table with secret markers and environment variable names, what it needs on the platform), **Security** (risk level and why, every compiled file with hash and signer, each scan's result, declared `Uses` against what was found, repository signals, repository ID, advisories), **Versions** (tag, commit, date, digest, risk level, changes to `Uses`, yanked versions); a sidebar with installs, version, first seen, last release, licence, required Maester version, GitHub stars and "Report this pack" |
+| `/p/{owner}/{repo}/tests/{id}` | **Test** | The test's Markdown (description, remediation) and its attribute data |
+| `/p/{owner}` | **Publisher** | Badges, the code and service names the publisher holds, packs, security contact |
+| `/codes/{code}` | **Code lookup** | Whether a code is available, held (and by whom) or reserved, and why |
 | `/status/{owner}/{repo}` | **Indexing status** | Each version the index has seen: listed, or not listed with every reason and its fix (section 7.7) |
 | `/official`, `/platform/{service}`, `/category/{slug}` | **Lists** | Filtered leaderboards |
 | `/advisories[/{id}]` | **Advisories** | Blocked packs and versions, what happened, what to do |
 | `/publish` | **Publishing guide** | The steps of section 10.3, the rules of section 4.3, risk levels and badges |
 | `/security` | **Security model** | Section 9 in plain words, for admins and their security reviewers |
 | `/b/{owner}/{repo}.svg` | **Badge** | Risk level and installs, for a pack's README |
+| `/feeds/...` | **Feeds** | JSON feeds of advisories and of status changes per publisher (section 7.7) |
+| `/terms`, `/privacy` | **Policies** | Terms of listing and use, and the privacy notice (section 9.10) |
 | `/api/v1/...` | **API** | `events` (POST), `stats`, `search` |
 
+Publishers and their packs live under `/p/`, so a GitHub account named `official`,
+`status` or `security` can never collide with a site page; `pack` and `tests` are
+reserved path segments under a repository.
+
 A blocked pack's page keeps its URL, shows the advisory at the top and removes the
-install command.
+install command. A delisted pack's page says so and removes the install command;
+deprecated and archived packs show their notice above the install box.
+
+**Content from packs is untrusted on the site too.** READMEs and test Markdown are
+sanitised; outbound links carry `rel="ugc nofollow noopener"`; remote images are
+removed (they would track visitors); `icon.svg` is converted to a PNG by the scan job,
+never served as SVG; names and descriptions have control and bidirectional-text
+characters removed and are capped in length. A pack name or description that claims to
+be "official" or to come from Microsoft, Maester or a reserved brand is flagged and
+not listed unless the claim is true (an official pack, or a brand-assigned code).
 
 ### 8.3 In the product
 
@@ -914,14 +1154,21 @@ limits what one bad pack can do.
 | Hidden code | A compiled library or an encoded blob that scanners cannot read (Trail of Bits got past three skill scanners this way) | Such content always makes the pack High risk, named file by file, with explicit consent to install |
 | Impersonation and typosquatting | `maester365-cis`, `micros0ft.entra` | Reserved names; pack ID must start with the GitHub owner; similarity flags; badges come from GitHub and the MVP directory, not from the pack |
 | Faking a built-in result | A pack defines `MT.1001` and always returns `$true`, so the report shows a built-in control as passed | Pack test IDs must start with `MP.`; a built-in ID can never come from a pack (section 4.5) |
-| Repository takeover | Owner renames or deletes the repo; someone re-creates the old name | The index and lock file record GitHub's numeric repository ID; a changed ID freezes the listing and fails restores |
+| Repository takeover | Owner renames or deletes the repo; someone re-creates the old name | The index and lock file record GitHub's numeric repository and owner IDs; a changed ID freezes the listing and fails restores; policy matches IDs, not names |
+| A fork's commit under the original's name | `contoso/x@<commit>` where the commit lives only in an attacker's fork | The commit must be reachable from a tag or branch of the named repository (section 5.7) |
+| Passing as a built-in check | A pack sets `Source: CIS` or the tag `CIS`, so `-Tag CIS` runs it and the report scores it with the built-ins | `Source` forced to `Custom`, reserved tags and suite names, pack results and pass rates shown apart (section 4.4) |
+| Owning a platform's connector | The first `Okta` connector would receive every user's `MAESTER_OKTA_*` secrets | Community connectors are namespaced by code; bare platform names are reserved (section 6.3) |
+| Text that redraws the prompt | A description with terminal control or bidi characters hides the Risk line | Pack text is cleaned and capped, and Maester's own lines print last (section 5.3); SVG icons are converted to PNG (section 8.2) |
+| Permission creep | A pack needs `Directory.ReadWrite.All`, and consent persists on the shared Graph app | Scopes listed and requested only with `-IncludePackScopes`; write scopes make a pack High risk; consent goes to the Maester app (section 6.6) |
+| Code that escapes the gate | Connector code runs from `Connect-Maester`, which an install-time check never sees | One loader gate for every path that loads pack code (section 4.4) |
 | Fake installs | Inflating installs to push a pack up the leaderboard | Section 7.6; popularity never changes a risk level or a badge |
 | Code that runs on load | `using module`, class definitions, top-level statements | Function-only files are a validation rule (section 4.3); no install scripts exist |
 | Dependency attack | A typosquatted or compromised PowerShell Gallery module | Exact version pins; package hash in the lock file; modules shown in the prompt and scanned |
 | Local tampering | Malware edits a pack in the store | Read-only files; digest checked on every load |
 | Report as a channel | A result embeds a remote image whose URL carries data | The report already sanitises Markdown (DOMPurify); pack rows also lose remote images and show link targets |
 | Secrets in results | A pack writes a token into a result | Results are scanned for token patterns before writing, as for built-ins |
-| Index compromise | A forged listing or a removed blocklist entry | The index is a public repository with protected branches and review; listings and blocklist are signed and verified by the client |
+| Index compromise | A forged listing, a removed blocklist entry, or an old blocklist replayed by a proxy | Untrusted scanning separated from signing and deploying (section 7.2); listings and blocklist signed with separate keys under an offline root, with serial numbers and expiry (section 9.8) |
+| Attacking the indexer | A hostile archive, or an issue title that injects into a workflow script | No secrets in the scan job; archive limits; untrusted text only through environment variables (section 7.2) |
 
 ### 9.3 Principles
 
@@ -986,8 +1233,8 @@ listed for phase 3.
 | Level | What it means | Install | Shown as |
 | --- | --- | --- | --- |
 | **Low** | Text files only (PowerShell, Markdown, JSON); every scan passed | The normal prompt | Green "Low risk" |
-| **Medium** | Text only, with findings worth reading: dynamic code (`Invoke-Expression`, `[scriptblock]::Create`, inline `Add-Type`), URLs built at run time, declared tenant writes, process start, PowerShell Gallery dependencies | The prompt lists the findings; `-AcceptRisk Medium` without a console | Amber "Medium risk" |
-| **High** | Compiled code, archives, or content that cannot be scanned (encoded or obfuscated); or a scan could not complete | Named file by file; typed confirmation; `-AcceptRisk High` without a console | Red "High risk: install only if you trust the publisher" |
+| **Medium** | Text only, with findings worth reading: dynamic code (`Invoke-Expression`, `[scriptblock]::Create`, inline `Add-Type`), URLs built at run time, process start, PowerShell Gallery modules that are themselves script only | The prompt lists the findings; `-AcceptRisk Medium` without a console | Amber "Medium risk" |
+| **High** | Compiled code (in the pack or in any Gallery module it needs), archives, or content that cannot be scanned (encoded or obfuscated); any Graph write scope or declared tenant write (section 6.6); or a scan could not complete | Named file by file; typed confirmation; `-AcceptRisk High` without a console | Red "High risk: install only if you trust the publisher" |
 | **Blocked** | A malware match, or confirmed malicious by a maintainer | Never loads; install refused | Advisory |
 
 Code that reaches something it did not declare is not a risk level: it fails
@@ -1035,34 +1282,68 @@ repository.
   "AllowedPublishers": ["maester365", "contoso"],
   "RequireBadge": [],
   "AllowUnlisted": false,
+  "TrustedSources": ["github.com/contoso-internal/maester-checks"],
+  "RequireFreshBlocklist": false,
   "Index": "https://packs.maester.dev/index.json"
 }
 ```
 
 The policy is read from the run config, from `MAESTER_PACK_POLICY`, or from a
 machine-wide file that device management can deploy, and the strictest value wins. It
-applies at install, restore and run. `RequireBadge` can demand `Official` or
-`MicrosoftMvp`. `Index` can point at an internal mirror: the index and archives are
-static files, so an organisation, or an air-gapped network, can host a copy.
+applies at install, restore and run.
+
+- `AllowedPublishers` names are resolved to GitHub's numeric owner IDs when the policy
+  is first applied and the IDs are what is checked, so someone who re-registers a
+  deleted name is not trusted by the old entry.
+- `RequireBadge` can demand `Official` or `MicrosoftMvp`.
+- `TrustedSources` lets an organisation's own packs, usually private repositories,
+  install with `AllowUnlisted: false`; entries are repositories (resolved to their
+  numeric IDs) or digests.
+- `RequireFreshBlocklist` makes a run fail instead of continuing when no current
+  blocklist can be fetched (section 9.8).
+- `Index` can point at an internal mirror. The index, the blocklist and the mirrored
+  archives are static files, so an organisation, or an air-gapped network, can host a
+  copy; `Save-MtPack` bundles cover the packs themselves.
 
 ### 9.8 Revocation
 
-- The index publishes a **signed blocklist** (`blocklist.json`) of pack IDs or
-  repository IDs, version ranges or digests, a severity and an advisory link. It is
-  signed with an ECDSA P-256 key whose public half ships in the module (.NET verifies
-  it with no extra library), rotated through module releases.
-- `Invoke-Maester`, `Restore-MtPack` and `Install-MtPack` fetch it with a short
-  timeout and cache it for an hour. A blocked pack does not load: its tests give
-  `NotRun` rows with reason `PackBlocked`, a warning names the advisory, and
-  `Get-MtPack` shows it. Offline runs use the cached list and warn when it is older
-  than seven days; policy can make that an error.
+- The index publishes a **signed blocklist** (`blocklist.json`) of pack, owner or
+  repository IDs, version ranges or digests, a severity and an advisory link.
+- **Freshness.** The signed payload carries a `Serial` that only goes up, an
+  `IssuedAt` and an `Expires` (seven days ahead; the list is re-signed daily even when
+  unchanged). The client rejects a list with a lower serial than one it has seen, so a
+  mirror or a TLS-inspecting proxy cannot replay an old list, and treats an expired
+  list as missing.
+- **Keys.** An offline root key signs two working keys: an **index key**, used by the
+  publish job to sign `index.json`, and a **blocklist key**, kept offline and used only
+  to sign blocklist changes that maintainers have merged after review. Signatures name
+  their key ID, the module ships the root's public key and the current working keys,
+  and a new working key is introduced alongside the old one before the old one is
+  retired, so clients on older versions keep verifying. If a working key is
+  compromised, the root signs its revocation and a replacement. All keys are ECDSA
+  P-256, which .NET verifies with no extra library.
+- **Checks.** The loader gate (section 4.4) checks the blocklist before any pack code
+  runs: in `Invoke-Maester`, `Invoke-MtTest`, `Connect-Maester` and the rest. The list
+  is fetched with a short timeout and cached for an hour. A blocked pack does not load:
+  its tests give `NotRun` rows with reason `PackBlocked`, a warning names the advisory,
+  and `Get-MtPack` shows it.
+- **When the index cannot be reached**, the default is to continue with the newest
+  cached list and a warning (fail open), because a security tool that stops working
+  when one website is down would be switched off. Ephemeral CI runners have no cache,
+  so they fetch the list on every run; when that fails they continue with a warning.
+  `PackPolicy.RequireFreshBlocklist` turns both into errors, and a list older than
+  seven days always warns.
+- **Phase 1 is covered from the start.** The checker, the keys and an empty signed
+  blocklist ship with the first release that can install packs, so every pack
+  installed before the marketplace exists can still be stopped later (section 12).
 - **A block stops a pack from running; it never deletes it.** VS Code's kill switch
   once uninstalled a legitimate extension by mistake for two weeks; here removing the
   entry undoes a false positive at the next run. An entry can also be `Warn` (runs,
   with the advisory shown) for something suspicious but unproven.
-- Reports come in through a "Report this pack" link on every page (a GitHub issue) and
-  the project's security contact. Maintainers can block within hours, notify the
-  publisher, and publish an advisory. A publisher can appeal in the index repository.
+- Reports come in through a "Report this pack" link on every page (a GitHub issue), the
+  pack's `SecurityContact` and the project's security contact. Maintainers can block
+  within hours, notify the publisher, and publish an advisory. A publisher can appeal
+  in the index repository.
 
 ### 9.9 Privacy of the install event
 
@@ -1072,6 +1353,40 @@ for deduplication and stores neither the IP nor any tenant, user or machine
 identifier. Nothing is sent for a source that needed credentials to download (a
 private repository). `MAESTER_TELEMETRY_OPTOUT=1`, `DO_NOT_TRACK=1` or config
 `Telemetry.Disabled` turns it off.
+
+### 9.10 Terms, licences and takedowns
+
+Before the public launch the site needs policies, written with legal advice:
+
+- **Terms of listing** for publishers, which apply when a pack is listed: the
+  publisher has the right to publish what is in the repository; it grants Maester Packs
+  a licence to display its listing, README and test documentation, and to mirror its
+  release archives for restores; no malware, no deception, no collecting data the pack
+  does not need; and the project may delist or block a pack. A publisher that does not
+  agree uses `"Listed": false` (section 4.2) or asks to be delisted; installing directly
+  from the repository still works.
+- **Repositories with no licence** are listed with metadata, the test catalog and a
+  short README excerpt only, and are not mirrored, since nothing grants more.
+- **Trademark and copyright complaints** have their own process and form, separate from
+  security takedowns: a complaint delists the pack (installed copies keep running) while
+  it is resolved, and a counter-notice can restore it. Only security problems use the
+  blocklist.
+- **A disclaimer for users:** packs are third-party code; the Maester project does not
+  review every pack and gives no warranty; risk levels and badges are signals, not
+  guarantees.
+- **A privacy notice** for the site and the install event (section 9.9).
+
+### 9.11 Locked-down Windows (AllSigned and App Control)
+
+On machines whose execution policy is AllSigned, or that use App Control for Business
+(WDAC), PowerShell runs only signed scripts in full language mode.
+
+- Pack files are loaded by path (section 4.4), never through `[scriptblock]::Create`,
+  so those controls apply to them, and Maester can never be used to get around them.
+- An unsigned pack does not load on such a machine, and `Install-MtPack` says so when
+  it sees the policy. An organisation that has reviewed a pack can sign its files with
+  its own code-signing certificate; the digest leaves signature blocks out
+  (section 5.2), so signing does not break the lock file.
 
 ## 10. User journeys
 
@@ -1099,7 +1414,7 @@ PR description.
 
 ### 10.3 A publisher creates and lists a pack
 
-1. `New-MtPack -Id contoso.google-workspace -Code CNT -Service GoogleWorkspace` scaffolds the
+1. `New-MtPack -Id contoso.google-workspace -Code CNT -Service CNT.GoogleWorkspace` scaffolds the
    repository: manifest, suite, a sample test, a connector skeleton, README, and the
    `pack-scan` workflow.
 2. They write tests with the same `New-MtTest`, `Invoke-MtTest` and `Get-MtTest` they
@@ -1124,37 +1439,47 @@ goes red; the pack's page shows the advisory and the install command is removed.
 
 | Area | Change | Phase |
 | --- | --- | --- |
-| Pack loader | Read `maester-pack.json`; load suites, helpers and connectors into one private module per pack; fill `Package` on rows | 1 |
-| Install | `Install-`, `Restore-`, `Update-`, `Uninstall-`, `Get-MtPack`; GitHub archive download without git; digest; lock file; store; risk acceptance | 1 |
-| Config | `Packs`, `Connections` and `PackPolicy` sections in the 3.0 config schema and resolver | 1 |
-| Validation | `Test-MtPack` (section 4.3 rules, the `MP.<code>` ID rule, local scans and risk level); `New-MtPack` scaffold; a template repository | 1 |
+| Pack loader | Read `maester-pack.json`; one loader gate for every path that loads pack code (digest, repository ID, policy, blocklist); one private module per pack loaded by path; `DuplicateFunctionName`; `Source` forced to `Custom`, reserved tags and suite names; fill `Package` on rows | 1 |
+| Install | `Install-`, `Restore-`, `Update-`, `Uninstall-`, `Get-`, `Save-MtPack`; GitHub archive download without git, with `GH_TOKEN` support; commit reachability check; digest without signature blocks; lock file with the dependency closure and numeric IDs; store; risk acceptance; ID diff on update; cooldown on GitHub's release time | 1 |
+| Revocation | The blocklist checker with serial and expiry, the root and working public keys, and an empty signed blocklist served from packs.maester.dev | 1 |
+| Config | `Packs`, `Connections` and `PackPolicy` sections in the 3.0 config schema and resolver; `-PackLock` and `MAESTER_PACK_LOCK` | 1 |
+| Validation | `Test-MtPack` (section 4.3 rules, the `MP.<code>` ID rule, the reserved-list snapshot, the pack API check, local scans and risk level); `New-MtPack` scaffold; a template repository | 1 |
 | Test schema | `MP.` added to the reserved prefixes, so custom tests written before packs ship get the warning; this one line can land in 3.0 | 1 (or 3.0) |
-| Connectors | Layered service registry; `Set-`/`Get-`/`Clear-MtConnectionState`; `Get-MtConnector`; `Connect-Maester -Service` opened up with `-ServiceSetting`; `Disconnect-Maester`, `Test-MtConnection`, `Get-MtTenantContext` dispatch to connectors; `Renew` before tests | 1 |
-| Report | `Package` filter and group; remote images stripped for pack rows | 1 |
+| Connectors | Layered service registry with namespaced service names; `Set-`/`Get-`/`Clear-MtConnectionState`; `Exports` for connector packs; `Get-MtConnector`; `Connect-Maester -Service` opened up with `-ServiceSetting` and platform shortcuts; `Disconnect-Maester`, `Test-MtConnection`, `Get-MtTenantContext` dispatch to connectors; `Renew` before tests | 1 |
+| Permissions | `-IncludePackScopes` on `Connect-Maester` and `Get-MtGraphScope`; pack scopes in `Update-MtMaesterApp`; the `MissingScope` skip reason | 1 |
+| Output safety | Cleaning of pack text in prompts and command output | 1 |
+| Report | A Packs section grouped by pack with publisher, badges, risk and its own pass rate; headline score without pack rows; remote images stripped for pack rows | 1 |
 | maester-action | `restore_packs` input; pack environment variables passed through | 1 |
-| Index client | `Find-MtPack`; signed index and blocklist verification; install event | 2 |
+| Pack API | The published list of commands, schemas and contracts packs may rely on, and the deprecation policy | 1 |
+| Index client | `Find-MtPack`; signed index verification; archive mirror fallback; install event | 2 |
 | Isolation | Container partitions per pack for hosts that can run containers | 3 |
 | Built-in connectors | GitHub and Active Directory on the connector contract | later |
 
-Outside the module (phase 2): the `maester365/packs-index` repository and its
-workflows and scanners, the `maester365/pack-scan` reusable action, the Worker and D1
-database, the static site, the MVP directory sync, a GitHub App for the dispatch, and
-the signing key.
+Outside the module (phase 2): the `maester365/packs-index` repository with its split
+scan and publish workflows, rulesets and scanners; the `maester365/pack-scan` reusable
+action; the Worker and D1 database; the R2 archive mirror; the static site; the MVP
+directory and brand-list syncs; the signing keys and their custody; and the terms of
+listing.
 
 ## 12. Phases
 
 1. **Phase 1, packs without the marketplace (3.1).** The format, GitHub install with
-   the lock file, connectors and `Connect-Maester` dispatch, `New-` and `Test-MtPack`,
-   the template, maester-action restore. Packs run in-process. Every install is
-   "unlisted" and gets the local scan and risk level. The first official pack is
-   Google Workspace, against the CISA SCuBA Google Workspace baselines (the ones ScubaGoggles implements), which proves the connector contract
-   with both a browser sign-in and a service account; the licence of any code reused
-   needs checking.
+   the lock file, connectors and `Connect-Maester` dispatch, the loader gate, the
+   permissions work, `New-` and `Test-MtPack`, the template, maester-action restore,
+   and the published pack API. Packs run in-process. Every install is "unlisted" and
+   gets the local scan and risk level. **The blocklist checker, the keys and an empty
+   signed blocklist ship in this phase**, so packs installed now can still be stopped
+   once the marketplace exists. The first official pack is Google Workspace (code
+   `MAES`, service `GoogleWorkspace`), against the CISA SCuBA Google Workspace
+   baselines that ScubaGoggles implements. It proves the connector contract with both a
+   browser sign-in and a service account; the licence of any code reused needs
+   checking.
 2. **Phase 2, Maester Packs.** The Worker and D1, the index workflows and scanners,
-   risk levels and badges, the signed index and blocklist, `Find-MtPack`, and
-   packs.maester.dev. The public launch waits for the blocklist, the cooldown and the
-   risk levels, because listing community code without them would ask users to trust
-   it blindly.
+   the R2 archive mirror, risk levels and badges, the signed index, `Find-MtPack`,
+   packs.maester.dev, the terms of listing and the privacy notice, and the claim window
+   for codes used during phase 1 (section 4.5). The public launch waits for the
+   blocklist, the cooldown, the risk levels, the indexer's split jobs and the terms,
+   because listing community code without them would ask users to trust it blindly.
 3. **Phase 3, isolation and verification.** Container isolation per pack; a publisher
    verification programme with signed provenance and a Verified badge.
 4. **Later.** Other Git hosts (Azure DevOps Repos, GitLab), private registries for
@@ -1211,11 +1536,21 @@ the signing key.
 - **Known brands cannot be claimed as codes** by default, using Simple Icons, S&P 500
   tickers and a short list of our own; the company itself can ask for its code
   (section 4.6).
+- **The design review of 2026-10-07 is applied in full**: commits must belong to the
+  named repository (5.7); one loader gate and no passing as built-ins (4.4);
+  namespaced connector service names (6.3); permissions packs need (6.6); the blocklist
+  in phase 1, with freshness and key hierarchy (9.8, 12); the split indexer and archive
+  mirror (7.2); lifecycle states (5.8); numeric IDs and the ID ledger (4.2, 4.5); the
+  pack API (4.7); locked-down Windows (9.11); and terms and takedowns (9.10).
+- maester365's own code is **`MAES`**.
 
 ### Still open
 
-- **Setup you would own:** a GitHub App for the Worker's dispatch, the blocklist
-  signing key, and the Cloudflare account and zone settings.
+- **Setup you would own:** the GitHub App the publish job uses to write the
+  `listings` branch; the offline root and blocklist signing keys and the publish job's
+  index key; the rulesets and protected environment on `maester365/packs-index`; the
+  Cloudflare account, zone settings, R2 bucket and Worker secrets; and the terms of
+  listing and privacy notice, with legal advice.
 
 ## 15. Not yet verified
 
@@ -1235,6 +1570,15 @@ the signing key.
   (the built-in checks are the first corpus).
 - **Container isolation** (phase 3): access-token sign-in for each Microsoft module
   inside a container, and renewal between tests.
+- **The commit reachability check:** which GitHub API call proves cheaply that a
+  commit is reachable from a tag or branch of the named repository (the compare API is
+  the likely one), and its cost against the anonymous rate limit.
+- **Signing key custody:** where the offline root and blocklist keys live and who
+  holds them, and how the publish job's index key is protected.
+- **R2 and the terms of listing:** that mirroring under the terms is enough for
+  repositories with permissive licences, and how proprietary packs opt out.
+- **The `MissingScope` gate:** reading granted scopes and roles reliably from delegated
+  and app-only tokens across clouds.
 - **The skills.sh mechanics** are taken from its public CLI source (commit `958f4b7`)
   and site on 2026-10-07 and may change; its server code is not public, so the
   deduplication and trending formulas are as documented, not as read. The facts about
