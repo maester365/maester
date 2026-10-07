@@ -1,0 +1,345 @@
+---
+title: "Maester 3.0: a new test engine, and a heads-up for preview users"
+description: Maester 3.0 merges into main on 8 October 2026 at 10:00 UTC, so the preview build on the PowerShell Gallery becomes 3.0. Here's what that means for your automation, and a walkthrough of the new native test format and engine.
+slug: maester-3-0
+authors: [merill]
+tags: [maester, release, preview, powershell]
+hide_table_of_contents: false
+date: 2026-10-07
+---
+
+import {
+  Hero, Chapter, Say, Timeline, Split, Panel, Pipeline, Gates, Layers, Statuses, Files,
+} from "./_components";
+
+Maester 3.0 merges into `main` on **Thursday, 8 October 2026 at 10:00 UTC** (8 pm AEST). From that moment the **preview** build of Maester on the PowerShell Gallery is Maester 3.0, and 3.0 has breaking changes.
+
+:::warning If you run Maester in automation with the preview build, switch to the release build now
+
+Your next scheduled run after the merge will pick up 3.0. The biggest change is that **Maester 3.0 needs PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported. We've worked hard to keep your custom tests (including Pester tests) working, but a rewrite this size will have rough edges.
+
+You're on the preview build if your pipeline does any of these:
+
+- `Install-Module Maester -AllowPrerelease` or `Update-Module Maester -AllowPrerelease`
+- `maester_version: preview` in the [Maester GitHub Action](https://github.com/maester365/maester-action)
+
+To stay on 2.x, install the release build instead: drop `-AllowPrerelease`, or pin the version with `Install-Module Maester -RequiredVersion 2.3.0`. In the GitHub Action, use `maester_version: latest`.
+
+:::
+
+<Timeline items={[
+  { when: "Now", what: "Move automation off the preview build" },
+  { when: "8 Oct, 10:00 UTC", what: "3.0 merges into main and becomes the preview build", primary: true },
+  { when: "After that", what: "We fix what the preview finds, then ship 3.0 as the release build" },
+]} />
+
+If you're using Maester interactively and want to see what's coming, the preview is exactly where we want you. Try it, and tell us what breaks.
+
+{/* truncate */}
+
+<Hero
+  eyebrow="Maester 3.0"
+  title="Its own test engine. Pester optional."
+  lede="Every built-in security check is now a plain PowerShell function with its metadata attached. Maester reads that metadata to decide what runs, a small engine runs it, and the results keep the 2.x shape."
+  facts={[
+    ["747", "native tests"],
+    ["0", "built-in Pester files"],
+    ["64", "exported commands (2.x: ~730)"],
+    ["7.4+", "PowerShell"],
+  ]}
+/>
+
+This post has two halves. The first half covers what most of you will notice: you no longer install a tests folder, and **the way a test is written has changed**. The second half is the technical detail for people who build pipelines on Maester, write a lot of custom tests, or just want to know how it works.
+
+<Chapter>What changed</Chapter>
+
+## Maester 2.x and 3.0 side by side
+
+In 2.x a check came in two parts: a function in the module, and a Pester `It` block in a `*.Tests.ps1` file that you copied into your own folder. Pester found and ran those files, so selecting, skipping and reporting all went through Pester.
+
+<Split>
+  <Panel title="Maester 2.x" variant="old">
+    <ul>
+      <li>A check is a module function plus a Pester <code>It</code> wrapper</li>
+      <li>Tests are copied into your folder with <code>Install-MaesterTests</code></li>
+      <li>Severity lives in a 700-row <code>maester-config.json</code></li>
+      <li>Every check guards its own connection and licence inside a try/catch</li>
+      <li>Pester is required, and tags are the only way to select tests</li>
+    </ul>
+  </Panel>
+  <Panel title="Maester 3.0" variant="now">
+    <ul>
+      <li>A check is one function with a <code>[MaesterTest]</code> attribute, plus a <code>.md</code> file</li>
+      <li>Built-in tests ship inside the module and run from it</li>
+      <li>Severity, services, licences and authors are declared on the test</li>
+      <li>The engine checks connections and licences, and turns exceptions into Error rows</li>
+      <li>Pester is only needed for Pester-format custom tests; select by tag or by test ID</li>
+    </ul>
+  </Panel>
+</Split>
+
+<Say label="What you'll notice">
+
+You no longer install or update a tests folder: **updating the module updates the tests**. And nothing needs Pester unless you wrote Pester tests yourself.
+
+</Say>
+
+<Chapter>The new test format</Chapter>
+
+## Anatomy of a native test
+
+A Maester 3.0 test is a pair of files. Every test that ships with Maester is written this way, and your own tests use the same format.
+
+<Files files={[
+  { name: "Test.<ID>.ps1", tag: "code", text: "One PowerShell function with a [MaesterTest(...)] attribute. It reads the tenant, decides, and returns $true or $false." },
+  { name: "Test.<ID>.md", tag: "docs", text: "The description and remediation steps shown in the report, with a %TestResult% placeholder for the result." },
+]} />
+
+Here's a real built-in test, `MT.1012`, shortened:
+
+```powershell title="tests/Maester/Entra/Test.MT.1012.ps1"
+function Test-MtCaMfaForRiskySignIn {
+    [MaesterTest(
+        Id                = 'MT.1012',
+        Title             = 'At least one Conditional Access policy is configured to require MFA for risky sign-ins.',
+        Severity          = 'High',
+        Category          = 'Maester/Entra',
+        Tag               = ('CA', 'Maester'),
+        Service           = 'Graph',            # skipped when Graph is not connected
+        CompatibleLicense = 'AAD_PREMIUM_P2',   # skipped when the tenant has no Entra ID P2
+        Author            = 'f-bader'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param ()
+
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+    # ... decide, then:
+    Add-MtTestResultDetail -Result $markdown
+    return $result
+}
+```
+
+Notice what isn't there: **no connection check, no licence check, and no outer try/catch.** The test declares what it needs, and the engine handles the rest. In 2.x every check carried that boilerplate, and every check got it slightly differently.
+
+### The attribute is read, never run
+
+Maester reads `[MaesterTest]` straight from the file's syntax tree. Listing tests, building the catalog and doing a dry run never execute any test code. That's why the values have to be constants: quoted strings, `$true`/`$false`, or a list in parentheses.
+
+| Property | What it does |
+| --- | --- |
+| `Id`, `Title` | Identity. The file is named `Test.<Id>.ps1`, and the ID doubles as a tag. |
+| `Severity` | `Critical`, `High`, `Medium`, `Low` or `Info`. Your config can override it. |
+| `Category`, `Tag` | Report grouping, and selection with `-Tag` / `-ExcludeTag`. |
+| `Service` | Services that must all be connected: `Graph`, `ExchangeOnline`, `Teams`, `Azure` and so on. |
+| `CompatibleLicense` | Service plans, any one of which is enough. `&` joins plans that are all required. |
+| `Preview`, `LongRunning` | Left out of a run unless you include them. |
+| `Platform`, `TenantType`, `Cloud` | Where the test applies: Windows-only tests, workforce or external tenants, sovereign clouds. |
+| `InstanceSource` | Makes the test a *family* that produces one result per item. |
+| `Author`, `Contributor` | Credit on maester.dev. |
+
+### The Markdown file
+
+```md title="Custom/Test.CONTOSO.1002.md"
+Disabled Conditional Access policies must say why they are disabled, in the form `Disabled: <reason>`.
+
+#### Remediation action
+
+1. In the Microsoft Entra admin center, open **Protection** > **Conditional Access** > **Policies**.
+2. For each policy listed below, add the reason to its name, or delete the policy.
+
+<!--- Results --->
+%TestResult%
+```
+
+Everything above `<!--- Results --->` is the description in the report. `%TestResult%` is replaced with what you pass to `Add-MtTestResultDetail -Result`. The report shows the description even for tests that didn't run, so readers always see what a test is about.
+
+### What a test returns
+
+The function's job is to return a verdict. The engine turns it into a result row:
+
+| The function | Result |
+| --- | --- |
+| returns `$true` | `Passed` |
+| returns `$false` | `Failed` |
+| calls `Add-MtTestResultDetail -Investigate` | `Investigate` |
+| calls `Add-MtTestResultDetail -SkippedBecause NotApplicable` | `Skipped` (the call ends the test) |
+| throws an error | `Error`, with the message as the reason |
+| returns nothing | `Skipped`, reason `NoResult` |
+
+<Say label="Watch out">
+
+Stray output becomes part of the return value. `$list.Add($x)` on an `ArrayList` writes an index to the pipeline, which turns your verdict into an `InvalidReturn` error. Assign such calls to `$null` or pipe them to `Out-Null`.
+
+</Say>
+
+### Parameters you can tune
+
+A test's `param()` block lists the values a user can change per tenant: thresholds, switches, objects to exclude. Each parameter needs a one-line description, and `[MaesterParameter(Kind = ...)]` tells a user interface what kind of object to offer.
+
+```powershell
+param(
+    # Longest validity period, in days, that a certificate may be issued for.
+    [ValidateRange(1, 3650)]
+    [int] $MaximumValidityDays = 365,
+
+    # Members of these groups are exempt from this check.
+    [MaesterParameter(Kind = 'Entra.Group')]
+    [string[]] $ExcludedGroups
+)
+```
+
+Values are set in `maester-config.json` and checked against the `param()` block before the test runs:
+
+```json
+{
+  "TestSettings": [
+    { "Id": "MT.1198", "Parameters": { "MaximumValidityDays": 180 } },
+    { "Id": "MT.1012", "Severity": "Critical" },
+    { "Id": "MT.1005", "Enabled": false, "Reason": "Handled by another control" }
+  ]
+}
+```
+
+That last row matters if you used to delete test files to turn tests off. In 3.0 the built-in tests come from the module, so **disable a test in the config instead**.
+
+### Write your first native test
+
+The whole loop works offline until you actually run against a tenant:
+
+```powershell
+# 1. Create Custom/Test.CONTOSO.1001.ps1 and Custom/Test.CONTOSO.1001.md
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
+
+# 2. Validate the metadata. No tenant connection needed.
+Get-MtTest -Path ./Custom
+
+# 3. Run just this test while you write it
+Connect-Maester
+Invoke-MtTest -Path ./Custom/Test.CONTOSO.1001.ps1
+
+# 4. See what a full run would do, without running anything
+Invoke-Maester -Path . -DryRun
+```
+
+Use a prefix of your own for IDs (`CONTOSO.1001`). The `MT.`, `CIS.`, `CISA.`, `EIDSCA.`, `ORCA.`, `AD-` and `AZDO.` prefixes belong to the built-in tests.
+
+### Your existing Pester tests keep working
+
+Custom tests written for 2.x (`*.Tests.ps1`) still run, and their results appear in the same report. You just need Pester 5.7.1 or later installed yourself, because Maester no longer installs it. When you're ready to move over, `Convert-MtTest -Path ./Custom` converts them to native tests and tells you what needs a manual touch.
+
+<Chapter>Under the hood</Chapter>
+
+## The life of an `Invoke-Maester` run
+
+Everything below is PowerShell except one step, which runs in a small C# engine that ships inside the module.
+
+<Pipeline steps={[
+  { title: "Resolve the run config", text: "Merge the config layers into one object: selection, test settings, environment overrides, output options." },
+  { title: "Find the test sources", text: "Built-in tests always come from the module. -Path adds your custom folder; -SkipBuiltIn runs your custom tests only." },
+  { title: "Discover tests from metadata", text: "Built-ins come from a catalog file in the module. Custom native tests are read from their syntax trees; Pester files get a static inventory." },
+  { title: "Work out the selection", text: "Combine -Tag, -ExcludeTag, -TestId, -ExcludeTestId, the include switches and the config. Stale 2.x copies of built-in tests in your folder are skipped." },
+  { title: "Build the tenant context", text: "Which services are connected, which licences the tenant has, tenant type, cloud and platform." },
+  { title: "Plan: apply the gates", text: "Each test passes the gates in order, or gets a row with a reason code. Parameters from config are bound and type-checked here." },
+  { title: "Execute", text: "The engine runs each planned test, captures its output, enforces timeouts and decides the outcome. Families expand into instances first.", cs: true },
+  { title: "Run Pester-format custom tests", text: "Pester is imported only now, and only if you have Pester tests. Without Pester, those tests become Error rows and everything else still runs." },
+  { title: "Build the result and write the outputs", text: "Native and Pester rows merge into one result: HTML report, JSON, Markdown, CSV/Excel, NUnit or JUnit XML, mail and Teams." },
+]} />
+
+<Say label="Try it">
+
+`-DryRun` stops after the plan. You get a full report showing every test that would run, and the reason every other test wouldn't.
+
+</Say>
+
+## Gates and reason codes
+
+Every test passes through the same gates, in the same order. The first gate that fails decides the result and the reason code, so the report always tells you *why* a test didn't run.
+
+<Gates gates={[
+  ["Metadata", "InvalidMetadata"],
+  ["Config", "DisabledByConfig"],
+  ["Selection", "NotSelected · Preview · LongRunning"],
+  ["Platform", "PlatformMismatch"],
+  ["Tenant type", "TenantTypeMismatch"],
+  ["Cloud", "CloudMismatch"],
+  ["Service", "ServiceNotConnected"],
+  ["Licence", "LicenseNotFound"],
+  ["Parameters", "InvalidConfiguration"],
+]} />
+
+The six results are unchanged from 2.x:
+
+<Statuses items={["Passed", "Failed", "Skipped", "Error", "Investigate", "NotRun"]} />
+
+The HTML report has a new reason column and filter, so a page full of skipped tests now explains itself.
+
+## Configuration layers
+
+Config files are found from `-Path`: the folder, its `tests` subfolder, and up to five parent folders. Layers merge from the bottom up, and each one only needs the settings it changes.
+
+<Layers layers={[
+  { name: "maester-config.<tenantId>.json", text: "Per-tenant overrides. Wins over everything below.", rank: "highest" },
+  { name: "Custom/maester-config.json", text: "Your customisations, kept apart from the root file.", rank: "" },
+  { name: "maester-config.json", text: "The root config in your folder.", rank: "" },
+  { name: "Shipped defaults", text: "The module's own config: global settings only. Test defaults now live on the tests.", rank: "lowest" },
+]} />
+
+Pipelines can skip discovery entirely with `-Config` (a path, a hashtable or both) or the `MAESTER_CONFIG` environment variable.
+
+## The C# engine
+
+The engine is a 37 KB DLL loaded as a nested module, and it does three jobs:
+
+<Split>
+  <Panel title="Attribute types">
+    <p><code>[MaesterTest]</code> and <code>[MaesterParameter]</code> must be real .NET types for PowerShell to accept them on a function.</p>
+  </Panel>
+  <Panel title="Session state">
+    <p>It tracks which test is running, so <code>Add-MtTestResultDetail</code> knows where its result belongs.</p>
+  </Panel>
+  <Panel title="The scheduler">
+    <p>It runs each test, captures output and streams, enforces timeouts, handles Ctrl+C, and classifies the outcome.</p>
+  </Panel>
+</Split>
+
+Reliable timeouts, cancellation, and catching every way a script can end are hard to get right in pure PowerShell, so that part is C#. Everything else (selection, gates, config, families, results) stays in PowerShell. The scheduler is built for parallel runs, but 3.0 runs one test at a time on your session to stay as close to 2.x behaviour as possible.
+
+The DLL is committed to the repository, so you never need the .NET SDK. CI rebuilds it from source on every change and fails if the bytes differ.
+
+## Families: one test, many results
+
+Some checks run once per item: once per Entra recommendation, per Defender for Identity health issue, per drift folder. In 2.x these were Pester `-ForEach` blocks. In 3.0 the test names an `InstanceSource` function in the same file, and each item becomes its own row, such as `MT.1024.<suffix>`. `-TestId MT.1024.*` selects the whole family. The source only runs when the test actually runs, never during discovery or a dry run.
+
+## Results and outputs
+
+The result JSON keeps its 2.x shape, so anything that reads it keeps working. Schema 2.1 only adds fields: `ReasonCode`, `ReasonDetail`, `Source`, `Format` (Native or Pester), `Parameters` and `Diagnostics` on each row; `TenantContext`, `RunMetadata` and `Selection` at the top level.
+
+Maester now writes the NUnit 2.5 or JUnit XML file itself, for native and Pester tests together, with the same test-case names your pipelines expect. A run split across processes or containers merges back into one report with `Merge-MtMaesterResult -SameRun`.
+
+<Chapter>Upgrading</Chapter>
+
+## What to do when you move to 3.0
+
+1. Run Maester on **PowerShell 7.4 or later**.
+2. Update the module, remove Maester 2.x, and start a new session:
+
+   ```powershell
+   Update-Module Maester -AllowPrerelease -Force
+   Uninstall-Module Maester -MaximumVersion 2.99.99 -AllVersions
+   ```
+
+3. Clean up your tests folder with `Update-MaesterTests -Path ./maester-tests -WhatIf`, then without `-WhatIf`. It removes the 2.x copies of the built-in tests and keeps your custom tests and config.
+4. If you disabled built-in tests by deleting their files, disable them in `maester-config.json` instead.
+5. If you have Pester-format custom tests, install Pester 5.7.1 or later, or convert them with `Convert-MtTest`.
+6. If a custom test calls a built-in `Test-Mt*` function, call `Invoke-MtTest -Id <ID>` instead. The check functions are no longer exported.
+7. Try your usual command with `-DryRun` first to see what would run.
+
+A few results can come out differently from 2.x. The main one: a built-in test that throws is now `Error`, not `Failed`, so your failed count can go down and your error count up. The [upgrade guide](https://maester.dev/docs/next/upgrading-from-2x) lists every change, and the [native test guide](https://maester.dev/docs/next/writing-tests) covers the format in full. Both are in the preview docs from 8 October.
+
+## Tell us what breaks
+
+This is the biggest change to Maester since it started. All 747 built-in checks moved to the new format, with tests that hold selection and tags to their 2.x behaviour, but your tenants and pipelines will find things ours didn't. If something breaks, please [open an issue](https://github.com/maester365/maester/issues) with the command you ran and what you saw. The work is in [maester365/maester#2334](https://github.com/maester365/maester/pull/2334) if you want to dig in.
+
+Contributions have been paused during the rewrite. They reopen once 3.0 is on `main`, and new checks should use the native format from then on.
+

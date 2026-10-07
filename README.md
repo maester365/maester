@@ -2,6 +2,15 @@
 
 **Monitor your Microsoft 365 tenant's security configuration using Maester!**
 
+> [!CAUTION]
+> **Maester 3.0 becomes the preview build on 8 October 2026 at 10:00 UTC (8 pm AEST)**
+>
+> Maester 3.0 merges into `main` at that time, so the **preview** build on the PowerShell Gallery becomes 3.0. It has breaking changes: most notably, **PowerShell 7.4 or later is required** (Windows PowerShell 5.1 is no longer supported). Custom tests, including Pester tests, should keep working, but expect some rough edges.
+>
+> **If your automation installs the preview build** (`-AllowPrerelease`, or `maester_version: preview` in the GitHub Action), **switch to the release build now**: drop `-AllowPrerelease` or pin `-RequiredVersion 2.3.0`, and use `maester_version: latest` in the action.
+>
+> Read the [Maester 3.0 announcement](https://maester.dev/blog/maester-3-0) for what's changing.
+
 > [!IMPORTANT]
 > **Contributions paused for the Maester 3.0 rewrite (from October 6, 2026, for about a week)**
 >

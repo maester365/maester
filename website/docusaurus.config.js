@@ -112,6 +112,12 @@ const config = {
     ({
       // Replace with your project's social card
       image: "img/maester-social-card.jpg",
+      announcementBar: {
+        id: "maester-3-preview",
+        content:
+          '⚠️ Maester 3.0 becomes the preview build on 8 October at 10:00 UTC. Running automation on the preview? Switch to the release build. <a href="/blog/maester-3-0">Read more</a>',
+        isCloseable: true,
+      },
       navbar: {
         title: "Maester",
         logo: {
