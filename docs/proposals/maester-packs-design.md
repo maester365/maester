@@ -320,7 +320,7 @@ each other and installed side by side, so they get their own namespace:
   test that uses it gets the reserved-prefix warning, and a pack test that does not use
   it fails validation. So a pack can never supply a built-in ID.
 - **A code is two to five characters**, letters and digits, starting with a letter,
-  compared case-insensitively and written in capitals: `CNT`, `OKTA`, `AWS1`.
+  compared case-insensitively and written in capitals: `CNT`, `NWT`, `FAB1`.
 
 **A code belongs to a publisher: one GitHub user or organisation.** Each owner holds
 exactly one code, and each code belongs to exactly one owner, permanently. All of an
@@ -351,10 +351,9 @@ number of codes small.
   packs.maester.dev/codes/CNT show whether it is available, held (and by whom) or
   reserved. `Test-MtPack` checks the manifest against `codes.json` before you publish.
   Availability is not a reservation: the claim happens at first index.
-- **Reserved codes** cannot be claimed: built-in suite names (`MT`, `CIS`, `CISA`,
-  `AD`, `AZDO`, `ORCA`, `EIDSCA`, `XSPM`), names that look official (`MS`, `MSFT`,
-  `MAESTER`), and offensive words. Vendors' product names are not reserved; a vendor
-  that wants its own name can raise a dispute while the code has no listed pack.
+- **Reserved codes** cannot be claimed (section 4.6): built-in suite names, names that
+  look official, offensive words, and **known brands**, so nobody but Google can take
+  `GOOG` and nobody but Okta can take `OKTA`.
 - **Against squatting:** one code per owner, ever; a claim needs a version that passes
   validation, from an owner account older than 30 days; and a claim whose owner never
   reaches a listed release within 90 days is released.
@@ -374,6 +373,34 @@ number of codes small.
 - **Run:** the 3.0 rule still backs this up: two non-built-in tests with the same ID
   give `DuplicateId` error rows and neither runs, so nothing silently replaces another
   test.
+
+### 4.6 Reserved codes and brands
+
+The index keeps a reserved list, rebuilt weekly by a workflow in the index repository
+and published in `codes.json` with the reason for each entry. It is made from
+maintained public lists rather than one we curate by hand:
+
+| Source | What it adds | Licence |
+| --- | --- | --- |
+| **Simple Icons** (`simple-icons/simple-icons`, the brand list behind most developer sites' logos) | 3,400+ technology and consumer brands: every brand name and alias that fits a code once reduced to letters and digits (`Okta`, `Zoom`, `Slack`, `Cisco`, `Meta`, `Box`, `AWS`, `GCP`) | CC0 (public domain) |
+| **S&P 500 constituents** (`datasets/s-and-p-500-companies`) | The stock tickers of major companies, which are exactly the 2 to 5 letter codes a brand would choose (`MSFT`, `GOOG`, `AMZN`, `CRM`, `PANW`, `CRWD`) | ODC-PDDL (public domain) |
+| **Our own short list** in the index repository | Built-in suite names (`MT`, `CIS`, `CISA`, `AD`, `AZDO`, `ORCA`, `EIDSCA`, `XSPM`), names that look official (`MS`, `MSFT`, `MAESTER`), product acronyms the lists miss (`M365`, `O365`, `GWS`, `AAD`), and offensive words | — |
+
+A code is blocked when it equals an entry, or an entry followed by one digit (`OKTA1`),
+after reducing both to capital letters and digits. Brand names may still appear in the
+segments after a publisher's code: `MP.CNT.OKTA.0001` is contoso's Okta check, and
+says so.
+
+**When the company itself wants its code,** it contacts the project (the security
+contact or an issue form in the index repository). A maintainer checks that the request
+comes from that company: a GitHub organisation that GitHub has verified for the brand's
+domain, or email from that domain. The assignment is a reviewed commit in the index
+repository that maps the code to the organisation's numeric owner ID, and the pack is
+then listed with that code like any other.
+
+A code someone already holds is not taken away when a new brand joins the lists,
+because its IDs are already in users' configs. A brand can raise a dispute over a held
+code that has no listed pack yet.
 
 ## 5. Installing, updating and running
 
@@ -802,8 +829,8 @@ need write access to them.
 | Reason | What the publisher sees (examples) | Fix |
 | --- | --- | --- |
 | `CodeMismatch` | Test IDs must start with `MP.CNT.`, the code contoso holds. 3 tests use `MP.CTO.`: `MP.CTO.0001`, `MP.CTO.0002`, `MP.CTO.0003`. | Rename the IDs, or correct `Code` in the manifest |
-| `CodeTaken` | The code `OKTA` is held by fabrikam. contoso has no code yet. | Pick a free code (`Find-MtPack -Code`) |
-| `CodeReserved` | `MS` is a reserved code. | Pick another code |
+| `CodeTaken` | The code `IDP` is held by fabrikam. contoso has no code yet. | Pick a free code (`Find-MtPack -Code`) |
+| `CodeReserved` | `OKTA` is reserved for the brand Okta (Simple Icons). If you represent Okta, contact us to have it assigned. | Pick another code, or ask for the brand's code (section 4.6) |
 | `CodeMissing` | `maester-pack.json` has no `Code`. | Add one |
 | `DuplicateTestId` | `MP.CNT.0001` is already used by contoso/maester-okta. | Renumber, or add a segment per pack (`MP.CNT.GWS.0001`) |
 | `ServiceTaken` | The service name `GoogleWorkspace` is held by maester365. | Depend on that connector pack, or rename the service |
@@ -1177,6 +1204,9 @@ the signing key.
   publisher (GitHub user or organisation), claimed at the first index of any of its
   repositories, first come, first served; no reservation pull request. A pack that is
   not listed shows the publisher why (sections 4.5 and 7.7).
+- **Known brands cannot be claimed as codes** by default, using Simple Icons, S&P 500
+  tickers and a short list of our own; the company itself can ask for its code
+  (section 4.6).
 
 ### Still open
 
@@ -1190,6 +1220,9 @@ the signing key.
   number of free WAF rate-limiting rules. Pricing in section 7.5 is from Cloudflare's
   Workers pricing page on 2026-10-07.
 - **The MVP directory API** is undocumented and may change or rate-limit.
+- **The brand lists:** the exact Simple Icons data file and alias fields to read, and
+  how many legitimate short codes the lists block (expected to be a small share of the
+  2 to 5 character space, but the 3-letter codes most affected).
 - **GitHub Models' free tier** and VirusTotal's public API terms for a non-commercial
   open-source index need confirming before either is relied on.
 - **Static rules for load-time execution:** that function-only files plus the listed
