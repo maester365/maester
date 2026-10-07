@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maester Packs</title>
+<meta name="description" content="How Maester Packs work: build, publish and run third-party Maester test packs and connectors. A proposal, not yet built.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a sticky contents rail beside one reading column; code and tables scroll inside their own boxes. */
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --ink: #161a22;
+  --muted: #565d6d;
+  --line: #dde1e7;
+  --accent: #b4232f;
+  --accent-soft: #fbe9ea;
+  --on-accent: #ffffff;
+  --info: #1d5fa8;
+  --ok: #146c43;
+  --ok-soft: #e3f4ea;
+  --warn: #7a5200;
+  --warn-soft: #fbf0d9;
+  --bad: #a1232f;
+  --bad-soft: #fbe5e7;
+  --code-bg: #12151b;
+  --code-ink: #e6e8ee;
+  --code-muted: #8d93a3;
+  --code-key: #ff9a9a;
+  --code-str: #9fd7b5;
+  --code-op: #ffd27a;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0d11; --surface: #12151b; --ink: #e8eaef; --muted: #a2a8b5; --line: #262b34;
+    --accent: #ff8a8a; --accent-soft: #2a1316; --on-accent: #1a0507; --info: #8cc8ff;
+    --ok: #74e2aa; --ok-soft: #10261b; --warn: #ffd27a; --warn-soft: #2a2110;
+    --bad: #ff9a9a; --bad-soft: #2c1214; --code-bg: #07090c; --code-ink: #e6e8ee; --code-muted: #8d93a3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0d11; --surface: #12151b; --ink: #e8eaef; --muted: #a2a8b5; --line: #262b34;
+  --accent: #ff8a8a; --accent-soft: #2a1316; --on-accent: #1a0507; --info: #8cc8ff;
+  --ok: #74e2aa; --ok-soft: #10261b; --warn: #ffd27a; --warn-soft: #2a2110;
+  --bad: #ff9a9a; --bad-soft: #2c1214; --code-bg: #07090c; --code-ink: #e6e8ee; --code-muted: #8d93a3;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--info); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code, pre, kbd { font-family: var(--font-mono); }
+:not(pre) > code {
+  font-size: 0.88em;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 0.08em 0.35em;
+  overflow-wrap: anywhere;
+}
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 0 72px;
+}
+
+/* Header */
+.masthead {
+  padding-block: 56px 40px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+  display: grid;
+  gap: 18px;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.6rem, 3.2vw, 2.1rem); letter-spacing: -0.01em; }
+h3 { font-size: 1.22rem; }
+.lede { font-size: 1.18rem; color: var(--muted); max-width: 62ch; margin: 0; }
+.status {
+  display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+  font-size: 14px; color: var(--muted);
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  border-radius: 999px; padding: 3px 11px;
+  background: var(--warn-soft); color: var(--warn);
+}
+.facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0; margin: 8px 0 0; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--surface); overflow: hidden;
+}
+.facts div { padding: 16px 18px; border-right: 1px solid var(--line); min-width: 0; }
+.facts div:last-child { border-right: 0; }
+.facts dt { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+.facts dd { margin: 0; font-weight: 600; }
+
+/* Two-column body */
+.layout { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+.toc {
+  flex: 1 1 220px; min-width: 0;
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px);
+  font-size: 14.5px;
+}
+.toc p { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a { display: block; padding: 6px 10px; border-radius: 7px; color: var(--muted); text-decoration: none; border-left: 2px solid transparent; }
+.toc a:hover { color: var(--ink); background: var(--surface); }
+.toc a.active { color: var(--ink); border-left-color: var(--accent); background: var(--surface); font-weight: 600; }
+.toc .sub a { padding-left: 22px; font-size: 13.5px; }
+main { flex: 999 1 600px; min-width: 0; display: grid; gap: 64px; }
+section { display: grid; gap: 18px; scroll-margin-top: 24px; }
+section > p, section > ul, section > ol, .prose { max-width: 68ch; margin: 0; }
+section ul, section ol { padding-left: 1.2em; display: grid; gap: 6px; }
+.part {
+  font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 -10px;
+}
+.sub-block { display: grid; gap: 12px; padding-top: 6px; }
+
+/* Code */
+.code { position: relative; min-width: 0; }
+pre {
+  margin: 0; background: var(--code-bg); color: var(--code-ink);
+  border-radius: 10px; padding: 16px 18px; font-size: 13.5px; line-height: 1.65;
+  overflow-x: auto;
+}
+pre .c { color: var(--code-muted); }
+pre .k { color: var(--code-key); }
+pre .s { color: var(--code-str); }
+pre .o { color: var(--code-op); }
+.code-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.copy {
+  position: absolute; top: 8px; right: 8px;
+  font: 600 12px var(--font-body); color: var(--code-ink);
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 6px; padding: 5px 9px; cursor: pointer; min-height: 30px;
+}
+.copy:hover { background: rgba(255,255,255,0.16); }
+
+/* Tables */
+.table { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+
+/* Steps */
+.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; counter-reset: step; }
+.steps > li {
+  counter-increment: step; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px;
+}
+.steps > li::before {
+  content: counter(step); width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font: 700 15px var(--font-display);
+}
+.steps h3 { margin-bottom: 4px; }
+.steps p { margin: 0 0 10px; color: var(--muted); }
+
+/* Flow */
+.flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.flow .node {
+  flex: 1 1 170px; min-width: 0; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; position: relative;
+}
+.flow .node strong { font-size: 15px; }
+.flow .node span { font-size: 13.5px; color: var(--muted); }
+.flow .node em { font-style: normal; font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Badges */
+.risk { display: inline-block; font-weight: 600; font-size: 13px; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+.risk.low { background: var(--ok-soft); color: var(--ok); }
+.risk.med { background: var(--warn-soft); color: var(--warn); }
+.risk.high { background: var(--bad-soft); color: var(--bad); }
+.risk.blocked { background: var(--bad); color: var(--bg); }
+
+.callout {
+  border: 1px solid var(--line); border-left: 0; background: var(--surface); border-radius: 12px;
+  padding: 16px 18px; display: grid; gap: 6px; max-width: 72ch;
+}
+.callout strong { color: var(--accent); }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.cols > div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; min-width: 0; align-content: start; }
+.cols h3 { font-size: 1.05rem; }
+.cols p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+footer { border-top: 1px solid var(--line); margin-top: 72px; padding-top: 24px; color: var(--muted); font-size: 14px; display: grid; gap: 6px; }
+
+@media (max-width: 860px) {
+  .toc { position: static; }
+  .facts div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .facts div:last-child { border-bottom: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Maester · design proposal</div>
+    <h1>Maester Packs</h1>
+    <p class="lede">Security checks for any platform, written by anyone, run by Maester. A pack is a GitHub repository of Maester tests, with an optional connector that signs in to a platform Maester doesn't know about, such as Google Workspace or Okta.</p>
+    <div class="status">
+      <span class="chip">Proposal · not built yet</span>
+      <span>Names, commands and details may change. Feedback goes on <a href="https://github.com/maester365/maester/pull/2358">pull request #2358</a>, which also has the <a href="https://github.com/maester365/maester/blob/claude/maester-packs-design/docs/proposals/maester-packs-design.md">full design</a>.</span>
+    </div>
+    <dl class="facts">
+      <div><dt>A pack is</dt><dd>A GitHub repository</dd></div>
+      <div><dt>Test IDs look like</dt><dd><code>MP.CNT.0001</code></dd></div>
+      <div><dt>Install with</dt><dd><code>Install-MtPack owner/repo</code></dd></div>
+      <div><dt>Find packs at</dt><dd>packs.maester.dev</dd></div>
+    </dl>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <p>Contents</p>
+      <ol>
+        <li><a href="#overview">How it works</a></li>
+        <li><a href="#build">Build a pack</a></li>
+        <li class="sub"><a href="#anatomy">Anatomy</a></li>
+        <li class="sub"><a href="#ids">Your code and test IDs</a></li>
+        <li class="sub"><a href="#connectors">Connectors</a></li>
+        <li class="sub"><a href="#permissions">Microsoft permissions</a></li>
+        <li class="sub"><a href="#risk">What you can ship</a></li>
+        <li class="sub"><a href="#publish">Publish in four steps</a></li>
+        <li class="sub"><a href="#not-listed">Why a pack isn't listed</a></li>
+        <li class="sub"><a href="#maintain">Keeping a pack healthy</a></li>
+        <li><a href="#use">Use a pack</a></li>
+        <li><a href="#listing">How listing works</a></li>
+        <li><a href="#security">Security model</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="overview" aria-labelledby="overview-h">
+        <h2 id="overview-h">How it works</h2>
+        <p>Maester Packs works the way skills.sh works for agent skills. Nobody submits anything. You push a pack to a public GitHub repository; the first time someone installs it, Maester Packs fetches the repository itself, checks and scans it, and lists it. Admins install packs with one command, connect to the platform through <code>Connect-Maester</code>, and see the results in their Maester report next to the built-in checks.</p>
+        <div class="flow" aria-label="From repository to report">
+          <div class="node"><em>You</em><strong>Push and tag</strong><span>A pack in a public GitHub repository</span></div>
+          <div class="node"><em>Anyone</em><strong>Install once</strong><span><code>Install-MtPack</code> pins the exact commit</span></div>
+          <div class="node"><em>Maester Packs</em><strong>Fetch, scan, list</strong><span>Risk level and badges, usually within the hour</span></div>
+          <div class="node"><em>Admins</em><strong>Connect and run</strong><span>Results in their report, in a Packs section</span></div>
+        </div>
+        <div class="cols">
+          <div><h3>For pack builders</h3><p>Write the same native tests you write for Maester 3.0, add a connector if your platform needs one, tag a release. No form, no approval queue.</p></div>
+          <div><h3>For admins</h3><p>Every pack shows a risk level and who published it before you install. Nothing updates on its own, and CI runs exactly what your lock file says.</p></div>
+          <div><h3>For security teams</h3><p>Packs are pinned, scanned on every version, kept apart from the built-in checks in the report, and can be stopped everywhere with a signed blocklist.</p></div>
+        </div>
+      </section>
+
+      <section id="build" aria-labelledby="build-h">
+        <p class="part">Part 1</p>
+        <h2 id="build-h">Build a pack</h2>
+        <p>If you can write a Maester custom test, you can write a pack. A pack is a Maester 3.0 test suite with a manifest, published from GitHub.</p>
+
+        <div class="sub-block" id="anatomy">
+          <h3>Anatomy of a pack</h3>
+          <div class="code"><div class="code-label">github.com/contoso/maester-google-workspace</div>
+<pre>maester-pack.json                  <span class="c"># the manifest</span>
+README.md                          <span class="c"># shown on your pack's page</span>
+LICENSE
+icon.svg                           <span class="c"># optional</span>
+connectors/
+  GoogleWorkspace.ps1              <span class="c"># optional: signs in to your platform</span>
+tests/
+  suite.json                       <span class="c"># a Maester 3.0 suite</span>
+  Test.MP.CNT.0001.ps1             <span class="c"># one test: a function with [MaesterTest(...)]</span>
+  Test.MP.CNT.0001.md              <span class="c"># its description and remediation</span>
+helpers/
+  Invoke-GwsRequest.ps1            <span class="c"># functions your tests and connector share</span>
+.github/workflows/pack-scan.yml    <span class="c"># optional: our scanners on every push</span></pre></div>
+          <p class="prose">The manifest is plain data. Nothing in it runs. It names your pack, your code, your suites and connector, and declares everything your pack reaches.</p>
+          <div class="code"><div class="code-label">maester-pack.json (trimmed)</div>
+<pre>{
+  <span class="k">"Id"</span>: <span class="s">"contoso.google-workspace"</span>,
+  <span class="k">"Name"</span>: <span class="s">"Google Workspace security baseline"</span>,
+  <span class="k">"Version"</span>: <span class="s">"1.2.0"</span>,
+  <span class="k">"Publisher"</span>: <span class="s">"contoso"</span>,
+  <span class="k">"Code"</span>: <span class="s">"CNT"</span>,
+  <span class="k">"RequiresMaester"</span>: <span class="s">"&gt;=3.1 &lt;4.0"</span>,
+  <span class="k">"SecurityContact"</span>: <span class="s">"security@contoso.com"</span>,
+  <span class="k">"Suites"</span>: [<span class="s">"tests"</span>],
+  <span class="k">"Connectors"</span>: [{
+    <span class="k">"Service"</span>: <span class="s">"CNT.GoogleWorkspace"</span>, <span class="k">"Platform"</span>: <span class="s">"GoogleWorkspace"</span>,
+    <span class="k">"File"</span>: <span class="s">"connectors/GoogleWorkspace.ps1"</span>,
+    <span class="k">"Connect"</span>: <span class="s">"Connect-GwsService"</span>, <span class="k">"Test"</span>: <span class="s">"Test-GwsService"</span>
+  }],
+  <span class="k">"Uses"</span>: {
+    <span class="k">"Services"</span>: [<span class="s">"CNT.GoogleWorkspace"</span>],
+    <span class="k">"GraphScopes"</span>: [], <span class="k">"TenantWrites"</span>: [],
+    <span class="k">"Network"</span>: [<span class="s">"admin.googleapis.com"</span>, <span class="s">"oauth2.googleapis.com"</span>],
+    <span class="k">"Modules"</span>: []
+  }
+}</pre></div>
+          <p class="prose">A test is a native Maester 3.0 test: one function with a <code>[MaesterTest]</code> attribute, returning <code>$true</code> when it passes. The engine handles connections, errors and skips, so the test is just the check.</p>
+          <div class="code"><div class="code-label">tests/Test.MP.CNT.0001.ps1</div>
+<pre><span class="k">function</span> Test-GwsTwoStepVerification {
+    [MaesterTest(Id = <span class="s">'MP.CNT.0001'</span>, Title = <span class="s">'2-Step Verification is enforced for all users'</span>,
+                 Severity = <span class="s">'High'</span>, Service = <span class="s">'CNT.GoogleWorkspace'</span>)]
+    [CmdletBinding()]
+    <span class="k">param</span>()
+    <span class="o">$settings</span> = Invoke-GwsRequest -Path <span class="s">'/admin/directory/v1/customer/my_customer/policies'</span>
+    Add-MtTestResultDetail -Result <span class="s">"2-Step Verification: </span><span class="o">$(</span><span class="s">$settings.twoStepEnforced</span><span class="o">)</span><span class="s">"</span>
+    <span class="o">$settings</span>.twoStepEnforced
+}</pre></div>
+        </div>
+
+        <div class="sub-block" id="ids">
+          <h3>Your code and test IDs</h3>
+          <p class="prose">Every pack test ID is <code>MP.&lt;code&gt;.&lt;number&gt;</code>. <code>MP</code> stands for Maester Pack, so anyone can tell from an ID alone that a test comes from a pack, and from whom. A pack can never use a built-in ID such as <code>MT.1001</code>.</p>
+          <ul>
+            <li><strong>Your code belongs to you</strong>, the GitHub user or organisation, and all your packs share it. It is 2 to 5 letters or digits and starts with a letter: <code>CNT</code>, <code>NWT</code>, <code>FAB1</code>.</li>
+            <li><strong>The first index claims it.</strong> There's no form. Put the code in your manifest; the first time any of your repositories is indexed, the code becomes yours for good. Check first with <code>Find-MtPack -Code CNT</code> or packs.maester.dev/codes/CNT.</li>
+            <li><strong>Known brands are reserved.</strong> Codes such as <code>GOOG</code>, <code>OKTA</code> or <code>MSFT</code> come from public brand lists and can't be claimed, unless you are that company: then contact us and we assign it.</li>
+            <li><strong>IDs are permanent.</strong> Your IDs end up in people's configs and result history, so an ID always means the same check. Don't reuse a number for a different check; give new checks new numbers. With several packs, keep them apart with a segment per pack (<code>MP.CNT.GWS.0001</code>) or number ranges.</li>
+          </ul>
+        </div>
+
+        <div class="sub-block" id="connectors">
+          <h3>Connectors</h3>
+          <p class="prose">If your platform needs a sign-in, your pack provides a connector: a few PowerShell functions named in the manifest. <code>Connect-Maester</code> calls them, so admins connect to your platform the same way they connect to Microsoft 365.</p>
+          <div class="table"><table>
+            <thead><tr><th>Function</th><th>Required</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td>Connect</td><td>Yes</td><td>Signs in (browser, device code or unattended) and stores what your tests need with <code>Set-MtConnectionState</code>. Its parameters become the connector's settings.</td></tr>
+              <tr><td>Test</td><td>Yes</td><td>Returns <code>$true</code> when connected. Maester uses it to skip your tests cleanly when nobody connected.</td></tr>
+              <tr><td>Disconnect</td><td>No</td><td>Called by <code>Disconnect-Maester</code>.</td></tr>
+              <tr><td>Describe</td><td>No</td><td>Returns non-secret facts (domain, customer ID, edition) for the report header and <code>Get-MtTenantContext</code>.</td></tr>
+              <tr><td>Renew</td><td>No</td><td>Refreshes your platform's token before it expires, so long runs keep working.</td></tr>
+            </tbody>
+          </table></div>
+          <div class="code"><div class="code-label">What admins type</div>
+<pre>Install-MtPack contoso/maester-google-workspace
+Connect-Maester -Service Graph, GoogleWorkspace     <span class="c"># browser sign-in for both</span>
+Invoke-Maester                                      <span class="c"># built-ins and MP.CNT.* in one report</span>
+
+<span class="c"># Unattended (CI): settings and secrets come from environment variables</span>
+<span class="o">$env:</span>MAESTER_CNT_GOOGLEWORKSPACE_ADMINEMAIL = <span class="s">'admin@contoso.com'</span>
+<span class="o">$env:</span>MAESTER_CNT_GOOGLEWORKSPACE_CREDENTIAL = <span class="s">'&lt;service account key from a secret&gt;'</span></pre></div>
+          <ul>
+            <li><strong>Name your service with your code</strong>, as in <code>CNT.GoogleWorkspace</code>. Bare platform names (<code>GoogleWorkspace</code>, <code>Okta</code>) are kept for official and brand-owned connectors. Admins can still type the platform name when only one installed connector serves it. Because the name carries your code, your connector never receives secrets meant for someone else's.</li>
+            <li><strong>Secrets never come from the config file.</strong> Settings typed as <code>[securestring]</code> or <code>[pscredential]</code> come only from parameters, environment variables or a SecretManagement vault.</li>
+            <li><strong>Write code that works in any execution model.</strong> Reach Microsoft services only through Maester's commands (<code>Invoke-MtGraphRequest</code> and friends), reach your platform only through your connector's state, and keep no global state between tests. Then your pack runs unchanged if packs are isolated in containers later.</li>
+            <li><strong>Share a connector across packs.</strong> A connector pack lists the helpers it shares in <code>Exports</code>; other packs declare it in <code>Requires</code> and use it.</li>
+          </ul>
+        </div>
+
+        <div class="sub-block" id="permissions">
+          <h3>Microsoft permissions your pack needs</h3>
+          <p class="prose">Maester connects to Microsoft Graph with read-only scopes. If your pack needs more, list them in <code>Uses.GraphScopes</code>. They are shown before install and only requested when an admin asks for them with <code>Connect-Maester -IncludePackScopes</code>. When a token lacks a scope, your tests are skipped with reason <code>MissingScope</code> rather than failing. Anything that changes a tenant goes in <code>Uses.TenantWrites</code>; a write scope or a declared write makes your pack High risk. A check pack shouldn't need to write.</p>
+        </div>
+
+        <div class="sub-block" id="risk">
+          <h3>What you can ship, and its risk level</h3>
+          <p class="prose">Ship anything a GitHub repository can hold, including proprietary libraries under any licence. What you ship sets your pack's risk level, which every admin sees before installing.</p>
+          <div class="table"><table>
+            <thead><tr><th>Risk</th><th>What sets it</th><th>What installers see</th></tr></thead>
+            <tbody>
+              <tr><td><span class="risk low">Low</span></td><td>Text files only (PowerShell, Markdown, JSON), and every scan passed</td><td>The normal install prompt</td></tr>
+              <tr><td><span class="risk med">Medium</span></td><td>Readable code with findings to check: <code>Invoke-Expression</code>, script blocks built from strings, URLs built at run time, starting processes, script-only Gallery modules</td><td>The findings, before they confirm</td></tr>
+              <tr><td><span class="risk high">High</span></td><td>Compiled code (DLLs, executables, compiled Python) in the pack or its modules, archives or encoded content we can't scan, or any tenant write</td><td>Every such file named with its hash and signer; they type the pack ID to confirm</td></tr>
+              <tr><td><span class="risk blocked">Blocked</span></td><td>A malware match, or confirmed malicious by a maintainer</td><td>Install refused; already installed copies stop running</td></tr>
+            </tbody>
+          </table></div>
+          <p class="prose">A few rules every pack must follow to be listed:</p>
+          <ul>
+            <li>Script files hold only function definitions. Nothing may run when a file is loaded; load libraries from inside functions.</li>
+            <li>Declare everything you reach in <code>Uses</code>: services, network hosts, Graph scopes, tenant writes, Gallery modules (pinned to exact versions). Code that reaches something undeclared is not listed.</li>
+            <li>Don't use tags or suite names that belong to the built-in checks, such as <code>CIS</code> or <code>Maester</code>. Pack results always appear in their own section of the report.</li>
+            <li>Include a <code>SecurityContact</code> and a <code>LICENSE</code>. No symbolic links, no paths that differ only in case, at most 50 MB per pack.</li>
+          </ul>
+        </div>
+
+        <div class="sub-block" id="publish">
+          <h3>Publish in four steps</h3>
+          <ol class="steps">
+            <li><div><h3>Scaffold it</h3><p>Creates the manifest, a suite, a sample test, a connector skeleton, a README and the scan workflow.</p>
+<div class="code"><pre>New-MtPack -Id contoso.google-workspace -Code CNT -Service CNT.GoogleWorkspace</pre></div></div></li>
+            <li><div><h3>Write and check tests</h3><p>The same commands as custom tests. <code>Test-MtPack</code> runs the exact checks and scans the index runs, so you see your risk level before you release.</p>
+<div class="code"><pre>New-MtTest -Id MP.CNT.0001 -Path ./tests
+Invoke-MtTest -Path ./tests/Test.MP.CNT.0001.ps1
+Test-MtPack -Path .</pre></div></div></li>
+            <li><div><h3>Claim your code</h3><p>Check it's free, then request indexing from packs.maester.dev to claim it straight away (it works before your first release), or let the first install claim it.</p>
+<div class="code"><pre>Find-MtPack -Code CNT</pre></div></div></li>
+            <li><div><h3>Tag a release and install it once</h3><p>Turn on GitHub's immutable releases. The first install tells the index about your pack; it is usually listed within the hour.</p>
+<div class="code"><pre>git tag v1.0.0; git push origin v1.0.0
+Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div></li>
+          </ol>
+        </div>
+
+        <div class="sub-block" id="not-listed">
+          <h3>Why a pack isn't listed</h3>
+          <p class="prose">You never have to guess. Every version the index looks at gets a status at packs.maester.dev/status/&lt;owner&gt;/&lt;repo&gt;, the same text appears in <code>Test-MtPack -Remote owner/repo</code> and in the pack-scan action, and every reason names the files or IDs and the fix. The common ones:</p>
+          <div class="table"><table>
+            <thead><tr><th>Reason</th><th>Example</th><th>Fix</th></tr></thead>
+            <tbody>
+              <tr><td><code>CodeMismatch</code></td><td>3 tests use <code>MP.CTO.</code>; contoso holds <code>CNT</code></td><td>Rename the IDs, or correct <code>Code</code></td></tr>
+              <tr><td><code>CodeTaken</code></td><td>The code <code>IDP</code> is held by fabrikam</td><td>Pick a free code</td></tr>
+              <tr><td><code>CodeReserved</code></td><td><code>OKTA</code> is reserved for the brand Okta</td><td>Pick another, or ask if you are Okta</td></tr>
+              <tr><td><code>DuplicateTestId</code></td><td><code>MP.CNT.0001</code> is used by contoso/maester-okta</td><td>Renumber, or add a segment per pack</td></tr>
+              <tr><td><code>IdReused</code></td><td><code>MP.CNT.0012</code> was a different check in 1.0.0</td><td>Give the new check a new number</td></tr>
+              <tr><td><code>ServiceReserved</code></td><td><code>GoogleWorkspace</code> is kept for an official connector</td><td>Name yours <code>CNT.GoogleWorkspace</code></td></tr>
+              <tr><td><code>UndeclaredReach</code></td><td><code>connectors/Gws.ps1:40</code> calls a host not in <code>Uses.Network</code></td><td>Declare it, or remove the call</td></tr>
+              <tr><td><code>InvalidPack</code></td><td><code>tests/Test.MP.CNT.0004.ps1:12</code> runs code when loaded</td><td>Move it into a function</td></tr>
+              <tr><td><code>CommitNotInRepository</code></td><td>The commit isn't on any tag or branch of your repository</td><td>Tag the release in your repository</td></tr>
+              <tr><td><code>OwnerTooNew</code>, <code>DailyLimit</code>, <code>NoRelease</code></td><td>Account under 30 days old; one new pack a day; no release yet</td><td>Wait, or tag a release</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div class="sub-block" id="maintain">
+          <h3>Keeping a pack healthy</h3>
+          <ul>
+            <li><strong>Releases wait 72 hours</strong> before they are offered by default, so a release from a hijacked account can be caught first. Admins can install a newer one on purpose.</li>
+            <li><strong>Deprecate or yank</strong> from your own manifest: <code>"Deprecated"</code> with a replacement, or <code>"Yanked"</code> for a broken version. Delisting never breaks people who already have your pack.</li>
+            <li><strong>What you can rely on:</strong> a published list of Maester commands and contracts for packs, changed only with a deprecation window. The index re-checks listed packs against each new Maester release and tells you if something you use was removed.</li>
+            <li><strong>If your repository disappears,</strong> Maester skips your pack with a warning in the report. Maester Packs keeps no copies of your repository.</li>
+            <li><strong>Want issues instead of watching your status page?</strong> Add <code>"Notify": "Issues"</code> to your manifest.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="use" aria-labelledby="use-h">
+        <p class="part">Part 2</p>
+        <h2 id="use-h">Use a pack</h2>
+        <p>Admins see a pack's risk level, its publisher's badges and everything it reaches before anything is installed. No code runs at install.</p>
+        <div class="code"><div class="code-label">The install prompt</div>
+<pre>PS&gt; Install-MtPack contoso/maester-google-workspace
+
+  Google Workspace security baseline  contoso.google-workspace 1.2.0
+  Source      github.com/contoso/maester-google-workspace @ 3f9c2e1 (tag v1.2.0)
+  Publisher   contoso   <span class="o">★ Microsoft MVP</span>
+  Risk        <span class="s">LOW: text files only; every scan passed</span>
+  Adds        42 tests (MP.CNT.*) and the "Google Workspace" connector
+  Reaches     Google Workspace: admin.googleapis.com, oauth2.googleapis.com
+  Microsoft   none declared
+
+  This pack runs PowerShell code inside your Maester session, with access to every
+  connection in it. Install it? [Y] Yes  [N] No  [F] List files  [?] Help (default is "N"):</pre></div>
+        <div class="table"><table>
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>Find-MtPack google</code></td><td>Searches Maester Packs</td></tr>
+            <tr><td><code>Install-MtPack owner/repo</code></td><td>Shows the prompt above, then pins the commit, content digest and repository ID in <code>maester-packs.lock.json</code></td></tr>
+            <tr><td><code>Restore-MtPack</code></td><td>Installs exactly what the lock file says, for CI; no prompts</td></tr>
+            <tr><td><code>Update-MtPack</code></td><td>Shows what changed (files, what it reaches, risk, test IDs added and removed) and asks again if the pack now reaches more</td></tr>
+            <tr><td><code>Get-MtPack</code></td><td>Installed packs, their risk, and any update, block or warning</td></tr>
+            <tr><td><code>Save-MtPack -Path ./vendor</code></td><td>Copies the locked packs into a folder, for vendoring or air-gapped networks</td></tr>
+          </tbody>
+        </table></div>
+        <ul>
+          <li><strong>CI runs what you reviewed.</strong> Commit <code>maester-config.json</code> and the lock file; maester-action restores from it with <code>restore_packs: true</code>. An update shows up as a lock file diff in a pull request.</li>
+          <li><strong>Organisations set the rules</strong> in <code>PackPolicy</code>: the highest risk level allowed, which publishers are allowed, whether unlisted packs may install, and trusted sources for their own private packs.</li>
+          <li><strong>Pack results sit apart.</strong> The report shows each pack in its own section with its own pass rate; the headline Maester score counts built-in and custom tests only.</li>
+          <li><strong>Run with a read-only identity.</strong> In this first version packs run inside your Maester session, like custom tests. A read-only identity limits what any pack can do to reading.</li>
+        </ul>
+      </section>
+
+      <section id="listing" aria-labelledby="listing-h">
+        <p class="part">Part 3</p>
+        <h2 id="listing-h">How listing works</h2>
+        <div class="flow" aria-label="Indexing pipeline">
+          <div class="node"><em>Client</em><strong>Install event</strong><span>Anonymous: source, commit, pack ID, a random install ID. Never for private repositories.</span></div>
+          <div class="node"><em>Cloudflare Worker</em><strong>Count and queue</strong><span>Deduplicates installs and queues new repositories</span></div>
+          <div class="node"><em>GitHub Actions</em><strong>Scan</strong><span>An untrusted job with no secrets fetches the repository itself and scans it</span></div>
+          <div class="node"><em>GitHub Actions</em><strong>Sign and publish</strong><span>A protected job signs the index and deploys static pages</span></div>
+        </div>
+        <ul>
+          <li><strong>The index trusts nothing the client says</strong> except the repository name. It fetches the release itself and checks the commit belongs to that repository.</li>
+          <li><strong>Ranking</strong> is by installs: all time, trending (24 hours) and new. Installs rank packs; they never change a risk level or a badge.</li>
+          <li><strong>Badges show who published a pack:</strong> Official (the Maester project), Microsoft MVP (the GitHub account is on a public MVP profile), and GitHub-verified organisation.</li>
+          <li><strong>Gaming is made expensive:</strong> one install per install ID and per hashed IP per pack per day, rate limits, account age of 30 days, one new pack per owner per day, duplicates hidden, reports through GitHub accounts.</li>
+          <li><strong>It costs almost nothing:</strong> static pages on Cloudflare, a small Worker and database, and free GitHub Actions minutes on a public repository. About $0 at launch, $5 a month once traffic passes the free tier.</li>
+        </ul>
+      </section>
+
+      <section id="security" aria-labelledby="security-h">
+        <p class="part">Part 4</p>
+        <h2 id="security-h">Security model</h2>
+        <p>Packs run with the connections of a security administrator, often unattended in CI. The design assumes some packs will be malicious and some publisher accounts will be compromised, and limits what one bad pack can do.</p>
+        <div class="cols">
+          <div><h3>Before anything runs</h3><p>No code runs at install. Every version is pinned to a commit, a content digest and GitHub's numeric repository ID, checked on every load. Commits from forks are refused.</p></div>
+          <div><h3>One gate</h3><p>Every command that loads pack code, <code>Connect-Maester</code> included, checks the digest, the policy and the blocklist first.</p></div>
+          <div><h3>Nothing changes quietly</h3><p>No automatic updates, a 72-hour cooldown, and a new approval when a pack reaches more or its risk rises.</p></div>
+          <div><h3>Can't pose as Maester</h3><p>Pack IDs start with <code>MP.</code>, built-in tags and suites are off-limits, and results are shown and scored apart.</p></div>
+          <div><h3>Stopped everywhere</h3><p>A signed blocklist, with serial numbers and expiry, stops a bad pack on every machine at its next run. It never deletes anything, so a mistake is undone at the next run.</p></div>
+          <div><h3>Honest about limits</h3><p>Code in the Maester session can use its connections. The prompt says so, and containers for untrusted packs come in a later phase.</p></div>
+        </div>
+      </section>
+
+      <section id="roadmap" aria-labelledby="roadmap-h">
+        <p class="part">Part 5</p>
+        <h2 id="roadmap-h">Roadmap</h2>
+        <div class="table"><table>
+          <thead><tr><th>Phase</th><th>What ships</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Packs</strong> (Maester 3.1)</td><td>The pack format, install from GitHub with a lock file, connectors in <code>Connect-Maester</code>, <code>New-MtPack</code> and <code>Test-MtPack</code>, maester-action support, and the blocklist checker. The first official pack is Google Workspace, against the CISA SCuBA baselines.</td></tr>
+            <tr><td><strong>2. Maester Packs</strong></td><td>packs.maester.dev, the index and scanners, risk levels and badges, code claiming and the terms of listing.</td></tr>
+            <tr><td><strong>3. Isolation and verification</strong></td><td>Containers for untrusted packs, and a verified publisher programme.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout">
+          <strong>Have a platform in mind?</strong>
+          <span>Tell us on <a href="https://github.com/maester365/maester/pull/2358">pull request #2358</a>, or start drafting tests now: packs use the same native test format as Maester 3.0, so tests you write today carry straight over.</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <span>Maester Packs is a design proposal for Maester, the open-source Microsoft 365 security test automation framework. Nothing here is built yet.</span>
+    <span>Full design: <a href="https://github.com/maester365/maester/blob/claude/maester-packs-design/docs/proposals/maester-packs-design.md">docs/proposals/maester-packs-design.md</a> · Discussion: <a href="https://github.com/maester365/maester/pull/2358">maester365/maester#2358</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // Copy buttons on code blocks.
+  document.querySelectorAll('.code pre').forEach(function (pre) {
+    var holder = pre.parentElement;
+    if (getComputedStyle(holder).position === 'static') holder.style.position = 'relative';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy';
+    btn.textContent = 'Copy';
+    btn.setAttribute('aria-label', 'Copy code');
+    btn.addEventListener('click', function () {
+      var text = pre.innerText;
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); };
+      var fallback = function () {
+        var range = document.createRange(); range.selectNodeContents(pre);
+        var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        btn.textContent = 'Selected';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+    });
+    holder.appendChild(btn);
+  });
+
+  // Highlight the section being read in the contents rail.
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var targets = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  if (!('IntersectionObserver' in window) || !targets.length) return;
+  var current = null;
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) current = e.target.id; });
+    links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + current); });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  targets.forEach(function (t) { observer.observe(t); });
+})();
+</script>
+</body>
+</html>
