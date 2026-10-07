@@ -1,4 +1,4 @@
-﻿BeforeDiscovery {
+BeforeDiscovery {
     $script:GoldenRoot = (Resolve-Path "$PSScriptRoot/../../fixtures/golden").Path
     $script:GoldenFiles = @(
         Get-ChildItem -Path $script:GoldenRoot -Recurse -File -Filter '*.json' |
@@ -67,11 +67,6 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         # MT1060 (drift) became the native family MT.1060 (design section 10): its four 2.x Its are one
         # family whose per-check tags (MT1060.<n>) are instance tags now, and its effective tags add MT.1060.
         $renamedFamilies = @{ 'MT1060' = 'MT.1060' }
-        # Checks that 2.x never ran, added in 3.0. CISA.MS.EXO.4.4's 2.x wrapper was not a *.Tests.ps1 file,
-        # so Pester never discovered it (design section 14).
-        $newIn3 = @('CISA.MS.EXO.4.4')
-        $snapshotIds = @($script:tagsAndBlocks.Entries | ForEach-Object { $_.Id })
-        @($newIn3 | Where-Object { $_ -in $snapshotIds }) | Should -BeNullOrEmpty -Because 'an ID in the 2.x snapshot is not new'
         $renamedSeen = @{}
         $problems = foreach ($e in $script:tagsAndBlocks.Entries) {
             if ($e.Family -and $renamedFamilies.ContainsKey($e.Id)) {
@@ -105,9 +100,7 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         @($problems) | Should -BeNullOrEmpty
         # Each renamed family is one native entry in place of its 2.x Its.
         $merged = ($renamedSeen.Values | ForEach-Object { $_ - 1 } | Measure-Object -Sum).Sum
-        $added = @($fresh | Where-Object { $_.Id -in $newIn3 }).Count
-        $added | Should -Be $newIn3.Count
-        @($fresh).Count + $merged - $added | Should -Be @($script:tagsAndBlocks.Entries).Count
+        @($fresh).Count + $merged | Should -Be @($script:tagsAndBlocks.Entries).Count
     }
 
     It 'records every built-in ID once and the five run-time families' {

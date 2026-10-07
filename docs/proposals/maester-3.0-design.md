@@ -1545,9 +1545,8 @@ changing their generator templates, then the manual residue and the families.
   flagged for review.
 - Orphan `.md` files and stale config IDs are deleted.
 - The never-discovered wrapper `tests/cisa/exchange/Test-MtCisaDmarcReport.ps1` is not
-  activated by the migration. Its function is rewritten as the new native check
-  `CISA.MS.EXO.4.4`, following the ScubaGear rule (an agency `rua` address besides CISA's
-  and a `ruf` address); the golden test lists it as new in 3.0.
+  activated by the migration. A separate PR either adds it as `CISA.MS.EXO.4.4` or
+  deletes it and its function.
 - The `-Because` sentences in wrappers are dropped: they only reach users through
   Pester's error record, which the HTML report strips.
 

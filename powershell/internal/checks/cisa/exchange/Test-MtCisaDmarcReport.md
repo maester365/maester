@@ -1,8 +1,6 @@
-﻿An agency point of contact SHOULD be included for aggregate and failure reports.
+An agency point of contact SHOULD be included for aggregate and failure reports.
 
 Rationale: Email spoofing attempts are not inherently visible to domain owners. DMARC provides a mechanism to receive reports of spoofing attempts. Including an agency point of contact gives the agency insight into attempts to spoof their domains.
-
-Maester reads the DMARC record that applies to each accepted domain: the domain's own `_dmarc` record or, when it has none, the record of its organizational domain (for example `contoso.co.uk` for `mail.contoso.co.uk`). A domain passes when its record has at least one aggregate report (`rua`) address other than `reports@dmarc.cyber.dhs.gov` and at least one failure report (`ruf`) address. Microsoft-managed domains (`*.onmicrosoft.com`) are skipped.
 
 #### Remediation action:
 
