@@ -343,7 +343,7 @@ $rootCred = New-Object PSCredential('<domain>\<testUserName>', (ConvertTo-Secure
 Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential $rootCred `
   -ActiveDirectoryServer '<root-dc-fqdn>' -ActiveDirectoryDomain '<root-domain>' `
   -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
-Invoke-Maester -Path C:\MaesterTests\ad -Tag AD -NonInteractive -SkipGraphConnect
+Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect
 ```
 
 #### Linux Runner via SSH
@@ -415,7 +415,6 @@ Run Maester tests with explicit output options to generate all report formats:
 # On each DC (root, child, separate-forest)
 Import-Module Maester -Force
 Connect-Maester -Service ActiveDirectory
-Set-Location C:\MaesterTests
 Invoke-Maester -Tag AD -NonInteractive -SkipGraphConnect `
   -OutputFolder 'C:\MaesterReports' `
   -OutputFolderFileName '<dc-name>-testresults'

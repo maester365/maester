@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-02"
-  - "Medium"
+  - "Critical"
   - "Active Directory"
   - "Active Directory - Domain Controllers"
   - "AD"
@@ -32,6 +32,10 @@ SMBv1 (Server Message Block version 1) is an outdated protocol with significant 
 - **Deprecated by Microsoft**: Microsoft strongly recommends disabling SMBv1
 
 Domain controllers with SMBv1 enabled pose a critical security risk as they are high-value targets for attackers.
+
+#### Control Type
+
+**Preventive**
 
 #### Security Recommendation
 
@@ -66,7 +70,7 @@ This test queries the SMB server configuration on each domain controller to chec
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-02 |
-| Severity | Medium |
+| Severity | Critical |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
 | PowerShell test | [Test-MtAdDcSmbv1EnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-02.ps1) |

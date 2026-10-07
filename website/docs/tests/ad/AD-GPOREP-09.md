@@ -1,6 +1,6 @@
 ---
 title: "AD-GPOREP-09 - GPO inherited permissions count should be retrievable"
-description: "This test retrieves GPO state data and counts how many GPO reports indicate that permissions are inherited. Remediation action Review the configuration described above."
+description: "**Operational** Test-MtAdGpoInheritedPermissionsCount Counts GPO reports with inherited permissions. Why This Test Matters - Detective control: checks for inherited permissions in GPOs which may lead to broader access than intended. Security Recommendation - Review inherited permissions and conside…"
 slug: /tests/AD-GPOREP-09
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,12 +24,29 @@ keywords:
 
 ## Overview
 
-This test retrieves GPO state data and counts how many GPO reports indicate that
-permissions are inherited.
+#### Control Type
 
-#### Remediation action
+**Operational**
 
-Review the configuration described above.
+#### Test-MtAdGpoInheritedPermissionsCount
+
+ Counts GPO reports with inherited permissions.
+
+#### Why This Test Matters
+- Detective control: checks for inherited permissions in GPOs which may lead to broader access than intended.
+
+#### Security Recommendation
+- Review inherited permissions and consider removing inheritance where not needed.
+
+#### How the Test Works
+- Scans GPO state for HasInheritedPermissions true and reports counts and a small sample.
+
+#### Related Tests
+- `Test-MtAdGpoInheritedPermissionsCount`.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 ## Test Metadata
 

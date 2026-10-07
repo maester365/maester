@@ -1,6 +1,6 @@
 ---
 title: "AD-GPOREP-05 - GPOs without enterprise domain controllers count should be retrievable"
-description: "This test retrieves GPO state data and counts how many GPO reports indicate that Enterprise Domain Controllers are not present. Remediation action Review the configuration described above."
+description: "**Detective** Test-MtAdGpoNoEnterpriseDcCount Counts GPO reports that do not include Enterprise Domain Controllers. Why This Test Matters - Detective control: flags GPO reports missing Enterprise Domain Controllers which could impact domain-wide policy targeting. Security Recommendation - Verify wh…"
 slug: /tests/AD-GPOREP-05
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,12 +24,29 @@ keywords:
 
 ## Overview
 
-This test retrieves GPO state data and counts how many GPO reports indicate that
-Enterprise Domain Controllers are not present.
+#### Control Type
 
-#### Remediation action
+**Detective**
 
-Review the configuration described above.
+#### Test-MtAdGpoNoEnterpriseDcCount
+
+ Counts GPO reports that do not include Enterprise Domain Controllers.
+
+#### Why This Test Matters
+- Detective control: flags GPO reports missing Enterprise Domain Controllers which could impact domain-wide policy targeting.
+
+#### Security Recommendation
+- Verify whether Enterprise DCs should be included; adjust policy accordingly.
+
+#### How the Test Works
+- Retrieves GPO state, enumerates GPO reports, and counts those without Enterprise Domain Controllers.
+
+#### Related Tests
+- `Test-MtAdGpoNoEnterpriseDcCount`.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 ## Test Metadata
 

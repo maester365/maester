@@ -1,6 +1,6 @@
 ---
 title: "AD-GPOREP-06 - GPOs without domain computers count should be retrievable"
-description: "This test retrieves GPO state data and counts how many GPO reports indicate that Domain Computers are not present. Remediation action Review the configuration described above."
+description: "**Detective** Test-MtAdGpoNoDomainComputersCount Counts GPO reports that do not include Domain Computers. Why This Test Matters - Detective control: identifies GPO reports missing Domain Computers which could impact scope or applicability. Security Recommendation - Verify whether Domain Computers s…"
 slug: /tests/AD-GPOREP-06
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -24,12 +24,29 @@ keywords:
 
 ## Overview
 
-This test retrieves GPO state data and counts how many GPO reports indicate that
-Domain Computers are not present.
+#### Control Type
 
-#### Remediation action
+**Detective**
 
-Review the configuration described above.
+#### Test-MtAdGpoNoDomainComputersCount
+
+ Counts GPO reports that do not include Domain Computers.
+
+#### Why This Test Matters
+- Detective control: identifies GPO reports missing Domain Computers which could impact scope or applicability.
+
+#### Security Recommendation
+- Verify whether Domain Computers should be included and adjust GpoReports as needed to reflect accurate targeting.
+
+#### How the Test Works
+- Reads GPO state, locates GpoReports, filters for reports with HasDomainComputers false or missing, and reports counts and samples.
+
+#### Related Tests
+- `Test-MtAdGpoNoDomainComputersCount`.
+
+#### Related links
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 ## Test Metadata
 

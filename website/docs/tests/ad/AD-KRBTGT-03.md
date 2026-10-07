@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-KRBTGT-03"
-  - "Medium"
+  - "High"
   - "Active Directory"
   - "Active Directory - Security Accounts"
   - "AD"
@@ -35,6 +35,10 @@ keywords:
 - **Delegation Flags**: Could allow dangerous delegation configurations
 - **Password Flags**: DONT_EXPIRE_PASSWORD could prevent required rotations
 - **Tampering Indicator**: Non-standard UAC may suggest malicious modification
+
+#### Control Type
+
+**Preventive**
 
 #### Security Recommendation
 
@@ -69,7 +73,7 @@ This test retrieves the KRBTGT account and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-KRBTGT-03 |
-| Severity | Medium |
+| Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Security Accounts |
 | PowerShell test | [Test-MtAdKrbtgtNonStandardUacCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-03.ps1) |

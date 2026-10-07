@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-04"
-  - "Medium"
+  - "High"
   - "Active Directory"
   - "Active Directory - Domain Controllers"
   - "AD"
@@ -31,6 +31,10 @@ SMB signing (also known as security signatures) is a security feature that helps
 - **Replay attacks**: Prevents attackers from replaying captured SMB traffic
 
 Without SMB signing, an attacker on the network could intercept and modify SMB traffic between clients and domain controllers.
+
+#### Control Type
+
+**Preventive**
 
 #### Security Recommendation
 
@@ -66,7 +70,7 @@ This test queries the SMB server configuration on each domain controller to chec
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-04 |
-| Severity | Medium |
+| Severity | High |
 | Suite | Active Directory |
 | Category | Active Directory - Domain Controllers |
 | PowerShell test | [Test-MtAdDcSmbSigningEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-04.ps1) |

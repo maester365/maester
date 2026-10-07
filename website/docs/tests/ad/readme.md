@@ -52,28 +52,28 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-COMP-08](./AD-COMP-08.md) | Computer per OU average should be retrievable | Info | Active Directory - Computer Objects |
 | [AD-COMP-09](./AD-COMP-09.md) | Computer delegation count should be retrievable | Info | Active Directory - Computer Objects |
 | [AD-COMP-10](./AD-COMP-10.md) | Computer delegation details should be retrievable | Info | Active Directory - Computer Objects |
-| [AD-DACL-01](./AD-DACL-01.md) | Distinct DACL object count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-02](./AD-DACL-02.md) | OU DACL entry count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-03](./AD-DACL-03.md) | Conflict object count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-04](./AD-DACL-04.md) | Conflict object details should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-05](./AD-DACL-05.md) | Deny ACE count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-06](./AD-DACL-06.md) | Deny ACE details should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-07](./AD-DACL-07.md) | Distinct DACL identity count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-08](./AD-DACL-08.md) | DACL ACE distribution per identity should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-09](./AD-DACL-09.md) | Privileged allow ACE count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-10](./AD-DACL-10.md) | Privileged allow ACE details should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-11](./AD-DACL-11.md) | Privileged extended right count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-12](./AD-DACL-12.md) | Privileged extended right details should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-13](./AD-DACL-13.md) | Privileged extended right identities should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-14](./AD-DACL-14.md) | Non-inherited ACE count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-15](./AD-DACL-15.md) | Unresolved SID count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-16](./AD-DACL-16.md) | Unresolved SID details should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-17](./AD-DACL-17.md) | Inherited object type count should be retrievable | Info | Active Directory - DACL |
-| [AD-DACL-18](./AD-DACL-18.md) | Inherited object type details should be retrievable | Info | Active Directory - DACL |
+| [AD-DACL-01](./AD-DACL-01.md) | Distinct DACL object count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-02](./AD-DACL-02.md) | OU DACL entry count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-03](./AD-DACL-03.md) | Conflict object count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-04](./AD-DACL-04.md) | Conflict object details should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-05](./AD-DACL-05.md) | Deny ACE count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-06](./AD-DACL-06.md) | Deny ACE details should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-07](./AD-DACL-07.md) | Distinct DACL identity count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-08](./AD-DACL-08.md) | DACL ACE distribution per identity should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-09](./AD-DACL-09.md) | Privileged allow ACE count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-10](./AD-DACL-10.md) | Privileged allow ACE details should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-11](./AD-DACL-11.md) | Privileged extended right count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-12](./AD-DACL-12.md) | Privileged extended right details should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-13](./AD-DACL-13.md) | Privileged extended right identities should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-14](./AD-DACL-14.md) | Non-inherited ACE count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-15](./AD-DACL-15.md) | Unresolved SID count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-16](./AD-DACL-16.md) | Unresolved SID details should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-17](./AD-DACL-17.md) | Inherited object type count should be investigated | Info | Active Directory - DACL |
+| [AD-DACL-18](./AD-DACL-18.md) | Inherited object type details should be investigated | Info | Active Directory - DACL |
 | [AD-DC-01](./AD-DC-01.md) | DC site coverage count should be retrievable | Info | Active Directory - Domain Controllers |
-| [AD-DC-02](./AD-DC-02.md) | SMBv1 should be disabled on all domain controllers | Medium | Active Directory - Domain Controllers |
+| [AD-DC-02](./AD-DC-02.md) | SMBv1 should be disabled on all domain controllers | Critical | Active Directory - Domain Controllers |
 | [AD-DC-03](./AD-DC-03.md) | SMBv3.1.1 enabled count should be retrievable | Info | Active Directory - Domain Controllers |
-| [AD-DC-04](./AD-DC-04.md) | SMB signing should be enabled on all domain controllers | Medium | Active Directory - Domain Controllers |
+| [AD-DC-04](./AD-DC-04.md) | SMB signing should be enabled on all domain controllers | High | Active Directory - Domain Controllers |
 | [AD-DC-05](./AD-DC-05.md) | DCs with all FSMO roles count should be retrievable | Info | Active Directory - Domain Controllers |
 | [AD-DC-06](./AD-DC-06.md) | FSMO role holder details should be retrievable | Info | Active Directory - Domain Controllers |
 | [AD-DC-07](./AD-DC-07.md) | DC operating system count should be retrievable | High | Active Directory - Domain Controllers |
@@ -82,16 +82,16 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-DCD-02](./AD-DCD-02.md) | DC non-standard LDAPS port count should be retrievable | Info | Active Directory - Domain Controllers |
 | [AD-DCD-03](./AD-DCD-03.md) | Read-only domain controller count should be retrievable | Info | Active Directory - Domain Controllers |
 | [AD-DCD-04](./AD-DCD-04.md) | Non-Global Catalog DC count should be retrievable | Info | Active Directory - Domain Controllers |
-| [AD-DCOMP-01](./AD-DCOMP-01.md) | Computers with unconstrained delegation count should be retrievable | Critical | Active Directory - Security Accounts |
+| [AD-DCOMP-01](./AD-DCOMP-01.md) | Computers with unconstrained delegation count should be investigated | Info | Active Directory - Security Accounts |
 | [AD-DCOMP-02](./AD-DCOMP-02.md) | Non-DC computers should not have unconstrained delegation | Critical | Active Directory - Security Accounts |
-| [AD-DCOMP-03](./AD-DCOMP-03.md) | Non-DC computers with constrained delegation count should be retrievable | High | Active Directory - Security Accounts |
-| [AD-DCOMP-04](./AD-DCOMP-04.md) | Computer operating system count should be retrievable | Info | Active Directory - Security Accounts |
-| [AD-DCOMP-05](./AD-DCOMP-05.md) | Computer operating system details should be retrievable | Info | Active Directory - Security Accounts |
-| [AD-DCOMP-06](./AD-DCOMP-06.md) | Stale enabled computer count should be retrievable | Medium | Active Directory - Security Accounts |
-| [AD-DCOMP-07](./AD-DCOMP-07.md) | Computer DNS host name count should be retrievable | Info | Active Directory - Security Accounts |
-| [AD-DCOMP-08](./AD-DCOMP-08.md) | Computer DNS zone count should be retrievable | Info | Active Directory - Security Accounts |
-| [AD-DCOMP-09](./AD-DCOMP-09.md) | Computer DNS zone details should be retrievable | Info | Active Directory - Security Accounts |
-| [AD-DFSR-01](./AD-DFSR-01.md) | DFS-R subscription count should be retrievable | Info | Active Directory - Replication |
+| [AD-DCOMP-03](./AD-DCOMP-03.md) | Non-DC computers with constrained delegation count should be investigated | Info | Active Directory - Security Accounts |
+| [AD-DCOMP-04](./AD-DCOMP-04.md) | Computer operating system count should be investigated | Info | Active Directory - Security Accounts |
+| [AD-DCOMP-05](./AD-DCOMP-05.md) | Computer operating system details should be investigated | Info | Active Directory - Security Accounts |
+| [AD-DCOMP-06](./AD-DCOMP-06.md) | No enabled computers should be stale for 180 days or more | Medium | Active Directory - Security Accounts |
+| [AD-DCOMP-07](./AD-DCOMP-07.md) | Computer DNS host name count should be investigated | Info | Active Directory - Security Accounts |
+| [AD-DCOMP-08](./AD-DCOMP-08.md) | Computer DNS zone count should be investigated | Info | Active Directory - Security Accounts |
+| [AD-DCOMP-09](./AD-DCOMP-09.md) | Computer DNS zone details should be investigated | Info | Active Directory - Security Accounts |
+| [AD-DFSR-01](./AD-DFSR-01.md) | All domain controllers should have DFS-R subscriptions | High | Active Directory - Replication |
 | [AD-DNS-01](./AD-DNS-01.md) | DNS zone count should be retrievable | Info | Active Directory - DNS Infrastructure |
 | [AD-DNS-02](./AD-DNS-02.md) | Zones with only SOA/NS records should be retrievable | Info | Active Directory - DNS Infrastructure |
 | [AD-DNS-03](./AD-DNS-03.md) | Root servers with incorrect IPs should be retrievable | Info | Active Directory - DNS Infrastructure |
@@ -120,8 +120,8 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-DOM-07](./AD-DOM-07.md) | NetBIOS name standard compliance should be retrievable | Info | Active Directory - Domain |
 | [AD-DOM-08](./AD-DOM-08.md) | NetBIOS name non-standard details should be retrievable | Info | Active Directory - Domain |
 | [AD-DOMS-01](./AD-DOMS-01.md) | Allowed DNS suffixes count should be retrievable | Info | Active Directory - Domain |
-| [AD-FEAT-01](./AD-FEAT-01.md) | Optional feature count should be retrievable | Info | Active Directory - Replication |
-| [AD-FEAT-02](./AD-FEAT-02.md) | Optional feature enabled details should be retrievable | Info | Active Directory - Replication |
+| [AD-FEAT-01](./AD-FEAT-01.md) | Optional feature count should be investigated | Info | Active Directory - Replication |
+| [AD-FEAT-02](./AD-FEAT-02.md) | Optional feature enabled details should be investigated | Info | Active Directory - Replication |
 | [AD-FGPP-01](./AD-FGPP-01.md) | Fine-grained password policy count should be retrievable | Info | Active Directory - Password Policy |
 | [AD-FGPP-02](./AD-FGPP-02.md) | Fine-grained password policy value count should be retrievable | Info | Active Directory - Password Policy |
 | [AD-FGPP-03](./AD-FGPP-03.md) | Fine-grained password policy setting counts should be retrievable | Info | Active Directory - Password Policy |
@@ -134,31 +134,31 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-FORS-02](./AD-FORS-02.md) | UPN suffixes details should be retrievable | Info | Active Directory - Forest |
 | [AD-FORS-03](./AD-FORS-03.md) | SPN suffixes count should be retrievable | Info | Active Directory - Forest |
 | [AD-FORS-04](./AD-FORS-04.md) | Cross-forest references count should be retrievable | Info | Active Directory - Forest |
-| [AD-GCHG-01](./AD-GCHG-01.md) | Average group membership changes per year should be retrievable | Info | Active Directory - Group Changes |
+| [AD-GCHG-01](./AD-GCHG-01.md) | Average group membership changes per year should be investigated | Info | Active Directory - Group Changes |
 | [AD-GMC-01](./AD-GMC-01.md) | Distinct groups with members count should be retrievable | Info | Active Directory - Group Members |
 | [AD-GMC-02](./AD-GMC-02.md) | Distinct account types of members count should be retrievable | Info | Active Directory - Group Members |
 | [AD-GMC-03](./AD-GMC-03.md) | Member account types breakdown should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-04](./AD-GMC-04.md) | Trust members count should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-05](./AD-GMC-05.md) | Trust members details by group should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-06](./AD-GMC-06.md) | Foreign SID principals count should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-07](./AD-GMC-07.md) | Foreign SID details by domain should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-08](./AD-GMC-08.md) | Empty non-privileged group count should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-09](./AD-GMC-09.md) | Empty non-privileged group details should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-10](./AD-GMC-10.md) | Privileged groups with members count should be retrievable | Info | Active Directory - Group Members |
-| [AD-GMC-11](./AD-GMC-11.md) | Privileged groups with members details should be retrievable | Info | Active Directory - Group Members |
+| [AD-GMC-04](./AD-GMC-04.md) | Trust members count should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-05](./AD-GMC-05.md) | Trust members details by group should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-06](./AD-GMC-06.md) | Foreign SID principals count should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-07](./AD-GMC-07.md) | Foreign SID details by domain should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-08](./AD-GMC-08.md) | Empty non-privileged group count should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-09](./AD-GMC-09.md) | Empty non-privileged group details should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-10](./AD-GMC-10.md) | Privileged groups with members count should be investigated | Info | Active Directory - Group Members |
+| [AD-GMC-11](./AD-GMC-11.md) | Privileged groups with members details should be investigated | Info | Active Directory - Group Members |
 | [AD-GPO-01](./AD-GPO-01.md) | GPO total count should be retrievable | Info | Active Directory - Group Policy |
 | [AD-GPO-02](./AD-GPO-02.md) | GPO created before 2020 count should be retrievable | Info | Active Directory - Group Policy |
-| [AD-GPO-03](./AD-GPO-03.md) | GPO stale-before-2020 count should be retrievable | Info | Active Directory - Group Policy |
+| [AD-GPO-03](./AD-GPO-03.md) | GPO stale-before-2020 count should be investigated | Info | Active Directory - Group Policy |
 | [AD-GPO-04](./AD-GPO-04.md) | Unlinked GPO count should be compliant | Medium | Active Directory - Group Policy |
 | [AD-GPO-05](./AD-GPO-05.md) | GPO unlinked details should be compliant | Medium | Active Directory - Group Policy |
-| [AD-GPOL-01](./AD-GPOL-01.md) | GPO linked count should be retrievable | Info | Active Directory - Group Policy |
+| [AD-GPOL-01](./AD-GPOL-01.md) | GPO linked count should be investigated | Info | Active Directory - Group Policy |
 | [AD-GPOL-02](./AD-GPOL-02.md) | Disabled GPO link count should be retrievable | Info | Active Directory - Group Policy Links |
 | [AD-GPOL-03](./AD-GPOL-03.md) | GPO unlinked target count should be compliant | Medium | Active Directory - Group Policy |
 | [AD-GPOL-04](./AD-GPOL-04.md) | Enforced GPO link count should be retrievable | Medium | Active Directory - Group Policy |
 | [AD-GPOL-05](./AD-GPOL-05.md) | GPO blocked inheritance count should be compliant | Medium | Active Directory - Group Policy |
 | [AD-GPOL-06](./AD-GPOL-06.md) | GPO linked OU count should be retrievable | Info | Active Directory - Group Policy Links |
-| [AD-GPOREP-01](./AD-GPOREP-01.md) | GPOs without permissions count should be retrievable | Medium | Active Directory - GPO State |
-| [AD-GPOREP-02](./AD-GPOREP-02.md) | GPOs without permissions details should be retrievable | Medium | Active Directory - GPO State |
+| [AD-GPOREP-01](./AD-GPOREP-01.md) | No GPOs should be missing permissions | Medium | Active Directory - GPO State |
+| [AD-GPOREP-02](./AD-GPOREP-02.md) | No GPOs should be missing permissions | Medium | Active Directory - GPO State |
 | [AD-GPOREP-03](./AD-GPOREP-03.md) | GPOs without authenticated users count should be retrievable | Medium | Active Directory - GPO State |
 | [AD-GPOREP-04](./AD-GPOREP-04.md) | GPOs without authenticated users details should be retrievable | Medium | Active Directory - GPO State |
 | [AD-GPOREP-05](./AD-GPOREP-05.md) | GPOs without enterprise domain controllers count should be retrievable | Medium | Active Directory - GPO State |
@@ -166,26 +166,26 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-GPOREP-07](./AD-GPOREP-07.md) | GPOs with deny ACE count should be retrievable | Medium | Active Directory - GPO State |
 | [AD-GPOREP-08](./AD-GPOREP-08.md) | GPOs with deny ACE details should be retrievable | Medium | Active Directory - GPO State |
 | [AD-GPOREP-09](./AD-GPOREP-09.md) | GPO inherited permissions count should be retrievable | Medium | Active Directory - GPO State |
-| [AD-GPOREP-10](./AD-GPOREP-10.md) | GPO no-apply Group Policy ACE count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOREP-11](./AD-GPOREP-11.md) | GPO no-apply Group Policy ACE details should be retrievable | Info | Active Directory - GPO State |
+| [AD-GPOREP-10](./AD-GPOREP-10.md) | GPO no-apply Group Policy ACE count should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOREP-11](./AD-GPOREP-11.md) | GPO no-apply Group Policy ACE details should be investigated | Info | Active Directory - GPO State |
 | [AD-GPOREP-12](./AD-GPOREP-12.md) | GPO disabled link count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOREP-13](./AD-GPOREP-13.md) | GPO disabled link details should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOREP-14](./AD-GPOREP-14.md) | GPO enforcement count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOREP-15](./AD-GPOREP-15.md) | GPO version mismatch count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOREP-16](./AD-GPOREP-16.md) | GPO version mismatch details should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOREP-17](./AD-GPOREP-17.md) | GPO Cpassword found count should be retrievable | Medium | Active Directory - GPO State |
-| [AD-GPOREP-18](./AD-GPOREP-18.md) | GPO Cpassword found details should be retrievable | Medium | Active Directory - GPO State |
-| [AD-GPOREP-19](./AD-GPOREP-19.md) | GPO default password found count should be retrievable | Medium | Active Directory - GPO State |
-| [AD-GPOREP-20](./AD-GPOREP-20.md) | GPO default password found details should be retrievable | Medium | Active Directory - GPO State |
-| [AD-GPOS-01](./AD-GPOS-01.md) | GPO state total count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOS-02](./AD-GPOS-02.md) | WMI filter count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOS-03](./AD-GPOS-03.md) | WMI filter details should be compliant | Info | Active Directory - GPO State |
-| [AD-GPOS-04](./AD-GPOS-04.md) | Disabled GPO settings count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOS-05](./AD-GPOS-05.md) | Computer disabled GPO settings details should be compliant | Info | Active Directory - GPO State |
-| [AD-GPOS-06](./AD-GPOS-06.md) | User disabled GPO settings details should be compliant | Info | Active Directory - GPO State |
-| [AD-GPOS-07](./AD-GPOS-07.md) | All disabled GPO settings details should be compliant | Info | Active Directory - GPO State |
-| [AD-GPOS-08](./AD-GPOS-08.md) | GPO owner distinct count should be retrievable | Info | Active Directory - GPO State |
-| [AD-GPOS-09](./AD-GPOS-09.md) | GPO owner details should be accessible | Info | Active Directory - GPO State |
+| [AD-GPOREP-13](./AD-GPOREP-13.md) | GPO disabled link details should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOREP-14](./AD-GPOREP-14.md) | GPO enforcement count should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOREP-15](./AD-GPOREP-15.md) | No GPOs should have version mismatches | High | Active Directory - GPO State |
+| [AD-GPOREP-16](./AD-GPOREP-16.md) | No GPOs should have version mismatches | High | Active Directory - GPO State |
+| [AD-GPOREP-17](./AD-GPOREP-17.md) | No GPOs should contain a cpassword | Critical | Active Directory - GPO State |
+| [AD-GPOREP-18](./AD-GPOREP-18.md) | No GPOs should contain a cpassword | Critical | Active Directory - GPO State |
+| [AD-GPOREP-19](./AD-GPOREP-19.md) | No GPOs should contain a default password | High | Active Directory - GPO State |
+| [AD-GPOREP-20](./AD-GPOREP-20.md) | No GPOs should contain a default password | High | Active Directory - GPO State |
+| [AD-GPOS-01](./AD-GPOS-01.md) | GPO state total count should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-02](./AD-GPOS-02.md) | WMI filter count should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-03](./AD-GPOS-03.md) | WMI filter details should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-04](./AD-GPOS-04.md) | Disabled GPO settings count should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-05](./AD-GPOS-05.md) | Computer disabled GPO settings details should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-06](./AD-GPOS-06.md) | User disabled GPO settings details should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-07](./AD-GPOS-07.md) | All disabled GPO settings details should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-08](./AD-GPOS-08.md) | GPO owner distinct count should be investigated | Info | Active Directory - GPO State |
+| [AD-GPOS-09](./AD-GPOS-09.md) | GPO owner details should be investigated | Info | Active Directory - GPO State |
 | [AD-GRP-01](./AD-GRP-01.md) | Group AdminCount should be retrievable | Info | Active Directory - Groups |
 | [AD-GRP-02](./AD-GRP-02.md) | Groups in container objects count should be retrievable | Info | Active Directory - Groups |
 | [AD-GRP-03](./AD-GRP-03.md) | Stale groups count should be retrievable | Info | Active Directory - Groups |
@@ -196,10 +196,10 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-GRP-08](./AD-GRP-08.md) | Domain local group count should be retrievable | Info | Active Directory - Groups |
 | [AD-GRP-09](./AD-GRP-09.md) | Global group count should be retrievable | Info | Active Directory - Groups |
 | [AD-GRP-10](./AD-GRP-10.md) | Universal group count should be retrievable | Info | Active Directory - Groups |
-| [AD-KRBTGT-01](./AD-KRBTGT-01.md) | KRBTGT password last set should be retrievable | High | Active Directory - Security Accounts |
-| [AD-KRBTGT-02](./AD-KRBTGT-02.md) | KRBTGT last logon should be retrievable | Info | Active Directory - Security Accounts |
-| [AD-KRBTGT-03](./AD-KRBTGT-03.md) | KRBTGT should have standard UAC settings (disabled account) | Medium | Active Directory - Security Accounts |
-| [AD-MSA-01](./AD-MSA-01.md) | Managed service account count should be retrievable | Info | Active Directory - Security Accounts |
+| [AD-KRBTGT-01](./AD-KRBTGT-01.md) | KRBTGT password age should not exceed 180 days | High | Active Directory - Security Accounts |
+| [AD-KRBTGT-02](./AD-KRBTGT-02.md) | KRBTGT last logon should be investigated | Info | Active Directory - Security Accounts |
+| [AD-KRBTGT-03](./AD-KRBTGT-03.md) | KRBTGT should have standard UAC settings (disabled account) | High | Active Directory - Security Accounts |
+| [AD-MSA-01](./AD-MSA-01.md) | Managed service account count should be investigated | Info | Active Directory - Security Accounts |
 | [AD-OU-01](./AD-OU-01.md) | OU overlapping name count should be retrievable | Info | Active Directory - Organizational Units |
 | [AD-OU-02](./AD-OU-02.md) | OU at domain root count should be retrievable | Info | Active Directory - Organizational Units |
 | [AD-OU-03](./AD-OU-03.md) | OU stale count should be retrievable | Info | Active Directory - Organizational Units |
@@ -213,16 +213,16 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-PWDPOL-05](./AD-PWDPOL-05.md) | Password reversible encryption status should be retrievable | Info | Active Directory - Password Policy |
 | [AD-PWDPOL-06](./AD-PWDPOL-06.md) | Account lockout duration should be retrievable | Info | Active Directory - Password Policy |
 | [AD-PWDPOL-07](./AD-PWDPOL-07.md) | Account lockout threshold should be retrievable | Info | Active Directory - Password Policy |
-| [AD-REPL-01](./AD-REPL-01.md) | Disabled replication connection count should be retrievable | Info | Active Directory - Replication |
-| [AD-REPL-02](./AD-REPL-02.md) | Non-auto replication connection count should be retrievable | Info | Active Directory - Replication |
-| [AD-ROOTDSE-01](./AD-ROOTDSE-01.md) | Supported SASL mechanism count should be retrievable | Info | Active Directory - Replication |
-| [AD-ROOTDSE-02](./AD-ROOTDSE-02.md) | Supported SASL mechanism details should be retrievable | Info | Active Directory - Replication |
-| [AD-ROOTDSE-03](./AD-ROOTDSE-03.md) | Root DSE synchronized status should be retrievable | Medium | Active Directory - Replication |
+| [AD-REPL-01](./AD-REPL-01.md) | No replication connections should be disabled | High | Active Directory - Replication |
+| [AD-REPL-02](./AD-REPL-02.md) | Non-auto replication connection count should be investigated | Info | Active Directory - Replication |
+| [AD-ROOTDSE-01](./AD-ROOTDSE-01.md) | Supported SASL mechanism count should be investigated | Info | Active Directory - Replication |
+| [AD-ROOTDSE-02](./AD-ROOTDSE-02.md) | Supported SASL mechanism details should be investigated | Info | Active Directory - Replication |
+| [AD-ROOTDSE-03](./AD-ROOTDSE-03.md) | Root DSE should be synchronized | High | Active Directory - Replication |
 | [AD-SCH-01](./AD-SCH-01.md) | Schema modification year count should be retrievable | Info | Active Directory - Schema |
 | [AD-SCH-02](./AD-SCH-02.md) | Schema modification year details should be retrievable | Info | Active Directory - Schema |
 | [AD-SCH-03](./AD-SCH-03.md) | Schema version entry count should be retrievable | Info | Active Directory - Schema |
 | [AD-SCH-04](./AD-SCH-04.md) | Schema version details should be retrievable | Info | Active Directory - Schema |
-| [AD-SCH-05](./AD-SCH-05.md) | LAPS installation status should be retrievable | Medium | Active Directory - Schema |
+| [AD-SCH-05](./AD-SCH-05.md) | LAPS should be installed in Active Directory | Medium | Active Directory - Schema |
 | [AD-SITE-01](./AD-SITE-01.md) | Site total count should be retrievable | Info | Active Directory - Sites and Subnets |
 | [AD-SITE-02](./AD-SITE-02.md) | Sites without domain controllers count should be retrievable | Info | Active Directory - Sites and Subnets |
 | [AD-SITE-03](./AD-SITE-03.md) | Sites without domain controllers details should be retrievable | Info | Active Directory - Sites and Subnets |
@@ -231,16 +231,16 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-SPN-01](./AD-SPN-01.md) | Computer SPN service class count should be retrievable | Info | Active Directory - SPN Analysis |
 | [AD-SPN-02](./AD-SPN-02.md) | Computer SPN service class usage should be retrievable | Info | Active Directory - SPN Analysis |
 | [AD-SPN-03](./AD-SPN-03.md) | Computer SPN unknown service class count should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-04](./AD-SPN-04.md) | Computer SPN unknown service class details should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-05](./AD-SPN-05.md) | Computer SPN non-FQDN hosts should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-06](./AD-SPN-06.md) | User SPN total count should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-07](./AD-SPN-07.md) | User SPN service class count should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-08](./AD-SPN-08.md) | User SPN service class usage should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-09](./AD-SPN-09.md) | User SPN unknown service class count should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-10](./AD-SPN-10.md) | User SPN unknown service class details should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-11](./AD-SPN-11.md) | User SPN non-FQDN hosts should be retrievable | Info | Active Directory - SPN Analysis |
-| [AD-SPN-12](./AD-SPN-12.md) | User SPN domain admin count should be retrievable | Critical | Active Directory - SPN Analysis |
-| [AD-SPN-13](./AD-SPN-13.md) | User SPN domain admin details should be retrievable | Critical | Active Directory - SPN Analysis |
+| [AD-SPN-04](./AD-SPN-04.md) | Computer SPN unknown service class details should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-05](./AD-SPN-05.md) | Computer SPN non-FQDN hosts should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-06](./AD-SPN-06.md) | User SPN total count should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-07](./AD-SPN-07.md) | User SPN service class count should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-08](./AD-SPN-08.md) | User SPN service class usage should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-09](./AD-SPN-09.md) | User SPN unknown service class count should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-10](./AD-SPN-10.md) | User SPN unknown service class details should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-11](./AD-SPN-11.md) | User SPN non-FQDN hosts should be investigated | Info | Active Directory - SPN Analysis |
+| [AD-SPN-12](./AD-SPN-12.md) | No domain admin accounts should have SPNs configured | Critical | Active Directory - SPN Analysis |
+| [AD-SPN-13](./AD-SPN-13.md) | No domain admin accounts should have SPNs configured | Critical | Active Directory - SPN Analysis |
 | [AD-SUB-01](./AD-SUB-01.md) | Subnet total count should be retrievable | Info | Active Directory - Sites and Subnets |
 | [AD-SUB-02](./AD-SUB-02.md) | Sites with subnet associations count should be retrievable | Info | Active Directory - Sites and Subnets |
 | [AD-SUB-03](./AD-SUB-03.md) | Catch-all subnets count should be retrievable | Info | Active Directory - Sites and Subnets |
@@ -252,13 +252,13 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-SUB-09](./AD-SUB-09.md) | Distinct first two octets (/16 networks) count should be retrievable | Info | Active Directory - Sites and Subnets |
 | [AD-SUB-10](./AD-SUB-10.md) | Distinct first three octets (/24 networks) count should be retrievable | Info | Active Directory - Sites and Subnets |
 | [AD-SUB-11](./AD-SUB-11.md) | Subnets without site associations count should be retrievable | Info | Active Directory - Sites and Subnets |
-| [AD-TRUST-01](./AD-TRUST-01.md) | Trust total count should be retrievable | Info | Active Directory - Trusts |
-| [AD-TRUST-02](./AD-TRUST-02.md) | Trust inter-forest count should be retrievable | Info | Active Directory - Trusts |
-| [AD-TRUST-03](./AD-TRUST-03.md) | Trust quarantined count should be retrievable | High | Active Directory - Trusts |
-| [AD-TRUST-04](./AD-TRUST-04.md) | Trust non-quarantined details should be retrievable | High | Active Directory - Trusts |
-| [AD-TRUST-05](./AD-TRUST-05.md) | Trust configuration details should be retrievable | Info | Active Directory - Trusts |
-| [AD-TRUST-06](./AD-TRUST-06.md) | Trust stale count should be retrievable | Info | Active Directory - Trusts |
-| [AD-TRUST-07](./AD-TRUST-07.md) | Trust stale details should be retrievable | Info | Active Directory - Trusts |
+| [AD-TRUST-01](./AD-TRUST-01.md) | Trust total count should be investigated | Info | Active Directory - Trusts |
+| [AD-TRUST-02](./AD-TRUST-02.md) | Trust inter-forest count should be investigated | Info | Active Directory - Trusts |
+| [AD-TRUST-03](./AD-TRUST-03.md) | Trust quarantined count should be investigated | Info | Active Directory - Trusts |
+| [AD-TRUST-04](./AD-TRUST-04.md) | No trusts should lack SID filtering (quarantine) | High | Active Directory - Trusts |
+| [AD-TRUST-05](./AD-TRUST-05.md) | Trust configuration details should be investigated | Info | Active Directory - Trusts |
+| [AD-TRUST-06](./AD-TRUST-06.md) | Trust stale count should be investigated | Info | Active Directory - Trusts |
+| [AD-TRUST-07](./AD-TRUST-07.md) | Trust stale details should be investigated | Info | Active Directory - Trusts |
 | [AD-USER-01](./AD-USER-01.md) | Disabled user count should be retrievable | Info | Active Directory - Users |
 | [AD-USER-02](./AD-USER-02.md) | Dormant enabled user count should be retrievable | High | Active Directory - Users |
 | [AD-USER-03](./AD-USER-03.md) | Non-expiring password user count should be retrievable | High | Active Directory - Users |
@@ -279,12 +279,12 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-USER-18](./AD-USER-18.md) | User script path count should be retrievable | Info | Active Directory - Users |
 | [AD-USER-19](./AD-USER-19.md) | User in container count should be retrievable | Info | Active Directory - Users |
 | [AD-USER-20](./AD-USER-20.md) | Known service account count should be retrievable | Info | Active Directory - Users |
-| [AD-USER-21](./AD-USER-21.md) | Known service account details should be retrievable | Info | Active Directory - Users |
-| [AD-USER-22](./AD-USER-22.md) | Built-in administrator account count should be retrievable | Info | Active Directory - Users |
-| [AD-USER-23](./AD-USER-23.md) | Enabled built-in administrator details should be retrievable | Info | Active Directory - Users |
-| [AD-USER-24](./AD-USER-24.md) | Built-in administrator last logon details should be retrievable | Info | Active Directory - Users |
-| [AD-USER-25](./AD-USER-25.md) | Built-in administrator password age details should be retrievable | Info | Active Directory - Users |
-| [AD-USER-26](./AD-USER-26.md) | Honey pot user count should be retrievable | Info | Active Directory - Users |
-| [AD-USER-27](./AD-USER-27.md) | Honey pot user details should be retrievable | Info | Active Directory - Users |
-| [AD-USER-28](./AD-USER-28.md) | User delegation configured count should be retrievable | Info | Active Directory - Users |
-| [AD-USER-29](./AD-USER-29.md) | User delegation details should be retrievable | Info | Active Directory - Users |
+| [AD-USER-21](./AD-USER-21.md) | Known service account details should be investigated | Info | Active Directory - Users |
+| [AD-USER-22](./AD-USER-22.md) | Built-in administrator account count should be investigated | Info | Active Directory - Users |
+| [AD-USER-23](./AD-USER-23.md) | Enabled built-in administrator details should be investigated | Info | Active Directory - Users |
+| [AD-USER-24](./AD-USER-24.md) | Built-in administrator last logon details should be investigated | Info | Active Directory - Users |
+| [AD-USER-25](./AD-USER-25.md) | Built-in administrator password age details should be investigated | Info | Active Directory - Users |
+| [AD-USER-26](./AD-USER-26.md) | Honey pot user count should be investigated | Info | Active Directory - Users |
+| [AD-USER-27](./AD-USER-27.md) | Honey pot user details should be investigated | Info | Active Directory - Users |
+| [AD-USER-28](./AD-USER-28.md) | User delegation configured count should be investigated | Info | Active Directory - Users |
+| [AD-USER-29](./AD-USER-29.md) | No users should be configured for unconstrained delegation | High | Active Directory - Users |
