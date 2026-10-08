@@ -380,6 +380,7 @@ footer { border-top: 1px solid var(--line); margin-top: 72px; padding-top: 24px;
     <p class="lede">Security checks for any platform, written by anyone, run by Maester. A pack is a GitHub repository of Maester tests, with an optional connector that signs in to a platform Maester doesn't know about, such as Google Workspace or Okta.</p>
     <div class="status">
       <span class="chip">Proposal · not built yet</span>
+      <span class="chip" style="background: var(--accent-soft); color: var(--accent)"><a href="#discussion" style="color: inherit; text-decoration: none">New: changes under discussion</a></span>
       <span>Names, commands and details may change. Feedback goes on <a href="https://github.com/maester365/maester/pull/2358">pull request #2358</a>, which also has the <a href="https://github.com/maester365/maester/blob/claude/maester-packs-design/docs/proposals/maester-packs-design.md">full design</a>.</span>
     </div>
     <dl class="facts">
@@ -408,6 +409,7 @@ footer { border-top: 1px solid var(--line); margin-top: 72px; padding-top: 24px;
         <li><a href="#use">Use a pack</a></li>
         <li><a href="#listing">How listing works</a></li>
         <li><a href="#security">Security model</a></li>
+        <li><a href="#discussion">Under discussion</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
       </ol>
     </nav>
@@ -923,6 +925,72 @@ Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div>
           <div><h3>Can't pose as Maester</h3><p>Pack IDs start with <code>MP.</code>, built-in tags and suites are off-limits, and results are shown and scored apart.</p></div>
           <div><h3>Stopped everywhere</h3><p>A signed blocklist, with serial numbers and expiry, stops a bad pack on every machine at its next run. It never deletes anything, so a mistake is undone at the next run.</p></div>
           <div><h3>Honest about limits</h3><p>Code in the Maester session can use its connections. The prompt says so, and containers for untrusted packs come in a later phase.</p></div>
+        </div>
+      </section>
+
+      <section id="discussion" aria-labelledby="discussion-h">
+        <p class="part">Under discussion</p>
+        <h2 id="discussion-h">Proposed changes from community feedback</h2>
+        <p>Two integrations people want to build raised cases the design didn't cover. The changes below are proposals for discussion. They are not in the design document yet and will be folded in once the discussion settles. Comment on <a href="https://github.com/maester365/maester/pull/2358">pull request #2358</a> or in the Maester Discord.</p>
+
+        <div class="sub-block">
+          <h3>What was asked</h3>
+          <div class="table"><table>
+            <thead><tr><th>Integration</th><th>What it needs</th></tr></thead>
+            <tbody>
+              <tr><td><strong>TestimoX</strong><br><span style="color: var(--muted); font-size: 13.5px">AD and Windows infrastructure assessment engine that collects once and produces precomputed results</span></td><td>
+                <ul style="margin: 0; padding-left: 1.1em; display: grid; gap: 4px">
+                  <li>One assessment snapshot per run, shared by health, coverage and result checks</li>
+                  <li>The full rule catalog visible before a run, including unselected rules, with rule and target identity kept apart</li>
+                  <li>Results collected elsewhere, with no live directory connection or cloud sign-in</li>
+                  <li>Partial or failed collection visible separately from findings, and usable in CI</li>
+                  <li>A separately installed assessment tool inside the pack trust model</li>
+                </ul></td></tr>
+              <tr><td><strong>LeastPrivilegedMSGraph</strong><br><span style="color: var(--muted); font-size: 13.5px">An existing module built on EntraAuth and PSFramework</span></td><td>
+                <ul style="margin: 0; padding-left: 1.1em; display: grid; gap: 4px">
+                  <li>Existing modules have their own sign-in and API libraries, so "reach Microsoft only through Maester's commands" would mean a rewrite</li>
+                  <li>One helper gathers the data once, and many tests check parts of it</li>
+                  <li>Permissions beyond Graph scopes, such as Azure RBAC on a Log Analytics workspace</li>
+                  <li>Pointing a connection at a specific resource, such as one workspace</li>
+                  <li>How module dependencies (EntraAuth, PSFramework and others) are handled</li>
+                </ul></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div class="sub-block">
+          <h3>What we propose</h3>
+          <div class="cols">
+            <div><h3>Outside tools run as their own step</h3><p>A tool like TestimoX runs on its own, by the admin or in a CI job inside the network, and writes its assessment file. The pack's connector only reads that file: no sign-in, no line of sight to domain controllers, nothing launched by Maester. It checks the file's schema version and age (stale files are rejected with a reason) and reports the target, collection time and coverage. The pack stays text only, so Low risk.</p></div>
+            <div><h3>Module-backed packs</h3><p>A publisher can keep all their code in their own PowerShell module. The pack becomes a small static shell: a manifest naming the module, a catalog file the publisher generates from their module at build time, and docs. Maester lists and selects tests from those files without running code, then imports the module only when its tests run and calls a small, versioned API for the selected IDs. Results are accepted only for IDs in the pack's catalog.</p></div>
+            <div><h3>Maester never installs modules</h3><p>A pack names the modules it needs; the user installs them through their own channel. The site and the terminal show a command Maester generates, so publishers can't inject commands. If a module is missing or the wrong version, that pack's tests are skipped with the command in the warning, and the run continues.</p></div>
+            <div><h3>Setup instructions from the publisher</h3><p>A Setup tab on the pack page and "Next steps" after install explain how to install and run the outside tool, with a CI example. Setup text is labelled as from the publisher, never run by Maester, and scanned for download-and-run commands.</p></div>
+            <div><h3>Rule catalogs</h3><p>Many rules can share one evaluator: rules are declared in a static catalog instead of one test file each. Every rule is listed, selectable by ID and shown as not run when unselected. Per-target results keep the rule and the target as separate fields.</p></div>
+            <div><h3>Coverage as its own result</h3><p>Health and coverage get their own panel in the report. A rule whose data wasn't collected is skipped as "not collected", never failed. An opt-in switch lets CI fail on incomplete coverage.</p></div>
+            <div><h3>Your own libraries, and gather once</h3><p>"Reach Microsoft only through Maester's commands" becomes a recommendation. A pack that signs in with its own library, such as EntraAuth, wraps that sign-in as a connector so <code>Connect-Maester</code> drives it and it's declared. A run-scoped cache lets one helper gather data once for many tests.</p></div>
+            <div><h3>Permissions and targets beyond Graph</h3><p>Packs can declare Entra roles, Azure RBAC (for example Log Analytics Reader on a workspace) and Exchange roles, shown before install. Missing access skips the tests with a reason. A connection can be pointed at one resource in config, a test at its own resource through a parameter, and several resources through a family.</p></div>
+          </div>
+          <div class="code"><div class="code-label">maester-pack.json for a module-backed pack (proposal)</div>
+<pre>{
+  <span class="k">"Id"</span>: <span class="s">"testimox.ad-assessment"</span>,
+  <span class="k">"Code"</span>: <span class="s">"TMX"</span>,
+  <span class="k">"RequiresModules"</span>: [ { <span class="k">"Name"</span>: <span class="s">"TestimoX"</span>, <span class="k">"MinimumVersion"</span>: <span class="s">"2.3"</span> } ],
+  <span class="k">"Provider"</span>: { <span class="k">"Module"</span>: <span class="s">"TestimoX"</span>, <span class="k">"ApiVersion"</span>: 1 },
+  <span class="k">"Catalog"</span>: <span class="s">"catalog.json"</span>,
+  <span class="k">"Setup"</span>: <span class="s">"docs/setup.md"</span>
+}</pre></div>
+          <div class="code"><div class="code-label">What users see (generated by Maester, not written by the publisher)</div>
+<pre>Install-Module TestimoX -MinimumVersion 2.3 -Scope CurrentUser</pre></div>
+          <p class="prose">This also simplifies the design: Maester no longer saves Gallery modules into its own store, pins their whole dependency tree, or needs an allowlist of well-known modules, because those modules never become part of a pack.</p>
+        </div>
+
+        <div class="sub-block">
+          <h3>Still open</h3>
+          <ul>
+            <li>The names and shape of the provider API (catalog export, status and coverage, running the selected checks), and how it is versioned.</li>
+            <li>The default maximum age of an assessment file.</li>
+            <li>Whether rule catalogs and module-backed packs ship in phase 1, since integrations like TestimoX are ready to build on them.</li>
+          </ul>
         </div>
       </section>
 
