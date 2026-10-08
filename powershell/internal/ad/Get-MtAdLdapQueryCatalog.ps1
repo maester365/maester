@@ -130,7 +130,7 @@
                 'CN=WellKnown Security Principals', 'CN=Inter-Site Transports,CN=Sites', 'CN=NetServices,CN=Services',
                 'CN=AuthN Policy Configuration,CN=Services', 'CN=Public Key Services,CN=Services',
                 'CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services',
-                'CN=Directory Service,CN=Windows NT,CN=Services', 'CN=Master Root Keys,CN=Group Key Distribution,CN=Services',
+                'CN=Directory Service,CN=Windows NT,CN=Services', 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services',
                 'CN=Activation Objects,CN=Services'
             )
             Description = 'Defines the bounded searches used to collect configuration, PKI, query policy, KDS, and activation data.'
