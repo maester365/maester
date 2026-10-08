@@ -369,6 +369,26 @@ footer { border-top: 1px solid var(--line); margin-top: 72px; padding-top: 24px;
 .rep .rp.low { color: var(--r-ok); background: var(--r-ok-bg); }
 .rep .rp.high { color: var(--r-bad); background: var(--r-bad-bg); }
 .rep .mvp { color: var(--r-info); font-size: 12px; }
+
+/* Diagrams */
+.dg-figure { margin: 0; display: grid; gap: 10px; }
+.dg-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.dg { display: block; width: 100%; min-width: 640px; height: auto; color: var(--ink); font-family: var(--font-body); }
+.dg .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+.dg .box.strong { stroke: var(--ink); stroke-width: 1.4; }
+.dg .box.new { fill: var(--accent-soft); stroke: var(--accent); stroke-dasharray: 5 3; }
+.dg .t { fill: var(--ink); font-size: 12.5px; font-weight: 600; }
+.dg .s { fill: var(--muted); font-size: 11px; }
+.dg .lbl { fill: var(--muted); font-size: 11px; }
+.dg .lane { fill: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; }
+.dg .mode { fill: var(--ink); font-size: 13.5px; font-weight: 700; }
+.dg .ln { stroke: currentColor; stroke-width: 1.3; fill: none; }
+.dg .ln.new { stroke: var(--accent); }
+.dg .ln.dash { stroke-dasharray: 4 3; }
+.dg .ln.faint { stroke: var(--line); }
+.dg .ah { fill: currentColor; }
+.dg .ah-new { fill: var(--accent); }
+figcaption { font-size: 14px; color: var(--muted); max-width: 72ch; }
 </style>
 </head>
 <body>
@@ -960,14 +980,155 @@ Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div>
 
         <div class="sub-block">
           <h3>What we propose</h3>
+          <p class="prose">Every pack makes two separate choices. <strong>Where its code lives:</strong> a <strong>Script pack</strong> ships its tests and connector as PowerShell files in the pack; a <strong>Module pack</strong> ships no code and points at the publisher's own PowerShell module. <strong>Where its data comes from:</strong> <strong>Live</strong> signs in and queries the platform during the run; <strong>Import</strong> reads results an outside tool wrote before the run; <strong>Collect</strong> lets the pack gather its data once at the start of the run. Any code choice works with any data choice.</p>
+
+          <figure class="dg-figure">
+            <div class="dg-scroll">
+            <svg class="dg" viewBox="0 0 760 360" role="img" aria-label="One Maester run in six stages. Discover only reads the pack's files; Connect, Collect, Run checks, Report and Release each call a hook in the pack's code. Collect and Release are proposed.">
+              <defs>
+                <marker id="ahA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"></path></marker>
+                <marker id="ahA2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-new" d="M0,0 L10,5 L0,10 z"></path></marker>
+              </defs>
+              <line class="ln" x1="92" y1="18" x2="748" y2="18" marker-end="url(#ahA)"></line>
+              <text class="lbl" x="92" y="12">one Invoke-Maester run</text>
+
+              <text class="lane" x="84" y="67" text-anchor="end">MAESTER</text>
+              <text class="lane" x="84" y="171" text-anchor="end">PACK FILES</text>
+              <text class="lane" x="84" y="265" text-anchor="end">PACK CODE</text>
+
+              <rect class="box strong" x="92" y="36" width="104" height="54" rx="8"></rect>
+              <text class="t" x="144" y="58" text-anchor="middle">1 Discover</text><text class="s" x="144" y="76" text-anchor="middle">reads files only</text>
+              <rect class="box strong" x="203" y="36" width="104" height="54" rx="8"></rect>
+              <text class="t" x="255" y="58" text-anchor="middle">2 Connect</text><text class="s" x="255" y="76" text-anchor="middle">sign in or load</text>
+              <rect class="box strong" x="314" y="36" width="104" height="54" rx="8"></rect>
+              <text class="t" x="366" y="58" text-anchor="middle">3 Collect</text><text class="s" x="366" y="76" text-anchor="middle">optional, once</text>
+              <rect class="box strong" x="425" y="36" width="104" height="54" rx="8"></rect>
+              <text class="t" x="477" y="58" text-anchor="middle">4 Run checks</text><text class="s" x="477" y="76" text-anchor="middle">selected IDs</text>
+              <rect class="box strong" x="536" y="36" width="104" height="54" rx="8"></rect>
+              <text class="t" x="588" y="58" text-anchor="middle">5 Report</text><text class="s" x="588" y="76" text-anchor="middle">rows, coverage</text>
+              <rect class="box strong" x="647" y="36" width="104" height="54" rx="8"></rect>
+              <text class="t" x="699" y="58" text-anchor="middle">6 Release</text><text class="s" x="699" y="76" text-anchor="middle">always</text>
+
+              <rect class="box" x="92" y="144" width="104" height="54" rx="8"></rect>
+              <text class="t" x="144" y="166" text-anchor="middle">manifest</text><text class="s" x="144" y="184" text-anchor="middle">catalog, docs</text>
+              <line class="ln" x1="144" y1="144" x2="144" y2="93" marker-end="url(#ahA)"></line>
+              <text class="lbl" x="150" y="122">read only</text>
+
+              <line class="ln" x1="255" y1="90" x2="255" y2="227" marker-end="url(#ahA)"></line>
+              <text class="lbl" x="261" y="160">calls</text>
+              <line class="ln new" x1="366" y1="90" x2="366" y2="227" marker-end="url(#ahA2)"></line>
+              <text class="lbl" x="372" y="160">once</text>
+              <line class="ln" x1="477" y1="90" x2="477" y2="227" marker-end="url(#ahA)"></line>
+              <text class="lbl" x="483" y="160">per test</text>
+              <line class="ln" x1="588" y1="90" x2="588" y2="227" marker-end="url(#ahA)"></line>
+              <text class="lbl" x="594" y="160">once</text>
+              <line class="ln new" x1="699" y1="90" x2="699" y2="227" marker-end="url(#ahA2)"></line>
+              <text class="lbl" x="693" y="190" text-anchor="end">even on Ctrl+C</text>
+
+              <rect class="box" x="203" y="230" width="104" height="62" rx="8"></rect>
+              <text class="t" x="255" y="255" text-anchor="middle">Connect</text><text class="s" x="255" y="274" text-anchor="middle">Test, Renew</text>
+              <rect class="box new" x="314" y="230" width="104" height="62" rx="8"></rect>
+              <text class="t" x="366" y="255" text-anchor="middle">Collect</text><text class="s" x="366" y="274" text-anchor="middle">writes run file</text>
+              <rect class="box" x="425" y="230" width="104" height="62" rx="8"></rect>
+              <text class="t" x="477" y="255" text-anchor="middle">Checks</text><text class="s" x="477" y="274" text-anchor="middle">tests or API</text>
+              <rect class="box" x="536" y="230" width="104" height="62" rx="8"></rect>
+              <text class="t" x="588" y="255" text-anchor="middle">Describe</text><text class="s" x="588" y="274" text-anchor="middle">target, coverage</text>
+              <rect class="box new" x="647" y="230" width="104" height="62" rx="8"></rect>
+              <text class="t" x="699" y="255" text-anchor="middle">Release</text><text class="s" x="699" y="274" text-anchor="middle">clean up</text>
+
+              <rect class="box new" x="92" y="322" width="22" height="14" rx="3"></rect>
+              <text class="lbl" x="122" y="333">proposed in this discussion</text>
+              <rect class="box" x="300" y="322" width="22" height="14" rx="3"></rect>
+              <text class="lbl" x="330" y="333">already in the design</text>
+            </svg>
+            </div>
+            <figcaption>One run, and where Maester calls into a pack. Discovery only reads the pack's files, so listing and selecting tests never runs publisher code. Every later stage calls a hook: in the pack's own files for a Script pack, or in the publisher's module for a Module pack. Collect and Release are the proposed additions.</figcaption>
+          </figure>
+
+          <figure class="dg-figure">
+            <div class="dg-scroll">
+            <svg class="dg" viewBox="0 0 760 400" role="img" aria-label="Two choices per pack. Code: a Script pack runs code from the pack's own files; a Module pack's files hold no code and Maester calls the publisher's installed module. Data: Live queries the platform during the run; Import reads a file an outside tool wrote first; Collect writes a file at the start of the run that the checks read.">
+              <defs>
+                <marker id="ahB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"></path></marker>
+                <marker id="ahB2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-new" d="M0,0 L10,5 L0,10 z"></path></marker>
+              </defs>
+              <text class="lane" x="0" y="16">WHERE THE CODE LIVES</text>
+              <text class="lane" x="410" y="16">WHERE THE DATA COMES FROM</text>
+              <line class="ln faint" x1="385" y1="0" x2="385" y2="400"></line>
+
+              <text class="mode" x="0" y="48">Script pack</text>
+              <rect class="box strong" x="0" y="74" width="110" height="46" rx="8"></rect>
+              <text class="t" x="55" y="102" text-anchor="middle">Maester</text>
+              <rect class="box" x="200" y="58" width="160" height="78" rx="8"></rect>
+              <text class="t" x="280" y="80" text-anchor="middle">Pack repo on GitHub</text>
+              <text class="s" x="280" y="98" text-anchor="middle">manifest, docs</text>
+              <text class="s" x="280" y="114" text-anchor="middle">tests + connector code</text>
+              <line class="ln" x1="110" y1="97" x2="198" y2="97" marker-end="url(#ahB)"></line>
+              <text class="lbl" x="155" y="90" text-anchor="middle">loads, runs</text>
+
+              <text class="mode" x="0" y="184">Module pack</text>
+              <rect class="box strong" x="0" y="246" width="110" height="46" rx="8"></rect>
+              <text class="t" x="55" y="274" text-anchor="middle">Maester</text>
+              <rect class="box" x="200" y="194" width="160" height="74" rx="8"></rect>
+              <text class="t" x="280" y="216" text-anchor="middle">Pack repo on GitHub</text>
+              <text class="s" x="280" y="234" text-anchor="middle">manifest, catalog, docs</text>
+              <text class="s" x="280" y="250" text-anchor="middle">no code</text>
+              <rect class="box new" x="200" y="306" width="160" height="74" rx="8"></rect>
+              <text class="t" x="280" y="328" text-anchor="middle">Publisher's module</text>
+              <text class="s" x="280" y="346" text-anchor="middle">installed by the user</text>
+              <text class="s" x="280" y="362" text-anchor="middle">Install-Module</text>
+              <line class="ln" x1="110" y1="258" x2="198" y2="236" marker-end="url(#ahB)"></line>
+              <text class="lbl" x="150" y="238" text-anchor="middle">reads</text>
+              <line class="ln new" x1="110" y1="282" x2="198" y2="334" marker-end="url(#ahB2)"></line>
+              <text class="lbl" x="106" y="318" text-anchor="end">calls its API</text>
+              <line class="ln dash" x1="280" y1="268" x2="280" y2="304" marker-end="url(#ahB)"></line>
+              <text class="lbl" x="286" y="290">names it</text>
+
+              <text class="mode" x="410" y="48">Live</text>
+              <rect class="box" x="410" y="62" width="110" height="46" rx="8"></rect>
+              <text class="t" x="465" y="82" text-anchor="middle">Pack code</text><text class="s" x="465" y="98" text-anchor="middle">connector</text>
+              <rect class="box" x="640" y="62" width="120" height="46" rx="8"></rect>
+              <text class="t" x="700" y="82" text-anchor="middle">Platform</text><text class="s" x="700" y="98" text-anchor="middle">Google, Okta, Graph</text>
+              <line class="ln" x1="520" y1="85" x2="638" y2="85" marker-end="url(#ahB)"></line>
+              <text class="lbl" x="579" y="78" text-anchor="middle">signs in, queries</text>
+
+              <text class="mode" x="410" y="162">Import</text>
+              <rect class="box" x="410" y="176" width="100" height="46" rx="8"></rect>
+              <text class="t" x="460" y="196" text-anchor="middle">Outside tool</text><text class="s" x="460" y="212" text-anchor="middle">runs first</text>
+              <rect class="box" x="535" y="176" width="100" height="46" rx="8"></rect>
+              <text class="t" x="585" y="196" text-anchor="middle">Results file</text><text class="s" x="585" y="212" text-anchor="middle">e.g. JSON</text>
+              <rect class="box" x="660" y="176" width="100" height="46" rx="8"></rect>
+              <text class="t" x="710" y="196" text-anchor="middle">Pack code</text><text class="s" x="710" y="212" text-anchor="middle">at Connect</text>
+              <line class="ln" x1="510" y1="199" x2="533" y2="199" marker-end="url(#ahB)"></line>
+              <line class="ln" x1="635" y1="199" x2="658" y2="199" marker-end="url(#ahB)"></line>
+              <text class="lbl" x="522" y="240" text-anchor="middle">writes</text>
+              <text class="lbl" x="647" y="240" text-anchor="middle">reads</text>
+
+              <text class="mode" x="410" y="290">Collect</text>
+              <rect class="box new" x="410" y="304" width="100" height="46" rx="8"></rect>
+              <text class="t" x="460" y="324" text-anchor="middle">Collect hook</text><text class="s" x="460" y="340" text-anchor="middle">start of run</text>
+              <rect class="box" x="535" y="304" width="100" height="46" rx="8"></rect>
+              <text class="t" x="585" y="324" text-anchor="middle">Results file</text><text class="s" x="585" y="340" text-anchor="middle">in run folder</text>
+              <rect class="box" x="660" y="304" width="100" height="46" rx="8"></rect>
+              <text class="t" x="710" y="324" text-anchor="middle">Checks</text><text class="s" x="710" y="340" text-anchor="middle">read it</text>
+              <line class="ln new" x1="510" y1="327" x2="533" y2="327" marker-end="url(#ahB2)"></line>
+              <line class="ln" x1="635" y1="327" x2="658" y2="327" marker-end="url(#ahB)"></line>
+              <text class="lbl" x="522" y="368" text-anchor="middle">writes</text>
+              <text class="lbl" x="647" y="368" text-anchor="middle">reads</text>
+            </svg>
+            </div>
+            <figcaption>The two choices each pack makes. Left: a Script pack's code is in its own files; a Module pack's files hold no code, and Maester calls the module the user installed. Right: Live queries the platform during the run; Import reads a file an outside tool wrote beforehand; Collect writes that same kind of file at the start of the run, so the checks read it the same way. TestimoX would be a Module pack using Import or Collect.</figcaption>
+          </figure>
+
           <div class="cols">
-            <div><h3>Outside tools run as their own step</h3><p>A tool like TestimoX runs on its own, by the admin or in a CI job inside the network, and writes its assessment file. The pack's connector only reads that file: no sign-in, no line of sight to domain controllers, nothing launched by Maester. It checks the file's schema version and age (stale files are rejected with a reason) and reports the target, collection time and coverage. The pack stays text only, so Low risk.</p></div>
-            <div><h3>Module-backed packs</h3><p>A publisher can keep all their code in their own PowerShell module. The pack is still published to GitHub like any other pack, so it is indexed, scanned and badged the same way, but it becomes a small static shell: a manifest naming the module, a catalog file and docs. Maester lists and selects tests from those files without running code, then imports the module only when its tests run and calls a small, versioned API for the selected IDs. Results are accepted only for IDs in the pack's catalog.</p></div>
+            <div><h3>Import: outside tools run as their own step</h3><p>A tool like TestimoX runs on its own, by the admin or in a CI job inside the network, and writes its assessment file. The pack's connector only reads that file: no sign-in, no line of sight to domain controllers, nothing launched by Maester. It checks the file's schema version and age (stale files are rejected with a reason) and reports the target, collection time and coverage. The pack stays text only, so Low risk.</p></div>
+            <div><h3>Module packs</h3><p>A publisher can keep all their code in their own PowerShell module. The pack is still published to GitHub like any other pack, so it is indexed, scanned and badged the same way, but it becomes a small static shell: a manifest naming the module, a catalog file and docs. Maester lists and selects tests from those files without running code, then imports the module only when its tests run and calls a small, versioned API for the selected IDs. Results are accepted only for IDs in the pack's catalog.</p></div>
+            <div><h3>Collect: gather data during the run</h3><p>As an option, a pack can collect its data inside a Maester run instead of reading a file collected beforehand. Its Collect hook runs once before any checks, receives the selected test IDs so it gathers only what they need, has its own timeout and progress output, and writes its results into the run's output folder. The checks then read that file exactly as in Import, and the file stays as evidence. A matching Release hook always runs at the end, even after Ctrl+C. Collect is off by default and turned on per pack in config; a failed collection skips the affected tests as "not collected" and the run continues. Import stays the recommendation when the Maester run can't reach the systems being assessed.</p></div>
             <div><h3>Maester never installs modules</h3><p>A pack names the modules it needs; the user installs them through their own channel. The site and the terminal show a command Maester generates, so publishers can't inject commands. If a module is missing or the wrong version, that pack's tests are skipped with the command in the warning, and the run continues.</p></div>
             <div><h3>Setup instructions from the publisher</h3><p>A Setup tab on the pack page and "Next steps" after install explain how to install and run the outside tool, with a CI example. Setup text is labelled as from the publisher, never run by Maester, and scanned for download-and-run commands.</p></div>
             <div><h3>Rule catalogs</h3><p>Many rules can share one evaluator: rules are declared in a static catalog instead of one test file each. Every rule is listed, selectable by ID and shown as not run when unselected. Per-target results keep the rule and the target as separate fields.</p></div>
             <div><h3>Coverage as its own result</h3><p>Health and coverage get their own panel in the report. A rule whose data wasn't collected is skipped as "not collected", never failed. An opt-in switch lets CI fail on incomplete coverage.</p></div>
-            <div><h3>Your own libraries, and gather once</h3><p>"Reach Microsoft only through Maester's commands" becomes a recommendation. A pack that signs in with its own library, such as EntraAuth, wraps that sign-in as a connector so <code>Connect-Maester</code> drives it and it's declared. A run-scoped cache lets one helper gather data once for many tests.</p></div>
+            <div><h3>Your own libraries, and gather once</h3><p>"Reach Microsoft only through Maester's commands" becomes a recommendation. A pack that signs in with its own library, such as EntraAuth, wraps that sign-in as a connector so <code>Connect-Maester</code> drives it and it's declared. The same Collect hook lets one helper gather data once for many tests.</p></div>
             <div><h3>Permissions and targets beyond Graph</h3><p>Packs can declare Entra roles, Azure RBAC (for example Log Analytics Reader on a workspace) and Exchange roles, shown before install. Missing access skips the tests with a reason. A connection can be pointed at one resource in config, a test at its own resource through a parameter, and several resources through a family.</p></div>
           </div>
           <div class="code"><div class="code-label">maester-pack.json for a module-backed pack (proposal)</div>
@@ -988,7 +1149,7 @@ Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div>
           <h3>Still open</h3>
           <ul>
             <li>The names and shape of the provider API (status and coverage, running the selected checks), and how it is versioned.</li>
-            <li>Whether a pack can also run its data collection as an optional step inside a Maester run, instead of only reading a file collected beforehand.</li>
+            <li>Collect mode's defaults: the collection timeout, and where in the run's output folder the results file goes.</li>
             <li>The default maximum age of an assessment file.</li>
             <li>Whether rule catalogs and module-backed packs ship in phase 1, since integrations like TestimoX are ready to build on them.</li>
           </ul>
