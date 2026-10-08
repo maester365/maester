@@ -962,7 +962,7 @@ Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div>
           <h3>What we propose</h3>
           <div class="cols">
             <div><h3>Outside tools run as their own step</h3><p>A tool like TestimoX runs on its own, by the admin or in a CI job inside the network, and writes its assessment file. The pack's connector only reads that file: no sign-in, no line of sight to domain controllers, nothing launched by Maester. It checks the file's schema version and age (stale files are rejected with a reason) and reports the target, collection time and coverage. The pack stays text only, so Low risk.</p></div>
-            <div><h3>Module-backed packs</h3><p>A publisher can keep all their code in their own PowerShell module. The pack becomes a small static shell: a manifest naming the module, a catalog file the publisher generates from their module at build time, and docs. Maester lists and selects tests from those files without running code, then imports the module only when its tests run and calls a small, versioned API for the selected IDs. Results are accepted only for IDs in the pack's catalog.</p></div>
+            <div><h3>Module-backed packs</h3><p>A publisher can keep all their code in their own PowerShell module. The pack is still published to GitHub like any other pack, so it is indexed, scanned and badged the same way, but it becomes a small static shell: a manifest naming the module, a catalog file and docs. Maester lists and selects tests from those files without running code, then imports the module only when its tests run and calls a small, versioned API for the selected IDs. Results are accepted only for IDs in the pack's catalog.</p></div>
             <div><h3>Maester never installs modules</h3><p>A pack names the modules it needs; the user installs them through their own channel. The site and the terminal show a command Maester generates, so publishers can't inject commands. If a module is missing or the wrong version, that pack's tests are skipped with the command in the warning, and the run continues.</p></div>
             <div><h3>Setup instructions from the publisher</h3><p>A Setup tab on the pack page and "Next steps" after install explain how to install and run the outside tool, with a CI example. Setup text is labelled as from the publisher, never run by Maester, and scanned for download-and-run commands.</p></div>
             <div><h3>Rule catalogs</h3><p>Many rules can share one evaluator: rules are declared in a static catalog instead of one test file each. Every rule is listed, selectable by ID and shown as not run when unselected. Per-target results keep the rule and the target as separate fields.</p></div>
@@ -987,7 +987,8 @@ Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div>
         <div class="sub-block">
           <h3>Still open</h3>
           <ul>
-            <li>The names and shape of the provider API (catalog export, status and coverage, running the selected checks), and how it is versioned.</li>
+            <li>The names and shape of the provider API (status and coverage, running the selected checks), and how it is versioned.</li>
+            <li>Whether a pack can also run its data collection as an optional step inside a Maester run, instead of only reading a file collected beforehand.</li>
             <li>The default maximum age of an assessment file.</li>
             <li>Whether rule catalogs and module-backed packs ship in phase 1, since integrations like TestimoX are ready to build on them.</li>
           </ul>
