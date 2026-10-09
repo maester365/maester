@@ -337,7 +337,7 @@ export function computeContributorData(tests, { log = console.log, updateAliases
   function declaredContributor(handle) {
     const key = String(handle).toLowerCase();
     const id = canonicalById.get(key) ?? String(handle);
-    const registered = Object.hasOwn(registry, id) ? registry[id] : undefined;
+    const registered = Object.getOwnPropertyDescriptor(registry, id)?.value;
     const profile = contributorFor({ id, name: registered?.name ?? gitNamesById.get(key)?.find((name) => name.includes(" ")) ?? gitNamesById.get(key)?.[0] ?? id, github: true });
     for (const name of gitNamesById.get(key) ?? []) if (!profile.gitNames.includes(name)) profile.gitNames.push(name);
     const firstDate = firstDateById.get(key);
