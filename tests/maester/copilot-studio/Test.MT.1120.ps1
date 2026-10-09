@@ -25,7 +25,7 @@ function Test-MtAIAgentMcpTools {
         Title = 'AI agents should not use MCP server tools without review.',
         Severity = 'Medium',
         Category = 'Copilot Studio Agent Security',
-        Tag = ('AIAgent', 'CopilotStudio', 'Maester'),
+        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

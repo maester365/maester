@@ -67,6 +67,8 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         # MT1060 (drift) became the native family MT.1060 (design section 10): its four 2.x Its are one
         # family whose per-check tags (MT1060.<n>) are instance tags now, and its effective tags add MT.1060.
         $renamedFamilies = @{ 'MT1060' = 'MT.1060' }
+        # Tags added in 3.0. They only add new selections; every 2.x -Tag still selects the same checks.
+        $addedTags = @('AI')
         $renamedSeen = @{}
         $problems = foreach ($e in $script:tagsAndBlocks.Entries) {
             if ($e.Family -and $renamedFamilies.ContainsKey($e.Id)) {
@@ -76,7 +78,7 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
                 $renamedSeen[$newId] = 1 + [int]$renamedSeen[$newId]
                 if ($now.Block -ne $e.Block) { "$($e.Id): Block '$($e.Block)' is now '$($now.Block)'" }
                 $was = @($e.SelectionTags | Where-Object { $_ -notlike "$($e.Id).*" } | Sort-Object -Unique) -join ','
-                $is = @($now.SelectionTags | Where-Object { $_ -ne $newId } | Sort-Object -Unique) -join ','
+                $is = @($now.SelectionTags | Where-Object { $_ -ne $newId -and $_ -notin $addedTags } | Sort-Object -Unique) -join ','
                 if ($was -ne $is) { "$($e.Id): selection tags '$was' are now '$is' on $newId" }
                 continue
             }
@@ -89,7 +91,7 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
             $null = $candidates.Remove($now)
             if ($now.Block -ne $e.Block) { "$($e.Id): Block '$($e.Block)' is now '$($now.Block)'" }
             $was = @($e.SelectionTags | Sort-Object -Unique) -join ','
-            $is = @($now.SelectionTags | Sort-Object -Unique) -join ','
+            $is = @($now.SelectionTags | Where-Object { $_ -notin $addedTags } | Sort-Object -Unique) -join ','
             if ($was -ne $is) { "$($e.Id): selection tags '$was' are now '$is'" }
             if ($now.Format -ne 'Native' -and $e.Id -notin $resultTagChanges) {
                 $wasResult = @($e.ResultTags | Sort-Object -Unique) -join ','

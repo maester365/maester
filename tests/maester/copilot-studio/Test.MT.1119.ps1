@@ -26,7 +26,7 @@ function Test-MtAIAgentHardCodedCredentials {
         Title = 'AI agents should not have hard-coded credentials in topics.',
         Severity = 'High',
         Category = 'Copilot Studio Agent Security',
-        Tag = ('AIAgent', 'CopilotStudio', 'Maester'),
+        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

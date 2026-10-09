@@ -28,9 +28,9 @@ carries the same rules for AI coding and review agents.
    This applies to every folder under `tests/`, `powershell/` and `build/`. Files keep their own conventions:
    `Test.<ID>.ps1` and `Test.<ID>.md` for checks, `Verb-Noun.ps1` for functions.
 2. **One name per service.** A service folder has the same name wherever it appears:
-   `ad`, `ai-agent`, `azure`, `azure-devops`, `defender`, `entra`, `exchange`, `github`, `global-secure-access`,
-   `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`. Adding a service means adding it to this list and to
-   the layout test.
+   `ad`, `azure`, `azure-devops`, `copilot`, `copilot-studio`, `defender`, `entra`, `exchange`, `foundry`, `github`,
+   `global-secure-access`, `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`. Adding a service means adding
+   it to this list and to the layout test.
 3. **A file goes in the group that matches its job**, not in the suite that first needed it (see the trees below).
 4. **Generated code lives in `generated/` folders**, so it is obvious from the path that it must not be edited by hand.
 
@@ -81,8 +81,32 @@ powershell/
   code in `lib/`; PSFramework and dbatools split exported and internal functions, then group by feature.
 - **`public/` is grouped by what the user is doing**, so the folder tells you which commands belong together in the
   [command reference](/docs/commands/).
+- **Folders name products, tags name themes.** A check goes in the folder of the product whose settings it reads,
+  because that is what an author knows when adding a check and what an admin knows when looking for one. Themes
+  that cut across products, such as AI, are tags: Copilot Studio agent checks live in `maester/copilot-studio/`,
+  an Entra agent identity check lives in `maester/entra/`, and both carry the `AI` tag, so `Invoke-Maester -Tag AI`
+  runs them together. A theme folder such as `ai/` would end up holding checks for Copilot, Copilot Studio,
+  Foundry, Entra Agent ID and Purview, each with its own API, portal and permissions.
 - **Data access is shared, check logic is not.** Code that reads a service (`services/`) is reused by many checks and
   by custom tests. Code that only one suite's checks need stays in `checks/<suite>/`.
+
+### Making an internal helper public
+
+Custom tests are loaded into their own private module, so they can call only the commands Maester exports. When
+users need one of the internal helpers in their own tests, promote it instead of copying it:
+
+1. Move the file from `powershell/internal/services/<service>/` to `powershell/public/services/<service>/` with
+   `git mv`, so its history follows it.
+2. Add the function to `FunctionsToExport` in `powershell/Maester.psd1`.
+3. Give it complete comment-based help: synopsis, description, every parameter, at least one example and a
+   `.LINK` to `https://maester.dev/docs/commands/<Name>`. The command reference page is generated from it.
+4. Review the name and parameters before you merge. Once a command is exported it is public API: renaming it,
+   removing a parameter or changing what it returns is a breaking change for users' tests.
+
+`Manifest.Tests.ps1` fails if a file in `public/` is not exported or an internal function is, and `Help.Tests.ps1`
+fails if an exported command's help is incomplete, so a half-finished promotion does not pass CI. Helpers that
+belong to one suite's checks (`internal/checks/`) are not candidates: move the reusable part into
+`services/<service>/` first.
 
 ## Maester PowerShell module dev guide
 

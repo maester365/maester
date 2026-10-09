@@ -315,7 +315,7 @@ function categoryFor(test, tags) {
 }
 
 // Test folders are lowercase kebab-case (see the repository layout in the contributing guide).
-const folderDisplayNames = new Map([["ad", "AD"], ["ai-agent", "AI Agent"], ["azure-devops", "Azure DevOps"], ["sharepoint", "SharePoint"], ["xspm", "XSPM"]]);
+const folderDisplayNames = new Map([["ad", "AD"], ["azure-devops", "Azure DevOps"], ["sharepoint", "SharePoint"], ["xspm", "XSPM"]]);
 function folderDisplayName(folder) {
   const key = folder.toLowerCase();
   if (folderDisplayNames.has(key)) return folderDisplayNames.get(key);

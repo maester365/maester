@@ -43,9 +43,12 @@ enforces them. When writing or reviewing a change, check every added, moved or r
 
 - Folder names under `tests/`, `powershell/` and `build/` are lowercase kebab-case
   (`global-secure-access`, not `GlobalSecureAccess`). No two paths may differ only in case.
-- One name per service, the same everywhere: `ad`, `ai-agent`, `azure`, `azure-devops`,
-  `defender`, `entra`, `exchange`, `github`, `global-secure-access`, `graph`, `intune`,
-  `purview`, `sharepoint`, `teams`, `xspm`. A new service must be added to the guide and the test.
+- One name per service, the same everywhere: `ad`, `azure`, `azure-devops`, `copilot`,
+  `copilot-studio`, `defender`, `entra`, `exchange`, `foundry`, `github`,
+  `global-secure-access`, `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`.
+  Folders name the product whose settings a check reads, never a theme: an AI check goes in
+  the folder of its product (an Entra agent identity check in `entra/`) and carries the `AI`
+  tag. A new service must be added to the guide and the test.
 - `tests/<suite>/` holds only `Test.<ID>.ps1`, `Test.<ID>.md`, `suite.json` and `README.md`.
   Suites: `maester/<service>/` (plus `drift/`; `maester/xspm/` has its own suite.json),
   `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
@@ -59,3 +62,7 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   goes in `internal/checks/<suite>/<service>/`; a helper users call from custom tests goes
   in `public/services/<service>/` (and in the manifest's `FunctionsToExport`).
 - One function per file, named `Verb-Noun.ps1` after the function, with an approved verb.
+- Custom tests can call only exported commands. To make an internal helper available to them,
+  `git mv` it from `internal/services/<service>/` to `public/services/<service>/`, add it to
+  `FunctionsToExport`, and give it full comment-based help (see "Making an internal helper public"
+  in the contributing guide). Exporting a command makes it public API; flag a promotion in review.

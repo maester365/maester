@@ -25,7 +25,7 @@ function Test-MtAIAgentRiskyHttpConfig {
         Title = 'AI agents should not have risky HTTP configurations.',
         Severity = 'Medium',
         Category = 'Copilot Studio Agent Security',
-        Tag = ('AIAgent', 'CopilotStudio', 'Maester'),
+        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

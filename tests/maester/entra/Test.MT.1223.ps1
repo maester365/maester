@@ -18,7 +18,7 @@
         Title = 'Agent Identities should not have high-risk Microsoft Graph permissions (Preview).',
         Severity = 'High',
         Category = 'Maester/Entra',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
+        Tag = ('AI', 'Entra', 'Graph', 'Maester', 'Severity:High'),
         Preview,
         LongRunning,
         Service = 'Graph',

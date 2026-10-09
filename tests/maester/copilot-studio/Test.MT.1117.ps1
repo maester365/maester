@@ -25,7 +25,7 @@ function Test-MtAIAgentDormant {
         Title = 'Published AI agents should not be dormant.',
         Severity = 'Low',
         Category = 'Copilot Studio Agent Security',
-        Tag = ('AIAgent', 'CopilotStudio', 'Maester'),
+        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]
