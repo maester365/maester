@@ -20,7 +20,7 @@ Maester runs two kinds of custom test from this folder:
   so that the test can be selected with `-TestId` and configured by ID. Pester must be
   installed to run them.
 - **Native tests** (`Test.<ID>.ps1` with a `[MaesterTest(...)]` function), the format of
-  the built-in tests from Maester 3.0. See https://maester.dev/docs/writing-tests.
+  the built-in tests from Maester 3.0. See https://maester.dev/docs/next/writing-tests.
 
 Use your own ID prefix (for example `CONTOSO.`). IDs that start with `MT.`, `CIS.`,
 `CISA.`, `EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` or `MT1060.` belong to the built-in tests.

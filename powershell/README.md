@@ -43,7 +43,7 @@ Exported functions, grouped by what the user is doing: `run/` (**Invoke-Maester*
 Only these functions are part of the public surface; the check functions behind the built-in tests are internal from
 3.0.
 
-The [repository layout](https://maester.dev/docs/contributing#repository-layout) explains the groups and the naming
+The [repository layout](../website/docs/contributing.md#repository-layout) explains the groups and the naming
 rules; `tests/general/RepositoryLayout.Tests.ps1` enforces them.
 
 #### tests/

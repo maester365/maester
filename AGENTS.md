@@ -37,8 +37,8 @@ maester.dev), `report/` (React app that builds the HTML report template).
 
 ## Repository layout — where files go
 
-Full rules and reasoning: https://maester.dev/docs/contributing#repository-layout
-(source: `website/docs/contributing.md`). `powershell/tests/general/RepositoryLayout.Tests.ps1`
+Full rules and reasoning: `website/docs/contributing.md` ("Repository layout"), published at
+https://maester.dev/docs/next/contributing#repository-layout. `powershell/tests/general/RepositoryLayout.Tests.ps1`
 enforces them. When writing or reviewing a change, check every added, moved or renamed file:
 
 - Folder names under `tests/`, `powershell/` and `build/` are lowercase kebab-case
