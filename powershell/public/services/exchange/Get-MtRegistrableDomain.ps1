@@ -47,7 +47,7 @@
     # Load public suffix list if not already loaded for performance
     if ($null -eq $script:MtPublicSuffixRules) {
         Write-Verbose 'Loading public suffix list for registrable domain extraction'
-        $pslPath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/public_domain_suffix_list.dat'
+        $pslPath = Join-Path -Path $PSScriptRoot -ChildPath '../../../assets/public_domain_suffix_list.dat'
         $exactRules = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
         $wildcardRules = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
         $exceptionRules = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)

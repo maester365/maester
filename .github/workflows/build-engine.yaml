@@ -14,7 +14,7 @@ on:
       - 'build/Build-MaesterEngine.ps1'
       - 'build/ci/Test-MaesterWithoutPester.ps1'
       - 'powershell/internal/engine/**'
-      - 'powershell/public/Invoke-Maester.ps1'
+      - 'powershell/public/run/Invoke-Maester.ps1'
       - '.github/workflows/build-engine.yaml'
 
 concurrency:

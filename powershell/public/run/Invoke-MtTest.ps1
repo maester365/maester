@@ -29,7 +29,7 @@ function Invoke-MtTest {
     Runs the built-in test MT.1005 and returns its result row.
 
     .EXAMPLE
-    Invoke-MtTest -Path ./Custom/Test.CONTOSO.1001.ps1 -Parameter @{ MaximumDays = 30 }
+    Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1 -Parameter @{ MaximumDays = 30 }
 
     Runs a custom test with a parameter value, as while writing it.
 

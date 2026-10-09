@@ -272,7 +272,7 @@ Describe 'Active Directory test source safety' {
 
     It 'Requires explicit authorization before the standalone AD runner connects or invokes tests' {
         $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
-        $runnerPath = Join-Path $repositoryRoot 'build/activeDirectory/Run-ADTests-And-CopyReports.ps1'
+        $runnerPath = Join-Path $repositoryRoot 'build/active-directory/Run-ADTests-And-CopyReports.ps1'
         $runnerContent = Get-Content -Path $runnerPath -Raw
 
         $authorizationGuardOffset = $runnerContent.IndexOf('if (-not $ConnectActiveDirectory.IsPresent)')
@@ -289,7 +289,7 @@ Describe 'Active Directory test source safety' {
     It 'Includes the explicit AD connection in every documented AD invocation block' {
         $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
         $documentationPaths = @(
-            (Join-Path $repositoryRoot 'build/activeDirectory/azure-lab/CONTRIBUTING-E2E.md')
+            (Join-Path $repositoryRoot 'build/active-directory/azure-lab/CONTRIBUTING-E2E.md')
             (Join-Path $repositoryRoot 'website/blog/2026-04-25-active-directory-security-testing/index.md')
         )
         $issues = @()

@@ -20,11 +20,17 @@ Templates and data files used by the module, including the engine's data tables:
 - `templates/` - the files `Install-MaesterTests` writes.
 
 #### internal/
-Internal functions that are not exported. `internal/engine/` holds the test engine: discovery
-(`Read-MtNativeTest`, `Get-MtNativeTestInventory`), configuration (`Resolve-MtRunConfig`), selection and
-applicability (`Resolve-MtSelection`, `Resolve-MtNativePlan`), execution (`Invoke-MtNativePlan`), the Pester
-provider for Pester-format custom tests, and the NUnit/JUnit writer. `internal/checks/` holds helpers shared by
-several built-in tests.
+Internal functions that are not exported, grouped by job:
+
+- `engine/` - the test engine: discovery (`Read-MtNativeTest`, `Get-MtNativeTestInventory`), configuration
+  (`Resolve-MtRunConfig`), selection and applicability (`Resolve-MtSelection`, `Resolve-MtNativePlan`), execution
+  (`Invoke-MtNativePlan`), the Pester provider for Pester-format custom tests, and the NUnit/JUnit writer.
+- `session/` - module state, configuration, versions, progress and telemetry.
+- `connect/` - connection checks and consent help. `report/` - result conversion, Markdown reports and affected
+  objects. `app/` - helpers for the Maester Entra app. `utility/` - small helpers with no domain.
+- `services/<service>/` - reusable data access for one service, such as the GitHub client or Graph caching.
+- `checks/<suite>/<service>/` - helpers used by the checks of one suite.
+- `generated/` - EIDSCA and ORCA code written by the generators in `build/`. Regenerate, never edit.
 
 #### lib/
 `Maester.Engine.dll`, the compiled scheduling core and the `[MaesterTest]` and `[MaesterParameter]` attribute
@@ -32,8 +38,13 @@ types, built from [`src/Maester.Engine`](../src/Maester.Engine) and committed. Y
 the engine.
 
 #### public/
-Exported functions, such as **Invoke-Maester**, **Invoke-MtTest**, **Get-MtTest** and **New-MtTest**. Only these
-functions are part of the public surface; the check functions behind the built-in tests are internal from 3.0.
+Exported functions, grouped by what the user is doing: `run/` (**Invoke-Maester**, **Invoke-MtTest**, **Get-MtTest**,
+**New-MtTest**, ...), `connect/`, `report/`, `app/`, and `services/<service>/` for the data helpers custom tests call.
+Only these functions are part of the public surface; the check functions behind the built-in tests are internal from
+3.0.
+
+The [repository layout](https://maester.dev/docs/contributing#repository-layout) explains the groups and the naming
+rules; `tests/general/RepositoryLayout.Tests.ps1` enforces them.
 
 #### tests/
 Unit tests for the module itself, run with `./powershell/tests/pester.ps1`. These are different from the security

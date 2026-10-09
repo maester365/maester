@@ -5,7 +5,7 @@
     .DESCRIPTION
     Downloads the Microsoft Entra built-in roles permissions reference Markdown from GitHub (public, no auth required),
     parses role names, GUIDs, and privileged indicators, then updates:
-    - powershell/internal/Get-MtRoleInfo.ps1 ($script:MtRoles hashtable with MtRoleDefinition objects)
+    - powershell/internal/services/entra/Get-MtRoleInfo.ps1 ($script:MtRoles hashtable with MtRoleDefinition objects)
 
     Includes safeguards against corrupted data, missing roles, and structural regressions.
 
@@ -17,7 +17,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple role definitions.')]
 param (
     # Path to Get-MtRoleInfo.ps1
-    [string] $RoleInfoPath = "$PSScriptRoot/../powershell/internal/Get-MtRoleInfo.ps1",
+    [string] $RoleInfoPath = "$PSScriptRoot/../powershell/internal/services/entra/Get-MtRoleInfo.ps1",
 
     # URL to fetch role definitions from (raw Markdown from GitHub)
     [string] $SourceUrl = 'https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/main/docs/identity/role-based-access-control/permissions-reference.md',

@@ -10,7 +10,7 @@ function Resolve-MtRunConfig {
        left to right. The run is hermetic: config files under -Path are not read.
     2. Otherwise the MAESTER_CONFIG environment variable, a path to a config file.
     3. Otherwise the config files discovered from -Path: maester-config.json (searched in -Path,
-       -Path/tests and up to five parent folders), then Custom/maester-config.json, then
+       -Path/tests and up to five parent folders), then custom/maester-config.json, then
        maester-config.<TenantId>.json. Each file is an optional layer and each merges over the one
        before; a Custom file without a root file beside it is honoured.
 

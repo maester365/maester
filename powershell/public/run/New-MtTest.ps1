@@ -23,7 +23,7 @@ function New-MtTest {
     The report grouping. Defaults to Custom.
 
     .PARAMETER Path
-    The folder to create the files in. Defaults to ./Custom.
+    The folder to create the files in. Defaults to ./custom (an existing ./Custom folder is reused).
 
     .PARAMETER Force
     Overwrites existing files.
@@ -31,7 +31,7 @@ function New-MtTest {
     .EXAMPLE
     New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
 
-    Creates Custom/Test.CONTOSO.1001.ps1 and Custom/Test.CONTOSO.1001.md.
+    Creates custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md.
 
     .LINK
     https://maester.dev/docs/commands/New-MtTest
@@ -56,12 +56,18 @@ function New-MtTest {
         [string] $Category = 'Custom',
 
         [Parameter()]
-        [string] $Path = './Custom',
+        [string] $Path = './custom',
 
         [Parameter()]
         [switch] $Force
     )
 
+    if (-not $PSBoundParameters.ContainsKey('Path')) {
+        # Reuse an existing custom folder whatever its case (2.x created 'Custom').
+        $existing = Get-ChildItem -LiteralPath (Get-Location).Path -Directory -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -ieq 'custom' } | Select-Object -First 1
+        if ($existing) { $Path = $existing.FullName }
+    }
     Write-Verbose "New-MtTest: $Id in $Path"
     $schema = Get-MtTestSchema
     if ($Id -notmatch $schema.IdPattern -or $Id.Length -gt $schema.IdMaxLength) {

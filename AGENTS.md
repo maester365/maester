@@ -10,7 +10,7 @@ maester.dev), `report/` (React app that builds the HTML report template).
 ## Two unrelated test trees — don't mix them
 
 - `tests/` — Maester **security checks** that ship to end-user tenants, run via
-  `Invoke-Maester`. Each check is a native test: `tests/<suite>/[<area>/]Test.<ID>.ps1`
+  `Invoke-Maester`. Each check is a native test: `tests/<suite>/[<service>/]Test.<ID>.ps1`
   (one function with a `[MaesterTest(...)]` attribute) plus `Test.<ID>.md`. No
   `*.Tests.ps1` wrappers, no connection/licence guards, no outer try/catch: declare
   `Service`/`CompatibleLicense` and the engine handles them. Scaffold with `New-MtTest`,
@@ -29,8 +29,33 @@ maester.dev), `report/` (React app that builds the HTML report template).
 ## Hard rules
 
 - Generated content — regenerate, never hand-edit: `website/docs/commands/`,
-  `website/docs/tests/`, `website/versioned_docs/`,
-  `powershell/internal/orca/check-ORCA*.ps1`, EIDSCA generated tests (and the
-  native `tests/EIDSCA/Test.EIDSCA.*` and `tests/orca/Test.ORCA.*` files the
-  generators in `build/eidsca/` and `build/orca/` write). Edit the PowerShell
-  source, comment-based help or generator templates and let automation regenerate.
+  `website/docs/tests/`, `website/versioned_docs/`, everything under
+  `powershell/internal/generated/`, and the native `tests/eidsca/Test.EIDSCA.*` and
+  `tests/orca/Test.ORCA.*` files the generators in `build/eidsca/` and `build/orca/`
+  write. Edit the PowerShell source, comment-based help or generator templates and let
+  automation regenerate.
+
+## Repository layout — where files go
+
+Full rules and reasoning: https://maester.dev/docs/contributing#repository-layout
+(source: `website/docs/contributing.md`). `powershell/tests/general/RepositoryLayout.Tests.ps1`
+enforces them. When writing or reviewing a change, check every added, moved or renamed file:
+
+- Folder names under `tests/`, `powershell/` and `build/` are lowercase kebab-case
+  (`global-secure-access`, not `GlobalSecureAccess`). No two paths may differ only in case.
+- One name per service, the same everywhere: `ad`, `ai-agent`, `azure`, `azure-devops`,
+  `defender`, `entra`, `exchange`, `github`, `global-secure-access`, `graph`, `intune`,
+  `purview`, `sharepoint`, `teams`, `xspm`. A new service must be added to the guide and the test.
+- `tests/<suite>/` holds only `Test.<ID>.ps1`, `Test.<ID>.md`, `suite.json` and `README.md`.
+  Suites: `maester/<service>/` (plus `drift/`; `maester/xspm/` has its own suite.json),
+  `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
+  (reserved for users; never commit tests there).
+- `powershell/public/` (exported) is grouped by job: `run/`, `connect/`, `report/`, `app/`,
+  `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
+  `report/`, `app/`, `services/<service>/`, `checks/<suite>/<service>/`, `generated/`,
+  `utility/`. Nothing sits directly in `public/` or `internal/`.
+- Put a function by its job, not by the check that first needed it: reusable data access
+  for a service goes in `internal/services/<service>/`; logic only one suite's checks use
+  goes in `internal/checks/<suite>/<service>/`; a helper users call from custom tests goes
+  in `public/services/<service>/` (and in the manifest's `FunctionsToExport`).
+- One function per file, named `Verb-Noun.ps1` after the function, with an approved verb.

@@ -8,7 +8,7 @@ function Get-MtMaesterConfig {
     2.x snapshots (build/golden/Export-MtGoldenFixture.ps1).
 
     .DESCRIPTION
-    This also uses the ./Custom/maester-config.json file if it exists and
+    This also uses the ./custom/maester-config.json file if it exists and
     merges the settings, allowing users to override the default settings.
     The Custom/custom directory name is matched case-insensitively.
 
@@ -59,7 +59,7 @@ function Get-MtMaesterConfig {
     function Find-CustomConfigFile {
         param([string]$ConfigDirectory)
 
-        foreach ($customDirectoryName in @('Custom', 'custom')) {
+        foreach ($customDirectoryName in @('custom', 'Custom')) {
             $customConfigPath = Join-Path -Path (Join-Path -Path $ConfigDirectory -ChildPath $customDirectoryName) -ChildPath 'maester-config.json'
             if (Test-Path -Path $customConfigPath -PathType Leaf) {
                 return $customConfigPath

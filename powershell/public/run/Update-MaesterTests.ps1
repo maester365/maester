@@ -7,7 +7,7 @@
     From Maester 3.0 the tests that ship with Maester run from the module itself. Copies of them that
     Install-MaesterTests wrote in Maester 2.x are not run any more. Update-MaesterTests removes those
     copies: every *.Tests.ps1 file outside a Custom folder whose tests all have the ID of a current,
-    previous or retired built-in test. Files with any other test, and everything under Custom/, are kept.
+    previous or retired built-in test. Files with any other test, and everything under custom/, are kept.
 
     A maester-config.json that is a copy of the file Maester 2.x shipped is reduced to the settings
     that differ from the built-in defaults.

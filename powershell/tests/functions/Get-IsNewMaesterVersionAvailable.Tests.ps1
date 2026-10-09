@@ -1,8 +1,8 @@
 ﻿Describe 'Get-IsNewMaesterVersionAvailable' {
     BeforeAll {
-        . "$PSScriptRoot/../../internal/Get-MtLatestModuleVersion.ps1"
-        . "$PSScriptRoot/../../internal/Get-MtModuleVersion.ps1"
-        . "$PSScriptRoot/../../internal/Get-IsNewMaesterVersionAvailable.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-MtLatestModuleVersion.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-MtModuleVersion.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-IsNewMaesterVersionAvailable.ps1"
     }
 
     Context 'When a newer version exists' {

@@ -13,11 +13,11 @@ This document describes how to deploy a reference Active Directory lab and valid
 
 ## Quick Start — Automated Lab Deployment
 
-The `build/activeDirectory/azure-lab/` folder contains fully automated deployment scripts for Azure.
+The `build/active-directory/azure-lab/` folder contains fully automated deployment scripts for Azure.
 
 ```powershell
 # Deploy the complete multi-forest lab
-./build/activeDirectory/azure-lab/Deploy-Lab.ps1 -ExecutorPublicIp '<YOUR_PUBLIC_IP>'
+./build/active-directory/azure-lab/Deploy-Lab.ps1 -ExecutorPublicIp '<YOUR_PUBLIC_IP>'
 ```
 
 This creates:
@@ -63,7 +63,7 @@ When using LDAPS / StartTLS and WinRM over HTTPS, ensure the runner trusts the s
 ### 2. Preflight Gate
 
 ```powershell
-./build/activeDirectory/azure-lab/Test-LabPrerequisites.ps1 -TargetName 'contoso.local'
+./build/active-directory/azure-lab/Test-LabPrerequisites.ps1 -TargetName 'contoso.local'
 ```
 
 Must pass before any E2E rows run. Validates DNS, certificate trust, StartTLS, runner posture, and banned-module absence.
@@ -71,7 +71,7 @@ Must pass before any E2E rows run. Validates DNS, certificate trust, StartTLS, r
 ### 3. Protocol Probe Matrix
 
 ```powershell
-./build/activeDirectory/azure-lab/Invoke-ProtocolProbeMatrix.ps1
+./build/active-directory/azure-lab/Invoke-ProtocolProbeMatrix.ps1
 ```
 
 Low-level protocol validation covering:
@@ -84,7 +84,7 @@ Low-level protocol validation covering:
 ### 4. Public E2E Runner Matrix
 
 ```powershell
-./build/activeDirectory/azure-lab/Invoke-PublicE2EMatrix.ps1
+./build/active-directory/azure-lab/Invoke-PublicE2EMatrix.ps1
 ```
 
 Full Maester test execution through the public path (`Connect-Maester -Service ActiveDirectory`).
@@ -99,7 +99,7 @@ Each row runs in a **fresh PowerShell process** to prevent session contamination
 ### 5. Single-Target Test Runner
 
 ```powershell
-./build/activeDirectory/Run-ADTests-And-CopyReports.ps1 `
+./build/active-directory/Run-ADTests-And-CopyReports.ps1 `
   -ConnectActiveDirectory -TargetName 'contoso.local'
 ```
 
@@ -183,7 +183,7 @@ Always use **PowerShell 7 (`pwsh`)** for runner-based validation. PowerShell 5.1
 ## Cleanup
 
 ```powershell
-./build/activeDirectory/azure-lab/Remove-Lab.ps1 `
+./build/active-directory/azure-lab/Remove-Lab.ps1 `
   -TagName 'maester-lab-id' -TagValue '<YOUR_LAB_ID>'
 ```
 
@@ -204,4 +204,4 @@ Always use **PowerShell 7 (`pwsh`)** for runner-based validation. PowerShell 5.1
 | `Invoke-PublicE2EMatrix.ps1` | Public E2E runner matrix |
 | `Invoke-LabVmRunCommand.ps1` | Enhanced VM Run Command wrapper |
 | `Remove-Lab.ps1` | Lab teardown |
-| `Run-ADTests-And-CopyReports.ps1` | Single-target test runner (in parent `build/activeDirectory/`) |
+| `Run-ADTests-And-CopyReports.ps1` | Single-target test runner (in parent `build/active-directory/`) |

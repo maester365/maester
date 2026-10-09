@@ -68,7 +68,7 @@ $policySplat = @{
 $policy = Invoke-MtGraphRequest @policySplat
 ```
 
-To learn more see [Invoke-MtGraphRequest](https://github.com/maester365/maester/blob/main/powershell/public/Invoke-MtGraphRequest.ps1).
+To learn more see [Invoke-MtGraphRequest](https://github.com/maester365/maester/blob/main/powershell/public/services/graph/Invoke-MtGraphRequest.ps1).
 
 ## Markdown, helpers and shared code
 

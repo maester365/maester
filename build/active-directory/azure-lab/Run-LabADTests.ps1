@@ -20,7 +20,7 @@
     timeout to at least 1800 seconds (30 minutes) or test domains individually.
 
 .PARAMETER LabConfigPath
-    Path to LabConfig.json. Defaults to ./build/activeDirectory/azure-lab/LabConfig.json
+    Path to LabConfig.json. Defaults to ./build/active-directory/azure-lab/LabConfig.json
 
 .PARAMETER EvidenceDir
     Local directory to store retrieved reports. Defaults to ./.sisyphus/evidence/lab-run-$(Get-Date -Format yyyyMMdd-HHmmss)

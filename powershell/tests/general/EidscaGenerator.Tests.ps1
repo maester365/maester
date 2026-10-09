@@ -182,19 +182,19 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
 
     It 'committed EIDSCA files match what the generator produces (drift check)' {
         # Rerun the generator offline (local EIDSCA config and page title cache) into a temporary folder.
+        # The value functions and the dispatcher share one folder, as in powershell/internal/generated/eidsca.
         $root = Join-Path $TestDrive 'drift'
         $paths = New-GeneratorOutput -Root $root
         $pwsh = (Get-Process -Id $PID).Path
         $output = & $pwsh -NoProfile -NonInteractive -File $script:EidscaBuildScript `
             -TestPath $paths.TestPath -PowerShellFunctionsPath $paths.PowerShellFunctionsPath `
-            -PublicFunctionPath $paths.PublicFunctionPath 3>&1 2>&1
+            -PublicFunctionPath $paths.PowerShellFunctionsPath 3>&1 2>&1
         $LASTEXITCODE | Should -Be 0 -Because ($output | Out-String)
         $output | Where-Object { "$_" -like '*No cached page title*' } | Should -BeNullOrEmpty -Because 'every page title must be in build/eidsca/PageTitles.json'
 
         $pairs = @(
-            @{ Fresh = $paths.TestPath; Committed = Join-Path $script:RepoRoot 'tests/EIDSCA'; Filter = 'Test.EIDSCA.*' }
-            @{ Fresh = $paths.PowerShellFunctionsPath; Committed = Join-Path $script:RepoRoot 'powershell/internal/eidsca'; Filter = 'Test-MtEidsca*' }
-            @{ Fresh = $paths.PublicFunctionPath; Committed = Join-Path $script:RepoRoot 'powershell/internal/checks/eidsca'; Filter = 'Test-MtEidscaControl*' }
+            @{ Fresh = $paths.TestPath; Committed = Join-Path $script:RepoRoot 'tests/eidsca'; Filter = 'Test.EIDSCA.*' }
+            @{ Fresh = $paths.PowerShellFunctionsPath; Committed = Join-Path $script:RepoRoot 'powershell/internal/generated/eidsca'; Filter = 'Test-MtEidsca*' }
         )
         $problems = foreach ($pair in $pairs) {
             $fresh = @(Get-ChildItem -Path $pair.Fresh -Filter $pair.Filter -File | ForEach-Object Name)
@@ -207,7 +207,7 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
                 }
             }
         }
-        Join-Path $script:RepoRoot 'tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1' | Should -Not -Exist
+        Join-Path $script:RepoRoot 'tests/eidsca/Test-EIDSCA.Generated.Tests.ps1' | Should -Not -Exist
         $problems | Should -BeNullOrEmpty -Because (
             'generated EIDSCA files must not be edited by hand. Run ./build/eidsca/Update-EidscaTests.ps1 and commit the result: ' +
             ($problems -join '; '))
@@ -216,7 +216,7 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
     It 'reproduces the 2.x Block, selection tags and title of every EIDSCA check' {
         $module = Import-Module (Join-Path $script:RepoRoot 'powershell/Maester.psd1') -Force -PassThru -WarningAction SilentlyContinue |
             Where-Object Name -EQ 'Maester' | Select-Object -First 1
-        $tests = @(& $module { param($p) Get-MtTest -Path $p } (Join-Path $script:RepoRoot 'tests/EIDSCA'))
+        $tests = @(& $module { param($p) Get-MtTest -Path $p } (Join-Path $script:RepoRoot 'tests/eidsca'))
         $golden = @((Get-Content -Path (Join-Path $script:RepoRoot 'powershell/tests/fixtures/golden/tags-and-blocks.json') -Raw |
                     ConvertFrom-Json).Entries | Where-Object { $_.Id -like 'EIDSCA.*' })
         $golden.Count | Should -BeGreaterThan 0

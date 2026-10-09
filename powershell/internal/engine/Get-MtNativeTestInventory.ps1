@@ -31,7 +31,7 @@ function Get-MtNativeTestInventory {
         if (Test-Path -LiteralPath $p -PathType Leaf) { (Resolve-Path -LiteralPath $p).Path }
         elseif (Test-Path -LiteralPath $p -PathType Container) {
             $resolved = (Resolve-Path -LiteralPath $p).Path
-            $customPrefix = (Join-Path $resolved 'Custom') + [System.IO.Path]::DirectorySeparatorChar
+            $customPrefix = (Join-Path $resolved 'custom') + [System.IO.Path]::DirectorySeparatorChar
             Get-ChildItem -LiteralPath $resolved -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue |
                 ForEach-Object { $_.FullName } |
                 Where-Object { -not ($BuiltIn -and $_.StartsWith($customPrefix, [System.StringComparison]::OrdinalIgnoreCase)) }

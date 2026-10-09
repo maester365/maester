@@ -70,7 +70,7 @@ $ExpectedItems = @(
     'lib/Maester.Engine.dll'
     'builtin-pester'
     'builtin-pester/maester-config.json'
-    'assets/templates/Custom/README.md'
+    'assets/templates/custom/README.md'
 )
 
 foreach ($Item in $ExpectedItems) {

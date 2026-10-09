@@ -21,7 +21,7 @@ $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it
 
 # Exclude internal script filenames as well as any helper function names declared inside
 # internal script files so multi-function files do not leak private helpers into docs.
-# Recurse so helpers in nested folders (e.g. internal/ad/queries, internal/eidsca) are excluded too.
+# Recurse so helpers in nested folders (e.g. internal/services/ad/queries, internal/generated/eidsca) are excluded too.
 $internalCommandFiles = Get-ChildItem ./powershell/internal -Recurse -Filter *.ps1
 $internalCommands = $internalCommandFiles | ForEach-Object { $_.BaseName }
 $internalFunctionNames = foreach ($file in $internalCommandFiles) {
@@ -37,7 +37,7 @@ New-DocusaurusHelp -Module ./powershell/Maester.psd1 -DocsFolder ./website/docs 
 
 # New-DocusaurusHelp only knows the flat -EditUrl root above, so every generated custom_edit_url
 # assumes commands live directly under powershell/public/. Most commands actually live in nested
-# category folders (e.g. powershell/public/maester/exchange/), which produces a dead "Edit this
+# category folders (e.g. powershell/public/services/exchange/), which produces a dead "Edit this
 # page" link. Rebuild custom_edit_url per command from the real file location instead.
 $sourceScripts = Get-ChildItem -Path ./powershell/public, ./powershell/internal -Recurse -Filter *.ps1
 $editUrlByCommand = @{}

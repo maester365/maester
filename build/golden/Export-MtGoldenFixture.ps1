@@ -118,7 +118,7 @@ function Get-UniqueTagSet {
 }
 
 function Get-MaesterTestId {
-    # Mirrors the Id computation in powershell/internal/ConvertTo-MtMaesterResult.ps1 (without the run-time TestTitle override).
+    # Mirrors the Id computation in powershell/internal/report/ConvertTo-MtMaesterResult.ps1 (without the run-time TestTitle override).
     param([string] $Name)
     $start = $Name.IndexOf('See https')
     if ($start -gt 0) { $Name = $Name.Substring(0, $start).Trim() }

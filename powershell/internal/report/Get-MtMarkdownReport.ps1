@@ -112,7 +112,7 @@
         return $details
     }
 
-    $markdownFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/ReportTemplate.md'
+    $markdownFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.md'
     $templateMarkdown = Get-Content -Path $markdownFilePath -Raw
 
     # Execute functions first so they don't mess with the markdown template

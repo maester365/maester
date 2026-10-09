@@ -309,9 +309,17 @@ function categoryFor(test, tags) {
   // CIS tests carry both "CIS E3" and "CIS E3 Level 1"; the level-specific tag is the more useful one.
   const levelTag = candidates.find((tag) => /\bLevel\s*\d\b/i.test(tag));
   if (levelTag ?? candidates[0]) return levelTag ?? candidates[0];
-  // Otherwise the folder the test lives in, below the suite folder (e.g. tests/cisa/exchange -> "exchange").
+  // Otherwise the folder the test lives in, below the suite folder (e.g. tests/cisa/exchange -> "Exchange").
   const folders = String(test.File ?? "").split("/").slice(1, -1).filter((part) => !/^(maester|cis|cisa|eidsca|orca)$/i.test(part));
-  return folders[0] ?? "General";
+  return folders[0] ? folderDisplayName(folders[0]) : "General";
+}
+
+// Test folders are lowercase kebab-case (see the repository layout in the contributing guide).
+const folderDisplayNames = new Map([["ad", "AD"], ["ai-agent", "AI Agent"], ["azure-devops", "Azure DevOps"], ["sharepoint", "SharePoint"], ["xspm", "XSPM"]]);
+function folderDisplayName(folder) {
+  const key = folder.toLowerCase();
+  if (folderDisplayNames.has(key)) return folderDisplayNames.get(key);
+  return key.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 }
 
 // CIS benchmark levels (L1/L2) live in tags ("L1"/"L2" or "CIS E3 Level 1"). Prefix the level so

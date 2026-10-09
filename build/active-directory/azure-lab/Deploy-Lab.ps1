@@ -52,13 +52,13 @@
     Skip the post-deployment validation script.
 
 .EXAMPLE
-    ./build/activeDirectory/azure-lab/Deploy-Lab.ps1 -ExecutorPublicIp 203.0.113.10
+    ./build/active-directory/azure-lab/Deploy-Lab.ps1 -ExecutorPublicIp 203.0.113.10
 
     Deploys the full lab and stores generated credentials in an ephemeral Key
     Vault.
 
 .EXAMPLE
-    ./build/activeDirectory/azure-lab/Deploy-Lab.ps1 -ExecutorPublicIp 203.0.113.10 -WhatIf
+    ./build/active-directory/azure-lab/Deploy-Lab.ps1 -ExecutorPublicIp 203.0.113.10 -WhatIf
 
     Shows the main orchestration flow without creating Azure resources.
 #>

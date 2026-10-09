@@ -86,7 +86,7 @@
 
     if (!$Subject) { $Subject = "Maester Test Results" }
 
-    $adaptiveCardTemplateFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/AdaptiveCardPayloadTemplate.json'
+    $adaptiveCardTemplateFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/AdaptiveCardPayloadTemplate.json'
     $adaptiveCardTemplate = Get-Content -Path $adaptiveCardTemplateFilePath -Raw
 
     $CurrentVersion = $MaesterResults.CurrentVersion

@@ -4,11 +4,11 @@
 
   .DESCRIPTION
   For each EIDSCA control collected by Maester the generator writes:
-  * tests/EIDSCA/Test.EIDSCA.<ID>.ps1 and .md: the native test (Maester 3.0). Its [MaesterTest] function reads
+  * tests/eidsca/Test.EIDSCA.<ID>.ps1 and .md: the native test (Maester 3.0). Its [MaesterTest] function reads
     the tenant value and returns $true when it meets the recommended value.
-  * powershell/internal/eidsca/Test-MtEidsca<ID>.ps1: the internal function that reads the tenant value,
+  * powershell/internal/generated/eidsca/Test-MtEidsca<ID>.ps1: the internal function that reads the tenant value,
     reports it with Add-MtTestResultDetail and returns it.
-  * powershell/internal/checks/eidsca/Test-MtEidscaControl.ps1: the dispatcher (internal since Maester 3.0).
+  * powershell/internal/generated/eidsca/Test-MtEidscaControl.ps1: the dispatcher (internal since Maester 3.0).
 
   The generator reads a local copy of the EIDSCA config (build/eidsca/EidscaConfig.json) and a cache of page
   titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
@@ -30,13 +30,13 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple EIDSCA tests.')]
 param (
     # Folder where the native test files (Test.EIDSCA.<ID>.ps1 and .md) are written.
-    [string] $TestPath = "$PSScriptRoot/../../tests/EIDSCA",
+    [string] $TestPath = "$PSScriptRoot/../../tests/eidsca",
 
     # Folder where the internal tenant value functions (Test-MtEidsca<ID>.ps1) are written.
-    [string] $PowerShellFunctionsPath = "$PSScriptRoot/../../powershell/internal/eidsca",
+    [string] $PowerShellFunctionsPath = "$PSScriptRoot/../../powershell/internal/generated/eidsca",
 
-    # Folder where the public function Test-MtEidscaControl is written.
-    [string] $PublicFunctionPath = "$PSScriptRoot/../../powershell/internal/checks/eidsca",
+    # Folder where the dispatcher Test-MtEidscaControl is written.
+    [string] $PublicFunctionPath = "$PSScriptRoot/../../powershell/internal/generated/eidsca",
 
     # Folder with the generator templates.
     [string] $TemplatePath = "$PSScriptRoot/templates",

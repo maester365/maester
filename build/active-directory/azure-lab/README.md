@@ -216,7 +216,7 @@ This approach has been validated successfully. See `DEPLOYMENT-ISSUES.md` Issue 
 
 1. **Enhanced diagnostics with Invoke-LabVmRunCommand.ps1:**
 ```powershell
-$result = ./build/activeDirectory/azure-lab/Invoke-LabVmRunCommand.ps1 `
+$result = ./build/active-directory/azure-lab/Invoke-LabVmRunCommand.ps1 `
   -ResourceGroupName '<resourceGroupName>' `
   -VmName '<vm-name>' `
   -ScriptString 'Get-ADRootDSE' `
@@ -267,7 +267,7 @@ The default `CompletionTimeoutMinutes` (60) in `New-DomainController.ps1` can be
 **Remediation:** Pass a longer timeout when calling `Deploy-Lab.ps1` indirectly via `New-DomainController.ps1`, or modify the parameter when invoking the domain controller script directly:
 
 ```powershell
-./build/activeDirectory/azure-lab/New-DomainController.ps1 `
+./build/active-directory/azure-lab/New-DomainController.ps1 `
   -CompletionTimeoutMinutes 120 `
   ...
 ```
@@ -608,16 +608,16 @@ Builds the module from source, retrieves credentials via managed identity, copie
 
 ```powershell
 # Full run — build module, test all domains, retrieve reports
-./build/activeDirectory/azure-lab/Run-LabADTests.ps1
+./build/active-directory/azure-lab/Run-LabADTests.ps1
 
 # Re-run without rebuilding (faster iteration)
-./build/activeDirectory/azure-lab/Run-LabADTests.ps1 -SkipBuild
+./build/active-directory/azure-lab/Run-LabADTests.ps1 -SkipBuild
 
 # Test only root domain
-./build/activeDirectory/azure-lab/Run-LabADTests.ps1 -Domains RootForest
+./build/active-directory/azure-lab/Run-LabADTests.ps1 -Domains RootForest
 
 # Custom evidence directory
-./build/activeDirectory/azure-lab/Run-LabADTests.ps1 -EvidenceDir ./my-evidence
+./build/active-directory/azure-lab/Run-LabADTests.ps1 -EvidenceDir ./my-evidence
 ```
 
 ### `Run-LabADTests.sh` (Bash wrapper)
@@ -625,8 +625,8 @@ Builds the module from source, retrieves credentials via managed identity, copie
 Same functionality via bash for environments where pwsh is the entry point:
 
 ```bash
-./build/activeDirectory/azure-lab/Run-LabADTests.sh
-./build/activeDirectory/azure-lab/Run-LabADTests.sh --skip-build --domains RootForest
+./build/active-directory/azure-lab/Run-LabADTests.sh
+./build/active-directory/azure-lab/Run-LabADTests.sh --skip-build --domains RootForest
 ```
 
 ### What the scripts do
@@ -672,14 +672,14 @@ evidence/lab-run-YYYYMMDD-HHMMSS/
 
 ```powershell
 # Values are read from LabConfig.json automatically
-./build/activeDirectory/azure-lab/Deploy-Lab.ps1 `
+./build/active-directory/azure-lab/Deploy-Lab.ps1 `
   -ExecutorPublicIp '203.0.113.10'
 ```
 
 ### Preview the orchestration without creating resources
 
 ```powershell
-./build/activeDirectory/azure-lab/Deploy-Lab.ps1 `
+./build/active-directory/azure-lab/Deploy-Lab.ps1 `
   -ExecutorPublicIp '203.0.113.10' `
   -WhatIf
 ```
@@ -687,7 +687,7 @@ evidence/lab-run-YYYYMMDD-HHMMSS/
 ### Remove a tagged lab
 
 ```powershell
-./build/activeDirectory/azure-lab/Remove-Lab.ps1 `
+./build/active-directory/azure-lab/Remove-Lab.ps1 `
   -TagName 'maester-lab-id' `
   -TagValue 'misoule-lab-20260818193000'
 ```

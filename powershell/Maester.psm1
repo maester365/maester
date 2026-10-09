@@ -12,7 +12,7 @@
 #Requires -Modules Microsoft.Graph.Authentication
 
 ## Initialize Module Variables
-## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
+## Update Clear-ModuleVariable function in internal/session/Clear-ModuleVariable.ps1 if you add new variables here
 $__MtSession = @{
 	GraphCache             = @{}
 	GraphBaseUri           = $null
@@ -63,7 +63,7 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 $builtInTestRoot = Join-Path $PSScriptRoot '../tests'
 if (Test-Path -LiteralPath $builtInTestRoot) {
 	$builtInTestRoot = (Resolve-Path -LiteralPath $builtInTestRoot).Path
-	$customTestFolder = (Join-Path $builtInTestRoot 'Custom') + [System.IO.Path]::DirectorySeparatorChar
+	$customTestFolder = (Join-Path $builtInTestRoot 'custom') + [System.IO.Path]::DirectorySeparatorChar
 	foreach ($testFile in @(Get-ChildItem -Path $builtInTestRoot -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue)) {
 		if ($testFile.FullName.StartsWith($customTestFolder, [System.StringComparison]::OrdinalIgnoreCase)) { continue }
 		try {

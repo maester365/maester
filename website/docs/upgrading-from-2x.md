@@ -75,7 +75,7 @@ own tests and your configuration.
 
 | Command | 2.x | 3.0 |
 | --- | --- | --- |
-| [`Install-MaesterTests`](./commands/Install-MaesterTests.mdx) | Copied every test into the folder and installed Pester. | Writes `Custom/README.md` and a starter `maester-config.json` when they are missing. Never writes a test file and never overwrites a file, so pipelines can keep calling it on every run. Does not install Pester; `-SkipPesterCheck` has no effect. |
+| [`Install-MaesterTests`](./commands/Install-MaesterTests.mdx) | Copied every test into the folder and installed Pester. | Writes `custom/README.md` and a starter `maester-config.json` when they are missing. Never writes a test file and never overwrites a file, so pipelines can keep calling it on every run. Does not install Pester; `-SkipPesterCheck` has no effect. |
 | [`Update-MaesterTests`](./commands/Update-MaesterTests.mdx) | Overwrote the test folders with the latest tests. | Removes the 2.x copies of built-in tests: every `*.Tests.ps1` outside `Custom/` whose tests all have a current, previous or retired built-in ID, and the folders that leaves empty. Keeps files that also hold tests of your own (with a warning), and never touches `Custom/`. Asks for confirmation unless you pass `-Force`; supports `-WhatIf`. It also reduces a copy of the 2.x shipped `maester-config.json` to the rows that differ from the built-in severities or set something else. |
 
 Pipelines that clone a copy of the 2.x tests and pass its folder to `-Path` keep working: the copies are

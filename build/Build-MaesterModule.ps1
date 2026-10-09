@@ -264,7 +264,7 @@ Write-Host "   Internal files: $($InternalFiles.Count)"
 Write-Host "   Public files:   $($PublicFiles.Count)"
 
 # Helper: compute directory depth of a file relative to $SourceRoot.
-# e.g. powershell/internal/foo.ps1 → depth 1, powershell/public/core/bar.ps1 → depth 2
+# e.g. powershell/internal/engine/Read-MtNativeTest.ps1 → depth 2, powershell/public/services/entra/Get-MtUser.ps1 → depth 3
 function Get-RelativeDepth {
     param (
         [string] $FilePath,
@@ -597,7 +597,7 @@ $OrcaBuilder = [System.Text.StringBuilder]::new()
 
 # Base classes and enums from orcaClass.psm1 — must come first (defines all base
 # types before any derived check classes).
-$OrcaClassPath = Join-Path $SourceRoot 'internal/orca/orcaClass.psm1'
+$OrcaClassPath = Join-Path $SourceRoot 'internal/generated/orca/orcaClass.psm1'
 $OrcaBaseContent = Get-Content -Path $OrcaClassPath -Raw
 
 $null = $OrcaBuilder.AppendLine('# Consolidated ORCA class definitions')
@@ -610,7 +610,7 @@ $null = $OrcaBuilder.AppendLine()
 # Derived check classes — each check-ORCA*.ps1 file defines a class that inherits
 # from ORCACheck. The `using module` directive is stripped because the base classes
 # are now defined inline above.
-$OrcaCheckFiles = @(Get-ChildItem -Path "$SourceRoot/internal/orca" -Filter 'check-ORCA*.ps1' -Recurse |
+$OrcaCheckFiles = @(Get-ChildItem -Path "$SourceRoot/internal/generated/orca" -Filter 'check-ORCA*.ps1' -Recurse |
     Sort-Object -Property FullName)
 
 $UsingModulePattern = '^\s*using\s+module\s+["'']\.[\\/]orcaClass\.psm1["'']\s*$'

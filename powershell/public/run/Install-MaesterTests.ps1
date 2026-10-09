@@ -6,7 +6,7 @@
     .DESCRIPTION
     From Maester 3.0 the tests that ship with Maester run from the module itself, so updating the module
     updates them and nothing needs to be copied. Install-MaesterTests prepares a folder for your custom
-    tests and configuration: it writes Custom/README.md and a starter maester-config.json when they are
+    tests and configuration: it writes custom/README.md and a starter maester-config.json when they are
     missing. It never writes a test file and never overwrites an existing file, so it is safe to call
     on every pipeline run.
 
@@ -22,7 +22,7 @@
     .EXAMPLE
     Install-MaesterTests -Path ./maester-tests
 
-    Creates ./maester-tests with Custom/README.md and maester-config.json.
+    Creates ./maester-tests with custom/README.md and maester-config.json.
 
     .LINK
     https://maester.dev/docs/commands/Install-MaesterTests
@@ -44,12 +44,15 @@
     Get-IsNewMaesterVersionAvailable | Out-Null
 
     $templates = Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/templates'
-    $customFolder = Join-Path $Path 'Custom'
+    # Reuse an existing custom folder whatever its case (2.x created 'Custom'); new folders are lowercase.
+    $existing = Get-ChildItem -LiteralPath $Path -Directory -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -ieq 'custom' } | Select-Object -First 1
+    $customFolder = if ($existing) { $existing.FullName } else { Join-Path $Path 'custom' }
     $null = New-Item -Path $customFolder -ItemType Directory -Force
 
     $written = [System.Collections.Generic.List[string]]::new()
     foreach ($file in @(
-            @{ Source = Join-Path $templates 'Custom/README.md'; Target = Join-Path $customFolder 'README.md' }
+            @{ Source = Join-Path $templates 'custom/README.md'; Target = Join-Path $customFolder 'README.md' }
             @{ Source = Join-Path $templates 'maester-config.json'; Target = Join-Path $Path 'maester-config.json' }
         )) {
         if (-not (Test-Path -LiteralPath $file.Target)) {
@@ -62,7 +65,7 @@
     $staleCopies = @(Get-ChildItem -LiteralPath $Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
             Where-Object { $_.FullName -notmatch '[\\/][Cc]ustom[\\/]' })
     if ($staleCopies.Count -gt 0) {
-        Write-Host "This folder has $($staleCopies.Count) test file(s) outside Custom/. Copies of the built-in tests are no longer needed; run Update-MaesterTests -Path '$Path' to remove them." -ForegroundColor Yellow
+        Write-Host "This folder has $($staleCopies.Count) test file(s) outside custom/. Copies of the built-in tests are no longer needed; run Update-MaesterTests -Path '$Path' to remove them." -ForegroundColor Yellow
     }
 
     $message = 'Run Connect-Maester to sign in and then run Invoke-Maester to start testing.'

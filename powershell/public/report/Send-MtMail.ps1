@@ -75,7 +75,7 @@
         if (!$Subject) { $Subject = "Maester Test Results" }
     }
 
-    $emailTemplateFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/EmailTemplate.html'
+    $emailTemplateFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/EmailTemplate.html'
     $emailTemplate = Get-Content -Path $emailTemplateFilePath -Raw
 
     $imgMaesterLogo = "https://maester.dev/img/logo.svg"

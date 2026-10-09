@@ -53,9 +53,10 @@ function Resolve-MtTestSource {
         $cwd = (Get-Location).Path
         $configSearchPath = $cwd
         if (Test-Path -LiteralPath (Join-Path $cwd 'powershell/tests/pester.ps1')) {
-            # Maester source checkout: the built-in tests are ./tests; custom tests are ./tests/Custom.
-            $devCustom = Join-Path $cwd 'tests/Custom'
-            if (Test-Path -LiteralPath $devCustom) { $customRoot = (Resolve-Path -LiteralPath $devCustom).Path }
+            # Maester source checkout: the built-in tests are ./tests; custom tests are ./tests/custom.
+            $devCustom = Get-ChildItem -LiteralPath (Join-Path $cwd 'tests') -Directory -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -ieq 'custom' } | Select-Object -First 1
+            if ($devCustom) { $customRoot = $devCustom.FullName }
             $configSearchPath = Join-Path $cwd 'tests'
         } elseif (Test-MtMaesterFolder -Path $cwd) {
             $customRoot = $cwd
@@ -104,7 +105,7 @@ function Get-MtBuiltInPesterFile {
         [string] $BuiltInRoot
     )
 
-    $customPrefix = (Join-Path $BuiltInRoot 'Custom') + [System.IO.Path]::DirectorySeparatorChar
+    $customPrefix = (Join-Path $BuiltInRoot 'custom') + [System.IO.Path]::DirectorySeparatorChar
     Get-ChildItem -LiteralPath $BuiltInRoot -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
         ForEach-Object { $_.FullName } |
         Where-Object { -not $_.StartsWith($customPrefix, [System.StringComparison]::OrdinalIgnoreCase) } |

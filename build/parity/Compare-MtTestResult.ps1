@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Reads two TestResults-*.json files written by Invoke-Maester (the shape built by
-    powershell/internal/ConvertTo-MtMaesterResult.ps1) and reports every difference in
+    powershell/internal/report/ConvertTo-MtMaesterResult.ps1) and reports every difference in
     the fields the parity harness checks (docs/proposals/maester-3.0-design.md section 14):
 
     Per row:   Result, Severity, Title, Name, Block, HelpUrl, Tag (as a set, one
