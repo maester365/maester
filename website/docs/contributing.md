@@ -80,7 +80,7 @@ powershell/
   providers, evaluation and reporting; Prowler keeps each service's client beside that service's checks and shared
   code in `lib/`; PSFramework and dbatools split exported and internal functions, then group by feature.
 - **`public/` is grouped by what the user is doing**, so the folder tells you which commands belong together in the
-  [command reference](/docs/commands/).
+  [command reference](./commands/readme.md).
 - **Folders name products, tags name themes.** A check goes in the folder of the product whose settings it reads,
   because that is what an author knows when adding a check and what an admin knows when looking for one. Themes
   that cut across products, such as AI, are tags: Copilot Studio agent checks live in `maester/copilot-studio/`,

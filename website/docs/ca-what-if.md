@@ -44,7 +44,7 @@ Test-MtConditionalAccessWhatIf -UserId $userId `
 ```
 
 A Maester test can simulate a sign-in and check that the expected Conditional Access policy applies. Each example
-below is a [native test](/docs/writing-tests): save the function as `Test.<ID>.ps1` in your `custom` folder, with a
+below is a [native test](./writing-tests/index.mdx): save the function as `Test.<ID>.ps1` in your `custom` folder, with a
 `Test.<ID>.md` file beside it that describes the test, then run it with `Invoke-MtTest -Path` or `Invoke-Maester`.
 
 ### Example 1: Test if MFA is enforced for Office 365 sign-in
@@ -132,7 +132,7 @@ function Test-ContosoAzurePortalBlockedForUsers {
 
 Both tests take the user as a parameter, so you can point them at a real account in your tenant from
 `maester-config.json` instead of editing the file. Tests written for Maester 2.x as Pester `Describe` / `It` blocks
-still run; see [Pester-format tests](/docs/writing-tests/pester-format-tests) and `Convert-MtTest`.
+still run; see [Pester-format tests](./writing-tests/pester-format-tests.md) and `Convert-MtTest`.
 
 ## Next steps
 
