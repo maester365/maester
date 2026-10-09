@@ -78,11 +78,12 @@ jobs:
         shell: pwsh
         run: |
           Install-Module Microsoft.Graph.Authentication -RequiredVersion 2.41.0 -Scope CurrentUser -Repository PSGallery -Force
-          # Delete only Pester folders: <Modules>/Pester or <Modules>/Pester/<version>.
+          # Delete only Pester folders: the nearest ancestor of each module base named Pester
+          # (-All also lists nested assemblies such as Pester/5.9.0/bin/net452).
           Get-Module -ListAvailable -Name Pester -All | ForEach-Object {
               $folder = $_.ModuleBase
-              if ((Split-Path $folder -Leaf) -ne 'Pester') { $folder = Split-Path $folder -Parent }
-              if ((Split-Path $folder -Leaf) -ne 'Pester') { throw "Unexpected Pester location: $($_.ModuleBase)" }
+              while ($folder -and (Split-Path $folder -Leaf) -ne 'Pester') { $folder = Split-Path $folder -Parent }
+              if (-not $folder) { throw "Unexpected Pester location: $($_.ModuleBase)" }
               $folder
           } | Sort-Object -Unique | ForEach-Object { Write-Host "Removing $_"; sudo rm -rf -- $_ }
 

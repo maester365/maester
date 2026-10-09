@@ -573,7 +573,8 @@ function GetTemplate($folderPath, $templateFileName) {
 }
 
 function RemoveTrailingWhitespace($content) {
-    return $content -replace '(?m)[ \t]+$', ''
+    # (?m)$ matches only before LF, so allow a CR in between for CRLF templates (Windows checkouts).
+    return $content -replace '(?m)[ \t]+(?=\r?$)', ''
 }
 
 function CreateFile($folderPath, $fileName, $content) {
