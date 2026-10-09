@@ -33,7 +33,7 @@ GitHub is the quickest and easiest way to get started with automating Maester. T
   - **Private**: Select this option to keep your tests private
 - Select **Create repository**
 
-The built-in Maester tests ship inside the Maester PowerShell module, so you don't need to copy them into this repository. It holds your workflow and, optionally, your own custom tests (in a `Custom` folder) and `maester-config.json`. Running `Install-MaesterTests` in your local clone creates a starter `Custom/README.md` and `maester-config.json` that you can commit.
+The built-in Maester tests ship inside the Maester PowerShell module, so you don't need to copy them into this repository. It holds your workflow and, optionally, your own custom tests (in a `custom` folder) and `maester-config.json`. Running `Install-MaesterTests` in your local clone creates a starter `custom/README.md` and `maester-config.json` that you can commit.
 
 ## Set up the GitHub Actions workflow
 

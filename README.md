@@ -107,9 +107,9 @@ Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrot
 A Maester test is two files: `Test.<ID>.ps1`, a PowerShell function with a `[MaesterTest(...)]` attribute, and `Test.<ID>.md` with its description and remediation steps.
 
 ```powershell
-New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph   # scaffold Custom/Test.CONTOSO.1001.*
-Get-MtTest -Path ./Custom                                                            # validate, no tenant needed
-Invoke-MtTest -Path ./Custom/Test.CONTOSO.1001.ps1                                   # run one test
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph   # scaffold custom/Test.CONTOSO.1001.*
+Get-MtTest -Path ./custom                                                            # validate, no tenant needed
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1                                   # run one test
 ```
 
 Custom tests written for 2.x with Pester still run when Pester 5.7.1 or later is installed, and `Convert-MtTest` converts them. See [Writing native tests](https://maester.dev/docs/writing-tests).

@@ -84,7 +84,7 @@ New-MtTest -Id CONTOSO.1101 -Title 'All users should have a manager attribute se
 
 ### Step 2: Write the test function
 
-#### Custom/Test.CONTOSO.1101.ps1
+#### custom/Test.CONTOSO.1101.ps1
 
 ```powershell
 function Test-ContosoUsersMissingManagers {
@@ -162,9 +162,9 @@ A custom test can call every command Maester exports, but not Maester's private 
 
 ### Step 3: Write the markdown file
 
-Create the markdown file in the `Custom` folder **with the same name as the test file** but with the `.md` extension.
+Create the markdown file in the `custom` folder **with the same name as the test file** but with the `.md` extension.
 
-#### Custom/Test.CONTOSO.1101.md
+#### custom/Test.CONTOSO.1101.md
 
 ```md
 This test checks if there are any users without a manager assigned.
@@ -189,8 +189,8 @@ Contoso's company policy requires that all users have a manager assigned to them
 ### Step 4: Run the test
 
 ```powershell
-Get-MtTest -Path ./Custom/Test.CONTOSO.1101.ps1   # validate it
-Invoke-MtTest -Path ./Custom/Test.CONTOSO.1101.ps1
+Get-MtTest -Path ./custom/Test.CONTOSO.1101.ps1   # validate it
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1101.ps1
 ```
 
 Running the test should now show the markdown content in the test results.

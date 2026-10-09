@@ -59,7 +59,7 @@ Added in 2.1:
 `MaesterConfig` is the effective run configuration after every layer was merged (see
 [Run configuration](./configuration/run-configuration.md)), with the 3.0 sections (`Selection`, `Metadata`, and
 any `Environment`, `Execution` and `Output` you set). `ConfigSource` names the sources that contributed, lowest
-first, for example `maester-config.json, Custom/maester-config.json`, `-Config`, or `defaults` when no file was
+first, for example `maester-config.json, custom/maester-config.json`, `-Config`, or `defaults` when no file was
 found.
 
 When the run has native tests, `MaesterConfig.TestSettings` lists one row per test in the run: `Id`, `Title`, the

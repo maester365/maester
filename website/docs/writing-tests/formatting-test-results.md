@@ -7,7 +7,7 @@ sidebar_position: 2
 
 In this section we will learn how to format test results to provide more context and make them easier to understand for the person viewing the results.
 
-The examples are [native tests](./index.mdx): a `Test.<ID>.ps1` file in your `Custom` folder with a `Test.<ID>.md` file beside it. `Add-MtTestResultDetail` works the same way in [Pester-format tests](./pester-format-tests.md).
+The examples are [native tests](./index.mdx): a `Test.<ID>.ps1` file in your `custom` folder with a `Test.<ID>.md` file beside it. `Add-MtTestResultDetail` works the same way in [Pester-format tests](./pester-format-tests.md).
 
 Let's write a test to check if conditional access policies are following the company's standards.
 
@@ -36,7 +36,7 @@ function Test-Contoso0001 {
 }
 ```
 
-You can run the test using `Invoke-MtTest -Path ./Custom/Test.CONTOSO.0001.ps1` or `Invoke-Maester` and check the results.
+You can run the test using `Invoke-MtTest -Path ./custom/Test.CONTOSO.0001.ps1` or `Invoke-Maester` and check the results.
 
 What you will notice is that the test results are not very informative. The test will pass or fail, but you won't know which conditional access policies are not following the standard.
 

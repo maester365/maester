@@ -374,8 +374,8 @@ The effective tags of a check are: the suite's `Tags` (from `suite.json`) + the 
 Users' 2.x custom tests (`*.Tests.ps1`) still run when Pester 5.7.1+ is installed. To convert:
 
 ```powershell
-Convert-MtTest -Path ./Custom -WhatIf
-Convert-MtTest -Path ./Custom | Format-Table Id, Status, Notes
+Convert-MtTest -Path ./custom -WhatIf
+Convert-MtTest -Path ./custom | Format-Table Id, Status, Notes
 ```
 
 It writes `Test.<ID>.ps1` + `.md` per `It`, turns a `Test-MtConnection` guard into `Service`, removes a blanket
@@ -384,7 +384,7 @@ have `TODO` comments; tests with names built at run time are `Skipped` and must 
 converted, delete the Pester file: a native test and a Pester test with the same ID give `DuplicateId` and neither
 runs.
 
-A user's custom native test lives in their `Custom/` folder, uses their own ID prefix (not `MT.`, `CISA.`, `CIS.`,
+A user's custom native test lives in their `custom/` folder, uses their own ID prefix (not `MT.`, `CISA.`, `CIS.`,
 `EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `MT1060.`), needs a `.md`, and may omit `Severity`, `Service` and `Author`. It
 can call only Maester's exported commands; to reuse a built-in check it calls `Invoke-MtTest -Id <ID>`.
 

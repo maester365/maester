@@ -8,7 +8,7 @@ description: Every section and key of maester-config.json in Maester 3.0, how co
 
 The run configuration tells Maester which tests to run, with which values, and how to report them. It is the
 `maester-config.json` format you know from 2.x, grown with new sections. Every 2.x `maester-config.json`,
-`Custom/maester-config.json` and `maester-config.<tenantId>.json` loads without changes, and an empty file is an
+`custom/maester-config.json` and `maester-config.<tenantId>.json` loads without changes, and an empty file is an
 empty configuration.
 
 Since 3.0 the module no longer ships a row per test: severities come from the tests themselves, so your config
@@ -33,7 +33,7 @@ Maester uses exactly **one** source, in this order:
    | Layer | Found at |
    | --- | --- |
    | `maester-config.json` | `-Path`, then `-Path/tests`, then up to five parent folders. The first match wins. |
-   | `Custom/maester-config.json` | The `Custom` folder next to that root file, or under `-Path` or `-Path/tests` when there is no root file. |
+   | `custom/maester-config.json` | The `custom` folder next to that root file, or under `-Path` or `-Path/tests` when there is no root file. |
    | `maester-config.<tenantId>.json` | Searched like the root file, once Maester knows the tenant ID from the Graph connection. |
 
 Under every source sits a small defaults layer (the default values of the global settings). Command-line
@@ -42,7 +42,7 @@ parameters sit on top of every source.
 Two changes from 2.x:
 
 - **The tenant file is merged, not substituted.** In 2.x `maester-config.<tenantId>.json` was loaded instead of
-  `maester-config.json`. In 3.0 it is merged over `maester-config.json` and `Custom/maester-config.json`, and wins
+  `maester-config.json`. In 3.0 it is merged over `maester-config.json` and `custom/maester-config.json`, and wins
   over both. A tenant now inherits base settings it does not set itself; Maester warns once and names the global
   settings it inherited. Set them in the tenant file to override them.
 - **`Custom/maester-config.json` works on its own.** In 2.x it was ignored without a root file beside it.

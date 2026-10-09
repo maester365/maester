@@ -43,48 +43,96 @@ Test-MtConditionalAccessWhatIf -UserId $userId `
     -DevicePlatform Windows
 ```
 
-A Maester test can be written to simulate a user sign in and check if a specific Conditional Access policy is enforced.
+A Maester test can simulate a sign-in and check that the expected Conditional Access policy applies. Each example
+below is a [native test](/docs/writing-tests): save the function as `Test.<ID>.ps1` in your `custom` folder, with a
+`Test.<ID>.md` file beside it that describes the test, then run it with `Invoke-MtTest -Path` or `Invoke-Maester`.
 
 ### Example 1: Test if MFA is enforced for Office 365 sign-in
 
-In the following example, the test checks if the Conditional Access policy enforces MFA for the user sign-in to Office 365.
+The test checks that a Conditional Access policy requires MFA when John signs in to Office 365.
 
-- The test queries the What If API to simulate the sign-in for the user John accessing SharePoint.
-- Running **Test-MtConditionalAccessWhatIf** with this test scenario returns the list of Conditional Access policies that would have been enforced for this scenario.
-- The last line of the test checks if there are any policies that contain MFA as a grant control, indicating that MFA is enforced for the user sign-in.
+- It simulates John's sign-in to SharePoint with the What If API.
+- **Test-MtConditionalAccessWhatIf** returns the Conditional Access policies that would apply to that sign-in.
+- The test passes when one of those policies has MFA as a grant control.
+
+`custom/Test.CONTOSO.2001.ps1`:
 
 ```powershell
-Describe "Contoso.ConditionalAccess" {
-    It "Microsoft 365 access requires MFA" {
+function Test-ContosoM365AccessRequiresMfa {
+    [MaesterTest(
+        Id       = 'CONTOSO.2001',
+        Title    = 'Microsoft 365 access requires MFA.',
+        Severity = 'High',
+        Category = 'Contoso/Conditional Access',
+        Tag      = ('CA', 'Contoso'),
+        Service  = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # The user whose sign-in is simulated.
+        [string] $UserPrincipalName = 'john@contoso.com'
+    )
 
-        $userId = (Get-MgUser -UserId 'john@contoso.com').Id
-        $sharePointAppId = '67ad5377-2d78-4ac2-a867-6300cda00e85'
+    $userId = (Invoke-MtGraphRequest -RelativeUri "users/$UserPrincipalName").id
+    $sharePointAppId = '67ad5377-2d78-4ac2-a867-6300cda00e85'
 
-        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId -IncludeApplications $sharePointAppId
+    $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId -IncludeApplications $sharePointAppId
+    $requiresMfa = $policiesEnforced.grantControls.builtInControls -contains 'mfa'
 
-        $policiesEnforced.grantControls.builtInControls | Should -Contain "mfa"
+    if ($requiresMfa) {
+        Add-MtTestResultDetail -Result "Well done. A Conditional Access policy requires MFA when $UserPrincipalName signs in to Microsoft 365."
+    } else {
+        Add-MtTestResultDetail -Result "No Conditional Access policy requires MFA when $UserPrincipalName signs in to Microsoft 365."
     }
+    return $requiresMfa
 }
 ```
 
 ### Example 2: Test if non-Admin users are blocked from accessing the Azure portal
 
-- This test queries the What If API to simulate the sign-in for the user Adele accessing the Azure Portal.
-- Running **Test-MtConditionalAccessWhatIf** should return at least one Conditional Access policy that blocks access to the Azure portal for Adele, an unprivileged user.
+- The test simulates a sign-in to the Azure portal by Adele, a user with no admin roles.
+- It passes when **Test-MtConditionalAccessWhatIf** returns at least one policy that blocks that sign-in.
+
+`custom/Test.CONTOSO.2002.ps1`:
 
 ```powershell
-Describe "Contoso.ConditionalAccess" {
-    It "Block access to the Azure portal for non-admin users" {
+function Test-ContosoAzurePortalBlockedForUsers {
+    [MaesterTest(
+        Id       = 'CONTOSO.2002',
+        Title    = 'Users without admin roles are blocked from the Azure portal.',
+        Severity = 'High',
+        Category = 'Contoso/Conditional Access',
+        Tag      = ('CA', 'Contoso'),
+        Service  = 'Graph',
+        CompatibleLicense = 'AAD_PREMIUM'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # A user with no admin roles.
+        [string] $UserPrincipalName = 'adele@contoso.com'
+    )
 
-        $userId = (Get-MgUser -UserId 'adele@contoso.com').Id
-        $azureAppId = 'c44b4083-3bb0-49c1-b47d-974e53cbdf3c'
+    $userId = (Invoke-MtGraphRequest -RelativeUri "users/$UserPrincipalName").id
+    $azureAppId = 'c44b4083-3bb0-49c1-b47d-974e53cbdf3c'
 
-        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId -IncludeApplications $azureAppId
+    $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId -IncludeApplications $azureAppId
+    $blocked = $policiesEnforced.grantControls.builtInControls -contains 'block'
 
-        $policiesEnforced.grantControls.builtInControls | Should -Contain "block"
+    if ($blocked) {
+        Add-MtTestResultDetail -Result "Well done. Conditional Access blocks $UserPrincipalName from the Azure portal."
+    } else {
+        Add-MtTestResultDetail -Result "No Conditional Access policy blocks $UserPrincipalName from the Azure portal."
     }
+    return $blocked
 }
 ```
+
+Both tests take the user as a parameter, so you can point them at a real account in your tenant from
+`maester-config.json` instead of editing the file. Tests written for Maester 2.x as Pester `Describe` / `It` blocks
+still run; see [Pester-format tests](/docs/writing-tests/pester-format-tests) and `Convert-MtTest`.
 
 ## Next steps
 

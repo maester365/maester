@@ -51,11 +51,11 @@ A Pester test whose ID is the ID of a test that ships with Maester, a previous I
 `MS.AAD.7.1` form of a CISA ID), or the ID of a built-in that was retired, is a stale copy, and so is a test
 whose name starts with the ID of a built-in family and a dot (`MT.1024.`, `MT.1033.`, `MT.1034.`, `MT.1059.`,
 `MT1060.`). A stale copy is not run and
-produces no row, wherever it is, including under `Custom/`. Maester writes one warning naming the files, and
+produces no row, wherever it is, including under `custom/`. Maester writes one warning naming the files, and
 lists the tests under `Selection.Superseded` in the result. `Update-MaesterTests` deletes files that contain
-only such copies (outside `Custom/`).
+only such copies (outside `custom/`).
 
-Copying a built-in test into `Custom/` to change it no longer works. Set its parameters or severity in the
+Copying a built-in test into `custom/` to change it no longer works. Set its parameters or severity in the
 [run configuration](../configuration/run-configuration.md), or copy it under your own ID and disable the
 built-in.
 
@@ -110,9 +110,9 @@ Some options also apply to native tests:
 and never runs them.
 
 ```powershell
-Convert-MtTest -Path ./Custom -WhatIf                      # what would be converted
-Convert-MtTest -Path ./Custom | Format-Table Id, Status, Notes
-Convert-MtTest -Path ./Custom -OutputPath ./Custom/native  # write the native files elsewhere
+Convert-MtTest -Path ./custom -WhatIf                      # what would be converted
+Convert-MtTest -Path ./custom | Format-Table Id, Status, Notes
+Convert-MtTest -Path ./custom -OutputPath ./custom/native  # write the native files elsewhere
 ```
 
 For each `It` block it writes `Test.<ID>.ps1` and `Test.<ID>.md` and returns one report row with `Id`,
@@ -146,7 +146,7 @@ What it leaves to you:
 - The guessed `Service` is a suggestion when the code had no `Test-MtConnection` guard; check it.
 
 Each written file is validated, and validation problems turn the row into `NeedsReview`. Run
-`Get-MtTest -Path ./Custom` and `Invoke-MtTest -Path ./Custom/Test.<ID>.ps1` on the result.
+`Get-MtTest -Path ./custom` and `Invoke-MtTest -Path ./custom/Test.<ID>.ps1` on the result.
 
 The original `*.Tests.ps1` files are not changed. Once a native test exists with the same ID, the Pester test
 with that ID no longer runs: the native test runs instead, and the Pester test is listed under

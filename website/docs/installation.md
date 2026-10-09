@@ -14,7 +14,7 @@ cd maester-tests
 Install-MaesterTests
 ```
 
-The built-in tests ship inside the module, so `Install-MaesterTests` does not copy any tests. It creates a `Custom` folder for your own tests and a starter `maester-config.json`.
+The built-in tests ship inside the module, so `Install-MaesterTests` does not copy any tests. It creates a `custom` folder for your own tests and a starter `maester-config.json`.
 
 - Sign into your Microsoft 365 tenant and run the tests.
 

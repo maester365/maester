@@ -41,7 +41,7 @@ The built-in Maester tests ship inside the Maester PowerShell module, so you don
 
 - Select **Repos** from the left-hand menu
 - In the **Initialize main branch with a README or gitignore** section, select **Initialize** to create the default repository for your project.
-- Optionally, to add your own tests and configuration, clone the repository and run `Install-MaesterTests` in it. This creates a `Custom` folder and a starter `maester-config.json` that you can commit. See [Writing custom tests](../writing-tests/index.mdx) and [Run configuration](../configuration/run-configuration.md).
+- Optionally, to add your own tests and configuration, clone the repository and run `Install-MaesterTests` in it. This creates a `custom` folder and a starter `maester-config.json` that you can commit. See [Writing custom tests](../writing-tests/index.mdx) and [Run configuration](../configuration/run-configuration.md).
 
 ## Set up the Azure Pipeline
 

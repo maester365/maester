@@ -80,7 +80,7 @@ Vulnerabilities in the low range typically have very little impact on an organiz
 
 ## Customizing Severity Levels
 
-Every Maester test declares its default severity in its `[MaesterTest]` attribute. You can override it per test in your `maester-config.json` (or `Custom/maester-config.json`, or a tenant file; see the [overview](./overview.md)). This allows you to tailor the severity levels to your specific needs and requirements.
+Every Maester test declares its default severity in its `[MaesterTest]` attribute. You can override it per test in your `maester-config.json` (or `custom/maester-config.json`, or a tenant file; see the [overview](./overview.md)). This allows you to tailor the severity levels to your specific needs and requirements.
 
 Provide the severity levels for the tests you want to customize using the format below:
 
@@ -139,7 +139,7 @@ Describe 'My Custom Test' {
 
 If a severity level is defined in multiple places, the following precedence order applies (highest to lowest):
 
-1. A `TestSettings` row in your configuration (the tenant file wins over `Custom/maester-config.json`, which wins over `maester-config.json`)
+1. A `TestSettings` row in your configuration (the tenant file wins over `custom/maester-config.json`, which wins over `maester-config.json`)
 2. The test's own severity: the `Severity` in its `[MaesterTest]` attribute, or the `Severity:` tag of a Pester-format test
 3. A severity the test reports at run time (used by tests whose severity depends on what they find)
 

@@ -20,31 +20,31 @@ Tests written for Maester 2.x with Pester (`*.Tests.ps1`) still run. See
 ## Quick start
 
 ```powershell
-# 1. Create Custom/Test.CONTOSO.1001.ps1 and Custom/Test.CONTOSO.1001.md
+# 1. Create custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md
 New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
 
 # 2. Edit the two files, then check them. No tenant connection is needed for this step.
-Get-MtTest -Path ./Custom
+Get-MtTest -Path ./custom
 
 # 3. Run the test on its own while you write it
 Connect-Maester
-Invoke-MtTest -Path ./Custom/Test.CONTOSO.1001.ps1
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1
 
 # 4. Run it with everything else
 Invoke-Maester -Path .
 ```
 
-`New-MtTest` writes to `./Custom` unless you pass `-Path`. It supports `-WhatIf` and refuses to overwrite
+`New-MtTest` writes to `./custom` unless you pass `-Path`. It supports `-WhatIf` and refuses to overwrite
 existing files unless you pass `-Force`.
 
 ## Files and layout
 
-Put your tests in a folder of your own, usually `Custom/` inside the folder you run Maester from:
+Put your tests in a folder of your own, usually `custom/` inside the folder you run Maester from:
 
 ```text
 maester-tests/
   maester-config.json        (optional: your run configuration)
-  Custom/
+  custom/
     Test.CONTOSO.1001.ps1
     Test.CONTOSO.1001.md
     suite.json               (optional: tags, category and source for every test in the folder)
@@ -53,8 +53,11 @@ maester-tests/
 
 `Invoke-Maester -Path ./maester-tests` finds every `Test.*.ps1` file under the path, in any subfolder. If you
 leave out `-Path`, Maester scans the current folder only when it looks like a Maester folder (it has a
-`maester-config*.json` file, a `Custom` folder, a 2.x suite folder, or a `*.Tests.ps1` or `Test.*.ps1` file).
+`maester-config*.json` file, a `custom` folder, a 2.x suite folder, or a `*.Tests.ps1` or `Test.*.ps1` file).
 Otherwise only the built-in tests run.
+
+Maester matches the `custom` folder name without regard to case, so a `Custom` folder created by Maester 2.x keeps
+working, and `New-MtTest` and `Install-MaesterTests` write into it when it exists.
 
 Rules for a test file:
 
@@ -87,7 +90,7 @@ runs and the Pester test does not; it is listed under `Selection.Superseded` in 
 
 ## A complete example
 
-`Custom/Test.CONTOSO.1002.ps1`:
+`custom/Test.CONTOSO.1002.ps1`:
 
 ```powershell
 function Test-ContosoDisabledCaPolicyReason {
@@ -121,7 +124,7 @@ function Test-ContosoDisabledCaPolicyReason {
 }
 ```
 
-`Custom/Test.CONTOSO.1002.md`:
+`custom/Test.CONTOSO.1002.md`:
 
 ```md
 Disabled Conditional Access policies must say why they are disabled, in the form `Disabled: <reason>`.
@@ -538,7 +541,7 @@ A single file can state the same with `#Requires -Modules @{ ModuleName = 'Maest
 ```powershell
 Get-MtTest -Tag CA | Format-Table Id, Title, Severity            # built-in tests
 Get-MtTest MT.1198 | Select-Object -ExpandProperty Parameters    # a test's parameters
-Get-MtTest -Path ./Custom | Where-Object { -not $_.IsValid } |
+Get-MtTest -Path ./custom | Where-Object { -not $_.IsValid } |
     Select-Object Id, File, Errors                               # validate your own tests
 ```
 
@@ -552,11 +555,11 @@ accepts exact IDs and `*` wildcards; `-Tag` matches any of the given tags.
 `Invoke-Maester`, and returns the rows. It writes no report.
 
 ```powershell
-Invoke-MtTest -Path ./Custom/Test.CONTOSO.1002.ps1
-Invoke-MtTest -Path ./Custom/Test.CONTOSO.1002.ps1 -Parameter @{ ReasonMarker = 'Off:' }
-Invoke-MtTest -Path ./Custom                       # every native test in the folder
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1002.ps1
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1002.ps1 -Parameter @{ ReasonMarker = 'Off:' }
+Invoke-MtTest -Path ./custom                       # every native test in the folder
 Invoke-MtTest -Id MT.1005, 'CISA.MS.AAD.3.*'       # built-in tests
-Invoke-MtTest -Path ./Custom -Id CONTOSO.2001.abc  # one instance of a family
+Invoke-MtTest -Path ./custom -Id CONTOSO.2001.abc  # one instance of a family
 ```
 
 - `-Id` takes exact IDs or `*` wildcards. Without `-Path` it selects built-in tests; with `-Path` it selects

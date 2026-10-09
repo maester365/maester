@@ -44,7 +44,7 @@ Update-MaesterTests -WhatIf   # list what would be removed
 Update-MaesterTests           # remove the copies (asks for confirmation; add -Force to skip it)
 ```
 
-* Your custom tests in the `Custom` folder are never touched.
+* Your custom tests in the `custom` folder are never touched.
 * A file that holds your own tests as well as copies of built-in tests is kept, with a warning.
 
 Remove Maester 2.x from the machine too, so it cannot be loaded by accident:

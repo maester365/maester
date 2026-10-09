@@ -14,7 +14,7 @@ From Maester 3.0 the tests carry their own defaults (severity, parameters), and 
 Maester reads these files from the folder you pass with `-Path` (or the current folder), each one optional:
 
 1. **`maester-config.json`** - your main configuration. Maester looks in `-Path`, `-Path/tests` and up to five parent folders.
-2. **`Custom/maester-config.json`** - an overlay on the main file, for example settings owned by a different team.
+2. **`custom/maester-config.json`** - an overlay on the main file, for example settings owned by a different team.
 3. **`maester-config.<tenantId>.json`** - settings for one tenant, merged over the other two once Maester knows which tenant you are connected to.
 
 Each file merges over the one before, so a tenant file only needs the values that differ for that tenant.
