@@ -20,7 +20,7 @@
       Category = 'Maester/Intune',
       Tag = ('Intune', 'Maester'),
       Service = 'Graph',
-      CompatibleLicense = ('AAD_PREMIUM', 'INTUNE_A'),
+      License = ('AAD_PREMIUM', 'INTUNE_A'),
       Author = 'nicolonsky'
   )]
   [CmdletBinding()]

@@ -21,7 +21,7 @@
         Category = 'CISA',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.7.6'),
         Service = 'Graph',
-        CompatibleLicense = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
+        License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',
         Contributor = ('ThorNicolai', 'JeanPhilippeGeorge')
     )]

@@ -22,7 +22,7 @@
         Category = 'CIS',
         Tag = ('CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
-        CompatibleLicense = 'ATP_ENTERPRISE',
+        License = 'ATP_ENTERPRISE',
         Author = 'NZLostboy',
         Contributor = ('thomas-s-schmidt', 'Mynster9361')
     )]

@@ -13,7 +13,7 @@ maester.dev), `report/` (React app that builds the HTML report template).
   `Invoke-Maester`. Each check is a native test: `tests/<suite>/[<service>/]Test.<ID>.ps1`
   (one function with a `[MaesterTest(...)]` attribute) plus `Test.<ID>.md`. No
   `*.Tests.ps1` wrappers, no connection/licence guards, no outer try/catch: declare
-  `Service`/`CompatibleLicense` and the engine handles them. Scaffold with `New-MtTest`,
+  `Service`/`License` and the engine handles them. Scaffold with `New-MtTest`,
   validate with `Get-MtTest -Path`, run with `Invoke-MtTest -Path`; `Convert-MtTest`
   converts users' Pester-format tests. New MT.xxxx checks go here; follow
   `.github/skills/maester-test-expert/SKILL.md` and `website/docs/writing-tests/index.mdx`.

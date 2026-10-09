@@ -22,7 +22,7 @@
         Category = 'CIS',
         Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
         Service = 'Graph',
-        CompatibleLicense = 'INTUNE_A',
+        License = 'INTUNE_A',
         Author = 'oed-metzb',
         Contributor = ('Mynster9361', 'Korthal-Maiyn')
     )]

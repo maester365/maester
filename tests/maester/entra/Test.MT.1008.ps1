@@ -23,7 +23,7 @@
         Category = 'Maester/Entra',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'f-bader',
         Contributor = ('DanielWahlgren', 'weyCC81', 'thomas-s-schmidt', 'SamErde')
     )]

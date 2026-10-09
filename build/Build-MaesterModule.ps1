@@ -695,7 +695,7 @@ if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); t
                 $problems = foreach ($t in $tests) {
                     foreach ($e in $t.Errors) { "$($t.File):$($e.Line): $($e.Message)" }
                     if (-not $t.MarkdownPath) { "$($t.File): the test has no Markdown file." }
-                    foreach ($element in @($t.CompatibleLicense)) {
+                    foreach ($element in @($t.License)) {
                         foreach ($token in ($element -split '&')) {
                             if ($token -and -not ($licenseTokens | Where-Object { $_ -eq $token })) { "$($t.File): licence token '$token' is not in the licence table." }
                         }

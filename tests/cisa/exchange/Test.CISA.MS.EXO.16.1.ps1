@@ -21,7 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.16.1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
-        CompatibleLicense = 'ATP_ENTERPRISE',
+        License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]

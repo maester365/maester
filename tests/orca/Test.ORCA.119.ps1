@@ -18,7 +18,7 @@ function Test-ORCA119 {
         Category = 'ORCA',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
-        CompatibleLicense = 'ATP_ENTERPRISE',
+        License = 'ATP_ENTERPRISE',
         Author = 'soulemike'
     )]
     [CmdletBinding()]

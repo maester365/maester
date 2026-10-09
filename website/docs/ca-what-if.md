@@ -66,7 +66,7 @@ function Test-ContosoM365AccessRequiresMfa {
         Category = 'Contoso/Conditional Access',
         Tag      = ('CA', 'Contoso'),
         Service  = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM'
+        License = 'AAD_PREMIUM'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -106,7 +106,7 @@ function Test-ContosoAzurePortalBlockedForUsers {
         Category = 'Contoso/Conditional Access',
         Tag      = ('CA', 'Contoso'),
         Service  = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM'
+        License = 'AAD_PREMIUM'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

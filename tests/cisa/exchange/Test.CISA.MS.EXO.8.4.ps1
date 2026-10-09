@@ -21,7 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.8.4'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
-        CompatibleLicense = 'EXCHANGE_DLP',
+        License = 'EXCHANGE_DLP',
         Author = 'soulemike'
     )]
     [CmdletBinding()]

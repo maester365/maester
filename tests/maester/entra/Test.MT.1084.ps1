@@ -22,7 +22,7 @@
         Category = 'Maester/Entra',
         Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM_P2',
+        License = 'AAD_PREMIUM_P2',
         Author = 'RobbeVandenDaele',
         Contributor = ('f-bader', 'merill')
     )]

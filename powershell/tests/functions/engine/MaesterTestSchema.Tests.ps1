@@ -12,7 +12,7 @@ Describe 'MaesterTest schema table' {
     }
 
     It 'Declares the same type as the attribute for <_>' -ForEach @(
-        'Id', 'Title', 'Severity', 'Category', 'Tag', 'Preview', 'LongRunning', 'Service', 'CompatibleLicense',
+        'Id', 'Title', 'Severity', 'Category', 'Tag', 'Preview', 'LongRunning', 'Service', 'License',
         'TenantType', 'Cloud', 'Platform', 'InstanceSource', 'Exclusive', 'Author', 'Contributor', 'HelpUrl'
     ) {
         $map = @{ 'System.String' = 'string'; 'System.String[]' = 'string[]'; 'System.Boolean' = 'bool' }

@@ -110,7 +110,7 @@ older `psnext` branch):
 - The model works: 336 tests, one `[ZtTest]` per file, AST discovery, `.md` split on
   `<!--- Results --->`.
 - Worth copying: the attribute idea, AST discovery, the Markdown contract, `Service` as
-  all-of, `CompatibleLicense` as "any element, `&` inside an element means all", tenant
+  all-of, `License` as "any element, `&` inside an element means all", tenant
   type from `organization.tenantType`.
 - Worth avoiding: free-text fields that drifted (53 categories, 49 spellings of minimum
   licence); the result helper accepting title and risk again, so 112 tests now show a
@@ -186,7 +186,7 @@ class MaesterTest : System.Attribute {
 
     # Applicability
     [string[]] $Service             # ALL must be connected
-    [string[]] $CompatibleLicense   # ANY element; 'A&B' inside an element = all of
+    [string[]] $License   # ANY element; 'A&B' inside an element = all of
     [string[]] $TenantType          # Workforce | External
     [string[]] $Cloud               # Commercial | GCC | GCCHigh | DoD | China | Bleu | Delos | GovSG
     [string[]] $Platform            # Windows | Linux | MacOS
@@ -419,7 +419,7 @@ parameter itself (section 3.4), not here.
 | 6 | `Preview` | bool | — | no | false | Not run unless `-IncludePreview` or any `-Tag` | `Preview` tag (28 checks) | none |
 | 7 | `LongRunning` | bool | — | no | false | Not run unless included (section 7.1) | `LongRunning` tag (30 checks) | none |
 | 8 | `Service` | string[] | names in the service registry, or `None` | built-ins | no requirement | Services that must **all** be connected | leading `Test-MtConnection` guards; inferred for unguarded functions | `Service` (optional in ZTA) |
-| 9 | `CompatibleLicense` | string[] | Microsoft service plan names; `&` joins plans | no | no requirement | Tenant needs **any one** element | `Get-MtLicenseInformation` checks; wrapper `-Skip` | `CompatibleLicense` |
+| 9 | `License` | string[] | Microsoft service plan names; `&` joins plans | no | no requirement | Tenant needs **any one** element | `Get-MtLicenseInformation` checks; wrapper `-Skip` | `License` |
 | 10 | `TenantType` | string[] | Workforce, External | no | Workforce | Tenant types the test applies to | new | `TenantType` (mandatory in ZTA) |
 | 11 | `Cloud` | string[] | Commercial, GCC, GCCHigh, DoD, China, Bleu, Delos, GovSG | no | all clouds | Clouds the test is valid in | new | none |
 | 12 | `Platform` | string[] | Windows, Linux, MacOS | no | all platforms | Operating systems the test can run on; the engine skips it elsewhere (section 6) | new; maintainers annotate, lint flags Windows-only calls | none |
@@ -438,7 +438,7 @@ reproduce both, so today's `-Tag` strings select the same tests.
 - Existing tags are kept verbatim, including the 14 that contain spaces (`CIS E3 Level
   1`, `Entra ID P1`, `SharePoint Online`; 79 checks carry one) and the `Severity:*`
   tags on 14 checks.
-- CISA licence tags stay in `Tag` even where they also seed `CompatibleLicense`.
+- CISA licence tags stay in `Tag` even where they also seed `License`.
 - Two rows (MT.1022, MT.1023) gain two tags in the result's `Tag` array, because 2.x
   drops `Describe` tags for tests nested in a `Context`. This is a listed difference.
 
@@ -456,7 +456,7 @@ reproduce both, so today's `-Tag` strings select the same tests.
 | Framework control mappings (CISA `MS.AAD.3.5` aliases, CIS level) | plain tags in 3.0 | A structured mapping can be added later |
 
 **ZtTest properties not adopted:** `MinimumLicense` (never enforced in ZTA, 49
-spellings, documented there as replaced by `CompatibleLicense`); `Pillar` and
+spellings, documented there as replaced by `License`); `Pillar` and
 `SfiPillar` (become tags on import); `ImplementationCost` and `UserImpact` (no data for
 Maester's checks and no consumer). `RiskLevel` is renamed `Severity` because that is
 the name Maester users, the report and downstream consumers already use.
@@ -773,7 +773,7 @@ the partition contract in section 13.1.
 | Dimension | Vocabulary | Semantics | When omitted | Enforced in 3.0 |
 | --- | --- | --- | --- | --- |
 | `Service` | service registry names, or `None` | all-of | no requirement (a lint error for built-ins) | yes |
-| `CompatibleLicense` | service plan names such as `AAD_PREMIUM`, `INTUNE_A` | any element; `&` inside an element is all-of | no requirement | yes, with a config switch |
+| `License` | service plan names such as `AAD_PREMIUM`, `INTUNE_A` | any element; `&` inside an element is all-of | no requirement | yes, with a config switch |
 | `TenantType` | Workforce, External | any-of | Workforce | detected and recorded; off by default |
 | `Cloud` | Commercial, GCC, GCCHigh, DoD, China, Bleu, Delos, GovSG | any-of allow-list | all clouds | detected and recorded; off by default |
 | `Platform` | Windows, Linux, MacOS | any-of allow-list | all platforms | yes |
@@ -1471,7 +1471,7 @@ proves that the engine produces the same rows without them:
   comparisons). 289 functions have only canonical guards and 233 AD functions use the
   collector-null pattern, which is kept because it also guards against empty data; 10
   use the P2-or-Governance two-step; 8 are irregular and are converted by hand. The
-  engine's `Service` and `CompatibleLicense` gates replace them.
+  engine's `Service` and `License` gates replace them.
 - **The outer `try`/`catch`** whose `catch` is exactly
   `Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_; return $null`
   (with or without a `Write-Verbose`). The body of the `try` is dedented in place.
@@ -1514,10 +1514,10 @@ what the migration guide tells custom-test authors:
 | `maester-config.json` row | `[MaesterTest]` `Severity` |
 | `-Because` sentence | dropped (it only reached Pester's error record) |
 | `BeforeDiscovery` that fetches data for `-ForEach` | `InstanceSource` function in the same file |
-| `BeforeDiscovery` that checks a licence or connection for `-Skip:` | `CompatibleLicense` / `Service` |
+| `BeforeDiscovery` that checks a licence or connection for `-Skip:` | `License` / `Service` |
 | `BeforeAll` that dot-sources the function file | nothing: the function is the test file |
 | `-TestCases` passing discovery data into the body | function parameters, or `$Instance.Data` |
-| `Test-MtConnection` / licence guard in the function | `Service` / `CompatibleLicense` |
+| `Test-MtConnection` / licence guard in the function | `Service` / `License` |
 | outer `try { } catch { -SkippedBecause Error }` | removed; the engine catches |
 | `Should -Be $true` | `return $true` |
 | `Should -Be $false`, `Should -Be <value>` | the comparison in the test function |
@@ -1692,7 +1692,7 @@ M4 to M8 move the remaining checks across.
 
 ### Decided by the design unless you object
 
-- The licence property is named `CompatibleLicense` as in ZTA, not `License`.
+- The licence property was first named `CompatibleLicense`, as in ZTA. On 2026-10-09, before 3.0 shipped, Merill renamed it `License`.
 - The run config is the existing `maester-config.json` shape grown additively, not a
   new document.
 - A tenant-specific config file is merged over the base file instead of replacing it.

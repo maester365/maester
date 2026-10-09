@@ -44,7 +44,7 @@ Describe 'Native built-in test <Name>' -ForEach $NativeFiles {
     }
 
     It 'Does not check its own licence' {
-        # Tests whose licence need is not one CompatibleLicense list for every run (a family where only some
+        # Tests whose licence need is not one License list for every run (a family where only some
         # instances need a premium licence) keep their own check.
         $allowed = @(
             'MT.1024' # Entra recommendations: only the premium recommendation instances need Entra ID P2.
@@ -53,7 +53,7 @@ Describe 'Native built-in test <Name>' -ForEach $NativeFiles {
         $text = $script:function.Body.Extent.Text
         $call = [regex]::Match($text, '\bGet-MtLicenseInformation\b')
         $skip = if ($call.Success) { [regex]::Match($text.Substring($call.Index), '-SkippedBecause\s+[''"]?NotLicensed\w*') }
-        $skip.Success | Should -BeFalse -Because 'CompatibleLicense makes the engine skip the test when the tenant is not licensed; add the ID to the allow-list only when the licence need varies by instance or the result branches on the plan'
+        $skip.Success | Should -BeFalse -Because 'License makes the engine skip the test when the tenant is not licensed; add the ID to the allow-list only when the licence need varies by instance or the result branches on the plan'
     }
 
     It 'Does not catch every exception only to report -SkippedBecause Error' {

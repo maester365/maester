@@ -13,7 +13,7 @@
         Category = 'Maester/Entra',
         Tag = ('CA', 'Entra', 'License', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'f-bader',
         Contributor = 'merill'
     )]

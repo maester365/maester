@@ -84,7 +84,7 @@
             ValuesFrom  = 'ServiceRegistry'
             Description = 'Services that must all be connected, or None.'
         }
-        CompatibleLicense = @{
+        License = @{
             Type        = 'string[]'
             Required    = 'No'
             Pattern     = '^[A-Za-z0-9_\-]+(&[A-Za-z0-9_\-]+)*$'

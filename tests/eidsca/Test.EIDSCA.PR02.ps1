@@ -17,7 +17,7 @@ function Test-MtCheckEidscaPR02 {
         Severity = 'High',
         Category = 'EIDSCA',
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

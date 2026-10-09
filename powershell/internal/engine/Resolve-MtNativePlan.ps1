@@ -213,12 +213,12 @@ function Test-MtApplicability {
         }
     }
 
-    if ($Enforce.License -and @($Test.CompatibleLicense).Count -gt 0 -and $TenantContext.Licenses.State -eq 'Known') {
-        if (-not (Test-MtLicenseRequirement -Requirement $Test.CompatibleLicense -Licenses $TenantContext.Licenses)) {
+    if ($Enforce.License -and @($Test.License).Count -gt 0 -and $TenantContext.Licenses.State -eq 'Known') {
+        if (-not (Test-MtLicenseRequirement -Requirement $Test.License -Licenses $TenantContext.Licenses)) {
             $table = Get-MtLicenseTable
-            $firstToken = (@($Test.CompatibleLicense)[0] -split '&')[0]
+            $firstToken = (@($Test.License)[0] -split '&')[0]
             $legacy = if ($table.Tokens.ContainsKey($firstToken)) { $table.Tokens[$firstToken].LegacySkipCode } else { 'Custom' }
-            $detail = "This test requires one of these licences: $($Test.CompatibleLicense -join ', ')."
+            $detail = "This test requires one of these licences: $($Test.License -join ', ')."
             return & $fail 'LicenseNotFound' $detail $legacy
         }
     }
@@ -228,7 +228,7 @@ function Test-MtApplicability {
 function Test-MtLicenseRequirement {
     <#
     .SYNOPSIS
-    True when the tenant has any one element of a CompatibleLicense list; 'A&B' inside an element means all of them.
+    True when the tenant has any one element of a License list; 'A&B' inside an element means all of them.
     #>
     [CmdletBinding()]
     [OutputType([bool])]

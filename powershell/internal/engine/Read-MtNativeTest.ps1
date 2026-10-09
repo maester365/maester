@@ -42,7 +42,7 @@ function Read-MtNativeTest {
         Preview           = $false
         LongRunning       = $false
         Service           = @()
-        CompatibleLicense = @()
+        License = @()
         TenantType        = @()
         Cloud             = @()
         Platform          = @()

@@ -85,7 +85,7 @@ Describe 'Maester.Engine attribute types' {
     }
 
     It 'Has the 17 properties of the design' {
-        $expected = 'Id', 'Title', 'Severity', 'Category', 'Tag', 'Preview', 'LongRunning', 'Service', 'CompatibleLicense',
+        $expected = 'Id', 'Title', 'Severity', 'Category', 'Tag', 'Preview', 'LongRunning', 'Service', 'License',
         'TenantType', 'Cloud', 'Platform', 'InstanceSource', 'Exclusive', 'Author', 'Contributor', 'HelpUrl'
         $actual = [MaesterTestAttribute].GetProperties() | Where-Object { $_.DeclaringType -eq [MaesterTestAttribute] } | ForEach-Object Name
         $actual | Sort-Object | Should -Be ($expected | Sort-Object)

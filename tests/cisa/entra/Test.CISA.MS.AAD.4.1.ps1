@@ -22,7 +22,7 @@
         Category = 'CISA',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.4.1'),
         Service = ('Graph', 'Azure'),
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -25,7 +25,7 @@
         Category = 'CISA',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.2.2'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM_P2',
+        License = 'AAD_PREMIUM_P2',
         Author = 'soulemike',
         Contributor = 'merill'
     )]

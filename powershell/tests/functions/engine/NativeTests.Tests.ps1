@@ -23,7 +23,7 @@ function $name {
 
 Describe 'Read-MtNativeTest' {
     It 'Reads the attribute, function and parameters of a valid test' {
-        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'valid') -Id 'CONTOSO.1' -Attribute "Tag = ('a', 'b'), LongRunning, Service = 'Graph', CompatibleLicense = 'AAD_PREMIUM'" -Param @'
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'valid') -Id 'CONTOSO.1' -Attribute "Tag = ('a', 'b'), LongRunning, Service = 'Graph', License = 'AAD_PREMIUM'" -Param @'
         # Days a credential may live.
         [ValidateRange(1, 365)]
         [int] $Days = 30,
@@ -37,7 +37,7 @@ Describe 'Read-MtNativeTest' {
         $t.Tag | Should -Be @('a', 'b')
         $t.LongRunning | Should -BeTrue
         $t.Service | Should -Be @('Graph')
-        $t.CompatibleLicense | Should -Be @('AAD_PREMIUM')
+        $t.License | Should -Be @('AAD_PREMIUM')
         $days = $t.Parameters | Where-Object Name -EQ 'Days'
         $days.Type | Should -Be 'int'
         $days.Default | Should -Be 30
@@ -151,7 +151,7 @@ Describe 'Applicability gates' {
             Licenses = [pscustomobject]@{ State = 'Known'; ServicePlanIds = @(); SkuIds = @(); ServicePlanNames = @() }
         }
         function Get-Gate { param([hashtable] $Test, [hashtable] $Enforce = @{ Service = $true; License = $true; TenantType = $false; Cloud = $false })
-            $merged = @{ Platform = @(); TenantType = @(); Cloud = @(); Service = @(); UnregisteredServices = @(); CompatibleLicense = @() }
+            $merged = @{ Platform = @(); TenantType = @(); Cloud = @(); Service = @(); UnregisteredServices = @(); License = @() }
             foreach ($k in $Test.Keys) { $merged[$k] = $Test[$k] }
             $t = [pscustomobject]$merged
             InModuleScope Maester -Parameters @{ T = $t; C = $script:context; E = $Enforce } { Test-MtApplicability -Test $T -TenantContext $C -Enforce $E }
@@ -166,7 +166,7 @@ Describe 'Applicability gates' {
 
     It 'Skips a test for another platform' { (Get-Gate @{ Platform = @('Windows') }).ReasonCode | Should -Be 'PlatformMismatch' }
     It 'Skips a test for an unregistered service' { (Get-Gate @{ UnregisteredServices = @('X') }).ReasonCode | Should -Be 'ServiceNotRegistered' }
-    It 'Skips a test the tenant is not licensed for' { (Get-Gate @{ CompatibleLicense = @('AAD_PREMIUM') }).ReasonCode | Should -Be 'LicenseNotFound' }
+    It 'Skips a test the tenant is not licensed for' { (Get-Gate @{ License = @('AAD_PREMIUM') }).ReasonCode | Should -Be 'LicenseNotFound' }
     It 'Does not enforce tenant type unless asked' { Get-Gate @{ TenantType = @('External') } | Should -BeNullOrEmpty }
     It 'Enforces tenant type when asked' {
         (Get-Gate @{ TenantType = @('External') } -Enforce @{ Service = $true; License = $true; TenantType = $true; Cloud = $false }).ReasonCode | Should -Be 'TenantTypeMismatch'
@@ -174,7 +174,7 @@ Describe 'Applicability gates' {
     It 'Lets a test run when every gate passes' { Get-Gate @{ Service = @('Graph') } | Should -BeNullOrEmpty }
     It 'Never skips on an unknown licence state' {
         $script:context.Licenses.State = 'Unknown'
-        Get-Gate @{ CompatibleLicense = @('AAD_PREMIUM') } | Should -BeNullOrEmpty
+        Get-Gate @{ License = @('AAD_PREMIUM') } | Should -BeNullOrEmpty
         $script:context.Licenses.State = 'Known'
     }
 }

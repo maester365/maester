@@ -151,9 +151,9 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $native | Should -Not -Match 'HelpUrl'
         $native | Should -Match "return \(\`$tenantValue -eq 'true'\)"
 
-        # A licence skip becomes CompatibleLicense; the severity falls back to the EIDSCA config.
+        # A licence skip becomes License; the severity falls back to the EIDSCA config.
         $licensed = Get-Content -Path (Join-Path $paths.TestPath 'Test.EIDSCA.ZZ98.ps1') -Raw
-        $licensed | Should -Match "CompatibleLicense = 'AAD_PREMIUM'"
+        $licensed | Should -Match "License = 'AAD_PREMIUM'"
         $licensed | Should -Match "Severity = 'Medium'"
         $licensed | Should -Match "Author = 'Cloud-Architekt'"
         $licensed | Should -Not -Match 'EntraIDPlan'

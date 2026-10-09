@@ -111,7 +111,7 @@ The test applies to some tenants but not, or not now, to this one.
 | --- | --- | --- |
 | `ServiceNotConnected` | A service in the test's `Service` list is not connected. `ReasonDetail` names it. | Connect it, for example `Connect-Maester -Service ExchangeOnline`. |
 | `ServiceNotRegistered` | A custom test names a service this Maester version does not know. | Fix the name (see the [service list](../writing-tests/index.mdx#service)) or update Maester. |
-| `LicenseNotFound` | The tenant has none of the licences in `CompatibleLicense`. | Nothing, if the licence is not in use. To force the decision, set `Environment.Licenses`, or turn the check off with `Environment.Enforce.License = false`. |
+| `LicenseNotFound` | The tenant has none of the licences in `License`. | Nothing, if the licence is not in use. To force the decision, set `Environment.Licenses`, or turn the check off with `Environment.Enforce.License = false`. |
 | `TenantTypeMismatch` | Tenant type is enforced and the test does not apply to this type of tenant. | Turn off `Environment.Enforce.TenantType`, or correct `Environment.TenantType`. |
 | `CloudMismatch` | Cloud is enforced and the test does not apply to this cloud. | Turn off `Environment.Enforce.Cloud`, or correct `Environment.Cloud`. |
 | `PlatformMismatch` | The test runs only on another operating system (for example Windows). | Run it on that operating system. |

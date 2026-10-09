@@ -333,7 +333,7 @@
     Context 'Free Entra ID license' {
 
         It 'Declares the Entra ID P1 licence so the engine skips it on a Free tenant' {
-            (Get-MtTest -Id 'MT.1020').CompatibleLicense | Should -Contain 'AAD_PREMIUM'
+            (Get-MtTest -Id 'MT.1020').License | Should -Contain 'AAD_PREMIUM'
 
             Mock -ModuleName Maester Test-MtConnection { return $true }
             Mock -ModuleName Maester Get-MgContext { return $null }

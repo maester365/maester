@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    # Built-in tests whose inline Get-MtLicenseInformation guard became CompatibleLicense. Each one must be
+    # Built-in tests whose inline Get-MtLicenseInformation guard became License. Each one must be
     # skipped by the engine on an unlicensed tenant and must run on a tenant with any one of its tokens.
     $p1 = @{ License = @('AAD_PREMIUM'); Legacy = 'NotLicensedEntraIDP1' }
     $p2 = @{ License = @('AAD_PREMIUM_P2'); Legacy = 'NotLicensedEntraIDP2' }
@@ -47,8 +47,8 @@ Describe 'Licence gate of converted test <Id>' -ForEach $Cases {
         Mock -ModuleName Maester Get-MtLicenseInformation { if ($Product -eq 'EntraID') { 'Free' } elseif ($Product -eq 'MdoV2') { 'EOP' } else { $null } }
     }
 
-    It 'Declares the licence in CompatibleLicense' {
-        @((Get-MtTest -Id $Id).CompatibleLicense) | Should -Be $License
+    It 'Declares the licence in License' {
+        @((Get-MtTest -Id $Id).License) | Should -Be $License
     }
 
     It 'Is skipped with LicenseNotFound on an unlicensed tenant' {

@@ -35,7 +35,7 @@
         Category = 'Maester/Entra',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'f-bader',
         Contributor = ('merill', 'weyCC81', 'SamErde', 'Mynster9361', 'Jhope188', 'blindzero')
     )]

@@ -101,7 +101,7 @@ function Test-ContosoDisabledCaPolicyReason {
         Category = 'Contoso/Entra',
         Tag      = ('CA', 'Contoso'),
         Service  = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM'
+        License = 'AAD_PREMIUM'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -169,7 +169,7 @@ release than the one you run.
 | `Preview` | bool | | No | `$false` | Not run unless `-IncludePreview`, any `-Tag`, or its exact ID in `-TestId`. |
 | `LongRunning` | bool | | No | `$false` | Not run unless `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, or its exact ID in `-TestId`. |
 | `Service` | string[] | A name from the service registry (below), or `None` | Built-in tests | No requirement | Services that must **all** be connected. |
-| `CompatibleLicense` | string[] | Service plan names; `&` joins plans | No | No requirement | The tenant needs **any one** element. |
+| `License` | string[] | Service plan names; `&` joins plans | No | No requirement | The tenant needs **any one** element. |
 | `TenantType` | string[] | `Workforce`, `External` | No | `Workforce` | Tenant types the test applies to. Recorded; enforced only when you turn it on. |
 | `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | All clouds | Clouds the test applies to. Recorded; enforced only when you turn it on. |
 | `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | All platforms | Operating systems the test can run on. |
@@ -232,7 +232,7 @@ native test:
 - `-Investigate`: the result needs a person to look at it.
 - `-SkippedBecause`: skip the test for a reason only the test can see, such as `NotApplicable`,
   `NotSupportedAppPermission` or `Custom` with `-SkippedCustomReason`. Do not use the `NotConnected*` and
-  `NotLicensed*` codes for conditions the attribute can declare; use `Service` and `CompatibleLicense`.
+  `NotLicensed*` codes for conditions the attribute can declare; use `Service` and `License`.
 - `-Description`: replaces the description from the `.md` file. Leave it out to use the `.md`.
 
 `-TestTitle` and `-Severity` are ignored in a single-result native test: the title and severity come from the
@@ -283,15 +283,15 @@ A test that is not connected to one of its services is `Skipped` with reason `Se
 `ActiveDirectory` is opt-in: its tests are `NotRun` with reason `OptInServiceNotConnected` until you connect it.
 A custom test that names a service the registry does not know is `Skipped` with reason `ServiceNotRegistered`.
 
-### CompatibleLicense
+### License
 
-`CompatibleLicense` lists Microsoft service plan names (the `servicePlanName` values of the tenant's
+`License` lists Microsoft service plan names (the `servicePlanName` values of the tenant's
 `subscribedSkus`). The tenant needs any one element; inside an element, `&` means all of the joined plans.
 
 ```powershell
-CompatibleLicense = 'AAD_PREMIUM_P2'                        # Entra ID P2
-CompatibleLicense = ('AAD_PREMIUM', 'INTUNE_A')             # Entra ID P1 (or better) or Intune
-CompatibleLicense = 'AAD_PREMIUM_P2&INTUNE_A'               # Entra ID P2 and Intune
+License = 'AAD_PREMIUM_P2'                        # Entra ID P2
+License = ('AAD_PREMIUM', 'INTUNE_A')             # Entra ID P1 (or better) or Intune
+License = 'AAD_PREMIUM_P2&INTUNE_A'               # Entra ID P2 and Intune
 ```
 
 Maester maps these tokens to the service plan and SKU IDs it has always used to detect each product, so

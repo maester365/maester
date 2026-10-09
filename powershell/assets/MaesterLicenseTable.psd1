@@ -1,4 +1,4 @@
-# Licence tokens for [MaesterTest(CompatibleLicense = ...)] (Maester 3.0 design, section 6).
+# Licence tokens for [MaesterTest(License = ...)] (Maester 3.0 design, section 6).
 #
 # A token is a Microsoft service plan name. Each resolves to the IDs that Get-MtLicenseInformation
 # matched in Maester 2.x, including government, education and volume variants, so the engine's

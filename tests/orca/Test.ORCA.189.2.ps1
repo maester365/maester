@@ -18,7 +18,7 @@ function Test-ORCA189_2 {
         Category = 'ORCA',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
-        CompatibleLicense = 'ATP_ENTERPRISE',
+        License = 'ATP_ENTERPRISE',
         Author = 'thomas-s-schmidt'
     )]
     [CmdletBinding()]

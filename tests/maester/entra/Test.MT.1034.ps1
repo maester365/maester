@@ -42,7 +42,7 @@ function Test-MtCaWhatIfEmergencyAccessNotBlocked {
         Tag = ('CA', 'CAWhatIf', 'Maester'),
         LongRunning,
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         InstanceSource = 'Get-MtCaWhatIfEmergencyAccessInstance',
         Author = 'merill',
         Contributor = ('f-bader', 'milanschwartz', 'jasperbaes')

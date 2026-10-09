@@ -112,7 +112,7 @@ Describe 'EIDSCA native tests' {
     Context 'metadata' {
         It 'declares the Entra ID P1 licence instead of a licence skip (EIDSCA.PR05)' {
             $test = Get-MtTest -Id EIDSCA.PR05
-            $test.CompatibleLicense | Should -Be 'AAD_PREMIUM'
+            $test.License | Should -Be 'AAD_PREMIUM'
             $test.Service | Should -Be 'Graph'
             (Get-Content -Path $test.File -Raw) | Should -Not -Match 'EntraIDPlan'
         }

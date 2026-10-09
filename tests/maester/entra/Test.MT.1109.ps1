@@ -38,7 +38,7 @@
         Category = 'Maester/Entra',
         Tag = ('AccessPackages', 'Entra', 'Governance', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
+        License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'nicowyss',
         Contributor = 'JeanPhilippeGeorge'
     )]

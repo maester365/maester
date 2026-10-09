@@ -221,7 +221,7 @@ When contributing tests, please ensure the following:
 
 - [x] Scaffold the files in the right suite folder, for example `New-MtTest -Id MT.1234 -Title '...' -Service Graph -Category 'Maester/Entra' -Path ./tests/maester/entra`, then follow [Writing native tests](./writing-tests/index.mdx).
 - [x] Built-in tests must set `Severity`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, and describe every parameter.
-- [x] Do not check connections or licences in the test and do not wrap it in a `try`/`catch` that only reports `-SkippedBecause Error`: declare `Service` and `CompatibleLicense` and let the engine handle it. The unit tests enforce this.
+- [x] Do not check connections or licences in the test and do not wrap it in a `try`/`catch` that only reports `-SkippedBecause Error`: declare `Service` and `License` and let the engine handle it. The unit tests enforce this.
 - [x] Tunable values (thresholds, objects to exclude) are parameters of the test function, not hard-coded.
 - [x] The test's `.md` file explains the test in detail and provides all the context required for the user to resolve the issue, including deep links to the admin portal page to resolve the issue. This will be shown to the user when they view the test report. The file should include:
   - [x] Link to the admin portal blade where the setting can be configured

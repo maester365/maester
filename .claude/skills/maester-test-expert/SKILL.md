@@ -4,7 +4,7 @@ description: >-
   Write, validate, and document Maester security checks for Microsoft 365 tenants.
   Use when asked to create, edit, review, or debug a Maester check (a native test:
   Test.<ID>.ps1 with a [MaesterTest] attribute plus Test.<ID>.md), its tagging, or a
-  user's custom test. Covers the [MaesterTest] attribute, Service/CompatibleLicense
+  user's custom test. Covers the [MaesterTest] attribute, Service/License
   gates, test parameters, Graph API data retrieval, Add-MtTestResultDetail formatting,
   the tagging taxonomy (CIS, CISA, EIDSCA, ORCA, MT), remediation guidance,
   Entra ID, Exchange, SharePoint, Teams, Defender, Conditional Access, and the

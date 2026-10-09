@@ -5,7 +5,7 @@ description: >-
   Use when asked to create, edit, review, or debug a Maester check (a native test:
   Test.<ID>.ps1 with a [MaesterTest] attribute plus Test.<ID>.md), its tagging, or a
   user's custom test, including converting Pester-format tests. Covers the [MaesterTest]
-  attribute, Service/CompatibleLicense gates, test parameters, families, Graph API data
+  attribute, Service/License gates, test parameters, families, Graph API data
   retrieval, Add-MtTestResultDetail formatting, the tagging taxonomy (CIS, CISA, EIDSCA,
   ORCA, MT), remediation guidance, Entra ID, Exchange, SharePoint, Teams, Defender,
   Conditional Access, and the validation checklist for new checks.
@@ -105,7 +105,7 @@ function Test-MtCaBlockDeviceCodeFlow {
         Category          = 'Maester/Entra',
         Tag               = ('CA', 'Entra', 'Maester'),
         Service           = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author            = 'your-github-handle'
     )]
     [CmdletBinding()]
@@ -156,7 +156,7 @@ schema lives in `powershell/assets/MaesterTestSchema.psd1`.
 | `Preview` | bool | | No | Depends on preview APIs or still being validated. |
 | `LongRunning` | bool | | No | Slow in large tenants. |
 | `Service` | string[] | `Graph`, `Azure`, `ExchangeOnline`, `SecurityCompliance`, `SharePointOnline`, `Teams`, `Dataverse`, `AzureDevOps`, `GitHub`, `ActiveDirectory`, or `None` | Yes | All listed must be connected. Registry: `powershell/assets/MaesterServiceRegistry.psd1`. |
-| `CompatibleLicense` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
+| `License` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
 | `TenantType` | string[] | `Workforce`, `External` | No | Default `Workforce`. Recorded; enforced only when a run turns it on. |
 | `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | Default all. Recorded; enforced only when a run turns it on. |
 | `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | Declare `Windows` for Windows-only commands (lint checks common ones). |
@@ -192,7 +192,7 @@ Licence tokens: `AAD_PREMIUM` (Entra ID P1 or better), `AAD_PREMIUM_P2`, `Entra_
 - Use `-SkippedBecause NotApplicable` when the tenant state makes the check meaningless (for example no policies of
   that kind exist). Never return `$null` to mean "not applicable".
 - Never use `NotConnected*` or `NotLicensed*` skip codes in a built-in check; declare `Service` /
-  `CompatibleLicense`.
+  `License`.
 - Checks that need delegated permissions skip with `-SkippedBecause NotSupportedAppPermission` when
   `(Get-MgContext).AuthType -ne 'Delegated'`.
 
@@ -358,7 +358,7 @@ The effective tags of a check are: the suite's `Tags` (from `suite.json`) + the 
    the next `MT.xxxx` (the maester-issue-manager agent can do this). `Get-MtTest MT.12*` shows which IDs exist.
 2. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Severity <level> -Category '<suite/area>'
    -Path ./tests/<suite>/<area>`.
-3. **Fill in the attribute**: `Tag`, `CompatibleLicense`, `Author`, flags as needed.
+3. **Fill in the attribute**: `Tag`, `License`, `Author`, flags as needed.
 4. **Write the function**: read with `Invoke-MtGraphRequest` or the helpers, decide, `Add-MtTestResultDetail`,
    return a boolean. Add parameters for tunable values.
 5. **Write the `.md`**: summary, rationale, remediation with portal links, related links, results footer.
@@ -392,7 +392,7 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 
 ### Test logic
 - [ ] Returns exactly one `$true`/`$false`; no stray pipeline output.
-- [ ] No `Test-MtConnection` guard, no `Get-MtLicenseInformation` check; `Service` and `CompatibleLicense` declared instead.
+- [ ] No `Test-MtConnection` guard, no `Get-MtLicenseInformation` check; `Service` and `License` declared instead.
 - [ ] No blanket `try { } catch { Add-MtTestResultDetail -SkippedBecause Error ... }`.
 - [ ] `-SkippedBecause NotApplicable` (not `$null`) when the check does not apply.
 - [ ] Data retrieval uses `Invoke-MtGraphRequest` or Maester helpers.
@@ -424,7 +424,7 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 
 | Mistake | Why it matters | Fix |
 | --- | --- | --- |
-| Adding a `Test-MtConnection` guard or licence check | Duplicates the engine's gate; lint fails | Declare `Service` / `CompatibleLicense` |
+| Adding a `Test-MtConnection` guard or licence check | Duplicates the engine's gate; lint fails | Declare `Service` / `License` |
 | Wrapping the body in `try`/`catch` that reports `-SkippedBecause Error` | Lint fails; the engine already does it | Remove it; catch only specific conditions |
 | Returning `$null` for "not applicable" | Reported as `Skipped`/`NoResult` | `Add-MtTestResultDetail -SkippedBecause NotApplicable` |
 | Uncaptured output (`$list.Add(...)`) | `Error`/`InvalidReturn` | `$null = $list.Add(...)` |
@@ -459,7 +459,7 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 | `Error` / `InvalidConfiguration` | Bad parameter value in config or `-Parameter` | Check `Get-MtTest <ID>` parameters; fix the value |
 | `Error` / `TestError` | Exception in the body (often a permission) | Read `ReasonDetail` / `ErrorRecord` |
 | `Skipped` / `ServiceNotConnected` | Declared service not connected | `Connect-Maester -Service <service>` |
-| `Skipped` / `LicenseNotFound` | Tenant lacks every `CompatibleLicense` element | Expected; check the token |
+| `Skipped` / `LicenseNotFound` | Tenant lacks every `License` element | Expected; check the token |
 | `Skipped` / `NoResult` | Returned `$null` | Return a boolean or skip explicitly |
 | `NotRun` / `LongRunning` or `Preview` | Excluded by default | `-IncludeLongRunning` / `-IncludePreview`, or `Invoke-MtTest -Id` |
 | `NotRun` / `OptInServiceNotConnected` | Active Directory check without AD connection | `Connect-Maester -Service ActiveDirectory` |

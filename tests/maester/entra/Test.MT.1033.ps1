@@ -46,7 +46,7 @@ function Test-MtCaWhatIfLegacyAuthenticationBlocked {
         Tag = ('CA', 'CAWhatIf', 'Maester'),
         LongRunning,
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         InstanceSource = 'Get-MtCaWhatIfRegularUserInstance',
         Author = 'f-bader'
     )]

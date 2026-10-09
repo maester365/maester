@@ -22,7 +22,7 @@
         Category = 'Maester/Entra',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM_P2',
+        License = 'AAD_PREMIUM_P2',
         Author = 'f-bader'
     )]
     [CmdletBinding()]

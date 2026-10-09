@@ -28,7 +28,7 @@
         Category = 'Maester/Entra',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'f-bader',
         Contributor = ('merill', 'earbona23')
     )]

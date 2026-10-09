@@ -42,7 +42,7 @@
         Tag = ('CA', 'Entra', 'Maester'),
         Preview,
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM',
+        License = 'AAD_PREMIUM',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

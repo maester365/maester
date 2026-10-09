@@ -13,7 +13,7 @@
         Category = 'Maester/Entra',
         Tag = ('Maester', 'PIM', 'Privileged'),
         Service = 'Graph',
-        CompatibleLicense = 'AAD_PREMIUM_P2',
+        License = 'AAD_PREMIUM_P2',
         Author = 'Cloud-Architekt',
         Contributor = ('f-bader', 'merill', 'thomas-s-schmidt', 'nathanmcnulty')
     )]

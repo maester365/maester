@@ -72,6 +72,6 @@ New checks are native tests in the right suite folder. Scaffold one with `New-Mt
 [Writing native tests](https://maester.dev/docs/writing-tests) and the
 [contribution guide](https://maester.dev/docs/contributing). Built-in tests must not check their own connection
 or licence, or wrap their body in a `try`/`catch` that only reports `-SkippedBecause Error`: they declare `Service`
-and `CompatibleLicense`, and the engine does the rest. The unit tests in `powershell/tests` enforce this.
+and `License`, and the engine does the rest. The unit tests in `powershell/tests` enforce this.
 
 Pages under `website/docs/tests/` are generated from these files; do not edit them by hand.

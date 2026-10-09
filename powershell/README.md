@@ -13,7 +13,7 @@ Templates and data files used by the module, including the engine's data tables:
 
 - `MaesterTestSchema.psd1` - the properties of the `[MaesterTest]` attribute and their rules.
 - `MaesterServiceRegistry.psd1` - the services a test can declare in `Service`, and how each is probed.
-- `MaesterLicenseTable.psd1` - the licence tokens accepted in `CompatibleLicense` and the plan and SKU IDs they match.
+- `MaesterLicenseTable.psd1` - the licence tokens accepted in `License` and the plan and SKU IDs they match.
 - `MaesterParameterKinds.psd1` - the kinds a test parameter can declare with `[MaesterParameter(Kind = ...)]`.
 - `MaesterSettings.psd1` - the global settings Maester knows, with their defaults (read by `Get-MtSetting`).
 - `Maester.LegacyIds.json` - previous IDs of built-in tests, used to recognise stale 2.x copies.

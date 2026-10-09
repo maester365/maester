@@ -21,7 +21,7 @@
         Category = 'Maester/Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
-        CompatibleLicense = 'INTUNE_A',
+        License = 'INTUNE_A',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'l-gosling')
     )]

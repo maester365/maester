@@ -147,7 +147,7 @@
     }
 
     It 'declares the Intune licence so the engine skips it when Intune is not licensed' {
-        (Get-MtTest -Id 'MT.1123').CompatibleLicense | Should -Contain 'INTUNE_A'
+        (Get-MtTest -Id 'MT.1123').License | Should -Contain 'INTUNE_A'
 
         Mock -ModuleName Maester Get-MgContext { return $null }
         $config = [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = @('AAD_PREMIUM') } }

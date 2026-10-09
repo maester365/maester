@@ -233,4 +233,4 @@ if ((Get-MgContext).AuthType -ne 'Delegated') {
 Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'All alerts have been suppressed.'
 ```
 
-Do not skip for a missing connection or licence: declare `Service` and `CompatibleLicense` in the attribute and the engine skips the test for you. See [Applicability and reason codes](../configuration/applicability.md).
+Do not skip for a missing connection or licence: declare `Service` and `License` in the attribute and the engine skips the test for you. See [Applicability and reason codes](../configuration/applicability.md).

@@ -21,7 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.17.3'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
-        CompatibleLicense = 'M365_ADVANCED_AUDITING',
+        License = 'M365_ADVANCED_AUDITING',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]

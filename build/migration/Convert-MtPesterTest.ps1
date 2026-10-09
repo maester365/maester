@@ -7,7 +7,7 @@
     maester-config.json row and the authorship seed, then:
 
     - writes the [MaesterTest(...)] attribute (Id, Title, Severity, Category, Tag, Preview, LongRunning,
-      Service, CompatibleLicense, Author, Contributor, HelpUrl);
+      Service, License, Author, Contributor, HelpUrl);
     - removes the canonical connection and licence guards at the top of the function and the outer
       try/catch whose catch only reports -SkippedBecause Error (both are done by the engine);
     - moves the function file and its .md to tests/<suite>/<area>/Test.<ID>.ps1 and .md (Move mode), or,
@@ -261,7 +261,7 @@ function New-AttributeText {
     if ($Meta.Preview) { $lines.Add("$Indent    Preview") }
     if ($Meta.LongRunning) { $lines.Add("$Indent    LongRunning") }
     & $add 'Service' (Format-ListValue $Meta.Service)
-    if ($Meta.CompatibleLicense.Count -gt 0) { & $add 'CompatibleLicense' (Format-ListValue $Meta.CompatibleLicense) }
+    if ($Meta.License.Count -gt 0) { & $add 'License' (Format-ListValue $Meta.License) }
     if ($Meta.Author.Count -gt 0) { & $add 'Author' (Format-ListValue $Meta.Author) }
     if ($Meta.Contributor.Count -gt 0) { & $add 'Contributor' (Format-ListValue $Meta.Contributor) }
     if ($Meta.HelpUrl) { & $add 'HelpUrl' (Format-StringValue $Meta.HelpUrl) }
@@ -452,7 +452,7 @@ foreach ($entry in $entries) {
         $meta = @{
             Id = $entry.Id; Title = $titleInfo.Title; Severity = $severity; Category = $entry.Block; Tag = $tag
             Preview = $selectionTags -contains 'Preview'; LongRunning = $selectionTags -contains 'LongRunning'
-            Service = $services; CompatibleLicense = @($guards.Licenses); Author = $authors; Contributor = $contributors; HelpUrl = $helpUrl
+            Service = $services; License = @($guards.Licenses); Author = $authors; Contributor = $contributors; HelpUrl = $helpUrl
         }
 
         $targetDir = Split-Path (Join-Path $RepoRoot $entry.File) -Parent
@@ -516,7 +516,7 @@ $(New-AttributeText -Meta $meta -Indent '    ')
         $item.Flags = $flags.ToArray()
         $item.Severity = $severity
         $item.Service = $services
-        $item.CompatibleLicense = @($guards.Licenses)
+        $item.License = @($guards.Licenses)
         $item.RemovedGuards = $guards.Statements.Count
         $item.RemovedTry = [bool]$outerTry
 

@@ -408,7 +408,7 @@ function buildInventory(catalog) {
       category: categoryFor(test, tags),
       tags,
       services: test.Service ?? [],
-      licenses: test.CompatibleLicense ?? [],
+      licenses: test.License ?? [],
       preview: Boolean(test.Preview),
       longRunning: Boolean(test.LongRunning),
       instanceSource: test.InstanceSource ?? "",

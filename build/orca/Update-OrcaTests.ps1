@@ -274,7 +274,7 @@ foreach ($check in $checks) {
     $attribute.Add("Tag = 'EXO'")
     $attribute.Add("Service = $(Format-OrcaList $services)")
     # Defender for Office 365 Plan 1 or 2. ORCA detects MDO itself and reports 'not completed' without it.
-    if ($check.Services -eq 'MDO') { $attribute.Add("CompatibleLicense = 'ATP_ENTERPRISE'") }
+    if ($check.Services -eq 'MDO') { $attribute.Add("License = 'ATP_ENTERPRISE'") }
     $attribute.Add("Author = $(Format-OrcaList @($meta.Author))")
     if ($meta.Contributor) { $attribute.Add("Contributor = $(Format-OrcaList @($meta.Contributor))") }
     $attributeText = ($attribute | ForEach-Object { "        $_" }) -join ",`n"

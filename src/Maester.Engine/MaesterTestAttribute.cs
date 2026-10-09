@@ -56,7 +56,7 @@ public sealed class MaesterTestAttribute : Attribute
     public string[] Service { get; set; }
 
     /// <summary>Service plan names; the tenant needs any one element. 'A&amp;B' inside an element means all of them.</summary>
-    public string[] CompatibleLicense { get; set; }
+    public string[] License { get; set; }
 
     /// <summary>Workforce or External.</summary>
     public string[] TenantType { get; set; }

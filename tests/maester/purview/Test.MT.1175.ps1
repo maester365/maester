@@ -32,7 +32,7 @@
         Category = 'Maester/Purview',
         Tag = ('Maester', 'Purview'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
-        CompatibleLicense = 'EXCHANGE_DLP',
+        License = 'EXCHANGE_DLP',
         Author = 'OfirGavish'
     )]
     [CmdletBinding()]

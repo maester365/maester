@@ -21,7 +21,7 @@
         Category = 'CISA',
         Tag = ('MS.EXO', 'MS.EXO.8.2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
-        CompatibleLicense = 'EXCHANGE_DLP',
+        License = 'EXCHANGE_DLP',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'
     )]

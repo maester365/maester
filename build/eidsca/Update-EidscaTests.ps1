@@ -475,30 +475,30 @@ function GetValueType($controlItem) {
     return (GetCompareOperator($controlItem.RecommendedValue)).valuetype
 }
 
-# Skip conditions in the EIDSCA config that are licence guards. The engine gates them with CompatibleLicense.
+# Skip conditions in the EIDSCA config that are licence guards. The engine gates them with License.
 $script:LicenseSkipConditions = @{
     "`$EntraIDPlan -eq 'Free'" = 'AAD_PREMIUM'
 }
 
 # Turns the SkipCondition of a control into the code at the top of the native test.
-# - A licence guard becomes a CompatibleLicense token (no code).
+# - A licence guard becomes a License token (no code).
 # - Any other condition is a fact only the test can see: the test reads the discovery variables it uses
 #   (from the Discovery lines of the EIDSCA config) and skips with the custom reason.
 # - A call to another control's function, (Test-MtEidsca<ID>), is replaced by a direct read of that control's
 #   tenant value, so no test calls another test and the other control's result detail is not reported
 #   (design section 13).
 function GetSkipCheck($controlItem, $discoveryLines, $controlLookup) {
-    $result = [pscustomobject]@{ Code = ''; CompatibleLicense = @() }
+    $result = [pscustomobject]@{ Code = ''; License = @() }
     $condition = "$($controlItem.SkipCondition)".Trim()
     if ([string]::IsNullOrWhiteSpace($condition)) {
         return $result
     }
     if ($script:LicenseSkipConditions.ContainsKey($condition)) {
-        $result.CompatibleLicense = @($script:LicenseSkipConditions[$condition])
+        $result.License = @($script:LicenseSkipConditions[$condition])
         return $result
     }
     if ($condition -match '\$EntraIDPlan') {
-        throw "$($controlItem.CheckId): the licence condition '$condition' has no CompatibleLicense mapping in `$LicenseSkipConditions."
+        throw "$($controlItem.CheckId): the licence condition '$condition' has no License mapping in `$LicenseSkipConditions."
     }
 
     $lines = [System.Collections.Generic.List[string]]::new()
@@ -555,7 +555,7 @@ function GetMaesterTestAttribute($meta) {
     if ($meta.Severity) { $lines.Add("        Severity = $(FormatAttributeString $meta.Severity)") }
     $lines.Add("        Category = $(FormatAttributeString $meta.Category)")
     $lines.Add("        Service = $(FormatAttributeList $meta.Service)")
-    if ($meta.CompatibleLicense.Count -gt 0) { $lines.Add("        CompatibleLicense = $(FormatAttributeList $meta.CompatibleLicense)") }
+    if ($meta.License.Count -gt 0) { $lines.Add("        License = $(FormatAttributeList $meta.License)") }
     if ($meta.Author.Count -gt 0) { $lines.Add("        Author = $(FormatAttributeList $meta.Author)") }
     if ($meta.Contributor.Count -gt 0) { $lines.Add("        Contributor = $(FormatAttributeList $meta.Contributor)") }
     "    [MaesterTest(`n" + ($lines -join ",`n") + "`n    )]"
@@ -687,7 +687,7 @@ foreach ($control in $aadsc) {
             Severity          = $severity
             Category          = 'EIDSCA'
             Service           = @('Graph')
-            CompatibleLicense = @($skipCheck.CompatibleLicense)
+            License = @($skipCheck.License)
             Author            = $authors
             Contributor       = $contributors
         }
