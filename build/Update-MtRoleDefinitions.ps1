@@ -435,7 +435,7 @@ function Update-FileSection {
     .SYNOPSIS
     Replaces content between delimiter markers in a file.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)]
         [string] $FilePath,
@@ -466,14 +466,16 @@ function Update-FileSection {
     # Use [System.IO.File]::WriteAllText with explicit UTF-8-with-BOM encoder for PS 5.1/7 compatibility.
     # Set-Content -Encoding utf8BOM is PS 7+ only and fails on Windows PowerShell 5.1.
     $utf8Bom = [System.Text.UTF8Encoding]::new($true)
-    [System.IO.File]::WriteAllText((Resolve-Path $FilePath).ProviderPath, $updatedContent, $utf8Bom)
+    if ($PSCmdlet.ShouldProcess($FilePath, "Replace the section between '$BeginMarker' and '$EndMarker'")) {
+        [System.IO.File]::WriteAllText((Resolve-Path $FilePath).ProviderPath, $updatedContent, $utf8Bom)
+    }
 }
 
 #endregion
 
 #region Main execution
 
-Write-Host 'Fetching role definitions from GitHub...' -ForegroundColor Cyan
+Write-Output 'Fetching role definitions from GitHub...'
 try {
     $response = Invoke-WebRequest -Uri $SourceUrl -UseBasicParsing -ErrorAction Stop
 } catch {
@@ -489,7 +491,7 @@ if ([string]::IsNullOrWhiteSpace($markdown) -or $markdown.Length -lt 10000) {
     throw "Downloaded content appears empty or too short ($($markdown.Length) chars). Aborting."
 }
 
-Write-Host 'Parsing role definitions from Markdown...' -ForegroundColor Cyan
+Write-Output 'Parsing role definitions from Markdown...'
 $roles = Get-RoleDataFromMarkdown -Markdown $markdown
 
 # Deduplicate by name (keep first occurrence)
@@ -503,7 +505,7 @@ foreach ($role in $roles) {
 }
 $roles = $uniqueRoles
 
-Write-Host "Found $($roles.Count) role definitions." -ForegroundColor Cyan
+Write-Output "Found $($roles.Count) role definitions."
 
 # Safeguard: minimum role count
 if ($roles.Count -lt $MinimumRoleCount) {
@@ -525,13 +527,13 @@ $roleInfoContent = Get-Content -Path $RoleInfoPath -Raw
 $preservedRoles = @(Get-ExistingRoles -FileContent $roleInfoContent -NewRoles $roles)
 $roleAliases = @(Get-RoleAliases -FileContent $roleInfoContent -NewRoles $roles)
 if ($preservedRoles.Count -gt 0) {
-    Write-Host "Preserving $($preservedRoles.Count) existing roles not in public docs: $($preservedRoles.Name -join ', ')" -ForegroundColor Yellow
+    Write-Output "Preserving $($preservedRoles.Count) existing roles not in public docs: $($preservedRoles.Name -join ', ')"
     foreach ($preserved in $preservedRoles) {
         $roles.Add($preserved)
     }
 }
 if ($roleAliases.Count -gt 0) {
-    Write-Host "Adding $($roleAliases.Count) compatibility aliases for renamed roles: $($roleAliases.Name -join ', ')" -ForegroundColor Yellow
+    Write-Output "Adding $($roleAliases.Count) compatibility aliases for renamed roles: $($roleAliases.Name -join ', ')"
 }
 
 # For CI summary output, prefer comparing against HEAD so local reruns still reflect
@@ -601,7 +603,7 @@ if ($existingPrivCount -gt 0 -and $privChange -gt 10) {
 # Sort roles alphabetically
 $roles = $roles | Sort-Object { $_.Name }
 
-Write-Host 'Generating hashtable entries...' -ForegroundColor Cyan
+Write-Output 'Generating hashtable entries...'
 
 # Generate Get-MtRoleInfo hashtable entries
 $hashtableEntries = $roles | ForEach-Object {
@@ -619,7 +621,7 @@ if ([string]::IsNullOrWhiteSpace($aliasBlock)) {
 }
 
 # Update Get-MtRoleInfo.ps1
-Write-Host "Updating $RoleInfoPath..." -ForegroundColor Cyan
+Write-Output "Updating $RoleInfoPath..."
 Update-FileSection -FilePath $RoleInfoPath `
     -BeginMarker '# BEGIN AUTO-GENERATED ROLE DEFINITIONS' `
     -EndMarker '# END AUTO-GENERATED ROLE DEFINITIONS' `
@@ -631,23 +633,23 @@ Update-FileSection -FilePath $RoleInfoPath `
 
 # Summary
 $privilegedCount = ($roles | Where-Object { $_.IsPrivileged }).Count
-Write-Host ''
-Write-Host 'Update complete!' -ForegroundColor Green
-Write-Host "  Total roles: $($roles.Count)"
-Write-Host "  Privileged:  $privilegedCount"
-Write-Host "  Standard:    $($roles.Count - $privilegedCount)"
+Write-Output ''
+Write-Output 'Update complete!'
+Write-Output "  Total roles: $($roles.Count)"
+Write-Output "  Privileged:  $privilegedCount"
+Write-Output "  Standard:    $($roles.Count - $privilegedCount)"
 if ($preservedRoles.Count -gt 0) {
-    Write-Host "  Preserved:   $($preservedRoles.Count) (system/implicit roles not in public docs)"
+    Write-Output "  Preserved:   $($preservedRoles.Count) (system/implicit roles not in public docs)"
 }
 if ($roleAliases.Count -gt 0) {
-    Write-Host "  Aliases:     $($roleAliases.Count) (renamed roles kept for compatibility)"
+    Write-Output "  Aliases:     $($roleAliases.Count) (renamed roles kept for compatibility)"
 }
 
 # Report new roles (roles in new data that weren't in the old file)
 $newNames = $roles | ForEach-Object { $_.Name }
 $addedRoles = $newNames | Where-Object { $_ -notin $existingRoleGuids.Keys }
 if ($addedRoles) {
-    Write-Host "  New roles:   $($addedRoles -join ', ')" -ForegroundColor Yellow
+    Write-Output "  New roles:   $($addedRoles -join ', ')"
 }
 
 # Output diff summary for GitHub Actions PR body
