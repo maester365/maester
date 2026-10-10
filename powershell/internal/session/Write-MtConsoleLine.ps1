@@ -228,10 +228,17 @@ function Get-MtDashboardTenantCount {
     One Graph batch request with six $count queries, so one round trip. A count that cannot be read (a missing
     permission, a tenant without the feature) is left out; when the request itself fails there are none.
     Returns an ordered dictionary of label to count.
+
+    A run of fewer than ten tests is over in a moment, and the request would be a large part of it: such a run
+    makes no request and has no counts.
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Specialized.OrderedDictionary])]
-    param()
+    param(
+        # How many tests the run is going to run.
+        [Parameter()] [int] $TestCount = [int]::MaxValue
+    )
+    if ($TestCount -lt 10) { return [ordered]@{} }
 
     $queries = [ordered]@{
         Users   = 'users/$count'

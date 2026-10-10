@@ -310,6 +310,16 @@ Describe 'Connection info' {
         $counts['Groups'] | Should -Be 310
     }
 
+    It 'Makes no request for the counts in a run of fewer than ten tests' {
+        InModuleScope Maester {
+            Mock Invoke-MgGraphRequest { [pscustomobject]@{ responses = @([pscustomobject]@{ id = 'Users'; status = 200; body = 5 }) } }
+            (Get-MtDashboardTenantCount -TestCount 9).Count | Should -Be 0
+            Should -Invoke Invoke-MgGraphRequest -Times 0 -Exactly
+            (Get-MtDashboardTenantCount -TestCount 10).Count | Should -Be 1
+            Should -Invoke Invoke-MgGraphRequest -Times 1 -Exactly
+        }
+    }
+
     It 'Has no counts when the request fails' {
         $none = InModuleScope Maester {
             Mock Invoke-MgGraphRequest { throw 'offline' }
