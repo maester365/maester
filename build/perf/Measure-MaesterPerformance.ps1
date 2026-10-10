@@ -309,7 +309,7 @@ function Get-ChildEnvironment([bool] $Is2x, [string] $CacheHome) {
     $environment
 }
 
-function Invoke-MeasuredProcess([hashtable] $Spec, [hashtable] $Environment, [string] $Folder) {
+function Invoke-MeasuredProcess([hashtable] $Spec, [hashtable] $Environment, [string] $Folder, [int] $Timeout) {
     $specFile = Join-Path $Folder 'spec.json'
     $Spec | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $specFile -Encoding utf8
     $psi = [System.Diagnostics.ProcessStartInfo]::new()
@@ -333,7 +333,7 @@ function Invoke-MeasuredProcess([hashtable] $Spec, [hashtable] $Environment, [st
     $p = [System.Diagnostics.Process]::Start($psi)
     $stdout = $p.StandardOutput.ReadToEndAsync()
     $stderr = $p.StandardError.ReadToEndAsync()
-    if (-not $p.WaitForExit($TimeoutSeconds * 1000)) { $p.Kill($true); throw "Timed out after $TimeoutSeconds s: $($Spec.Label) $($Spec.Scenario)" }
+    if (-not $p.WaitForExit($Timeout * 1000)) { $p.Kill($true); throw "Timed out after $Timeout s: $($Spec.Label) $($Spec.Scenario)" }
     $p.WaitForExit()
     $wall.Stop()
     $errText = $stderr.Result
@@ -427,7 +427,7 @@ foreach ($s in $Scenario) {
             }
             $envVars = Get-ChildEnvironment -Is2x $v.Is2x -CacheHome $warmCache[$v.Key]
             Write-Host ("{0,-10} {1,-26} {2}" -f $s, $v.Label, $(if ($pass -eq 0) { 'cold' } else { "warm $pass/$Repetitions" })) -NoNewline
-            $r = Invoke-MeasuredProcess -Spec $spec -Environment $envVars -Folder $folder
+            $r = Invoke-MeasuredProcess -Spec $spec -Environment $envVars -Folder $folder -Timeout $TimeoutSeconds
             $r.Key = $v.Key
             $r.Pass = $pass
             $r.Cold = $pass -eq 0
