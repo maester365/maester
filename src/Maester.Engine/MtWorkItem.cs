@@ -14,6 +14,9 @@ namespace Maester.Engine
         /// <summary>Title shown by the console renderer while the item runs.</summary>
         public string Title { get; set; }
 
+        /// <summary>Lane the console renderer counts the item in: the product of the test.</summary>
+        public string Group { get; set; }
+
         /// <summary>Name of the function to call.</summary>
         public string Command { get; set; }
 

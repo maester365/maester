@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     # Engine DLL only, as Invoke-MtEngineRun.Tests.ps1: the build-engine workflow runs these on every OS.
     Import-Module "$PSScriptRoot/../../../lib/Maester.Engine.dll" -Force
 
@@ -178,5 +178,116 @@ Describe 'Invoke-MtEngineRun -Renderer' {
         $item = [Maester.Engine.MtWorkItem]@{ Id = 'R.3'; Command = 'Test-Quiet' }
         $r = Invoke-MtEngineRun -WorkItem $item -Module $script:fixtureModule -NoStreamReplay
         [string]$r.Output[0] | Should -Not -Be 'SilentlyContinue'
+    }
+}
+
+Describe 'MtConsoleRenderer dashboard' {
+    BeforeAll {
+        function New-TestDashboard {
+            param([int] $Width = 100, [int] $Height = 30)
+            $t = New-TestRenderer -Width $Width
+            $t.Renderer.Height = $Height
+            $t.Renderer.FullScreen = $true
+            $t.Renderer.SetHeader(@('BANNER 1', 'BANNER 2', 'BANNER 3'), 60, 'Maester v3')
+            $t.Renderer.SetPhases(@('Prepare', 'Run tests', 'Results', 'Reports'))
+            $t
+        }
+    }
+
+    It 'Takes the alternate screen on Open and gives it back on Close' {
+        $t = New-TestDashboard
+        $t.Renderer.Open()
+        $t.Renderer.IsFullScreen | Should -BeTrue
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[?1049h"))
+        $t.Renderer.Close()
+        $t.Renderer.Close()
+        $t.Renderer.IsFullScreen | Should -BeFalse
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[?25h$esc[?1049l") + '$')
+    }
+
+    It 'Stays in the compact layout when the console is too small (<Width>x<Height>)' -ForEach @(@{ Width = 100; Height = 12 }, @{ Width = 60; Height = 40 }) {
+        $t = New-TestDashboard -Width $Width -Height $Height
+        $t.Renderer.Open()
+        $t.Renderer.IsFullScreen | Should -BeFalse
+        $t.Writer.ToString() | Should -Not -Match '1049h'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows the phases: done with a tick, the current one, and the ones to come' {
+        $t = New-TestDashboard
+        $t.Renderer.Open()
+        $t.Renderer.StartPhase('Prepare')
+        $t.Renderer.StartPhase('Run tests')
+        $strip = $t.Renderer.GetPlainScreen(100, 30) | Where-Object { $_ -match 'Prepare' }
+        $strip | Should -Match '✓ Prepare .*● Run tests .*○ Results .*○ Reports'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows what a phase is doing outside the test phase' {
+        $t = New-TestDashboard
+        $t.Renderer.Open()
+        $t.Renderer.StartPhase('Reports')
+        $t.Renderer.ShowStatus('Creating html report')
+        ($t.Renderer.GetPlainScreen(100, 30) -join "`n") | Should -Match 'Creating html report…'
+        $t.Renderer.Close()
+    }
+
+    It 'Counts results per lane and lists every running test, as parallel runs need' {
+        $t = New-TestDashboard
+        $t.Renderer.Open()
+        $t.Renderer.Start(10, @('Entra ID', 'Teams', 'Azure'), [int[]]@(6, 4, 0), @($null, $null, '3 skipped'))
+        $t.Renderer.ItemStarting('E.1', 'First', 'Entra ID')
+        $t.Renderer.ItemStarting('T.1', 'Second', 'Teams')
+        $t.Renderer.ItemStarting('E.2', 'Third', 'Entra ID')
+        $t.Renderer.ItemFinished('T.1', 'Failed')   # finishes out of order
+        $screen = $t.Renderer.GetPlainScreen(100, 30)
+        ($screen | Where-Object { $_ -match '^ Entra ID' }) | Should -Match '0/6 .* 2 running'
+        ($screen | Where-Object { $_ -match '^ Teams' }) | Should -Match '1/4 .*✗ 1'
+        ($screen | Where-Object { $_ -match '^ Azure' }) | Should -Match '3 skipped'
+        ($screen | Where-Object { $_ -match '^ Running' }) | Should -Match '2 tests'
+        @($screen | Where-Object { $_ -match ' (E\.1|E\.2) ' }).Count | Should -Be 2
+        ($screen -join "`n") | Should -Not -Match 'T\.1'
+        $t.Renderer.Failed | Should -Be 1
+        $t.Renderer.Close()
+    }
+
+    It 'Uses the one-line header and hides lanes when the console is short, and never draws more rows than it has' {
+        $t = New-TestDashboard -Height 16
+        $t.Renderer.Open()
+        $names = 1..9 | ForEach-Object { "Product $_" }
+        $t.Renderer.Start(90, [string[]]$names, [int[]]@(1..9 | ForEach-Object { 10 }), $null)
+        $t.Renderer.ItemStarting('P.1', 'Running one', 'Product 7')
+        $screen = $t.Renderer.GetPlainScreen(100, 16)
+        $screen.Count | Should -BeLessThan 16
+        $screen[0] | Should -Be ' Maester v3'
+        ($screen -join "`n") | Should -Not -Match 'BANNER'
+        ($screen -join "`n") | Should -Match 'Product 7'
+        ($screen -join "`n") | Should -Match 'and \d+ more'
+        foreach ($line in $screen) { $line.Length | Should -BeLessThan 100 }
+        $t.Renderer.Close()
+    }
+
+    It 'Keeps the dashboard after Stop, for the phases that follow' {
+        $t = New-TestDashboard
+        $t.Renderer.Open()
+        $t.Renderer.Start(1)
+        $t.Renderer.ItemFinished('Passed')
+        $t.Renderer.Stop()
+        $t.Renderer.IsRunning | Should -BeFalse
+        $t.Renderer.IsFullScreen | Should -BeTrue
+        $t.Writer.ToString() | Should -Not -Match '1049l'
+        $t.Renderer.Close()
+    }
+
+    It 'Leaves the records of a test on the result instead of replaying them over the dashboard' {
+        $t = New-TestDashboard
+        $t.Renderer.Open()
+        $t.Renderer.Start(1)
+        $item = [Maester.Engine.MtWorkItem]@{ Id = 'R.9'; Command = 'Test-Warning'; Title = 'Warns'; Group = 'Entra ID' }
+        $warnings = $null
+        $r = Invoke-MtEngineRun -WorkItem $item -Module $script:fixtureModule -Renderer $t.Renderer -WarningVariable warnings -WarningAction SilentlyContinue
+        $t.Renderer.Close()
+        $warnings | Should -BeNullOrEmpty
+        $r.Warnings.Count | Should -Be 1
     }
 }

@@ -272,7 +272,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
 
         private void Starting(MtWorkItem item)
         {
-            if (Renderer != null) Renderer.ItemStarting(item.Id, item.Title);
+            if (Renderer != null) Renderer.ItemStarting(item.Id, item.Title, item.Group);
             if (OnItemStarting != null) OnItemStarting.Invoke(item);
         }
 
@@ -280,9 +280,11 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
         {
             _results[item] = r;
             Interlocked.Increment(ref _finishedCount);
-            if (!NoStreamReplay.IsPresent && HasRecords(r))
+            // Replayed records are host output. The compact region is erased while they are written. The
+            // full-screen dashboard has no scrollback to write them to: they stay on the result, and the caller
+            // replays them once the screen is restored.
+            if (!NoStreamReplay.IsPresent && HasRecords(r) && !(Renderer != null && Renderer.IsFullScreen))
             {
-                // Replayed records are host output: the live region is erased while they are written.
                 if (Renderer != null) Renderer.Pause();
                 try { Replay(r); }
                 finally { if (Renderer != null) Renderer.Resume(); }
@@ -436,7 +438,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
             if (item.Module != null)
             {
                 // A module object belongs to the caller's runspace; a worker finds its own instance by name.
-                invocation = new MtWorkItem { Id = item.Id, Title = item.Title, Command = item.Command, Parameters = item.Parameters, ModuleName = item.Module.Name };
+                invocation = new MtWorkItem { Id = item.Id, Title = item.Title, Group = item.Group, Command = item.Command, Parameters = item.Parameters, ModuleName = item.Module.Name };
             }
             AddInvocation(ps, invocation, module, Renderer != null);
             ps.Commands.Commands[0].MergeMyResults(PipelineResultTypes.All, PipelineResultTypes.Output);

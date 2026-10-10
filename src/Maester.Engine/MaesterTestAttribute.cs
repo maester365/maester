@@ -41,6 +41,9 @@ public sealed class MaesterTestAttribute : Attribute
     /// <summary>Report grouping, written to the result as Block.</summary>
     public string Category { get; set; }
 
+    /// <summary>The product the test checks, for example Entra ID. Groups progress and the run summary.</summary>
+    public string Product { get; set; }
+
     /// <summary>Free tags used by -Tag and -ExcludeTag.</summary>
     public string[] Tag { get; set; }
 
