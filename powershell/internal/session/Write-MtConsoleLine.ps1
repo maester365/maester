@@ -169,6 +169,12 @@ function Initialize-MtDashboard {
         }
     }
 
+    # The status bar on the last row: where to read more about the project, each a hyperlink.
+    $heart = if ($Console -and $Console.Unicode) { [string][char]0x2665 + ' ' } else { '' }
+    $Renderer.SetStatusBar(
+        [string[]]@('maester.dev', 'Contributors', 'Our Manifesto', "${heart}Sponsor"),
+        [string[]]@('https://maester.dev', 'https://maester.dev/contributors', 'https://maester.cloud/manifesto', 'https://github.com/maester365/maester?sponsor=1'))
+
     $Renderer.Open()
     if (-not $Renderer.IsFullScreen) { return }
 

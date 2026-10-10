@@ -247,7 +247,9 @@ Describe 'MtConsoleRenderer dashboard' {
         ($screen | Where-Object { $_ -match '^ Azure' }) | Should -Match '3 skipped'
         ($screen | Where-Object { $_ -match '^ Running' }) | Should -Match '2 tests'
         @($screen | Where-Object { $_ -match ' (E\.1|E\.2) ' }).Count | Should -Be 2
-        ($screen -join "`n") | Should -Not -Match 'T\.1'
+        # The test that finished is no longer running: it is listed under the running ones, with its result.
+        $running = [array]::IndexOf($screen, ($screen | Where-Object { $_ -match '^ Running' }))
+        $screen[$running + 3] | Should -Match '^ ✗ T\.1 +Second +[\d.]+ s$'
         $t.Renderer.Failed | Should -Be 1
         $t.Renderer.Close()
     }
@@ -532,6 +534,44 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Fills the rows under the running tests with the tests that ran before, newest first' {
+        $t = New-TestPanelDashboard -Panels 'Results'
+        $t.Renderer.Start(60)
+        $results = 'Passed', 'Failed', 'Error', 'Investigate', 'Skipped'
+        1..40 | ForEach-Object { $t.Renderer.ItemStarting("H.$_", "Test $_", $null); $t.Renderer.ItemFinished("H.$_", $results[$_ % 5], 'High') }
+        $t.Renderer.ItemStarting('H.41', 'Running now', $null)
+        $screen = $t.Renderer.GetPlainScreen(160, 30)
+        $running = [array]::IndexOf($screen, ($screen | Where-Object { $_ -match '^ Running' }))
+        $screen[$running + 1] | Should -Match 'H\.41 +Running now'
+        # Newest first, each with the mark of its result. H.39 was skipped, so it is not listed.
+        $screen[$running + 2] | Should -Match '^ ✓ H\.40 +Test 40 +[\d.]+ s$'
+        $screen[$running + 3] | Should -Match '^ \? H\.38 '
+        $screen[$running + 4] | Should -Match '^ ! H\.37 '
+        $screen[$running + 5] | Should -Match '^ ✗ H\.36 '
+        # The list goes down to the last row of the content.
+        $screen.Count | Should -Be 29
+        $screen[28] | Should -Match '^ . H\.\d+ '
+        $t.Renderer.Close()
+    }
+
+    It 'Draws a status bar of links on the last row, and then leaves the site out of the tagline' {
+        $t = New-TestPanelDashboard -Panels 'Results'
+        $t.Renderer.SetHeader(@('top', 'FLAME  old tagline', 'bottom'), 30, 'Maester v3.0.0')
+        $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 44, 'v3.0.0', 'maester.dev', 'https://maester.dev')
+        $t.Renderer.SetStatusBar(@('maester.dev', 'Contributors', 'Our Manifesto', '♥ Sponsor'), @('https://maester.dev', 'https://maester.dev/contributors', 'https://maester.cloud/manifesto', 'https://github.com/maester365/maester?sponsor=1'))
+        $t.Renderer.Start(1)
+        $screen = $t.Renderer.GetPlainScreen(160, 30)
+        $screen.Count | Should -Be 30
+        $screen[29] | Should -Be (' maester.dev  Contributors │ Our Manifesto │ ♥ Sponsor ').PadRight(159)
+        $screen[1] | Should -Match '^FLAME +v3\.0\.0$'
+        $out = $t.Writer.ToString()
+        $out | Should -Match ([regex]::Escape("$esc[1;97;48;5;161m$esc]8;;https://maester.dev$esc\ maester.dev $esc]8;;$esc\"))
+        $out | Should -Match ([regex]::Escape("$esc]8;;https://github.com/maester365/maester?sponsor=1$esc\ ♥ Sponsor $esc]8;;$esc\"))
+        # A narrow window keeps the labels that fit.
+        $t.Renderer.GetPlainScreen(40, 30)[29] | Should -Be (' maester.dev  Contributors ').PadRight(39)
+        $t.Renderer.Close()
+    }
+
     It 'Says how long ago the earlier run was, and when' {
         $t = New-TestPanelDashboard
         $before = [System.Collections.Generic.Dictionary[string, string]]::new()
@@ -612,7 +652,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemFinished('S.2', 'Passed', 'Low')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
         ($screen -join "`n") | Should -Match '╭─ Pace ─+ [\d.]+ tests/s ─╮'
-        $slow = @($screen | Where-Object { $_ -match ' S\.[12] ' })
+        $slow = @($screen | Where-Object { $_ -match '│ S\.[12] ' })
         $slow[0] | Should -Match 'S\.1 .*Slow one'
         $t.Renderer.Close()
     }

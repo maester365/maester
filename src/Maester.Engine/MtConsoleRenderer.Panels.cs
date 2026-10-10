@@ -54,6 +54,14 @@ namespace Maester.Engine
             public bool Connected;
         }
 
+        private sealed class Recent
+        {
+            public string Id;
+            public string Title;
+            public string Result;
+            public TimeSpan Duration;
+        }
+
         private sealed class Slow
         {
             public string Id;
@@ -67,6 +75,10 @@ namespace Maester.Engine
         private readonly List<string> _sequence = new List<string>();
         private readonly List<double> _finishSeconds = new List<double>();
         private readonly List<Slow> _slowest = new List<Slow>();
+        private readonly List<Recent> _recent = new List<Recent>();
+        private readonly List<string> _barLabels = new List<string>();
+        private readonly List<string> _barLinks = new List<string>();
+        private const int RecentKept = 100;
         private readonly Dictionary<string, string> _finished = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _newlyFailing = new List<string>();
         private readonly System.Diagnostics.Stopwatch _runClock = new System.Diagnostics.Stopwatch();
@@ -150,6 +162,89 @@ namespace Maester.Engine
                 }
                 Redraw();
             }
+        }
+
+        /// <summary>
+        /// The status bar on the last row of the dashboard: a row of labels on a solid background, each a hyperlink
+        /// to its address. The first is the name of the project and stands out. No labels, no bar.
+        /// </summary>
+        public void SetStatusBar(string[] labels, string[] links)
+        {
+            lock (_gate)
+            {
+                _barLabels.Clear();
+                _barLinks.Clear();
+                int count = labels == null ? 0 : labels.Length;
+                for (int i = 0; i < count; i++)
+                {
+                    if (string.IsNullOrEmpty(labels[i])) continue;
+                    _barLabels.Add(labels[i]);
+                    _barLinks.Add(links != null && i < links.Length ? links[i] : null);
+                }
+                Redraw();
+            }
+        }
+
+        /// <summary>The status bar: as many of its labels as fit, then its background to the edge of the window.</summary>
+        private Line BuildStatusBar(int width, bool ansi)
+        {
+            const string first = "1;97;48;5;161";
+            const string rest = "38;5;252;48;5;236";
+            const string rule = "38;5;242;48;5;236";
+            int max = Math.Max(1, width - 1);
+            var text = new StringBuilder();
+            var plain = new StringBuilder();
+            for (int i = 0; i < _barLabels.Count; i++)
+            {
+                string separator = i > 1 ? (Unicode ? "│" : "|") : string.Empty;
+                string label = " " + _barLabels[i] + " ";
+                if (plain.Length + separator.Length + label.Length > max) break;
+                plain.Append(separator).Append(label);
+                if (!ansi) continue;
+                if (separator.Length > 0) text.Append(Esc).Append(rule).Append('m').Append(separator).Append(Esc).Append("0m");
+                text.Append(Esc).Append(i == 0 ? first : rest).Append('m').Append(Hyperlink(label, _barLinks[i])).Append(Esc).Append("0m");
+            }
+            string fill = new string(' ', max - plain.Length);
+            if (ansi) text.Append(Esc).Append(rest).Append('m').Append(fill).Append(Esc).Append("0m");
+            plain.Append(fill);
+            return new Line { Text = ansi ? text.ToString() : plain.ToString(), Plain = plain.ToString() };
+        }
+
+        /// <summary>The tests that ran before the ones that are running, newest first, to fill <paramref name="rows"/> rows.</summary>
+        private List<Line> BuildRecent(int max, int rows, bool ansi)
+        {
+            var lines = new List<Line>();
+            foreach (var r in _recent)
+            {
+                if (lines.Count >= rows) break;
+                string mark;
+                string colour;
+                switch (r.Result)
+                {
+                    case "Passed":
+                        mark = Ok;
+                        colour = "32";
+                        break;
+                    case "Failed":
+                        mark = Bad;
+                        colour = "31";
+                        break;
+                    case "Error":
+                        mark = "!";
+                        colour = "33";
+                        break;
+                    default:
+                        mark = "?";
+                        colour = "35";
+                        break;
+                }
+                string time = Short(r.Duration).PadLeft(7);
+                var b = new LineBuilder(ansi).Add(" " + mark + " ", colour).Add((r.Id ?? string.Empty).PadRight(17) + " ", "2").Add(r.Title, "2");
+                var cut = Truncate(b.Build(), max - time.Length - 1, ansi);
+                string gap = new string(' ', Math.Max(1, max - time.Length - cut.Plain.Length));
+                lines.Add(new Line { Text = cut.Text + gap + (ansi ? Esc + "2m" + time + Esc + "0m" : time), Plain = cut.Plain + gap + time });
+            }
+            return lines;
         }
 
         /// <summary>The Blog panel: the newest post, its title a hyperlink over at most two lines, its date in the border.</summary>
@@ -289,6 +384,7 @@ namespace Maester.Engine
             _sequence.Clear();
             _finishSeconds.Clear();
             _slowest.Clear();
+            _recent.Clear();
             _finished.Clear();
             RecountDrift();
             _runClock.Restart();
@@ -298,6 +394,13 @@ namespace Maester.Engine
         {
             _sequence.Add(result);
             _finishSeconds.Add(_runClock.Elapsed.TotalSeconds);
+            // The tests that ran, newest first, for the list under the running tests.
+            bool ran = result == "Passed" || result == "Failed" || result == "Error" || result == "Investigate";
+            if (ran && !string.IsNullOrEmpty(id))
+            {
+                _recent.Insert(0, new Recent { Id = id, Title = title, Result = result, Duration = duration });
+                if (_recent.Count > RecentKept) _recent.RemoveAt(RecentKept);
+            }
             if (result == "Failed")
             {
                 string key = Array.IndexOf(SeverityOrder, Normalise(severity)) >= 0 ? Normalise(severity) : "Low";

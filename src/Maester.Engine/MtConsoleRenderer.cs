@@ -191,18 +191,20 @@ namespace Maester.Engine
             string label = string.IsNullOrEmpty(_updateLabel) ? string.Empty : (Unicode ? "↑ " : "^ ") + _updateLabel;
             bool update = label.Length > 0 &&
                 _taglineVersion.Length + label.Length + _taglineSite.Length + 2 * dot.Length <= _taglineWidth;
-            string plain = _taglineVersion + dot + (update ? label + dot : string.Empty) + _taglineSite;
+            // The site is in the status bar when there is one, and then not here as well.
+            string site = _barLabels.Count > 0 ? string.Empty : _taglineSite;
+            string plain = _taglineVersion + (update ? dot + label : string.Empty) + (site.Length > 0 ? dot + site : string.Empty);
             string pad = new string(' ', Math.Max(0, _taglineWidth - plain.Length));
             string prefixPlain = StripAnsi(_taglinePrefix);
             if (!ansi) return new Line { Text = prefixPlain + pad + plain, Plain = prefixPlain + pad + plain };
             var sb = new StringBuilder(_taglinePrefix).Append(pad);
-            sb.Append(Esc).Append("2m").Append(_taglineVersion).Append(dot).Append(Esc).Append("0m");
+            sb.Append(Esc).Append("2m").Append(_taglineVersion).Append(Esc).Append("0m");
             if (update)
             {
-                sb.Append(Esc).Append("1;38;5;215m").Append(Hyperlink(label, _updateUrl)).Append(Esc).Append("0m");
                 sb.Append(Esc).Append("2m").Append(dot).Append(Esc).Append("0m");
+                sb.Append(Esc).Append("1;38;5;215m").Append(Hyperlink(label, _updateUrl)).Append(Esc).Append("0m");
             }
-            sb.Append(Esc).Append("2m").Append(Hyperlink(_taglineSite, _taglineSiteUrl)).Append(Esc).Append("0m");
+            if (site.Length > 0) sb.Append(Esc).Append("2m").Append(dot).Append(Hyperlink(site, _taglineSiteUrl)).Append(Esc).Append("0m");
             return new Line { Text = sb.ToString(), Plain = prefixPlain + pad + plain };
         }
 
@@ -756,9 +758,22 @@ namespace Maester.Engine
 
         // ---- full-screen layout: the dashboard
 
+        /// <summary>
+        /// The whole screen: the content in all rows but the last of the window, and the status bar, when there is
+        /// one, on the last row.
+        /// </summary>
         private List<Line> BuildScreen(int width, int height, bool ansi)
         {
             int rows = Math.Max(8, height - 1);
+            var screen = BuildContent(width, rows, ansi);
+            if (_barLabels.Count == 0) return screen;
+            while (screen.Count < rows) screen.Add(new Line { Text = string.Empty, Plain = string.Empty });
+            screen.Add(BuildStatusBar(width, ansi));
+            return screen;
+        }
+
+        private List<Line> BuildContent(int width, int rows, bool ansi)
+        {
             // On a wide console the panels take a column on the right, and the two columns share the whole width.
             int paneWidth = PaneWidth(width);
             int mainWidth = width - 1 - PaneGap - paneWidth;
@@ -897,6 +912,8 @@ namespace Maester.Engine
             screen.AddRange(lanes);
             screen.AddRange(chart);
             screen.AddRange(tail);
+            // The rows that are left under the running tests list the tests that ran before them.
+            if (tests && screen.Count < rows) screen.AddRange(BuildRecent(max, rows - screen.Count, ansi));
             if (screen.Count > rows) screen.RemoveRange(rows, screen.Count - rows);
             if (paneWidth > 0)
             {
