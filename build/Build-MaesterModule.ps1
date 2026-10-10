@@ -766,6 +766,14 @@ $AssetsOutput = Join-Path $OutputRoot 'assets'
 Copy-Item -Path $AssetsSource -Destination $AssetsOutput -Recurse -Force
 Write-Host '   Copied: assets/'
 
+# The people of the dashboard's Featured contributor panel: refreshed from the website's contributor data
+# when the build runs in a full checkout, so that a release has the current list. Without that data the
+# copy from the source tree stays.
+$ContributorData = Join-Path $RepoRoot 'website/src/data/contributors.json'
+if (Test-Path -LiteralPath $ContributorData) {
+    & (Join-Path $PSScriptRoot 'Update-ConsoleContributors.ps1') -Source $ContributorData -Destination (Join-Path $AssetsOutput 'ConsoleContributors.json')
+}
+
 # Engine DLL (committed prebuilt; see build/Build-MaesterEngine.ps1)
 $LibSource = Join-Path $SourceRoot 'lib'
 $LibOutput = Join-Path $OutputRoot 'lib'

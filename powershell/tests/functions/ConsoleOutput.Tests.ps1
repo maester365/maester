@@ -283,50 +283,6 @@ Describe 'Connection info' {
         $services.Text | Should -Be ' ● Graph  ● Exchange Online  ○ Teams'
     }
 
-    It 'Writes a count in a few characters' {
-        $cases = [ordered]@{ 0 = '0'; 87 = '87'; 999 = '999'; 1000 = '1K'; 1204 = '1.2K'; 48211 = '48.2K'; 999960 = '1M'; 3400000 = '3.4M'; 1100000000 = '1.1B' }
-        foreach ($case in $cases.GetEnumerator()) {
-            InModuleScope Maester -Parameters @{ n = $case.Key } { param($n) Format-MtCompactNumber $n } | Should -Be $case.Value
-        }
-    }
-
-    It 'Counts the objects of the tenant in one batch request, and leaves out a count it cannot read' {
-        $counts = InModuleScope Maester {
-            Mock Invoke-MgGraphRequest {
-                [pscustomobject]@{ responses = @(
-                        [pscustomobject]@{ id = 'Groups'; status = 200; body = '310' }
-                        [pscustomobject]@{ id = 'Users'; status = 200; body = 1204 }
-                        [pscustomobject]@{ id = 'Guests'; status = 200; body = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('87')) }
-                        [pscustomobject]@{ id = 'Devices'; status = 403; body = [pscustomobject]@{ error = 'denied' } }
-                        [pscustomobject]@{ id = 'Apps'; status = 200; body = 'not a number' }
-                    )
-                }
-            } -ParameterFilter { $Method -eq 'POST' -and $Uri -eq '/v1.0/$batch' -and $Body -match 'ConsistencyLevel' -and $Body -match 'agentIdentity' }
-            Get-MtDashboardTenantCount
-        }
-        @($counts.Keys) | Should -Be @('Users', 'Guests', 'Groups')
-        $counts['Users'] | Should -Be 1204
-        $counts['Guests'] | Should -Be 87
-        $counts['Groups'] | Should -Be 310
-    }
-
-    It 'Makes no request for the counts in a run of fewer than ten tests' {
-        InModuleScope Maester {
-            Mock Invoke-MgGraphRequest { [pscustomobject]@{ responses = @([pscustomobject]@{ id = 'Users'; status = 200; body = 5 }) } }
-            (Get-MtDashboardTenantCount -TestCount 9).Count | Should -Be 0
-            Should -Invoke Invoke-MgGraphRequest -Times 0 -Exactly
-            (Get-MtDashboardTenantCount -TestCount 10).Count | Should -Be 1
-            Should -Invoke Invoke-MgGraphRequest -Times 1 -Exactly
-        }
-    }
-
-    It 'Has no counts when the request fails' {
-        $none = InModuleScope Maester {
-            Mock Invoke-MgGraphRequest { throw 'offline' }
-            Get-MtDashboardTenantCount
-        }
-        $none.Count | Should -Be 0
-    }
 }
 
 Describe 'Deferred console output' {
@@ -432,6 +388,46 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
+    It 'Shows a contributor from the list that ships with the module' {
+        $file = Join-Path $PSScriptRoot '../../assets/ConsoleContributors.json'
+        $people = @(Get-Content -LiteralPath $file -Raw | ConvertFrom-Json)
+        $people.Count | Should -BeGreaterThan 10
+        foreach ($person in $people) {
+            $person.Name | Should -Not -BeNullOrEmpty
+            $person.GitHub | Should -Match '^[A-Za-z0-9-]+$'
+        }
+        $renderer = New-PanelRenderer
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
+        # The list is read on a background thread.
+        $shown = $false
+        foreach ($try in 1..40) {
+            if (($renderer.GetPlainScreen(160, 44) -join "`n") -match '╭─ Featured contributor ') { $shown = $true; break }
+            Start-Sleep -Milliseconds 50
+        }
+        $shown | Should -BeTrue
+        $renderer.Close()
+    }
+
+    It 'Writes the contributor list from the data of the website, without the people who are pinned last' {
+        $source = Join-Path $TestDrive 'contributors.json'
+        $destination = Join-Path $TestDrive 'out/ConsoleContributors.json'
+        @{ profiles = @(
+                @{ id = 'ada-l'; github = 'ada-l'; name = 'Ada Lovelace'; pinLast = $false; firstContribution = '2025-03-01'; testsAuthored = @('A.1', 'A.2'); testsContributed = @('B.1') }
+                @{ id = 'pinned'; github = 'pinned'; name = 'Pinned Last'; pinLast = $true; firstContribution = '2024-01-01'; testsAuthored = @(); testsContributed = @() }
+                @{ id = 'newp'; github = 'newp'; name = ''; pinLast = $false; firstContribution = ''; testsAuthored = @(); testsContributed = @() }
+            )
+        } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $source
+        & (Join-Path $PSScriptRoot '../../../build/Update-ConsoleContributors.ps1') -Source $source -Destination $destination -InformationAction SilentlyContinue
+        $people = @(Get-Content -LiteralPath $destination -Raw | ConvertFrom-Json)
+        $people.GitHub | Should -Be @('ada-l', 'newp')
+        $people[0].Name | Should -Be 'Ada Lovelace'
+        $people[0].Tests | Should -Be 2
+        $people[0].Improvements | Should -Be 1
+        $people[0].Since | Should -Be 2025
+        $people[1].Name | Should -Be 'newp'
+        $people[1].Since | Should -Be 0
+    }
+
     It 'Says so in the Tenant panel when Graph is not connected' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{ TenantName = $null; Services = [pscustomobject]@{ Graph = $false; ExchangeOnline = $true } }
@@ -447,7 +443,7 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
-    It 'Shows the tenant, its domain, the account and the counts in the Tenant panel, without the services' {
+    It 'Shows the tenant, its domain and the account in the Tenant panel, without the services' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{
             TenantName = 'Contoso'; PrimaryDomain = 'contoso.com'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
@@ -457,14 +453,15 @@ Describe 'Dashboard panels' {
             param($r, $c, $t)
             $r.SetPanels([string[]]@('Tenant'))
             $r.Open()
-            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Count ([ordered]@{ Users = 1204; Guests = 87; Devices = 2500000 }) -Console $c
+            Mock Invoke-MgGraphRequest { throw 'The Tenant panel must not request anything' }
+            Mock Invoke-MtGraphRequest { throw 'The Tenant panel must not request anything' }
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Console $c
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
         $screen | Should -Match '│ Contoso +contoso\.com │'
         $screen | Should -Match 'merill@contoso\.com · Delegated'
-        $screen | Should -Match '│ +1\.2K +87 +2\.5M │'
-        $screen | Should -Match '│ +Users +Guests +Devices │'
-        # The tenant ID, the cloud and the tenant type are not shown.
+        # Two lines: the tenant ID, the cloud, the tenant type and counts of its objects are not shown.
+        @($renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '│$' }).Count | Should -Be 2
         $screen | Should -Not -Match '0817c655|Commercial|Workforce'
         $screen | Should -Not -Match 'Teams'
         $renderer.Close()

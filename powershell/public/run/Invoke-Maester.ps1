@@ -730,11 +730,7 @@
         if ($console.Mode -eq 'Interactive') {
             # The tenant in its panel on a wide console, and the services as one line under the banner.
             $tenantPanel = $renderer.IsFullScreen -and $renderer.HasPanel('Tenant')
-            $tenantCount = if ($tenantPanel -and $tenantContext -and $tenantContext.Services.PSObject.Properties['Graph'] -and $tenantContext.Services.Graph) {
-                # Not for a handful of tests: the request would take a large part of such a run.
-                Get-MtDashboardTenantCount -TestCount @($nativePlan | Where-Object { $_.Disposition -eq 'Run' }).Count
-            } else { $null }
-            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Count $tenantCount -Console $console
+            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Console $console
             if ($connections.Count -gt 0 -and $renderer.IsFullScreen -and $renderer.HasPanel('Connections')) {
                 # The services in their panel: which are connected, and which are not.
                 $renderer.SetConnections([string[]]@($connections.Name), [bool[]]@($connections.Connected))

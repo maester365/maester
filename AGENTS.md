@@ -33,7 +33,9 @@ maester.dev), `report/` (React app that builds the HTML report template).
   `powershell/internal/generated/`, and the native `tests/eidsca/Test.EIDSCA.*` and
   `tests/orca/Test.ORCA.*` files the generators in `build/eidsca/` and `build/orca/`
   write. Edit the PowerShell source, comment-based help or generator templates and let
-  automation regenerate.
+  automation regenerate. `powershell/assets/ConsoleContributors.json` (the dashboard's
+  Featured contributor list) is written by `./build/Update-ConsoleContributors.ps1` from
+  the website's contributor data.
 
 ## Repository layout — where files go
 

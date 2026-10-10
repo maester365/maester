@@ -24,7 +24,6 @@ namespace Maester.Engine
         private const int MinPaneWidth = 38;
         private const int StandardPaneWidth = 58;
         private const int MaxPaneWidth = 90;
-        private const int SlowestShown = 3;
         private const int SlowestKept = 20;
         private const string ResultsPanel = "Results";
         private static readonly string[] SeverityOrder = { "Critical", "High", "Medium", "Low" };
@@ -44,8 +43,6 @@ namespace Maester.Engine
             public string Name;
             public string Domain;
             public string Detail;
-            public string[] Labels;
-            public string[] Values;
         }
 
         private sealed class Connection
@@ -95,7 +92,8 @@ namespace Maester.Engine
         private string _baselineReport;
         private int _fixedCount;
         private int _newTests;
-        private int _slowestShown = SlowestShown;
+        private int _paceExtra;
+        private bool _tight;
 
         /// <summary>
         /// The panels to show, in order. "Results" is the chart in the main column; the others stack in the right
@@ -136,14 +134,14 @@ namespace Maester.Engine
         }
 
         /// <summary>
-        /// The Tenant panel: the name on the left of the first line and the primary domain on its right, a line
-        /// of detail (the account), and the counts (label and value, such as "Users" and "1.2K") in columns.
+        /// The Tenant panel: the name on the left of the first line and the primary domain on its right, and a
+        /// line of detail (the account).
         /// </summary>
-        public void SetTenant(string name, string domain, string detail, string[] labels, string[] values)
+        public void SetTenant(string name, string domain, string detail)
         {
             lock (_gate)
             {
-                _tenant = new TenantInfo { Name = name, Domain = domain, Detail = detail, Labels = labels ?? new string[0], Values = values ?? new string[0] };
+                _tenant = new TenantInfo { Name = name, Domain = domain, Detail = detail };
                 Redraw();
             }
         }
@@ -611,33 +609,48 @@ namespace Maester.Engine
         /// <summary>
         /// The right column: each panel that has something to show, in order, as a box with its title in the top
         /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
-        /// A panel that does not fit in the rows that are left is skipped.
+        ///
+        /// Every panel is shown whenever the column has the rows for it. The Pace panel is the one that gives:
+        /// it starts at its chart and one test, and takes the rows that are left over for more tests. In a column
+        /// that is still too short, the panels that can do with less take less (the Tips panel the height of the
+        /// tip it shows, the Failed panel the severities that have failures, the Blog panel one line). Only then
+        /// is a panel that does not fit left out.
         /// </summary>
         private List<Line> BuildPane(int paneWidth, int rows, bool ansi)
         {
-            // Every panel first, with the Pace panel at its smallest. The rows that are then left over go to the
-            // Pace panel, which lists more of the slowest tests: it fills the column and never pushes a panel out.
-            _slowestShown = SlowestShown;
-            var pane = StackPanels(paneWidth, rows, ansi);
-            int spare = rows - pane.Count;
-            if (spare > 0 && _slowest.Count > SlowestShown && PanelShown("Pace"))
+            _paceExtra = 0;
+            _tight = false;
+            bool all;
+            var pane = StackPanels(paneWidth, rows, ansi, out all);
+            if (!all)
             {
-                _slowestShown = Math.Min(_slowest.Count, SlowestShown + spare);
-                pane = StackPanels(paneWidth, rows, ansi);
+                _tight = true;
+                pane = StackPanels(paneWidth, rows, ansi, out all);
+            }
+            int spare = rows - pane.Count;
+            if (all && spare > 0 && _slowest.Count > 0 && PanelShown("Pace"))
+            {
+                _paceExtra = spare;
+                pane = StackPanels(paneWidth, rows, ansi, out all);
             }
             return pane;
         }
 
-        private List<Line> StackPanels(int paneWidth, int rows, bool ansi)
+        private List<Line> StackPanels(int paneWidth, int rows, bool ansi, out bool all)
         {
             var pane = new List<Line>();
             int inner = paneWidth - 4;
+            all = true;
             foreach (var name in _panels)
             {
                 if (string.Equals(name, ResultsPanel, StringComparison.OrdinalIgnoreCase)) continue;
                 var panel = BuildPanel(name, inner, ansi);
                 if (panel == null || panel.Lines.Count == 0) continue;
-                if (pane.Count + panel.Lines.Count + 2 > rows) continue;
+                if (pane.Count + panel.Lines.Count + 2 > rows)
+                {
+                    all = false;
+                    continue;
+                }
                 pane.AddRange(Box(panel, paneWidth, ansi));
             }
             return pane;
@@ -697,6 +710,10 @@ namespace Maester.Engine
                     return _tenant != null ? BuildTenantPanel(width, ansi) : BuildTextPanel(name, ansi);
                 case "connections":
                     return BuildConnectionsPanel(width, ansi);
+                case "ring":
+                    return BuildRingPanel(width, ansi);
+                case "contributor":
+                    return BuildContributorPanel(width, ansi);
                 case "blog":
                     return _blogPost != null ? BuildBlogPanel(width, ansi) : BuildTextPanel(name, ansi);
                 default:
@@ -732,33 +749,6 @@ namespace Maester.Engine
             }
             if (!string.IsNullOrEmpty(_tenant.Detail)) panel.Lines.Add(Truncate(new LineBuilder(ansi).Add(_tenant.Detail, "2").Build(), width, ansi));
 
-            // The counts: each value over its label, right-aligned in columns of the same width. All in one row
-            // when the panel is wide enough, else in rows of the same length.
-            int count = Math.Min(_tenant.Labels.Length, _tenant.Values.Length);
-            if (count > 0)
-            {
-                int perRow = Math.Max(1, Math.Min(count, width / 9));
-                int rows = (count + perRow - 1) / perRow;
-                perRow = (count + rows - 1) / rows;
-                int cell = width / perRow;
-                int first = 0;
-                while (first < count)
-                {
-                    // Columns that do not divide the width leave their remainder on the left.
-                    string lead = new string(' ', width - cell * perRow);
-                    var values = new LineBuilder(ansi).Add(lead);
-                    var labels = new LineBuilder(ansi).Add(lead);
-                    int end = Math.Min(count, first + perRow);
-                    for (int i = first; i < end; i++)
-                    {
-                        values.Add(Fit(_tenant.Values[i] ?? string.Empty, cell - 1).PadLeft(cell), "1");
-                        labels.Add(Fit(_tenant.Labels[i] ?? string.Empty, cell - 1).PadLeft(cell), "2");
-                    }
-                    panel.Lines.Add(values.Build());
-                    panel.Lines.Add(labels.Build());
-                    first = end;
-                }
-            }
             return panel.Lines.Count > 0 ? panel : null;
         }
 
@@ -799,11 +789,13 @@ namespace Maester.Engine
             if (string.IsNullOrEmpty(_blogPost.Title)) return null;
             var panel = new PanelContent { Title = "From the blog", Badge = string.IsNullOrEmpty(_blogPost.Published) ? null : _blogPost.Published };
             var wrapped = Wrap(_blogPost.Title, width);
-            // Two lines at most: what is left over joins the second line, which is then cut.
-            if (wrapped.Count > 2)
+            // Two lines at most (one in a column that is short of rows): what is left over joins the last line,
+            // which is then cut.
+            int most = _tight ? 1 : 2;
+            if (wrapped.Count > most)
             {
-                string rest = string.Join(" ", wrapped.GetRange(1, wrapped.Count - 1));
-                wrapped.RemoveRange(1, wrapped.Count - 1);
+                string rest = string.Join(" ", wrapped.GetRange(most - 1, wrapped.Count - most + 1));
+                wrapped.RemoveRange(most - 1, wrapped.Count - most + 1);
                 wrapped.Add(rest);
             }
             foreach (var text in wrapped)
@@ -825,11 +817,18 @@ namespace Maester.Engine
                 max = Math.Max(max, c);
             }
             var panel = new PanelContent { Title = "Failed so far", Badge = N(_failed), Colour = _failed > 0 ? "31" : null };
+            if (_tight && _failed == 0)
+            {
+                panel.Lines.Add(new LineBuilder(ansi).Add("None so far", "2").Build());
+                return panel;
+            }
             int barWidth = Math.Max(4, width - 14);
             for (int i = 0; i < SeverityOrder.Length; i++)
             {
                 int count;
                 _failedBySeverity.TryGetValue(SeverityOrder[i], out count);
+                // In a column that is short of rows: only the severities that have failures.
+                if (_tight && count == 0) continue;
                 var b = new LineBuilder(ansi).Add(SeverityOrder[i].PadRight(9), count > 0 ? null : "2");
                 string bar = Bar((double)count / max * barWidth);
                 b.Add(bar, SeverityColor[i]).Add(new string(' ', barWidth - bar.Length + 1)).Add(N(count).PadLeft(4), count > 0 ? SeverityColor[i] : "2");
@@ -873,12 +872,17 @@ namespace Maester.Engine
             }
             panel.Lines.Add(new LineBuilder(ansi).Add(spark.ToString(), "36").Build());
 
+            // The slowest tests: always one, right under the chart. Rows that the column has left over go to a
+            // heading and then to more tests.
             if (_slowest.Count > 0)
             {
-                panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
+                int shown = Math.Max(1, Math.Min(_slowest.Count, _paceExtra));
+                if (_paceExtra > 0) panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
+                int listed = 0;
                 foreach (var s in _slowest)
                 {
-                    if (panel.Lines.Count >= 2 + _slowestShown) break;
+                    if (listed >= shown) break;
+                    listed++;
                     string time = Short(s.Duration).PadLeft(7);
                     var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
                     string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
@@ -954,7 +958,10 @@ namespace Maester.Engine
             // The panel is as tall as the longest tip needs, so that the panels under and around it do not move
             // when the tip changes.
             int tallest = 0;
-            foreach (var tip in _tips) tallest = Math.Max(tallest, Wrap(tip, width).Count);
+            if (!_tight)
+            {
+                foreach (var tip in _tips) tallest = Math.Max(tallest, Wrap(tip, width).Count);
+            }
             while (panel.Lines.Count < tallest) panel.Lines.Add(new Line { Text = string.Empty, Plain = string.Empty });
             string link = index < _tipLinks.Length ? _tipLinks[index] : null;
             if (!string.IsNullOrEmpty(link))

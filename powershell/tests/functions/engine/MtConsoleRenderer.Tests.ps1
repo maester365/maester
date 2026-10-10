@@ -468,29 +468,151 @@ Describe 'MtConsoleRenderer panels' {
         $long.Renderer.Close()
     }
 
-    It 'Lays out the Tenant panel: name and domain on one line, the counts in right-aligned columns' {
+    It 'Lays out the Tenant panel: the name and the domain on one line, the account under them' {
         $t = New-TestPanelDashboard -Panels 'Tenant'
-        $t.Renderer.SetTenant('Contoso', 'contoso.com', 'merill@contoso.com · Delegated', @('Users', 'Guests', 'Devices', 'Groups', 'Apps', 'Agents'), @('1.2K', '87', '432', '310', '95', '4'))
+        $t.Renderer.SetTenant('Contoso', 'contoso.com', 'merill@contoso.com · Delegated')
         $t.Renderer.Start(1)
-        $screen = $t.Renderer.GetPlainScreen(160, 44)
-        $box = @($screen | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box.Count | Should -Be 4
         $box[1] | Should -Match '^│ Contoso +contoso\.com │$'
         $box[2] | Should -Match '^│ merill@contoso\.com · Delegated +│$'
-        # Six columns of nine: each value ends where its label ends.
-        $box[3] | Should -Be '│      1.2K       87      432      310       95        4 │'
-        $box[4] | Should -Be '│     Users   Guests  Devices   Groups     Apps   Agents │'
         $t.Renderer.Close()
 
-        # A narrower panel has two rows of three, and a long name is cut to keep the domain.
+        # A long name is cut to keep the domain.
         $narrow = New-TestPanelDashboard -Width 142 -Panels 'Tenant'
-        $narrow.Renderer.SetTenant('A tenant with a very long display name', 'contoso.onmicrosoft.com', $null, @('Users', 'Guests', 'Devices', 'Groups', 'Apps', 'Agents'), @('1.2K', '87', '432', '310', '95', '4'))
+        $narrow.Renderer.SetTenant('A tenant with a very long display name', 'contoso.onmicrosoft.com', $null)
         $narrow.Renderer.Start(1)
         $small = @($narrow.Renderer.GetPlainScreen(142, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
-        $small[1] | Should -Match '^│ A tenant…? ?\S*… +contoso\.onmicrosoft\.com │$|^│ A tenant\S*… contoso\.onmicrosoft\.com │$'
-        $small[2] | Should -Match '^│ +1\.2K +87 +432 │$'
-        $small[3] | Should -Match '^│ +Users +Guests +Devices │$'
-        $small[5] | Should -Match '^│ +Groups +Apps +Agents │$'
+        $small.Count | Should -Be 3
+        $small[1] | Should -Match '^│ A tenant.*… +contoso\.onmicrosoft\.com │$'
         $narrow.Renderer.Close()
+    }
+
+    It 'Draws the results so far as a ring, with the pass rate in its middle and the counts next to it' {
+        $t = New-TestPanelDashboard -Panels 'Ring'
+        $t.Renderer.Start(100)
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '╭─ Results ─+ 0 of 100 ─╮'
+        $results = @('Passed') * 6 + @('Failed') * 2 + 'Investigate', 'Skipped'
+        $n = 0
+        foreach ($result in $results) { $n++; $t.Renderer.ItemStarting("R.$n", "Test $n", $null); $t.Renderer.ItemFinished("R.$n", $result, 'High') }
+        $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box.Count | Should -Be 7
+        $box[0] | Should -Match '^╭─ Results ─+ 10 of 100 ─╮$'
+        # Ten cells by five rows; six of the nine tests with a verdict passed.
+        $box[1] | Should -Match '^│  ▄▄████▄▄    ✓ 6 passed +60% │$'
+        $box[2] | Should -Match '^│ ▄██▀▀▀▀██▄   ✗ 2 failed +20% │$'
+        $box[3] | Should -Match '^│ ███ 67%███   ! 0 errors +0% │$'
+        $box[4] | Should -Match '^│ ▀██▄▄▄▄██▀   \? 1 investigate +10% │$'
+        $box[5] | Should -Match '^│  ▀▀████▀▀    – 1 skipped +10% │$'
+        # Each slice in the colour of its result, clockwise from the top: passed first.
+        $out = $t.Writer.ToString()
+        $out | Should -Match "$esc\[32(;4\d)?m[▀▄█]"
+        $out | Should -Match "$esc\[31(;4\d)?m[▀▄█]|$esc\[3\d;41m▀"
+        $t.Renderer.Close()
+    }
+
+    It 'Keeps one failure among hundreds of passed tests visible in the ring' {
+        $t = New-TestPanelDashboard -Panels 'Ring'
+        $t.Renderer.Start(300)
+        1..299 | ForEach-Object { $t.Renderer.ItemFinished("P.$_", 'Passed', 'Low') }
+        $before = $t.Writer.ToString().Length
+        $t.Renderer.ItemFinished('F.1', 'Failed', 'High')
+        $t.Writer.ToString().Substring($before) | Should -Match "$esc\[31(;4\d)?m[▀▄█]|$esc\[3\d;41m▀"
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '███100%███|███ 99%███|███ 100%'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows the counts without a ring when the console has no Unicode' {
+        $t = New-TestPanelDashboard -Panels 'Ring'
+        $t.Renderer.Unicode = $false
+        $t.Renderer.Start(4)
+        $t.Renderer.ItemFinished('A.1', 'Passed', 'Low')
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '\| \+ 1 passed'
+        $screen | Should -Not -Match '[▀▄█]'
+        $t.Renderer.Close()
+    }
+
+    It 'Features one contributor at a time: name, handle, what they did, and a link to their page' {
+        $t = New-TestPanelDashboard -Panels 'Contributor'
+        $people = [Maester.Engine.MtContributor[]]@(
+            [Maester.Engine.MtContributor]@{ Name = 'Thomas Naunheim'; GitHub = 'Cloud-Architekt'; Tests = 63; Improvements = 0; Since = 2024 }
+            [Maester.Engine.MtContributor]@{ Name = 'Ada Lovelace'; GitHub = 'ada-l'; Tests = 1; Improvements = 12; Since = 2025 }
+            [Maester.Engine.MtContributor]@{ Name = 'New Person'; GitHub = 'newp'; Since = 2026 }
+            [Maester.Engine.MtContributor]@{ Name = 'Not shown'; GitHub = 'not a handle'; Tests = 5 }
+        )
+        $t.Renderer.SetContributors($people, 0)
+        $t.Renderer.Start(1)
+        $pane = { @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' }) }
+        $box = & $pane
+        $box[0] | Should -Match '^╭─ Featured contributor ─+╮$'
+        $box[1] | Should -Match '^│ Thomas Naunheim +@Cloud-Architekt │$'
+        # A count of nothing is left out.
+        $box[2] | Should -Match '^│ 63 tests · since 2024 +│$'
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\"))
+
+        $t.Renderer.SetContributors($people, 1)
+        (& $pane)[2] | Should -Match '^│ 1 test · 12 improvements · since 2025 +│$'
+        $t.Renderer.SetContributors($people, 2)
+        (& $pane)[2] | Should -Match '^│ Contributor since 2026 +│$'
+        # The entry without a usable handle is dropped, so the fourth place is the first person again.
+        $t.Renderer.SetContributors($people, 3)
+        (& $pane)[1] | Should -Match 'Thomas Naunheim'
+        $t.Renderer.Close()
+    }
+
+    It 'Reads the contributors from a file, and has no panel when the file cannot be read' {
+        $file = Join-Path $TestDrive 'contributors.json'
+        Set-Content -LiteralPath $file -Value '[{"Name":"Ada Lovelace","GitHub":"ada-l","Tests":2,"Improvements":0,"Since":2025}]'
+        $t = New-TestPanelDashboard -Panels 'Contributor'
+        $t.Renderer.LoadContributorsAsync($file, 7).Wait()
+        $t.Renderer.Start(1)
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '│ Ada Lovelace +@ada-l │'
+        $t.Renderer.Close()
+
+        $none = New-TestPanelDashboard -Panels 'Contributor'
+        $none.Renderer.LoadContributorsAsync((Join-Path $TestDrive 'missing.json'), 0).Wait()
+        Set-Content -LiteralPath $file -Value 'not json'
+        $none.Renderer.LoadContributorsAsync($file, 0).Wait()
+        $none.Renderer.Start(1)
+        ($none.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Featured contributor'
+        $none.Renderer.Close()
+    }
+
+    It 'Keeps every panel in a short column: the Pace panel shrinks to its chart and one test' {
+        $t = New-TestPanelDashboard -Panels 'Tenant', 'Failed', 'Pace', 'Tips'
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('One', 'Two', 'Three'))
+        $t.Renderer.SetTips(@('A tip'))
+        $t.Renderer.Start(50)
+        1..12 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
+        # 18 rows hold the four panels with the Pace panel at its smallest: no heading, one test.
+        $short = $t.Renderer.GetPlainScreen(160, 19)
+        @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Pace|Tip) ' }).Count | Should -Be 4
+        @($short | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 1
+        ($short -join "`n") | Should -Not -Match 'Slowest so far'
+        # One more row goes to the heading, the next ones to more tests.
+        ($t.Renderer.GetPlainScreen(160, 20) -join "`n") | Should -Match 'Slowest so far'
+        @($t.Renderer.GetPlainScreen(160, 22) | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 3
+        $t.Renderer.Close()
+    }
+
+    It 'Makes the other panels smaller before it leaves one out' {
+        $t = New-TestPanelDashboard -Panels 'Failed', 'Tips'
+        $long = 'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twenty-one'
+        $t.Renderer.SetTips(@('Short', $long))
+        $t.Renderer.Start(5)
+        $t.Renderer.ItemFinished('F.1', 'Failed', 'High')
+        # With room: the four severities, and the Tips panel as tall as its longest tip.
+        $roomy = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $roomy | Should -Match '│ Critical '
+        $roomy | Should -Match '│ Short +│\n[^\n]*│ +│\n'
+        # Without: only the severity that has failures, and the tip at its own height. Both panels stay.
+        $tight = $t.Renderer.GetPlainScreen(160, 9)
+        @($tight | Where-Object { $_ -match '╭─ (Failed so far|Tip) ' }).Count | Should -Be 2
+        ($tight -join "`n") | Should -Not -Match '│ (Critical|Medium|Low) '
+        ($tight -join "`n") | Should -Match '│ High '
+        ($tight -join "`n") | Should -Match '│ Short +│\n[^\n]*╰'
+        $t.Renderer.Close()
     }
 
     It 'Shows the connections in a grid, connected ones with a green dot, and cuts a name that is too long' {

@@ -110,7 +110,7 @@ namespace Maester.Engine
         /// escape sequences to the console. Emoji and other pictographs are left out: terminals do not agree on
         /// how wide they are, and a wrong guess pushes the border of the panel out of line.
         /// </summary>
-        private static string Clean(string text)
+        internal static string Clean(string text)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
             var sb = new System.Text.StringBuilder(text.Length);

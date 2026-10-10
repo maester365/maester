@@ -121,31 +121,6 @@ function Write-MtCIAnnotation {
     }
 }
 
-function Format-MtCompactNumber {
-    <#
-    .SYNOPSIS
-    Formats a count in a few characters: 950, 1.2K, 48K, 3.4M, 1.1B.
-
-    .DESCRIPTION
-    Numbers under a thousand are written in full. Larger ones get one decimal at most and K, M or B.
-    #>
-    [CmdletBinding()]
-    [OutputType([string])]
-    param(
-        [Parameter(Mandatory, Position = 0)] [long] $Number
-    )
-    $value = [double][math]::Abs($Number)
-    $sign = if ($Number -lt 0) { '-' } else { '' }
-    $suffixes = '', 'K', 'M', 'B', 'T'
-    $index = 0
-    # 999,950 is 1M, not 1000K: step up while the rounded value would reach a thousand.
-    while ($index -lt $suffixes.Count - 1 -and [math]::Round($value, $(if ($index -eq 0) { 0 } else { 1 })) -ge 1000) {
-        $value = $value / 1000
-        $index++
-    }
-    $sign + $value.ToString($(if ($index -eq 0) { '0' } else { '0.#' }), [cultureinfo]::InvariantCulture) + $suffixes[$index]
-}
-
 function Get-MtConnectionInfo {
     <#
     .SYNOPSIS

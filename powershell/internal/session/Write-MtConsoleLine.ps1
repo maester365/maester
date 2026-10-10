@@ -118,18 +118,22 @@ function Initialize-MtDashboard {
     .DESCRIPTION
     The panels and their order come from Output.DashboardPanels in the run config; the default is all of
     them. Results is the chart under the lanes; the others stack in a column on the right when the console
-    is wide enough (about 140 columns).
+    is wide enough (about 140 columns). Every panel is shown when the column has the rows for it; the Pace
+    panel takes what is left over.
 
+      Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
+      Ring         the results so far as a ring chart
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
-      Tenant    the tenant, its primary domain, the account and its object counts (set later, by Set-MtDashboardTenant)
-      Failed    failed tests by severity
-      Drift     changes against the newest earlier results file in the output folder, for the same tenant
-      Pace      tests per second and the slowest tests
-      Blog      the newest post on maester.dev (one web request, cached for a day)
-      Version   not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
-                (one web request)
-      Tips      a tip from assets/ConsoleTips.txt
-      Results   one square per test
+      Failed       failed tests by severity
+      Drift        changes against the newest earlier results file in the output folder, for the same tenant
+      Pace         tests per second and the slowest tests: one at least, more in the rows that are left over
+      Contributor  one of the people who built Maester, a different one every twenty seconds, from
+                   assets/ConsoleContributors.json (written by build/Update-ConsoleContributors.ps1)
+      Blog         the newest post on maester.dev (one web request, cached for a day)
+      Version      not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
+                   (one web request)
+      Tips         a tip from assets/ConsoleTips.txt
+      Results      one square per test
 
     Blog and Version are the only ones that use the network. They run on background threads, only when the
     dashboard is wide enough to show them, and never with -SkipVersionCheck.
@@ -144,7 +148,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Connections', 'Failed', 'Drift', 'Pace', 'Blog', 'Version', 'Tips', 'Results'
+    $known = 'Tenant', 'Ring', 'Connections', 'Failed', 'Drift', 'Pace', 'Contributor', 'Blog', 'Version', 'Tips', 'Results'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
     if ($output -and $output.PSObject.Properties['DashboardPanels']) {
@@ -168,6 +172,12 @@ function Initialize-MtDashboard {
             }
             $Renderer.SetTips($tips.ToArray(), $links.ToArray())
         }
+    }
+
+    # The people who built Maester, from the list that ships with the module, starting with a different one each run.
+    if ($panels -contains 'Contributor') {
+        $contributorFile = Join-Path $PSScriptRoot '../../assets/ConsoleContributors.json'
+        if (Test-Path -LiteralPath $contributorFile) { $null = $Renderer.LoadContributorsAsync($contributorFile, (Get-Random -Maximum 100000)) }
     }
 
     # The status bar on the last row: where to read more about the project, each a hyperlink.
@@ -219,79 +229,21 @@ function Initialize-MtDashboard {
     }
 }
 
-function Get-MtDashboardTenantCount {
-    <#
-    .SYNOPSIS
-    Counts the users, guests, devices, groups, apps and agents of the tenant, for the Tenant panel.
-
-    .DESCRIPTION
-    One Graph batch request with six $count queries, so one round trip. A count that cannot be read (a missing
-    permission, a tenant without the feature) is left out; when the request itself fails there are none.
-    Returns an ordered dictionary of label to count.
-
-    A run of fewer than ten tests is over in a moment, and the request would be a large part of it: such a run
-    makes no request and has no counts.
-    #>
-    [CmdletBinding()]
-    [OutputType([System.Collections.Specialized.OrderedDictionary])]
-    param(
-        # How many tests the run is going to run.
-        [Parameter()] [int] $TestCount = [int]::MaxValue
-    )
-    if ($TestCount -lt 10) { return [ordered]@{} }
-
-    $queries = [ordered]@{
-        Users   = 'users/$count'
-        Guests  = "users/`$count?`$filter=userType eq 'Guest'"
-        Devices = 'devices/$count'
-        Groups  = 'groups/$count'
-        Apps    = 'applications/$count'
-        Agents  = 'servicePrincipals/microsoft.graph.agentIdentity/$count'
-    }
-    $counts = [ordered]@{}
-    try {
-        $requests = foreach ($name in $queries.Keys) {
-            @{ id = $name; method = 'GET'; url = $queries[$name]; headers = @{ ConsistencyLevel = 'eventual' } }
-        }
-        $body = @{ requests = @($requests) } | ConvertTo-Json -Depth 5
-        $response = Invoke-MgGraphRequest -Method POST -Uri '/v1.0/$batch' -Body $body -ContentType 'application/json' -OutputType PSObject -ErrorAction Stop
-        $byId = @{}
-        foreach ($item in @($response.responses)) { $byId[[string]$item.id] = $item }
-        foreach ($name in $queries.Keys) {
-            $item = $byId[$name]
-            if (-not $item -or [int]$item.status -ne 200) { continue }
-            # A count comes back as a number, as text, or as base64 text, depending on the service.
-            $value = 0L
-            $text = [string]$item.body
-            if (-not [long]::TryParse($text, [ref]$value)) {
-                try { $text = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($text)).Trim([char]0xFEFF, ' ') } catch { continue }
-                if (-not [long]::TryParse($text, [ref]$value)) { continue }
-            }
-            $counts[$name] = $value
-        }
-    } catch {
-        Write-Verbose "Could not count the objects of the tenant: $($_.Exception.Message)"
-    }
-    $counts
-}
-
 function Set-MtDashboardTenant {
     <#
     .SYNOPSIS
-    Fills the Tenant panel of the dashboard: the tenant and its primary domain, the account, and how many
-    users, guests, devices, groups, apps and agents it has.
+    Fills the Tenant panel of the dashboard: the tenant, its primary domain and the account.
 
     .DESCRIPTION
+    Everything comes from the tenant context the run already has; nothing is requested for the panel.
     Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show, and the panel says so.
-    The connected services are not here: they are the line under the banner.
+    The connected services are not here: they are in the Connections panel.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
         [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
-        # From Get-MtDashboardTenantCount: label to count.
-        [Parameter()] [AllowNull()] [System.Collections.IDictionary] $Count,
         [Parameter()] [AllowNull()] [pscustomobject] $Console
     )
     $graph = $TenantContext -and $TenantContext.Services -and $TenantContext.Services.PSObject.Properties['Graph'] -and $TenantContext.Services.Graph
@@ -301,13 +253,5 @@ function Set-MtDashboardTenant {
     }
     $domain = if ($TenantContext.PSObject.Properties['PrimaryDomain']) { [string]$TenantContext.PrimaryDomain } else { '' }
     $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
-    $labels = [System.Collections.Generic.List[string]]::new()
-    $values = [System.Collections.Generic.List[string]]::new()
-    if ($Count) {
-        foreach ($label in $Count.Keys) {
-            $labels.Add([string]$label)
-            $values.Add((Format-MtCompactNumber ([long]$Count[$label])))
-        }
-    }
-    $Renderer.SetTenant([string]$TenantContext.TenantName, $domain, $account, $labels.ToArray(), $values.ToArray())
+    $Renderer.SetTenant([string]$TenantContext.TenantName, $domain, $account)
 }

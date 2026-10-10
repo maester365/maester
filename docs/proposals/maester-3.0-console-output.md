@@ -130,18 +130,25 @@ amber; one orange without true colour), with a group of links at each edge and, 
 Docs (maester.dev/docs), Contributors (maester.dev/contributors), Our Manifesto (maester.cloud/manifesto), Star on GitHub (the repository),
 Discord (discord.maester.dev), Issues and Sponsor (the Sponsor dialog of the repository, fed by
 `.github/FUNDING.yml`), each a hyperlink. With the bar on screen the tagline under the logo
-has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit) and to the Pace
-panel, which gives them back as soon as another panel needs them. The Tips panel keeps the height of its longest
-tip, so the panels do not move when the tip changes. `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
+has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit).
+
+Every panel of the right column is shown whenever the column has the rows for it. The Pace panel is the one that
+gives: it starts at its chart and one test, and takes the rows that are left over for a heading and more tests
+(twenty at most). In a column that is still too short the panels that can do with less take less (the Tips panel the
+height of the tip it shows instead of that of its longest tip, the Failed panel only the severities that have
+failures, the Blog panel one line); only then is a panel that does not fit left out. With the default panels that
+takes a window of about 44 rows. `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
 default is all of them, and an empty list turns them off.
 
 | Panel | Shows | Where it comes from | Cost |
 | --- | --- | --- | --- |
-| `Tenant` | Tenant name with the primary domain on the right of the same line, the account and auth type, then the number of users, guests, devices, groups, apps and agents (1.2K, 3.4M) in right-aligned columns. Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are in the `Connections` panel under it. | The tenant context of the run (the name, the domain and the tenant type come from the one `organization` request every run makes; the ID, the account and the cloud from the local Graph context), and one Graph batch request of six `$count` queries for the counts (not made in a run of fewer than ten tests) | one Graph request |
+| `Tenant` | Tenant name with the primary domain on the right of the same line, and the account and auth type under them. Without a Graph connection (or with `-SkipGraphConnect`) it says so. | The tenant context of the run: the name, the domain and the tenant type come from the one `organization` request every run makes; the account from the local Graph context. Nothing is requested for the panel. | none |
+| `Ring` | The results so far as a ring chart (five rows of half blocks): a slice each for passed, failed, errors, investigate and skipped, clockwise from the top, the pass rate of the tests with a verdict in the middle, and the counts with their shares next to it. A slice is never thinner than a twenty-fifth of the ring, so that one failure among hundreds of passed tests shows. | Counters updated as results arrive | none |
 | `Connections` | The services of the run in a grid: a green dot when connected, a hollow one when not, and how many are connected in the border. A name that is too long is cut at its end. With this panel on screen there is no connection line under the banner. | The tenant context of the run | none |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date (a hyperlink that opens the HTML report of that run, when it is next to the results file) and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
-| `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests: three, and more (twenty at most) in the rows of the column that no other panel needs | Finish times of the run | none |
+| `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests: always one, and a heading and more of them (twenty at most) in the rows of the column that no other panel needs | Finish times of the run | none |
+| `Contributor` | Featured contributor: one of the people who built Maester, a different one every twenty seconds, starting with a different one each run. The name and the GitHub handle (both a hyperlink to the person's page on maester.dev/contributors), how many tests they wrote and how many they improved (a count of nothing is left out), and the year of their first contribution. | `assets/ConsoleContributors.json`, which ships with the module. `build/Update-ConsoleContributors.ps1` writes it from the contributor data of the website, and the module build runs it. People who are pinned last on the contributors page are left out. | none |
 | `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Not a panel: when a newer stable Maester is on the PowerShell Gallery, the tagline under the logo says so ("v3.0.0 · ↑ v3.1.0 available · maester.dev"), in bold amber, as a hyperlink to that version in the gallery. | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds, with a hyperlink to the page on maester.dev that says more | `assets/ConsoleTips.txt` in the module | none |
