@@ -35,16 +35,16 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $data = Get-Content -LiteralPath $Source -Raw | ConvertFrom-Json
-$lines = foreach ($profile in $data.profiles) {
-    $has = { param($name) $profile.PSObject.Properties[$name] -and $null -ne $profile.$name }
-    if ((& $has 'pinLast') -and $profile.pinLast) { continue }
-    if (-not (& $has 'github') -or -not $profile.github) { continue }
-    $since = if ((& $has 'firstContribution') -and "$($profile.firstContribution)" -match '^(\d{4})') { [int]$Matches[1] } else { 0 }
+$lines = foreach ($contributor in $data.profiles) {
+    $has = { param($name) $contributor.PSObject.Properties[$name] -and $null -ne $contributor.$name }
+    if ((& $has 'pinLast') -and $contributor.pinLast) { continue }
+    if (-not (& $has 'github') -or -not $contributor.github) { continue }
+    $since = if ((& $has 'firstContribution') -and "$($contributor.firstContribution)" -match '^(\d{4})') { [int]$Matches[1] } else { 0 }
     [ordered]@{
-        Name         = if ((& $has 'name') -and $profile.name) { [string]$profile.name } else { [string]$profile.github }
-        GitHub       = [string]$profile.github
-        Tests        = if (& $has 'testsAuthored') { @($profile.testsAuthored).Count } else { 0 }
-        Improvements = if (& $has 'testsContributed') { @($profile.testsContributed).Count } else { 0 }
+        Name         = if ((& $has 'name') -and $contributor.name) { [string]$contributor.name } else { [string]$contributor.github }
+        GitHub       = [string]$contributor.github
+        Tests        = if (& $has 'testsAuthored') { @($contributor.testsAuthored).Count } else { 0 }
+        Improvements = if (& $has 'testsContributed') { @($contributor.testsContributed).Count } else { 0 }
         Since        = $since
     } | ConvertTo-Json -Compress
 }
