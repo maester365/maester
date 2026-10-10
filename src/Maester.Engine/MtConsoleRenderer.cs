@@ -676,6 +676,9 @@ namespace Maester.Engine
                 _plain.Append(s);
                 return this;
             }
+            // The return value is used by callers in MtConsoleRenderer.Panels.cs and MtConsoleRenderer.Totals.cs,
+            // which the analyzer does not see from this file.
+#pragma warning disable S3241
             /// <summary>Text that is a hyperlink (OSC 8) to <paramref name="url"/> when colour is on and there is an address.</summary>
             public LineBuilder AddLink(string s, string url, string sgr = null)
             {
@@ -687,6 +690,7 @@ namespace Maester.Engine
                 _plain.Append(s);
                 return this;
             }
+#pragma warning restore S3241
 
             public Line Build() { return new Line { Text = _text.ToString(), Plain = _plain.ToString() }; }
         }
