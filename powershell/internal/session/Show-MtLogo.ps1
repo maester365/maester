@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Returns Lines (with colour when the console uses it), the Width they need, Compact, a one-line
-    replacement, and Small, the small banner that the dashboard shows while tests run. The banner is 88 columns: the Maester flame on the left, as on maester.dev, drawn with
+    replacement, and Band, the two-line wordmark that the dashboard shows while tests run. The banner is 88 columns: the Maester flame on the left, as on maester.dev, drawn with
     quadrant characters (two by two pixels per cell, sampled from assets/logo/maester.png), and the "ANSI Shadow" wordmark next to it. The wordmark has a
     gradient from left to right, Maester red to amber, with its shadow in a darker shade of the same colour.
     The flame has the logo's own gradient, orange at the top to red at the bottom, in two steps per row. Truecolor where the
@@ -143,8 +143,7 @@
     $tagline = "v$version · maester.dev"
     $site = if ($Console.Ansi) { "$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\" } else { 'maester.dev' }
     $taglineText = "${dim}v$version · $site$reset"
-    # The small banner: the flame at a third of its size next to a two-line wordmark. Narrow consoles get it
-    # as their banner, and the dashboard shows it at the top of the screen while tests run.
+    # The small banner: the flame at a third of its size next to a two-line wordmark, for narrow consoles.
     $smallLines = [System.Collections.Generic.List[string]]::new()
     $text = @('', $smallWordmark[0], $smallWordmark[1], $tagline, '')
     for ($r = 0; $r -lt $smallFlame.Count; $r++) {
@@ -178,8 +177,17 @@
     }
 
     [pscustomobject]@{
-        # The small banner, for the dashboard while tests run. It writes the row of the version itself.
-        Small   = [pscustomobject]@{ Lines = $smallLines.ToArray(); Width = 37; TaglineRow = 3; TaglinePrefix = " $(& $paintFlame $smallFlame[3] 3 $smallFlame.Count)  "; Version = "v$version" }
+        # The wordmark for the top of the dashboard while tests run: five rows, as tall as the Pace graph and
+        # its caption next to it. The two lines of the wordmark are the last two rows of the graph, so the
+        # letters stand on the same line as the bars, and the version is in the row of the caption. The
+        # dashboard writes that row itself.
+        Band    = [pscustomobject]@{
+            Lines         = @('', '', " $(& $paintWordmark $smallWordmark[0] $smallWordmark[0].Length)", " $(& $paintWordmark $smallWordmark[1] $smallWordmark[0].Length)", " ${dim}v$version$reset")
+            Width         = $smallWordmark[0].Length + 1
+            TaglineRow    = 4
+            TaglinePrefix = ' '
+            Version       = "v$version"
+        }
         Tagline = [pscustomobject]@{ Row = $taglineRow; Prefix = $taglinePrefix; Width = 60; Version = "v$version"; Site = 'maester.dev'; SiteUrl = 'https://maester.dev' }
         Lines   = $lines.ToArray()
         Width   = $width

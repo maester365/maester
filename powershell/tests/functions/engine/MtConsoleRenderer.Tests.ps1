@@ -373,7 +373,7 @@ Describe 'MtConsoleRenderer panels' {
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
         $screen.IndexOf('Tip') | Should -BeLessThan $screen.IndexOf('Tenant')
         $screen | Should -Not -Match 'Failed so far'
-        $screen | Should -Not -Match '[■▖]'
+        $screen | Should -Not -Match '[■░]'
         $t.Renderer.Close()
     }
 
@@ -397,9 +397,9 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Ansi = $false
         $t.Renderer.Start(10)
         1..4 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
-        $chart = $t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[▖░]' }
-        ([regex]::Matches($chart, '▄▖')).Count | Should -Be 4
-        ([regex]::Matches($chart, '░ ')).Count | Should -Be 6
+        $chart = $t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '░' }
+        ([regex]::Matches($chart, '▆▆ ')).Count | Should -Be 4
+        ([regex]::Matches($chart, '░░')).Count | Should -Be 6
         $t.Renderer.Close()
     }
 
@@ -408,15 +408,15 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Ansi = $false
         $t.Renderer.Start(300)
         1..4 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
-        # Plenty of rows: 300 blocks of two cells, 78 to a row of this console without a right column.
+        # Plenty of rows: 300 blocks of three cells, 52 to a row of this console without a right column.
         $roomy = $t.Renderer.GetPlainScreen(160, 44)
-        ([regex]::Matches(($roomy -join ''), '▄▖|░ ')).Count | Should -Be 300
+        ([regex]::Matches(($roomy -join ''), '▆▆|░░')).Count | Should -Be 300
         ($roomy -join '') | Should -Not -Match '[■□]'
-        @($roomy | Where-Object { $_ -match '[▖░]' }).Count | Should -Be 4
-        # A short console: one cell to a test, so that the chart takes two rows and not four.
+        @($roomy | Where-Object { $_ -match '[▆░]' }).Count | Should -Be 6
+        # A short console: one cell to a test, so that the chart takes two rows and not six.
         $short = $t.Renderer.GetPlainScreen(160, 10)
         (($short -join '') -replace '[^■□]').Length | Should -Be 300
-        ($short -join '') | Should -Not -Match '[▖░]'
+        ($short -join '') | Should -Not -Match '[▆░]'
         @($short | Where-Object { $_ -match '[■□]' }).Count | Should -Be 2
         $t.Renderer.Close()
     }
@@ -498,7 +498,7 @@ Describe 'MtConsoleRenderer panels' {
         $boxes | ForEach-Object { $_.Length | Should -Be 199 }
         ($boxes[0] -replace '^.*(?=╭)').Length | Should -BeGreaterThan 58
         # One square per test: 700 squares over more rows than the standard six would hold.
-        ([regex]::Matches(($screen -join ''), '▄▖|░ ')).Count | Should -Be 700
+        (($screen -join '') -replace '[^■□]').Length | Should -Be 700
         ($screen -join "`n") | Should -Not -Match 'each square is'
         # The Slowest panel fills the rows that are free with more tests (twenty at most).
         @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 20
@@ -959,7 +959,7 @@ Describe 'MtConsoleRenderer panels' {
         ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match 'how long each test took'
         $short = $t.Renderer.GetPlainScreen(160, 12) -join "`n"
         $short | Should -Not -Match 'how long each test took'
-        $short | Should -Match '[■▖]'
+        $short | Should -Match '[■▆]'
         $t.Renderer.Close()
     }
 
@@ -1033,15 +1033,15 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemStarting('R.1', 'Running one')
         $t.Renderer.ItemStarting('R.2', 'Running two')
         # The main column is the first 98 characters of a row; the panels are to its right.
-        $chart = { ($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[▖░]' }).PadRight(98).Substring(0, 98).Trim() }
-        # A block is two cells: a lower half block and a lower left quadrant, so there is a gap to the next
-        # one. A running test shows the spinner of the list of running tests.
-        & $chart | Should -Be ('▄▖' * 3 + '⠋ ' * 2 + '░ ' * 5).Trim()
+        $chart = { ($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '░' }).PadRight(98).Substring(0, 98).Trim() }
+        # A block is two cells and a cell of space. A running test shows the spinner of the list of running
+        # tests with its dots a row lower (the first frame, ⠋, is ⠖), so that it is as tall as a block.
+        & $chart | Should -Be ('▆▆ ' * 3 + '⠖  ' * 2 + '░░ ' * 5).Trim()
         $t.Renderer.ItemFinished('R.1', 'Passed')
-        & $chart | Should -Be ('▄▖' * 4 + '⠋ ' + '░ ' * 5).Trim()
+        & $chart | Should -Be ('▆▆ ' * 4 + '⠖  ' + '░░ ' * 5).Trim()
         # A console that is short of rows keeps the small squares, and their own pulse.
         $small = { ($t.Renderer.GetPlainScreen(160, 9) | Where-Object { $_ -match '[■□]' }).PadRight(98).Substring(0, 98).Trim() }
-        & $small | Should -Be '■■■■⠋□□□□□'
+        & $small | Should -Be '■■■■⠲□□□□□'
         $t.Renderer.Close()
     }
 }

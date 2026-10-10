@@ -1081,29 +1081,35 @@ namespace Maester.Engine
         /// The results chart of the main column: one square per test (or per group of tests when there are more
         /// than fit), filled in the order the tests finish and coloured by the worst result in the square.
         /// </summary>
+        // The spinner of the running tests (⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏) with every dot one row lower, so that it is as tall as a
+        // big block and stands on the same line; and one of two rows of dots, as tall as a small square.
+        private static readonly string[] LowSpinner = { "⠖", "⠲", "⢲", "⢰", "⣰", "⣠", "⣄", "⣆", "⡆", "⡖" };
+        private static readonly string[] MidSpinner = { "⠲", "⠴", "⠦", "⠖" };
+
         private List<Line> BuildResultsChart(int width, int maxRows, bool ansi)
         {
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
             // One square per test for as long as the rows that are free allow it. In a console with room to
-            // spare a test gets two cells: a block half as wide again as the square, with a gap of half a cell
-            // to the next one and of half a row to the row above (a lower half block and a lower left quadrant).
-            // That is when all the tests then still fit, with three rows left over for the list of the tests
-            // that ran.
+            // spare a test gets a block of two cells and three quarters of a row, which is close to a square
+            // four times the size, with a cell of space to the next block and a quarter of a row to the row
+            // above. That is when all the tests then still fit, with three rows left over for the list of the
+            // tests that ran.
             int columns = Math.Max(10, width - 2);
             int rows = Math.Min(16, maxRows);
-            bool big = Unicode && _total <= (columns / 2) * Math.Min(16, maxRows - 3);
-            int perRow = big ? columns / 2 : columns;
+            bool big = Unicode && _total <= (columns / 3) * Math.Min(16, maxRows - 3);
+            int perRow = big ? columns / 3 : columns;
             int perSquare = big ? 1 : Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
             int squares = (int)Math.Ceiling((double)_total / perSquare);
             bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);
-            string mark = big ? "▄▖" : (Unicode ? "■" : "#");
-            string waiting = ansi ? mark : (big ? "░ " : (Unicode ? "□" : "."));
+            string mark = big ? "▆▆ " : (Unicode ? "■" : "#");
+            string waiting = ansi ? mark : (big ? "░░ " : (Unicode ? "□" : "."));
             // The tests that are running take the next places after the finished ones, and show the spinner
-            // that is in front of them in the list of running tests.
+            // that is in front of them in the list of running tests, at the size of a block: its dots moved
+            // down a row for the big blocks, and two rows of dots for the small squares.
             int done = _sequence.Count;
             int active = done + (_running ? _workers.Count : 0);
-            string spinning = Spinner() + (big ? " " : string.Empty);
+            string spinning = !Unicode ? Spinner() : (big ? LowSpinner[_tick % LowSpinner.Length] + "  " : MidSpinner[_tick % MidSpinner.Length]);
 
             LineBuilder row = null;
             for (int i = 0; i < squares; i++)

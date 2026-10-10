@@ -578,9 +578,9 @@
             if ($console.Unicode -and $banner.Tagline.Row -ge 0) {
                 $renderer.SetHeaderTagline($banner.Tagline.Row, $banner.Tagline.Prefix, $banner.Tagline.Width, $banner.Tagline.Version, $banner.Tagline.Site, $banner.Tagline.SiteUrl)
             }
-            # Once the tests start, the small logo is at the top of the screen, with the Pace graph next to it.
+            # Once the tests start, the wordmark is at the top of the screen, with the Pace graph next to it.
             if ($console.Unicode) {
-                $renderer.SetRunLogo([string[]]$banner.Small.Lines, $banner.Small.Width, $banner.Small.TaglineRow, $banner.Small.TaglinePrefix, $banner.Small.Version)
+                $renderer.SetRunLogo([string[]]$banner.Band.Lines, $banner.Band.Width, $banner.Band.TaglineRow, $banner.Band.TaglinePrefix, $banner.Band.Version)
             }
             $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
             Initialize-MtDashboard -Renderer $renderer -Console $console -RunConfig $runConfig -OutputJsonFile $out.OutputJsonFile -SkipVersionCheck:$SkipVersionCheck

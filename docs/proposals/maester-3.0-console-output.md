@@ -71,9 +71,10 @@ terminal's alternate screen, as `less` and `vim` do, so nothing it draws ends up
 redraw freely.
 
 The banner (the flame and the wordmark, 13 rows) is the opening screen: it is shown while the run prepares. Once
-the tests start it makes room for them: the top of the main column is a band of five rows, with the small logo (the
-small flame, a two-line wordmark and the version, and a newer version when there is one) at the left and the Pace
-graph in the same rows to its right. The phases and the overall progress are the two lines under it. A console of
+the tests start it makes room for them: the top of the main column is a band of five rows, with the two-line
+wordmark at the left and the Pace graph to its right. The wordmark is in the last two rows of the graph, so the
+letters stand on the same line as the bars, and the version (and a newer version when there is one) is in the row
+of the caption of the graph. There is no flame in the band. The phases and the overall progress are the two lines under it. A console of
 fewer than 26 rows, or one too narrow for the logo and a graph, gets one line: the name in the colours of the
 wordmark, the version and the phases; the Pace graph is then under the product lanes when there are rows for it.
 The sketch below is the opening screen.
@@ -160,7 +161,7 @@ default is all of them, and an empty list turns them off.
 | `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Not a panel: when a newer stable Maester is on the PowerShell Gallery, the tagline under the logo says so ("v3.0.0 · ↑ v3.1.0 available · maester.dev"), in bold amber, as a hyperlink to that version in the gallery. | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds, with a hyperlink to the page on maester.dev that says more | `assets/ConsoleTips.txt` in the module | none |
-| `Results` | One square per test under the product lanes, edge to edge, filled in the order tests finish and coloured by result. In a console with room to spare a test gets two cells: a block half as wide again as the square, with a gap of half a cell to the next one and of half a row to the row above. That is when all the tests then still fit, with three rows left over for the list of the tests that ran. A test that is running shows the same spinner as in the list of running tests. With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
+| `Results` | One square per test under the product lanes, edge to edge, filled in the order tests finish and coloured by result. In a console with room to spare a test gets a block of two cells and three quarters of a row (close to a square, four times the size), with a cell of space to the next block and a quarter of a row to the row above. That is when all the tests then still fit, with three rows left over for the list of the tests that ran. A test that is running shows the spinner of the list of running tests at the size of a block: with its dots a row lower for the big blocks, and with two rows of dots for the small squares. A block with thin gaps of the same size on both sides is not possible with characters every terminal font has: a character can be cut to a part of its width or to a part of its height, not both. With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
 
 - Each panel in the right column is a rounded box with its title in the top border, and where there is one a badge
   on the right of that border (the failed count, the date of the last run, tests per second). The border takes the
