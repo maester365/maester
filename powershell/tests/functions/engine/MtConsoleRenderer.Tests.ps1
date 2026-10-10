@@ -393,6 +393,24 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Fills a console that is wider and taller than the standard layout' {
+        $t = New-TestPanelDashboard -Width 200 -Panels 'Failed', 'Pace', 'Results'
+        $t.Renderer.Start(700)
+        1..12 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
+        $screen = $t.Renderer.GetPlainScreen(200, 50)
+        # The right column ends at the edge of the window, and is wider than on a 160-column console.
+        $boxes = @($screen | Where-Object { $_ -match '╮$' })
+        $boxes.Count | Should -Be 2
+        $boxes | ForEach-Object { $_.Length | Should -Be 199 }
+        ($boxes[0] -replace '^.*(?=╭)').Length | Should -BeGreaterThan 58
+        # One square per test: 700 squares over more rows than the standard six would hold.
+        (($screen -join '') -replace '[^■□]').Length | Should -Be 700
+        ($screen -join "`n") | Should -Not -Match 'each square is'
+        # The rows that are free list more than three of the slowest tests.
+        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 10
+        $t.Renderer.Close()
+    }
+
     It 'Says how long ago the earlier run was, and when' {
         $t = New-TestPanelDashboard
         $before = [System.Collections.Generic.Dictionary[string, string]]::new()

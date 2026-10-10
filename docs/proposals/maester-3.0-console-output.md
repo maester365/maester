@@ -121,8 +121,11 @@ of the screen. This happened in the Claude desktop app's embedded terminal. The 
 
 ### Dashboard panels
 
-On a console of about 140 columns or more the dashboard has a second column on the right, and the main content keeps
-a fixed width of 98 columns. `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
+On a console of about 140 columns or more the dashboard has a second column on the right. The dashboard fills the
+window: the main content takes 98 columns, the right column grows to 58 (a 160-column console), and beyond that the
+extra width is shared, two parts to the main content (longer bars, more squares per row) and one to the right column
+(up to 90 columns). Rows that are free go to the results chart (up to 16 rows, one square per test while they fit)
+and to the Pace panel (up to ten slowest tests). `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
 default is all of them, and an empty list turns them off.
 
 | Panel | Shows | Where it comes from | Cost |
@@ -130,7 +133,7 @@ default is all of them, and an empty list turns them off.
 | `Tenant` | Tenant name and ID, account, auth type and cloud. Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are not here: they are the line under the banner. | The tenant context of the run | none |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
-| `Pace` | Tests per second, a sparkline of the run so far, and the three slowest tests | Finish times of the run | none |
+| `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests (three, or up to ten when rows are free) | Finish times of the run | none |
 | `Blog` | The three newest posts on maester.dev, newest first, each a hyperlink (OSC 8) to the post | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Whether a newer stable Maester is on the PowerShell Gallery | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds | `assets/ConsoleTips.txt` in the module | none |

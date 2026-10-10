@@ -22,7 +22,10 @@ namespace Maester.Engine
         private const int MainWidth = 98;
         private const int PaneGap = 3;
         private const int MinPaneWidth = 38;
-        private const int MaxPaneWidth = 58;
+        private const int StandardPaneWidth = 58;
+        private const int MaxPaneWidth = 90;
+        private const int SlowestShown = 3;
+        private const int SlowestKept = 10;
         private const string ResultsPanel = "Results";
         private static readonly string[] SeverityOrder = { "Critical", "High", "Medium", "Low" };
         private static readonly string[] SeverityColor = { "31", "38;5;208", "33", "2" };
@@ -58,6 +61,7 @@ namespace Maester.Engine
         private DateTime? _baselineWhen;
         private int _fixedCount;
         private int _newTests;
+        private int _slowestShown = SlowestShown;
 
         /// <summary>
         /// The panels to show, in order. "Results" is the chart in the main column; the others stack in the right
@@ -211,7 +215,7 @@ namespace Maester.Engine
             {
                 _slowest.Add(new Slow { Id = id, Title = title, Duration = duration });
                 _slowest.Sort((a, b) => b.Duration.CompareTo(a.Duration));
-                if (_slowest.Count > 3) _slowest.RemoveAt(3);
+                if (_slowest.Count > SlowestKept) _slowest.RemoveAt(SlowestKept);
                 _finished[id] = result;
                 CountDrift(id, result);
             }
@@ -251,7 +255,11 @@ namespace Maester.Engine
 
         // ------------------------------------------------------------------ layout
 
-        /// <summary>The width of the right column for a console width, or 0 when there is no room or nothing to show in it.</summary>
+        /// <summary>
+        /// The width of the right column for a console width, or 0 when there is no room or nothing to show in it.
+        /// The main column gets its standard width first, then the right column up to its standard width; beyond
+        /// that the extra is shared, two parts to the main column and one to the right column.
+        /// </summary>
         private int PaneWidth(int width)
         {
             bool any = false;
@@ -260,8 +268,9 @@ namespace Maester.Engine
                 if (!string.Equals(p, ResultsPanel, StringComparison.OrdinalIgnoreCase)) any = true;
             }
             if (!any) return 0;
-            int pane = Math.Min(MaxPaneWidth, width - 1 - MainWidth - PaneGap);
-            return pane >= MinPaneWidth ? pane : 0;
+            int room = width - 1 - MainWidth - PaneGap;
+            if (room < MinPaneWidth) return 0;
+            return room <= StandardPaneWidth ? room : Math.Min(MaxPaneWidth, StandardPaneWidth + (room - StandardPaneWidth) / 3);
         }
 
         private bool PanelShown(string name)
@@ -291,6 +300,20 @@ namespace Maester.Engine
         /// A panel that does not fit in the rows that are left is skipped.
         /// </summary>
         private List<Line> BuildPane(int paneWidth, int rows, bool ansi)
+        {
+            _slowestShown = SlowestShown;
+            var pane = StackPanels(paneWidth, rows, ansi);
+            // Rows that are left over go to the Pace panel, which then lists more of the slowest tests.
+            int spare = rows - pane.Count;
+            if (spare > 0 && _slowest.Count > SlowestShown && PanelShown("Pace"))
+            {
+                _slowestShown = Math.Min(_slowest.Count, SlowestShown + spare);
+                pane = StackPanels(paneWidth, rows, ansi);
+            }
+            return pane;
+        }
+
+        private List<Line> StackPanels(int paneWidth, int rows, bool ansi)
         {
             var pane = new List<Line>();
             int inner = paneWidth - 4;
@@ -415,7 +438,7 @@ namespace Maester.Engine
             var panel = new PanelContent { Title = "Pace", Badge = (_finishSeconds.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" };
 
             // Tests finished in each slice of the run so far.
-            int buckets = Math.Max(8, Math.Min(48, width));
+            int buckets = Math.Max(8, width);
             var counts = new int[buckets];
             int top = 1;
             foreach (var t in _finishSeconds)
@@ -437,6 +460,7 @@ namespace Maester.Engine
                 panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
                 foreach (var s in _slowest)
                 {
+                    if (panel.Lines.Count >= 2 + _slowestShown) break;
                     string time = Short(s.Duration).PadLeft(7);
                     var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
                     string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
@@ -535,8 +559,9 @@ namespace Maester.Engine
         {
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
-            int columns = Math.Max(10, Math.Min(96, width - 2));
-            int rows = Math.Min(6, maxRows);
+            // One square per test for as long as the rows that are free allow it.
+            int columns = Math.Max(10, width - 2);
+            int rows = Math.Min(16, maxRows);
             int perSquare = Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
             int squares = (int)Math.Ceiling((double)_total / perSquare);
             bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);

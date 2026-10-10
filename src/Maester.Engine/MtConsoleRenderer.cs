@@ -683,9 +683,10 @@ namespace Maester.Engine
         private List<Line> BuildScreen(int width, int height, bool ansi)
         {
             int rows = Math.Max(8, height - 1);
-            // On a wide console the panels take a column on the right and the main content keeps a fixed width.
+            // On a wide console the panels take a column on the right, and the two columns share the whole width.
             int paneWidth = PaneWidth(width);
-            int max = paneWidth > 0 ? MainWidth - 1 : Math.Max(20, width - 1);
+            int mainWidth = width - 1 - PaneGap - paneWidth;
+            int max = paneWidth > 0 ? mainWidth - 1 : Math.Max(20, width - 1);
             Func<Line> blank = () => new Line { Text = string.Empty, Plain = string.Empty };
             bool tests = _running || _total > 0;
             bool info = _info != null;
@@ -710,7 +711,7 @@ namespace Maester.Engine
             {
                 int done = FinishedCount();
                 var overall = new LineBuilder(ansi).Add(" ");
-                AddBar(overall, done, _total, Math.Max(10, Math.Min(40, max - 52)));
+                AddBar(overall, done, _total, Math.Max(10, Math.Min(40, max - 52) + Math.Max(0, max - (MainWidth - 1))));
                 overall.Add("  " + ProgressText(done, CurrentPhaseClock(), false), "1").Add("   ");
                 AddCounts(overall, _passed, _failed, _error, _investigate, _skipped);
                 body.Add(Truncate(overall.Build(), max, ansi));
@@ -778,7 +779,8 @@ namespace Maester.Engine
                 }
                 int nameWidth = 8;
                 foreach (var l in shown) nameWidth = Math.Max(nameWidth, Math.Min(18, l.Name.Length));
-                int barWidth = Math.Max(8, Math.Min(24, max - nameWidth - 52));
+                // Up to the standard width the bars are at most 24 columns; a wider column gives them the extra.
+                int barWidth = Math.Max(8, Math.Min(24, max - nameWidth - 52) + Math.Max(0, max - (MainWidth - 1)));
                 foreach (var l in shown)
                 {
                     bool active = l.Done > 0 || l.Running > 0;
@@ -819,7 +821,7 @@ namespace Maester.Engine
             if (paneWidth > 0)
             {
                 var pane = BuildPane(paneWidth, rows, ansi);
-                if (pane.Count > 0) return Beside(screen, pane, MainWidth, rows);
+                if (pane.Count > 0) return Beside(screen, pane, mainWidth, rows);
             }
             return screen;
         }
