@@ -6,9 +6,9 @@ function Get-MtNativeTestInventory {
     .DESCRIPTION
     Reads every Test.*.ps1 file statically (Read-MtNativeTest) and applies the nearest suite.json between
     the file and the root: suite tags, Source, Suite, help URL template and RequiresMaester (design
-    section 3.6). Adds the derived values (test attribute design, section 2.3): Block, the tag set that
-    selection uses and the resolved help URL. Tests that share an ID or a function name get a DuplicateId
-    error. A built-in root skips its Custom folder.
+    section 3.6). Adds the derived values (test attribute design, section 2.3): Block and the resolved help
+    URL. Tests that share an ID or a function name get a DuplicateId error. A built-in root skips its
+    Custom folder.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject], [object[]])]
@@ -66,15 +66,16 @@ function Get-MtNativeTestInventory {
 function Complete-MtNativeTest {
     <#
     .SYNOPSIS
-    Adds Source, Suite, Block, the selection tags and the help URL to a test read by Read-MtNativeTest.
+    Adds Source, Suite, Block, the suite's tags and the help URL to a test read by Read-MtNativeTest.
 
     .DESCRIPTION
     Block is kept on the result row for 2.x consumers and for XML test-case names. It is the display name of
     Product when the taxonomy registry knows it, else Product as written, else Feature, else the suite's
     Name, else Custom.
 
-    EffectiveTag is what -Tag and -ExcludeTag match. It is never written to a result row: a row's Tag holds
-    the tags the test's author wrote.
+    SuiteTag holds the Tags of the suite.json. Like the test's own Tag they are matched by -Tag and
+    -ExcludeTag (Get-MtSelectionTag), but they are not written to a result row: a row's Tag holds the tags
+    the test's author wrote.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -91,12 +92,7 @@ function Complete-MtNativeTest {
     elseif ($Suite -and $Suite.PSObject.Properties['Name'] -and $Suite.Name) { [string]$Suite.Name }
     else { 'Custom' }
 
-    $tags = [System.Collections.Generic.List[string]]::new()
-    foreach ($t in @($(if ($Suite) { $Suite.Tags } else { @() })) + @($Test.Id) + @($Test.Tag)) {
-        if ($t -and -not ($tags | Where-Object { $_ -eq $t })) { $tags.Add([string]$t) }
-    }
-    if ($Test.Lifecycle -eq 'Preview' -and -not ($tags -contains 'Preview')) { $tags.Add('Preview') }
-    if ($Test.LongRunning -and -not ($tags -contains 'LongRunning')) { $tags.Add('LongRunning') }
+    $suiteTags = [string[]]@($(if ($Suite -and $Suite.PSObject.Properties['Tags']) { $Suite.Tags }) | Where-Object { $_ } | ForEach-Object { [string]$_ } | Select-Object -Unique)
 
     $helpUrl = $Test.HelpUrl
     if (-not $helpUrl -and $Test.Id) {
@@ -118,7 +114,7 @@ function Complete-MtNativeTest {
             Source       = $source
             Suite        = $suiteId
             Block        = $block
-            EffectiveTag = $tags.ToArray()
+            SuiteTag     = $suiteTags
             HelpUrl      = $helpUrl
             Format       = 'Native'
         }) -Force
@@ -127,6 +123,71 @@ function Complete-MtNativeTest {
         $Test | Add-Member -NotePropertyName NoResultReason -NotePropertyValue ([string]$Suite.NoResultReason) -Force
     }
     $Test
+}
+
+function Get-MtSelectionTag {
+    <#
+    .SYNOPSIS
+    Returns the tags that -Tag and -ExcludeTag match for a native test (test attribute design, section 5.1).
+
+    .DESCRIPTION
+    Own: the tags the test's author wrote and the Tags of its suite.json and, for a test shipped with
+    Maester, its own ID. Legacy: for a test shipped with Maester, the tags it carried in Maester 2.x
+    (assets/Maester.LegacyTags.json), so that every 2.x tag keeps selecting the tests it selected.
+
+    The legacy tags and the ID are used for selection only. They are never written to a result row.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter(Mandatory)] [object] $Test
+    )
+
+    $own = [System.Collections.Generic.List[string]]::new()
+    foreach ($tag in @($Test.Tag) + @($(if ($Test.PSObject.Properties['SuiteTag']) { $Test.SuiteTag }))) { if ($tag) { $own.Add([string]$tag) } }
+    $legacy = @()
+    if ($Test.PSObject.Properties['BuiltIn'] -and $Test.BuiltIn -and $Test.Id) {
+        $own.Add([string]$Test.Id)
+        $table = Get-MtLegacyTagTable
+        $tags = $null
+        if ($table.ByTest.TryGetValue([string]$Test.Id, [ref] $tags)) { $legacy = $tags }
+    }
+    [pscustomobject]@{ Own = $own.ToArray(); Legacy = @($legacy) }
+}
+
+function Get-MtLegacyTagTable {
+    <#
+    .SYNOPSIS
+    Returns the Maester 2.x tags of the built-in tests (assets/Maester.LegacyTags.json). Cached for the session.
+
+    .DESCRIPTION
+    ByTest maps a test ID to the 2.x tags it carried, and Replacement maps a tag to the typed selector that
+    takes its place, for the tags that have one. Both are case-insensitive. The file is generated once by
+    build/golden/Export-MtLegacyTagTable.ps1; tests added after Maester 3.0 are not in it.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param()
+
+    if (-not $script:__MtLegacyTagTable) {
+        $ignoreCase = [System.StringComparer]::OrdinalIgnoreCase
+        $byTest = [System.Collections.Generic.Dictionary[string, string[]]]::new($ignoreCase)
+        $replacement = [System.Collections.Generic.Dictionary[string, string]]::new($ignoreCase)
+        $file = Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/Maester.LegacyTags.json'
+        if (Test-Path -LiteralPath $file) {
+            $lists = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.List[string]]]::new($ignoreCase)
+            foreach ($entry in @((Get-Content -LiteralPath $file -Raw | ConvertFrom-Json).Tags)) {
+                if ($entry.PSObject.Properties['Replacement'] -and $entry.Replacement) { $replacement[[string]$entry.Tag] = [string]$entry.Replacement }
+                foreach ($id in @($entry.Tests)) {
+                    if (-not $lists.ContainsKey([string]$id)) { $lists[[string]$id] = [System.Collections.Generic.List[string]]::new() }
+                    $lists[[string]$id].Add([string]$entry.Tag)
+                }
+            }
+            foreach ($id in $lists.Keys) { $byTest[$id] = $lists[$id].ToArray() }
+        }
+        $script:__MtLegacyTagTable = [pscustomobject]@{ ByTest = $byTest; Replacement = $replacement }
+    }
+    $script:__MtLegacyTagTable
 }
 
 function Get-MtSuiteManifest {
@@ -166,7 +227,7 @@ function Get-MtTestCatalog {
     Returns the built-in native tests: the shipped Maester.TestCatalog.json, or a scan of tests/ in a source checkout.
 
     .DESCRIPTION
-    Each row has the attribute properties plus Source, Suite, Block, EffectiveTag, HelpUrl, FunctionName,
+    Each row has the attribute properties plus Source, Suite, Block, SuiteTag, HelpUrl, FunctionName,
     File, Parameters and MarkdownPath (design appendix A.4). Cached for the session.
     #>
     [CmdletBinding()]
@@ -183,7 +244,7 @@ function Get-MtTestCatalog {
     $rows = if (Test-Path -LiteralPath $catalogFile) {
         $catalog = Get-Content -LiteralPath $catalogFile -Raw | ConvertFrom-Json
         # JSON null for an empty list would read back as @($null), a list of one, so the gates would apply.
-        $arrayProperties = @((Get-MtTestSchema).Properties.GetEnumerator() | Where-Object { $_.Value.Type -eq 'string[]' } | ForEach-Object { $_.Key }) + 'EffectiveTag'
+        $arrayProperties = @((Get-MtTestSchema).Properties.GetEnumerator() | Where-Object { $_.Value.Type -eq 'string[]' } | ForEach-Object { $_.Key }) + 'SuiteTag'
         foreach ($t in $catalog.Tests) {
             foreach ($name in $arrayProperties) {
                 if ($t.PSObject.Properties[$name]) { $t.$name = [string[]]@($t.$name | Where-Object { $null -ne $_ -and $_ -ne '' }) }

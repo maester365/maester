@@ -12,7 +12,8 @@ function Get-MtTest {
     Only tests with these IDs: exact IDs or '*' wildcards.
 
     .PARAMETER Tag
-    Only tests that carry any of these tags.
+    Only tests that any of these tags select: a tag the test carries or, for a test that ships with Maester,
+    its ID or one of the tags it carried in Maester 2.x.
 
     .PARAMETER Product
     Only tests of these products: keys such as entra, or an alias such as 'Entra ID'. Matches a test's
@@ -88,7 +89,11 @@ function Get-MtTest {
     $selectorInUse = Test-MtSelectorInUse -Selection $selection
     foreach ($t in $tests) {
         if ($Id -and -not (Test-MtIdMatch -Id $t.Id -Pattern $Id)) { continue }
-        if ($Tag -and -not (@($t.EffectiveTag) | Where-Object { $tg = $_; $Tag | Where-Object { $tg -like $_ } })) { continue }
+        if ($Tag) {
+            # What -Tag matches in a run: the test's own tags and, for a built-in test, its ID and its 2.x tags.
+            $selectionTags = Get-MtSelectionTag -Test $t
+            if (-not (@($selectionTags.Own) + @($selectionTags.Legacy) | Where-Object { $tg = $_; $Tag | Where-Object { $tg -like $_ } })) { continue }
+        }
         if ($selectorInUse -and (Test-MtSelectorMatch -Selection $selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $t.Severity -Suite $t.Suite)) { continue }
         $copy = [ordered]@{}
         foreach ($p in $t.PSObject.Properties) { $copy[$p.Name] = $p.Value }

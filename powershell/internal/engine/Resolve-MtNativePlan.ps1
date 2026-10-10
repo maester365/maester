@@ -52,6 +52,13 @@ function Resolve-MtNativePlan {
 
     $selectorInUse = Test-MtSelectorInUse -Selection $Selection
     $userExcludeTag = @($ExcludeTag | Where-Object { $_ -and $_ -notin $AutoExcludedTag })
+    # How a tag pattern matches a test: by one of its own tags, else by a Maester 2.x tag, else not at all.
+    $matchTag = {
+        param($tags, $pattern)
+        foreach ($tag in $tags.Own) { if ($tag -like $pattern) { return 'Own' } }
+        foreach ($tag in $tags.Legacy) { if ($tag -like $pattern) { return 'Legacy' } }
+    }
+    $legacyTagUsed = [ordered]@{}
 
     foreach ($t in $Test) {
         $row = [ordered]@{
@@ -124,11 +131,18 @@ function Resolve-MtNativePlan {
             }
         }
 
-        # Selection by tag.
-        $tags = @($t.EffectiveTag)
+        # Selection by tag: the tags of the test and its suite and, for a built-in test, its ID and its
+        # Maester 2.x tags (section 5.1). A pattern that only a 2.x tag answers is noted for the warning below.
+        $tags = if ($IncludeTag.Count -gt 0 -or $userExcludeTag.Count -gt 0) { Get-MtSelectionTag -Test $t } else { $null }
         $included = $IncludeTag.Count -eq 0
         if (-not $included) {
-            foreach ($tag in $tags) { foreach ($pattern in $IncludeTag) { if ($tag -like $pattern) { $included = $true; break } }; if ($included) { break } }
+            foreach ($pattern in $IncludeTag) {
+                $via = & $matchTag $tags $pattern
+                if (-not $via) { continue }
+                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = $true }
+                $included = $true
+                break
+            }
         }
         if (-not $included) {
             & $set 'NotRun' 'NotSelected' "Matched none of the tags $($IncludeTag -join ', ')."
@@ -154,7 +168,12 @@ function Resolve-MtNativePlan {
             }
         }
         # The tags the caller excludes. The tags the engine adds for Pester-format tests are not among them.
-        $hits = @(foreach ($pattern in $userExcludeTag) { foreach ($tag in $tags) { if ($tag -like $pattern) { $pattern; break } } })
+        $hits = @(foreach ($pattern in $userExcludeTag) {
+                $via = & $matchTag $tags $pattern
+                if (-not $via) { continue }
+                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = $true }
+                $pattern
+            })
         if ($hits) {
             & $set 'NotRun' 'ExcludedByTag' "Excluded by tag ($(@($hits | Select-Object -Unique) -join ', '))."
             [pscustomobject]$row; continue
@@ -188,6 +207,37 @@ function Resolve-MtNativePlan {
 
         if ($DryRun) { & $set 'NotRun' 'DryRun' 'Dry run: this test would have run.' }
         [pscustomobject]$row
+    }
+
+    # One warning per run when a tag of Maester 2.x did the selecting, with the typed selector that replaces it.
+    if ($legacyTagUsed.Count -gt 0) { Write-Warning (Get-MtLegacyTagWarning -Tag @($legacyTagUsed.Keys)) }
+}
+
+function Get-MtLegacyTagWarning {
+    <#
+    .SYNOPSIS
+    Returns the text of the warning for a run that selected tests through Maester 2.x tags.
+
+    .DESCRIPTION
+    Names each tag and, where assets/Maester.LegacyTags.json gives one, the typed selector that replaces
+    it, for example -Tag CA and -Feature conditional-access (test attribute design, section 5.1).
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        # The -Tag and -ExcludeTag values that matched a test only through a 2.x tag.
+        [Parameter(Mandatory)] [string[]] $Tag
+    )
+
+    $table = Get-MtLegacyTagTable
+    $named = foreach ($t in $Tag) {
+        $replacement = $null
+        if ($table.Replacement.TryGetValue($t, [ref] $replacement)) { "'$t' (now $replacement)" } else { "'$t'" }
+    }
+    if (@($named).Count -eq 1) {
+        "The tag $named is a Maester 2.x tag. It still selects the same built-in tests, but tests added after Maester 3.0 do not carry it."
+    } else {
+        "These tags are Maester 2.x tags: $($named -join ', '). They still select the same built-in tests, but tests added after Maester 3.0 do not carry them."
     }
 }
 

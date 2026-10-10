@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "Description": "Tags the built-in tests carried in the Maester 3.0 previews and not in 2.x (tags-and-blocks.json). Frozen with the 2.x snapshot when tags stopped carrying taxonomy; read by build/golden/Export-MtLegacyTagTable.ps1. Never hand-edit.",
+    "Source": "The effective tags of the built-in catalog at the last 3.0 preview before the test attribute redesign, less the tags each test has in tags-and-blocks.json and less the test's own ID."
+  },
+  "Tags": {
+    "AI": [
+      "MT.1113",
+      "MT.1114",
+      "MT.1115",
+      "MT.1116",
+      "MT.1117",
+      "MT.1118",
+      "MT.1119",
+      "MT.1120",
+      "MT.1121",
+      "MT.1122",
+      "MT.1223"
+    ]
+  }
+}
