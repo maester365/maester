@@ -133,8 +133,10 @@ Describe 'Product of the built-in tests' {
 
         function Get-TestFolder {
             param([string] $File)
+            # Forward slashes on every platform (Split-Path would turn them back into backslashes on Windows).
             $relative = [System.IO.Path]::GetRelativePath((Join-Path $script:repoRoot 'tests'), $File) -replace '\\', '/'
-            Split-Path -Path $relative -Parent
+            $cut = $relative.LastIndexOf('/')
+            if ($cut -lt 0) { '' } else { $relative.Substring(0, $cut) }
         }
     }
 
@@ -161,6 +163,9 @@ Describe 'Product of the built-in tests' {
     }
 
     It 'Gives every test in a service folder the product of that folder' {
+        # Guard against a path bug that makes this check skip every test.
+        @($script:builtIn | Where-Object { $script:folderProduct.Contains((Get-TestFolder -File $_.File)) }).Count | Should -BeGreaterThan 300
+        (Get-TestFolder -File ($script:builtIn | Where-Object Id -EQ 'MT.1001').File) | Should -Be 'maester/entra'
         $offenders = foreach ($test in $script:builtIn) {
             $folder = Get-TestFolder -File $test.File
             # The folder itself, or its suite for suites with area subfolders (ad/user -> ad).
