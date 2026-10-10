@@ -644,6 +644,13 @@ Describe 'Rows, Taxonomy and warnings of a run' {
             LegacyTag      = '-Tag CA, EXO -ExcludeTag MS.EXO -DryRun'
             TypedBuiltIn   = '-Product entra -Suite cisa -DryRun'
         }
+        # A test that reads variables it never set must not see the selector parameters of Invoke-Maester. Only a
+        # built-in test shares a scope chain with Invoke-Maester (a custom test has its own module), so the probe
+        # is defined in the module and added to the catalog of the child process, after the other runs.
+        $script:probeFolder = Join-Path $TestDrive 'probe'
+        $probeFile = New-AttributeTestFile -Folder $script:probeFolder -Id 'PROBE.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', Severity = 'High', Author = 'someone'" `
+            -Body 'return ($null -eq $Product -and $null -eq $Feature -and $null -eq $Area -and $null -eq $Severity -and $null -eq $Suite)'
+
         $lines = [System.Collections.Generic.List[string]]::new()
         $lines.Add("`$ErrorActionPreference = 'Continue'")
         $lines.Add("Import-Module '$script:manifest' -WarningAction SilentlyContinue")
@@ -654,6 +661,8 @@ Describe 'Rows, Taxonomy and warnings of a run' {
             $lines.Add("`$w = `$null; try { `$null = Invoke-Maester -Path '$script:runFolder' -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -OutputJsonFile '$out' -WarningVariable w -WarningAction SilentlyContinue -ErrorAction SilentlyContinue $($scenarios[$name]) $xml } catch { }")
             $lines.Add("ConvertTo-Json -InputObject @(`$w | ForEach-Object { `$_.Message }) | Set-Content '$warn'")
         }
+        $lines.Add(". (Get-Module Maester) { . `$args[0]; `$script:__MtTestCatalog = @(Get-MtTestCatalog) + (Complete-MtNativeTest -Test (Read-MtNativeTest -Path `$args[0] -BuiltIn) -Suite `$null -BuiltIn) } '$probeFile'")
+        $lines.Add("`$null = Invoke-Maester -Path '$script:runFolder' -TestId PROBE.1 -Product entra, exchange -Feature conditional-access -Area authentication -Severity High, Critical -Suite Maester -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -OutputJsonFile '$(Join-Path $TestDrive 'Scope.json')' -WarningAction SilentlyContinue")
         $null = pwsh -NoProfile -NonInteractive -Command ($lines -join [Environment]::NewLine) 2>&1
 
         function Get-Run { param([string] $Scenario) Get-Content (Join-Path $TestDrive "$Scenario.json") -Raw | ConvertFrom-Json }
@@ -773,6 +782,15 @@ Describe 'Rows, Taxonomy and warnings of a run' {
         @($selected | Where-Object { $_.Suite -ne 'CISA' -or $_.Product -ne 'entra' }) | Should -HaveCount 0
         @(Get-RunWarning 'TypedBuiltIn' | Where-Object { $_ -like '*Maester 2.x tag*' }) | Should -HaveCount 0
         @($r.Taxonomy.Products.Key) | Should -Contain 'entra'
+    }
+
+    It 'Does not leak the selector parameters of Invoke-Maester into a test' {
+        # A test function runs in a child scope of Invoke-Maester. Several built-in tests read a $Severity
+        # they only set on some paths, and must keep seeing nothing when the run was started with -Severity.
+        $row = (Get-Run 'Scope').Tests | Where-Object Id -EQ 'PROBE.1'
+        $row.Source | Should -Be 'Maester' -Because 'the probe has to run as a built-in test'
+        $row.ReasonCode | Should -BeNullOrEmpty
+        $row.Result | Should -Be 'Passed'
     }
 
     It 'Builds the full Taxonomy for the catalog' {

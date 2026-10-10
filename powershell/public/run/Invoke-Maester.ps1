@@ -470,6 +470,9 @@
             -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite `
             -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
         if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
+        # The selectors live in $selection from here on. A test runs in a child scope of this function, so a
+        # test that reads a $Severity or $Product it never set would otherwise see the value of the parameter.
+        $Product = $Feature = $Area = $Severity = $Suite = $null
         $Tag = $selection.Tag
         $ExcludeTag = $selection.ExcludeTag
         $IncludePreview = [switch]$selection.IncludePreview
