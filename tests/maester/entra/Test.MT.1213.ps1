@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1213',
         Title = 'Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview).',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
         Service = 'Graph',
+        Lifecycle = 'Preview',
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

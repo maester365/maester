@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.10.1',
         Title = 'Emails SHALL be scanned for malware.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.10.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

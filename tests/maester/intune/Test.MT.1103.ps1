@@ -16,10 +16,8 @@
   [MaesterTest(
       Id = 'MT.1103',
       Title = 'Ensure Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable groups',
+      Product = 'intune',
       Severity = 'High',
-      Category = 'Maester/Intune',
-      Product = 'Intune',
-      Tag = ('Intune', 'Maester'),
       Service = 'Graph',
       License = ('AAD_PREMIUM', 'INTUNE_A'),
       Author = 'nicolonsky'

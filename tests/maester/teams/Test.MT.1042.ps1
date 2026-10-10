@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1042',
         Title = 'Restrict dial-in users from bypassing a meeting lobby',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

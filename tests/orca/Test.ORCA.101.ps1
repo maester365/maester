@@ -14,10 +14,8 @@ function Test-ORCA101 {
     [MaesterTest(
         Id = 'ORCA.101',
         Title = 'Bulk is marked as spam.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

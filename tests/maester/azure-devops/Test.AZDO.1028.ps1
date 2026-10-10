@@ -21,10 +21,8 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
     [MaesterTest(
         Id = 'AZDO.1028',
         Title = 'Disable creation of TFVC repositories.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects'

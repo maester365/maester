@@ -49,6 +49,44 @@ Describe 'ORCA generator' {
         }
     }
 
+    It 'writes the typed attributes: the product as a key, no Category and no Tag' {
+        foreach ($file in ($script:Fresh | Where-Object Extension -EQ '.ps1')) {
+            $text = [System.IO.File]::ReadAllText($file.FullName)
+            $text | Should -Match "(?m)^\s+Product = 'defender',\r?$" -Because $file.Name
+            $text | Should -Not -Match '(?m)^\s+(Category|Tag|Preview) = ' -Because "$($file.Name): the 2.x tags select through Maester.LegacyTags.json"
+        }
+    }
+
+    It 'emits the classification values of the metadata file, in the order of the attribute' {
+        $metadataPath = Join-Path $TestDrive 'orca-test-metadata.json'
+        $metadata = Get-Content (Join-Path $script:RepoRoot 'build/orca/orca-test-metadata.json') -Raw | ConvertFrom-Json
+        $row = $metadata.Tests.'ORCA.100'
+        foreach ($pair in @(
+                @{ Name = 'RelatedProduct'; Value = @('exchange') }, @{ Name = 'Feature'; Value = 'anti-spam' }, @{ Name = 'Area'; Value = 'email-protection' },
+                @{ Name = 'ResourceType'; Value = 'Policy' }, @{ Name = 'UserImpact'; Value = 'Low' }, @{ Name = 'ImplementationCost'; Value = 'Medium' },
+                @{ Name = 'Mitre'; Value = @('T1566', 'T1566.001') })) {
+            $row | Add-Member -NotePropertyName $pair.Name -NotePropertyValue $pair.Value -Force
+        }
+        $metadata | ConvertTo-Json -Depth 10 | Set-Content -Path $metadataPath
+        $out = Join-Path $TestDrive 'orca-values'
+        $pwsh = (Get-Process -Id $PID).Path
+        $output = & $pwsh -NoProfile -NonInteractive -File $script:Generator -Offline -OutputPath $out -MetadataPath $metadataPath 2>&1
+        $LASTEXITCODE | Should -Be 0 -Because ($output | Out-String)
+
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $out 'Test.ORCA.100.ps1'), [ref] $null, [ref] $null)
+        $attribute = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AttributeAst] -and $n.TypeName.Name -eq 'MaesterTest' }, $true)
+        $text = @{}
+        foreach ($argument in $attribute.NamedArguments) { $text[$argument.ArgumentName] = $argument.Argument.Extent.Text }
+        $text.RelatedProduct | Should -Be "'exchange'"
+        $text.Feature | Should -Be "'anti-spam'"
+        $text.Mitre | Should -Be "('T1566', 'T1566.001')"
+        $names = @($attribute.NamedArguments.ArgumentName)
+        $expected = 'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact', 'ImplementationCost', 'Mitre', 'Service'
+        ($names | Select-Object -First $expected.Count) -join ',' | Should -Be ($expected -join ',')
+        # A check without values is generated as it is in tests/orca.
+        [System.IO.File]::ReadAllText((Join-Path $out 'Test.ORCA.101.ps1')) | Should -Be ([System.IO.File]::ReadAllText((Join-Path $script:CommittedRoot 'Test.ORCA.101.ps1')))
+    }
+
     It 'has Maester metadata for every ORCA check' {
         $metadata = (Get-Content (Join-Path $script:RepoRoot 'build/orca/orca-test-metadata.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
         $ids = @($script:Fresh | Where-Object Extension -EQ '.ps1' | ForEach-Object { $_.BaseName -replace '^Test\.', '' })

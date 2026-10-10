@@ -24,10 +24,8 @@
     [MaesterTest(
         Id = 'AD-TRUST-03',
         Title = 'Trust quarantined count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

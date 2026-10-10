@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-SUB-02',
         Title = 'Sites with subnet associations count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

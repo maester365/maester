@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.7.8',
         Title = 'User activation of the Global Administrator role SHALL trigger an alert.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.7.8'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('michaelmsonne', 'JeanPhilippeGeorge')

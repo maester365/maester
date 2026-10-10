@@ -14,10 +14,8 @@ function Test-ORCA228 {
     [MaesterTest(
         Id = 'ORCA.228',
         Title = 'No trusted senders in Anti-phishing policy.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

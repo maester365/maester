@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-DOM-02',
         Title = 'Machine account quota should be retrievable',
+        Product = 'ad',
         Severity = 'Low',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

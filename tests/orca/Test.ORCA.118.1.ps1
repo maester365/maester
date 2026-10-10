@@ -14,10 +14,8 @@ function Test-ORCA118_1 {
     [MaesterTest(
         Id = 'ORCA.118.1',
         Title = 'Domains are not being allow listed in an unsafe manner in Anti-Spam Policies.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

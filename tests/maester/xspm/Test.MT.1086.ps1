@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1086',
         Title = 'Devices should not share both critical and non-critical user credentials.',
+        Product = 'defender',
         Severity = 'Low',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = 'Device',
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'RobbeVandenDaele'
     )]
     [CmdletBinding()]

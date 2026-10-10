@@ -14,10 +14,8 @@ function Test-ORCA124 {
     [MaesterTest(
         Id = 'ORCA.124',
         Title = 'Safe attachments unknown malware response set to block messages.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

@@ -17,11 +17,10 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.17.2',
         Title = 'Microsoft Purview Audit (Premium) logging SHALL be enabled.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('Deprecated', 'MS.EXO', 'MS.EXO.17.2'),
         Service = 'Graph',
+        Lifecycle = 'Deprecated',
         Author = 'soulemike',
         Contributor = 'merill'
     )]

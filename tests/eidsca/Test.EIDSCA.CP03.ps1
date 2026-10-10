@@ -14,9 +14,8 @@ function Test-MtCheckEidscaCP03 {
     [MaesterTest(
         Id = 'EIDSCA.CP03',
         Title = 'Default Settings - Consent Policy Settings - Block user consent for risky apps.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

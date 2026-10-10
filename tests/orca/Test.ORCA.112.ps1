@@ -14,10 +14,8 @@ function Test-ORCA112 {
     [MaesterTest(
         Id = 'ORCA.112',
         Title = 'Anti-spoofing protection action is configured to Move message to the recipients'' Junk Email folders in Anti-phishing policy.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

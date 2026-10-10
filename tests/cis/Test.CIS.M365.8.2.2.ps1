@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.8.2.2',
         Title = 'Ensure communication with unmanaged Teams users is disabled',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Teams',
-        Tag = ('CIS E3 Level 1', 'CIS M365 v7.0.0'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'Mynster9361')

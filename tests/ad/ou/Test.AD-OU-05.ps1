@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'AD-OU-05',
         Title = 'OU empty details should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Organizational Units',
-        Product = 'Active Directory',
-        Tag = 'AD.OU',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

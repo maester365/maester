@@ -14,10 +14,8 @@ function Test-ORCA236 {
     [MaesterTest(
         Id = 'ORCA.236',
         Title = 'Safe Links is enabled for emails.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

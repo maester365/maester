@@ -22,10 +22,8 @@ function Test-AzdoRestrictPersonalAccessTokenLifespan {
     [MaesterTest(
         Id = 'AZDO.1035',
         Title = '(Tenant) Restrict Personal Access Token lifespan.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan'

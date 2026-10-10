@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-GPOREP-08',
         Title = 'GPOs with deny ACE details should be retrievable',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

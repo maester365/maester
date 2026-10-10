@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.7.1',
         Title = 'External sender warnings SHALL be implemented.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.7.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = ('merill', 'f-bader')

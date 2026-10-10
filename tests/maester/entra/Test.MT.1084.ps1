@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1084',
         Title = 'Microsoft Entra seamless single sign-on should be disabled for all domains in EntraID Connect servers.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'RobbeVandenDaele',

@@ -18,13 +18,11 @@
     [MaesterTest(
         Id = 'MT.1112',
         Title = 'Privileged user accounts should not remain enabled when the linked primary account is disabled.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

@@ -21,10 +21,8 @@ function Test-AzdoResourceUsageWorkItemTag {
     [MaesterTest(
         Id = 'AZDO.1012',
         Title = 'Work Items Tags Limits.',
+        Product = 'azure-devops',
         Severity = 'Info',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops'

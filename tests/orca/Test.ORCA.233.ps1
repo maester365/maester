@@ -14,10 +14,8 @@ function Test-ORCA233 {
     [MaesterTest(
         Id = 'ORCA.233',
         Title = 'Domains are pointed directly at EOP or enhanced filtering is used.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

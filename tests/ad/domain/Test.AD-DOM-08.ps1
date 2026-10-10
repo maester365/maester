@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-DOM-08',
         Title = 'NetBIOS name non-standard details should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

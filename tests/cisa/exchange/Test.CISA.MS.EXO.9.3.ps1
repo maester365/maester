@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.9.3',
         Title = 'Disallowed file types SHALL be determined and enforced.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.9.3'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]

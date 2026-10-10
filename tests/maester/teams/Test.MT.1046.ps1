@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1046',
         Title = 'Restrict anonymous users from joining meetings',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

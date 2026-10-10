@@ -14,10 +14,8 @@ function Test-ORCA244 {
     [MaesterTest(
         Id = 'ORCA.244',
         Title = 'Policies are configured to honor sending domains DMARC.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

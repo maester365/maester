@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-PWDPOL-04',
         Title = 'Password complexity requirement should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Password Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.PasswordPolicy',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

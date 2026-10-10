@@ -14,9 +14,8 @@ function Test-MtCheckEidscaPR05 {
     [MaesterTest(
         Id = 'EIDSCA.PR05',
         Title = 'Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

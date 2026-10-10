@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-DOM-04',
         Title = 'RIDs remaining should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

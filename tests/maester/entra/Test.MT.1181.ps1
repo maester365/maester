@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1181',
         Title = 'Conditional Access policy is present that blocks high agent risk sign-ins.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'ExeqZ'
     )]

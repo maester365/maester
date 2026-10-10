@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1165',
         Title = 'Network Protection should be enabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

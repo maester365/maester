@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.2.2',
         Title = 'An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.2.2'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'moorereason'

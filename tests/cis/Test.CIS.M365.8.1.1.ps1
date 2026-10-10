@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.8.1.1',
         Title = 'Ensure external file sharing in Teams is enabled for only approved cloud storage services',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Teams',
-        Tag = ('CIS E3 Level 2', 'CIS M365 v7.0.0'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'Mynster9361')

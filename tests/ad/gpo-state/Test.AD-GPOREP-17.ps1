@@ -20,10 +20,8 @@ function Test-MtAdGpoCpasswordFoundCount {
     [MaesterTest(
         Id = 'AD-GPOREP-17',
         Title = 'No GPOs should contain a cpassword',
+        Product = 'ad',
         Severity = 'Critical',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -17,12 +17,10 @@
     [MaesterTest(
         Id = 'MT.1057',
         Title = 'App registrations should no longer use secrets.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'svrooij'
     )]
     [CmdletBinding()]

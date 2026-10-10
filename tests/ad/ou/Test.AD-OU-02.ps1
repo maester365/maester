@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-OU-02',
         Title = 'OU at domain root count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Organizational Units',
-        Product = 'Active Directory',
-        Tag = 'AD.OU',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

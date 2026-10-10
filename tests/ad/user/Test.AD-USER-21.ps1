@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-USER-21',
         Title = 'Known service account details should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

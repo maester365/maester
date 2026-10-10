@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.9.1',
         Title = 'Emails SHALL be filtered by attachment file types.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.9.1'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

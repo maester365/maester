@@ -16,13 +16,11 @@
     [MaesterTest(
         Id = 'MT.1210',
         Title = 'Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview).',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

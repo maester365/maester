@@ -24,10 +24,8 @@ function Test-MtAIAgentEmailExfiltration {
     [MaesterTest(
         Id = 'MT.1116',
         Title = 'AI agents should not send email with AI-controlled inputs.',
+        Product = 'copilot-studio',
         Severity = 'High',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

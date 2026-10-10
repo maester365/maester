@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.7.4',
         Title = 'Permanent active role assignments SHALL NOT be allowed for highly privileged roles.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.7.4'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',

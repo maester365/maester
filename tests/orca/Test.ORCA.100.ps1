@@ -14,10 +14,8 @@ function Test-ORCA100 {
     [MaesterTest(
         Id = 'ORCA.100',
         Title = 'Bulk Complaint Level threshold is between 4 and 6.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

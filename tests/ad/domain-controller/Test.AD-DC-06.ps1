@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-DC-06',
         Title = 'FSMO role holder details should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

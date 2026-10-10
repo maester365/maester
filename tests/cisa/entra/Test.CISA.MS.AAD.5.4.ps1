@@ -17,11 +17,10 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.5.4',
         Title = 'Group owners SHALL NOT be allowed to consent to applications.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Deprecated', 'Entra ID Free', 'MS.AAD', 'MS.AAD.5.4'),
         Service = 'Graph',
+        Lifecycle = 'Deprecated',
         Author = 'soulemike',
         Contributor = ('michaelmsonne', 'weyCC81', 'SamErde')
     )]

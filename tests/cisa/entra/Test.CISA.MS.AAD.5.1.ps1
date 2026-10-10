@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.5.1',
         Title = 'Only administrators SHALL be allowed to register applications.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.5.1'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = 'merill'

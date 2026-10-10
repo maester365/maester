@@ -31,10 +31,8 @@
     [MaesterTest(
         Id = 'MT.1177',
         Title = 'Ensure LAPS Configuration Policy is properly set.',
+        Product = 'intune',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

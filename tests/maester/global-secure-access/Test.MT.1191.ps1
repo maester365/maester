@@ -23,13 +23,11 @@
     [MaesterTest(
         Id = 'MT.1191',
         Title = 'Break-glass accounts should be excluded from the Compliant Network Conditional Access policy.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Entra', 'Maester'),
-        Preview,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

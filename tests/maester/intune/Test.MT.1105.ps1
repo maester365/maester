@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'MT.1105',
         Title = 'Ensure MDM Authority is set to Intune',
+        Product = 'intune',
         Severity = 'Low',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

@@ -29,10 +29,8 @@
     [MaesterTest(
         Id = 'MT.1154',
         Title = 'Full Scan Removable Drives should be enabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

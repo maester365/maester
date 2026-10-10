@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1081',
         Title = 'Hybrid users should not be assigned Entra ID role assignments.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

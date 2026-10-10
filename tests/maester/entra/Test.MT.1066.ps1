@@ -25,10 +25,8 @@
     [MaesterTest(
         Id = 'MT.1066',
         Title = 'Conditional Access policies should not reference non-existent users, groups, or roles.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'SamErde'
     )]

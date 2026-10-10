@@ -23,10 +23,8 @@ function Test-MtAIAgentDormant {
     [MaesterTest(
         Id = 'MT.1117',
         Title = 'Published AI agents should not be dormant.',
+        Product = 'copilot-studio',
         Severity = 'Low',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

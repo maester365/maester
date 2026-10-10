@@ -21,13 +21,11 @@
     [MaesterTest(
         Id = 'MT.1190',
         Title = 'Entra Private Access applications should not use the Default connector group.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

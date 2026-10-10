@@ -37,10 +37,8 @@
     [MaesterTest(
         Id = 'MT.1123',
         Title = 'Ensure BitLocker full disk encryption is configured',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish',

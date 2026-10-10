@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.13.1',
         Title = 'Mailbox auditing SHALL be enabled.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.13.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'MT.1072',
         Title = 'Conditional Access policies should not use the deprecated Approved Client App grant.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'HenrikPiecha'
     )]

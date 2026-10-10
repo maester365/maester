@@ -28,10 +28,8 @@
     [MaesterTest(
         Id = 'MT.1175',
         Title = 'DLP policy is configured for the Microsoft 365 Copilot location.',
+        Product = 'purview',
         Severity = 'High',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'OfirGavish'

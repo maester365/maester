@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-GPOREP-03',
         Title = 'GPOs without authenticated users count should be retrievable',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

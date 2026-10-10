@@ -14,10 +14,8 @@ function Test-ORCA222 {
     [MaesterTest(
         Id = 'ORCA.222',
         Title = 'Domain Impersonation action is set to move to Quarantine.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

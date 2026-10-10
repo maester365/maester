@@ -14,10 +14,8 @@ function Test-ORCA120_spam {
     [MaesterTest(
         Id = 'ORCA.120.3',
         Title = 'Zero Hour Autopurge Enabled for Spam.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

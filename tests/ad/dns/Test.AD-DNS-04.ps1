@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-DNS-04',
         Title = 'Root server incorrect IP details should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - DNS Infrastructure',
-        Product = 'Active Directory',
-        Tag = 'AD.DNS',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

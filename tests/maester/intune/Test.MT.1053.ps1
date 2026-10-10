@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'MT.1053',
         Title = 'Ensure intune device clean-up rule is configured',
+        Product = 'intune',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'HenrikPiecha',

@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1030',
         Title = 'Eligible role assignments on Control Plane are in use by administrators.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Maester', 'PIM', 'Privileged'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'Cloud-Architekt',

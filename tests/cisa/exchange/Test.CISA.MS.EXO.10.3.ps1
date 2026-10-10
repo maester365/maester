@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.10.3',
         Title = 'Email scanning SHALL be capable of reviewing emails after delivery.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.10.3'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

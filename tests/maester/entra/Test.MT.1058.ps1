@@ -17,12 +17,10 @@
     [MaesterTest(
         Id = 'MT.1058',
         Title = 'Exchange application access policies must be configured.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        LongRunning,
         Service = ('Graph', 'ExchangeOnline'),
+        LongRunning,
         Author = 'l-gosling',
         Contributor = ('merill', 'SamErde', 'thomas-s-schmidt')
     )]

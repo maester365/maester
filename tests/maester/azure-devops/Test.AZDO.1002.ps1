@@ -23,10 +23,8 @@ function Test-AzdoLogAuditEvent {
     [MaesterTest(
         Id = 'AZDO.1002',
         Title = 'Log Audit Events.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing'

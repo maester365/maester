@@ -14,10 +14,8 @@ function Test-ORCA106 {
     [MaesterTest(
         Id = 'ORCA.106',
         Title = 'Quarantine retention period is 30 days.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

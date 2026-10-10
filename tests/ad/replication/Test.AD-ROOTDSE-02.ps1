@@ -31,10 +31,8 @@
     [MaesterTest(
         Id = 'AD-ROOTDSE-02',
         Title = 'Supported SASL mechanism details should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Replication',
-        Product = 'Active Directory',
-        Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

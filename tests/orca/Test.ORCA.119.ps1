@@ -14,10 +14,8 @@ function Test-ORCA119 {
     [MaesterTest(
         Id = 'ORCA.119',
         Title = 'Similar Domains Safety Tips is enabled.',
+        Product = 'defender',
         Severity = 'Info',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

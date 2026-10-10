@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-SUB-06',
         Title = 'Non-RFC1918 (public IP) subnets count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

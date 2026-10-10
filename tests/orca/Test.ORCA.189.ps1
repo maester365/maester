@@ -14,10 +14,8 @@ function Test-ORCA189 {
     [MaesterTest(
         Id = 'ORCA.189',
         Title = 'Safe Attachments is not bypassed.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

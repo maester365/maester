@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1045',
         Title = 'Only invited users should be automatically admitted to Teams meetings',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

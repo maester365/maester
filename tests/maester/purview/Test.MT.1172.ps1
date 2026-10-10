@@ -28,10 +28,8 @@
     [MaesterTest(
         Id = 'MT.1172',
         Title = 'Unified audit log ingestion is enabled.',
+        Product = 'purview',
         Severity = 'High',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
         Service = 'ExchangeOnline',
         Author = 'OfirGavish'
     )]

@@ -29,10 +29,8 @@
     [MaesterTest(
         Id = 'AD-ROOTDSE-03',
         Title = 'Root DSE should be synchronized',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - Replication',
-        Product = 'Active Directory',
-        Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

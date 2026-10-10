@@ -31,10 +31,8 @@ function Test-AzdoOrganizationCodeSecurityEnrollment {
     [MaesterTest(
         Id = 'AZDO.1043',
         Title = '(Organization) Code Security: existing repositories enrolled.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding'

@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-FGPP-01',
         Title = 'Fine-grained password policy count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Password Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.PasswordPolicy',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

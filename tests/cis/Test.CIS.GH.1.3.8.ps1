@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'CIS.GH.1.3.8',
         Title = 'Ensure strict base permissions are set for repositories',
+        Product = 'github',
         Severity = 'High',
-        Category = 'CIS',
-        Product = 'GitHub',
-        Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

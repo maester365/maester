@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-TRUST-02',
         Title = 'Trust inter-forest count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

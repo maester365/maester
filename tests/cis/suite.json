@@ -2,9 +2,6 @@
   "Id": "CIS",
   "Name": "CIS Microsoft 365 Foundations Benchmark",
   "Source": "CIS",
-  "Tags": [
-    "CIS"
-  ],
   "IdPattern": "^CIS\\.",
   "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
   "Upstream": {

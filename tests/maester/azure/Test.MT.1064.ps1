@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1064',
         Title = 'Ensure that write permissions are required to create new management groups',
+        Product = 'azure',
         Severity = 'High',
-        Category = 'AzureConfig',
-        Product = 'Azure',
-        Tag = ('Azure', 'Maester'),
         Service = 'Azure',
         Author = 'brianveldman',
         Contributor = 'l-gosling'

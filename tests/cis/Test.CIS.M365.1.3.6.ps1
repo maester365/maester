@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.1.3.6',
         Title = 'Ensure the customer lockbox feature is enabled',
+        Product = 'microsoft-365',
         Severity = 'High',
-        Category = 'CIS',
-        Product = 'Microsoft 365',
-        Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = 'ExchangeOnline',
         License = 'LOCKBOX_ENTERPRISE',
         Author = 'NZLostboy',

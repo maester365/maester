@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'MT.1061',
         Title = 'Device registration MFA control conflicts with Conditional Access policies.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'RobbeVandenDaele',
         Contributor = 'thomas-s-schmidt'

@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.1.1',
         Title = 'External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.',
+        Product = 'sharepoint',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.1.1'),
         Service = 'SharePointOnline',
         Author = 'soulemike',
         Contributor = ('SamErde', 'merill')

@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.2.1',
         Title = 'File and folder default sharing scope SHALL be set to Specific People.',
+        Product = 'sharepoint',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.2.1'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'MT.1008',
         Title = 'At least one Conditional Access policy is configured to require MFA for Azure management.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

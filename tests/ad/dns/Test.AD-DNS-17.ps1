@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-DNS-17',
         Title = 'Non-standard zone count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - DNS Infrastructure',
-        Product = 'Active Directory',
-        Tag = 'AD.DNS',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

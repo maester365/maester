@@ -18,10 +18,8 @@ function Test-MtExoMoeraMailActivity {
     [MaesterTest(
         Id = 'MT.1076',
         Title = 'MOERA SHOULD NOT be used for sent mail',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('kij', 'SamErde')

@@ -32,10 +32,8 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
     [MaesterTest(
         Id = 'AZDO.1041',
         Title = '(Organization) Secret Protection: push protection blocks secret commits.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-secret-scanning'

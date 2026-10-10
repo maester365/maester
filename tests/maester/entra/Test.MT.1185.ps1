@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'MT.1185',
         Title = 'Block legacy MSOnline (MSOL) PowerShell module.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

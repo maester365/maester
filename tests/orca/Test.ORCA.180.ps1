@@ -14,10 +14,8 @@ function Test-ORCA180 {
     [MaesterTest(
         Id = 'ORCA.180',
         Title = 'Anti-phishing policy exists and EnableSpoofIntelligence is true.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

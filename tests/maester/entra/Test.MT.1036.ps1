@@ -86,10 +86,8 @@ function Test-MtCaGap {
     [MaesterTest(
         Id = 'MT.1036',
         Title = 'All excluded objects should have a fallback include in another policy.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'RobbeVandenDaele',
         Contributor = ('soulemike', 'weyCC81', 'thomas-s-schmidt')

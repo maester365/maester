@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.6.1',
         Title = 'User passwords SHALL NOT expire.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.6.1'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('michaelmsonne', 'jed-exotic', 'brianreidc7')

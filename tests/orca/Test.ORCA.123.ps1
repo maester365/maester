@@ -14,10 +14,8 @@ function Test-ORCA123 {
     [MaesterTest(
         Id = 'ORCA.123',
         Title = 'Unusual Characters Safety Tips is enabled.',
+        Product = 'defender',
         Severity = 'Info',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

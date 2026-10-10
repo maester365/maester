@@ -21,10 +21,8 @@ function Test-AzdoDisablePATCreation {
     [MaesterTest(
         Id = 'AZDO.1037',
         Title = '(Organization) Restrict Personal Access Token creation.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops'

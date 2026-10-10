@@ -20,10 +20,8 @@ function Test-MtAdGpoStateTotalCount {
     [MaesterTest(
         Id = 'AD-GPOS-01',
         Title = 'GPO state total count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.3.2',
         Title = 'Allowable file and folder permissions for Anyone links SHALL be set to View only.',
+        Product = 'sharepoint',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.3.2'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

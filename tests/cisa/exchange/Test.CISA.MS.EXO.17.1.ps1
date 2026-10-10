@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.17.1',
         Title = 'Microsoft Purview Audit (Standard) logging SHALL be enabled.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.17.1'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]

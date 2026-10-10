@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-GMC-08',
         Title = 'Empty non-privileged group count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = ('AD.GMC', 'AD.Group'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

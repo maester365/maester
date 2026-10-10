@@ -29,10 +29,8 @@
     [MaesterTest(
         Id = 'MT.1167',
         Title = 'Real-Time Scan Direction should cover both directions.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

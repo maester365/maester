@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-GPOL-04',
         Title = 'Enforced GPO link count should be retrievable',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'CIS.GH.1.3.2',
         Title = 'Ensure team creation is limited to specific members',
+        Product = 'github',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'GitHub',
-        Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

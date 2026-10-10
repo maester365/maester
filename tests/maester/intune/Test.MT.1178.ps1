@@ -42,10 +42,8 @@
     [MaesterTest(
         Id = 'MT.1178',
         Title = 'Ensure ASR Rules are configured correctly.',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish',

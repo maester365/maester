@@ -17,10 +17,8 @@
   [MaesterTest(
       Id = 'MT.1038',
       Title = 'Conditional Access policies should not include or exclude deleted groups.',
+      Product = 'entra',
       Severity = 'Medium',
-      Category = 'Maester/Entra',
-      Product = 'Entra ID',
-      Tag = ('CA', 'Maester'),
       Service = 'Graph',
       Author = 'Cloud-Architekt',
       Contributor = ('merill', 'thomas-s-schmidt')

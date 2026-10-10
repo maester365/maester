@@ -19,13 +19,11 @@
     [MaesterTest(
         Id = 'MT.1211',
         Title = 'Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview).',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

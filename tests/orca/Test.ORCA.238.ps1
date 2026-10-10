@@ -14,10 +14,8 @@ function Test-ORCA238 {
     [MaesterTest(
         Id = 'ORCA.238',
         Title = 'Safe Links is enabled for office documents.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

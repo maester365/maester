@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1063',
         Title = 'All App registration owners should have MFA registered',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Maester'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'marcel-ngn'
     )]
     [CmdletBinding()]

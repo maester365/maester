@@ -41,13 +41,11 @@ function Test-MtCaWhatIfLegacyAuthenticationBlocked {
     [MaesterTest(
         Id = 'MT.1033',
         Title = 'Users should be blocked from using legacy authentication.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'CAWhatIf', 'Maester'),
-        LongRunning,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        LongRunning,
         InstanceSource = 'Get-MtCaWhatIfRegularUserInstance',
         Author = 'f-bader'
     )]

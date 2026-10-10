@@ -32,10 +32,8 @@
     [MaesterTest(
         Id = 'MT.1216',
         Title = 'Ensure macOS compliance policy requires a Defender machine risk score level.',
+        Product = 'intune',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

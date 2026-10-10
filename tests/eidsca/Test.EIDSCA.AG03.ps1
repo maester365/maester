@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAG03 {
     [MaesterTest(
         Id = 'EIDSCA.AG03',
         Title = 'Authentication Method - General Settings - Report suspicious activity - Included users/groups.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

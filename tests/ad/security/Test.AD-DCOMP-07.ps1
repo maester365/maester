@@ -25,10 +25,8 @@
     [MaesterTest(
         Id = 'AD-DCOMP-07',
         Title = 'Computer DNS host name count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.7.5',
         Title = 'Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.7.5'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',

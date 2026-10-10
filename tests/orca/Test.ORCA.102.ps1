@@ -14,10 +14,8 @@ function Test-ORCA102 {
     [MaesterTest(
         Id = 'ORCA.102',
         Title = 'Advanced Spam filter options are turned off.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

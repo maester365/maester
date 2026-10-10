@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.9.5',
         Title = 'At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe).',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.9.5'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]

@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.4.2',
         Title = 'The DMARC message rejection option SHALL be p=reject.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.4.2'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

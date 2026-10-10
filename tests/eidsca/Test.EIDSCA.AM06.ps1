@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAM06 {
     [MaesterTest(
         Id = 'EIDSCA.AM06',
         Title = 'Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

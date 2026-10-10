@@ -24,10 +24,8 @@
     [MaesterTest(
         Id = 'MT.1011',
         Title = 'At least one Conditional Access policy is configured to secure security info registration only from a trusted location.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

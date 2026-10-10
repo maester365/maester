@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1085',
         Title = 'Pending approvals for Critical Asset Management should not be present.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'Graph'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

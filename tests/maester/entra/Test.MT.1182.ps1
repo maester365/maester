@@ -28,10 +28,8 @@
     [MaesterTest(
         Id = 'MT.1182',
         Title = 'Mature DMARC policy SHALL be published for every Entra managed and verified domain.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'blindzero'
     )]

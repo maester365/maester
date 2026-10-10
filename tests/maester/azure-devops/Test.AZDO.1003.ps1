@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'AZDO.1003',
         Title = 'Restrict public projects.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/vsts-anon-access'

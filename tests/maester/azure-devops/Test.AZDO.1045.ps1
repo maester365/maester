@@ -29,12 +29,10 @@ function Test-AzdoOrganizationCopilotCodeReview {
     [MaesterTest(
         Id = 'AZDO.1045',
         Title = '(Organization) Copilot code review: allowed for repositories.',
+        Product = 'azure-devops',
         Severity = 'Info',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
-        Preview,
         Service = 'AzureDevOps',
+        Lifecycle = 'Preview',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops'
     )]

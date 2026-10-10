@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'MT.1184',
         Title = 'Conditional Access policy without any target resources configured.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

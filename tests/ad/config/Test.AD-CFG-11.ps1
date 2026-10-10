@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'AD-CFG-11',
         Title = 'Registered DHCP servers count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

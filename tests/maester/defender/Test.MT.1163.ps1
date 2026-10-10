@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1163',
         Title = 'Signature Update Interval should be 1-4 hours.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

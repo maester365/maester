@@ -37,13 +37,11 @@ function Test-MtCaWhatIfEmergencyAccessNotBlocked {
     [MaesterTest(
         Id = 'MT.1034',
         Title = 'Emergency access users should not be blocked.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'CAWhatIf', 'Maester'),
-        LongRunning,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        LongRunning,
         InstanceSource = 'Get-MtCaWhatIfEmergencyAccessInstance',
         Author = 'merill',
         Contributor = ('f-bader', 'milanschwartz', 'jasperbaes')

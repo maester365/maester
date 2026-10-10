@@ -17,12 +17,10 @@
     [MaesterTest(
         Id = 'MT.1075',
         Title = 'Require explicit assignment of Third Party Entra Apps.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'jflieben'
     )]
     [CmdletBinding()]

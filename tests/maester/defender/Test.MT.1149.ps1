@@ -29,10 +29,8 @@
     [MaesterTest(
         Id = 'MT.1149',
         Title = 'Behavior Monitoring should be enabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

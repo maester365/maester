@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-CFG-02',
         Title = 'dSHeuristics count should be retrievable',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

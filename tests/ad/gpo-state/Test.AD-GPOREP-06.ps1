@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'AD-GPOREP-06',
         Title = 'GPOs without domain computers count should be retrievable',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

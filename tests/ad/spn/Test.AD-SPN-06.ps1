@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-SPN-06',
         Title = 'User SPN total count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

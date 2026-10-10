@@ -14,10 +14,8 @@ function Test-ORCA109 {
     [MaesterTest(
         Id = 'ORCA.109',
         Title = 'Senders are not being allow listed in an unsafe manner.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

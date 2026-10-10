@@ -14,10 +14,8 @@ function Test-ORCA179 {
     [MaesterTest(
         Id = 'ORCA.179',
         Title = 'Safe Links is enabled intra-organization.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

@@ -32,13 +32,11 @@
     [MaesterTest(
         Id = 'MT.1193',
         Title = 'Entra Private Access application segments should avoid broad or risky destinations.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

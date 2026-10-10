@@ -13,10 +13,8 @@
     [MaesterTest(
         Id = 'MT.1197',
         Title = 'Remove memberOf rules.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'agnivesh'
     )]

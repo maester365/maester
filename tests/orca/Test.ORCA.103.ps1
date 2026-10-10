@@ -14,10 +14,8 @@ function Test-ORCA103 {
     [MaesterTest(
         Id = 'ORCA.103',
         Title = 'Outbound spam filter policy settings configured.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

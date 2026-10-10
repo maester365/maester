@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'AD-GPOL-03',
         Title = 'GPO unlinked target count should be compliant',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

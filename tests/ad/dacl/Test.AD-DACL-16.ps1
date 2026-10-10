@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-DACL-16',
         Title = 'Unresolved SID details should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

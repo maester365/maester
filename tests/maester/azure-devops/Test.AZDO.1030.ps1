@@ -21,10 +21,8 @@ function Test-AzdoProjectCollectionAdministrator {
     [MaesterTest(
         Id = 'AZDO.1030',
         Title = 'Project Collection Administrators.',
+        Product = 'azure-devops',
         Severity = 'Critical',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions'

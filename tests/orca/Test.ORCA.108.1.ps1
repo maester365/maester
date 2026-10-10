@@ -14,10 +14,8 @@ function Test-ORCA108_1 {
     [MaesterTest(
         Id = 'ORCA.108.1',
         Title = 'DNS Records have been set up to support DKIM.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

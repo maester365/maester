@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-GRP-06',
         Title = 'Distribution group count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Groups',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

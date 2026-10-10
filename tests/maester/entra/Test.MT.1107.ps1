@@ -36,10 +36,8 @@
     [MaesterTest(
         Id = 'MT.1107',
         Title = 'Access packages and catalogs should not reference deleted groups.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('AccessPackages', 'Entra', 'Governance', 'Maester'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'nicowyss',

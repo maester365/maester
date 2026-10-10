@@ -14,10 +14,8 @@ function Test-ORCA120_phish {
     [MaesterTest(
         Id = 'ORCA.120.1',
         Title = 'Zero Hour Autopurge Enabled for Phish.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

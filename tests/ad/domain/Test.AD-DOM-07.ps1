@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-DOM-07',
         Title = 'NetBIOS name standard compliance should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

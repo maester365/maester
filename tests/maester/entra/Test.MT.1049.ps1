@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1049',
         Title = 'Conditional Access policies for User Risk and Sign-in Risk should be configured separately.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'BakkerJan',

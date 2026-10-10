@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'AD-GMC-03',
         Title = 'Member account types breakdown should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

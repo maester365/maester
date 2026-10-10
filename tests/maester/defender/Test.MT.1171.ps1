@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1171',
         Title = 'Sample Submission should send safe samples automatically.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-DNS-06',
         Title = 'Zones with non-default records should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - DNS Infrastructure',
-        Product = 'Active Directory',
-        Tag = 'AD.DNS',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

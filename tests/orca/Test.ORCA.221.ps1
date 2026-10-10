@@ -14,10 +14,8 @@ function Test-ORCA221 {
     [MaesterTest(
         Id = 'ORCA.221',
         Title = 'Mailbox intelligence is enabled in anti-phishing policies.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

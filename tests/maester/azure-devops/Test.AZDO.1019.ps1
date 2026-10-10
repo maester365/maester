@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'AZDO.1019',
         Title = 'Stage chooser.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops'

@@ -14,10 +14,8 @@ function Test-ORCA111 {
     [MaesterTest(
         Id = 'ORCA.111',
         Title = 'Anti-phishing policy exists and EnableUnauthenticatedSender is true.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

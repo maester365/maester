@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'AD-USER-25',
         Title = 'Built-in administrator password age details should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

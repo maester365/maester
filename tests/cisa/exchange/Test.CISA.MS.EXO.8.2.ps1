@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.8.2',
         Title = 'The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.8.2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'soulemike',

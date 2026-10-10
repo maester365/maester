@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1166',
         Title = 'Local Admin Merge should be disabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

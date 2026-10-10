@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.5.2.3.5',
         Title = 'Ensure weak authentication methods are disabled',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Entra ID',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

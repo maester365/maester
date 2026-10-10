@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.4.3',
         Title = 'The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.4.3'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

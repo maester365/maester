@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.2.1.13',
         Title = 'Ensure the connection filter safe list is off (Only Checks Default Policy)',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Defender',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = 'knussbaumer'

@@ -14,10 +14,8 @@
     [MaesterTest(
         Id = 'MT.1070',
         Title = 'Restrict device join to selected users/groups or none.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Device', 'Entra', 'Maester'),
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

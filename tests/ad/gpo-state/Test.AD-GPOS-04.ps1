@@ -26,10 +26,8 @@ function Test-MtAdGpoSettingsDisabledCount {
     [MaesterTest(
         Id = 'AD-GPOS-04',
         Title = 'Disabled GPO settings count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-GPO-01',
         Title = 'GPO total count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

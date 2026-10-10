@@ -24,10 +24,8 @@
     [MaesterTest(
         Id = 'MT.1067',
         Title = 'Authentication method policies should not reference non-existent groups.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Authentication', 'Maester'),
         Service = 'Graph',
         Author = 'SamErde'
     )]

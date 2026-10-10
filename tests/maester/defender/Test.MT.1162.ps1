@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1162',
         Title = 'Cloud Extended Timeout should be 30-50 seconds.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

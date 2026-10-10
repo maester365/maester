@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.10.2',
         Title = 'Emails identified as containing malware SHALL be quarantined or dropped.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.10.2'),
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

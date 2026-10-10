@@ -25,10 +25,8 @@
     [MaesterTest(
         Id = 'AD-FEAT-02',
         Title = 'Optional feature enabled details should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Replication',
-        Product = 'Active Directory',
-        Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

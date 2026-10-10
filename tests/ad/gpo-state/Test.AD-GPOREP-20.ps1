@@ -21,10 +21,8 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     [MaesterTest(
         Id = 'AD-GPOREP-20',
         Title = 'No GPOs should contain a default password',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

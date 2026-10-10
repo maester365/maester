@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAM01 {
     [MaesterTest(
         Id = 'EIDSCA.AM01',
         Title = 'Authentication Method - Microsoft Authenticator - State.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

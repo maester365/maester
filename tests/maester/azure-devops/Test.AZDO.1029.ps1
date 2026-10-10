@@ -25,10 +25,8 @@ function Test-AzdoOrganizationStorageUsage {
     [MaesterTest(
         Id = 'AZDO.1029',
         Title = 'Storage Usage Limit.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops'

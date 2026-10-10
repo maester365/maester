@@ -23,10 +23,8 @@ function Test-MtAIAgentOrphaned {
     [MaesterTest(
         Id = 'MT.1122',
         Title = 'AI agents should not have orphaned ownership.',
+        Product = 'copilot-studio',
         Severity = 'Medium',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

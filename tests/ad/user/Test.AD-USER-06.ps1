@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'AD-USER-06',
         Title = 'DES-only Kerberos user count should be retrievable',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

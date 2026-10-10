@@ -14,10 +14,8 @@ function Test-ORCA224 {
     [MaesterTest(
         Id = 'ORCA.224',
         Title = 'Similar Users Safety Tips is enabled.',
+        Product = 'defender',
         Severity = 'Info',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

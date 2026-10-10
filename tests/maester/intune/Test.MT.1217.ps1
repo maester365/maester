@@ -40,10 +40,8 @@
     [MaesterTest(
         Id = 'MT.1217',
         Title = 'Ensure macOS LAPS is configured on Automated Device Enrollment profiles.',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

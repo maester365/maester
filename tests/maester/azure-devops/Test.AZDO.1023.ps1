@@ -21,10 +21,8 @@ function Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask {
     [MaesterTest(
         Id = 'AZDO.1023',
         Title = 'Disable Marketplace tasks.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution'

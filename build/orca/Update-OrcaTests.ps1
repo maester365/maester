@@ -14,14 +14,18 @@
 
     Each upstream check becomes a Maester 3.0 native test (design sections 3 and 14):
     tests/orca/Test.ORCA.<n>.ps1 with one [MaesterTest] function, and tests/orca/Test.ORCA.<n>.md.
-    Maester metadata that ORCA does not carry (severity, author, contributors) is read from
-    build/orca/orca-test-metadata.json.
+    Maester metadata that ORCA does not carry (severity, author, contributors and the classification
+    attributes RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost and Mitre) is
+    read from build/orca/orca-test-metadata.json. Edit that file, never the generated tests.
 
 .PARAMETER Offline
     Regenerates only the native tests from the committed check files. Nothing is downloaded.
 
 .PARAMETER OutputPath
     Folder that receives the native tests. Defaults to tests/orca.
+
+.PARAMETER MetadataPath
+    The Maester metadata of the ORCA checks. Defaults to build/orca/orca-test-metadata.json.
 
 .EXAMPLE
     ./build/orca/Update-OrcaTests.ps1
@@ -33,7 +37,8 @@
 [CmdletBinding()]
 param (
     [Parameter()] [switch] $Offline,
-    [Parameter()] [string] $OutputPath
+    [Parameter()] [string] $OutputPath,
+    [Parameter()] [string] $MetadataPath = (Join-Path $PSScriptRoot 'orca-test-metadata.json')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -181,8 +186,7 @@ if (-not $Offline) {
 #endregion
 
 #region native tests
-$metadataPath = Join-Path $PSScriptRoot 'orca-test-metadata.json'
-$metadata = (Get-Content $metadataPath -Raw | ConvertFrom-Json -AsHashtable).Tests
+$metadata = (Get-Content $MetadataPath -Raw | ConvertFrom-Json -AsHashtable).Tests
 
 # Collection entries that Get-ORCACollection only fills when Security & Compliance is connected. A check
 # that reads one of them needs that service.
@@ -255,8 +259,8 @@ foreach ($check in $checks) {
         throw "Test ID '$testId' is not in the Maester format (ORCA.nnn or ORCA.nnn.n). Add a mapping for it in Update-OrcaTests.ps1."
     }
 
-    # Attribute values. Category and Tag reproduce the 2.x Describe 'ORCA' -Tag 'ORCA', '<Id>', 'EXO'
-    # (the ORCA suite tag comes from tests/orca/suite.json).
+    # Attribute values (test attribute design, section 2). Every ORCA check is a Defender for Office 365
+    # setting; the other classification values come from orca-test-metadata.json.
     $meta = $metadata[$testId]
     if (-not $meta) {
         Write-Warning "$testId has no entry in orca-test-metadata.json; using Severity Medium and Author merill. Add an entry and regenerate."
@@ -269,10 +273,16 @@ foreach ($check in $checks) {
     $attribute = [System.Collections.Generic.List[string]]::new()
     $attribute.Add("Id = $(Format-OrcaString $testId)")
     $attribute.Add("Title = $(Format-OrcaString $title)")
+    $attribute.Add("Product = 'defender'")
+    if ($meta.RelatedProduct) { $attribute.Add("RelatedProduct = $(Format-OrcaList @($meta.RelatedProduct))") }
+    foreach ($name in 'Feature', 'Area', 'ResourceType') {
+        if ($meta[$name]) { $attribute.Add("$name = $(Format-OrcaString $meta[$name])") }
+    }
     $attribute.Add("Severity = $(Format-OrcaString $meta.Severity)")
-    $attribute.Add("Category = 'ORCA'")
-    $attribute.Add("Product = 'Defender'")
-    $attribute.Add("Tag = 'EXO'")
+    foreach ($name in 'UserImpact', 'ImplementationCost') {
+        if ($meta[$name]) { $attribute.Add("$name = $(Format-OrcaString $meta[$name])") }
+    }
+    if ($meta.Mitre) { $attribute.Add("Mitre = $(Format-OrcaList @($meta.Mitre))") }
     $attribute.Add("Service = $(Format-OrcaList $services)")
     # Defender for Office 365 Plan 1 or 2. ORCA detects MDO itself and reports 'not completed' without it.
     if ($check.Services -eq 'MDO') { $attribute.Add("License = 'ATP_ENTERPRISE'") }

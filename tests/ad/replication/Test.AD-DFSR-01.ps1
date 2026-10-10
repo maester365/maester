@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'AD-DFSR-01',
         Title = 'All domain controllers should have DFS-R subscriptions',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - Replication',
-        Product = 'Active Directory',
-        Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

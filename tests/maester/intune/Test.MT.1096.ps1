@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'MT.1096',
         Title = 'Ensure at least one Intune Multi Admin Approval policy is configured',
+        Product = 'intune',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

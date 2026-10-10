@@ -37,13 +37,11 @@
     [MaesterTest(
         Id = 'MT.1195',
         Title = 'The Quick Access app should not be subject to a sign-in frequency Conditional Access control.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Entra', 'Maester'),
-        Preview,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

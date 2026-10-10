@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAF03 {
     [MaesterTest(
         Id = 'EIDSCA.AF03',
         Title = 'Authentication Method - FIDO2 security key - Enforce attestation.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

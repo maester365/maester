@@ -36,10 +36,8 @@
     [MaesterTest(
         Id = 'MT.1179',
         Title = 'Ensure App Control for Business is enabled.',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

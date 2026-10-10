@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1021',
         Title = 'Security Defaults are enabled.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'f-bader',
         Contributor = 'weyCC81'

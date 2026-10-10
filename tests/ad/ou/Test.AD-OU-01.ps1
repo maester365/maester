@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-OU-01',
         Title = 'OU overlapping name count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Organizational Units',
-        Product = 'Active Directory',
-        Tag = 'AD.OU',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

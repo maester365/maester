@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-SCH-03',
         Title = 'Schema version entry count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Schema',
-        Product = 'Active Directory',
-        Tag = 'AD.Schema',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

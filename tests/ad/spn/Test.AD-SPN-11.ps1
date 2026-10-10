@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-SPN-11',
         Title = 'User SPN non-FQDN hosts should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

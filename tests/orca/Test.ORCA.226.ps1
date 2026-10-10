@@ -14,10 +14,8 @@ function Test-ORCA226 {
     [MaesterTest(
         Id = 'ORCA.226',
         Title = 'Each domain has a Safe Link policy applied to it.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

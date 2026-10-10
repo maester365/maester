@@ -14,10 +14,8 @@ function Test-ORCA158 {
     [MaesterTest(
         Id = 'ORCA.158',
         Title = 'Safe Attachments is enabled for SharePoint and Teams.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

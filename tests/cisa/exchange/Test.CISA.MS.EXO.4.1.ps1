@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.4.1',
         Title = 'A DMARC policy SHALL be published for every second-level domain.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.4.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'moorereason'

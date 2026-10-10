@@ -14,10 +14,8 @@ function Test-ORCA139 {
     [MaesterTest(
         Id = 'ORCA.139',
         Title = 'Spam action set to move message to junk mail folder or quarantine.',
+        Product = 'defender',
         Severity = 'Low',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

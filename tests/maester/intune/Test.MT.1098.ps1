@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'MT.1098',
         Title = 'Mobile Threat Defense Connectors should be healthy',
+        Product = 'intune',
         Severity = 'Critical',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky',

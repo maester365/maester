@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.7.1',
         Title = 'A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.7.1'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'michaelmsonne', 'oed-metzb')

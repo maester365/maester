@@ -21,13 +21,11 @@
     [MaesterTest(
         Id = 'MT.1194',
         Title = 'The baseline Global Secure Access security profile should enforce a threat-intelligence floor.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

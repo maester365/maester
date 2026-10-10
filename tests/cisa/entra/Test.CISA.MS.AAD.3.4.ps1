@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.3.4',
         Title = 'The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.4'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike'

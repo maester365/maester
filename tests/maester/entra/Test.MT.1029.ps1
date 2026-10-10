@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1029',
         Title = 'Stale accounts are not assigned to privileged roles.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Maester', 'PIM', 'Privileged'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'Cloud-Architekt',

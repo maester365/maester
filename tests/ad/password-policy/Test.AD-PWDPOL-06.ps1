@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-PWDPOL-06',
         Title = 'Account lockout duration should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Password Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.PasswordPolicy',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

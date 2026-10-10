@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1176',
         Title = 'Retention policy is configured for the Microsoft Copilot location.',
+        Product = 'purview',
         Severity = 'Medium',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

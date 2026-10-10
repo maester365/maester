@@ -21,10 +21,8 @@ function Test-AzdoExternalGuestAccess {
     [MaesterTest(
         Id = 'AZDO.1006',
         Title = 'External Users access.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access'

@@ -14,10 +14,8 @@ function Test-ORCA243 {
     [MaesterTest(
         Id = 'ORCA.243',
         Title = 'Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

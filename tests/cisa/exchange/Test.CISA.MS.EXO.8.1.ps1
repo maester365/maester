@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.8.1',
         Title = 'A DLP solution SHALL be used.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.8.1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'soulemike',

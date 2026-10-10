@@ -14,10 +14,8 @@ function Test-ORCA241 {
     [MaesterTest(
         Id = 'ORCA.241',
         Title = 'Anti-phishing policy exists and EnableFirstContactSafetyTips is true.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

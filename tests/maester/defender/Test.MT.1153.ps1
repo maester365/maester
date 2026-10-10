@@ -29,10 +29,8 @@
     [MaesterTest(
         Id = 'MT.1153',
         Title = 'Real-time Monitoring should be enabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.14.2',
         Title = 'Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.14.2'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'

@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.7.2.11',
         Title = 'Ensure the SharePoint default sharing link permission is set',
+        Product = 'sharepoint',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'SharePoint',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'OneDrive', 'SharePoint Online'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

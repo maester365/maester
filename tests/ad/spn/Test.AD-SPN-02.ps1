@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-SPN-02',
         Title = 'Computer SPN service class usage should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

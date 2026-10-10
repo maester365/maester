@@ -14,10 +14,8 @@ function Test-ORCA143 {
     [MaesterTest(
         Id = 'ORCA.143',
         Title = 'Safety Tips are enabled.',
+        Product = 'defender',
         Severity = 'Info',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

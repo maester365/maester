@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.11.1',
         Title = 'Impersonation protection checks SHOULD be used.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.11.1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

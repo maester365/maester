@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'MT.1093',
         Title = 'Apple Automated Device Enrollment Tokens should be valid for more than 30 days',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

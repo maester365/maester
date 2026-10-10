@@ -16,13 +16,11 @@
     [MaesterTest(
         Id = 'MT.1223',
         Title = 'Agent Identities should not have high-risk Microsoft Graph permissions (Preview).',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('AI', 'Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

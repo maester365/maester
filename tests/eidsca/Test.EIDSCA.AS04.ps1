@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAS04 {
     [MaesterTest(
         Id = 'EIDSCA.AS04',
         Title = 'Authentication Method - SMS - Use for sign-in.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

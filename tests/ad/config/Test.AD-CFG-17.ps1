@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-CFG-17',
         Title = 'Trusted root CA details should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

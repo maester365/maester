@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'AZDO.1008',
         Title = 'Request access to Azure DevOps by e-mail notifications to administrators.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://go.microsoft.com/fwlink/?linkid=2113172'

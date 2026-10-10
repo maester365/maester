@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.12.1',
         Title = 'IP allow lists SHOULD NOT be created.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.12.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

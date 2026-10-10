@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1039',
         Title = 'Ensure MailTips are enabled for end users',
+        Product = 'exchange',
         Severity = 'Low',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

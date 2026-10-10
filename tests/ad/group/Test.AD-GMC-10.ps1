@@ -28,10 +28,8 @@
     [MaesterTest(
         Id = 'AD-GMC-10',
         Title = 'Privileged groups with members count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = ('AD.GMC', 'AD.Group'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

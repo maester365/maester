@@ -14,9 +14,8 @@ function Test-MtCheckEidscaCR03 {
     [MaesterTest(
         Id = 'EIDSCA.CR03',
         Title = 'Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

@@ -14,10 +14,8 @@ function Test-ORCA230 {
     [MaesterTest(
         Id = 'ORCA.230',
         Title = 'Each domain has a Anti-phishing policy applied to it, or the default policy is being used.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

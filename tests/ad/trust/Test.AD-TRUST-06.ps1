@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'AD-TRUST-06',
         Title = 'Trust stale count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -9,13 +9,11 @@
     [MaesterTest(
         Id = 'MT.1051',
         Title = 'Apps with high-risk permissions having an indirect path to Global Administrator',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'HenrikPiecha',
         Contributor = 'merill'
     )]

@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAM10 {
     [MaesterTest(
         Id = 'EIDSCA.AM10',
         Title = 'Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

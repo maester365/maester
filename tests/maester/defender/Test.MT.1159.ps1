@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1159',
         Title = 'Quick Scan Time configuration is not required.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-USER-29',
         Title = 'No users should be configured for unconstrained delegation',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

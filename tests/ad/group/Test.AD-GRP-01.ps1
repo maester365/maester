@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-GRP-01',
         Title = 'Group AdminCount should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Groups',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

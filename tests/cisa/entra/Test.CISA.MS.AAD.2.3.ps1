@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.2.3',
         Title = 'Sign-ins detected as high risk SHALL be blocked.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.2.3'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'soulemike',

@@ -14,10 +14,8 @@ function Test-ORCA105 {
     [MaesterTest(
         Id = 'ORCA.105',
         Title = 'Safe Links Synchronous URL detonation is enabled.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'AD-GPO-05',
         Title = 'GPO unlinked details should be compliant',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

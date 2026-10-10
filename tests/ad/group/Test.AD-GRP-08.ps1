@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'AD-GRP-08',
         Title = 'Domain local group count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Groups',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -24,13 +24,11 @@
     [MaesterTest(
         Id = 'MT.1187',
         Title = 'The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

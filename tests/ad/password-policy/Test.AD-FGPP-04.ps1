@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-FGPP-04',
         Title = 'Fine-grained password policy application targets should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Password Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.PasswordPolicy',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

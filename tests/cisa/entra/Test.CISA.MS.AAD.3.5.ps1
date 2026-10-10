@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.3.5',
         Title = 'The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.5'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike',

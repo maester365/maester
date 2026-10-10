@@ -31,10 +31,8 @@
     [MaesterTest(
         Id = 'MT.1020',
         Title = 'All Conditional Access policies are configured to exclude Directory/OnPremises synchronization accounts or do not scope them.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

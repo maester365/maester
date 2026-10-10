@@ -14,9 +14,8 @@ function Test-MtCheckEidscaCR01 {
     [MaesterTest(
         Id = 'EIDSCA.CR01',
         Title = 'Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

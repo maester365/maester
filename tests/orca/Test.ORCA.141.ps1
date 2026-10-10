@@ -14,10 +14,8 @@ function Test-ORCA141 {
     [MaesterTest(
         Id = 'ORCA.141',
         Title = 'Bulk action set to Move message to Junk Email Folder.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

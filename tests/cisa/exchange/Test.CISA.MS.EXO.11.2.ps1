@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.11.2',
         Title = 'User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.11.2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

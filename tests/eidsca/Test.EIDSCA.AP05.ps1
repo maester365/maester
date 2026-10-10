@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAP05 {
     [MaesterTest(
         Id = 'EIDSCA.AP05',
         Title = 'Default Authorization Settings - Sign-up for email based subscription.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

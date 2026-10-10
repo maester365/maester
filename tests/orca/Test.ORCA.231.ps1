@@ -14,10 +14,8 @@ function Test-ORCA231 {
     [MaesterTest(
         Id = 'ORCA.231',
         Title = 'Each domain has a anti-spam policy applied to it, or the default policy is being used.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

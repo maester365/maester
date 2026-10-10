@@ -14,10 +14,8 @@ function Test-ORCA120_malware {
     [MaesterTest(
         Id = 'ORCA.120.2',
         Title = 'Zero Hour Autopurge Enabled for Malware.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1168',
         Title = 'Cleaned Malware should be retained for at least 30 days.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

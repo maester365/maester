@@ -14,10 +14,8 @@ function Test-ORCA237 {
     [MaesterTest(
         Id = 'ORCA.237',
         Title = 'Safe Links is enabled for teams messages.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

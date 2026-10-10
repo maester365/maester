@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1004',
         Title = 'At least one Conditional Access policy is configured with All Apps and All Users.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'merill',
         Contributor = 'f-bader'

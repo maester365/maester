@@ -14,10 +14,8 @@ function Test-ORCA235 {
     [MaesterTest(
         Id = 'ORCA.235',
         Title = 'SPF records is set up for all your custom domains.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

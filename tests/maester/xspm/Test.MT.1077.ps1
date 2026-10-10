@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1077',
         Title = 'App registrations with privileged API permissions should not have owners.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

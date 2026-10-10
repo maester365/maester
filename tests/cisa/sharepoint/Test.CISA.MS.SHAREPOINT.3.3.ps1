@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.3.3',
         Title = 'Reauthentication days for people who use a verification code SHALL be set to 30 days or less.',
+        Product = 'sharepoint',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.3.3'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

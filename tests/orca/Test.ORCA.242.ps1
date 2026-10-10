@@ -14,10 +14,8 @@ function Test-ORCA242 {
     [MaesterTest(
         Id = 'ORCA.242',
         Title = 'Important protection alerts responsible for AIR activities are enabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

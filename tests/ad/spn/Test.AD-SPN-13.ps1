@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-SPN-13',
         Title = 'No domain admin accounts should have SPNs configured',
+        Product = 'ad',
         Severity = 'Critical',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

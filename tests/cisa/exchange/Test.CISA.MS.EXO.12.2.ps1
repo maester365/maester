@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.12.2',
         Title = 'Safe lists SHOULD NOT be enabled.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.12.2'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

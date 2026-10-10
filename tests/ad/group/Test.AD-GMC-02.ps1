@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-GMC-02',
         Title = 'Distinct account types of members count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

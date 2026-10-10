@@ -22,10 +22,8 @@ function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
     [MaesterTest(
         Id = 'AZDO.1026',
         Title = 'Enable automatic enrollment to Advanced Security for Azure DevOps.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding'

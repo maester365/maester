@@ -19,10 +19,8 @@
   [MaesterTest(
       Id = 'MT.1001',
       Title = 'At least one Conditional Access policy is configured with device compliance.',
+      Product = 'entra',
       Severity = 'Medium',
-      Category = 'Maester/Entra',
-      Product = 'Entra ID',
-      Tag = ('CA', 'Maester'),
       Service = 'Graph',
       License = 'AAD_PREMIUM',
       Author = 'merill',

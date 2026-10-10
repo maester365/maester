@@ -26,10 +26,8 @@
     [MaesterTest(
         Id = 'AD-DCOMP-02',
         Title = 'Non-DC computers should not have unconstrained delegation',
+        Product = 'ad',
         Severity = 'Critical',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -25,10 +25,8 @@
     [MaesterTest(
         Id = 'MT.1173',
         Title = 'Sensitivity labels are published for files used by Microsoft 365 Copilot.',
+        Product = 'purview',
         Severity = 'Medium',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
         Service = 'SecurityCompliance',
         Author = 'OfirGavish'
     )]

@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'MT.1083',
         Title = 'Ensure Delicensing Resiliency is enabled',
+        Product = 'exchange',
         Severity = 'Low',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'l-gosling'
     )]

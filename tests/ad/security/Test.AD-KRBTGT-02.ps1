@@ -24,10 +24,8 @@
     [MaesterTest(
         Id = 'AD-KRBTGT-02',
         Title = 'KRBTGT last logon should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -68,10 +68,8 @@ function Test-MtMdiHealthIssue {
     [MaesterTest(
         Id = 'MT.1059',
         Title = 'Microsoft Defender for Identity health issues should be resolved',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Defender for Identity health issues',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester', 'MDI'),
         Service = 'Graph',
         InstanceSource = 'Get-MtMdiHealthIssueInstance',
         Author = 'Cloud-Architekt',

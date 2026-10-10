@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-CFG-05',
         Title = 'Recycle bin enabled paths should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

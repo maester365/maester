@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAP04 {
     [MaesterTest(
         Id = 'EIDSCA.AP04',
         Title = 'Default Authorization Settings - Guest invite restrictions.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

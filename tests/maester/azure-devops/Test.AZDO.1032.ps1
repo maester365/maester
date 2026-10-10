@@ -25,10 +25,8 @@ function Test-AzdoDisableGlobalPATCreation {
     [MaesterTest(
         Id = 'AZDO.1032',
         Title = '(Tenant) Restrict creation of global Personal Access Tokens.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy'

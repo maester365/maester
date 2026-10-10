@@ -14,10 +14,8 @@
     [MaesterTest(
         Id = 'MT.1068',
         Title = 'Restrict non-admin users from creating tenants.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

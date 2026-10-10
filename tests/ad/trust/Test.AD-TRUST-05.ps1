@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'AD-TRUST-05',
         Title = 'Trust configuration details should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

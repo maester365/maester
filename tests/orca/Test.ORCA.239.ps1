@@ -14,10 +14,8 @@ function Test-ORCA239 {
     [MaesterTest(
         Id = 'ORCA.239',
         Title = 'No exclusions for the built-in protection policies.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

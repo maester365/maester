@@ -14,10 +14,8 @@ function Test-ORCA205 {
     [MaesterTest(
         Id = 'ORCA.205',
         Title = 'Common attachment type filter is enabled.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

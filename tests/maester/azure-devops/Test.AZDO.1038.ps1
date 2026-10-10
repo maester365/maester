@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'AZDO.1038',
         Title = '(Organization) Disallow extensions from accessing resources on the local network.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops'

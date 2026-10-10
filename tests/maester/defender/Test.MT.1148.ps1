@@ -29,10 +29,8 @@
     [MaesterTest(
         Id = 'MT.1148',
         Title = 'Archive Scanning should be enabled.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

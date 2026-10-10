@@ -14,10 +14,8 @@ function Test-ORCA118_2 {
     [MaesterTest(
         Id = 'ORCA.118.2',
         Title = 'Domains are not being allow listed in an unsafe manner in Transport Rules.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1025',
         Title = 'No external user with permanent role assignment on Control Plane.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Maester', 'Privileged'),
         Service = 'Graph',
         Author = 'Cloud-Architekt',
         Contributor = ('f-bader', 'thomas-s-schmidt', 'nathanmcnulty')

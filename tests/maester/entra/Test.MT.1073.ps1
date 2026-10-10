@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1073',
         Title = 'Soft- and hard-matching of synchronized objects should be blocked.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
         Author = 'HenrikPiecha'
     )]

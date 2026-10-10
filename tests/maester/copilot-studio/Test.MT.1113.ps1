@@ -22,10 +22,8 @@ function    Test-MtAIAgentBroadSharing {
     [MaesterTest(
         Id = 'MT.1113',
         Title = 'AI agents should not be shared with broad access control policies.',
+        Product = 'copilot-studio',
         Severity = 'High',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

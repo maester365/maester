@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'MT.1097',
         Title = 'Ensure all Intune Certificate Connectors are healthy and running supported versions',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

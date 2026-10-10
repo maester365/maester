@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.8.2',
         Title = 'Only users with the Guest Inviter role SHOULD be able to invite guest users.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.8.2'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('michaelmsonne', 'mattcave')

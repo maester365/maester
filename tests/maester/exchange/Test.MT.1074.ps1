@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1074',
         Title = 'Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'HenrikPiecha',
         Contributor = 'JeanPhilippeGeorge'

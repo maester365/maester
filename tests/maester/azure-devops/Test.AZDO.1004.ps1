@@ -24,10 +24,8 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
     [MaesterTest(
         Id = 'AZDO.1004',
         Title = 'Additional protections when using public package registries.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/'

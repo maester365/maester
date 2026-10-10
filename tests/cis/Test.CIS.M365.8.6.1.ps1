@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.8.6.1',
         Title = 'Ensure users can report security concerns in Teams',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Teams',
-        Tag = ('CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = 'merill'

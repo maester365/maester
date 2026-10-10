@@ -22,10 +22,8 @@ function Test-AzdoOrganizationBadgesArePrivate {
     [MaesterTest(
         Id = 'AZDO.1014',
         Title = 'Anonymous access to pipeline badges.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository'

@@ -14,9 +14,8 @@ function Test-MtCheckEidscaAP10 {
     [MaesterTest(
         Id = 'EIDSCA.AP10',
         Title = 'Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

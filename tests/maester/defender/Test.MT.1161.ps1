@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1161',
         Title = 'Cloud Block Level should be High or higher.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

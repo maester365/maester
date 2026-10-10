@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1048',
         Title = 'Limit external participants from having control in a Teams meeting',
+        Product = 'teams',
         Severity = 'Medium',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

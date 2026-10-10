@@ -25,10 +25,8 @@
     [MaesterTest(
         Id = 'AD-COMP-04',
         Title = 'Computer non-standard primary group count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -23,10 +23,8 @@ function Test-MtAIAgentMcpTools {
     [MaesterTest(
         Id = 'MT.1120',
         Title = 'AI agents should not use MCP server tools without review.',
+        Product = 'copilot-studio',
         Severity = 'Medium',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'CIS.M365.2.1.3',
         Title = 'Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Defender',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'NZLostboy',
         Contributor = ('thomas-s-schmidt', 'Mynster9361')

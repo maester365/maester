@@ -32,10 +32,8 @@
     [MaesterTest(
         Id = 'MT.1214',
         Title = 'Ensure macOS compliance policy requires System Integrity Protection.',
+        Product = 'intune',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

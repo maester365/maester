@@ -15,10 +15,8 @@
   [MaesterTest(
       Id = 'MT.1002',
       Title = 'App management restrictions on applications and service principals is configured and enabled.',
+      Product = 'entra',
       Severity = 'High',
-      Category = 'Maester/Entra',
-      Product = 'Entra ID',
-      Tag = ('App', 'Maester'),
       Service = 'Graph',
       Author = 'f-bader',
       Contributor = ('merill', 'BakkerJan')

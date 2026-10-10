@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'AD-GMC-06',
         Title = 'Foreign SID principals count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

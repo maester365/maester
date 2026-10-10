@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'MT.1019',
         Title = 'At least one Conditional Access policy is configured to enable application enforced restrictions.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

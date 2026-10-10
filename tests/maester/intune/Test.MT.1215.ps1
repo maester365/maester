@@ -36,10 +36,8 @@
     [MaesterTest(
         Id = 'MT.1215',
         Title = 'Ensure Gatekeeper restricts macOS app download locations.',
+        Product = 'intune',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

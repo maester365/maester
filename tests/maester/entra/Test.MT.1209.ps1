@@ -17,13 +17,11 @@
     [MaesterTest(
         Id = 'MT.1209',
         Title = 'Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview).',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

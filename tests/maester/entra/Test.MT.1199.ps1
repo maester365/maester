@@ -32,12 +32,10 @@
     [MaesterTest(
         Id = 'MT.1199',
         Title = 'App registration credentials should not be expired or expiring soon.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'simon-vedder'
     )]
     [CmdletBinding()]

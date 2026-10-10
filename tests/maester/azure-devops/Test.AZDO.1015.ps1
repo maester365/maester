@@ -21,10 +21,8 @@ function Test-AzdoOrganizationLimitVariablesAtQueueTime {
     [MaesterTest(
         Id = 'AZDO.1015',
         Title = 'Limit variables that can be set at queue time.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time'

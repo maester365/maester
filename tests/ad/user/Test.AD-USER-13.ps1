@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-USER-13',
         Title = 'User SID History count should be retrievable',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

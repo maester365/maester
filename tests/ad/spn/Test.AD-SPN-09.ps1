@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-SPN-09',
         Title = 'User SPN unknown service class count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

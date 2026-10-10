@@ -25,10 +25,8 @@
     [MaesterTest(
         Id = 'AD-REPL-01',
         Title = 'No replication connections should be disabled',
+        Product = 'ad',
         Severity = 'High',
-        Category = 'Active Directory - Replication',
-        Product = 'Active Directory',
-        Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

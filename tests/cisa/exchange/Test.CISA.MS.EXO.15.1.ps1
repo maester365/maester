@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.15.1',
         Title = 'URL comparison with a block-list SHOULD be enabled.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.15.1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',

@@ -26,10 +26,8 @@
     [MaesterTest(
         Id = 'MT.1174',
         Title = 'Insider Risk Management policy for Risky AI usage is enabled.',
+        Product = 'purview',
         Severity = 'Medium',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
         Service = ('Graph', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

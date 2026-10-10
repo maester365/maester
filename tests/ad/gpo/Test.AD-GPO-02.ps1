@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'AD-GPO-02',
         Title = 'GPO created before 2020 count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

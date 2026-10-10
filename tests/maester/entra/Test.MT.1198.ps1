@@ -29,12 +29,10 @@
     [MaesterTest(
         Id = 'MT.1198',
         Title = 'App registration certificates should not have excessive validity periods.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'simon-vedder'
     )]
     [CmdletBinding()]

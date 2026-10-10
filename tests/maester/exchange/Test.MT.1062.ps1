@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'MT.1062',
         Title = 'Ensure Direct Send is set to be rejected',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'bastienperez'
     )]

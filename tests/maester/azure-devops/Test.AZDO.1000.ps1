@@ -22,10 +22,8 @@ function Test-AzdoThirdPartyAccessViaOauth {
     [MaesterTest(
         Id = 'AZDO.1000',
         Title = 'Azure DevOps OAuth apps can access resources in your organization through OAuth.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/vstspolicyoauth'

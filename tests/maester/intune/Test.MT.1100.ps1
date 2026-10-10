@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'MT.1100',
         Title = 'Intune Diagnostic Settings should include Audit Logs',
+        Product = 'intune',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Azure',
         License = 'INTUNE_A',
         Author = 'nicolonsky',

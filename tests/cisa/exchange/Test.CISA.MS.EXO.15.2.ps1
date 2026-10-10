@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.15.2',
         Title = 'Direct download links SHOULD be scanned for malware.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.15.2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',

@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1079',
         Title = 'Privileged API permissions on service principals should not remain unused.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

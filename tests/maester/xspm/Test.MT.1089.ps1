@@ -18,12 +18,10 @@
     [MaesterTest(
         Id = 'MT.1089',
         Title = 'Devices with critical credentials should be protected by Credential Guard.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = 'Device',
-        LongRunning,
         Service = 'Graph',
+        LongRunning,
         Author = 'RobbeVandenDaele',
         Contributor = 'SamErde'
     )]

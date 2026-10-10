@@ -22,10 +22,8 @@ function Test-AzdoValidateSshKeyExpiration {
     [MaesterTest(
         Id = 'AZDO.1031',
         Title = 'Validate SSH Key Expiration.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies'

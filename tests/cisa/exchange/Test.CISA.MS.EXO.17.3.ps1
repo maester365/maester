@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.17.3',
         Title = 'Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.17.3'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'M365_ADVANCED_AUDITING',
         Author = 'soulemike',

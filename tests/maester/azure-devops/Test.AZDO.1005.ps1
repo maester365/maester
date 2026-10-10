@@ -22,10 +22,8 @@ function Test-AzdoEnforceAADConditionalAccess {
     [MaesterTest(
         Id = 'AZDO.1005',
         Title = 'IP Conditional Access policy validation.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops'

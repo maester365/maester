@@ -23,10 +23,8 @@
     [MaesterTest(
         Id = 'MT.1183',
         Title = 'Temporary bypass for onPremisesObjectIdentifier updates should be disabled.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

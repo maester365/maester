@@ -20,13 +20,11 @@
     [MaesterTest(
         Id = 'MT.1111',
         Title = 'High privileged user should be linked to an identity.',
+        Product = 'defender',
         Severity = 'Low',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        Preview,
-        LongRunning,
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

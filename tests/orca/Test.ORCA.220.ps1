@@ -14,10 +14,8 @@ function Test-ORCA220 {
     [MaesterTest(
         Id = 'ORCA.220',
         Title = 'Advanced Phish filter Threshold level is adequate.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

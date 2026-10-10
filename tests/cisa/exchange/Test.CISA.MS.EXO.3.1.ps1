@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.3.1',
         Title = 'DKIM SHOULD be enabled for all domains.',
+        Product = 'exchange',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.3.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech', 'blindzero')

@@ -14,10 +14,8 @@ function Test-ORCA108 {
     [MaesterTest(
         Id = 'ORCA.108',
         Title = 'DKIM signing is set up for all your custom domains.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

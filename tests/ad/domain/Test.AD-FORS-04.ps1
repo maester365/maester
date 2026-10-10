@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'AD-FORS-04',
         Title = 'Cross-forest references count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Forest',
-        Product = 'Active Directory',
-        Tag = 'AD.Forest',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

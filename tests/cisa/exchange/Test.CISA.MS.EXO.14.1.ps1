@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.14.1',
         Title = 'A spam filter SHALL be enabled.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.14.1'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'

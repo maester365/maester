@@ -25,10 +25,8 @@ function Test-AzdoAuditStream {
     [MaesterTest(
         Id = 'AZDO.1010',
         Title = 'Audit streaming.',
+        Product = 'azure-devops',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops'

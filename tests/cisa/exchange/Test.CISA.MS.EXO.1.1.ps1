@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.1.1',
         Title = 'Automatic forwarding to external domains SHALL be disabled.',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.1.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

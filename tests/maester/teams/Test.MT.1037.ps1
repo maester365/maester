@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1037',
         Title = 'Only users with Presenter role are allowed to present in Teams meetings',
+        Product = 'teams',
         Severity = 'High',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = 'merill'

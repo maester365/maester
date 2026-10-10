@@ -14,9 +14,8 @@ function Test-MtCheckEidscaPR01 {
     [MaesterTest(
         Id = 'EIDSCA.PR01',
         Title = 'Default Settings - Password Rule Settings - Password Protection - Mode.',
+        Product = 'entra',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

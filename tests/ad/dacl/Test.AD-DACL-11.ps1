@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'AD-DACL-11',
         Title = 'Privileged extended right count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

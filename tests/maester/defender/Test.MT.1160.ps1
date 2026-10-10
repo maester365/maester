@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1160',
         Title = 'Signatures should be checked before scan.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

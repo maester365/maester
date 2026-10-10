@@ -14,10 +14,8 @@ function Test-ORCA142 {
     [MaesterTest(
         Id = 'ORCA.142',
         Title = 'Phish action set to Quarantine message.',
+        Product = 'defender',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

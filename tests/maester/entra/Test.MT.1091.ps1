@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'MT.1091',
         Title = 'Registering user should not be added as local administrator on the device during Microsoft Entra join',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Device', 'Entra', 'Maester'),
         Service = 'Graph',
         Author = 'nicolonsky'
     )]

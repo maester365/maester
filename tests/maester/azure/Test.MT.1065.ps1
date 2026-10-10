@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'MT.1065',
         Title = 'Ensure all Recovery Services Vaults have soft delete enabled',
+        Product = 'azure',
         Severity = 'High',
-        Category = 'AzureConfig',
-        Product = 'Azure',
-        Tag = ('Azure', 'Backup', 'Maester'),
         Service = 'Azure',
         Author = 'brianveldman',
         Contributor = 'l-gosling'

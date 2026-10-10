@@ -30,10 +30,8 @@
     [MaesterTest(
         Id = 'MT.1157',
         Title = 'CPU Load Factor should be optimized (20-30%).',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

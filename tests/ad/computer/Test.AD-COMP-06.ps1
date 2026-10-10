@@ -24,10 +24,8 @@
     [MaesterTest(
         Id = 'AD-COMP-06',
         Title = 'Computer default container count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

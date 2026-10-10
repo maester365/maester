@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'AZDO.1021',
         Title = 'Creation of classic release pipelines.',
+        Product = 'azure-devops',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/'

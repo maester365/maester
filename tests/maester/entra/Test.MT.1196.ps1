@@ -22,10 +22,8 @@
     [MaesterTest(
         Id = 'MT.1196',
         Title = 'Review who can change attributes used by dynamic group rules.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'agnivesh'
     )]

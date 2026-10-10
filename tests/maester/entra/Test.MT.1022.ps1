@@ -9,10 +9,8 @@
     [MaesterTest(
         Id = 'MT.1022',
         Title = 'All users utilizing a P1 license should be licensed.',
+        Product = 'entra',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Entra', 'License', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

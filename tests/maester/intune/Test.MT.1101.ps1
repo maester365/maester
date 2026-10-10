@@ -16,10 +16,8 @@
     [MaesterTest(
         Id = 'MT.1101',
         Title = 'Default Branding Profile should be customized',
+        Product = 'intune',
         Severity = 'Low',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

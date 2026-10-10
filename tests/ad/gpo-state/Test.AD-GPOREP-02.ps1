@@ -20,10 +20,8 @@
     [MaesterTest(
         Id = 'AD-GPOREP-02',
         Title = 'No GPOs should be missing permissions',
+        Product = 'ad',
         Severity = 'Medium',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

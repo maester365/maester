@@ -21,10 +21,8 @@
     [MaesterTest(
         Id = 'AD-FORS-01',
         Title = 'UPN suffixes count should be retrievable',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Forest',
-        Product = 'Active Directory',
-        Tag = 'AD.Forest',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

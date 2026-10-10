@@ -18,10 +18,8 @@
     [MaesterTest(
         Id = 'AD-USER-26',
         Title = 'Honey pot user count should be investigated',
+        Product = 'ad',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

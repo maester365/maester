@@ -17,10 +17,8 @@
     [MaesterTest(
         Id = 'MT.1056',
         Title = 'Ensure that no person has permanent access to all Azure subscriptions at the root scope',
+        Product = 'azure',
         Severity = 'High',
-        Category = 'AzureConfig',
-        Product = 'Azure',
-        Tag = ('Azure', 'Maester', 'Privileged'),
         Service = ('Azure', 'Graph'),
         Author = 'Oppedijk',
         Contributor = 'merill'

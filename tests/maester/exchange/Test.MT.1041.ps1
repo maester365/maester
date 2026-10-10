@@ -19,10 +19,8 @@
     [MaesterTest(
         Id = 'MT.1041',
         Title = 'Ensure users installing Outlook add-ins is not allowed',
+        Product = 'exchange',
         Severity = 'High',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

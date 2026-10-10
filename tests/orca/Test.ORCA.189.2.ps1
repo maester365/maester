@@ -14,10 +14,8 @@ function Test-ORCA189_2 {
     [MaesterTest(
         Id = 'ORCA.189.2',
         Title = 'Safe Links is not bypassed.',
+        Product = 'defender',
         Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'thomas-s-schmidt'
