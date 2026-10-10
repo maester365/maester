@@ -525,8 +525,8 @@ Describe 'MtConsoleRenderer panels' {
 
         $t.Renderer.SetHeaderUpdate('v3.1.0 available', 'https://www.powershellgallery.com/packages/Maester/3.1.0')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        $screen[1] | Should -Match '^FLAME   v3\.0\.0 · v3\.1\.0 available · maester\.dev\b'
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\v3.1.0 available$esc]8;;$esc\"))
+        $screen[1] | Should -Match '^FLAME v3\.0\.0 · ↑ v3\.1\.0 available · maester\.dev\b'
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;38;5;215m$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\↑ v3.1.0 available$esc]8;;$esc\"))
         # There is no Version panel.
         ($screen -join "`n") | Should -Not -Match '╭─ Version'
         $t.Renderer.Close()

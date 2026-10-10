@@ -170,7 +170,7 @@ namespace Maester.Engine
         }
 
         /// <summary>
-        /// A newer version to mention in the tagline ("v3.1.0 available"), as a hyperlink to where it can be had.
+        /// A newer version to mention in the tagline ("↑ v3.1.0 available"), as a hyperlink to where it can be had.
         /// Null removes it.
         /// </summary>
         public void SetHeaderUpdate(string label, string url)
@@ -187,9 +187,11 @@ namespace Maester.Engine
         private Line BuildTagline(bool ansi)
         {
             string dot = Unicode ? " · " : " - ";
-            bool update = !string.IsNullOrEmpty(_updateLabel) &&
-                _taglineVersion.Length + _updateLabel.Length + _taglineSite.Length + 2 * dot.Length <= _taglineWidth;
-            string plain = _taglineVersion + dot + (update ? _updateLabel + dot : string.Empty) + _taglineSite;
+            // A newer version stands out: an arrow in front of it, bold, in amber.
+            string label = string.IsNullOrEmpty(_updateLabel) ? string.Empty : (Unicode ? "↑ " : "^ ") + _updateLabel;
+            bool update = label.Length > 0 &&
+                _taglineVersion.Length + label.Length + _taglineSite.Length + 2 * dot.Length <= _taglineWidth;
+            string plain = _taglineVersion + dot + (update ? label + dot : string.Empty) + _taglineSite;
             string pad = new string(' ', Math.Max(0, _taglineWidth - plain.Length));
             string prefixPlain = StripAnsi(_taglinePrefix);
             if (!ansi) return new Line { Text = prefixPlain + pad + plain, Plain = prefixPlain + pad + plain };
@@ -197,7 +199,7 @@ namespace Maester.Engine
             sb.Append(Esc).Append("2m").Append(_taglineVersion).Append(dot).Append(Esc).Append("0m");
             if (update)
             {
-                sb.Append(Esc).Append("38;5;215m").Append(Hyperlink(_updateLabel, _updateUrl)).Append(Esc).Append("0m");
+                sb.Append(Esc).Append("1;38;5;215m").Append(Hyperlink(label, _updateUrl)).Append(Esc).Append("0m");
                 sb.Append(Esc).Append("2m").Append(dot).Append(Esc).Append("0m");
             }
             sb.Append(Esc).Append("2m").Append(Hyperlink(_taglineSite, _taglineSiteUrl)).Append(Esc).Append("0m");
