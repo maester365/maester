@@ -73,7 +73,8 @@ namespace Maester.Engine
                     string[] lines = latest > current
                         ? new[] { moduleName + " " + latest + " is available (this is " + current + ")", "Update-Module " + moduleName }
                         : new[] { moduleName + " " + current + " is the latest version" };
-                    renderer.SetPanelText("Version", "Version", lines);
+                    // An update is worth a glance: its box gets an amber border.
+                    renderer.SetPanelText("Version", "Version", lines, latest > current ? "38;5;215" : null);
                 }
                 catch (Exception)
                 {

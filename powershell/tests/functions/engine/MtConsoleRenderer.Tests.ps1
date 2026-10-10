@@ -312,7 +312,7 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard
         $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso', 'merill@contoso.com'))
         $wide = $t.Renderer.GetPlainScreen(160, 44)
-        ($wide | Where-Object { $_ -match 'Tenant$' }).IndexOf('Tenant') | Should -BeGreaterThan 98
+        ($wide | Where-Object { $_ -match '╭─ Tenant ─+╮$' }).IndexOf('Tenant') | Should -BeGreaterThan 98
         ($wide -join "`n") | Should -Match 'merill@contoso\.com'
         ($t.Renderer.GetPlainScreen(120, 44) -join "`n") | Should -Not -Match 'merill@contoso\.com'
         $t.Renderer.Close()
@@ -347,10 +347,10 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemFinished('A.3', 'Failed', 'Medium')
         $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        ($screen | Where-Object { $_ -match 'Failed so far' }) | Should -Match '3$'
-        ($screen | Where-Object { $_ -match ' Critical ' }) | Should -Match '█+\s+2$'
-        ($screen | Where-Object { $_ -match ' High ' }) | Should -Match '\s0$'
-        ($screen | Where-Object { $_ -match ' Medium ' }) | Should -Match '█+.?\s+1$'
+        ($screen | Where-Object { $_ -match 'Failed so far' }) | Should -Match '╭─ Failed so far ─+ 3 ─╮$'
+        ($screen | Where-Object { $_ -match ' Critical ' }) | Should -Match '█+\s+2 │$'
+        ($screen | Where-Object { $_ -match ' High ' }) | Should -Match '\s0 │$'
+        ($screen | Where-Object { $_ -match ' Medium ' }) | Should -Match '█+.?\s+1 │$'
         $t.Renderer.Close()
     }
 
@@ -383,7 +383,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemFinished('A.3', 'Passed', 'High')
         $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match 'Since the last run\s+Oct 9, 08:12'
+        $screen | Should -Match '╭─ Since the last run ─+ Oct 9, 08:12 ─╮'
         $screen | Should -Match '1 newly failing'
         $screen | Should -Match 'A\.1'
         $screen | Should -Match '1 fixed'
@@ -427,7 +427,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemStarting('S.2', 'Quick one')
         $t.Renderer.ItemFinished('S.2', 'Passed', 'Low')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        ($screen -join "`n") | Should -Match 'Pace\s+[\d.]+ tests/s'
+        ($screen -join "`n") | Should -Match '╭─ Pace ─+ [\d.]+ tests/s ─╮'
         $slow = @($screen | Where-Object { $_ -match ' S\.[12] ' })
         $slow[0] | Should -Match 'S\.1 .*Slow one'
         $t.Renderer.Close()
@@ -437,9 +437,58 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard -Width 141
         $t.Renderer.SetTips(@('one two three four five six seven eight nine ten eleven twelve thirteen fourteen'))
         $screen = $t.Renderer.GetPlainScreen(141, 44)
-        ($screen | Where-Object { $_ -match 'Tip$' }) | Should -Not -BeNullOrEmpty
+        ($screen | Where-Object { $_ -match '╭─ Tip ─+╮$' }) | Should -Not -BeNullOrEmpty
         foreach ($line in $screen) { $line.Length | Should -BeLessThan 141 }
         ($screen -join ' ') | Should -Match 'fourteen'
+        $t.Renderer.Close()
+    }
+    It 'Draws each panel as a closed box of the same width' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
+        $t.Renderer.SetTips(@('A tip'))
+        $t.Renderer.Start(2)
+        $t.Renderer.ItemFinished('A.1', 'Failed', 'High')
+        $pane = @($t.Renderer.GetPlainScreen(160, 44) | ForEach-Object { if ($_.Length -gt 101) { $_.Substring(101) } } | Where-Object { $_.Trim() })
+        @($pane | Where-Object { $_ -match '^╭' }).Count | Should -Be @($pane | Where-Object { $_ -match '^╰─+╯$' }).Count
+        @($pane | ForEach-Object { $_.Length } | Select-Object -Unique).Count | Should -Be 1
+        foreach ($line in $pane) { $line | Should -Match '^[╭│╰].*[╮│╯]$' }
+        $t.Renderer.Close()
+    }
+
+    It 'Colours the border of a panel by its state' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Start(2)
+        $t.Renderer.ItemFinished('A.1', 'Passed', 'High')
+        $before = $t.Writer.ToString().Length
+        $t.Renderer.ItemFinished('A.2', 'Failed', 'High')
+        $frame = $t.Writer.ToString().Substring($before)
+        $frame | Should -Match ([regex]::Escape("$esc[31m╭─ "))
+        $t.Renderer.Close()
+    }
+
+    It 'Draws boxes with ASCII when Unicode is off' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Unicode = $false
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '\+- Tenant -+\+'
+        $screen | Should -Match '\| Contoso +\|'
+        $screen | Should -Not -Match '[╭╮╰╯│─]'
+        $t.Renderer.Close()
+    }
+
+    It 'Marks the squares of the tests that are running' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Ansi = $false
+        $t.Renderer.Start(10)
+        1..3 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
+        $t.Renderer.ItemStarting('R.1', 'Running one')
+        $t.Renderer.ItemStarting('R.2', 'Running two')
+        # The main column is the first 98 characters of a row; the panels are to its right.
+        $chart = { ($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[■□]' }).PadRight(98).Substring(0, 98).Trim() }
+        & $chart | Should -Be '■■■··□□□□□'
+        $t.Renderer.ItemFinished('R.1', 'Passed')
+        & $chart | Should -Be '■■■■·□□□□□'
         $t.Renderer.Close()
     }
 }

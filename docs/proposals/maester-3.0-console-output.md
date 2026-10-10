@@ -134,8 +134,14 @@ default is all of them, and an empty list turns them off.
 | `Blog` | The three newest posts on maester.dev | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Whether a newer stable Maester is on the PowerShell Gallery | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds | `assets/ConsoleTips.txt` in the module | none |
-| `Results` | One square per test under the product lanes, filled in the order tests finish and coloured by result. With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
+| `Results` | One square per test under the product lanes, edge to edge, filled in the order tests finish and coloured by result. The squares of the tests that are running pulse (a dot, a small square, a full square). With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
 
+- Each panel in the right column is a rounded box with its title in the top border, and where there is one a badge
+  on the right of that border (the failed count, the date of the last run, tests per second). The border takes the
+  colour of the panel's state: red when tests have failed, amber when tests are newly failing or an update is
+  available, green when the only drift is fixes, grey otherwise. This is the btop and lazygit convention, chosen by the
+  owner from ten mocked styles. Without Unicode the boxes are drawn with `+`, `-` and `|`.
+- A box costs two columns and two rows, so one panel fewer fits than without borders.
 - A panel with nothing to show is left out (no drift without an earlier file, no blog offline), and a panel that does
   not fit in the rows that are left is skipped.
 - The connection line stays under the banner at every width (owner ruling: the services belong in the main

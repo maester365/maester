@@ -33,6 +33,7 @@ namespace Maester.Engine
         {
             public string Title;
             public string[] Lines;
+            public string Colour;
         }
 
         private sealed class Slow
@@ -80,11 +81,17 @@ namespace Maester.Engine
         /// <summary>The content of a text panel. The lines may contain colour. Null or no lines removes the panel.</summary>
         public void SetPanelText(string name, string title, string[] lines)
         {
+            SetPanelText(name, title, lines, null);
+        }
+
+        /// <summary>The content of a text panel, with the SGR colour of its border (for example "38;5;215" to draw attention).</summary>
+        public void SetPanelText(string name, string title, string[] lines, string borderColour)
+        {
             if (string.IsNullOrEmpty(name)) return;
             lock (_gate)
             {
                 if (lines == null || lines.Length == 0) _text.Remove(name);
-                else _text[name] = new TextPanel { Title = title, Lines = lines };
+                else _text[name] = new TextPanel { Title = title, Lines = lines, Colour = borderColour };
                 Redraw();
             }
         }
@@ -250,24 +257,77 @@ namespace Maester.Engine
             return false;
         }
 
-        /// <summary>The right column: the panels that have something to show and fit in the rows, in order.</summary>
+        /// <summary>What a panel shows: its title, an optional badge for the top border, the colour of its border, and its lines.</summary>
+        private sealed class PanelContent
+        {
+            public string Title;
+            public string Badge;
+            public string Colour;
+            public List<Line> Lines = new List<Line>();
+        }
+
+        private const string NeutralBorder = "38;5;240";
+        private const string Amber = "38;5;215";
+
+        /// <summary>
+        /// The right column: each panel that has something to show, in order, as a box with its title in the top
+        /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
+        /// A panel that does not fit in the rows that are left is skipped.
+        /// </summary>
         private List<Line> BuildPane(int paneWidth, int rows, bool ansi)
         {
             var pane = new List<Line>();
+            int inner = paneWidth - 4;
             foreach (var name in _panels)
             {
                 if (string.Equals(name, ResultsPanel, StringComparison.OrdinalIgnoreCase)) continue;
-                var panel = BuildPanel(name, paneWidth, ansi);
-                if (panel == null || panel.Count == 0) continue;
-                int needed = panel.Count + (pane.Count > 0 ? 1 : 0);
-                if (pane.Count + needed > rows) continue;
-                if (pane.Count > 0) pane.Add(new Line { Text = string.Empty, Plain = string.Empty });
-                pane.AddRange(panel);
+                var panel = BuildPanel(name, inner, ansi);
+                if (panel == null || panel.Lines.Count == 0) continue;
+                if (pane.Count + panel.Lines.Count + 2 > rows) continue;
+                pane.AddRange(Box(panel, paneWidth, ansi));
             }
             return pane;
         }
 
-        private List<Line> BuildPanel(string name, int width, bool ansi)
+        /// <summary>Frames a panel: the title and badge in the top border, the lines padded between the sides.</summary>
+        private List<Line> Box(PanelContent panel, int width, bool ansi)
+        {
+            string h = Unicode ? "─" : "-";
+            string v = Unicode ? "│" : "|";
+            string colour = panel.Colour ?? NeutralBorder;
+            int inner = width - 4;
+            var box = new List<Line>();
+
+            string title = Fit(panel.Title ?? string.Empty, inner - 2);
+            string badge = panel.Badge;
+            if (!string.IsNullOrEmpty(badge) && title.Length + badge.Length + 8 > width) badge = null;
+            var top = new LineBuilder(ansi).Add((Unicode ? "╭" : "+") + h + " ", colour).Add(title, "1").Add(" ", colour);
+            int fill = width - top.Length - 1 - (badge == null ? 0 : badge.Length + 3);
+            top.Add(Repeat(h, Math.Max(0, fill)), colour);
+            if (badge != null) top.Add(" " + badge + " ", panel.Colour ?? "2").Add(h, colour);
+            top.Add(Unicode ? "╮" : "+", colour);
+            box.Add(top.Build());
+
+            foreach (var raw in panel.Lines)
+            {
+                var line = Truncate(raw, inner, ansi);
+                string pad = new string(' ', inner - line.Plain.Length);
+                string left = ansi ? Esc + colour + "m" + v + Esc + "0m " : v + " ";
+                string right = ansi ? " " + Esc + colour + "m" + v + Esc + "0m" : " " + v;
+                box.Add(new Line { Text = left + line.Text + pad + right, Plain = v + " " + line.Plain + pad + " " + v });
+            }
+            box.Add(new LineBuilder(ansi).Add((Unicode ? "╰" : "+") + Repeat(h, width - 2) + (Unicode ? "╯" : "+"), colour).Build());
+            return box;
+        }
+
+        private static string Repeat(string s, int count)
+        {
+            var sb = new StringBuilder(s.Length * Math.Max(0, count));
+            for (int i = 0; i < count; i++) sb.Append(s);
+            return sb.ToString();
+        }
+
+        private PanelContent BuildPanel(string name, int width, bool ansi)
         {
             switch (name.ToLowerInvariant())
             {
@@ -280,36 +340,24 @@ namespace Maester.Engine
                 case "tips":
                     return BuildTipsPanel(width, ansi);
                 default:
-                    return BuildTextPanel(name, width, ansi);
+                    return BuildTextPanel(name, ansi);
             }
         }
 
-        private Line Title(string title, string right, int width, bool ansi)
+        private PanelContent BuildTextPanel(string name, bool ansi)
         {
-            var b = new LineBuilder(ansi).Add(title, "1");
-            if (!string.IsNullOrEmpty(right) && title.Length + right.Length + 2 <= width)
+            TextPanel text;
+            if (!_text.TryGetValue(name, out text)) return null;
+            var panel = new PanelContent { Title = text.Title ?? name, Colour = text.Colour };
+            foreach (var raw in text.Lines)
             {
-                b.Add(new string(' ', width - title.Length - right.Length)).Add(right, "2");
+                string plain = StripAnsi(raw);
+                panel.Lines.Add(new Line { Text = ansi ? raw : plain, Plain = plain });
             }
-            return Truncate(b.Build(), width, ansi);
+            return panel;
         }
 
-        private List<Line> BuildTextPanel(string name, int width, bool ansi)
-        {
-            TextPanel panel;
-            if (!_text.TryGetValue(name, out panel)) return null;
-            var lines = new List<Line> { Title(panel.Title ?? name, null, width, ansi) };
-            foreach (var raw in panel.Lines)
-            {
-                string plain = " " + StripAnsi(raw);
-                lines.Add(plain.Length <= width
-                    ? new Line { Text = " " + (ansi ? raw : StripAnsi(raw)), Plain = plain }
-                    : Truncate(new Line { Text = plain, Plain = plain }, width, ansi));
-            }
-            return lines;
-        }
-
-        private List<Line> BuildFailedPanel(int width, bool ansi)
+        private PanelContent BuildFailedPanel(int width, bool ansi)
         {
             if (!_running && _sequence.Count == 0) return null;
             int max = 1;
@@ -319,18 +367,18 @@ namespace Maester.Engine
                 _failedBySeverity.TryGetValue(s, out c);
                 max = Math.Max(max, c);
             }
-            var lines = new List<Line> { Title("Failed so far", N(_failed), width, ansi) };
-            int barWidth = Math.Max(4, width - 16);
+            var panel = new PanelContent { Title = "Failed so far", Badge = N(_failed), Colour = _failed > 0 ? "31" : null };
+            int barWidth = Math.Max(4, width - 14);
             for (int i = 0; i < SeverityOrder.Length; i++)
             {
                 int count;
                 _failedBySeverity.TryGetValue(SeverityOrder[i], out count);
-                var b = new LineBuilder(ansi).Add(" " + SeverityOrder[i].PadRight(9), count > 0 ? null : "2");
+                var b = new LineBuilder(ansi).Add(SeverityOrder[i].PadRight(9), count > 0 ? null : "2");
                 string bar = Bar((double)count / max * barWidth);
                 b.Add(bar, SeverityColor[i]).Add(new string(' ', barWidth - bar.Length + 1)).Add(N(count).PadLeft(4), count > 0 ? SeverityColor[i] : "2");
-                lines.Add(Truncate(b.Build(), width, ansi));
+                panel.Lines.Add(b.Build());
             }
-            return lines;
+            return panel;
         }
 
         /// <summary>A horizontal bar of a fractional number of cells.</summary>
@@ -344,15 +392,14 @@ namespace Maester.Engine
             return sb.ToString();
         }
 
-        private List<Line> BuildPacePanel(int width, bool ansi)
+        private PanelContent BuildPacePanel(int width, bool ansi)
         {
             if (_finishSeconds.Count == 0) return null;
             double elapsed = Math.Max(0.001, _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
-            string rate = (_finishSeconds.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s";
-            var lines = new List<Line> { Title("Pace", rate, width, ansi) };
+            var panel = new PanelContent { Title = "Pace", Badge = (_finishSeconds.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" };
 
             // Tests finished in each slice of the run so far.
-            int buckets = Math.Max(8, Math.Min(40, width - 2));
+            int buckets = Math.Max(8, Math.Min(48, width));
             var counts = new int[buckets];
             int top = 1;
             foreach (var t in _finishSeconds)
@@ -367,48 +414,50 @@ namespace Maester.Engine
                 if (Unicode) spark.Append(c == 0 ? ' ' : Spark[Math.Min(Spark.Length - 1, (int)((double)c / top * (Spark.Length - 1)))]);
                 else spark.Append(c == 0 ? ' ' : (c * 2 > top ? '#' : '-'));
             }
-            lines.Add(new LineBuilder(ansi).Add(" ").Add(spark.ToString(), "36").Build());
+            panel.Lines.Add(new LineBuilder(ansi).Add(spark.ToString(), "36").Build());
 
             if (_slowest.Count > 0)
             {
-                lines.Add(new LineBuilder(ansi).Add(" Slowest so far", "2").Build());
+                panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
                 foreach (var s in _slowest)
                 {
                     string time = Short(s.Duration).PadLeft(7);
-                    var left = Truncate(new LineBuilder(ansi).Add(" " + (s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
+                    var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
                     string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
-                    lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
+                    panel.Lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
                 }
             }
-            return lines;
+            return panel;
         }
 
-        private List<Line> BuildDriftPanel(int width, bool ansi)
+        private PanelContent BuildDriftPanel(int width, bool ansi)
         {
             if (_baseline == null) return null;
-            var lines = new List<Line> { Title("Since the last run", _baselineLabel, width, ansi) };
+            var panel = new PanelContent { Title = "Since the last run", Badge = _baselineLabel };
+            if (_newlyFailing.Count > 0) panel.Colour = Amber;
+            else if (_fixedCount > 0) panel.Colour = "32";
             if (_newlyFailing.Count == 0 && _fixedCount == 0 && _newTests == 0)
             {
-                lines.Add(new LineBuilder(ansi).Add(_sequence.Count == 0 ? " Waiting for results" + Ellipsis() : " No changes so far", "2").Build());
-                return lines;
+                panel.Lines.Add(new LineBuilder(ansi).Add(_sequence.Count == 0 ? "Waiting for results" + Ellipsis() : "No changes so far", "2").Build());
+                return panel;
             }
             if (_newlyFailing.Count > 0)
             {
-                lines.Add(new LineBuilder(ansi).Add(" " + (Unicode ? "▲ " : "^ ") + N(_newlyFailing.Count) + " newly failing", "31").Build());
-                lines.Add(Truncate(new LineBuilder(ansi).Add("   " + string.Join(Unicode ? " · " : ", ", _newlyFailing), "2").Build(), width, ansi));
+                panel.Lines.Add(new LineBuilder(ansi).Add((Unicode ? "▲ " : "^ ") + N(_newlyFailing.Count) + " newly failing", "31").Build());
+                panel.Lines.Add(Truncate(new LineBuilder(ansi).Add("  " + string.Join(Unicode ? " · " : ", ", _newlyFailing), "2").Build(), width, ansi));
             }
-            if (_fixedCount > 0) lines.Add(new LineBuilder(ansi).Add(" " + (Unicode ? "▼ " : "v ") + N(_fixedCount) + " fixed", "32").Build());
-            if (_newTests > 0) lines.Add(new LineBuilder(ansi).Add(" + " + N(_newTests) + " new test" + (_newTests == 1 ? string.Empty : "s"), "36").Build());
-            return lines;
+            if (_fixedCount > 0) panel.Lines.Add(new LineBuilder(ansi).Add((Unicode ? "▼ " : "v ") + N(_fixedCount) + " fixed", "32").Build());
+            if (_newTests > 0) panel.Lines.Add(new LineBuilder(ansi).Add("+ " + N(_newTests) + " new test" + (_newTests == 1 ? string.Empty : "s"), "36").Build());
+            return panel;
         }
 
-        private List<Line> BuildTipsPanel(int width, bool ansi)
+        private PanelContent BuildTipsPanel(int width, bool ansi)
         {
             if (_tips.Length == 0) return null;
             string tip = _tips[(int)(_clock.Elapsed.TotalSeconds / 12) % _tips.Length];
-            var lines = new List<Line> { Title("Tip", null, width, ansi) };
-            foreach (var wrapped in Wrap(tip, width - 1)) lines.Add(new LineBuilder(ansi).Add(" " + wrapped, "2").Build());
-            return lines;
+            var panel = new PanelContent { Title = "Tip", Colour = "36" };
+            foreach (var wrapped in Wrap(tip, width)) panel.Lines.Add(new LineBuilder(ansi).Add(wrapped, "2").Build());
+            return panel;
         }
 
         /// <summary>Breaks text at spaces into lines of at most <paramref name="width"/> characters.</summary>
@@ -438,12 +487,16 @@ namespace Maester.Engine
         {
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
-            int columns = Math.Max(10, Math.Min(48, (width - 2) / 2));
+            int columns = Math.Max(10, Math.Min(96, width - 2));
             int rows = Math.Min(6, maxRows);
             int perSquare = Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
             int squares = (int)Math.Ceiling((double)_total / perSquare);
             bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);
             string mark = Unicode ? "■" : "#";
+            // The tests that are running take the next places after the finished ones; their squares pulse.
+            int done = _sequence.Count;
+            int active = done + (_running ? _workers.Count : 0);
+            string[] pulse = Unicode ? new[] { "·", "▪", "■", "▪" } : new[] { ".", "o", "O", "o" };
 
             LineBuilder row = null;
             for (int i = 0; i < squares; i++)
@@ -455,14 +508,18 @@ namespace Maester.Engine
                 }
                 int first = i * perSquare;
                 int last = Math.Min(_total, first + perSquare);
-                string colour = "38;5;238";
-                string shown = ansi ? mark : (Unicode ? "□" : ".");
-                if (first < _sequence.Count)
+                if (last > done && first < active)
                 {
-                    colour = SquareColour(first, Math.Min(last, _sequence.Count));
-                    shown = mark;
+                    row.Add(pulse[(_tick / 2) % pulse.Length], "1;97");
                 }
-                row.Add(shown, colour).Add(" ");
+                else if (first < done)
+                {
+                    row.Add(mark, SquareColour(first, Math.Min(last, done)));
+                }
+                else
+                {
+                    row.Add(ansi ? mark : (Unicode ? "□" : "."), "38;5;238");
+                }
             }
             if (row != null) lines.Add(row.Build());
             if (caption) lines.Add(new LineBuilder(ansi).Add(" each square is " + N(perSquare) + " tests", "2").Build());
