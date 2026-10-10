@@ -1,0 +1,42 @@
+function Test-MtEidscaCP04 {
+    <#
+    .SYNOPSIS
+    Checks if Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to is set to 'true'
+
+    .DESCRIPTION
+
+    If this option is set to enabled, then users request admin consent to any app that requires access to data they do not have the permission to grant. If this option is set to disabled, then users must contact their admin to request to consent in order to use the apps they need.
+
+    Queries settings
+    and returns the tenant value of
+    graph/settings.values
+
+    The native test EIDSCA.CP04 passes when this value -eq 'true'.
+
+    .EXAMPLE
+    Test-MtEidscaCP04
+
+    Returns the tenant value of graph.microsoft.com/beta/settings.values
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+
+    $rawValue = $result.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value
+    [string]$tenantValue = $rawValue
+    $testResult = $tenantValue -eq 'true'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
+
+    if($testResult){
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **settings**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'true'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+    } else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **settings**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
+
+    return $tenantValue
+}

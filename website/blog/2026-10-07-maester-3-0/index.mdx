@@ -106,7 +106,7 @@ function Test-MtCaMfaForRiskySignIn {
         Category          = 'Maester/Entra',
         Tag               = ('CA', 'Maester'),
         Service           = 'Graph',            # skipped when Graph is not connected
-        CompatibleLicense = 'AAD_PREMIUM_P2',   # skipped when the tenant has no Entra ID P2
+        License = 'AAD_PREMIUM_P2',   # skipped when the tenant has no Entra ID P2
         Author            = 'f-bader'
     )]
     [CmdletBinding()]
@@ -132,7 +132,7 @@ Maester reads `[MaesterTest]` straight from the file's syntax tree. Listing test
 | `Severity` | `Critical`, `High`, `Medium`, `Low` or `Info`. Your config can override it. |
 | `Category`, `Tag` | Report grouping, and selection with `-Tag` / `-ExcludeTag`. |
 | `Service` | Services that must all be connected: `Graph`, `ExchangeOnline`, `Teams`, `Azure` and so on. |
-| `CompatibleLicense` | Service plans, any one of which is enough. `&` joins plans that are all required. |
+| `License` | Service plans, any one of which is enough. `&` joins plans that are all required. |
 | `Preview`, `LongRunning` | Left out of a run unless you include them. |
 | `Platform`, `TenantType`, `Cloud` | Where the test applies: Windows-only tests, workforce or external tenants, sovereign clouds. |
 | `InstanceSource` | Makes the test a *family* that produces one result per item. |

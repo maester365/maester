@@ -1,0 +1,666 @@
+﻿function ConvertTo-MtMaesterResult {
+    <#
+    .SYNOPSIS
+    Converts Pester results to the Maester test results format which includes additional information.
+    #>
+    [CmdletBinding()]
+    param(
+        # The Pester test results returned from Invoke-Pester -PassThru. Omitted when the run had no Pester tests.
+        [Parameter(Mandatory = $false)]
+        [AllowNull()]
+        [psobject] $PesterResults,
+
+        # Result rows of the native tests (Invoke-MtNativePlan).
+        [Parameter(Mandatory = $false)]
+        [object[]] $NativeRows = @(),
+
+        # Wall-clock duration of the native tests.
+        [Parameter(Mandatory = $false)]
+        [timespan] $NativeDuration = [timespan]::Zero,
+
+        # Optional output files information
+        [Parameter(Mandatory = $false)]
+        [psobject] $OutputFiles,
+
+        # Optional Invoke-Maester command that was run
+        [Parameter(Mandatory = $false)]
+        [string] $InvokeMaesterCommand,
+
+        # Optional Pester configuration that was used
+        [Parameter(Mandatory = $false)]
+        [psobject] $PesterConfiguration,
+
+        # Skip checking PowerShell Gallery for the latest Maester version.
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipVersionCheck,
+
+        # Build the consolidated affected objects and attach it as the AffectedObjects property.
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludeAffectedObjects,
+
+        # Optional run context from Invoke-Maester: the selection, the selection plan and the run config.
+        # Used to add the 3.0 fields (reason codes, family IDs) to each row.
+        [Parameter(Mandatory = $false)]
+        [psobject] $RunContext
+    )
+
+    $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
+    if ($null -eq $PesterResults) {
+        # No Pester tests in this run: an empty Pester result keeps the rest of the conversion unchanged.
+        $PesterResults = [PSCustomObject]@{
+            Tests = @(); Containers = @(); Result = 'Passed'; ExecutedAt = (Get-Date)
+            Duration = [timespan]::Zero; UserDuration = [timespan]::Zero; DiscoveryDuration = [timespan]::Zero; FrameworkDuration = [timespan]::Zero
+        }
+    }
+
+    function GetTenantName() {
+        if (Test-MtConnection Graph) {
+            $org = Invoke-MtGraphRequest -RelativeUri 'organization'
+            return $org.DisplayName
+        } elseif (Test-MtConnection Teams) {
+            $tenant = Get-CsTenant
+            return $tenant.DisplayName
+        } else {
+            return 'TenantName (not connected to Graph)'
+        }
+    }
+
+    function GetTenantId() {
+        if (Test-MtConnection Graph) {
+            $mgContext = Get-MgContext
+            return $mgContext.TenantId
+        } elseif (Test-MtConnection Teams) {
+            $tenant = Get-CsTenant
+            return $tenant.TenantId
+        } else {
+            return 'TenantId (not connected to Graph)'
+        }
+    }
+
+    function GetAccount() {
+        if (Test-MtConnection Graph) {
+            $mgContext = Get-MgContext
+            return $mgContext.Account
+            #} elseif (Test-MtConnection Teams) {
+            #    $tenant = Get-CsTenant #ToValidate: N/A
+            #    return $tenant.DisplayName
+        } else {
+            return 'Account (not connected to Graph)'
+        }
+    }
+
+    function GetTestsSorted() {
+        # Show passed and failed tests first by name then show not run tests
+        $activeTests = $PesterResults.Tests | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name
+        $inactiveTests = $PesterResults.Tests | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name
+
+        # Convert to array and add, if not when only one object is returned it doesn't create an array with all items.
+        return @($activeTests) + @($inactiveTests)
+    }
+
+    function GetFormattedDate($date) {
+        if (!$IsCoreCLR) {
+            # Prevent 5.1 date format to json issue
+            return $date.ToString('o')
+        } else {
+            return $date
+        }
+    }
+
+    function GetMaesterLatestVersion() {
+        if ($shouldSkipVersionCheck) {
+            return 'Unknown'
+        }
+
+        $latestVersion = Get-MtLatestModuleVersion -Name Maester -TimeoutSec 10
+        if ($null -ne $latestVersion) {
+            return $latestVersion.ToString()
+        }
+
+        return 'Unknown'
+    }
+
+    function GetSystemInfo() {
+        $systemInfo = [PSCustomObject]@{
+            MachineName    = [System.Environment]::MachineName
+            OSDescription  = if ($PSVersionTable.OS) { $PSVersionTable.OS } else { [System.Environment]::OSVersion.VersionString }
+            OSPlatform     = if ($IsWindows) { 'Windows' } elseif ($IsMacOS) { 'macOS' } elseif ($IsLinux) { 'Linux' } else { 'Windows' }
+            ProcessorCount = [System.Environment]::ProcessorCount
+            UserName       = [System.Environment]::UserName
+            UserDomain     = [System.Environment]::UserDomainName
+        }
+        return $systemInfo
+    }
+
+    function GetPowerShellInfo() {
+        $psInfo = [PSCustomObject]@{
+            Version  = $PSVersionTable.PSVersion.ToString()
+            Edition  = $PSVersionTable.PSEdition
+            Platform = if ($PSVersionTable.Platform) { $PSVersionTable.Platform } else { 'Win32NT' }
+        }
+        return $psInfo
+    }
+
+    function GetLoadedModules() {
+        $modules = Get-Module | ForEach-Object {
+            [PSCustomObject]@{
+                Name    = $_.Name
+                Version = $_.Version.ToString()
+            }
+        } | Sort-Object -Property Name
+        return @($modules)
+    }
+
+    function GetMgContextInfo() {
+        if (Test-MtConnection Graph) {
+            $mgContext = Get-MgContext
+            if ($null -ne $mgContext) {
+                return [PSCustomObject]@{
+                    ClientId            = $mgContext.ClientId
+                    TenantId            = $mgContext.TenantId
+                    Scopes              = @($mgContext.Scopes)
+                    AuthType            = [string]$mgContext.AuthType
+                    TokenCredentialType = [string]$mgContext.TokenCredentialType
+                    Account             = $mgContext.Account
+                    AppName             = $mgContext.AppName
+                    ContextScope        = [string]$mgContext.ContextScope
+                    Environment         = $mgContext.Environment
+                    ManagedIdentityId   = $mgContext.ManagedIdentityId
+                }
+            }
+        }
+        return $null
+    }
+
+    function GetLogoAsBase64DataUri($uri) {
+        try {
+            $response = Invoke-MgGraphRequest -Uri $uri -OutputType HttpResponseMessage
+            if ($response.IsSuccessStatusCode) {
+                $logoBytes = $response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+                if ($null -ne $logoBytes -and $logoBytes.Length -gt 0) {
+                    $base64Logo = [System.Convert]::ToBase64String($logoBytes)
+                    # Detect content type from response or default to png
+                    $contentType = $response.Content.Headers.ContentType.MediaType
+                    if ([string]::IsNullOrEmpty($contentType)) { $contentType = 'image/png' }
+                    return "data:$contentType;base64,$base64Logo"
+                }
+            }
+        } catch {
+            Write-Verbose "Could not retrieve logo from $uri : $_"
+        }
+        return $null
+    }
+
+    function GetOrganizationLogos() {
+        $logos = [PSCustomObject]@{
+            Banner = $null
+        }
+
+        if (Test-MtConnection Graph) {
+            $mgContext = Get-MgContext
+            $orgId = $mgContext.TenantId
+
+            # Try to get the banner logo
+            $logos.Banner = GetLogoAsBase64DataUri "/v1.0/organization/$orgId/branding/localizations/default/bannerLogo"
+        }
+
+        # Return null if no logo is available, otherwise return the logos object
+        if ($null -eq $logos.Banner) {
+            return $null
+        }
+        return $logos
+    }
+
+    function GetPesterConfigInfo($config) {
+        if ($null -eq $config) { return $null }
+
+        # Convert PesterConfiguration to a simple hashtable for JSON serialization
+        $configInfo = [PSCustomObject]@{
+            Run          = [PSCustomObject]@{
+                Path                   = @($config.Run.Path.Value)
+                ExcludePath            = @($config.Run.ExcludePath.Value)
+                ScriptBlock            = @($config.Run.ScriptBlock.Value | ForEach-Object { if ($null -ne $_) { $_.ToString() } })
+                Container              = @($config.Run.Container.Value)
+                TestExtension          = $config.Run.TestExtension.Value
+                Exit                   = $config.Run.Exit.Value
+                Throw                  = $config.Run.Throw.Value
+                PassThru               = $config.Run.PassThru.Value
+                SkipRun                = $config.Run.SkipRun.Value
+                SkipRemainingOnFailure = [string]$config.Run.SkipRemainingOnFailure.Value
+            }
+            Filter       = [PSCustomObject]@{
+                Tag         = @($config.Filter.Tag.Value)
+                ExcludeTag  = @($config.Filter.ExcludeTag.Value)
+                Line        = @($config.Filter.Line.Value)
+                ExcludeLine = @($config.Filter.ExcludeLine.Value)
+                FullName    = @($config.Filter.FullName.Value)
+            }
+            CodeCoverage = [PSCustomObject]@{
+                Enabled               = $config.CodeCoverage.Enabled.Value
+                OutputFormat          = $config.CodeCoverage.OutputFormat.Value
+                OutputPath            = $config.CodeCoverage.OutputPath.Value
+                OutputEncoding        = $config.CodeCoverage.OutputEncoding.Value
+                Path                  = @($config.CodeCoverage.Path.Value)
+                ExcludeTests          = $config.CodeCoverage.ExcludeTests.Value
+                RecursePaths          = $config.CodeCoverage.RecursePaths.Value
+                CoveragePercentTarget = $config.CodeCoverage.CoveragePercentTarget.Value
+                UseBreakpoints        = $config.CodeCoverage.UseBreakpoints.Value
+                SingleHitBreakpoints  = $config.CodeCoverage.SingleHitBreakpoints.Value
+            }
+            TestResult   = [PSCustomObject]@{
+                Enabled        = $config.TestResult.Enabled.Value
+                OutputFormat   = $config.TestResult.OutputFormat.Value
+                OutputPath     = $config.TestResult.OutputPath.Value
+                OutputEncoding = $config.TestResult.OutputEncoding.Value
+                TestSuiteName  = $config.TestResult.TestSuiteName.Value
+            }
+            Should       = [PSCustomObject]@{
+                ErrorAction = [string]$config.Should.ErrorAction.Value
+            }
+            Debug        = [PSCustomObject]@{
+                ShowFullErrors         = $config.Debug.ShowFullErrors.Value
+                WriteDebugMessages     = $config.Debug.WriteDebugMessages.Value
+                WriteDebugMessagesFrom = @($config.Debug.WriteDebugMessagesFrom.Value)
+                ShowNavigationMarkers  = $config.Debug.ShowNavigationMarkers.Value
+                ReturnRawResultObject  = $config.Debug.ReturnRawResultObject.Value
+            }
+            Output       = [PSCustomObject]@{
+                Verbosity           = [string]$config.Output.Verbosity.Value
+                StackTraceVerbosity = [string]$config.Output.StackTraceVerbosity.Value
+                CIFormat            = [string]$config.Output.CIFormat.Value
+                CILogLevel          = [string]$config.Output.CILogLevel.Value
+                RenderMode          = [string]$config.Output.RenderMode.Value
+            }
+        }
+        return $configInfo
+    }
+
+    #if(Test-MtConnection Graph) { #ToValidate: Issue with -SkipGraphConnect
+    #    $mgContext = Get-MgContext
+    #}
+
+    #$tenantId = $mgContext.TenantId ?? "Tenant ID (not connected to Graph)"
+    $tenantId = GetTenantId
+    $tenantName = GetTenantName
+    #$account = $mgContext.Account ?? "Account (not connected to Graph)"
+    $account = GetAccount
+
+    $currentVersion = Get-MtModuleVersion
+    $latestVersion = GetMaesterLatestVersion
+
+    $mtTests = @()
+    $sortedTests = GetTestsSorted
+
+    $testIndex = 0
+
+    # Tests superseded by a built-in (stale copies of 2.x wrappers) produce no row.
+    $supersededKeys = @{}
+    if ($RunContext -and $RunContext.Superseded) {
+        foreach ($item in $RunContext.Superseded.Items) { $supersededKeys["$($item.File):$($item.Line)"] = $true }
+    }
+
+    foreach ($test in $sortedTests) {
+        if ($supersededKeys.Count -gt 0 -and $test.ScriptBlock.File -and $supersededKeys.ContainsKey("$($test.ScriptBlock.File):$($test.StartLine)")) { continue }
+        $testIndex++
+
+        $name = $test.ExpandedName
+        $testCustomName = $__MtSession.TestResultDetail[$test.ExpandedName].TestTitle
+        if (![string]::IsNullOrEmpty($testCustomName)) {
+            # Use the custom title if it's been provided.
+            $name = $testCustomName
+        }
+
+        $helpUrl = ''
+
+        $start = $name.IndexOf('See https')
+        # Get the Help Url from the message and the ID
+        if ($start -gt 0) {
+            $helpUrl = $name.Substring($start + 4).Trim() #Strip away the "See https://maester.dev" part
+            $name = $name.Substring(0, $start).Trim() #Strip away the "See https://maester.dev" part
+        }
+
+
+        # Find the first : and use the first part as $testId and remaining as $testTitle
+        # If no : is found or if there are spaces before the first : display a warning that the test name is not in the correct format
+        $titleStart = $name.IndexOf(':')
+        $testId = $name # Default to the full test name if no split is found
+        $testTitle = $name # Default to the full test name if no split is found
+
+        if ($titleStart -gt 0) {
+            $testId = $name.Substring(0, $titleStart).Trim()
+            $testTitle = $name.Substring($titleStart + 1).Trim()
+        } elseif ($test.Result -ne 'NotRun') {
+            Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
+        }
+        $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
+
+        # Filtered tests never execute Add-MtTestResultDetail. Resolve their
+        # authored metadata from the commands in the discovered Pester test so
+        # reports show the test description instead of raw PowerShell source.
+        if (-not $testResultDetail -and $test.Result -eq 'NotRun') {
+            $commandNames = @($test.ScriptBlock.Ast.FindAll({
+                        param($node)
+                        $node -is [System.Management.Automation.Language.CommandAst]
+                    }, $true) |
+                    ForEach-Object { $_.GetCommandName() } |
+                    Where-Object { $_ } |
+                    Select-Object -Unique)
+            $testMetadata = Get-MtTestResultTemplate -CommandName $commandNames -TestId $testId
+            $testResultDetail = [PSCustomObject]@{
+                TestTitle       = $null
+                TestDescription = if ($testMetadata) { $testMetadata.Description } else { 'This test was not run.' }
+                TestResult      = 'This test was not run.'
+                TestSkipped     = $null
+                SkippedReason   = $null
+                TestInvestigate = $false
+                Severity        = $null
+                Service         = $null
+            }
+        }
+
+        # Add the other test metadata to the test result
+        $testSetting = Get-MtMaesterConfigTestSetting -TestId $testId
+        $severity = $testResultDetail.Severity # Default to the test result severity
+        if ($testSetting -and [string]::IsNullOrEmpty($testSetting.Severity) -eq $false) {
+            # Overwrite the settings if it is set in the config
+            $severity = $testSetting.Severity
+        }
+
+        # Setting Result to Error or Investigate, Overwriting the Skipped state
+        if ($testResultDetail.TestSkipped -eq 'Error' ) {
+            $result = 'Error'
+        } elseif ($testResultDetail.TestInvestigate -eq $true) {
+            $result = 'Investigate'
+        } elseif ((
+                $test -and
+                $test.ErrorRecord -and
+                $test.ErrorRecord.Count -gt 0 -and
+                $test.ErrorRecord[0].CategoryInfo -and
+                $test.ErrorRecord[0].CategoryInfo.Reason) -and
+            (@('RuntimeException', 'ParameterBindingValidationException', 'ParameterBindingException', 'HttpRequestException', 'TaskCanceledException') -contains $test.ErrorRecord[0].CategoryInfo.Reason )) {
+            Write-Verbose "Setting result=Error $($name) because: $($test.ErrorRecord[0].CategoryInfo.Reason)"
+            $result = 'Error'
+        } else {
+            $result = $test.Result
+        }
+        # Pester's Inconclusive (Set-ItResult -Inconclusive) is not a Maester result: no count, report or XML
+        # mapping knows it. It means the test could not decide, which Maester reports as Skipped.
+        if ($result -eq 'Inconclusive') { $result = 'Skipped' }
+
+        $annotation = Get-MtPesterRowAnnotation -Test $test -Id $testId -Result $result -ResultDetail $testResultDetail -RunContext $RunContext
+        if ($annotation.ResultOverride) { $result = $annotation.ResultOverride }
+        if ($annotation.IdOverride) { $testId = $annotation.IdOverride }
+        $origin = if ($RunContext -and $RunContext.FileOrigin -and $test.ScriptBlock.File -and $RunContext.FileOrigin.ContainsKey($test.ScriptBlock.File)) {
+            $RunContext.FileOrigin[$test.ScriptBlock.File]
+        } else { [PSCustomObject]@{ Source = $null; Suite = $null } }
+
+        $timeSpanFormat = 'hh\:mm\:ss'
+        # Individual tests usually complete in well under a second, so keep milliseconds
+        # here. The run-level totals below stay on the coarser format.
+        $testTimeSpanFormat = 'hh\:mm\:ss\.fff'
+        $mtTestInfo = [PSCustomObject]@{
+            Index           = $testIndex
+            Id              = $testId
+            Title           = $testTitle
+            Name            = $name
+            HelpUrl         = $helpUrl
+            Severity        = $severity
+            Tag             = @($test.Block.Tag + $test.Tag | Select-Object -Unique)
+            Result          = $result
+            ScriptBlock     = $test.ScriptBlock.ToString()
+            ScriptBlockFile = $test.ScriptBlock.File
+            ErrorRecord     = $test.ErrorRecord
+            Block           = $test.Block.ExpandedName
+            Duration        = $test.Duration.ToString($testTimeSpanFormat)
+            ResultDetail    = $testResultDetail
+            # Additive in result schema 2.1.
+            Source          = $origin.Source
+            Suite           = $origin.Suite
+            Format          = $annotation.Format
+            ReasonCode      = $annotation.ReasonCode
+            ReasonDetail    = $annotation.ReasonDetail
+            ParentId        = $annotation.ParentId
+            InstanceId      = $annotation.InstanceId
+            Parameters      = $null
+            Diagnostics     = @()
+        }
+        $mtTests += $mtTestInfo
+    }
+
+    # Native rows join the Pester rows, sorted the way 2.x sorts: Passed and Failed first, then the rest, each by name.
+    if ($NativeRows.Count -gt 0) {
+        $allRows = @($mtTests) + @($NativeRows)
+        $active = @($allRows | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name)
+        $inactive = @($allRows | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name)
+        $mtTests = @($active) + @($inactive)
+        $testIndex = 0
+        foreach ($row in $mtTests) { $testIndex++; $row.Index = $testIndex }
+    }
+
+    # Count all Passed, Failed, Skipped, Error, Investigate, NotRun and Total results
+    $Recount = [PSCustomObject]@{
+        FailedCount      = 0
+        PassedCount      = 0
+        SkippedCount     = 0
+        NotRunCount      = 0
+        ErrorCount       = 0
+        InvestigateCount = 0
+        TotalCount       = 0
+    }
+    $Recount.FailedCount = @($mtTests | Where-Object { $_.Result -eq 'Failed' }).Count
+    $Recount.PassedCount = @($mtTests | Where-Object { $_.Result -eq 'Passed' }).Count
+    $Recount.ErrorCount = @($mtTests | Where-Object { $_.Result -eq 'Error' }).Count
+    $Recount.InvestigateCount = @($mtTests | Where-Object { $_.Result -eq 'Investigate' }).Count
+    $Recount.SkippedCount = @($mtTests | Where-Object { $_.Result -eq 'Skipped' }).Count
+    $Recount.NotRunCount = @($mtTests | Where-Object { $_.Result -eq 'NotRun' }).Count
+    $Recount.TotalCount = $mtTests.Count
+    Write-Verbose "Recount: $($Recount | Out-String)"
+
+    $mtBlocks = @()
+    foreach ($container in $PesterResults.Containers) {
+
+        foreach ($block in $container.Blocks) {
+            $mtBlockInfo = $mtBlocks | Where-Object { $_.Name -eq $block.Name }
+            if ($null -eq $mtBlockInfo) {
+                Write-Verbose "Recalculating block: $($block.Name)"
+                $mtBlockInfo = [PSCustomObject]@{
+                    Name             = $block.Name
+                    Result           = $block.Result
+                    FailedCount      = @($mtTests | Where-Object { $_.Result -eq 'Failed' -and $_.Block -eq $block.name }).Count
+                    PassedCount      = @($mtTests | Where-Object { $_.Result -eq 'Passed' -and $_.Block -eq $block.name }).Count
+                    ErrorCount       = @($mtTests | Where-Object { $_.Result -eq 'Error' -and $_.Block -eq $block.name }).Count
+                    InvestigateCount = @($mtTests | Where-Object { $_.Result -eq 'Investigate' -and $_.Block -eq $block.name }).Count
+                    SkippedCount     = @($mtTests | Where-Object { $_.Result -eq 'Skipped' -and $_.Block -eq $block.name }).Count
+                    NotRunCount      = @($mtTests | Where-Object { $_.Result -eq 'NotRun' -and $_.Block -eq $block.name }).Count
+                    TotalCount       = @($mtTests | Where-Object { $_.Block -eq $block.name }).Count
+                    Tag              = $block.Tag
+                }
+                $mtBlocks += $mtBlockInfo
+            } else {
+                # We already seen and counted all blocks
+            }
+        }
+    }
+    # Native tests: one block per category. The rows are indexed by block once (a row whose Block is a list
+    # counts in each of its blocks), instead of filtering every row for every category.
+    $rowsByBlock = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.List[object]]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($row in $mtTests) {
+        foreach ($blockName in @($row.Block | Where-Object { $_ } | Select-Object -Unique)) {
+            if (-not $rowsByBlock.ContainsKey($blockName)) { $rowsByBlock[$blockName] = [System.Collections.Generic.List[object]]::new() }
+            $rowsByBlock[$blockName].Add($row)
+        }
+    }
+    $countByResult = {
+        param($rows)
+        $counts = @{ Failed = 0; Passed = 0; Error = 0; Investigate = 0; Skipped = 0; NotRun = 0 }
+        foreach ($r in $rows) { if ($counts.ContainsKey([string]$r.Result)) { $counts[[string]$r.Result]++ } }
+        $counts
+    }
+    foreach ($category in @($NativeRows | ForEach-Object { $_.Block } | Where-Object { $_ } | Select-Object -Unique)) {
+        $blockRows = if ($rowsByBlock.ContainsKey($category)) { $rowsByBlock[$category].ToArray() } else { @() }
+        $counts = & $countByResult $blockRows
+        $existing = $mtBlocks | Where-Object { $_.Name -eq $category } | Select-Object -First 1
+        if ($existing) {
+            foreach ($counter in 'Failed', 'Passed', 'Error', 'Investigate', 'Skipped', 'NotRun') {
+                $existing."$($counter)Count" = $counts[$counter]
+            }
+            $existing.TotalCount = $blockRows.Count
+            continue
+        }
+        $mtBlocks += [PSCustomObject]@{
+            Name             = $category
+            Result           = if ($counts.Failed -gt 0) { 'Failed' } else { 'Passed' }
+            FailedCount      = $counts.Failed
+            PassedCount      = $counts.Passed
+            ErrorCount       = $counts.Error
+            InvestigateCount = $counts.Investigate
+            SkippedCount     = $counts.Skipped
+            NotRunCount      = $counts.NotRun
+            TotalCount       = $blockRows.Count
+            Tag              = @($blockRows | ForEach-Object { $_.Tag } | Select-Object -Unique)
+        }
+    }
+
+    # Top-level Result (design section 5.3, item 7): Failed if any row failed, the Pester run failed, or
+    # the engine itself raised an Error row. A test that threw fails the run only with ErrorsAsFailures.
+    $engineErrorCodes = 'InvalidMetadata', 'InvalidConfiguration', 'InvalidInstanceId', 'DuplicateId', 'LoadFailed',
+    'InstanceSourceFailed', 'RequiresNewerMaester', 'ForeignModuleLoaded', 'PesterNotAvailable'
+    $errorsAsFailures = $false
+    if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Output'] -and $__MtSession.MaesterConfig.Output -and
+        $__MtSession.MaesterConfig.Output.PSObject.Properties['ErrorsAsFailures']) {
+        $errorsAsFailures = [bool]$__MtSession.MaesterConfig.Output.ErrorsAsFailures
+    }
+    $runResult = $PesterResults.Result
+    if ($NativeRows.Count -gt 0 -or $errorsAsFailures) {
+        $failed = $PesterResults.Result -eq 'Failed' -or
+            ($NativeRows | Where-Object { $_.Result -eq 'Failed' -or ($_.Result -eq 'Error' -and $_.ReasonCode -in $engineErrorCodes) }) -or
+            ($errorsAsFailures -and ($mtTests | Where-Object { $_.Result -eq 'Error' }))
+        $runResult = if ($failed) { 'Failed' } else { 'Passed' }
+    }
+
+    # Consolidated inventory of all objects referenced by the run (RelatedObjects,
+    # result markdown deep links and the session request caches). Never fail the
+    # results conversion over inventory issues.
+    $affectedObjects = @()
+    if ($IncludeAffectedObjects.IsPresent) {
+        try {
+            $affectedObjects = @(Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{ Tests = $mtTests }))
+        } catch {
+            Write-Verbose "Failed to build affected objects: $($_.Exception.Message)"
+        }
+    }
+
+    # Assigned through a variable: an if-expression would turn an empty array into $null.
+    $unknownIds = @()
+    if ($RunContext -and $RunContext.Plan) { $unknownIds = @($RunContext.Plan.UnknownIds) }
+    $includeTag = @()
+    $excludeTag = @()
+    if ($RunContext) {
+        $includeTag = @($RunContext.IncludeTag | Where-Object { $_ })
+        $excludeTag = @($RunContext.ExcludeTag | Where-Object { $_ })
+    }
+    $supersededItems = @()
+    if ($RunContext -and $RunContext.Superseded) {
+        $supersededItems = @($RunContext.Superseded.Items | ForEach-Object { [PSCustomObject]@{ Id = $_.Id; File = $_.File; MatchedBy = $_.MatchedBy } })
+    }
+
+    $mtTestResults = [PSCustomObject][ordered]@{
+        Result            = $runResult
+        FailedCount       = $Recount.FailedCount
+        PassedCount       = $Recount.PassedCount
+        ErrorCount        = $Recount.ErrorCount
+        InvestigateCount  = $Recount.InvestigateCount
+        SkippedCount      = $Recount.SkippedCount
+        NotRunCount       = $Recount.NotRunCount
+        TotalCount        = $Recount.TotalCount
+        ExecutedAt        = GetFormattedDate($PesterResults.ExecutedAt)
+        TotalDuration     = ($PesterResults.Duration + $NativeDuration).ToString($timeSpanFormat)
+        UserDuration      = ($PesterResults.UserDuration + $NativeDuration).ToString($timeSpanFormat)
+        DiscoveryDuration = $PesterResults.DiscoveryDuration.ToString($timeSpanFormat)
+        FrameworkDuration = $PesterResults.FrameworkDuration.ToString($timeSpanFormat)
+        TenantId          = $tenantId
+        TenantName        = $tenantName
+        TenantLogos       = GetOrganizationLogos
+        Account           = $account
+        CurrentVersion    = $currentVersion
+        LatestVersion     = $latestVersion
+        SystemInfo        = GetSystemInfo
+        PowerShellInfo    = GetPowerShellInfo
+        LoadedModules     = GetLoadedModules
+        InvokeCommand     = $InvokeMaesterCommand
+        MgContext         = GetMgContextInfo
+        PesterConfig      = GetPesterConfigInfo $PesterConfiguration
+        MaesterConfig     = New-MtResultConfig -RunConfig $__MtSession.MaesterConfig -Rows $mtTests -NativeRows $NativeRows
+        # Additive in result schema 2.1.
+        SchemaVersion     = '2.1'
+        # A string: CurrentVersion keeps its 2.x shape ([version] serialised as an object).
+        CatalogVersion    = [string]$currentVersion
+        TenantContext     = if ($RunContext -and $RunContext.TenantContext) { $RunContext.TenantContext } else { $null }
+        RunMetadata       = if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Metadata']) { $__MtSession.MaesterConfig.Metadata } else { $null }
+        Selection         = [PSCustomObject]@{
+            BuiltIn    = if ($RunContext -and $RunContext.Selection) { $RunContext.Selection.BuiltIn } else { 'All' }
+            UnknownIds = $unknownIds
+            Superseded = $supersededItems
+            IncludeTag = $includeTag
+            ExcludeTag = $excludeTag
+            DryRun     = [bool]($RunContext -and $RunContext.DryRun)
+        }
+        Tests             = $mtTests
+        Blocks            = $mtBlocks
+        EndOfJson         = 'EndOfJson' # Always leave this as the last property. Used by the script to determine the end of the JSON
+    }
+
+    if ($IncludeAffectedObjects.IsPresent) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'AffectedObjects' -Value $affectedObjects
+    }
+
+    # Add output files information if provided
+    if ($OutputFiles) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'OutputFiles' -Value $OutputFiles
+    }
+
+    return $mtTestResults
+}
+
+function New-MtResultConfig {
+    <#
+    .SYNOPSIS
+    Returns the effective run config as recorded in the result, with TestSettings synthesised per test.
+
+    .DESCRIPTION
+    TestSettings holds one row per test in the run: Id, Title, the effective Severity, DefaultSeverity
+    (the attribute's, for native tests) and any keys the user set (design section 9). This keeps the
+    report's Config page complete once the module no longer ships a row per test.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in-memory object only.')]
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter()] [AllowNull()] [object] $RunConfig,
+        [Parameter()] [AllowEmptyCollection()] [object[]] $Rows = @(),
+        [Parameter()] [AllowEmptyCollection()] [object[]] $NativeRows = @()
+    )
+
+    if ($null -eq $RunConfig) { return $null }
+    if ($NativeRows.Count -eq 0) { return $RunConfig }
+
+    $copy = [pscustomobject]@{}
+    foreach ($p in $RunConfig.PSObject.Properties) {
+        if ($p.Name -in 'TestSettings', 'TestSettingsHash') { continue }
+        $copy | Add-Member -NotePropertyName $p.Name -NotePropertyValue $p.Value
+    }
+    $catalog = @{}
+    foreach ($t in @(Get-MtTestCatalog)) { if ($t.Id) { $catalog[$t.Id] = $t } }
+    $settings = foreach ($row in $Rows) {
+        $entry = [ordered]@{ Id = $row.Id; Title = $row.Title; Severity = $row.Severity }
+        $default = if ($row.ParentId -and $catalog.ContainsKey($row.ParentId)) { $catalog[$row.ParentId].Severity } elseif ($catalog.ContainsKey($row.Id)) { $catalog[$row.Id].Severity } else { $null }
+        if ($default) { $entry.DefaultSeverity = $default }
+        $user = if ($RunConfig.TestSettingsHash -and $RunConfig.TestSettingsHash.ContainsKey($row.Id)) { $RunConfig.TestSettingsHash[$row.Id] } else { $null }
+        if ($user) {
+            foreach ($p in $user.PSObject.Properties) { if ($p.Name -notin 'Id', 'Title', 'Severity') { $entry[$p.Name] = $p.Value } }
+        }
+        [pscustomobject]$entry
+    }
+    $copy | Add-Member -NotePropertyName TestSettings -NotePropertyValue @($settings)
+    $copy
+}

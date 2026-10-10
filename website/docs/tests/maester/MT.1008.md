@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1008"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1008 - At least one Conditional Access policy is configured to require MFA for Azure management.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/danielwahlgren" title="Daniel Wahlgren · Co-contributor"><img src="https://github.com/DanielWahlgren.png" alt="Daniel Wahlgren" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/danielwahlgren" title="Daniel Wahlgren · Co-contributor"><img src="https://github.com/DanielWahlgren.png" alt="Daniel Wahlgren" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -27,6 +28,10 @@ Conditional Access policy requiring multifactor authentication to access Azure m
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-azure-management
 
+#### Remediation action
+
+Review the configuration described above.
+
 ## Test Metadata
 
 | Field | Value |
@@ -34,11 +39,13 @@ https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-
 | Test ID | MT.1008 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaMfaForAdminManagement](/docs/commands/Test-MtCaMfaForAdminManagement) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCaMfaForAdminManagement](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1008.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1008 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaMfaForAdminManagement.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1008.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1008.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1008.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1008.md)

@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1053"
   - "Medium"
+  - "Maester/Intune"
   - "Intune"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1053 - Ensure intune device clean-up rule is configured
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -50,11 +51,13 @@ To enable device clean-up rules:
 | Test ID | MT.1053 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Intune |
-| PowerShell test | [Test-MtManagedDeviceCleanupSettings](/docs/commands/Test-MtManagedDeviceCleanupSettings) |
+| Category | Maester/Intune |
+| PowerShell test | [Test-MtManagedDeviceCleanupSettings](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1053.ps1) |
+| Services | Graph |
+| Compatible licenses | INTUNE_A |
 | Tags | Intune, Maester, MT.1053 |
 
 ## Source
 
-- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
-- PowerShell source: `powershell/public/maester/intune/Test-MtManagedDeviceCleanupSettings.ps1`
+- Test: [`tests/Maester/Intune/Test.MT.1053.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1053.ps1)
+- Documentation: [`tests/Maester/Intune/Test.MT.1053.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Intune/Test.MT.1053.md)

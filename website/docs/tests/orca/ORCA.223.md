@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.223 - User impersonation action is set to move to Quarantine.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 User impersonation protection can detect spoofing of your sensitive users. Move messages that are caught using user impersonation detection to Quarantine.
 
 #### Remediation action
+
 Configure user impersonation action to Quarantine.
 
 #### Related Links
@@ -40,10 +41,12 @@ Configure user impersonation action to Quarantine.
 | Severity | High |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA223](/docs/commands/Test-ORCA223) |
+| PowerShell test | [Test-ORCA223](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.223.ps1) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 | Tags | EXO, ORCA, ORCA.223 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA223.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA223.ps1`
+- Test: [`tests/orca/Test.ORCA.223.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.223.ps1)
+- Documentation: [`tests/orca/Test.ORCA.223.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.223.md)

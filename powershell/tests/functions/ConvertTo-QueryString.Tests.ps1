@@ -1,5 +1,5 @@
 ﻿BeforeAll {
-    . "$PSScriptRoot/../../internal/ConvertTo-QueryString.ps1"
+    . "$PSScriptRoot/../../internal/utility/ConvertTo-QueryString.ps1"
 }
 
 Describe 'ConvertTo-QueryString' {

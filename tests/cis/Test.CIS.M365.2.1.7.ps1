@@ -1,0 +1,113 @@
+﻿function Test-MtCisSafeAntiPhishingPolicy {
+    <#
+    .SYNOPSIS
+    Checks if the anti-phishing policy matches CIS recommendations
+
+    .DESCRIPTION
+    The anti-phishing policy should be enabled, and the settings for PhishThresholdLevel, EnableMailboxIntelligenceProtection, EnableMailboxIntelligence, EnableSpoofIntelligence controls match CIS recommendations
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.7, L1)
+
+    .EXAMPLE
+    Test-MtCisSafeAntiPhishingPolicy
+
+    Returns true if the default anti-phishing policy matches CIS recommendations
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.2.1.7',
+        Title = 'Ensure that an anti-phishing policy has been created (Only Checks Default Policy)',
+        Severity = 'Medium',
+        Category = 'CIS',
+        Product = 'Defender',
+        Tag = ('CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1'),
+        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
+        License = 'ATP_ENTERPRISE',
+        Author = 'NZLostboy',
+        Contributor = ('thomas-s-schmidt', 'Mynster9361')
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose 'Getting Anti Phishing Policy...'
+    $policies = Get-MtExo -Request AntiPhishPolicy
+
+    # We grab the default policy as that is what CIS checks
+    $policy = $policies | Where-Object { $_.IsDefault -eq $true }
+
+    $antiPhishingPolicyCheckList = @()
+
+    # Enabled should be True
+    $antiPhishingPolicyCheckList += [pscustomobject] @{
+        'CheckName' = 'Enabled'
+        'Value'     = 'True'
+    }
+
+    # EnableMailboxIntelligenceProtection should be True
+    $antiPhishingPolicyCheckList += [pscustomobject] @{
+        'CheckName' = 'EnableMailboxIntelligenceProtection'
+        'Value'     = 'True'
+    }
+
+    # EnableMailboxIntelligence should be True
+    $antiPhishingPolicyCheckList += [pscustomobject] @{
+        'CheckName' = 'EnableMailboxIntelligence'
+        'Value'     = 'True'
+    }
+
+    # EnableSpoofIntelligence should be True
+    $antiPhishingPolicyCheckList += [pscustomobject] @{
+        'CheckName' = 'EnableSpoofIntelligence'
+        'Value'     = 'True'
+    }
+
+    Write-Verbose 'Executing checks'
+    $failedCheckList = @()
+
+    foreach ($check in $antiPhishingPolicyCheckList) {
+        $checkResult = $policy | Where-Object { $_.($check.CheckName) -notmatch $check.Value }
+        if ($checkResult) {
+            #If the check fails, add it to the list so we can report on it later
+            $failedCheckList += $check.CheckName
+        }
+    }
+
+    # Custom check for PhishThresholdLevel
+    # Because it is not exact match, the above logic won't work. Manual check to see if PhishThresholdLevel is 2 or greater
+    if ($policy | Where-Object { $_.PhishThresholdLevel -le 1 }) {
+        #If the check fails, add it to the list so we can report on it later
+        $failedCheckList += 'PhishThresholdLevel'
+    }
+
+    # We didn't use this in the foreach loop above, but we need to add it now so we get results in the output for the separate check
+    $antiPhishingPolicyCheckList += [pscustomobject] @{
+        'CheckName' = 'PhishThresholdLevel'
+    }
+
+    $testResult = ($failedCheckList | Measure-Object).Count -eq 0
+
+    $portalLink = 'https://security.microsoft.com/antiphishing'
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Your tenants default anti-phishing policy matches CIS recommendations($portalLink).`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Your tenants default anti-phishing policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+    }
+
+    $resultMd = "| Check Name | Result |`n"
+    $resultMd += "| --- | --- |`n"
+    foreach ($item in $antiPhishingPolicyCheckList) {
+        $itemResult = '❌ Fail'
+        if ($item.CheckName -notin $failedCheckList) {
+            $itemResult = '✅ Pass'
+        }
+        $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
+    }
+
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
+}

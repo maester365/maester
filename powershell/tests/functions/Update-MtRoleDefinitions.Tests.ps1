@@ -1,5 +1,5 @@
 ﻿BeforeAll {
-    . "$PSScriptRoot/../../internal/Get-MtRoleInfo.ps1"
+    . "$PSScriptRoot/../../internal/services/entra/Get-MtRoleInfo.ps1"
 
     # Import only the helper functions from the build script without executing the main body.
     # The main execution body (network calls, file writes) lives after '#region Main execution'.

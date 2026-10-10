@@ -1,0 +1,14 @@
+Run only the Conditional Access tests with Invoke-Maester -Tag CA.
+Run one test with Invoke-Maester -TestId MT.1001. Wildcards work too: -TestId 'CISA.MS.AAD.*'.
+See what would run, and why other tests would not, with Invoke-Maester -DryRun.
+Connect more services with Connect-Maester -Service All, or name them: -Service Graph, Teams.
+Set severities, turn tests off and pass parameters to tests in maester-config.json.
+Add -IncludeAffectedObjects to list the users, groups and apps each finding refers to.
+Add -IncludePreview and -IncludeLongRunning to run the tests that are left out by default.
+Choose the panels of this dashboard with Output.DashboardPanels in maester-config.json.
+Get-MtTest lists every test with its product, severity and tags, without connecting to a tenant.
+Write your own test with New-MtTest -Id CONTOSO.1001 -Title '...'.
+Send the results by mail or to Teams with -MailRecipient or -TeamChannelWebhookUri.
+Use -OutputMode Plain for output without colour or symbols, and -OutputMode Stream for lines only.
+Run Maester on a schedule in GitHub Actions or Azure DevOps: see maester.dev/docs/monitoring.
+Create the app for unattended runs, with its permissions granted, in one line: New-MtMaesterApp.

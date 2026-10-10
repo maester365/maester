@@ -68,135 +68,130 @@ $policySplat = @{
 $policy = Invoke-MtGraphRequest @policySplat
 ```
 
-To learn more see [Invoke-MtGraphRequest](https://github.com/maester365/maester/blob/main/powershell/public/Invoke-MtGraphRequest.ps1).
+To learn more see [Invoke-MtGraphRequest](https://github.com/maester365/maester/blob/main/powershell/public/services/graph/Invoke-MtGraphRequest.ps1).
 
-## Splitting tests into multiple files
+## Markdown, helpers and shared code
 
-As you write more tests you might find it helpful to split out the markdown part of the tests into a separate file. This helps reduce clutter in the test code and also allows content writers to independently edit the markdown files. Almost all the out of the box Maester tests use this approach of splitting out the markdown content for the test.
+A native test is always split into two files: the code in `Test.<ID>.ps1` and the description, remediation steps and result template in `Test.<ID>.md`. Content writers can edit the `.md` file without touching the code. See [Writing native tests](./index.mdx) for the full format.
 
-Here's an example of how you can split out the markdown content into a separate file.
+Here's a custom test that checks if there are any users without a manager assigned.
 
-This custom test checks if there are any users without a manager assigned.
-
-### Step 1: Create the tests file in the `Custom` folder
-
-Create a new file in the `Custom` folder with the `.Tests.ps1` suffix.
-
-#### ContosoUsers.Tests.ps1
+### Step 1: Create the test
 
 ```powershell
-BeforeAll {
-    . $PSScriptRoot/Test-ContosoUsersMissingManagers.ps1
-}
-Describe "Contoso" -Tag "Entra", "CustomTests", "Users" {
-    It "CTS.1001: Manager Attribute - All users should have a manager attribute set" {
-        $result = Test-ContosoUsersMissingManagers
-        $result | Should -Be $true -Because "All users should have a manager assigned."
-    }
-}
+New-MtTest -Id CONTOSO.1101 -Title 'All users should have a manager attribute set' -Service Graph -Category Contoso
 ```
 
-### Step 2: Create test functions file
+### Step 2: Write the test function
 
-Create the test file in the `Custom` folder that was referred to in the `BeforeAll` block in the previous step.
-
-#### Test-ContosoUsersMissingManagers.ps1
+#### custom/Test.CONTOSO.1101.ps1
 
 ```powershell
 function Test-ContosoUsersMissingManagers {
-    $result = $true
+    [MaesterTest(
+        Id       = 'CONTOSO.1101',
+        Title    = 'All users should have a manager attribute set',
+        Severity = 'Low',
+        Category = 'Contoso',
+        Tag      = ('Entra', 'Users'),
+        Service  = 'Graph'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # Job titles that do not need a manager.
+        [string[]] $ExemptJobTitles = @('CEO')
+    )
 
-    try {
-        # Retrieve all users from Microsoft Graph
-        $users = Invoke-MtGraphRequest -RelativeUri "users" -Filter "userType eq 'Member'"
+    $users = Invoke-MtGraphRequest -RelativeUri 'users' -Filter "userType eq 'Member'" -Select id, displayName, userPrincipalName, jobTitle
+    $usersWithoutManager = @()
 
-        # Initialize an array to track users without a manager
-        $usersWithoutManager = @()
-
-        # Loop through each user and ensure they have a manager assigned
-        foreach ($user in $users) {
-            if($user.jobTitle -eq "CEO" -or $user.displayName -eq "On-Premises Directory Synchronization Service Account" ) {
-                continue
-            }
-
-            # Fetch the manager for the current user
-            $manager = Get-MgUserManager -UserId $user.Id -ErrorAction SilentlyContinue
-
-            if ([string]::IsNullOrEmpty($manager)) {
-                $result = $false
-                $usersWithoutManager += $user
-            }
+    foreach ($user in $users) {
+        if ($user.jobTitle -in $ExemptJobTitles -or $user.displayName -eq 'On-Premises Directory Synchronization Service Account') {
+            continue
         }
-
-        if ($result) {
-            $TestResults = "Well done! There were no users with out managers assigned."
-        } else {
-            $TestResults += "No managers are assigned for the following users.`n%TestResult%"
+        # Graph answers 404 when a user has no manager. Handling that one case with try/catch is fine;
+        # any other error still ends the test as an Error result.
+        $manager = try { Get-MgUserManager -UserId $user.id -ErrorAction Stop } catch { $null }
+        if (-not $manager) {
+            $usersWithoutManager += $user
         }
-
-        Add-MtTestResultDetail -Result $TestResults -GraphObjects $usersWithoutManager -GraphObjectType Users
-        return $result
-    } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
     }
+
+    if ($usersWithoutManager.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'Well done! There were no users without managers assigned.'
+        return $true
+    }
+
+    Add-MtTestResultDetail -Result "No managers are assigned for the following users.`n`n%TestResult%" -GraphObjects $usersWithoutManager -GraphObjectType Users
+    return $false
 }
 ```
 
-:::note
-To use the markdown content from the file, **do not** include the `-Description` parameter when calling `Add-MtTestResultDetail`.
-:::
+A few things to notice:
 
-##### Error handling
-
-Always include your main code within a try catch block. In the catch block, use `Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_` to log the error and return `$null` to indicate that the test could not be run.
+- There is no outer `try`/`catch`. The engine runs every test inside its own error handler: an uncaught error ends the test and is reported as `Error` with the message. Use `try`/`catch` only for a case you handle, as with the missing manager above.
+- There is no `Test-MtConnection` check. `Service = 'Graph'` makes the engine skip the test when Graph is not connected.
+- `$ExemptJobTitles` is a parameter, so each tenant can set it in `maester-config.json` (`TestSettings` > `Parameters`) without changing the code.
 
 :::note
-Do not call `Add-MtTestResultDetail` with a `-SkippedBecause` parameter within the try block. This will result in the test being reported as an error instead of skipped. To avoid this, close the try block before calling `Add-MtTestResultDetail` with the `-SkippedBecause` parameter and then start a new try block to continue the main test logic. This is the way Pester handles skipped tests and errors.
+To use the markdown content from the `.md` file, **do not** include the `-Description` parameter when calling `Add-MtTestResultDetail`.
 :::
 
 ##### Tests that don't support application permissions
 
-Some tests may rely on Graph APIs that don't support application permissions. In these cases, you can use the `Add-MtTestResultDetail -SkippedBecause 'NotSupportedAppPermission'` to indicate that the test was skipped due to this limitation.
-
-Use this code block to perform the check.
+Some tests rely on Graph APIs that don't support application permissions. Skip them when Maester runs with an application identity:
 
 ```powershell
 if (((Get-MgContext).AuthType) -ne "Delegated") {
     Add-MtTestResultDetail -SkippedBecause 'NotSupportedAppPermission'
-    return $null
 }
 ```
 
-### Step 3: Create the markdown file
+`Add-MtTestResultDetail -SkippedBecause` ends the test, so no `return` is needed after it. It works inside a `try` block too.
 
-Create a markdown file in the `Custom` folder **with the same name as the test file** but with the `.md` extension.
+##### Sharing code between tests
 
-#### Test-ContosoUsersMissingManagers.md
+Functions defined in the same `Test.<ID>.ps1` file are available to the test. To share code between several test files, put it in a helper file whose name does not start with `Test.` (for example `Contoso.Helpers.ps1`) and dot-source it from inside the test function:
+
+```powershell
+. "$PSScriptRoot/Contoso.Helpers.ps1"
+```
+
+A custom test can call every command Maester exports, but not Maester's private functions.
+
+### Step 3: Write the markdown file
+
+Create the markdown file in the `custom` folder **with the same name as the test file** but with the `.md` extension.
+
+#### custom/Test.CONTOSO.1101.md
 
 ```md
 This test checks if there are any users without a manager assigned.
 
 Contoso's company policy requires that all users have a manager assigned to them. This is important for accountability and delegation of responsibilities.
 
-**To remediate this issue:**
+#### Remediation action
 
 - Identify the users without a manager.
 - Raise a ticket in Service Now using [Form: Manager Missing - HR Ticket](https://contoso.service-now.com/managermissing) to request the manager assignment for the users identified in this test.
   - 🔺 If this is not actioned in three days, escalate to the HR manager.
 
-**Learn more:**
+#### Related links
 
 - [Manager Missing - HR Ticket](https://contoso.service-now.com/managermissing)
 - [HR Escalation Process](https://contoso.service-now.com/hrescalation)
 
 <!--- Results --->
-
 %TestResult%
-
 ```
 
 ### Step 4: Run the test
+
+```powershell
+Get-MtTest -Path ./custom/Test.CONTOSO.1101.ps1   # validate it
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1101.ps1
+```
 
 Running the test should now show the markdown content in the test results.
 

@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1038"
   - "Medium"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1038 - Conditional Access policies should not include or exclude deleted groups.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/cloud-architekt" title="Thomas Naunheim · Co-contributor"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -40,11 +41,12 @@ To fix this issue:
 | Test ID | MT.1038 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaReferencedGroupsExist](/docs/commands/Test-MtCaReferencedGroupsExist) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCaReferencedGroupsExist](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.ps1) |
+| Services | Graph |
 | Tags | CA, Maester, MT.1038 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaReferencedGroupsExist.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1038.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1038.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.md)

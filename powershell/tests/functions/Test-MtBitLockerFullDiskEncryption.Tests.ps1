@@ -1,6 +1,9 @@
 ﻿Describe 'Test-MtBitLockerFullDiskEncryption' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtBitLockerFullDiskEncryption
 
         $script:OsType = 'device_vendor_msft_bitlocker_systemdrivesencryptiontype'
         $script:OsTypeDropdown = "$($script:OsType)_osencryptiontypedropdown_name"
@@ -134,17 +137,22 @@
         $script:Result | Should -BeLike '*No BitLocker settings found*'
     }
 
-    It 'skips when Graph is not connected' {
-        Mock -ModuleName Maester Test-MtConnection { return $false }
+    It 'declares Graph so the engine skips it when Graph is not connected' {
+        (Get-MtTest -Id 'MT.1123').Service | Should -Contain 'Graph'
 
-        Test-MtBitLockerFullDiskEncryption | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotConnectedGraph'
+        Mock -ModuleName Maester Test-MtConnection { return $false }
+        $row = Invoke-MtTest -Id 'MT.1123'
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'ServiceNotConnected'
     }
 
-    It 'skips when Intune is not licensed' {
-        Mock -ModuleName Maester Get-MtLicenseInformation { return $null }
+    It 'declares the Intune licence so the engine skips it when Intune is not licensed' {
+        (Get-MtTest -Id 'MT.1123').License | Should -Contain 'INTUNE_A'
 
-        Test-MtBitLockerFullDiskEncryption | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotLicensedIntune'
+        Mock -ModuleName Maester Get-MgContext { return $null }
+        $config = [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = @('AAD_PREMIUM') } }
+        $row = Invoke-MtTest -Id 'MT.1123' -Config $config
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'LicenseNotFound'
     }
 }

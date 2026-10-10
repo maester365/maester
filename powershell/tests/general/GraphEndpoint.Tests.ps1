@@ -26,7 +26,7 @@ Describe 'Microsoft Graph endpoints' {
                     # Invoke-MtAzureRequest uses Invoke-AzRest, which requires an absolute URI.
                     # Keep its public-cloud fallback when the Azure context has no MicrosoftGraphUrl.
                     $isApprovedFallback = (
-                        $relativePath -eq 'public/core/Invoke-MtAzureRequest.ps1' -and
+                        $relativePath -eq 'public/services/azure/Invoke-MtAzureRequest.ps1' -and
                         $token.Text -eq "'https://graph.microsoft.com'"
                     )
 

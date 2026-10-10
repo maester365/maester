@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1043"
   - "Medium"
+  - "Maester/Exchange"
   - "Exchange"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1043 - Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/bastienperez" title="Bastien Perez · Co-contributor"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/bastienperez" title="Bastien Perez · Co-contributor"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with <a href="/contributors/bastienperez">Bastien Perez</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -66,11 +67,12 @@ The result should return no rules.
 | Test ID | MT.1043 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exchange |
-| PowerShell test | [Test-MtExoSetScl](/docs/commands/Test-MtExoSetScl) |
+| Category | Maester/Exchange |
+| PowerShell test | [Test-MtExoSetScl](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.ps1) |
+| Services | ExchangeOnline |
 | Tags | Exchange, Maester, MT.1043 |
 
 ## Source
 
-- Pester test: `tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1`
-- PowerShell source: `powershell/public/maester/exchange/Test-MtExoSetScl.ps1`
+- Test: [`tests/Maester/Exchange/Test.MT.1043.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.ps1)
+- Documentation: [`tests/Maester/Exchange/Test.MT.1043.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.md)

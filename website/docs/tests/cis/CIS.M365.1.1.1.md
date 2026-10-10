@@ -21,7 +21,7 @@ keywords:
 
 # CIS.M365.1.1.1 - (L1) Ensure Administrative accounts are cloud-only
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/nzlostboy">Ben Miles</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -59,10 +59,11 @@ Remediation will require first identifying the privileged accounts that are sync
 | Severity | High |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisCloudAdmin](/docs/commands/Test-MtCisCloudAdmin) |
+| PowerShell test | [Test-MtCisCloudAdmin](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.1.ps1) |
+| Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.1.1, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisCloudAdmin.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisCloudAdmin.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.1.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.1.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.1.1.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.1.md)

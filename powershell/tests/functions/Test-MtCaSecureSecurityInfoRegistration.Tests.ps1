@@ -1,6 +1,9 @@
 Describe 'Test-MtCaSecureSecurityInfoRegistration' {
   BeforeAll {
     Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtCaSecureSecurityInfoRegistration
     Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
 
     # Otherwise valid "secure security info registration from a trusted location"

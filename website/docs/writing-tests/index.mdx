@@ -1,84 +1,594 @@
 ---
-title: Getting started
+title: Writing native tests
 sidebar_position: 1
+description: Write a Maester check as a native test, the default format from Maester 3.0.
 ---
 
-## Introduction
+# Writing native tests
 
-Maester is built on top of [Pester](https://pester.dev) which uses an English-like format to define tests.
+From Maester 3.0 a test is two files: `Test.<ID>.ps1`, which holds one PowerShell function with a
+`[MaesterTest(...)]` attribute, and `Test.<ID>.md`, which holds the description and remediation shown in the
+report. Every test that ships with Maester is written this way, and your own tests use the same format.
 
-In this guide we will show you how to write custom tests using Pester and Microsoft Graph PowerShell.
+The engine reads the attribute without running your code, checks that the services the test needs are
+connected, runs the function, catches any error, and writes the result row. Your function only has to read the
+tenant, decide, and return `$true` or `$false`.
 
-## Pre-requisites
+Tests written for Maester 2.x with Pester (`*.Tests.ps1`) still run. See
+[Pester-format tests](./pester-format-tests.md), which also shows how to convert them with `Convert-MtTest`.
 
-- You have set up Maester following the [installation guide](/docs/installation).
-- Successfully run **Invoke-Maester** and tested with the out of the box tests.
-
-## Creating the custom test file
-
-In your Maester folder you should have a folder called **Custom**. This is where you can create your custom test files.
-
-To get started create an empty file called **ContosoEntra.Tests.ps1** in the **Custom** folder (replace **Contoso** with your company name).
-
-It is important to use the .Tests.ps1 suffix in the file name so that your test file can be automatically discovered and tested when you run **Invoke-Maester**.
-
-Once you've created the file you can add multiple tests to it.
-
-## Adding a test to the file
-
-Let's create a simple test that checks if a specific security group exists and is not empty.
-
-A common scenario for this test would be a security group that is used in a critical conditional access policy or to assign Microsoft 365 licenses.
+## Quick start
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0001: Check 'Contoso MFA Users' group" -Tag 'Severity:Medium' {
+# 1. Create custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
 
-        try {
-            $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"
+# 2. Edit the two files, then check them. No tenant connection is needed for this step.
+Get-MtTest -Path ./custom
 
-            $memberCount = Get-MgGroupTransitiveMemberCount -GroupId $groupId -ConsistencyLevel eventual
+# 3. Run the test on its own while you write it
+Connect-Maester
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1
 
-            # Test if the group exists and has members
-            $memberCount | Should -BeGreaterThan 0
+# 4. Run it with everything else
+Invoke-Maester -Path .
+```
 
-        }
-        catch {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-            return $false
-        }
+`New-MtTest` writes to `./custom` unless you pass `-Path`. It supports `-WhatIf` and refuses to overwrite
+existing files unless you pass `-Force`.
+
+## Files and layout
+
+Put your tests in a folder of your own, usually `custom/` inside the folder you run Maester from:
+
+```text
+maester-tests/
+  maester-config.json        (optional: your run configuration)
+  custom/
+    Test.CONTOSO.1001.ps1
+    Test.CONTOSO.1001.md
+    suite.json               (optional: tags, category and source for every test in the folder)
+    maester-config.json      (optional: an overlay on the root config)
+```
+
+`Invoke-Maester -Path ./maester-tests` finds every `Test.*.ps1` file under the path, in any subfolder. If you
+leave out `-Path`, Maester scans the current folder only when it looks like a Maester folder (it has a
+`maester-config*.json` file, a `custom` folder, a 2.x suite folder, or a `*.Tests.ps1` or `Test.*.ps1` file).
+Otherwise only the built-in tests run.
+
+Maester matches the `custom` folder name without regard to case, so a `Custom` folder created by Maester 2.x keeps
+working, and `New-MtTest` and `Install-MaesterTests` write into it when it exists.
+
+Rules for a test file:
+
+- The file name is `Test.<ID>.ps1`, where `<ID>` is the `Id` in the attribute. The `.md` file has the same
+  name with the `.md` extension and sits in the same folder. A custom test without its `.md` file is reported
+  as `Error` with reason `InvalidMetadata`.
+- The file contains exactly one function with a `[MaesterTest(...)]` attribute. It may contain other functions
+  (helpers, or a family's instance source).
+- At the top level the file contains only function definitions: no statements, no script-level `param()`
+  block. Discovery never executes the file, and this rule keeps it that way.
+- The test function has `[CmdletBinding()]`.
+
+### Test IDs
+
+An ID is letters and digits in segments separated by `.` or `-` (and `_` after the first segment). It starts
+with a letter, contains at least one digit or separator, and is at most 64 characters. `CONTOSO.1001`,
+`CONTOSO-ID-07` and `CT0001` are all valid. IDs are compared case-insensitively.
+
+Use a prefix of your own. These prefixes belong to the tests that ship with Maester: `MT.`, `CISA.`, `CIS.`,
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and `MT1060.`. A custom test with one of these prefixes still runs, with a
+warning. A custom test that uses the exact ID of a built-in test is not run at all, and the built-in runs
+instead. To change how a built-in test behaves, set its parameters or severity in the
+[run configuration](../configuration/run-configuration.md), or copy it under your own ID and disable the
+built-in.
+
+Two native tests with the same ID (or the same function name) both get an `Error` row with reason
+`DuplicateId`, and neither runs. When a native test and a Pester-format test share an ID, the native test
+runs and the Pester test does not; it is listed under `Selection.Superseded` in the result with `MatchedBy`
+`NativeTest`.
+
+## A complete example
+
+`custom/Test.CONTOSO.1002.ps1`:
+
+```powershell
+function Test-ContosoDisabledCaPolicyReason {
+    [MaesterTest(
+        Id       = 'CONTOSO.1002',
+        Title    = 'Disabled Conditional Access policies state why they are disabled.',
+        Severity = 'Medium',
+        Category = 'Contoso/Entra',
+        Product  = 'Entra ID',
+        Tag      = ('CA', 'Contoso'),
+        Service  = 'Graph',
+        License = 'AAD_PREMIUM'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # Text that a disabled policy's name must contain.
+        [string] $ReasonMarker = 'Disabled:'
+    )
+
+    $policies = Get-MtConditionalAccessPolicy
+    $withoutReason = @($policies | Where-Object { $_.state -eq 'disabled' -and $_.displayName -notlike "*$ReasonMarker*" })
+
+    if ($withoutReason.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'Well done. Every disabled policy states why it is disabled.'
+        return $true
     }
+
+    $result = "These disabled policies do not state why they are disabled:`n`n%TestResult%"
+    Add-MtTestResultDetail -Result $result -GraphObjects $withoutReason -GraphObjectType ConditionalAccess
+    return $false
 }
 ```
 
-Copy the code above and paste it into your **ContosoEntra.Tests.ps1** file.
+`custom/Test.CONTOSO.1002.md`:
 
-- Replace the **Contoso** tag with your company name.
-- Replace the **Contoso MFA Users** label for the test with the name of the group you want to test.
-- Replace the groupID GUID with the **Object ID** of a group in your tenant.
-- Provide a [Severity level](../configuration/severity-levels.md) in the -Tag for the test. The available severity levels are **Critical**, **High**, **Medium**, **Low** and **Info**.
-- Save the file.
+```md
+Disabled Conditional Access policies must say why they are disabled, in the form `Disabled: <reason>`.
 
-## Running the custom test
+#### Remediation action
 
-To run the test, open PowerShell and navigate to the Maester folder.
+1. In the Microsoft Entra admin center, open **Protection** > **Conditional Access** > **Policies**.
+2. For each policy listed below, add the reason to its name, or delete the policy.
 
-Run the following command to execute the test you just created.
+#### Related links
 
-```powershell
-Invoke-Maester .\tests\Custom\
+- [Conditional Access policies](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies)
+
+<!--- Results --->
+%TestResult%
 ```
 
-You should now see the output of your test.
+There is no connection check, no licence check and no `try`/`catch` in the function. The engine does all three.
 
-**Congratulations. You've just created your first Maester test!**
+## The `[MaesterTest]` attribute
 
-You can continue to add more tests to the file or create new test files as needed.
+The attribute is read from the file's syntax tree, so its arguments must be constants:
 
-If you followed the Monitoring and email alert guides, these new tests you created will also be included in the monitoring and alerting (assuming you add this test file to GitHub or Azure DevOps).
+- Named arguments only: `Id = 'CONTOSO.1001'`, never a positional value.
+- Values are quoted strings, `$true`, `$false`, or a list in parentheses such as `('CA', 'Contoso')`.
+- A single string is accepted for a list property: `Service = 'Graph'`.
+- A `bool` property can be written as a bare flag: `LongRunning` means `LongRunning = $true`.
+- No variables, expressions, `@()` arrays or hashtables.
 
-In the future, if someone deletes this group or removes the members you will be alerted about a security risk in your environment.
+A value that breaks these rules, an unknown property, or a value outside the allowed list makes the test an
+`Error` row with reason `InvalidMetadata`, naming the file and line. The function is never called. If the
+message says a property or value "may come from a newer version of Maester", the test was written for a later
+release than the one you run.
 
-## Examples from the community
+| Property | Type | Allowed values | Required | When omitted | What it does |
+| --- | --- | --- | --- | --- | --- |
+| `Id` | string | ID rules above | Always | | Stable identifier. The file is `Test.<Id>.ps1`. Also an implicit tag, so `-Tag CONTOSO.1001` selects it. |
+| `Title` | string | One line | Always | | The title shown in the report. The result row's `Name` is `<Id>: <Title>`. |
+| `Severity` | string | `Critical`, `High`, `Medium`, `Low`, `Info` | Built-in tests | Empty | Default severity. A `TestSettings` row in the config overrides it. |
+| `Category` | string | Free text | No | The suite's `DefaultCategory`, else `Custom` | Report grouping. Written to the result as `Block`. |
+| `Product` | string | One line, up to 40 characters. Built-in tests use one of: `Entra ID`, `Exchange Online`, `Defender`, `Intune`, `Purview`, `SharePoint`, `Teams`, `Microsoft 365`, `Azure`, `Azure DevOps`, `GitHub`, `Active Directory`, `Copilot Studio` | Built-in tests | Empty | The product the test checks. The console progress and the run summary group tests by it; tests without one are shown under Other. Written to the result as `Product`. |
+| `Tag` | string[] | Non-empty, no commas (spaces allowed) | No | None | Tags for `-Tag` and `-ExcludeTag`. |
+| `Preview` | bool | | No | `$false` | Not run unless `-IncludePreview`, any `-Tag`, or its exact ID in `-TestId`. |
+| `LongRunning` | bool | | No | `$false` | Not run unless `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, or its exact ID in `-TestId`. |
+| `Service` | string[] | A name from the service registry (below), or `None` | Built-in tests | No requirement | Services that must **all** be connected. |
+| `License` | string[] | Service plan names; `&` joins plans | No | No requirement | The tenant needs **any one** element. |
+| `TenantType` | string[] | `Workforce`, `External` | No | `Workforce` | Tenant types the test applies to. Recorded; enforced only when you turn it on. |
+| `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | All clouds | Clouds the test applies to. Recorded; enforced only when you turn it on. |
+| `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | All platforms | Operating systems the test can run on. |
+| `InstanceSource` | string | Name of a function in the same file | No | One result | Makes the test a family with one result per instance. |
+| `Exclusive` | bool | | No | `$false` | The test must not run at the same time as another test. Recorded for a future parallel scheduler; no effect in 3.0. |
+| `Author` | string[] | GitHub handles | Built-in tests | None | Initial authors, credited on maester.dev. |
+| `Contributor` | string[] | GitHub handles | No | None | Further contributors, in order of first contribution. |
+| `HelpUrl` | string | An `https://` URL | No | The suite's `HelpUrlTemplate` with `{Id}` replaced; none for a custom test without one | The "learn more" link on the result row. |
 
-If you want inspiration for custom tests, check out [this repository](https://devclate.github.io/Custom-Maester-Tests/) by Clayton Tyger.
+The names `GraphScope`, `OptionalService`, `TimeoutSeconds` and `Deprecated` are reserved for
+later versions and are rejected today.
+
+The effective tag set of a test, used by `-Tag` and `-ExcludeTag` and written to the result row, is: the
+suite's `Tags`, the `Id`, the `Tag` values, and `Preview` and `LongRunning` when those are set.
+
+## The Markdown file
+
+`Test.<ID>.md` has no front matter. It holds:
+
+1. The description: what the test checks and why it matters.
+2. A `#### Remediation action` section with the steps to fix a failing result, ideally with a direct link to
+   the admin portal page.
+3. Optionally `#### Related links`.
+4. Exactly one `<!--- Results --->` line followed by `%TestResult%`.
+
+Everything above `<!--- Results --->` becomes the description in the report. The text after it is the result
+template: `%TestResult%` is replaced with the `-Result` you pass to `Add-MtTestResultDetail`. The `.md` is also
+shown for rows the engine produced without running the test (not selected, skipped because a service is not
+connected), so the reader always sees what the test is about.
+
+## What the function returns
+
+| The function does | Result | Reason code |
+| --- | --- | --- |
+| returns `$true` | `Passed` | |
+| returns `$false` | `Failed` | |
+| calls `Add-MtTestResultDetail -Investigate` | `Investigate`, whatever it returns | |
+| calls `Add-MtTestResultDetail -SkippedBecause <code>` | `Skipped`. The call ends the test. | `TestSkipped`, or `NotApplicable` for `-SkippedBecause NotApplicable` |
+| calls `Add-MtTestResultDetail -SkippedBecause Error`, or throws any error | `Error` | `TestError` |
+| returns `$null` without skipping or `-Investigate` | `Skipped` | `NoResult` |
+| returns something that is not a boolean, or more than one value | `Error` | `InvalidReturn` |
+| runs longer than the configured timeout | `Error` | `Timeout` |
+
+When several apply, they are evaluated in this order: `-SkippedBecause Error`, `-Investigate`, any other
+skip, an uncaught error, the returned value.
+
+Watch for stray output. A command whose output you do not capture (`$list.Add($x)` on an `ArrayList`, for
+example) adds a second value to the function's output and turns the result into `InvalidReturn`. Assign such
+calls to `$null` or pipe them to `Out-Null`.
+
+### Add-MtTestResultDetail
+
+[`Add-MtTestResultDetail`](../commands/Add-MtTestResultDetail.mdx) works as in 2.x. The parameters you use in a
+native test:
+
+- `-Result`: the Markdown result. It replaces `%TestResult%` in the `.md` file.
+- `-GraphObjects` and `-GraphObjectType`: a list of objects rendered as a table with links to the admin
+  portal, inserted where `%TestResult%` appears in `-Result`. See
+  [Formatting test results](./formatting-test-results.md).
+- `-Investigate`: the result needs a person to look at it.
+- `-SkippedBecause`: skip the test for a reason only the test can see, such as `NotApplicable`,
+  `NotSupportedAppPermission` or `Custom` with `-SkippedCustomReason`. Do not use the `NotConnected*` and
+  `NotLicensed*` codes for conditions the attribute can declare; use `Service` and `License`.
+- `-Description`: replaces the description from the `.md` file. Leave it out to use the `.md`.
+
+`-TestTitle` and `-Severity` are ignored in a single-result native test: the title and severity come from the
+attribute and the config. In a family, `-TestTitle` sets the instance's title when the instance object has no
+`Title`. `-Severity` is used only when neither the config nor the attribute sets one.
+
+### Errors and skips
+
+Do not wrap the body in `try`/`catch` only to report `-SkippedBecause Error`. The engine runs every test inside
+its own `try`, so any terminating error ends the test and becomes an `Error` row with the exception message as
+`ReasonDetail` and the error record in `ErrorRecord`. Statement-terminating errors (a failed command, a method
+call on `$null`) also end the test, so it cannot carry on with empty data and return `$true` by accident.
+
+You may still use `try`/`catch` for a condition you handle, for example a 403 from Graph that you report as
+`-SkippedBecause NotAuthorized`. A `-SkippedBecause` call made inside your own `try` block still skips the
+test; the engine recognises the skip when your `catch` passes it to `Add-MtTestResultDetail -SkippedBecause
+Error -SkippedError $_`.
+
+Warnings and non-terminating errors written by the test are shown on the console and stored on the result row
+in `Diagnostics`.
+
+## Declare what the test needs
+
+Do not check connections or licences in the test. Declare them, and the engine decides before the test runs.
+A test whose requirement is not met gets a `Skipped` row with a reason code and its `.md` description, so it
+still appears in the report. See [Applicability](../configuration/applicability.md) for the order of the
+checks and every reason code.
+
+### Service
+
+`Service` lists the services that must all be connected. Use `None` for a test that needs no connection.
+The names come from the service registry:
+
+| Service | Also accepted | Connected by |
+| --- | --- | --- |
+| `Graph` | | `Connect-Maester` |
+| `Azure` | | `Connect-Maester -Service Azure` |
+| `ExchangeOnline` | `Exchange` | `Connect-Maester -Service ExchangeOnline` |
+| `SecurityCompliance` | `EOP` | `Connect-Maester -Service SecurityCompliance` |
+| `SharePointOnline` | `SharePoint` | `Connect-Maester -Service SharePointOnline` |
+| `Teams` | | `Connect-Maester -Service Teams` |
+| `Dataverse` | | `Connect-Maester -Service Dataverse`; counts as connected when Graph is |
+| `AzureDevOps` | | `Connect-ADOPS` |
+| `GitHub` | | `Connect-Maester -Service GitHub` |
+| `ActiveDirectory` | `AD` | `Connect-Maester -Service ActiveDirectory` |
+
+A test that is not connected to one of its services is `Skipped` with reason `ServiceNotConnected`.
+`ActiveDirectory` is opt-in: its tests are `NotRun` with reason `OptInServiceNotConnected` until you connect it.
+A custom test that names a service the registry does not know is `Skipped` with reason `ServiceNotRegistered`.
+
+### License
+
+`License` lists Microsoft service plan names (the `servicePlanName` values of the tenant's
+`subscribedSkus`). The tenant needs any one element; inside an element, `&` means all of the joined plans.
+
+```powershell
+License = 'AAD_PREMIUM_P2'                        # Entra ID P2
+License = ('AAD_PREMIUM', 'INTUNE_A')             # Entra ID P1 (or better) or Intune
+License = 'AAD_PREMIUM_P2&INTUNE_A'               # Entra ID P2 and Intune
+```
+
+Maester maps these tokens to the service plan and SKU IDs it has always used to detect each product, so
+government, education and suite variants match too:
+
+| Token | Tenant has |
+| --- | --- |
+| `AAD_PREMIUM` | Entra ID P1 or better (P1, P2 or ID Governance) |
+| `AAD_PREMIUM_P2` | Entra ID P2 |
+| `Entra_Identity_Governance` | Microsoft Entra ID Governance |
+| `AAD_WRKLDID_P1`, `AAD_WRKLDID_P2` | Workload ID P1 or better, Workload ID P2 |
+| `ATP_ENTERPRISE` | Defender for Office 365 Plan 1 or Plan 2 |
+| `THREAT_INTELLIGENCE` | Defender for Office 365 Plan 2 |
+| `EOP_ENTERPRISE` | Exchange Online Protection |
+| `EXCHANGE_S_STANDARD` | Any Exchange Online mailbox licence |
+| `EXCHANGE_DLP` | Exchange Online DLP (Exchange Online Plan 2, the DLP plan, or Microsoft 365 Business Premium) |
+| `M365_ADVANCED_AUDITING` | Microsoft 365 Advanced Auditing |
+| `DEFENDER_XDR` | Any Defender XDR workload (Endpoint P2, Office 365 P2, Identity or Cloud Apps) |
+| `LOCKBOX_ENTERPRISE` | Customer Lockbox |
+| `INTUNE_A` | Microsoft Intune |
+
+Any other token is compared literally with the tenant's service plan names, so a custom test can use any plan
+name. Only enabled subscriptions count. When the licences cannot be read (no Graph connection, or no
+permission), the licence check is not applied and the test runs.
+
+### TenantType and Cloud
+
+`TenantType` (`Workforce` or `External`) and `Cloud` describe where a test is meaningful. Maester detects both
+and records them in the result's `TenantContext`, but by default does not skip tests on them. A run turns
+enforcement on with `Environment.Enforce` in the [run configuration](../configuration/run-configuration.md).
+Declare them now if you know them; a test without `TenantType` is treated as `Workforce`.
+
+### Platform
+
+Declare `Platform = 'Windows'` when the test calls a Windows-only command or module. On other operating
+systems it is `Skipped` with reason `PlatformMismatch`. Most tests run everywhere and declare nothing.
+
+## Parameters
+
+A test's `param()` block lists the values a user can tune per tenant: thresholds, switches, objects to exclude.
+Values come from the run configuration or from `Invoke-MtTest -Parameter`; a test always has to run with none
+set, using its defaults.
+
+```powershell
+param(
+    # Longest validity period, in days, that a certificate may be issued for.
+    [ValidateRange(1, 3650)]
+    [int] $MaximumValidityDays = 365,
+
+    # Members of these groups are exempt from this check.
+    [MaesterParameter(Kind = 'Entra.Group')]
+    [string[]] $ExcludedGroups,
+
+    # How strictly to evaluate.
+    [ValidateSet('Strict', 'Lenient')]
+    [string] $Mode = 'Strict'
+)
+```
+
+Rules:
+
+- Types are `int`, `bool`, `switch`, `string` or `string[]`.
+- Defaults are constants. No parameter is mandatory.
+- Every parameter has a description: a `#` comment on the line directly above it, or `.PARAMETER` help. Only
+  the comment line nearest the parameter is read, so keep the comment to one line or use `.PARAMETER`.
+  `Get-MtTest` shows the description.
+- Give thresholds a `ValidateRange`. A `ValidateSet` makes the parameter a list of choices.
+- `Instance` and every name that starts with `Mt` belong to the engine and cannot be set.
+
+Set values in the config:
+
+```json
+{
+  "TestSettings": [
+    { "Id": "CONTOSO.1002", "Parameters": { "ReasonMarker": "Off:" } },
+    { "Id": "MT.1198", "Parameters": { "MaximumValidityDays": 180 } }
+  ]
+}
+```
+
+The engine checks each value against the `param()` block before the test runs. A name the test does not have,
+a fraction for an `int`, a number for a `string`, a string for a `bool` or `switch`, or a value outside the
+`ValidateRange` or `ValidateSet` gives that test an `Error` row with reason `InvalidConfiguration`; the run
+carries on. A `string[]` parameter accepts one string or a list. The effective values, and where each came from
+(`Default`, `Config` or `Parameter`), are written to the result row's `Parameters`.
+
+### Parameter kinds
+
+`[MaesterParameter(Kind = '...')]` says what a string parameter holds, so a user interface can offer a picker
+and the engine can check the value's shape:
+
+| Kind | Value |
+| --- | --- |
+| `Entra.User` | User object ID |
+| `Entra.Group` | Group object ID |
+| `Entra.ServicePrincipal` | Service principal object ID |
+| `Entra.Application` | Application object ID |
+| `Entra.ConditionalAccessPolicy` | Conditional Access policy ID |
+| `Entra.NamedLocation` | Named location ID |
+| `Entra.Domain` | Domain name |
+| `Entra.DirectoryRole` | Directory role definition ID |
+| `Azure.Subscription` | Subscription ID |
+| `Azure.ResourceGroup` | Resource group ID (`/subscriptions/<id>/resourceGroups/<name>`) |
+| `Azure.Resource` | Azure resource ID |
+
+A value that does not match the kind's pattern (for example a malformed GUID) is `InvalidConfiguration`. In the
+config a value can be the ID itself or an object `{ "Id": "...", "DisplayName": "..." }`; the test always
+receives the ID.
+
+## Families: one test, several results
+
+Some checks produce one result per item: per drift folder, per recommendation, per user. Declare
+`InstanceSource` with the name of a function in the same file. The engine calls that function when the test
+runs (never during discovery) and runs the test once per object it returns, passing the object as `$Instance`.
+
+```powershell
+function Get-ContosoAdminUnit {
+    [CmdletBinding()]
+    param()
+    foreach ($unit in Invoke-MtGraphRequest -RelativeUri 'directory/administrativeUnits') {
+        [pscustomobject]@{
+            Id    = $unit.id                     # required: the instance suffix
+            Title = "Administrative unit '$($unit.displayName)' is restricted"   # optional
+            Data  = $unit                        # optional: anything the test needs
+        }
+    }
+}
+
+function Test-ContosoAdminUnitRestricted {
+    [MaesterTest(
+        Id = 'CONTOSO.2001',
+        Title = 'Administrative units are restricted.',
+        Severity = 'Medium',
+        Service = 'Graph',
+        InstanceSource = 'Get-ContosoAdminUnit'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # The administrative unit to check, supplied by the engine.
+        $Instance
+    )
+
+    $restricted = [bool]$Instance.Data.isMemberManagementRestricted
+    Add-MtTestResultDetail -Result "Member management restricted: $restricted"
+    return $restricted
+}
+```
+
+The instance object has:
+
+| Property | Required | Meaning |
+| --- | --- | --- |
+| `Id` | Yes | The suffix. The row's ID is `<parent ID>.<Id>`, for example `CONTOSO.2001.4f6c...`. It must match `^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$` and be unique within the family. |
+| `Title` | No | The instance's title. Defaults to `-TestTitle` from the helper, then the attribute's title. |
+| `Severity` | No | The instance's severity, used when the config sets none. |
+| `Tag` | No | Extra tags for the instance's row. |
+| `Data` | No | Anything the test needs. |
+
+Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce
+instance rows, the result has one row on the parent ID instead:
+
+| What happened | Row on the parent ID |
+| --- | --- |
+| The family was not selected, was disabled, or a gate failed | The usual `NotRun` or `Skipped` reason |
+| The instance source returned nothing | `Skipped` with `NoInstances` |
+| The instance source threw | `Error` with `InstanceSourceFailed` |
+| An instance `Id` is missing, invalid or repeated | `Error` with `InvalidInstanceId` |
+
+Selection and configuration understand families:
+
+- `-TestId CONTOSO.2001` or `-TestId 'CONTOSO.2001.*'` selects the whole family.
+- `-TestId CONTOSO.2001.abc` runs only that instance; the others get `NotRun` rows with reason `NotSelected`.
+- `-ExcludeTestId` and `"Enabled": false` on an instance ID drop that instance after the source has run.
+- A `TestSettings` row on an instance ID wins over a row on the parent ID.
+- IDs under a family's parent are never reported as unknown, even if that instance does not exist in this run.
+
+## Settings shared by many tests
+
+Read tenant-wide settings from `GlobalSettings` in the config with `Get-MtSetting`:
+
+```powershell
+$accounts = Get-MtSetting -Name EmergencyAccessAccounts
+$siteUrl  = Get-MtSetting -Name 'Contoso.SiteUrl' -Default 'https://contoso.sharepoint.com'
+```
+
+When the config does not set the value, `Get-MtSetting` returns Maester's default for the settings it knows,
+else `-Default`. Use a `Namespace.Key` name for your own settings. Prefer a test parameter when the value
+belongs to one test.
+
+## What a custom test can call
+
+Each custom test file is loaded into its own private module. It can call every command Maester exports,
+including `Invoke-MtGraphRequest`, `Add-MtTestResultDetail`, `Get-MtSetting`, `Get-MtTenantContext`,
+`Test-MtConnection`, `Get-MtLicenseInformation`, `Get-MtUser`, `Get-MtConditionalAccessPolicy` and
+`Invoke-MtTest`. It cannot call Maester's private functions, and it cannot replace a Maester command.
+
+Functions defined in the same file are visible to the test. Functions in another test file are not. To share
+code between files, put it in a helper `.ps1` (one that is not named `Test.*.ps1`) and dot-source it from
+inside the test function: `. "$PSScriptRoot/Contoso.Helpers.ps1"`. `$PSScriptRoot` is the test file's folder.
+
+To reuse a built-in check, run it through the engine instead of calling its function:
+
+```powershell
+$row = Invoke-MtTest -Id MT.1005
+$row.Result   # Passed, Failed, Skipped, ...
+```
+
+The built-in check functions are no longer exported in 3.0, and they no longer contain their own connection
+checks, so calling one directly is not supported.
+
+## A suite manifest for your folder
+
+A `suite.json` in a test folder sets what is true for every test in it (and its subfolders, unless a nearer
+`suite.json` exists):
+
+```json
+{
+  "Id": "Contoso",
+  "Name": "Contoso security baseline",
+  "Source": "Custom",
+  "Tags": ["Contoso"],
+  "DefaultCategory": "Contoso",
+  "HelpUrlTemplate": "https://wiki.contoso.com/maester/{Id}",
+  "RequiresMaester": "3.0"
+}
+```
+
+| Key | Effect |
+| --- | --- |
+| `Id` | Written to each result row as `Suite`. Defaults to `Custom`. |
+| `Source` | Written to each result row as `Source`. Defaults to `Custom`. |
+| `Tags` | Added to every test's tags. |
+| `DefaultCategory` | The `Category` of tests that do not set one. |
+| `HelpUrlTemplate` | The `HelpUrl` of tests that do not set one; `{Id}` is replaced. |
+| `RequiresMaester` | Tests in the folder need at least this Maester version. On an older version each one is an `Error` row with reason `RequiresNewerMaester`. |
+| `NoResultReason` | The skip text shown when a test returns `$null` without calling `Add-MtTestResultDetail`. Defaults to "The test returned no result." |
+
+A single file can state the same with `#Requires -Modules @{ ModuleName = 'Maester'; ModuleVersion = '3.1' }`.
+
+## Running and inspecting tests
+
+### Get-MtTest
+
+`Get-MtTest` lists tests and their metadata without connecting to a tenant and without running any test code.
+
+```powershell
+Get-MtTest -Tag CA | Format-Table Id, Title, Severity            # built-in tests
+Get-MtTest MT.1198 | Select-Object -ExpandProperty Parameters    # a test's parameters
+Get-MtTest -Path ./custom | Where-Object { -not $_.IsValid } |
+    Select-Object Id, File, Errors                               # validate your own tests
+```
+
+Without `-Path` it returns the tests that ship with Maester. With `-Path` (a file or a folder) it reads and
+validates those files; `IsValid` is `$false` and `Errors` lists every problem with its line number. `-Id`
+accepts exact IDs and `*` wildcards; `-Tag` matches any of the given tags.
+
+### Invoke-MtTest
+
+`Invoke-MtTest` runs tests through the engine, with the same gates, parameter checks and result rows as
+`Invoke-Maester`, and returns the rows. It writes no report.
+
+```powershell
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1002.ps1
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1002.ps1 -Parameter @{ ReasonMarker = 'Off:' }
+Invoke-MtTest -Path ./custom                       # every native test in the folder
+Invoke-MtTest -Id MT.1005, 'CISA.MS.AAD.3.*'       # built-in tests
+Invoke-MtTest -Path ./custom -Id CONTOSO.2001.abc  # one instance of a family
+```
+
+- `-Id` takes exact IDs or `*` wildcards. Without `-Path` it selects built-in tests; with `-Path` it selects
+  among the tests in that file or folder. A family instance ID runs only that instance.
+- `-Parameter` is allowed only when exactly one test is selected. Its values win over the config.
+- `-Config` takes a path, an object or a list of them, as for `Invoke-Maester`. Without it, a test that calls
+  `Invoke-MtTest` during an `Invoke-Maester` run uses the run's configuration; otherwise Maester reads the config
+  files found from `-Path` (or the current folder).
+- Tests you name run even if they are Preview or long-running, and `Selection.DefaultAction` is ignored. A
+  test disabled in the config is still `NotRun`.
+
+Dot-sourcing a test file at the prompt defines the function but gives it no engine: no service checks, no
+error handling and no `.md`. Use `Invoke-MtTest` while you write a test.
+
+### Console output
+
+`Invoke-Maester -Verbosity Normal` prints one line per finished native test with its result, ID, title and
+duration, plus the first line of the reason for `Failed` and `Error`. `-Verbosity Detailed` also prints
+`Running <ID>` when a test starts. The default, `None`, prints only the summary.
+
+## Next steps
+
+- [Formatting test results](./formatting-test-results.md)
+- [Advanced guide](./advanced-concepts.md): `Invoke-MtGraphRequest`, caching and other helpers
+- [Applicability and reason codes](../configuration/applicability.md)
+- [Run configuration](../configuration/run-configuration.md)
+- [Pester-format tests](./pester-format-tests.md)
+
+For inspiration, see the community's [custom Maester tests](https://devclate.github.io/Custom-Maester-Tests/)
+by Clayton Tyger (written for 2.x in Pester format; they still run, and `Convert-MtTest` can convert them).

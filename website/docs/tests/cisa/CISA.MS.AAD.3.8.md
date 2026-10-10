@@ -20,7 +20,7 @@ keywords:
 
 # CISA.MS.AAD.3.8 - Managed Devices SHOULD be required to register MFA.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/michaelmsonne">Michael Morten Sonne</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -54,10 +54,12 @@ Create a Conditional Access policy requiring a user to be on a managed device wh
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaManagedDeviceRegistration](/docs/commands/Test-MtCisaManagedDeviceRegistration) |
+| PowerShell test | [Test-MtCisaManagedDeviceRegistration](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.8.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CISA, CISA.MS.AAD.3.8, Entra ID P1, MS.AAD, MS.AAD.3.8 |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaManagedDeviceRegistration.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaManagedDeviceRegistration.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.3.8.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.8.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.3.8.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.8.md)

@@ -1,6 +1,6 @@
 ---
 title: "MT.1048 - Limit external participants from having control in a Teams meeting"
-description: "Limit external participants from having control in a Teams meeting"
+description: "External participants should not be able to give or request control in Teams meetings. External participants are users that are outside your organization. Limiting their permission to share content, add new users, and more protects your organization’s information from data leaks, inappropriate cont…"
 slug: /tests/MT.1048
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1048"
   - "Medium"
+  - "Maester/Teams"
   - "Teams"
 ---
 
@@ -17,11 +18,28 @@ keywords:
 
 # MT.1048 - Limit external participants from having control in a Teams meeting
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/svrooij" title="Stephan van Rooij · Co-contributor"><img src="https://github.com/svrooij.png" alt="Stephan van Rooij" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/svrooij" title="Stephan van Rooij · Co-contributor"><img src="https://github.com/svrooij.png" alt="Stephan van Rooij" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Limit external participants from having control in a Teams meeting
+External participants should not be able to give or request control in Teams meetings.
+
+External participants are users that are outside your organization. Limiting their permission to share content, add new users, and more protects your organization’s information from data leaks, inappropriate content being shared, or malicious actors joining the meeting.
+
+This test checks the `AllowExternalParticipantGiveRequestControl` setting of the Global (Org-wide default) Teams meeting policy.
+
+#### Remediation action
+
+1. Open [Meeting policies](https://admin.teams.microsoft.com/policies/meetings) in the Teams admin center.
+2. Select the **Global (Org-wide default)** policy.
+3. Set **External participants can give or request control** to **Off**.
+4. Select **Save**.
+
+Or with PowerShell: `Set-CsTeamsMeetingPolicy -Identity Global -AllowExternalParticipantGiveRequestControl $false`
+
+#### Related links
+
+* [Manage meeting policies in Microsoft Teams - Microsoft Learn](https://learn.microsoft.com/microsoftteams/meeting-policies-overview)
 
 ## Test Metadata
 
@@ -30,9 +48,12 @@ Limit external participants from having control in a Teams meeting
 | Test ID | MT.1048 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Teams |
+| Category | Maester/Teams |
+| PowerShell test | [Test-MtCheckMT1048](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1048.ps1) |
+| Services | Teams |
 | Tags | Maester, MT.1048, Teams |
 
 ## Source
 
-- Pester test: `tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1`
+- Test: [`tests/Maester/Teams/Test.MT.1048.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1048.ps1)
+- Documentation: [`tests/Maester/Teams/Test.MT.1048.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1048.md)

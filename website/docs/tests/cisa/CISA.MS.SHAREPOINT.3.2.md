@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.3.2"
-  - "Unknown"
+  - "Medium"
   - "CISA"
   - "spo"
   - "MS.SHAREPOINT"
@@ -45,13 +45,14 @@ Rationale: Allowing edit permissions on Anyone links increases the risk of unaut
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.3.2 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoAnyoneLinkPermission](/docs/commands/Test-MtCisaSpoAnyoneLinkPermission) |
+| PowerShell test | [Test-MtCisaSpoAnyoneLinkPermission](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1) |
+| Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.3.2, MS.SHAREPOINT, MS.SHAREPOINT.3.2 |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoAnyoneLinkPermission.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoAnyoneLinkPermission.ps1`
+- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1)
+- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.md)

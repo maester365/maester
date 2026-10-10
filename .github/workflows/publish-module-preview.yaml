@@ -17,6 +17,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The committed engine DLL must be the deterministic build of src/Maester.Engine before anything ships.
+  build-engine:
+    uses: ./.github/workflows/build-engine.yaml
+    permissions:
+      contents: read
+
   build-report:
     uses: ./.github/workflows/build-maester-report-template.yaml
     permissions:
@@ -24,7 +30,7 @@ jobs:
       actions: read
 
   create-preview-release:
-    needs: build-report
+    needs: [build-report, build-engine]
     runs-on: ubuntu-latest
     permissions:
       contents: write

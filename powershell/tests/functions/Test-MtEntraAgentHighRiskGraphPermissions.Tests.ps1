@@ -1,6 +1,9 @@
 ﻿Describe 'MT.1223: Test-MtEntraAgentHighRiskGraphPermissions' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtEntraAgentHighRiskGraphPermissions
     }
 
     BeforeEach {
@@ -243,18 +246,26 @@
         $script:TestResult | Should -Match 'Delegated'
     }
 
-    It 'skips when Graph is disconnected' {
-        Mock -ModuleName Maester Test-MtConnection { return $false }
+    It 'is skipped by the engine when Graph is disconnected' {
+        # The engine gates on the [MaesterTest] Service declaration; the check no longer guards itself.
+        foreach ($id in @('MT.1223')) {
+            (Get-MtTest -Id $id).Service | Should -Contain 'Graph'
+        }
 
-        Test-MtEntraAgentHighRiskGraphPermissions | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotConnectedGraph'
+        Mock -ModuleName Maester Test-MtConnection { return $false }
+        foreach ($row in @(Invoke-MtTest -Id @('MT.1223'))) {
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'ServiceNotConnected'
+        }
     }
 
-    It 'skips when Graph returns an error' {
+    It 'throws when Graph returns an error, which the engine records as an error' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw 'Graph unavailable' }
 
-        Test-MtEntraAgentHighRiskGraphPermissions | Should -BeNull
-        $script:SkippedBecause | Should -Be 'Error'
-        $script:SkippedError.Exception.Message | Should -Be 'Graph unavailable'
+        { Test-MtEntraAgentHighRiskGraphPermissions } | Should -Throw 'Graph unavailable'
+        $row = Invoke-MtTest -Id 'MT.1223'
+        $row.Result | Should -Be 'Error'
+        $row.ReasonCode | Should -Be 'TestError'
+        $row.ReasonDetail | Should -BeLike '*Graph unavailable*'
     }
 }

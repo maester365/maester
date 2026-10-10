@@ -21,7 +21,7 @@ $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it
 
 # Exclude internal script filenames as well as any helper function names declared inside
 # internal script files so multi-function files do not leak private helpers into docs.
-# Recurse so helpers in nested folders (e.g. internal/ad/queries, internal/eidsca) are excluded too.
+# Recurse so helpers in nested folders (e.g. internal/services/ad/queries, internal/generated/eidsca) are excluded too.
 $internalCommandFiles = Get-ChildItem ./powershell/internal -Recurse -Filter *.ps1
 $internalCommands = $internalCommandFiles | ForEach-Object { $_.BaseName }
 $internalFunctionNames = foreach ($file in $internalCommandFiles) {
@@ -31,11 +31,13 @@ $internalFunctionNames = foreach ($file in $internalCommandFiles) {
 }
 $commandsToExclude = ($internalCommands + $internalFunctionNames) | Sort-Object -Unique
 
-New-DocusaurusHelp -Module ./powershell/Maester.psm1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/powershell/public/ -Exclude $commandsToExclude
+# The manifest, not the .psm1: in a source checkout the .psm1 exports every function it loads, including
+# the check functions of the native tests, which are internal in Maester 3.0. Only exported commands get a page.
+New-DocusaurusHelp -Module ./powershell/Maester.psd1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/powershell/public/ -Exclude $commandsToExclude
 
 # New-DocusaurusHelp only knows the flat -EditUrl root above, so every generated custom_edit_url
 # assumes commands live directly under powershell/public/. Most commands actually live in nested
-# category folders (e.g. powershell/public/maester/exchange/), which produces a dead "Edit this
+# category folders (e.g. powershell/public/services/exchange/), which produces a dead "Edit this
 # page" link. Rebuild custom_edit_url per command from the real file location instead.
 $sourceScripts = Get-ChildItem -Path ./powershell/public, ./powershell/internal -Recurse -Filter *.ps1
 $editUrlByCommand = @{}
@@ -113,7 +115,12 @@ Set-Content $commandsIndexFile $readmeContent  # Restore the readme content
 $versionedDocsRoot = "./website/versioned_docs"
 if (Test-Path $versionedDocsRoot) {
     $sourceCommands = "./website/docs/commands"
-    $versionFolders = Get-ChildItem $versionedDocsRoot -Directory
+    # Only versions with the module's major version share its commands: syncing 3.x pages into the 2.x docs
+    # would delete the 2.x pages of commands that 3.0 removed and add pages for commands 2.x never had.
+    $moduleMajor = ([version](Import-PowerShellDataFile ./powershell/Maester.psd1).ModuleVersion).Major
+    $versionFolders = Get-ChildItem $versionedDocsRoot -Directory | Where-Object {
+        $_.Name -match '^version-(\d+)\.' -and [int]$Matches[1] -eq $moduleMajor
+    }
     foreach ($versionFolder in $versionFolders) {
         $targetCommands = Join-Path $versionFolder.FullName "commands"
         if (Test-Path $targetCommands) {

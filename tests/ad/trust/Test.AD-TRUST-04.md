@@ -1,0 +1,69 @@
+Trusts with weak SID filtering are a significant security risk:
+
+- **SID History Vulnerability**: Attackers can exploit SID history to elevate privileges across trust boundaries
+- **Privilege Escalation Path**: Compromised external accounts can gain access to privileged resources
+- **Audit Finding**: Most security audits flag weak SID filtering on inter-forest trusts as high-risk
+- **Compliance Gap**: Fails compliance requirements for many security frameworks
+
+This test identifies external and forest trusts with weak SID filtering, enabling targeted remediation:
+- **External trusts** are weak when the `QUARANTINED_DOMAIN` bit (`0x4`) is not set
+- **Forest trusts** are weak when the `TREAT_AS_EXTERNAL` bit (`0x40`) is set (SID history enabled)
+- **Intra-forest** (parent-child) trusts are excluded because they do not support quarantine
+- **MIT Kerberos realm** trusts are excluded as SID filtering does not apply to them
+
+#### Control Type
+
+**Detective**
+
+#### Security Recommendation
+
+**Immediate Actions:**
+- Review each trust with weak SID filtering to determine if it can be strengthened
+- For external trusts: enable SID filtering (`netdom trust /quarantine:yes`)
+- For forest trusts: disable SID history (`netdom trust /enablesidhistory:no`)
+- Test applications that rely on cross-trust authentication before making changes
+
+**Long-term Strategy:**
+- Replace external trusts with forest trusts where possible
+- Implement selective authentication for sensitive resources
+- Regularly audit trust configurations
+- Document any trusts that must remain weak with business justification
+
+**Commands to Strengthen SID Filtering:**
+```powershell
+# External trust — enable quarantine (SID filtering)
+netdom trust <TrustingDomain> /domain:<TrustedDomain> /quarantine:yes
+
+# Forest trust — disable SID history
+netdom trust <TrustingDomain> /domain:<TrustedDomain> /enablesidhistory:no
+```
+
+#### How the Test Works
+
+This test derives trust classification and SID filtering status from the `trustAttributes` LDAP attribute and `trustType`:
+
+- **External trusts**: `trustType` in `1,2` and `trustAttributes` does not have `FOREST_TRANSITIVE` (`0x8`) or `WITHIN_FOREST` (`0x20`)
+- **Forest trusts**: `trustAttributes` has `FOREST_TRANSITIVE` (`0x8`)
+- **Weak external trusts**: `QUARANTINED_DOMAIN` (`0x4`) is **not** set
+- **Weak forest trusts**: `TREAT_AS_EXTERNAL` (`0x40`) **is** set (SID history enabled)
+
+The test displays:
+- Target domain of the trust
+- Trust direction (Inbound, Outbound, or Bidirectional)
+- Trust type (External Downlevel, Domain Uplevel, MIT Kerberos, or DCE)
+- Whether the trust is a forest or external trust
+- The reason for weak SID filtering
+
+#### Related Tests
+
+- `Test-MtAdTrustQuarantinedCount` - Count of quarantined vs non-quarantined external/forest trusts
+- `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined
+- `Test-MtAdTrustDetails` - Complete trust configuration details
+
+#### Related links
+
+- [Microsoft Learn: Security considerations for trusts](https://learn.microsoft.com/previous-versions/windows/it-pro/windows-server-2003/cc755321%28v=ws.10%29)
+- [ANSSI Active Directory checkpoints: Unfiltered outbound domain trust relationship](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_trusts_domain_notfiltered)
+
+<!--- Results --->
+%TestResult%

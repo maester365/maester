@@ -1,0 +1,81 @@
+﻿function Test-MtCisThirdPartyAndCustomApps {
+    <#
+    .SYNOPSIS
+    Ensure app permission policies are configured
+
+    .DESCRIPTION
+    The Global (Org-wide default) app permission policy should block third-party and custom Teams apps,
+    either entirely or by allowing only an approved list.
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.4.1, L1)
+
+    .EXAMPLE
+    Test-MtCisThirdPartyAndCustomApps
+
+    Returns true if the Global app permission policy blocks third-party and custom apps
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisThirdPartyAndCustomApps
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.8.4.1',
+        Title = 'Ensure app permission policies are configured',
+        Severity = 'High',
+        Category = 'CIS',
+        Product = 'Teams',
+        Tag = ('CIS E3 Level 1', 'CIS M365 v7.0.0'),
+        Service = 'Teams',
+        Author = 'HenrikPiecha',
+        Contributor = ('merill', 'MarcoJanse', 'Mynster9361')
+    )]
+    [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple types of apps.')]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose 'Test-MtCisThirdPartyAndCustomApps: Checking if all or a majority of third-party and custom apps are blocked'
+
+    $return = $true
+    $appPermPolicy = Get-CsTeamsAppPermissionPolicy -Identity Global
+
+    $passResult = '✅ Pass'
+    $failResult = '❌ Fail'
+
+    $result = "| Policy | Value | Status |`n"
+    $result += "| --- | --- | --- |`n"
+
+    if (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.GlobalCatalogApps)) {
+        # Third-party apps
+        $result += "| Third-party apps | Allow all apps | $failResult |`n"
+        $return = $false
+    } elseif (($appPermPolicy.GlobalCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.GlobalCatalogApps)) {
+        $result += "| Third-party apps | Allow specific apps and block all others | $passResult |`n"
+    } elseif (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.GlobalCatalogApps)) {
+        $result += "| Third-party apps | Block specific apps and allow all others | $failResult |`n"
+        $return = $false
+    } else {
+        $result += "| Third-party apps | Block all apps | $passResult |`n"
+    }
+
+    if (($appPermPolicy.PrivateCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.PrivateCatalogApps)) {
+        # Custom apps
+        $result += "| Custom apps | Allow all apps | $failResult |`n"
+        $return = $false
+    } elseif (($appPermPolicy.PrivateCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.PrivateCatalogApps)) {
+        $result += "| Custom apps | Allow specific apps and block all others | $passResult |`n"
+    } elseif (($appPermPolicy.PrivateCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.PrivateCatalogApps)) {
+        $result += "| Custom apps | Block specific apps and allow all others | $failResult |`n"
+        $return = $false
+    } else {
+        $result += "| Custom apps | Block all apps | $passResult |`n"
+    }
+
+    if ($return) {
+        $testResultMarkdown = "Well done. All or a majority of third-party and custom apps are blocked.`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "All or a majority of third-party or custom apps are allowed.`n`n%TestResult%"
+    }
+
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $return
+}

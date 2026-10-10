@@ -21,7 +21,7 @@ keywords:
 
 # CIS.M365.2.1.2 - (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -88,10 +88,11 @@ vbs, vxd, wsc, wsf, wsh, xll, xz, z, ace
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisAttachmentFilter](/docs/commands/Test-MtCisAttachmentFilter) |
+| PowerShell test | [Test-MtCisAttachmentFilter](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.2.ps1) |
+| Services | ExchangeOnline, SecurityCompliance |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.2, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisAttachmentFilter.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisAttachmentFilter.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.2.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.2.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.2.md)

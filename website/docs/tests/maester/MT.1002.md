@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1002"
   - "High"
+  - "Maester/Entra"
   - "App"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1002 - App management restrictions on applications and service principals is configured and enabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -93,11 +94,12 @@ Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params
 | Test ID | MT.1002 |
 | Severity | High |
 | Suite | Maester |
-| Category | App |
-| PowerShell test | [Test-MtAppManagementPolicyEnabled](/docs/commands/Test-MtAppManagementPolicyEnabled) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtAppManagementPolicyEnabled](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.ps1) |
+| Services | Graph |
 | Tags | App, Maester, MT.1002 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-AppManagementPolicies.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtAppManagementPolicyEnabled.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1002.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1002.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.md)

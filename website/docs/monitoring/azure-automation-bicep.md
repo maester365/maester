@@ -77,25 +77,29 @@ param __maesterAutomationAccountModules__ = [
   {
     name: 'Maester'
     uri: 'https://www.powershellgallery.com/api/v2/package/Maester'
+    version: '3.0.0'
   }
   {
     name: 'Microsoft.Graph.Authentication'
     uri: 'https://www.powershellgallery.com/api/v2/package/Microsoft.Graph.Authentication'
-  }
-  {
-    name: 'Pester'
-    uri: 'https://www.powershellgallery.com/api/v2/package/Pester'
+    version: '2.30.0'
   }
   {
     name: 'NuGet'
     uri: 'https://www.powershellgallery.com/api/v2/package/NuGet'
+    version: '1.3.3'
   }
   {
     name: 'PackageManagement'
     uri: 'https://www.powershellgallery.com/api/v2/package/PackageManagement'
+    version: '1.4.8.1'
   }
 ]
 ```
+
+:::info
+The built-in Maester tests ship inside the Maester module, so updating the `Maester` version here is all it takes to get new tests. Set it to the [latest Maester 3.x release](https://www.powershellgallery.com/packages/Maester). Pester is not needed; add it (5.7.1 or later) only if you also run your own [Pester-format custom tests](../writing-tests/pester-format-tests.md).
+:::
 
 The ```main.bicep``` template serves as the entry point for our Bicep configuration. It defines the parameters and variables used across the various modules.
 
@@ -274,28 +278,43 @@ resource managedIdentityRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0' 
 }]
 
 @description('Existing Automation Account')
-resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: _maesterAutomationAccountName_
 }
 
-@description('PowerShell Modules Deployment')
-resource automationAccountModules 'Microsoft.Automation/automationAccounts/modules@2023-11-01' = [ for module in __maesterAutomationAccountModules__: {
-  name: module.name
+@description('PowerShell 7.4 Runtime Environment (Maester 3.0 requires PowerShell 7.4 or later)')
+resource automationAccountRuntimeEnvironment 'Microsoft.Automation/automationAccounts/runtimeEnvironments@2024-10-23' = {
   parent: automationAccount
+  name: 'PowerShell-7.4'
+  location: __location__
+  properties: {
+    runtime: {
+      language: 'PowerShell'
+      version: '7.4'
+    }
+  }
+}
+
+@description('PowerShell Modules Deployment')
+resource automationAccountModules 'Microsoft.Automation/automationAccounts/runtimeEnvironments/packages@2024-10-23' = [ for module in __maesterAutomationAccountModules__: {
+  name: module.name
+  parent: automationAccountRuntimeEnvironment
   properties: {
     contentLink: {
       uri: module.uri
+      version: module.version
     }
   }
 }]
 
 @description('Runbook Deployment')
-resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
+resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbooks@2024-10-23' = {
   name: 'runBookMaester'
   location: __location__
   parent: automationAccount
   properties: {
     runbookType: 'PowerShell'
+    runtimeEnvironment: automationAccountRuntimeEnvironment.name
     logProgress: true
     logVerbose: true
     description: 'Runbook to execute Maester report'
@@ -306,7 +325,7 @@ resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbo
 }
 
 @description('Schedule Deployment')
-resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2023-11-01' = {
+resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2024-10-23' = {
   name: 'scheduleMaester'
   parent: automationAccount
   properties: {
@@ -351,11 +370,7 @@ if (!(Test-Path $TempOutputFolder -PathType Container)) {
     New-Item -ItemType Directory -Force -Path $TempOutputFolder
 }
 
-#Run Maester report
-cd $env:TEMP
-md maester-tests
-cd maester-tests
-Install-MaesterTests .\tests
+#Run Maester report (the built-in tests run from the Maester module)
 Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputFolder $TempOutputFolder
 ```
 
@@ -408,6 +423,7 @@ New-AzSubscriptionDeploymentStack -Name Maester -Location WestEurope -DenySettin
 ## FAQ / Troubleshooting
 
 - Ensure you have the latest version of Azure Bicep, as the ```microsoftGraphV1``` module depends on the newer versions
+- If you deployed this template with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md). The runbook must now use the PowerShell 7.4 Runtime Environment, and the runbook script no longer runs `Install-MaesterTests`.
 
 ## Contributors
 

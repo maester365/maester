@@ -1,0 +1,48 @@
+﻿function Test-MtExoMailTip {
+    <#
+    .SYNOPSIS
+    Checks if MailTips are enabled for end users
+
+    .DESCRIPTION
+    MailTips assist end users with identifying strange patterns to emails they send.
+    This helps protect against accidental information disclosure and phishing attempts.
+
+    .EXAMPLE
+    Test-MtExoMailTip
+
+    Returns true if MailTips are enabled for end users.
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtExoMailTip
+    #>
+    [MaesterTest(
+        Id = 'MT.1039',
+        Title = 'Ensure MailTips are enabled for end users',
+        Severity = 'Low',
+        Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
+        Tag = ('Exchange', 'Maester'),
+        Service = 'ExchangeOnline',
+        Author = 'weyCC81',
+        Contributor = 'bastienperez'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose "Getting Organization Config..."
+    $organizationConfig = Get-MtExo -Request OrganizationConfig
+    $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
+
+    $result = $organizationConfig.MailTipsExternalRecipientsTipsEnabled
+
+    if ($result) {
+        $testResultMarkdown = "Well done. ``MailTipsExternalRecipientsTipsEnabled`` is ``$($result)```n`n"
+    } else {
+        $testResultMarkdown = "``MailTipsExternalRecipientsTipsEnabled`` should be ``True`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+return $result
+}

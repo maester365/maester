@@ -1,0 +1,104 @@
+# Verifies that the committed engine DLL is the build output of src/Maester.Engine
+# and that it loads and runs on every operating system.
+name: build-engine
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'src/**'
+      - 'powershell/lib/**'
+      - 'build/Build-MaesterEngine.ps1'
+      - 'build/ci/Test-MaesterWithoutPester.ps1'
+      - 'powershell/internal/engine/**'
+      - 'powershell/public/run/Invoke-Maester.ps1'
+      - '.github/workflows/build-engine.yaml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  verify-dll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: src/global.json
+
+      - name: Rebuild the engine and compare with the committed DLL
+        shell: pwsh
+        run: ./build/Build-MaesterEngine.ps1 -Verify
+
+  load-and-run:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          # The PowerShell Gallery sometimes answers "No match was found" for a module that exists, so retry.
+          foreach ($attempt in 1..3) {
+            try {
+              Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber -ErrorAction Stop
+              break
+            }
+            catch {
+              if ($attempt -eq 3) { throw }
+              Write-Warning "Installing Pester failed (attempt $attempt of 3): $($_.Exception.Message)"
+              Start-Sleep -Seconds (10 * $attempt)
+            }
+          }
+
+      - name: Load the engine and run its tests
+        shell: pwsh
+        run: |
+          $PSVersionTable | Format-Table -AutoSize | Out-String | Write-Host
+          $config = New-PesterConfiguration
+          # Only the tests that need nothing but the DLL; the module's own tests run in build-validation.
+          $config.Run.Path = @('./powershell/tests/functions/engine/Invoke-MtEngineRun.Tests.ps1', './powershell/tests/functions/engine/MaesterTestSchema.Tests.ps1')
+          $config.Run.Exit = $true
+          $config.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $config
+
+  run-without-pester:
+    # Pester is not a dependency of Maester 3.0: native tests must run where it is not installed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Microsoft.Graph.Authentication and remove Pester from the runner
+        shell: pwsh
+        run: |
+          Install-Module Microsoft.Graph.Authentication -RequiredVersion 2.41.0 -Scope CurrentUser -Repository PSGallery -Force
+          # Delete only Pester folders: the nearest ancestor of each module base named Pester
+          # (-All also lists nested assemblies such as Pester/5.9.0/bin/net452).
+          Get-Module -ListAvailable -Name Pester -All | ForEach-Object {
+              $folder = $_.ModuleBase
+              while ($folder -and (Split-Path $folder -Leaf) -ne 'Pester') { $folder = Split-Path $folder -Parent }
+              if (-not $folder) { throw "Unexpected Pester location: $($_.ModuleBase)" }
+              $folder
+          } | Sort-Object -Unique | ForEach-Object { Write-Host "Removing $_"; sudo rm -rf -- $_ }
+
+      - name: Run Maester without Pester
+        shell: pwsh
+        run: ./build/ci/Test-MaesterWithoutPester.ps1

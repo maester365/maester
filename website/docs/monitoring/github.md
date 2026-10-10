@@ -33,6 +33,8 @@ GitHub is the quickest and easiest way to get started with automating Maester. T
   - **Private**: Select this option to keep your tests private
 - Select **Create repository**
 
+The built-in Maester tests ship inside the Maester PowerShell module, so you don't need to copy them into this repository. It holds your workflow and, optionally, your own custom tests (in a `custom` folder) and `maester-config.json`. Running `Install-MaesterTests` in your local clone creates a starter `custom/README.md` and `maester-config.json` that you can commit.
+
 ## Set up the GitHub Actions workflow
 
 There are many ways to authenticate with Microsoft Entra from GitHub Actions. We recommend using [**workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) as it is more secure, requires less maintenance and is the easiest to set up.
@@ -121,8 +123,10 @@ jobs:
         with:
           tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          include_public_tests: true
-          include_private_tests: false
+          # Use Maester 3.0. Without this the action keeps installing Maester 2.x.
+          maester_major_version: "3"
+          # Check out this repository to run your custom tests and maester-config.json (if any)
+          include_private_tests: true
           include_exchange: false
           include_teams: false
           # Set a specific version of the powershell module here or 'latest' or 'preview'
@@ -140,6 +144,10 @@ jobs:
           echo "Failed tests: ${{ steps.maester.outputs.tests_failed }}"
           echo "Skipped tests: ${{ steps.maester.outputs.tests_skipped }}"
 ```
+
+:::note
+The `maester_major_version: "3"` input opts the action in to Maester 3.0, where the built-in tests run from the Maester module. Without it the action keeps installing Maester 2.x, so existing workflows are not changed. If you are moving an existing workflow to 3.0, see [Upgrading from 2.x](../upgrading-from-2x.md).
+:::
 
   </TabItem>
   <TabItem value="wif" label="Custom workflow using Workload identity federation" default>
@@ -220,18 +228,11 @@ jobs:
           $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
           Connect-MgGraph -AccessToken $accessToken
 
-          # Install Maester
+          # Install Maester (the built-in tests ship inside the module)
           Install-Module Maester -Force
 
-          # Install Tests
-          Install-MaesterTests -Path ./tests
-
-          # Configure test results
-          $PesterConfiguration = New-PesterConfiguration
-          $PesterConfiguration.Output.Verbosity = 'None'
-
-          # Run Maester tests
-          $results = Invoke-Maester -Path ./tests -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+          # Run Maester tests: -Path adds the custom tests and maester-config.json in this repository, if any
+          $results = Invoke-Maester -Path . -Verbosity None -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
 
           # Add step summary
           $summary = Get-Content test-results/test-results.md
@@ -312,18 +313,11 @@ jobs:
         [pscredential]$clientSecretCredential = New-Object System.Management.Automation.PSCredential($env:CLIENTID, $clientSecret)
         Connect-MgGraph -TenantId $env:TENANTID -ClientSecretCredential $clientSecretCredential
 
-        # Install Maester
+        # Install Maester (the built-in tests ship inside the module)
         Install-Module Maester -Force
 
-        # Install Tests
-        Install-MaesterTests -Path ./tests
-
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.Output.Verbosity = 'None'
-
-        # Run Maester tests
-        $results = Invoke-Maester -Path ./tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+        # Run Maester tests: -Path adds the custom tests and maester-config.json in this repository, if any
+        $results = Invoke-Maester -Path . -Verbosity None -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
 
         # Add step summary
         $summary = Get-Content test-results/test-results.md
@@ -341,6 +335,12 @@ jobs:
         name: maester-test-results-${{ env.NOW }}
         path: test-results
 ```
+
+:::tip
+- If your custom tests include [Pester-format tests](../writing-tests/pester-format-tests.md) (`*.Tests.ps1`), add `Install-Module Pester -MinimumVersion 5.7.1 -Force` before `Invoke-Maester`. Pester is not needed for the built-in tests.
+- To publish NUnit XML test results (for example with a test reporter action), add `-PesterConfiguration @{ TestResult = @{ Enabled = $true; OutputPath = 'test-results/test-results.xml'; OutputFormat = 'NUnitXml' } }` to `Invoke-Maester`, or set `Output.TestResult` in `maester-config.json`. Maester writes the file itself; Pester is not required.
+- Use `-IncludePreview`, `-IncludeLongRunning`, `-Tag`, `-TestId` or `-ExcludeTestId` to choose which tests run, and `-DryRun` to see what would run.
+:::
 
 ### Step-by-step video tutorial
 
@@ -390,17 +390,9 @@ Select the **Run Maester Tests** job from **Jobs** in the left pane to view the 
 
 ## Keeping your Maester tests up to date
 
-The Maester team will add new tests over time. To get the latest updates, use the commands below to update your GitHub repository with the latest tests.
+The Maester team adds new tests over time. The built-in tests ship inside the Maester PowerShell module, so getting new tests only means using a newer module:
 
-- Clone your fork of the **maester-tests** repository to your local computer. See [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
-- Update the `Maester` PowerShell module to the latest version and load it.
-- Change to the `maester-tests\tests` directory.
-- Run `Update-MaesterTests`.
+- The workflows above install the latest Maester release on every run (`maester_version: latest` for the action, `Install-Module Maester -Force` for the custom workflows), so new tests are picked up automatically.
+- To control when you upgrade, pin a version instead, for example `maester_version: 3.0.0` or `Install-Module Maester -RequiredVersion 3.0.0 -Force`, and raise it when you are ready.
 
-```powershell
-cd maester-tests\tests
-
-Update-Module Maester -Force
-Import-Module Maester
-Update-MaesterTests
-```
+Your repository only needs to hold your own custom tests and configuration; there is nothing to update in it. If you set up this repository with Maester 2.x by copying the `maester-tests` repository and running `Update-MaesterTests`, see [Upgrading from 2.x](../upgrading-from-2x.md) to clean it up.

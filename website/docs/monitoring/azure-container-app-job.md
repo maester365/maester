@@ -24,7 +24,7 @@ Azure Container App Jobs allow you to run custom container images and run those 
 - If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately
 - You must also have the **Global Administrator** role in your Entra tenant. This is so the necessary permissions can be consented
 - An instance where you have [Docker installed](https://github.com/docker/docker-install?tab=readme-ov-file#dockerdocker-install)
-- A Docker [image with PowerShell Core](https://learn.microsoft.com/en-us/powershell/scripting/install/powershell-in-docker#using-powershell-in-a-container) installed
+- A Docker [image with PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/install/powershell-in-docker#using-powershell-in-a-container) 7.4 or later installed (Maester 3.0 requires PowerShell 7.4+)
 - An Azure Container Registry for hosting your image
 - Optionally:
   - Azure VM with a Managed Identity as your build instance (Assign Application Administrator Entra Role)
@@ -94,11 +94,10 @@ Using Docker you can define process steps and save those steps as layers to an i
 
 The following PowerShell script will enable you to:
 - Define the key aspects of your environment
-- Update any Maester tests each time the container is run
 - Connect to the environment as the container's managed identity
 - Obtain the private key of your Service Principal to authenticate against Entra with
 - Connect to the environment as the Service Principal
-- Run Maester
+- Run Maester (the built-in tests ship inside the Maester module installed in the image)
 - Sync the results with an Azure Storage Account
   - Alternatively you can utilize a Git repo
   - The below example uses Storage Account connection strings that the system assigned managed identity retrieves, alternatively you can use a user assigned managed identity to avoid connection strings
@@ -112,7 +111,6 @@ $applicationDisplayName = "<Application Display Name"
 $keyVaultName = "<Key Vault Name>"
 $storageAccountName = "<Storage Account Name>"
 $storageAccountResourceGroupName = "<Name of Resource Group Storage Account exists>"
-Update-MaesterTests
 #Connect to Service provider tenant
 Connect-MgGraph -Identity -NoWelcome
 Connect-AzAccount -Identity
@@ -164,6 +162,8 @@ RUN Install-Module Maester -Force
 
 CMD & /main.ps1
 ```
+
+The built-in tests are part of the Maester module, so you don't need to download or update any test files in the container. To pick up new tests, rebuild the image so that it installs the latest Maester module (or pin a version with `Install-Module Maester -RequiredVersion <version> -Force`). To add your own tests, copy a folder with a `Custom` subfolder into the image and run `Invoke-Maester -Path <folder>`. Pester is only needed if your custom tests are [Pester-format tests](../writing-tests/pester-format-tests.md); in that case add `RUN Install-Module Pester -MinimumVersion 5.7.1 -Force`.
 
 ### Push your image to ACR
 

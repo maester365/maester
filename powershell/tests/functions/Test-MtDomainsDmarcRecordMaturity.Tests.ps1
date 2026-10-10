@@ -1,3 +1,9 @@
+BeforeAll {
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtDomainsDmarcRecordMaturity
+}
+
 Describe 'Test-MtDomainsDmarcRecordMaturity' {
     BeforeEach {
         $script:skipCustomReason = $null

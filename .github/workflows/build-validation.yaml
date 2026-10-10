@@ -39,6 +39,7 @@ jobs:
               - 'build/**'
               - 'powershell/**'
               - 'report/**'
+              - 'src/**'
               - 'tests/**'
               - '.github/workflows/build-validation.yaml'
 
@@ -51,10 +52,25 @@ jobs:
           # -SkipPublisherCheck is required only for Pester: Windows images ship an inbox
           # Pester 3.4.0 signed by a different publisher, and installing a newer version
           # over it fails the Authenticode publisher match without the switch.
-          Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSFramework -Force -Scope CurrentUser -AllowClobber
-          Install-Module PSModuleDevelopment -Force -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Force -Scope CurrentUser -AllowClobber
+          # The PowerShell Gallery sometimes answers "No match was found" for a module that exists, so retry.
+          function Install-ModuleWithRetry {
+            param([hashtable] $Module)
+            foreach ($attempt in 1..3) {
+              try {
+                Install-Module @Module -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
+                return
+              }
+              catch {
+                if ($attempt -eq 3) { throw }
+                Write-Warning "Installing $($Module.Name) failed (attempt $attempt of 3): $($_.Exception.Message)"
+                Start-Sleep -Seconds (10 * $attempt)
+              }
+            }
+          }
+          Install-ModuleWithRetry @{ Name = 'Pester'; MinimumVersion = '5.7.1'; MaximumVersion = '5.7.1'; SkipPublisherCheck = $true }
+          Install-ModuleWithRetry @{ Name = 'PSFramework' }
+          Install-ModuleWithRetry @{ Name = 'PSModuleDevelopment' }
+          Install-ModuleWithRetry @{ Name = 'Microsoft.Graph.Authentication'; MinimumVersion = '2.27.0' }
           if ($env:RUNNER_OS -ne 'Windows') {
             try {
               Install-Module Microsoft.PowerShell.PSResourceGet -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
@@ -74,17 +90,6 @@ jobs:
           # original per-file Pester loop unchanged.
           PESTER_COVERAGE: "${{ runner.os == 'Linux' && 'true' || 'false' }}"
         run: |
-          ./powershell/tests/pester.ps1
-
-      - name: Run Tests using Windows PowerShell
-        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
-        shell: powershell
-        run: |
-          # Reuse downloaded modules from pwsh
-          $env:PSModulePath = ($env:PSModulePath).TrimEnd(';')+";$HOME\Documents\PowerShell\Modules"
-          # Remove old test results
-          Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
-          # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
       - name: Build module and validate output
@@ -122,7 +127,7 @@ jobs:
                 "| Coverage      | $pct%             |",
                 "",
                 "> Coverage is measured on the Linux + PowerShell 7 matrix leg only.",
-                "> Code paths gated to Windows PowerShell 5.1 or other platforms may appear uncovered here.",
+                "> Code paths gated to Windows or macOS may appear uncovered here.",
                 "> No threshold is enforced in this baseline run."
               ) -join "`n"
               $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8

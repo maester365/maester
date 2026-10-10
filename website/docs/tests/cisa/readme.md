@@ -34,7 +34,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1.md) | Only administrators SHALL be allowed to register applications. | High | Entra ID Free |
 | [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2.md) | Only administrators SHALL be allowed to consent to applications. | High | Entra ID Free |
 | [CISA.MS.AAD.5.3](./CISA.MS.AAD.5.3.md) | An admin consent workflow SHALL be configured for applications. | High | Entra ID Free |
-| [CISA.MS.AAD.5.4](./CISA.MS.AAD.5.4.md) | Group owners SHALL NOT be allowed to consent to applications. | High | Entra ID Free |
+| [CISA.MS.AAD.5.4](./CISA.MS.AAD.5.4.md) | Group owners SHALL NOT be allowed to consent to applications. | High | Deprecated |
 | [CISA.MS.AAD.6.1](./CISA.MS.AAD.6.1.md) | User passwords SHALL NOT expire. | High | Entra ID Free |
 | [CISA.MS.AAD.7.1](./CISA.MS.AAD.7.1.md) | A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role. | High | Entra ID Free |
 | [CISA.MS.AAD.7.2](./CISA.MS.AAD.7.2.md) | Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator. | High | Entra ID Free |
@@ -45,7 +45,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7.md) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | High | Entra ID P2 |
 | [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8.md) | User activation of the Global Administrator role SHALL trigger an alert. | High | Entra ID P2 |
 | [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9.md) | User activation of other highly privileged roles SHOULD trigger an alert. | High | Entra ID P2 |
-| [CISA.MS.AAD.8.1](./CISA.MS.AAD.8.1.md) | Guest users SHOULD have limited or restricted access to Azure AD directory objects. | Medium | Entra ID Free |
+| [CISA.MS.AAD.8.1](./CISA.MS.AAD.8.1.md) | Guest users SHOULD have limited or restricted access to Entra ID directory objects. | Medium | Entra ID Free |
 | [CISA.MS.AAD.8.2](./CISA.MS.AAD.8.2.md) | Only users with the Guest Inviter role SHOULD be able to invite guest users. | High | Entra ID Free |
 | [CISA.MS.AAD.8.3](./CISA.MS.AAD.8.3.md) | Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes. | Medium | Entra ID Free |
 | [CISA.MS.EXO.1.1](./CISA.MS.EXO.1.1.md) | Automatic forwarding to external domains SHALL be disabled. | High | exchange |
@@ -90,10 +90,10 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.EXO.17.2](./CISA.MS.EXO.17.2.md) | Microsoft Purview Audit (Premium) logging SHALL be enabled. | Medium | Deprecated |
 | [CISA.MS.EXO.17.3](./CISA.MS.EXO.17.3.md) | Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C). | Medium | exchange |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1.md) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | Medium | spo |
-| [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2.md) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | Unknown | spo |
+| [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2.md) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | Medium | spo |
 | [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3.md) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | High | spo |
-| [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1.md) | File and folder default sharing scope SHALL be set to Specific People. | Unknown | spo |
-| [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2.md) | File and folder default sharing permissions SHALL be set to View only. | Unknown | spo |
-| [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1.md) | Expiration days for Anyone links SHALL be set to 30 days or less. | Unknown | spo |
-| [CISA.MS.SHAREPOINT.3.2](./CISA.MS.SHAREPOINT.3.2.md) | Allowable file and folder permissions for Anyone links SHALL be set to View only. | Unknown | spo |
-| [CISA.MS.SHAREPOINT.3.3](./CISA.MS.SHAREPOINT.3.3.md) | Reauthentication days for people who use a verification code SHALL be set to 30 days or less. | Unknown | spo |
+| [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1.md) | File and folder default sharing scope SHALL be set to Specific People. | Medium | spo |
+| [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2.md) | File and folder default sharing permissions SHALL be set to View only. | Medium | spo |
+| [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1.md) | Expiration days for Anyone links SHALL be set to 30 days or less. | Medium | spo |
+| [CISA.MS.SHAREPOINT.3.2](./CISA.MS.SHAREPOINT.3.2.md) | Allowable file and folder permissions for Anyone links SHALL be set to View only. | Medium | spo |
+| [CISA.MS.SHAREPOINT.3.3](./CISA.MS.SHAREPOINT.3.3.md) | Reauthentication days for people who use a verification code SHALL be set to 30 days or less. | Medium | spo |

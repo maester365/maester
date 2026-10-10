@@ -20,7 +20,7 @@ keywords:
 
 # CISA.MS.EXO.4.2 - The DMARC message rejection option SHALL be p=reject.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/kij" title="kij · Co-contributor"><img src="https://github.com/kij.png" alt="kij" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/jeanphilippegeorge">Jean-Philippe George</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -47,10 +47,11 @@ Rationale: Of the three policy options (i.e., none, quarantine, and reject), rej
 | Severity | High |
 | Suite | CISA |
 | Category | exchange |
-| PowerShell test | [Test-MtCisaDmarcRecordReject](/docs/commands/Test-MtCisaDmarcRecordReject) |
+| PowerShell test | [Test-MtCisaDmarcRecordReject](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.2.ps1) |
+| Services | ExchangeOnline |
 | Tags | CISA, CISA.MS.EXO.4.2, MS.EXO, MS.EXO.4.2 |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaDmarcRecordReject.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaDmarcRecordReject.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.4.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.2.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.4.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.2.md)

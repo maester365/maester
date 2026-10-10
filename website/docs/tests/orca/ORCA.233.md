@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.233 - Domains are pointed directly at EOP or enhanced filtering is used.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Exchange Online Protection (EOP) and Microsoft Defender for Office 365 (MDO) works best when the mail exchange (MX) record is pointed directly at the service. In the event another third-party service is being used, a very important signal (the senders IP address) is obfuscated and hidden from EOP & MDO, generating a larger quantity of false positives and false negatives. By configuring Enhanced Filtering with the IP addresses of these services the true senders IP address can be discovered, reducing the false-positive and false-negative impact.
 
 #### Remediation action
+
 Send mail directly to EOP or configure enhanced filtering.
 
 #### Related Links
@@ -40,10 +41,11 @@ Send mail directly to EOP or configure enhanced filtering.
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA233](/docs/commands/Test-ORCA233) |
+| PowerShell test | [Test-ORCA233](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.ps1) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.233 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA233.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA233.ps1`
+- Test: [`tests/orca/Test.ORCA.233.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.ps1)
+- Documentation: [`tests/orca/Test.ORCA.233.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.md)

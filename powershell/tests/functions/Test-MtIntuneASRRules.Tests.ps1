@@ -1,6 +1,9 @@
 ﻿Describe 'Test-MtIntuneASRRules' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtIntuneASRRules
 
         $script:AsrRoot = 'device_vendor_msft_policy_config_defender_attacksurfacereductionrules'
 
@@ -144,10 +147,13 @@
         $script:Result | Should -BeLike '*No Attack Surface Reduction rules found*'
     }
 
-    It 'skips when Intune is not licensed' {
-        Mock -ModuleName Maester Get-MtLicenseInformation { return $null }
+    It 'declares the Intune licence so the engine skips it when Intune is not licensed' {
+        (Get-MtTest -Id 'MT.1178').License | Should -Contain 'INTUNE_A'
 
-        Test-MtIntuneASRRules | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotLicensedIntune'
+        Mock -ModuleName Maester Get-MgContext { return $null }
+        $config = [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = @('AAD_PREMIUM') } }
+        $row = Invoke-MtTest -Id 'MT.1178' -Config $config
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'LicenseNotFound'
     }
 }

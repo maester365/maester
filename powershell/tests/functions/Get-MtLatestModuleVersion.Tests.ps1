@@ -1,6 +1,6 @@
 ﻿Describe 'Get-MtLatestModuleVersion' {
     BeforeAll {
-        . "$PSScriptRoot/../../internal/Get-MtLatestModuleVersion.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-MtLatestModuleVersion.ps1"
     }
 
     Context 'OData API lookup' {

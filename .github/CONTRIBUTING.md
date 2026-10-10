@@ -2,12 +2,10 @@
 
 Thank you for your interest in contributing to Maester.
 
-> [!IMPORTANT]
-> **Contributions paused for the Maester 3.0 rewrite (from October 6, 2026, for about a week)**
+> [!NOTE]
+> **Contributions are open again**
 >
-> We're rewriting the Maester engine and all of the tests for 3.0. To avoid merge conflicts, please **don't open new pull requests** (new tests, test updates or engine changes) until the rewrite lands. PRs that are already open won't be merged during the pause.
->
-> Bug reports and ideas are still welcome as issues. We'll remove this notice when contributions reopen. Thank you for your patience! 💖
+> The Maester 3.0 rewrite is in `main`. Checks are now native tests (`Test.<ID>.ps1` and `Test.<ID>.md`), and the repository has a new folder layout. Read [Writing tests](https://maester.dev/docs/next/writing-tests) and the [contributing guide](https://maester.dev/docs/next/contributing#repository-layout) before you start. If your pull request was opened before 3.0, rebase it on `main`; `Convert-MtTest` converts Pester-format checks to native tests.
 
 The Maester team strives to maintain code that is resilient, safe, easy to understand, and easy to maintain. We welcome contributions that support these goals.
 

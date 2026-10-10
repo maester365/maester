@@ -1,0 +1,409 @@
+{
+  "_meta": {
+    "Description": "Maester metadata for the ORCA native tests that the upstream ORCA checks do not carry. Read by build/orca/Update-OrcaTests.ps1. Severity was seeded from the 2.x tests/maester-config.json rows, Author and Contributor from docs/proposals/maester-3.0-evidence/authorship-seed.csv. Edit here, then regenerate."
+  },
+  "Tests": {
+    "ORCA.100": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.101": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.102": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.103": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.104": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.105": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.106": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.107": {
+      "Severity": "Low",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.108": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.108.1": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.109": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.110": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.111": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.112": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.113": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.114": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.115": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.116": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.118.1": {
+      "Severity": "High",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.118.2": {
+      "Severity": "High",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.118.3": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.118.4": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.119": {
+      "Severity": "Info",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.120.1": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.120.2": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.120.3": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.121": {
+      "Severity": "Low",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.123": {
+      "Severity": "Info",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.124": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.139": {
+      "Severity": "Low",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.140": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.141": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.142": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.143": {
+      "Severity": "Info",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.156": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.158": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.179": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.180": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.189": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.189.2": {
+      "Severity": "High",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.205": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.220": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.221": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.222": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.223": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.224": {
+      "Severity": "Info",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.225": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.226": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.227": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.228": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.229": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.230": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.231": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.232": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.233": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.233.1": {
+      "Severity": "Medium",
+      "Author": [
+        "thomas-s-schmidt"
+      ]
+    },
+    "ORCA.234": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.235": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.236": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.237": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.238": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.239": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.240": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.241": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.242": {
+      "Severity": "High",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.243": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    },
+    "ORCA.244": {
+      "Severity": "Medium",
+      "Author": [
+        "soulemike"
+      ]
+    }
+  }
+}

@@ -1,7 +1,9 @@
 // Builds contributor attribution for Maester tests.
 //
-// Attribution is derived from git history (with rename tracking) and enriched
-// with the registry at website/contributors/contributors.yml. Because CI often
+// Per-test attribution comes from the Author and Contributor values of each test's
+// [MaesterTest] attribute; tests without them fall back to git history (with
+// rename tracking). Git history also supplies profile details, enriched with
+// the registry at website/contributors/contributors.yml. Because CI often
 // builds from a shallow clone, the computed result is snapshotted to
 // website/src/data/contributors.json; when full git history is unavailable the
 // committed snapshot is used as-is.
@@ -18,7 +20,6 @@ const websiteRoot = join(scriptDir, "..");
 const repoRoot = join(websiteRoot, "..");
 const registryPath = join(websiteRoot, "contributors", "contributors.yml");
 const emailAliasesPath = join(websiteRoot, "contributors", "email-aliases.json");
-const overridesPath = join(websiteRoot, "contributors", "attribution-overrides.yml");
 const snapshotPath = join(websiteRoot, "src", "data", "contributors.json");
 const avatarDir = join(websiteRoot, "static", "img", "contributors");
 
@@ -198,7 +199,6 @@ export function computeContributorData(tests, { log = console.log, updateAliases
   }
 
   const registry = loadYaml(registryPath);
-  const overrides = loadYaml(overridesPath);
   const fileHistory = loadGitFileHistory();
   // Machine-maintained cache: sha256(lowercased email) -> GitHub handle.
   // Never edited by hand - unknown emails are resolved via the GitHub API
@@ -312,52 +312,67 @@ export function computeContributorData(tests, { log = console.log, updateAliases
     return profile;
   }
 
-  function historyFor(test) {
-    const files = [];
-    if (test.sourceFunctionFile) {
-      files.push(test.sourceFunctionFile);
-      const mdSibling = test.sourceFunctionFile.replace(/\.ps1$/i, ".md");
-      if (mdSibling !== test.sourceFunctionFile && existsSync(join(repoRoot, mdSibling))) files.push(mdSibling);
-    } else if (test.sourceTestFile) {
-      files.push(test.sourceTestFile);
+  // Maester 3.0 native tests declare their credit in the [MaesterTest] attribute (Author, Contributor),
+  // seeded once from git and maintained by hand. Those handles are used as-is; git history only
+  // supplies profile details (display name, first contribution) for them.
+  const canonicalById = new Map(Object.keys(registry).map((id) => [id.toLowerCase(), id]));
+  const gitNamesById = new Map(); // lowercased id -> git author names
+  const firstDateById = new Map(); // lowercased id -> earliest commit date on test or module files
+  for (const identity of identities) {
+    if (!identity.id) continue;
+    const key = identity.id.toLowerCase();
+    if (!canonicalById.has(key)) canonicalById.set(key, identity.id);
+    if (!gitNamesById.has(key)) gitNamesById.set(key, []);
+    gitNamesById.get(key).push(identity.name);
+  }
+  for (const [path, entries] of fileHistory) {
+    if (!/^(powershell|tests)\//.test(path)) continue;
+    for (const entry of entries) {
+      const identity = identityByEmail.get(entry.email);
+      if (!identity || identity.skip || !identity.id) continue;
+      const key = identity.id.toLowerCase();
+      if (!firstDateById.has(key) || entry.date < firstDateById.get(key)) firstDateById.set(key, entry.date);
     }
-    return files.flatMap((file) => fileHistory.get(file) ?? []);
+  }
+  function declaredContributor(handle) {
+    const key = String(handle).toLowerCase();
+    const id = canonicalById.get(key) ?? String(handle);
+    const registered = Object.getOwnPropertyDescriptor(registry, id)?.value;
+    const profile = contributorFor({ id, name: registered?.name ?? gitNamesById.get(key)?.find((name) => name.includes(" ")) ?? gitNamesById.get(key)?.[0] ?? id, github: true });
+    for (const name of gitNamesById.get(key) ?? []) if (!profile.gitNames.includes(name)) profile.gitNames.push(name);
+    const firstDate = firstDateById.get(key);
+    if (firstDate && (!profile.firstContribution || firstDate < profile.firstContribution)) profile.firstContribution = firstDate;
+    return id;
   }
 
   const attributions = {};
   for (const test of tests) {
-    const entries = historyFor(test)
-      .filter((entry) => !identityByEmail.get(entry.email)?.skip)
-      .sort((a, b) => a.date.localeCompare(b.date));
-    const seen = new Map(); // id -> { id, commits, firstDate }
-    for (const entry of entries) {
-      const identity = identityByEmail.get(entry.email);
-      if (!identity) continue;
-      const profile = contributorFor(identity);
-      if (!profile.firstContribution || entry.date < profile.firstContribution) profile.firstContribution = entry.date;
-      if (!seen.has(identity.id)) seen.set(identity.id, { id: identity.id, commits: 0, firstDate: entry.date });
-      seen.get(identity.id).commits += 1;
+    // Credit comes only from the [MaesterTest] attribute (Author, Contributor); every built-in test declares
+    // an Author, so a test without one is a metadata error rather than something to guess from git.
+    if (!(test.authors?.length > 0)) {
+      throw new Error(`Test ${test.id} declares no Author in its [MaesterTest] attribute.`);
     }
+    const ids = [];
+    for (const handle of [...test.authors, ...(test.contributors ?? [])]) {
+      const id = declaredContributor(handle);
+      if (!ids.some((existing) => existing.toLowerCase() === id.toLowerCase())) ids.push(id);
+    }
+    const [author, ...rest] = ids;
+    attributions[test.id] = { author, contributors: rest };
+    contributors.get(author)?.testsAuthored.push(test.id);
+    for (const id of rest) contributors.get(id)?.testsContributed.push(test.id);
+  }
 
-    let ordered = [...seen.values()];
-    const override = overrides[test.id] ?? overrides.suites?.[test.suite];
-    if (override?.author) {
-      ordered = ordered.filter((item) => item.id.toLowerCase() !== String(override.author).toLowerCase());
-      ordered.unshift({ id: override.author, commits: 0, firstDate: "" });
-      contributorFor({ id: override.author, name: registry[override.author]?.name ?? override.author, github: true });
-    }
-    for (const extra of override?.contributors ?? []) {
-      if (!ordered.some((item) => item.id.toLowerCase() === String(extra).toLowerCase())) {
-        ordered.push({ id: extra, commits: 0, firstDate: "" });
-        contributorFor({ id: extra, name: registry[extra]?.name ?? extra, github: true });
-      }
-    }
-    if (ordered.length === 0) continue;
-
-    const [author, ...rest] = ordered;
-    attributions[test.id] = { author: author.id, contributors: rest.map((item) => item.id) };
-    contributors.get(author.id)?.testsAuthored.push(test.id);
-    for (const item of rest) contributors.get(item.id)?.testsContributed.push(test.id);
+  // A profile page, once published, is kept even when no test credits that person any more (the 3.0
+  // Contributor rule is stricter than "touched the file"), so links to /contributors/<id> stay valid.
+  // Only people with a registry entry are kept, and no new zero-credit pages are created.
+  const publishedIds = new Set(
+    (existsSync(snapshotPath) ? JSON.parse(readFileSync(snapshotPath, "utf8")).profiles ?? [] : []).map((profile) => String(profile.id).toLowerCase())
+  );
+  const keptIds = new Set();
+  for (const id of Object.keys(registry)) {
+    if (!publishedIds.has(id.toLowerCase()) || contributors.has(id)) continue;
+    keptIds.add(declaredContributor(id));
   }
 
   // Finalize profiles: display name, avatar.
@@ -385,7 +400,7 @@ export function computeContributorData(tests, { log = console.log, updateAliases
     profile.testsAuthored.length * AUTHORED_WEIGHT +
     Math.sqrt(profile.testsContributed.length) * IMPROVEMENT_SCALE;
   const profiles = [...contributors.values()]
-    .filter((profile) => profile.testsAuthored.length + profile.testsContributed.length > 0)
+    .filter((profile) => profile.testsAuthored.length + profile.testsContributed.length > 0 || keptIds.has(profile.id))
     .sort(
       (a, b) =>
         (a.pinLast ? 1 : 0) - (b.pinLast ? 1 : 0) ||

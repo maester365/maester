@@ -82,17 +82,12 @@ param __maesterAutomationAccountModules__ = [
   {
     name: 'Maester'
     uri: 'https://www.powershellgallery.com/api/v2/package/Maester'
-    version: '1.3.0'
+    version: '3.0.0'
   }
   {
     name: 'Microsoft.Graph.Authentication'
     uri: 'https://www.powershellgallery.com/api/v2/package/Microsoft.Graph.Authentication'
     version: '2.30.0'
-  }
-  {
-    name: 'Pester'
-    uri: 'https://www.powershellgallery.com/api/v2/package/Pester'
-    version: '5.7.1'
   }
   {
     name: 'NuGet'
@@ -116,6 +111,10 @@ param __maesterAutomationAccountModules__ = [
   }
 ]
 ```
+
+:::info
+The built-in Maester tests ship inside the Maester module (Maester 3.0 and later), so updating the `Maester` version here is all it takes to get new tests. Set it to the [latest Maester 3.x release](https://www.powershellgallery.com/packages/Maester). Pester is not needed; add it (5.7.1 or later) only if you also run your own [Pester-format custom tests](../writing-tests/pester-format-tests.md).
+:::
 
 The ```main.bicep``` template serves as the entry point for our Bicep configuration. It defines the parameters and variables used across the various modules.
 
@@ -603,11 +602,8 @@ if (!(Test-Path $TempOutputFolder -PathType Container)) {
     New-Item -ItemType Directory -Force -Path $TempOutputFolder | Out-Null
 }
 
+#The built-in tests run from the Maester module
 Set-Location $env:TEMP
-if (!(Test-Path ".\maester-tests")) { New-Item -ItemType Directory -Path ".\maester-tests" | Out-Null }
-Set-Location ".\maester-tests"
-
-Install-MaesterTests .\tests
 Invoke-Maester -OutputHtmlFile (Join-Path $TempOutputFolder "index.html")
 
 Compress-Archive -Path (Join-Path $TempOutputFolder "*") -DestinationPath $FileName -Force
@@ -716,6 +712,7 @@ The schedule of the Automation Account which will trigger on Monday, Wednesday, 
 ## FAQ / Troubleshooting
 
 - Ensure you have the latest version of Azure Bicep, as the ```microsoftGraphV1_0``` module depends on the newer versions
+- If you deployed this template with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md). The runbook script no longer runs `Install-MaesterTests`.
 
 ## Contributors
 

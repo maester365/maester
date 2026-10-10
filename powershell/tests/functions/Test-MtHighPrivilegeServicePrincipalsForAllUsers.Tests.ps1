@@ -1,5 +1,8 @@
 ﻿Describe 'Test-MtHighPrivilegeServicePrincipalsForAllUsers' {
     BeforeAll {
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtHighPrivilegeServicePrincipalsForAllUsers
         $script:monitoredAppIds = @(
             '1950a258-227b-4e31-a9cf-717495945fc2'
             '04b07795-8ddb-461a-bbee-02f9e1bf7b46'

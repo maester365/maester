@@ -1,0 +1,42 @@
+function Test-MtEidscaAP07 {
+    <#
+    .SYNOPSIS
+    Checks if Default Authorization Settings - Guest user access is set to '2af84b1e-32c8-42b7-82bc-daa82404023b'
+
+    .DESCRIPTION
+
+    Represents role templateId for the role that should be granted to guest user.
+
+    Queries policies/authorizationPolicy
+    and returns the tenant value of
+    graph/policies/authorizationPolicy.guestUserRoleId
+
+    The native test EIDSCA.AP07 passes when this value -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'.
+
+    .EXAMPLE
+    Test-MtEidscaAP07
+
+    Returns the tenant value of graph.microsoft.com/beta/policies/authorizationPolicy.guestUserRoleId
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+
+    $rawValue = $result.guestUserRoleId
+    [string]$tenantValue = $rawValue
+    $testResult = $tenantValue -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and '2af84b1e-32c8-42b7-82bc-daa82404023b' -notlike '*$null*'
+
+    if($testResult){
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+    } else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity ''
+
+    return $tenantValue
+}

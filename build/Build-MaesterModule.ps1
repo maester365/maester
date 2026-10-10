@@ -264,7 +264,7 @@ Write-Host "   Internal files: $($InternalFiles.Count)"
 Write-Host "   Public files:   $($PublicFiles.Count)"
 
 # Helper: compute directory depth of a file relative to $SourceRoot.
-# e.g. powershell/internal/foo.ps1 → depth 1, powershell/public/core/bar.ps1 → depth 2
+# e.g. powershell/internal/engine/Read-MtNativeTest.ps1 → depth 2, powershell/public/services/entra/Get-MtUser.ps1 → depth 3
 function Get-RelativeDepth {
     param (
         [string] $FilePath,
@@ -540,6 +540,24 @@ foreach ($File in $PublicFiles) {
 $null = $Builder.AppendLine('#endregion Public Functions')
 $null = $Builder.AppendLine()
 
+# Built-in native tests (tests/**/Test.<ID>.ps1) are module source: their functions are defined in module
+# scope, after internal and public functions (Maester 3.0 design, section 3.1).
+$NativeTestFiles = @(Get-ChildItem -Path $TestsRoot -Filter 'Test.*.ps1' -Recurse -File |
+        Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' } |
+        Sort-Object -Property FullName)
+Write-Information "   Native test files: $($NativeTestFiles.Count)" -InformationAction Continue
+$null = $Builder.AppendLine('#region Built-in Native Tests')
+$null = $Builder.AppendLine()
+foreach ($File in $NativeTestFiles) {
+    $FileContent = Get-Content -Path $File.FullName -Raw
+    $FileContent = Remove-FileLevelPreamble -Content $FileContent -FileName $File.Name
+    $null = $Builder.AppendLine("# ── $($File.Name) ──")
+    $null = $Builder.AppendLine($FileContent.TrimEnd())
+    $null = $Builder.AppendLine()
+}
+$null = $Builder.AppendLine('#endregion Built-in Native Tests')
+$null = $Builder.AppendLine()
+
 # Read aliases from the source manifest for the Export-ModuleMember statement.
 $SourceManifest = Import-PowerShellDataFile -Path "$SourceRoot/Maester.psd1"
 $AliasExportList = $SourceManifest['AliasesToExport']
@@ -579,7 +597,7 @@ $OrcaBuilder = [System.Text.StringBuilder]::new()
 
 # Base classes and enums from orcaClass.psm1 — must come first (defines all base
 # types before any derived check classes).
-$OrcaClassPath = Join-Path $SourceRoot 'internal/orca/orcaClass.psm1'
+$OrcaClassPath = Join-Path $SourceRoot 'internal/generated/orca/orcaClass.psm1'
 $OrcaBaseContent = Get-Content -Path $OrcaClassPath -Raw
 
 $null = $OrcaBuilder.AppendLine('# Consolidated ORCA class definitions')
@@ -592,7 +610,7 @@ $null = $OrcaBuilder.AppendLine()
 # Derived check classes — each check-ORCA*.ps1 file defines a class that inherits
 # from ORCACheck. The `using module` directive is stripped because the base classes
 # are now defined inline above.
-$OrcaCheckFiles = @(Get-ChildItem -Path "$SourceRoot/internal/orca" -Filter 'check-ORCA*.ps1' -Recurse |
+$OrcaCheckFiles = @(Get-ChildItem -Path "$SourceRoot/internal/generated/orca" -Filter 'check-ORCA*.ps1' -Recurse |
     Sort-Object -Property FullName)
 
 $UsingModulePattern = '^\s*using\s+module\s+["'']\.[\\/]orcaClass\.psm1["'']\s*$'
@@ -659,6 +677,84 @@ foreach ($MarkdownFile in $MarkdownFiles) {
     }
 }
 
+# Built-in native tests: validate them, write the catalog, and bundle each test's Markdown by ID
+# (design appendix A.4). The build fails on a schema error, a duplicate ID or function name, a missing
+# .md file or an unknown licence token.
+# The source module is imported in a separate runspace, so the caller's session (which may itself have
+# Maester loaded, as in the module's own tests) is not changed.
+$CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @() }
+if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); try {
+    $null = $CatalogRunspace.AddScript({
+            param($SourceManifest, $TestsRoot)
+            $module = Import-Module $SourceManifest -Force -PassThru -WarningAction SilentlyContinue -ErrorAction Stop |
+                Where-Object { $_.Name -eq 'Maester' } | Select-Object -First 1
+            & $module {
+                param($TestsRoot)
+                $tests = @(Get-MtNativeTestInventory -Path $TestsRoot -Root $TestsRoot -BuiltIn)
+                $licenseTokens = @((Get-MtLicenseTable).Tokens.Keys)
+                $problems = foreach ($t in $tests) {
+                    foreach ($e in $t.Errors) { "$($t.File):$($e.Line): $($e.Message)" }
+                    if (-not $t.MarkdownPath) { "$($t.File): the test has no Markdown file." }
+                    foreach ($element in @($t.License)) {
+                        foreach ($token in ($element -split '&')) {
+                            if ($token -and -not ($licenseTokens | Where-Object { $_ -eq $token })) { "$($t.File): licence token '$token' is not in the licence table." }
+                        }
+                    }
+                }
+                $suites = @{}
+                foreach ($manifest in Get-ChildItem -Path $TestsRoot -Filter 'suite.json' -Recurse -File) {
+                    $suite = Get-Content -LiteralPath $manifest.FullName -Raw | ConvertFrom-Json
+                    if ($suite.Id) { $suites[[string]$suite.Id] = $suite }
+                }
+                [pscustomobject]@{
+                    Tests      = $tests
+                    Problems   = @($problems)
+                    Suites     = $suites
+                    Version    = (Get-MtModuleVersion)
+                    GraphScope = @(Get-MtGraphScope)
+                }
+            } $TestsRoot
+        }).AddArgument((Join-Path $SourceRoot 'Maester.psd1')).AddArgument($TestsRoot)
+    $CatalogResult = $CatalogRunspace.Invoke() | Select-Object -Last 1
+    if ($CatalogRunspace.HadErrors -and -not $CatalogResult) {
+        throw "Could not read the built-in native tests: $($CatalogRunspace.Streams.Error | Select-Object -First 1)"
+    }
+} finally {
+    $CatalogRunspace.Dispose()
+} }
+if ($CatalogResult.Problems.Count -gt 0) {
+    throw "Built-in native tests have $($CatalogResult.Problems.Count) problem(s):`n$($CatalogResult.Problems -join "`n")"
+}
+$RepoRootForCatalog = Split-Path -Path $TestsRoot -Parent
+$CatalogTests = foreach ($t in ($CatalogResult.Tests | Sort-Object Id)) {
+    $Relative = $t.File.Substring($RepoRootForCatalog.Length).TrimStart('\', '/') -replace '\\', '/'
+    $Entry = [ordered]@{}
+    foreach ($Property in $t.PSObject.Properties) {
+        if ($Property.Name -in 'Errors', 'MarkdownPath', 'BuiltIn') { continue }
+        $Entry[$Property.Name] = $Property.Value
+    }
+    $Entry.File = $Relative
+    $Entry.IdPattern = if ($t.InstanceSource) { '^' + [regex]::Escape($t.Id) + '\.[A-Za-z0-9][A-Za-z0-9._-]{0,127}$' } else { $null }
+    [pscustomobject]$Entry
+
+    # Markdown by ID, and by function name for 2.x-style lookups.
+    $MarkdownContent = Get-Content -LiteralPath $t.MarkdownPath -Raw
+    $MarkdownParts = $MarkdownContent -split '<!--- Results --->', 2
+    $MarkdownEntry = [ordered]@{ Description = $MarkdownParts[0]; Result = if ($MarkdownParts.Count -gt 1) { $MarkdownParts[1] } else { $null } }
+    $TestMetadata[$t.Id] = $MarkdownEntry
+    if (-not $TestMetadata.Contains($t.FunctionName)) { $TestMetadata[$t.FunctionName] = $MarkdownEntry }
+}
+$Catalog = [ordered]@{
+    SchemaVersion    = '1.0'
+    CatalogVersion   = [string]$CatalogResult.Version
+    GraphPermissions = $CatalogResult.GraphScope
+    Suites           = $CatalogResult.Suites
+    Tests            = @($CatalogTests)
+}
+$CatalogPath = Join-Path $OutputRoot 'Maester.TestCatalog.json'
+Set-Utf8BomContent -Path $CatalogPath -Value ($Catalog | ConvertTo-Json -Depth 8)
+Write-Information "   Generated: Maester.TestCatalog.json ($(@($CatalogTests).Count) native tests)" -InformationAction Continue
+
 $TestMetadataPath = Join-Path $OutputRoot 'Maester.TestMetadata.json'
 $TestMetadataJson = $TestMetadata | ConvertTo-Json -Depth 3
 Set-Utf8BomContent -Path $TestMetadataPath -Value $TestMetadataJson
@@ -669,6 +765,20 @@ $AssetsSource = Join-Path $SourceRoot 'assets'
 $AssetsOutput = Join-Path $OutputRoot 'assets'
 Copy-Item -Path $AssetsSource -Destination $AssetsOutput -Recurse -Force
 Write-Host '   Copied: assets/'
+
+# The people of the dashboard's Featured contributor panel: refreshed from the website's contributor data
+# when the build runs in a full checkout, so that a release has the current list. Without that data the
+# copy from the source tree stays.
+$ContributorData = Join-Path $RepoRoot 'website/src/data/contributors.json'
+if (Test-Path -LiteralPath $ContributorData) {
+    & (Join-Path $PSScriptRoot 'Update-ConsoleContributors.ps1') -Source $ContributorData -Destination (Join-Path $AssetsOutput 'ConsoleContributors.json')
+}
+
+# Engine DLL (committed prebuilt; see build/Build-MaesterEngine.ps1)
+$LibSource = Join-Path $SourceRoot 'lib'
+$LibOutput = Join-Path $OutputRoot 'lib'
+Copy-Item -Path $LibSource -Destination $LibOutput -Recurse -Force
+Write-Information '   Copied: lib/' -InformationAction Continue
 
 # Format file
 $FormatFile = Join-Path $SourceRoot 'Maester.Format.ps1xml'
@@ -703,14 +813,22 @@ Update-ModuleManifest -Path $OutputManifest `
 Write-Host "   FunctionsToExport: $($ExportFunctionList.Count) functions"
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Phase G — Copy tests as-is and preserve Pester file boundaries
+# Phase G — Copy the built-in Pester test suites, preserving Pester file boundaries
 # ──────────────────────────────────────────────────────────────────────────────
+# Built-in tests run from the module (Maester 3.0 design, section 7.2). Suites that are not yet
+# migrated to the native format ship as Pester files in builtin-pester/. The Custom folder is the
+# user's and is not shipped; Install-MaesterTests writes its README from assets/templates.
 
-Write-Host '── Phase G: Copying test suites' -ForegroundColor Cyan
+Write-Information '── Phase G: Copying built-in test suites' -InformationAction Continue
 
-$TestsOutput = Join-Path $OutputRoot 'maester-tests'
-Copy-Item -Path $TestsRoot -Destination $TestsOutput -Recurse -Force
-Write-Host '   Copied: tests/ → maester-tests/'
+$TestsOutput = Join-Path $OutputRoot 'builtin-pester'
+$null = New-Item -Path $TestsOutput -ItemType Directory -Force
+Get-ChildItem -LiteralPath $TestsRoot -Force | Where-Object { $_.Name -ine 'Custom' } |
+    Copy-Item -Destination $TestsOutput -Recurse -Force
+# Native tests are compiled into Maester.psm1 and their Markdown is bundled; they are not copied here.
+Get-ChildItem -LiteralPath $TestsOutput -Recurse -File | Where-Object { $_.Name -like 'Test.*.ps1' -or $_.Name -like 'Test.*.md' } |
+    Remove-Item -Force
+Write-Information '   Copied: tests/ → builtin-pester/ (without Custom/)' -InformationAction Continue
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Phase H — Build profiling (optional)

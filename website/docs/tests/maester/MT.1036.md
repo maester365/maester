@@ -1,6 +1,6 @@
 ---
 title: "MT.1036 - All excluded objects should have a fallback include in another policy."
-description: "Provides the differences in objects between two arrays of objects."
+description: "Checks for gaps in Conditional Access policies, by looking for excluded objects which are not specifically included in another Conditional Access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly overlooked exclusions which do not have a fallback. Remediati…"
 slug: /tests/MT.1036
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1036"
   - "Medium"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,11 +18,17 @@ keywords:
 
 # MT.1036 - All excluded objects should have a fallback include in another policy.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Original author"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/robbevandendaele">Robbe Van den Daele</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Original author"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/robbevandendaele">Robbe Van den Daele</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Provides the differences in objects between two arrays of objects.
+Checks for gaps in Conditional Access policies, by looking for excluded objects which are not specifically included
+in another Conditional Access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
+overlooked exclusions which do not have a fallback.
+
+#### Remediation action
+
+Review the configuration described above.
 
 ## Test Metadata
 
@@ -30,11 +37,12 @@ Provides the differences in objects between two arrays of objects.
 | Test ID | MT.1036 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaGap](/docs/commands/Test-MtCaGap) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCaGap](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1036.ps1) |
+| Services | Graph |
 | Tags | CA, Maester, MT.1036 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaGap.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1036.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1036.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1036.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1036.md)

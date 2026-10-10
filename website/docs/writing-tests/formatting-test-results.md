@@ -7,32 +7,36 @@ sidebar_position: 2
 
 In this section we will learn how to format test results to provide more context and make them easier to understand for the person viewing the results.
 
+The examples are [native tests](./index.mdx): a `Test.<ID>.ps1` file in your `custom` folder with a `Test.<ID>.md` file beside it. `Add-MtTestResultDetail` works the same way in [Pester-format tests](./pester-format-tests.md).
+
 Let's write a test to check if conditional access policies are following the company's standards.
 
 ## A custom Maester test to check conditional access policies standards
 
 Our organization has a policy that all disabled conditional access policies should include the reason for the policy being disabled. This is done by adding a note to the display name in the format `Disabled: <reason>`.
 
-To check if the conditional access policies are following this standard, we can write the following custom test and add it to the `ContosoEntra.Tests.ps1` file in the `Custom` folder (see previous article).
-
-You can copy and paste the following code and add it to the end of the `ContosoEntra.Tests.ps1` file.
+To check if the conditional access policies are following this standard, we can write the following test. Create it with `New-MtTest -Id CONTOSO.0001 -Title 'Disabled CA policies must have reason for being disabled' -Service Graph` and replace the function body:
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "CA", "Contoso" {
-   It "CT0001: Disabled CA policies must have reason for being disabled" {
+function Test-Contoso0001 {
+    [MaesterTest(
+        Id       = 'CONTOSO.0001',
+        Title    = 'Disabled CA policies must have reason for being disabled',
+        Severity = 'Medium',
+        Category = 'Contoso',
+        Service  = 'Graph'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
 
-       try {
-          $policies = Get-MgIdentityConditionalAccessPolicy -All
-          $disabledWithoutReason = $policies | Where-Object { $_.State -eq "Disabled" -and $_.DisplayName -notlike "*Disabled:*" }
-       } catch {
-           Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-       }
-       $disabledWithoutReason | Should -Be 0
-    }
+    $policies = Get-MtConditionalAccessPolicy
+    $disabledWithoutReason = @($policies | Where-Object { $_.state -eq 'disabled' -and $_.displayName -notlike '*Disabled:*' })
+    return ($disabledWithoutReason.Count -eq 0)
 }
 ```
 
-You can run the test using `Invoke-Maester` and check the results.
+You can run the test using `Invoke-MtTest -Path ./custom/Test.CONTOSO.0001.ps1` or `Invoke-Maester` and check the results.
 
 What you will notice is that the test results are not very informative. The test will pass or fail, but you won't know which conditional access policies are not following the standard.
 
@@ -46,37 +50,38 @@ To provide more context in the test results, you can use Maester's `Add-MtTestRe
 
 ![Test results with basic formatting](img/formatted-test-basic.png)
 
-By providing the `-Description` and `-Result` parameters the test results are now more informative and provide context on what the test is checking and the outcome.
+The description comes from the test's `.md` file (everything above the `<!--- Results --->` line), and the `-Result` parameter describes the outcome. The `-Result` text replaces `%TestResult%` in the `.md` file.
 
-Here's the code for the complete custom test.
+`Test.CONTOSO.0001.md`:
 
-Copy and paste this code to any `*.Tests.ps1` file in the `Custom` folder to try it out.
+```md
+Checks if the disabled policies have the reason for being disabled.
+
+#### Remediation action
+
+Add `Disabled: <reason>` to the name of each disabled policy, or delete the policy.
+
+<!--- Results --->
+%TestResult%
+```
+
+`Test.CONTOSO.0001.ps1` (the attribute is the same as above):
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0001: Disabled CA policies must have reason for being disabled" {
+    $policies = Get-MtConditionalAccessPolicy
+    $disabledWithoutReason = @($policies | Where-Object { $_.state -eq 'disabled' -and $_.displayName -notlike '*Disabled:*' })
 
-        try {
-            $policies = Get-MgIdentityConditionalAccessPolicy -All
-
-            $disabledWithoutReason = $policies | Where-Object { $_.State -eq "Disabled" -and $_.DisplayName -notlike "*Disabled:*" }
-
-            $testDescription = "Checks if the disabled policies have the reason for being disabled."
-            if ($disabledWithoutReason.Count -gt 0) {
-                $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled."
-                Add-MtTestResultDetail -Description $testDescription -Result $result
-            } else {
-                Add-MtTestResultDetail -Description $testDescription -Result "Well done. All disabled policies have a reason for being disabled."
-            }
-
-            $disabledWithoutReason | Should -Be 0
-        } catch {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-            return $null
-        }
+    if ($disabledWithoutReason.Count -gt 0) {
+        Add-MtTestResultDetail -Result "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled."
+    } else {
+        Add-MtTestResultDetail -Result 'Well done. All disabled policies have a reason for being disabled.'
     }
-}
+    return ($disabledWithoutReason.Count -eq 0)
 ```
+
+You can also pass `-Description` to `Add-MtTestResultDetail`. It replaces the description from the `.md` file.
+
+There is no `try`/`catch` and no connection check in the test. The engine skips the test when Graph is not connected (`Service = 'Graph'`) and reports any error as an `Error` result.
 
 ### Adding graph objects
 
@@ -96,34 +101,22 @@ The `%TestResult%` placeholder will be replaced with the names of the objects in
 
 The current list of supported object types includes Users, Groups, Devices, ConditionalAccess, AuthenticationMethod, AuthorizationPolicy, ConsentPolicy, Domains, IdentityProtection and UserRole.
 
-Here's the updated test with the graph objects that you can try out.
+Here's the updated test body with the graph objects that you can try out.
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0001: Disabled CA policies must have reason for being disabled" {
+    $policies = Get-MtConditionalAccessPolicy
+    $disabledWithoutReason = @($policies | Where-Object { $_.state -eq 'disabled' -and $_.displayName -notlike '*Disabled:*' })
 
-        try {
-            $policies = Get-MgIdentityConditionalAccessPolicy -All
-
-            $disabledWithoutReason = $policies | Where-Object { $_.State -eq "Disabled" -and $_.DisplayName -notlike "*Disabled:*" }
-
-            $testDescription = "Checks if the disabled policies have the reason for being disabled."
-            if ($disabledWithoutReason.Count -gt 0) {
-                $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled.`n`n%TestResult%"
-                Add-MtTestResultDetail -Description $testDescription -Result $result -GraphObjects $disabledWithoutReason -GraphObjectType ConditionalAccess
-            } else {
-                Add-MtTestResultDetail -Description $testDescription -Result "Well done. All disabled policies have a reason for being disabled."
-            }
-            $disabledWithoutReason | Should -Be 0
-        } catch {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-            return $null
-        }
+    if ($disabledWithoutReason.Count -gt 0) {
+        $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled.`n`n%TestResult%"
+        Add-MtTestResultDetail -Result $result -GraphObjects $disabledWithoutReason -GraphObjectType ConditionalAccess
+    } else {
+        Add-MtTestResultDetail -Result 'Well done. All disabled policies have a reason for being disabled.'
     }
-}
+    return ($disabledWithoutReason.Count -eq 0)
 ```
 
-To add support for additional types see [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1) and [Get-GraphObjectMarkdown](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1).
+To add support for additional types see [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/run/Add-MtTestResultDetail.ps1) and [Get-GraphObjectMarkdown](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1).
 
 ### Marking tests as Investigate
 
@@ -135,59 +128,56 @@ Common scenarios for using Investigate:
 - **Risk-based findings**: Items flagged by risk detection systems that need human verification
 - **Compliance gray areas**: Configurations that partially meet requirements but need manual assessment
 
-To mark a test as requiring investigation, use the `-Investigate` switch:
+To mark a test as requiring investigation, use the `-Investigate` switch. The row is `Investigate` whatever the test returns. What it returns still matters for CI: in the NUnit or JUnit file an `Investigate` row counts as a success when the test returned `$true` and as a failure when it returned `$false`.
 
 This example also shows how you can directly use the `Invoke-MtGraphRequest` function to get the conditional access policies from the Microsoft Graph API as well as create custom markdown to display the results.
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag  "Contoso" {
-    It "CT0002: Read-only CA policies should be reviewed" {
+function Test-Contoso0002 {
+    [MaesterTest(
+        Id       = 'CONTOSO.0002',
+        Title    = 'Report-only CA policies should be reviewed',
+        Severity = 'Low',
+        Category = 'Contoso',
+        Service  = 'Graph'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
 
-        $policies = Invoke-MtGraphRequest -RelativeUri "identity/conditionalAccess/policies"
+    $policies = Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies'
+    $reportOnlyPolicies = @($policies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' })
 
-        $readOnlyPolicies = $policies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' }
-
-        $description = "Checks if read-only conditional access policies should be reviewed."
-
-        if ($readOnlyPolicies.Count -gt 0) {
-            $result = "Found $($readOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n"
-            $result += "| Policy Name | State |`n"
-            $result += "| --- | --- |`n"
-            foreach ($policy in $readOnlyPolicies) {
-                $result += "| $($policy.displayName) | $($policy.state) |`n"
-            }
-            Add-MtTestResultDetail -Description $description -Result $result -Investigate
-        } else {
-            Add-MtTestResultDetail -Description $description -Result "Well done. No report-only policies were found to investigate."
+    if ($reportOnlyPolicies.Count -gt 0) {
+        $result = "Found $($reportOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n"
+        $result += "| Policy Name | State |`n"
+        $result += "| --- | --- |`n"
+        foreach ($policy in $reportOnlyPolicies) {
+            $result += "| $($policy.displayName) | $($policy.state) |`n"
         }
-
-        $readOnlyPolicies.Count | Should -Be 0 -Because "Conditional access policies should not be in read-only mode for the long term. Please review and enable the policy."
+        Add-MtTestResultDetail -Result $result -Investigate
+    } else {
+        Add-MtTestResultDetail -Result 'Well done. No report-only policies were found to investigate.'
     }
+
+    return ($reportOnlyPolicies.Count -eq 0)
 }
 ```
 
-Here's an alternative version using the out of the box Maester cmdlets for getting CA policies and displaying the results.
+Here's an alternative body using the out of the box Maester cmdlets for getting CA policies and displaying the results.
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag  "Contoso" {
-    It "CT0003: Read-only CA policies should be reviewed" {
+    $policies = Get-MtConditionalAccessPolicy
+    $reportOnlyPolicies = @($policies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' })
 
-        $policies = Get-MtConditionalAccessPolicy
-
-        $readOnlyPolicies = $policies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' }
-
-        $description = "Checks if read-only conditional access policies should be reviewed."
-
-        if ($readOnlyPolicies.Count -gt 0) {
-            $result = "Found $($readOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n%TestResult%"
-            Add-MtTestResultDetail -Description $description -Result $result -Investigate -GraphObjects $readOnlyPolicies -GraphObjectType ConditionalAccess
-        } else {
-            Add-MtTestResultDetail -Description $description -Result "Well done. No report-only policies were found to investigate."
-        }
-
-        $readOnlyPolicies.Count | Should -Be 0 -Because "Conditional access policies should not be in read-only mode for the long term. Please review and enable the policy."
+    if ($reportOnlyPolicies.Count -gt 0) {
+        $result = "Found $($reportOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n%TestResult%"
+        Add-MtTestResultDetail -Result $result -Investigate -GraphObjects $reportOnlyPolicies -GraphObjectType ConditionalAccess
+    } else {
+        Add-MtTestResultDetail -Result 'Well done. No report-only policies were found to investigate.'
     }
-}
+
+    return ($reportOnlyPolicies.Count -eq 0)
 ```
 
 #### Adding custom markdown
@@ -199,44 +189,48 @@ Here's an example of how you can use a markdown table to display the results inc
 ![Test results with custom markdown](img/formatted-test-custom-markdown.png)
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "CT0003: Disabled CA policies must have reason for being disabled" {
+    $policies = Get-MtConditionalAccessPolicy
+    $disabledWithoutReason = @($policies | Where-Object { $_.state -eq 'disabled' -and $_.displayName -notlike '*Disabled:*' })
+    $disabledWithReason = @($policies | Where-Object { $_.state -eq 'disabled' -and $_.displayName -like '*Disabled:*' })
 
-        try {
-            $policies = Get-MgIdentityConditionalAccessPolicy -All
+    if ($disabledWithoutReason.Count -gt 0) {
+        $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled."
+    } else {
+        $result = 'Well done. All disabled policies have a reason for being disabled.'
+    }
 
-            $disabledWithoutReason = $policies | Where-Object { $_.State -eq "Disabled" -and $_.DisplayName -notlike "*Disabled:*" }
-            $disabledWithReason = $policies | Where-Object { $_.State -eq "Disabled" -and $_.DisplayName -like "*Disabled:*" }
-
-            $testDescription = "Checks if the disabled policies have the reason for being disabled."
-
-            if ($disabledWithoutReason.Count -gt 0 ) {
-                $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled."
-            } else {
-                $result = "Well done. All disabled policies have a reason for being disabled."
-            }
-            $portalLink = "https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
-            if($disabledWithReason.Count -gt 0 -or $disabledWithoutReason.Count -gt 0){
-                $result += "`n`n"
-                $result += "| Disabled CA Policy | Reason for disabling policy |`n"
-                $result += "| --- | --- |`n"
-                foreach($policy in $disabledWithReason){
-                    $nameSplit = $policy.DisplayName -split ":Disabled:"
-                    $result += "| ✅ [$($nameSplit[0])]($($portalLink -f $policy.id)) | $($nameSplit[1]) |`n"
-                }
-                foreach($policy in $disabledWithoutReason){
-                    $result += "| ❌ [$($policy.DisplayName)]($($portalLink -f $policy.id)) | No reason provided |`n"
-                }
-            }
-            Add-MtTestResultDetail -Description $testDescription -Result $result
-        } catch {
-            Write-Error $_.Exception.Message
+    $portalLink = 'https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}'
+    if ($disabledWithReason.Count -gt 0 -or $disabledWithoutReason.Count -gt 0) {
+        $result += "`n`n"
+        $result += "| Disabled CA Policy | Reason for disabling policy |`n"
+        $result += "| --- | --- |`n"
+        foreach ($policy in $disabledWithReason) {
+            $nameSplit = $policy.displayName -split 'Disabled:'
+            $result += "| ✅ [$($nameSplit[0])]($($portalLink -f $policy.id)) | $($nameSplit[1]) |`n"
         }
-
-        $disabledWithoutReason | Should -Be 0
-        } catch {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-            return $null
+        foreach ($policy in $disabledWithoutReason) {
+            $result += "| ❌ [$($policy.displayName)]($($portalLink -f $policy.id)) | No reason provided |`n"
         }
     }
+
+    Add-MtTestResultDetail -Result $result
+    return ($disabledWithoutReason.Count -eq 0)
 ```
+
+### Skipping a test
+
+When a test finds that it does not apply, it can skip itself. The call ends the test.
+
+```powershell
+if ($policies.Count -eq 0) {
+    Add-MtTestResultDetail -SkippedBecause NotApplicable
+}
+
+if ((Get-MgContext).AuthType -ne 'Delegated') {
+    Add-MtTestResultDetail -SkippedBecause NotSupportedAppPermission
+}
+
+Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'All alerts have been suppressed.'
+```
+
+Do not skip for a missing connection or licence: declare `Service` and `License` in the attribute and the engine skips the test for you. See [Applicability and reason codes](../configuration/applicability.md).

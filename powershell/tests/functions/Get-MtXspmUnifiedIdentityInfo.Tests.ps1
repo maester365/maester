@@ -6,7 +6,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
     BeforeEach {
         $script:xspmQuery = $null
 
-        Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
+        Mock -ModuleName Maester Get-MtSetting {
             return $null
         }
         Mock -ModuleName Maester Invoke-MtGraphSecurityQuery {
@@ -35,7 +35,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
             ApiPermissions      = 'https://mirror.contoso.com/permissions.json'
             ArmApiRequests      = 'https://mirror.contoso.com/arm.csv'
         }
-        Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
+        Mock -ModuleName Maester Get-MtSetting {
             return $config
         }
 
@@ -57,7 +57,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         @{ Uri = 'https://mirror.contoso.com/roles.json#fragment' }
         @{ Uri = '' }
     ) {
-        Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
+        Mock -ModuleName Maester Get-MtSetting {
             return [PSCustomObject]@{
                 EntraDirectoryRoles = $Uri
             }
@@ -88,7 +88,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         @{ ErrorPrefix = 'externaldata: Cannot read' }
         @{ ErrorPrefix = 'Cannot read' }
     ) {
-        Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting {
+        Mock -ModuleName Maester Get-MtSetting {
             @{ MicrosoftApps = 'https://mirror.contoso.com/apps.json?sig=secret' }
         }
         Mock -ModuleName Maester Invoke-MtGraphSecurityQuery {
@@ -100,7 +100,7 @@ Describe 'Get-MtXspmUnifiedIdentityInfo external data sources' {
         $message = try { InModuleScope Maester { Get-MtXspmUnifiedIdentityInfo }; '' } catch { $_.Exception.Message }
         $message | Should -Match 'Cannot read https://mirror.contoso.com/apps.json'
         $message | Should -Not -Match 'secret'
-        Should -Invoke Get-MtMaesterConfigGlobalSetting -ModuleName Maester -Exactly 1 -ParameterFilter { $Verbose -eq $false }
+        Should -Invoke Get-MtSetting -ModuleName Maester -Exactly 1 -ParameterFilter { $Verbose -eq $false }
         Should -Invoke Invoke-MtGraphSecurityQuery -ModuleName Maester -Exactly 1 -ParameterFilter { $Verbose -eq $false }
     }
 

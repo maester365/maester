@@ -1,0 +1,774 @@
+[
+  {
+    "Id": "CIS.GH.1.2.2",
+    "Wrapper": "tests/cis/Test-MtCisGitHubRepositoryCreationLimited.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisGitHubRepositoryCreationLimited",
+    "Target": "tests/cis/Test.CIS.GH.1.2.2.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "GitHub",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.GH.1.2.3",
+    "Wrapper": "tests/cis/Test-MtCisGitHubRepositoryDeletionLimited.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 392]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "CIS.GH.1.2.4",
+    "Wrapper": "tests/cis/Test-MtCisGitHubIssueDeletionLimited.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: the It body is not a single check call with a boolean Should; convert by hand [line 392]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "CIS.GH.1.3.2",
+    "Wrapper": "tests/cis/Test-MtCisGitHubTeamCreationLimited.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisGitHubTeamCreationLimited",
+    "Target": "tests/cis/Test.CIS.GH.1.3.2.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "GitHub",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.GH.1.3.8",
+    "Wrapper": "tests/cis/Test-MtCisGitHubStrictBasePermission.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisGitHubStrictBasePermission",
+    "Target": "tests/cis/Test.CIS.GH.1.3.8.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "GitHub",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.1.1",
+    "Wrapper": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisCloudAdmin",
+    "Target": "tests/cis/Test.CIS.M365.1.1.1.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.1.3",
+    "Wrapper": "tests/cis/Test-MtCisGlobalAdminCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisGlobalAdminCount",
+    "Target": "tests/cis/Test.CIS.M365.1.1.3.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.2.1",
+    "Wrapper": "tests/cis/Test-MtCis365PublicGroup.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCis365PublicGroup",
+    "Target": "tests/cis/Test.CIS.M365.1.2.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.2.2",
+    "Wrapper": "tests/cis/Test-MtCisSharedMailboxSignIn.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSharedMailboxSignIn",
+    "Target": "tests/cis/Test.CIS.M365.1.2.2.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 2,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.3.1",
+    "Wrapper": "tests/cis/Test-MtCisPasswordExpiry.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisPasswordExpiry",
+    "Target": "tests/cis/Test.CIS.M365.1.3.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.3.3",
+    "Wrapper": "tests/cis/Test-MtCisCalendarSharing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisCalendarSharing",
+    "Target": "tests/cis/Test.CIS.M365.1.3.3.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.3.4",
+    "Wrapper": "tests/cis/Test-MtCisUserOwnedAppsRestricted.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisUserOwnedAppsRestricted",
+    "Target": "tests/cis/Test.CIS.M365.1.3.4.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.3.5",
+    "Wrapper": "tests/cis/Test-MtCisFormsPhishingProtectionEnabled.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisFormsPhishingProtectionEnabled",
+    "Target": "tests/cis/Test.CIS.M365.1.3.5.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.3.6",
+    "Wrapper": "tests/cis/Test-MtCisCustomerLockBox.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisCustomerLockBox",
+    "Target": "tests/cis/Test.CIS.M365.1.3.6.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.1.3.7",
+    "Wrapper": "tests/cis/Test-MtCisThirdPartyStorageServicesRestricted.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisThirdPartyStorageServicesRestricted",
+    "Target": "tests/cis/Test.CIS.M365.1.3.7.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.1",
+    "Wrapper": "tests/cis/Test-MtCisSafeLink.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSafeLink",
+    "Target": "tests/cis/Test.CIS.M365.2.1.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.11",
+    "Wrapper": "tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisAttachmentFilterComprehensive",
+    "Target": "tests/cis/Test.CIS.M365.2.1.11.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.12",
+    "Wrapper": "tests/cis/Test-MtCisHostedConnectionFilterPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisHostedConnectionFilterPolicy",
+    "Target": "tests/cis/Test.CIS.M365.2.1.12.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.13",
+    "Wrapper": "tests/cis/Test-MtCisConnectionFilterSafeList.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisConnectionFilterSafeList",
+    "Target": "tests/cis/Test.CIS.M365.2.1.13.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.2",
+    "Wrapper": "tests/cis/Test-MtCisAttachmentFilter.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisAttachmentFilter",
+    "Target": "tests/cis/Test.CIS.M365.2.1.2.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.3",
+    "Wrapper": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisInternalMalwareNotification",
+    "Target": "tests/cis/Test.CIS.M365.2.1.3.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.4",
+    "Wrapper": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSafeAttachment",
+    "Target": "tests/cis/Test.CIS.M365.2.1.4.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.5",
+    "Wrapper": "tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSafeAttachmentsAtpPolicy",
+    "Target": "tests/cis/Test.CIS.M365.2.1.5.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.6",
+    "Wrapper": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisOutboundSpamFilterPolicy",
+    "Target": "tests/cis/Test.CIS.M365.2.1.6.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.7",
+    "Wrapper": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSafeAntiPhishingPolicy",
+    "Target": "tests/cis/Test.CIS.M365.2.1.7.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.1.9",
+    "Wrapper": "tests/cis/Test-MtCisDkim.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisDkim",
+    "Target": "tests/cis/Test.CIS.M365.2.1.9.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.2.4.4",
+    "Wrapper": "tests/cis/Test-MtCisZAP.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisZAP",
+    "Target": "tests/cis/Test.CIS.M365.2.4.4.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Teams",
+    "CompatibleLicense": [
+      "THREAT_INTELLIGENCE"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.3.1.1",
+    "Wrapper": "tests/cis/Test-MtCisAuditLogSearch.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: wrapper file not found (already converted?) [line 382]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "CIS.M365.4.1",
+    "Wrapper": "tests/cis/Test-MtCisDevicesWithoutCompliancePolicyMarked.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisDevicesWithoutCompliancePolicyMarked",
+    "Target": "tests/cis/Test.CIS.M365.4.1.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "INTUNE_A"
+    ],
+    "RemovedGuards": 2,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.1.2.2",
+    "Wrapper": "tests/cis/Test-MtCisThirdPartyApplicationsDisallowed.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisThirdPartyApplicationsDisallowed",
+    "Target": "tests/cis/Test.CIS.M365.5.1.2.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.1.2.3",
+    "Wrapper": "tests/cis/Test-MtCisCreateTenantDisallowed.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisCreateTenantDisallowed",
+    "Target": "tests/cis/Test.CIS.M365.5.1.2.3.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.1.4.6",
+    "Wrapper": "tests/cis/Test-MtCisEnsureBitLockerKeyRecoveryRestricted.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisEnsureBitLockerKeyRecoveryRestricted",
+    "Target": "tests/cis/Test.CIS.M365.5.1.4.6.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.1.5.1",
+    "Wrapper": "tests/cis/Test-MtCisEnsureUserConsentToAppsDisallowed.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisEnsureUserConsentToAppsDisallowed",
+    "Target": "tests/cis/Test.CIS.M365.5.1.5.1.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.1.5.2",
+    "Wrapper": "tests/cis/Test-MtCisAdminConsentWorkflowEnabled.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisAdminConsentWorkflowEnabled",
+    "Target": "tests/cis/Test.CIS.M365.5.1.5.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.1.6.2",
+    "Wrapper": "tests/cis/Test-MtCisEnsureGuestAccessRestricted.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisEnsureGuestAccessRestricted",
+    "Target": "tests/cis/Test.CIS.M365.5.1.6.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.5.2.3.5",
+    "Wrapper": "tests/cis/Test-MtCisWeakAuthenticationMethodsDisabled.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisWeakAuthenticationMethodsDisabled",
+    "Target": "tests/cis/Test.CIS.M365.5.2.3.5.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.6.5.3",
+    "Wrapper": "tests/cis/Test-MtCisExoAdditionalStorageProvider.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisExoAdditionalStorageProvider",
+    "Target": "tests/cis/Test.CIS.M365.6.5.3.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CIS.M365.7.2.11",
+    "Wrapper": "tests/cis/Test-MtCisSpoDefaultSharingLinkPermission.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSpoDefaultSharingLinkPermission",
+    "Target": "tests/cis/Test.CIS.M365.7.2.11.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: SharePointOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.7.2.2",
+    "Wrapper": "tests/cis/Test-MtCisSpoB2BIntegration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSpoB2BIntegration",
+    "Target": "tests/cis/Test.CIS.M365.7.2.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: SharePointOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.7.2.5",
+    "Wrapper": "tests/cis/Test-MtCisSpoGuestCannotShareUnownedItem.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSpoGuestCannotShareUnownedItem",
+    "Target": "tests/cis/Test.CIS.M365.7.2.5.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: SharePointOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.7.2.7",
+    "Wrapper": "tests/cis/Test-MtCisSpoDefaultSharingLink.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSpoDefaultSharingLink",
+    "Target": "tests/cis/Test.CIS.M365.7.2.7.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: SharePointOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.7.2.9",
+    "Wrapper": "tests/cis/Test-MtCisSpoGuestAccessExpiry.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSpoGuestAccessExpiry",
+    "Target": "tests/cis/Test.CIS.M365.7.2.9.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: SharePointOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.7.3.1",
+    "Wrapper": "tests/cis/Test-MtCisSpoPreventDownloadMaliciousFile.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisSpoPreventDownloadMaliciousFile",
+    "Target": "tests/cis/Test.CIS.M365.7.3.1.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: SharePointOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.8.1.1",
+    "Wrapper": "tests/cis/Test-MtCisThirdPartyFileSharing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisThirdPartyFileSharing",
+    "Target": "tests/cis/Test.CIS.M365.8.1.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Teams",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.8.2.2",
+    "Wrapper": "tests/cis/Test-MtCisCommunicateWithUnmanagedTeamsUsers.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisCommunicateWithUnmanagedTeamsUsers",
+    "Target": "tests/cis/Test.CIS.M365.8.2.2.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Teams",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.8.2.3",
+    "Wrapper": "tests/cis/Test-MtCisCommunicateInitiateExternalTeamsUsers.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisCommunicateInitiateExternalTeamsUsers",
+    "Target": "tests/cis/Test.CIS.M365.8.2.3.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Teams",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.8.4.1",
+    "Wrapper": "tests/cis/Test-MtCisThirdPartyAndCustomApps.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisThirdPartyAndCustomApps",
+    "Target": "tests/cis/Test.CIS.M365.8.4.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Teams",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.8.5.3",
+    "Wrapper": "tests/cis/Test-MtCisTeamsLobbyBypass.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisTeamsLobbyBypass",
+    "Target": "tests/cis/Test.CIS.M365.8.5.3.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Teams",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CIS.M365.8.6.1",
+    "Wrapper": "tests/cis/Test-MtCisTeamsReportSecurityConcerns.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisTeamsReportSecurityConcerns",
+    "Target": "tests/cis/Test.CIS.M365.8.6.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Teams",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  }
+]

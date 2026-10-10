@@ -68,14 +68,17 @@ foreach ($perm in $getPerms){
 - Select **Runtime Environments**.
 - Select **Create**.
 - Define a name for the environment.
-- Select **PowerShell** for the language and set the **Runtime version** to **7.4**.
+- Select **PowerShell** for the language and set the **Runtime version** to **7.4**. Maester 3.0 requires PowerShell 7.4 or later; the PowerShell 5.1 runtime is not supported.
 - Select **Next**.
 - On the **Packages** tab, select **Add from gallery** and select the following packages:
   - **Maester**
   - **Microsoft.Graph.Authentication**
-  - **Pester**
   - **NuGet**
   - **PackageManagement**
+
+:::info
+The built-in tests ship inside the Maester module, so you don't need to install Pester or copy any test files. Add the **Pester** package (version 5.7.1 or later) only if you also run your own [Pester-format custom tests](../writing-tests/pester-format-tests.md).
+:::
 - Select **Next**.
 - Select **Create**.
 
@@ -106,15 +109,15 @@ if (!(Test-Path $TempOutputFolder -PathType Container)) {
     New-Item -ItemType Directory -Force -Path $TempOutputFolder
 }
 
-#Run Maester report
-cd $env:TEMP
-md maester-tests
-cd maester-tests
-Install-MaesterTests .\tests
+#Run Maester report (the built-in tests run from the Maester module)
 Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputFolder $TempOutputFolder
 ```
 
 - Click **Save**, then **Publish**.
+
+:::tip
+The built-in tests are updated with the Maester module. To pick up new tests, update the **Maester** package in the Runtime Environment. See [Upgrading from 2.x](../upgrading-from-2x.md) if you set up this runbook with Maester 2.x.
+:::
 
 ## Create a schedule
 

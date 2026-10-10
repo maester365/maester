@@ -1,0 +1,59 @@
+﻿<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks if Personal Access Token full scope restrictions are configured.
+
+    https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-full-scope-personal-access-tokens
+
+.EXAMPLE
+    ```
+    Test-AzdoRestrictFullScopePersonalAccessToken
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoRestrictFullScopePersonalAccessToken
+#>
+
+function Test-AzdoRestrictFullScopePersonalAccessToken {
+    [MaesterTest(
+        Id = 'AZDO.1036',
+        Title = '(Tenant) Restrict Personal Access Token full scope.',
+        Severity = 'High',
+        Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
+        Tag = 'AZDO',
+        Service = 'AzureDevOps',
+        Author = 'SebastianClaesson',
+        HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose "Running Test-AzdoRestrictFullScopePersonalAccessToken"
+
+$Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictFullScopePersonalAccessToken -Force
+    if ($null -eq $Policy) {
+        $Message = "Tenant Policy for RestrictFullScopePersonalAccessToken not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
+        Please see [Manage Tenant Policies](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
+        Write-Verbose $Message
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
+    }
+    else {
+        $result = [bool]$Policy.value
+        if ($result) {
+            $resultMarkdown = "Your tenant has Personal Access Token full scope restrictions enabled."
+        }
+        else {
+            $resultMarkdown = "Your tenant does not have Personal Access Token full scope restrictions enabled."
+        }
+
+        Add-MtTestResultDetail -Result $resultMarkdown
+
+        return $result
+    }
+}

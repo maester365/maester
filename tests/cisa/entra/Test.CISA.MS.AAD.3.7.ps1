@@ -1,0 +1,64 @@
+﻿function Test-MtCisaManagedDevice {
+    <#
+    .SYNOPSIS
+    Checks if a Conditional Access policy requiring managed device is enabled
+
+    .DESCRIPTION
+    Managed devices SHOULD be required for authentication.
+
+    .EXAMPLE
+    Test-MtCisaManagedDevice
+
+    Returns true if at least one policy requires managed devices
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisaManagedDevice
+    #>
+    [MaesterTest(
+        Id = 'CISA.MS.AAD.3.7',
+        Title = 'Managed devices SHOULD be required for authentication.',
+        Severity = 'High',
+        Category = 'CISA',
+        Product = 'Entra ID',
+        Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.7'),
+        Service = 'Graph',
+        License = 'AAD_PREMIUM',
+        Author = 'soulemike',
+        Contributor = 'michaelmsonne'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # Do not check if Hybrid Joined devices are accepted.
+        [switch]$SkipHybridJoinCheck
+    )
+
+    $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+
+    if($SkipHybridJoinCheck){
+        $policies = $result | Where-Object {`
+            $_.conditions.applications.includeApplications -contains "All" -and `
+            $_.conditions.users.includeUsers -contains "All" -and `
+            $_.grantControls.builtInControls -contains "compliantDevice" }
+    }else{
+        $policies = $result | Where-Object {`
+            $_.conditions.applications.includeApplications -contains "All" -and `
+            $_.conditions.users.includeUsers -contains "All" -and `
+            $_.grantControls.builtInControls -contains "compliantDevice" -and `
+            $_.grantControls.builtInControls -contains "domainJoinedDevice" -and `
+            $_.grantControls.operator -eq "OR" }
+    }
+
+    $testResult = ($policies|Measure-Object).Count -ge 1
+
+    if ($testResult -and $SkipHybridJoinCheck) {
+        $testResultMarkdown = "Well done, your security posture is more than CISA's recommended control. Your tenant has one or more policies that require a compliant device:`n`n%TestResult%"
+    } elseif ($testResult) {
+        $testResultMarkdown = "Well done. Your tenant has one or more policies that require a compliant or domain joined device:`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that require managed devices."
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
+
+    return $testResult
+}

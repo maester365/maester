@@ -20,7 +20,7 @@ keywords:
 
 # CISA.MS.AAD.7.4 - Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+3</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 8 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/michaelmsonne" title="Michael Morten Sonne · Co-contributor"><img src="https://github.com/michaelmsonne.png" alt="Michael Morten Sonne" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -57,10 +57,12 @@ Note: Exceptions to this policy are:
 | Severity | High |
 | Suite | CISA |
 | Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaPermanentRoleAssignment](/docs/commands/Test-MtCisaPermanentRoleAssignment) |
+| PowerShell test | [Test-MtCisaPermanentRoleAssignment](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.4.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
 | Tags | CISA, CISA.MS.AAD.7.4, Entra ID P2, MS.AAD, MS.AAD.7.4 |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaPermanentRoleAssignment.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaPermanentRoleAssignment.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.7.4.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.4.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.7.4.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.4.md)

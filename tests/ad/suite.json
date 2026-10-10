@@ -1,0 +1,11 @@
+{
+  "Id": "AD",
+  "Name": "Active Directory",
+  "Source": "Maester",
+  "Tags": [
+    "AD"
+  ],
+  "IdPattern": "^AD-",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "NoResultReason": "Active Directory data could not be retrieved"
+}
