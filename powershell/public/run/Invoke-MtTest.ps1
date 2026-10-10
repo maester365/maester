@@ -93,7 +93,9 @@ function Invoke-MtTest {
         }
         $runConfig = $__MtSession.MaesterConfig
         $selection = Resolve-MtSelection -RunConfig $runConfig -TestId @($tests | ForEach-Object { $_.Id })
+        # The caller named the tests: the allow-list and the selectors of the config do not apply.
         $selection.DefaultAction = 'Run'
+        foreach ($selector in 'Product', 'Feature', 'Area', 'Severity', 'Suite') { $selection.$selector = [string[]]@() }
         # Instance IDs given with -Id select those instances only.
         if ($Id) { $selection.TestId = @(@($tests | ForEach-Object { $_.Id }) | Where-Object { $tid = $_; $Id | Where-Object { $tid -like $_ } }) + @($Id | Where-Object { $i = $_; $tests | Where-Object { $_.InstanceSource -and $i -like "$($_.Id).*" } }) }
         $services = @($tests | ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
