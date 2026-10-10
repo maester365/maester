@@ -154,6 +154,7 @@ function Get-MtConnectionInfo {
     .DESCRIPTION
     Reads the tenant context the run already has; it makes no calls. A service that is not connected is listed
     when tests are skipped for it. Opt-in services (Active Directory) are only listed when connected.
+    The connected services come first, then the others; each group by name, with Graph before the rest.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -171,7 +172,7 @@ function Get-MtConnectionInfo {
         if ($row.Disposition -ne 'Skipped') { continue }
         foreach ($service in @($row.Test.Service)) { $skippedFor[[string]$service] = 1 + [int]$skippedFor[[string]$service] }
     }
-    foreach ($property in $TenantContext.Services.PSObject.Properties) {
+    $rows = foreach ($property in $TenantContext.Services.PSObject.Properties) {
         $name = $property.Name
         $connected = [bool]$property.Value
         $skipped = [int]$skippedFor[$name]
@@ -185,6 +186,7 @@ function Get-MtConnectionInfo {
             Detail    = $detail
         }
     }
+    $rows | Sort-Object -Property @{ Expression = { -not $_.Connected } }, @{ Expression = { $_.Name -ne 'Graph' } }, Name
 }
 
 function Format-MtConnectionInfo {

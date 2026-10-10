@@ -223,6 +223,30 @@ Describe 'Connection info' {
         ($script:connections | Where-Object Name -EQ 'Teams').Detail | Should -Be 'not connected · 2 tests will be skipped'
     }
 
+    It 'Lists the connected services first, then the others, each by name with Graph first' {
+        $context = [pscustomobject]@{
+            TenantName = 'Contoso'; Account = 'a@contoso.com'
+            Services   = [pscustomobject]@{ Teams = $true; Azure = $false; Graph = $true; SharePointOnline = $false; ExchangeOnline = $true }
+        }
+        $plan = 'Azure', 'SharePointOnline' | ForEach-Object { [pscustomobject]@{ Disposition = 'Skipped'; Test = [pscustomobject]@{ Service = @($_) } } }
+        $rows = @(InModuleScope Maester -Parameters @{ t = $context; p = $plan } { param($t, $p) Get-MtConnectionInfo -TenantContext $t -Plan $p })
+        $rows.Name | Should -Be @('Graph', 'Exchange Online', 'Teams', 'Azure', 'SharePoint Online')
+        $rows.Connected | Should -Be @($true, $true, $true, $false, $false)
+    }
+
+    It 'Links maester.dev in the banner' {
+        $esc = [char]27
+        $wide = $script:stream.PSObject.Copy(); $wide.Mode = 'Interactive'; $wide.Width = 120; $wide.Ansi = $true; $wide.ColorDepth = 'TrueColor'
+        foreach ($width in 120, 60) {
+            $wide.Width = $width
+            $banner = InModuleScope Maester -Parameters @{ c = $wide } { param($c) Get-MtBanner -Console $c }
+            ($banner.Lines -join "`n") | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\"))
+        }
+        $wide.Ansi = $false; $wide.ColorDepth = 'None'
+        $plain = InModuleScope Maester -Parameters @{ c = $wide } { param($c) Get-MtBanner -Console $c }
+        ($plain.Lines -join "`n") | Should -Not -Match ([regex]::Escape("$esc"))
+    }
+
     It 'Formats one line per service, and one line for the dashboard with its visible length' {
         $lines = @(InModuleScope Maester -Parameters @{ c = $script:stream; x = $script:connections } { param($c, $x) Format-MtConnectionInfo -Connection $x -Console $c })
         $lines.Count | Should -Be 3

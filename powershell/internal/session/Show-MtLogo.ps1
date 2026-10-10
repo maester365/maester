@@ -138,14 +138,18 @@
         $sb.ToString()
     }
 
+    # The tagline: its plain form for measuring, and the form that is written, in which maester.dev is a
+    # hyperlink (OSC 8) where the terminal supports them.
     $tagline = "v$version · maester.dev"
+    $site = if ($Console.Ansi) { "$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\" } else { 'maester.dev' }
+    $taglineText = "${dim}v$version · $site$reset"
     $lines = [System.Collections.Generic.List[string]]::new()
     if ($Console.Width -ge 90) {
         $width = 88
         $lines.Add("$dim┌──$reset$(' ' * ($width - 6))$dim──┐$reset")
         for ($r = 0; $r -lt $flame.Count; $r++) {
             $right = if ($r -ge 3 -and $r -le 8) { & $paintWordmark $wordmark[$r - 3] 60 }
-            elseif ($r -eq 9) { (' ' * (60 - $tagline.Length)) + "$dim$tagline$reset" }
+            elseif ($r -eq 9) { (' ' * (60 - $tagline.Length)) + $taglineText }
             else { '' }
             $lines.Add("   $(& $paintFlame $flame[$r] $r $flame.Count)    $right".TrimEnd())
         }
@@ -154,7 +158,7 @@
         $width = 37
         $text = @('', $smallWordmark[0], $smallWordmark[1], $tagline, '')
         for ($r = 0; $r -lt $smallFlame.Count; $r++) {
-            $right = if ($r -in 1, 2) { & $paintWordmark $text[$r] $smallWordmark[0].Length } elseif ($text[$r]) { "$dim$($text[$r])$reset" } else { '' }
+            $right = if ($r -in 1, 2) { & $paintWordmark $text[$r] $smallWordmark[0].Length } elseif ($text[$r]) { $taglineText } else { '' }
             $lines.Add(" $(& $paintFlame $smallFlame[$r] $r $smallFlame.Count)  $right")
         }
     }
