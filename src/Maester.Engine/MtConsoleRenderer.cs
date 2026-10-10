@@ -293,10 +293,14 @@ namespace Maester.Engine
             return sb.ToString();
         }
 
-        private struct FrameLine
+        private struct FrameLine : IEquatable<FrameLine>
         {
             public string Text;
             public string Plain;
+
+            public bool Equals(FrameLine other) { return Text == other.Text && Plain == other.Plain; }
+            public override bool Equals(object obj) { return obj is FrameLine other && Equals(other); }
+            public override int GetHashCode() { return HashCode.Combine(Text, Plain); }
         }
 
         private sealed class LineBuilder
