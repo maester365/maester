@@ -844,28 +844,73 @@ namespace Maester.Engine
                     i++;
                     continue;
                 }
-                if (i + 1 < s.Length && s[i + 1] == '[')
-                {
-                    i += 2;
-                    while (i < s.Length && !(s[i] >= '@' && s[i] <= '~')) i++;
-                }
-                else if (i + 1 < s.Length && s[i + 1] == ']')
-                {
-                    i += 2;
-                    while (i < s.Length && s[i] != '\u0007' && !(s[i] == '\u001b' && i + 1 < s.Length && s[i + 1] == '\\')) i++;
-                    if (i < s.Length && s[i] == '\u001b') i++;
-                }
-                i++; // past the sequence's final character (or a lone escape)
+                i = SequenceEnd(s, i);
             }
             return sb.ToString();
         }
 
-        /// <summary>Cuts a line to <paramref name="max"/> visible characters. Colour is dropped from a cut line rather than risk splitting an escape sequence.</summary>
+        /// <summary>
+        /// Cuts a line to <paramref name="max"/> visible characters and ends it with an ellipsis. The colours and
+        /// hyperlinks of the part that is kept stay: escape sequences are copied whole, never split.
+        /// </summary>
         private Line Truncate(Line line, int max, bool ansi)
         {
             if (line.Plain.Length <= max) return line;
-            string cut = max > 1 ? line.Plain.Substring(0, max - 1) + (Unicode ? "…" : ".") : line.Plain.Substring(0, Math.Max(0, max));
-            return new Line { Text = ansi ? Esc + "2m" + cut + Esc + "0m" : cut, Plain = cut };
+            string mark = Unicode ? "…" : ".";
+            string cut = max > 1 ? line.Plain.Substring(0, max - 1) + mark : line.Plain.Substring(0, Math.Max(0, max));
+            if (!ansi || max <= 1 || line.Text.IndexOf('\u001b') < 0) return new Line { Text = cut, Plain = cut };
+
+            var sb = new StringBuilder(line.Text.Length);
+            string text = line.Text;
+            int visible = 0;
+            int i = 0;
+            bool linkOpen = false;
+            while (i < text.Length && visible < max - 1)
+            {
+                if (text[i] != '\u001b')
+                {
+                    sb.Append(text[i]);
+                    visible++;
+                    i++;
+                    continue;
+                }
+                int end = SequenceEnd(text, i);
+                // OSC 8 opens a hyperlink when it names a target, and closes one when it does not.
+                if (end - i > 5 && string.CompareOrdinal(text, i, Esc8, 0, Esc8.Length) == 0) linkOpen = text[i + Esc8.Length] != '\u001b' && text[i + Esc8.Length] != '\u0007';
+                sb.Append(text, i, end - i);
+                i = end;
+            }
+            sb.Append(mark).Append(Esc).Append("0m");
+            if (linkOpen) sb.Append(LinkEnd);
+            return new Line { Text = sb.ToString(), Plain = cut };
+        }
+
+        private const string Esc8 = "\u001b]8;;";
+        private const string LinkEnd = "\u001b]8;;\u001b\\";
+
+        /// <summary>Text that a terminal with hyperlink support (OSC 8) opens at <paramref name="url"/>; other terminals show the text alone.</summary>
+        public static string Hyperlink(string text, string url)
+        {
+            if (string.IsNullOrEmpty(url)) return text ?? string.Empty;
+            return Esc8 + url + "\u001b\\" + text + LinkEnd;
+        }
+
+        /// <summary>The index after the escape sequence (CSI or OSC) that starts at <paramref name="start"/>.</summary>
+        private static int SequenceEnd(string s, int start)
+        {
+            int i = start;
+            if (i + 1 < s.Length && s[i + 1] == '[')
+            {
+                i += 2;
+                while (i < s.Length && !(s[i] >= '@' && s[i] <= '~')) i++;
+            }
+            else if (i + 1 < s.Length && s[i + 1] == ']')
+            {
+                i += 2;
+                while (i < s.Length && s[i] != '\u0007' && !(s[i] == '\u001b' && i + 1 < s.Length && s[i + 1] == '\\')) i++;
+                if (i < s.Length && s[i] == '\u001b') i++;
+            }
+            return Math.Min(s.Length, i + 1); // past the sequence's final character (or a lone escape)
         }
 
         private int CurrentWidth()

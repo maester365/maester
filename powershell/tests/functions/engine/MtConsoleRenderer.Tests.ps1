@@ -388,6 +388,45 @@ Describe 'MtConsoleRenderer panels' {
         $screen | Should -Match 'A\.1'
         $screen | Should -Match '1 fixed'
         $screen | Should -Match '1 new test\b'
+        # What the earlier run found: two passed, one failed, none to investigate.
+        $screen | Should -Match '│ ✓ 2  ✗ 1  \? 0 '
+        $t.Renderer.Close()
+    }
+
+    It 'Says how long ago the earlier run was, and when' {
+        $t = New-TestPanelDashboard
+        $before = [System.Collections.Generic.Dictionary[string, string]]::new()
+        $before['A.1'] = 'Passed'; $before['A.2'] = 'Investigate'
+        $when = (Get-Date).AddDays(-4).AddMinutes(-5)
+        $t.Renderer.SetBaseline($before, $when)
+        $t.Renderer.Start(2)
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '╭─ Since the last run ─+ 4 days ago ─╮'
+        $screen | Should -Match ([regex]::Escape($when.ToString('MMM d, HH:mm', [cultureinfo]::InvariantCulture)) + '  ✓ 1  ✗ 0  \? 1 ')
+        $t.Renderer.Close()
+    }
+
+    It 'Puts an age in words' {
+        $cases = [ordered]@{
+            'just now' = [timespan]::FromSeconds(20); '10 min ago' = [timespan]::FromMinutes(10.9); '1 hour ago' = [timespan]::FromMinutes(61)
+            '5 hours ago' = [timespan]::FromHours(5.5); '1 day ago' = [timespan]::FromHours(30); '4 days ago' = [timespan]::FromDays(4)
+            '2 months ago' = [timespan]::FromDays(75); '1 year ago' = [timespan]::FromDays(400); '-' = [timespan]::FromMinutes(-5)
+        }
+        foreach ($case in $cases.GetEnumerator()) {
+            $expected = if ($case.Key -eq '-') { 'just now' } else { $case.Key }
+            [Maester.Engine.MtConsoleRenderer]::FormatAge($case.Value) | Should -Be $expected
+        }
+    }
+
+    It 'Keeps the colours and the hyperlink of a line that is cut' {
+        $t = New-TestPanelDashboard -Panels 'Blog'
+        $link = [Maester.Engine.MtConsoleRenderer]::Hyperlink(('A long title ' * 8), 'https://maester.dev/blog/post')
+        $t.Renderer.SetPanelText('Blog', 'From the blog', @("$esc[2mOct 07$esc[0m  $link", "$esc[2mJul 26$esc[0m  Short"))
+        $t.Renderer.Start(1)
+        $out = $t.Writer.ToString()
+        # The cut line still has its dimmed date and its link, and the link is closed after the ellipsis.
+        $out | Should -Match ([regex]::Escape("$esc[2mOct 07$esc[0m  $esc]8;;https://maester.dev/blog/post$esc\A long title") + '[^\r\n]*…' + [regex]::Escape("$esc[0m$esc]8;;$esc\"))
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '│ Oct 07  A long title .*… │'
         $t.Renderer.Close()
     }
 
@@ -496,14 +535,32 @@ Describe 'MtConsoleRenderer panels' {
 Describe 'MtConsoleFeeds' {
     It 'Reads the newest posts of an RSS feed' {
         $xml = '<?xml version="1.0"?><rss version="2.0"><channel><title>Blog</title>' +
-            '<item><title><![CDATA[First post]]></title><pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate></item>' +
-            '<item><title>Second post</title><pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate></item>' +
-            '<item><title>Third post</title></item><item><title>Fourth post</title></item></channel></rss>'
+            '<item><title><![CDATA[First post]]></title><link>https://maester.dev/blog/first</link><pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate></item>' +
+            '<item><title>Second post</title><link>javascript:alert(1)</link><pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate></item>' +
+            '<item><title>Third&#x9;&#xA;post</title></item><item><title>Fourth post</title></item></channel></rss>'
         $posts = [Maester.Engine.MtConsoleFeeds]::ParseFeed($xml, 3)
         $posts.Count | Should -Be 3
-        $posts[0] | Should -Be 'Oct 07  First post'
-        $posts[1] | Should -Be 'Oct 06  Second post'
-        $posts[2] | Should -Match 'Third post$'
+        $posts[0].Published | Should -Be 'Oct 07'
+        $posts[0].Title | Should -Be 'First post'
+        $posts[0].Link | Should -Be 'https://maester.dev/blog/first'
+        $posts[1].Title | Should -Be 'Second post'
+        # A link that is not a web address is dropped, and control characters cannot reach the console.
+        $posts[1].Link | Should -BeNullOrEmpty
+        $posts[2].Title | Should -Be 'Third  post'
+        $posts[2].Published | Should -BeNullOrEmpty
+    }
+
+    It 'Shows each post as a hyperlink, newest first, with the date dimmed' {
+        $esc = [char]27
+        $posts = [System.Collections.Generic.List[Maester.Engine.MtBlogPost]]::new()
+        $posts.Add([Maester.Engine.MtBlogPost]@{ Published = 'Oct 07'; Title = 'Newest'; Link = 'https://maester.dev/blog/newest' })
+        $posts.Add([Maester.Engine.MtBlogPost]@{ Published = 'Jul 26'; Title = 'Older' })
+        $posts.Add([Maester.Engine.MtBlogPost]@{ Published = 'Jan 01'; Title = 'Oldest' })
+        $lines = [Maester.Engine.MtConsoleFeeds]::FormatPosts($posts, 2, 'https://maester.dev/blog')
+        $lines.Count | Should -Be 3
+        $lines[0] | Should -Be "$esc[2mOct 07$esc[0m  $esc]8;;https://maester.dev/blog/newest$esc\Newest$esc]8;;$esc\"
+        $lines[1] | Should -Be "$esc[2mJul 26$esc[0m  Older"
+        $lines[2] | Should -Be "$esc[2m$esc]8;;https://maester.dev/blog$esc\maester.dev/blog$esc]8;;$esc\$esc[0m"
     }
 
     It 'Reads the latest version from a PowerShell Gallery response' {

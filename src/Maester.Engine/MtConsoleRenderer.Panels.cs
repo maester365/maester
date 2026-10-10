@@ -55,6 +55,7 @@ namespace Maester.Engine
         private string[] _tips = new string[0];
         private Dictionary<string, string> _baseline;
         private string _baselineLabel;
+        private DateTime? _baselineWhen;
         private int _fixedCount;
         private int _newTests;
 
@@ -109,10 +110,25 @@ namespace Maester.Engine
         /// <summary>The results of an earlier run (test ID to result) that the Drift panel compares with, and when it ran.</summary>
         public void SetBaseline(IDictionary<string, string> results, string label)
         {
+            SetBaseline(results, label, null);
+        }
+
+        /// <summary>
+        /// The results of an earlier run and the local time it ran. The panel then shows how long ago that was
+        /// ("4 days ago") in its border, and the date next to that run's counts.
+        /// </summary>
+        public void SetBaseline(IDictionary<string, string> results, DateTime executedAt)
+        {
+            SetBaseline(results, null, executedAt);
+        }
+
+        private void SetBaseline(IDictionary<string, string> results, string label, DateTime? executedAt)
+        {
             lock (_gate)
             {
                 _baseline = results == null ? null : new Dictionary<string, string>(results, StringComparer.OrdinalIgnoreCase);
                 _baselineLabel = label;
+                _baselineWhen = executedAt;
                 RecountDrift();
                 Redraw();
             }
@@ -129,7 +145,7 @@ namespace Maester.Engine
                 try
                 {
                     var results = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                    string label = null;
+                    DateTime? executedAt = null;
                     using (var doc = JsonDocument.Parse(File.ReadAllBytes(path)))
                     {
                         var root = doc.RootElement;
@@ -140,7 +156,7 @@ namespace Maester.Engine
                         DateTime when;
                         if (DateTime.TryParse(ReadString(root, "ExecutedAt"), CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out when))
                         {
-                            label = when.ToString("MMM d, HH:mm", CultureInfo.InvariantCulture);
+                            executedAt = when;
                         }
                         JsonElement tests;
                         if (!root.TryGetProperty("Tests", out tests) || tests.ValueKind != JsonValueKind.Array) return;
@@ -151,7 +167,7 @@ namespace Maester.Engine
                             if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(result)) results[id] = result;
                         }
                     }
-                    if (results.Count > 0) SetBaseline(results, label);
+                    if (results.Count > 0) SetBaseline(results, null, executedAt);
                 }
                 catch (Exception)
                 {
@@ -434,8 +450,24 @@ namespace Maester.Engine
         {
             if (_baseline == null) return null;
             var panel = new PanelContent { Title = "Since the last run", Badge = _baselineLabel };
+            if (_baselineWhen.HasValue) panel.Badge = FormatAge(DateTime.Now - _baselineWhen.Value);
             if (_newlyFailing.Count > 0) panel.Colour = Amber;
             else if (_fixedCount > 0) panel.Colour = "32";
+
+            // What the last run found, and when.
+            int passed = 0;
+            int failed = 0;
+            int investigate = 0;
+            foreach (var result in _baseline.Values)
+            {
+                if (result == "Passed") passed++;
+                else if (result == "Failed") failed++;
+                else if (result == "Investigate") investigate++;
+            }
+            var last = new LineBuilder(ansi);
+            if (_baselineWhen.HasValue) last.Add(_baselineWhen.Value.ToString("MMM d, HH:mm", CultureInfo.InvariantCulture) + "  ", "2");
+            last.Add(Ok + " " + N(passed), "32").Add("  ").Add(Bad + " " + N(failed), failed > 0 ? "31" : "2").Add("  ").Add("? " + N(investigate), investigate > 0 ? "35" : "2");
+            panel.Lines.Add(Truncate(last.Build(), width, ansi));
             if (_newlyFailing.Count == 0 && _fixedCount == 0 && _newTests == 0)
             {
                 panel.Lines.Add(new LineBuilder(ansi).Add(_sequence.Count == 0 ? "Waiting for results" + Ellipsis() : "No changes so far", "2").Build());
@@ -449,6 +481,22 @@ namespace Maester.Engine
             if (_fixedCount > 0) panel.Lines.Add(new LineBuilder(ansi).Add((Unicode ? "▼ " : "v ") + N(_fixedCount) + " fixed", "32").Build());
             if (_newTests > 0) panel.Lines.Add(new LineBuilder(ansi).Add("+ " + N(_newTests) + " new test" + (_newTests == 1 ? string.Empty : "s"), "36").Build());
             return panel;
+        }
+
+        /// <summary>How long ago, in words: "just now", "10 min ago", "3 hours ago", "4 days ago", "2 months ago", "1 year ago".</summary>
+        public static string FormatAge(TimeSpan age)
+        {
+            if (age.TotalMinutes < 1) return "just now";
+            if (age.TotalHours < 1) return N((int)age.TotalMinutes) + " min ago";
+            if (age.TotalDays < 1) return Count((int)age.TotalHours, "hour") + " ago";
+            if (age.TotalDays < 30) return Count((int)age.TotalDays, "day") + " ago";
+            if (age.TotalDays < 365) return Count((int)(age.TotalDays / 30), "month") + " ago";
+            return Count((int)(age.TotalDays / 365), "year") + " ago";
+        }
+
+        private static string Count(int n, string unit)
+        {
+            return N(n) + " " + unit + (n == 1 ? string.Empty : "s");
         }
 
         private PanelContent BuildTipsPanel(int width, bool ansi)

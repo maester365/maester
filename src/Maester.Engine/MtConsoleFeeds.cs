@@ -8,6 +8,14 @@ using System.Xml.Linq;
 
 namespace Maester.Engine
 {
+    /// <summary>A post of the blog feed: the day it was published ("MMM dd", or empty), its title and its address.</summary>
+    public sealed class MtBlogPost
+    {
+        public string Published { get; set; }
+        public string Title { get; set; }
+        public string Link { get; set; }
+    }
+
     /// <summary>
     /// Fills the Blog and Version panels of the dashboard from the web, on background threads, so a run never
     /// waits for them. Each makes one GET request with a five-second timeout; a failure (offline, proxy, a
@@ -42,13 +50,8 @@ namespace Maester.Engine
                         WriteCache(cacheFile, posts);
                     }
                     if (posts.Count == 0) return;
-                    var lines = new List<string>();
-                    foreach (var post in posts)
-                    {
-                        if (lines.Count < count) lines.Add(post);
-                    }
-                    lines.Add(new Uri(feedUrl).Host + "/blog");
-                    renderer.SetPanelText("Blog", "From the blog", lines.ToArray());
+                    string blog = new Uri(feedUrl).GetLeftPart(UriPartial.Authority) + "/blog";
+                    renderer.SetPanelText("Blog", "From the blog", FormatPosts(posts, count, blog));
                 }
                 catch (Exception)
                 {
@@ -83,23 +86,64 @@ namespace Maester.Engine
             });
         }
 
-        /// <summary>The newest posts of an RSS 2.0 feed as "MMM dd  title" lines.</summary>
-        public static List<string> ParseFeed(string xml, int count)
+        /// <summary>
+        /// The lines of the Blog panel: the newest post first, each with its date dimmed and its title as a
+        /// hyperlink to the post, then the address of the blog.
+        /// </summary>
+        public static string[] FormatPosts(IList<MtBlogPost> posts, int count, string blogUrl)
         {
-            var posts = new List<string>();
+            var lines = new List<string>();
+            foreach (var post in posts)
+            {
+                if (lines.Count >= count) break;
+                string date = string.IsNullOrEmpty(post.Published) ? "      " : post.Published;
+                lines.Add("\u001b[2m" + date + "\u001b[0m  " + MtConsoleRenderer.Hyperlink(post.Title, post.Link));
+            }
+            if (!string.IsNullOrEmpty(blogUrl))
+            {
+                string shown = blogUrl.Substring(blogUrl.IndexOf("://", StringComparison.Ordinal) + 3);
+                lines.Add("\u001b[2m" + MtConsoleRenderer.Hyperlink(shown, blogUrl) + "\u001b[0m");
+            }
+            return lines.ToArray();
+        }
+
+        /// <summary>The newest posts of an RSS 2.0 feed, in the order of the feed (newest first).</summary>
+        public static List<MtBlogPost> ParseFeed(string xml, int count)
+        {
+            var posts = new List<MtBlogPost>();
             var doc = XDocument.Parse(xml);
             foreach (var item in doc.Descendants("item"))
             {
                 if (posts.Count >= count) break;
-                string title = ((string)item.Element("title") ?? string.Empty).Trim();
+                string title = Clean((string)item.Element("title"));
                 if (title.Length == 0) continue;
                 DateTime published;
                 string date = DateTime.TryParse((string)item.Element("pubDate"), CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out published)
                     ? published.ToString("MMM dd", CultureInfo.InvariantCulture)
-                    : "      ";
-                posts.Add(date + "  " + title);
+                    : string.Empty;
+                posts.Add(new MtBlogPost { Published = date, Title = title, Link = WebLink(Clean((string)item.Element("link"))) });
             }
             return posts;
+        }
+
+        /// <summary>Text from the web without control characters, so that it cannot write escape sequences to the console.</summary>
+        private static string Clean(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            var sb = new System.Text.StringBuilder(text.Length);
+            foreach (char c in text)
+            {
+                sb.Append(char.IsControl(c) ? ' ' : c);
+            }
+            return sb.ToString().Trim();
+        }
+
+        /// <summary>The address when it is an absolute http or https one, or null.</summary>
+        private static string WebLink(string link)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(link, UriKind.Absolute, out uri)) return null;
+            return uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp ? uri.AbsoluteUri : null;
         }
 
         /// <summary>The version in a PowerShell Gallery FindPackagesById response, or null.</summary>
@@ -115,21 +159,34 @@ namespace Maester.Engine
             return latest;
         }
 
-        private static List<string> ReadCache(string cacheFile, TimeSpan maxAge)
+        // The cache holds one post per line: date, title and address, separated by tabs.
+        private static List<MtBlogPost> ReadCache(string cacheFile, TimeSpan maxAge)
         {
             if (string.IsNullOrEmpty(cacheFile) || !File.Exists(cacheFile)) return null;
             if (DateTime.UtcNow - File.GetLastWriteTimeUtc(cacheFile) > maxAge) return null;
-            var posts = new List<string>(File.ReadAllLines(cacheFile));
+            var posts = new List<MtBlogPost>();
+            foreach (var line in File.ReadAllLines(cacheFile))
+            {
+                var fields = line.Split('\t');
+                // A line in another layout (an earlier version's cache) means the feed is read again.
+                if (fields.Length != 3) return null;
+                posts.Add(new MtBlogPost { Published = Clean(fields[0]), Title = Clean(fields[1]), Link = WebLink(fields[2]) });
+            }
             return posts.Count > 0 ? posts : null;
         }
 
-        private static void WriteCache(string cacheFile, List<string> posts)
+        private static void WriteCache(string cacheFile, List<MtBlogPost> posts)
         {
             if (string.IsNullOrEmpty(cacheFile) || posts.Count == 0) return;
             try
             {
+                var lines = new List<string>();
+                foreach (var post in posts)
+                {
+                    lines.Add(post.Published + "\t" + post.Title + "\t" + post.Link);
+                }
                 Directory.CreateDirectory(Path.GetDirectoryName(cacheFile));
-                File.WriteAllLines(cacheFile, posts);
+                File.WriteAllLines(cacheFile, lines);
             }
             catch (IOException)
             {
