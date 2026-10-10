@@ -52,57 +52,87 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
         }
     }
 
-    It 'reproduces the 2.x Block and tags of every built-in ID, native or Pester' {
-        # tags-and-blocks.json is the frozen 2.x snapshot. A check migrated to the native format must keep
-        # its Block and the tags -Tag selects on (design section 4); only its file and line change.
-        $fresh = (Get-Content -Path (Join-Path $freshRoot 'tags-and-blocks.json') -Raw | ConvertFrom-Json).Entries
-        $byId = @{}
-        foreach ($e in $fresh) {
-            $key = "$($e.Id)|$($e.Family)"
-            if (-not $byId.ContainsKey($key)) { $byId[$key] = [System.Collections.Generic.List[object]]::new() }
-            $byId[$key].Add($e)
-        }
-        # 2.x dropped the Describe tags of tests nested in a Context; native rows carry them (design section 5.3, item 4).
-        $resultTagChanges = @('MT.1022', 'MT.1023')
-        # MT1060 (drift) became the native family MT.1060 (design section 10): its four 2.x Its are one
-        # family whose per-check tags (MT1060.<n>) are instance tags now, and its effective tags add MT.1060.
-        $renamedFamilies = @{ 'MT1060' = 'MT.1060' }
-        # Tags added in 3.0. They only add new selections; every 2.x -Tag still selects the same checks.
-        $addedTags = @('AI')
-        $renamedSeen = @{}
-        $problems = foreach ($e in $script:tagsAndBlocks.Entries) {
-            if ($e.Family -and $renamedFamilies.ContainsKey($e.Id)) {
-                $newId = $renamedFamilies[$e.Id]
-                $now = @($byId["$newId|True"]) | Select-Object -First 1
-                if (-not $now) { "$($e.Id): missing as $newId"; continue }
-                $renamedSeen[$newId] = 1 + [int]$renamedSeen[$newId]
-                if ($now.Block -ne $e.Block) { "$($e.Id): Block '$($e.Block)' is now '$($now.Block)'" }
-                $was = @($e.SelectionTags | Where-Object { $_ -notlike "$($e.Id).*" } | Sort-Object -Unique) -join ','
-                $is = @($now.SelectionTags | Where-Object { $_ -ne $newId -and $_ -notin $addedTags } | Sort-Object -Unique) -join ','
-                if ($was -ne $is) { "$($e.Id): selection tags '$was' are now '$is' on $newId" }
-                continue
+    Context 'Maester 2.x tags (test attribute design, section 5.1)' {
+        BeforeAll {
+            # tags-and-blocks.json is the frozen 2.x snapshot. In 3.0 the built-in tests carry no taxonomy
+            # tags, and Block and the tags on a result row changed on purpose, so neither is compared any
+            # more. What must hold is that every 2.x tag still selects exactly the tests it selected: not
+            # fewer, and not more, so a new test must not take a 2.x tag as one of its own tags.
+            # MT1060 (drift) became the native family MT.1060: its four 2.x Its are one test.
+            $script:renamedIds = @{ 'MT1060' = 'MT.1060' }
+            $toSet = {
+                param($entries)
+                $byTag = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.SortedSet[string]]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                foreach ($e in $entries) {
+                    $id = if ($script:renamedIds.ContainsKey([string]$e.Id)) { $script:renamedIds[[string]$e.Id] } else { [string]$e.Id }
+                    foreach ($tag in @($e.SelectionTags)) {
+                        if (-not $byTag.ContainsKey($tag)) { $byTag[$tag] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase) }
+                        $null = $byTag[$tag].Add($id)
+                    }
+                }
+                , $byTag
             }
-            $candidates = $byId["$($e.Id)|$($e.Family)"]
-            if (-not $candidates -or $candidates.Count -eq 0) { "$($e.Id): missing"; continue }
-            # An ID with several entries (a family with several Its) is matched entry by entry on its tags.
-            $wanted = @($e.SelectionTags | Sort-Object -Unique) -join ','
-            $now = $candidates | Where-Object { (@($_.SelectionTags | Sort-Object -Unique) -join ',') -eq $wanted } | Select-Object -First 1
-            if (-not $now) { $now = $candidates[0] }
-            $null = $candidates.Remove($now)
-            if ($now.Block -ne $e.Block) { "$($e.Id): Block '$($e.Block)' is now '$($now.Block)'" }
-            $was = @($e.SelectionTags | Sort-Object -Unique) -join ','
-            $is = @($now.SelectionTags | Where-Object { $_ -notin $addedTags } | Sort-Object -Unique) -join ','
-            if ($was -ne $is) { "$($e.Id): selection tags '$was' are now '$is'" }
-            if ($now.Format -ne 'Native' -and $e.Id -notin $resultTagChanges) {
-                $wasResult = @($e.ResultTags | Sort-Object -Unique) -join ','
-                $isResult = @($now.ResultTags | Sort-Object -Unique) -join ','
-                if ($wasResult -ne $isResult) { "$($e.Id): result tags '$wasResult' are now '$isResult'" }
-            }
+            $script:was = & $toSet $script:tagsAndBlocks.Entries
+            $script:fresh = (Get-Content -Path (Join-Path $freshRoot 'tags-and-blocks.json') -Raw | ConvertFrom-Json).Entries
+            $script:now = & $toSet $script:fresh
+            $script:legacyTable = Join-Path $repoRoot 'powershell/assets/Maester.LegacyTags.json'
         }
-        @($problems) | Should -BeNullOrEmpty
-        # Each renamed family is one native entry in place of its 2.x Its.
-        $merged = ($renamedSeen.Values | ForEach-Object { $_ - 1 } | Measure-Object -Sum).Sum
-        @($fresh).Count + $merged | Should -Be @($script:tagsAndBlocks.Entries).Count
+
+        It 'selects with every 2.x tag exactly the built-in tests it selected in 2.x' {
+            $script:was.Count | Should -BeGreaterThan 900
+            $problems = foreach ($tag in $script:was.Keys) {
+                $expected = @($script:was[$tag]) -join ','
+                $actual = if ($script:now.ContainsKey($tag)) { @($script:now[$tag]) -join ',' } else { '' }
+                if ($expected -ne $actual) { "-Tag '$tag' selected '$expected' in 2.x and now selects '$actual'" }
+            }
+            @($problems) | Should -BeNullOrEmpty
+        }
+
+        It 'resolves every 2.x tag that is not a test ID to the same tests through the engine' {
+            # The same question asked of the code path of Invoke-Maester -Tag (Resolve-MtNativePlan), one
+            # plan per tag. A tag that is only the ID of its own test is covered by the test above.
+            $cases = @(foreach ($tag in $script:was.Keys) {
+                    $ids = @($script:was[$tag])
+                    if ($ids.Count -eq 1 -and $ids[0] -eq $tag) { continue }
+                    @{ Tag = $tag; Expected = $ids -join ',' }
+                })
+            $cases.Count | Should -BeGreaterThan 150
+            $problems = InModuleScope Maester -Parameters @{ Cases = $cases } {
+                param($Cases)
+                $tests = @(Get-MtTestCatalog)
+                $config = Resolve-MtRunConfig -Config @{}
+                foreach ($case in $Cases) {
+                    $selection = Resolve-MtSelection -RunConfig $config -Tag $case.Tag
+                    $plan = @(Resolve-MtNativePlan -Test $tests -Selection $selection -RunConfig $config -IncludeTag $case.Tag -WarningAction SilentlyContinue)
+                    $actual = @($plan | Where-Object { $_.ReasonCode -ne 'NotSelected' } | ForEach-Object { [string]$_.Test.Id } | Sort-Object -Unique { $_.ToLowerInvariant() })
+                    $expected = @($case.Expected -split ',' | Sort-Object -Unique { $_.ToLowerInvariant() })
+                    if (($actual -join ',') -ne ($expected -join ',')) { "-Tag '$($case.Tag)' should select '$($expected -join ',')' and selects '$($actual -join ',')'" }
+                }
+            }
+            @($problems) | Should -BeNullOrEmpty
+        }
+
+        It 'Maester.LegacyTags.json is what build/golden/Export-MtLegacyTagTable.ps1 produces' {
+            $out = Join-Path $TestDrive 'Maester.LegacyTags.json'
+            $pwsh = (Get-Process -Id $PID).Path
+            $output = & $pwsh -NoProfile -NonInteractive -File (Join-Path $repoRoot 'build/golden/Export-MtLegacyTagTable.ps1') -OutputPath $out 2>&1
+            $LASTEXITCODE | Should -Be 0 -Because ($output | Out-String)
+            (Get-NormalizedContent -Path $out) | Should -Be (Get-NormalizedContent -Path $script:legacyTable) -Because 'the table is generated from the frozen snapshots and never edited by hand'
+        }
+
+        It 'lists in Maester.LegacyTags.json only tests that exist, and gives the replacements of the design' {
+            $table = Get-Content -Path $script:legacyTable -Raw | ConvertFrom-Json
+            $ids = [System.Collections.Generic.HashSet[string]]::new([string[]]@($script:fresh | ForEach-Object { $_.Id }), [System.StringComparer]::OrdinalIgnoreCase)
+            $missing = @($table.Tags | ForEach-Object { $_.Tests } | Where-Object { -not $ids.Contains($_) } | Select-Object -Unique)
+            $missing | Should -BeNullOrEmpty
+            $replacement = @{}
+            foreach ($entry in $table.Tags) { if ($entry.PSObject.Properties['Replacement']) { $replacement[$entry.Tag] = $entry.Replacement } }
+            $replacement['CA'] | Should -Be '-Feature conditional-access'
+            $replacement['CISA'] | Should -Be '-Suite cisa'
+            $replacement['EXO'] | Should -Be '-Product exchange'
+            $replacement['Severity:High'] | Should -Be '-Severity High'
+            $replacement.ContainsKey('MS.AAD.3.5') | Should -BeFalse
+        }
     }
 
     It 'records every built-in ID once and the five run-time families' {

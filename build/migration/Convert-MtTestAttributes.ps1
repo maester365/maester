@@ -34,6 +34,9 @@
     The script is idempotent: a second run with the same values changes nothing. It ends with one summary
     line that counts each kind of change, after validating every built-in test with the module's reader.
 
+    It removes every Tag it finds, so it is a tool for the migration only. Once a built-in test carries a
+    label of its own again, do not run it over that test.
+
 .PARAMETER Path
     The built-in tests folder. Defaults to ./tests.
 
