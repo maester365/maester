@@ -146,6 +146,81 @@ function Format-MtCompactNumber {
     $sign + $value.ToString($(if ($index -eq 0) { '0' } else { '0.#' }), [cultureinfo]::InvariantCulture) + $suffixes[$index]
 }
 
+function Get-MtTenantShortName {
+    <#
+    .SYNOPSIS
+    The part of a domain that tells one tenant from another: "contoso" for contoso.onmicrosoft.com.
+
+    .DESCRIPTION
+    Leaves out .onmicrosoft.com (and its national cloud forms), .sharepoint.com with -admin and -my, and
+    otherwise the last label (.com). A name without a dot is returned as it is.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory, Position = 0)] [AllowNull()] [AllowEmptyString()] [string] $Domain
+    )
+    if ([string]::IsNullOrWhiteSpace($Domain)) { return '' }
+    $name = $Domain.Trim().ToLowerInvariant()
+    $short = $name -replace '\.onmicrosoft\.(com|us|de|cn)$' -replace '(-admin|-my)?\.sharepoint(-mil)?\.(com|us|de|cn)$'
+    if ($short -eq $name -and $name.Contains('.')) { $short = $name.Substring(0, $name.LastIndexOf('.')) }
+    $short
+}
+
+function Get-MtConnectionIdentity {
+    <#
+    .SYNOPSIS
+    The tenant or organization a connected service is connected to, for the Connections panel.
+
+    .DESCRIPTION
+    Reads what the connection already holds in the session; it makes no network calls. Graph, Exchange Online,
+    Security & Compliance and SharePoint Online give the short name of the tenant (see Get-MtTenantShortName),
+    so that a service connected to another tenant stands out. Azure gives the domain of the account, Azure
+    DevOps and GitHub the organization. Returns an empty string when it is not known (Teams, for one, would
+    need a request).
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        # The name of the service in the service registry, such as ExchangeOnline.
+        [Parameter(Mandatory)] [string] $Service,
+        [Parameter()] [AllowNull()] [pscustomobject] $TenantContext
+    )
+    $property = { param($object, [string[]] $names) foreach ($n in $names) { if ($object -and $object.PSObject.Properties[$n] -and $object.$n) { return [string]$object.$n } } }
+    try {
+        switch ($Service) {
+            'Graph' {
+                $domain = & $property $TenantContext 'InitialDomain', 'PrimaryDomain'
+                return Get-MtTenantShortName $domain
+            }
+            { $_ -in 'ExchangeOnline', 'SecurityCompliance' } {
+                $eop = $Service -eq 'SecurityCompliance'
+                $session = Get-MtExo -Request ConnectionInformation | Where-Object { $_.State -eq 'Connected' -and [bool]$_.IsEopSession -eq $eop } | Select-Object -First 1
+                return Get-MtTenantShortName (& $property $session 'Organization')
+            }
+            'SharePointOnline' {
+                $url = & $property (Get-PnPConnection) 'Url'
+                if ($url) { return Get-MtTenantShortName ([uri]$url).Host }
+            }
+            'Azure' {
+                $azure = Get-AzContext
+                $account = & $property $azure.Account 'Id'
+                if ($account -and $account.Contains('@')) { return Get-MtTenantShortName $account.Substring($account.IndexOf('@') + 1) }
+                return [string](& $property $azure.Tenant 'Id')
+            }
+            'AzureDevOps' {
+                $connection = Get-ADOPSConnection
+                if ($connection -and $connection['Organization']) { return [string]$connection['Organization'] }
+            }
+            'GitHub' { return [string](& $property $__MtSession.GitHubConnection 'Organization') }
+            'ActiveDirectory' { return [string](& $property $__MtSession.ADConnection 'Domain', 'DomainName', 'Server') }
+        }
+    } catch {
+        Write-Verbose "Could not read what $Service is connected to: $($_.Exception.Message)"
+    }
+    ''
+}
+
 function Get-MtConnectionInfo {
     <#
     .SYNOPSIS
@@ -180,6 +255,7 @@ function Get-MtConnectionInfo {
         elseif ($name -eq 'Graph') { (@($TenantContext.TenantName, $TenantContext.Account) | Where-Object { $_ }) -join ' · ' }
         else { 'connected' }
         [pscustomobject]@{
+            Service   = $name
             Name      = if ($display.ContainsKey($name)) { $display[$name] } else { $name }
             Connected = $connected
             Detail    = $detail

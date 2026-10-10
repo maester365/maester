@@ -48,6 +48,13 @@ namespace Maester.Engine
             public string[] Values;
         }
 
+        private sealed class Connection
+        {
+            public string Name;
+            public bool Connected;
+            public string Identity;
+        }
+
         private sealed class Slow
         {
             public string Id;
@@ -66,6 +73,7 @@ namespace Maester.Engine
         private readonly System.Diagnostics.Stopwatch _runClock = new System.Diagnostics.Stopwatch();
         private TenantInfo _tenant;
         private MtBlogPost _blogPost;
+        private readonly List<Connection> _connections = new List<Connection>();
         private string[] _tips = new string[0];
         private string[] _tipLinks = new string[0];
         private Dictionary<string, string> _baseline;
@@ -122,6 +130,30 @@ namespace Maester.Engine
             lock (_gate)
             {
                 _tenant = new TenantInfo { Name = name, Domain = domain, Detail = detail, Labels = labels ?? new string[0], Values = values ?? new string[0] };
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        /// The Connections panel: the services of the run in a grid, each with a green dot when it is connected
+        /// and, where it is known, the tenant or organization it is connected to. A name that is too long is cut
+        /// at its end; a tenant is cut in its middle, so that two tenants that start alike can still be told apart.
+        /// </summary>
+        public void SetConnections(string[] names, bool[] connected, string[] identities)
+        {
+            lock (_gate)
+            {
+                _connections.Clear();
+                int count = names == null ? 0 : names.Length;
+                for (int i = 0; i < count; i++)
+                {
+                    _connections.Add(new Connection
+                    {
+                        Name = names[i] ?? string.Empty,
+                        Connected = connected != null && i < connected.Length && connected[i],
+                        Identity = identities != null && i < identities.Length ? identities[i] : null,
+                    });
+                }
                 Redraw();
             }
         }
@@ -434,6 +466,8 @@ namespace Maester.Engine
                     return BuildTipsPanel(width, ansi);
                 case "tenant":
                     return _tenant != null ? BuildTenantPanel(width, ansi) : BuildTextPanel(name, ansi);
+                case "connections":
+                    return BuildConnectionsPanel(width, ansi);
                 case "blog":
                     return _blogPost != null ? BuildBlogPanel(width, ansi) : BuildTextPanel(name, ansi);
                 default:
@@ -497,6 +531,51 @@ namespace Maester.Engine
                 }
             }
             return panel.Lines.Count > 0 ? panel : null;
+        }
+
+        private PanelContent BuildConnectionsPanel(int width, bool ansi)
+        {
+            if (_connections.Count == 0) return null;
+            int on = 0;
+            foreach (var c in _connections)
+            {
+                if (c.Connected) on++;
+            }
+            var panel = new PanelContent { Title = "Connections", Badge = N(on) + " of " + N(_connections.Count) };
+            const int gap = 2;
+            int columns = width >= 80 ? 3 : 2;
+            int cell = (width - gap * (columns - 1)) / columns;
+            int index = 0;
+            while (index < _connections.Count)
+            {
+                var row = new LineBuilder(ansi);
+                int end = Math.Min(_connections.Count, index + columns);
+                for (int i = index; i < end; i++)
+                {
+                    var c = _connections[i];
+                    // The tenant gets up to twelve columns and at most half of the cell; the name gets the rest.
+                    string identity = c.Connected ? MiddleEllipsis(c.Identity, Math.Min(12, (cell - 2) / 2)) : string.Empty;
+                    int nameRoom = cell - 2 - (identity.Length > 0 ? identity.Length + 1 : 0);
+                    string name = c.Name.Length <= nameRoom ? c.Name : c.Name.Substring(0, Math.Max(0, nameRoom - 1)).TrimEnd() + (Unicode ? "…" : ".");
+                    row.Add(c.Connected ? (Unicode ? "●" : "*") : (Unicode ? "○" : "o"), c.Connected ? "32" : "2").Add(" ");
+                    row.Add(name, c.Connected ? null : "2");
+                    row.Add(new string(' ', Math.Max(0, cell - 2 - name.Length - identity.Length))).Add(identity, "2");
+                    if (i < end - 1) row.Add(new string(' ', gap));
+                }
+                panel.Lines.Add(row.Build());
+                index = end;
+            }
+            return panel;
+        }
+
+        /// <summary>Cuts text in its middle: the start and the end stay, with an ellipsis between them.</summary>
+        private string MiddleEllipsis(string text, int max)
+        {
+            if (string.IsNullOrEmpty(text) || max < 3) return string.Empty;
+            if (text.Length <= max) return text;
+            int tail = (max - 1) / 2;
+            int head = max - 1 - tail;
+            return text.Substring(0, head) + (Unicode ? "…" : ".") + text.Substring(text.Length - tail);
         }
 
         private PanelContent BuildBlogPanel(int width, bool ansi)

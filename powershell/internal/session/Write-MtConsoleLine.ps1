@@ -119,6 +119,7 @@ function Initialize-MtDashboard {
     them. Results is the chart under the lanes; the others stack in a column on the right when the console
     is wide enough (about 140 columns).
 
+      Connections  the services of the run, and the tenant each is connected to (set later, by Invoke-Maester)
       Tenant    the tenant, its primary domain, the account and its object counts (set later, by Set-MtDashboardTenant)
       Failed    failed tests by severity
       Drift     changes against the newest earlier results file in the output folder, for the same tenant
@@ -141,7 +142,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Failed', 'Drift', 'Pace', 'Blog', 'Version', 'Tips', 'Results'
+    $known = 'Tenant', 'Connections', 'Failed', 'Drift', 'Pace', 'Blog', 'Version', 'Tips', 'Results'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
     if ($output -and $output.PSObject.Properties['DashboardPanels']) {

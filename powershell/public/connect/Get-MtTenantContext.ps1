@@ -72,6 +72,7 @@ function Get-MtTenantContext {
     # Organization: name and tenant type.
     $tenantName = $null
     $primaryDomain = $null
+    $initialDomain = $null
     $tenantType = 'Unknown'
     $tenantTypeSource = 'Unknown'
     if ($graphConnected) {
@@ -79,6 +80,7 @@ function Get-MtTenantContext {
             $organization = @(Invoke-MtGraphRequest -RelativeUri 'organization' -ErrorAction Stop) | Select-Object -First 1
             $tenantName = $organization.displayName
             $primaryDomain = @($organization.verifiedDomains | Where-Object { $_.isDefault } | Select-Object -First 1).name
+            $initialDomain = @($organization.verifiedDomains | Where-Object { $_.isInitial } | Select-Object -First 1).name
             $tenantType = switch ($organization.tenantType) { 'AAD' { 'Workforce' } 'CIAM' { 'External' } default { 'Unknown' } }
             if ($tenantType -ne 'Unknown') { $tenantTypeSource = 'Detected' }
         } catch {
@@ -129,6 +131,7 @@ function Get-MtTenantContext {
         TenantId         = if ($mgContext) { $mgContext.TenantId } else { $null }
         TenantName       = $tenantName
         PrimaryDomain    = if ($primaryDomain) { [string]$primaryDomain } else { $null }
+        InitialDomain    = if ($initialDomain) { [string]$initialDomain } else { $null }
         TenantType       = $tenantType
         TenantTypeSource = $tenantTypeSource
         Cloud            = $cloud
