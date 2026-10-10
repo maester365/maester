@@ -19,8 +19,10 @@ function Convert-MtTest {
       listed in the report.
 
     The It name gives the ID and title (an ID without a prefix such as CT0001 is kept; the report suggests a
-    prefix), the Describe name gives the category, and the tags are kept. The Markdown comes from the
-    function's .md file, else from -Description in the code or the function's help.
+    prefix). The Describe name becomes Feature, so the Block of the test's result rows, and with it the name
+    of its test case in CI, stays what it was. The tags are kept; a Severity:<value> tag also gives Severity,
+    a Preview tag becomes Lifecycle = 'Preview' and a LongRunning tag the LongRunning flag. The Markdown
+    comes from the function's .md file, else from -Description in the code or the function's help.
 
     The original Pester files are not changed. Once a test is converted, Invoke-Maester runs the native test
     and does not run the Pester test with the same ID. Delete the Pester file when you are satisfied.
@@ -105,15 +107,21 @@ function Convert-MtTest {
             if ($id -notmatch '[.\-]') { $notes.Add("Consider a prefix for '$id', for example CONTOSO.$id.") }
             if ($schema.ReservedPrefixes | Where-Object { $id.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) { $notes.Add("The prefix of '$id' belongs to the built-in tests; a native test with a built-in ID is not run.") }
 
-            # Describe (category) and tags.
+            # Describe (written to Feature, which gives the row's Block) and tags.
             $tags = [System.Collections.Generic.List[string]]::new()
-            $category = 'Custom'
+            $feature = $null
             for ($p = $it.Parent; $p; $p = $p.Parent) {
                 if ($p -is [System.Management.Automation.Language.CommandAst] -and $p.GetCommandName() -in 'Describe', 'Context') {
                     $block = Get-MtPesterBlockArgument -CommandAst $p
                     foreach ($t in $block.Tags) { $tags.Insert(0, $t) }
-                    if ($p.GetCommandName() -eq 'Describe' -and $block.NameAst -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $category = $block.NameAst.Value }
+                    if ($p.GetCommandName() -eq 'Describe' -and $block.NameAst -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $feature = $block.NameAst.Value }
                 }
+            }
+            # Feature is one line of at most 60 characters.
+            $featureLimit = $schema.Properties.Feature.MaxLength
+            if ($feature -and ($feature -match '[\r\n]' -or $feature.Length -gt $featureLimit)) {
+                $notes.Add("The Describe name is not one line of at most $featureLimit characters, so it was not written to Feature; the Block of the test's rows changes.")
+                $feature = $null
             }
             foreach ($t in $info.Tags) { $tags.Add($t) }
             $severity = ($tags | Where-Object { $_ -like 'Severity:*' } | Select-Object -First 1)
@@ -190,7 +198,7 @@ function Convert-MtTest {
             }
             if ($markdown -notmatch '<!--- Results --->') { $markdown = $markdown.TrimEnd() + "`n`n<!--- Results --->`n%TestResult%`n" }
 
-            $attribute = New-MtTestAttributeText -Id $id -Title $title -Severity $severity -Category $category -Tag $cleanTags `
+            $attribute = New-MtTestAttributeText -Id $id -Title $title -Severity $severity -Feature $feature -Tag $cleanTags `
                 -Preview:($tags -contains 'Preview') -LongRunning:($tags -contains 'LongRunning') -Service $(if ($service) { $service } else { @('None') }) -HelpUrl $(if ($url -and $url -notlike '*maester.dev/docs/tests/*') { $url } else { $null })
             # The attribute goes above [CmdletBinding()] of the test function.
             $functionText = [regex]::Replace($functionText, "(?m)^(\s*)\[CmdletBinding\(", { param($m) "$($m.Groups[1].Value)$($attribute.Replace("`n", "`n$($m.Groups[1].Value)"))`n$($m.Groups[1].Value)[CmdletBinding(" }, 'None', [timespan]::FromSeconds(5))

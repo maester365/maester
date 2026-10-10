@@ -7,11 +7,16 @@
     Reads the native tests (Test.<ID>.ps1) and Pester-format tests (*.Tests.ps1) under the provided path
     without running them, and returns a list of objects containing:
 
-        TestName     - Name of the It test.
+        TestName     - Name of the It test, or '<Id>: <Title>' of a native test.
         FilePath     - Full path to the test file.
-        Describe     - Name of the parent Describe block.
-        Tags         - Tags explicitly set on the test.
+        Describe     - Name of the parent Describe block. For a native test, its Feature.
+        Tags         - Tags explicitly set on the test. For a native test, the tags that -Tag matches: the
+                       tags it carries and, for a test that ships with Maester, its ID and the tags it
+                       carried in Maester 2.x.
         CombinedTags - Combination of Describe and Tags (unique, case-insensitive).
+
+    This command is kept for one major version for scripts written for Maester 2.x. Get-MtTest lists the
+    native tests with their typed attributes (Product, Feature, Area, Severity and the rest).
 
     .PARAMETER Path
     Root path containing the test files. Defaults to the '..\tests' directory in the current location.
@@ -154,11 +159,13 @@
         }
         $Tests = [System.Collections.Generic.List[object]]::new()
         foreach ($t in $nativeTests) {
+            # Feature stands where 2.x had the Describe name; the tags are those that -Tag matches.
+            $selectionTags = Get-MtSelectionTag -Test $t
             $Tests.Add([PSCustomObject]@{
                     Name        = "$($t.Id): $($t.Title)"
                     ScriptBlock = [PSCustomObject]@{ File = $t.File }
-                    Tag         = @($t.EffectiveTag)
-                    Block       = [PSCustomObject]@{ Name = $t.Category; Tag = @() }
+                    Tag         = @(@($selectionTags.Own) + @($selectionTags.Legacy) | Select-Object -Unique)
+                    Block       = [PSCustomObject]@{ Name = [string]$t.Feature; Tag = @() }
                 })
         }
         foreach ($row in @(Get-MtPesterFileInventory -Path $resolvedPath | Where-Object { $_.Line })) {
@@ -228,7 +235,7 @@
             [string[]] $DescribeTags = $TestItem.Block.Tag | Where-Object { $_ } | Select-Object -Unique
             [string[]] $Tags = ($TestTags + $DescribeTags) | Select-Object -Unique
 
-            $CombinedTags += $Describe
+            if ($Describe) { $CombinedTags += $Describe }
             $CombinedTags += $Tags
 
             # Add $Describe and $Tags to the $AllTags list.

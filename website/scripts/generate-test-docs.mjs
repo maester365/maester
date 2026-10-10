@@ -265,6 +265,8 @@ function catalogArgument() {
   return process.env.MAESTER_TEST_CATALOG ?? "";
 }
 
+// Returns the export: { Taxonomy, Tests }. Taxonomy holds the display names of the product, feature and
+// area keys and of the ATT&CK techniques that the tests use.
 function loadCatalog() {
   const explicit = catalogArgument();
   if (explicit) {
@@ -272,7 +274,7 @@ function loadCatalog() {
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is supplied by the caller (CI workflow or developer)
     if (!existsSync(path)) throw new Error(`Test catalog not found at ${path}. Run build/docs/Export-MtTestCatalogForDocs.ps1 first.`);
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- same caller-supplied path as above
-    return JSON.parse(readFileSync(path, "utf8")).Tests;
+    return JSON.parse(readFileSync(path, "utf8"));
   }
 
   const result = spawnSync("pwsh", ["-NoProfile", "-NonInteractive", "-File", exporterPath, "-OutputPath", defaultCatalogPath], {
@@ -281,7 +283,7 @@ function loadCatalog() {
     stdio: ["ignore", "pipe", "pipe"],
   });
   if (result.status === 0 && existsSync(defaultCatalogPath)) {
-    return JSON.parse(readFileSync(defaultCatalogPath, "utf8")).Tests;
+    return JSON.parse(readFileSync(defaultCatalogPath, "utf8"));
   }
   const reason = result.error ? result.error.message : (result.stderr || result.stdout || "").trim().split("\n").slice(-3).join(" ");
   console.warn(`Could not export the Maester test catalog (${reason || `pwsh exited with ${result.status}`}).`);
@@ -297,38 +299,44 @@ function suiteFor(test) {
   return "other";
 }
 
-// Category from the [MaesterTest] attribute. Benchmark suites set it to the suite name, which says
-// nothing on a page that already lists the suite, so fall back to the most specific tag (the 2.x rule).
-function categoryFor(test, tags) {
-  const category = String(test.Category ?? "").trim();
-  const uninformative = [test.Suite, test.Source].filter(Boolean).map((value) => String(value).toLowerCase());
-  if (category && !uninformative.includes(category.toLowerCase())) return category;
-  // Excludes benchmark-version tags (e.g. "CIS M365 v7.0.0", "CIS GitHub v1.2.0") too, so a
-  // suite-level version tag never wins over a more specific "CIS E3 Level 1" tag.
-  const candidates = tags.filter((tag) => !/^(MT\.|CIS\.|CISA\.|MS\.|EIDSCA\.|ORCA\.|AD-|AZDO\.|L1$|L2$|Maester$|CIS$|CISA$|ORCA$|EIDSCA$|AD$|CIS\s+\S+\s+v[\d.]+$)/i.test(tag));
-  // CIS tests carry both "CIS E3" and "CIS E3 Level 1"; the level-specific tag is the more useful one.
-  const levelTag = candidates.find((tag) => /\bLevel\s*\d\b/i.test(tag));
-  if (levelTag ?? candidates[0]) return levelTag ?? candidates[0];
-  // Otherwise the folder the test lives in, below the suite folder (e.g. tests/cisa/exchange -> "Exchange").
-  const folders = String(test.File ?? "").split("/").slice(1, -1).filter((part) => !/^(maester|cis|cisa|eidsca|orca)$/i.test(part));
-  return folders[0] ? folderDisplayName(folders[0]) : "General";
+// Display names of the taxonomy keys, from the export's Taxonomy. A test says what it is about with keys
+// (Product = 'entra', Feature = 'conditional-access'); a key the taxonomy does not list is shown as written.
+let taxonomyNames = { products: new Map(), features: new Map(), areas: new Map(), techniques: new Map() };
+function loadTaxonomyNames(taxonomy) {
+  taxonomyNames = {
+    products: new Map((taxonomy?.Products ?? []).map((product) => [product.Key, product.Name])),
+    features: new Map((taxonomy?.Features ?? []).map((feature) => [`${feature.Product}|${feature.Key}`, feature.Name])),
+    areas: new Map((taxonomy?.Areas ?? []).map((area) => [area.Key, area.Name])),
+    techniques: new Map((taxonomy?.Attack?.Techniques ?? []).map((technique) => [technique.Id, technique.Name])),
+  };
 }
 
-// Test folders are lowercase kebab-case (see the repository layout in the contributing guide).
-const folderDisplayNames = new Map([["ad", "AD"], ["azure-devops", "Azure DevOps"], ["sharepoint", "SharePoint"], ["xspm", "XSPM"]]);
-function folderDisplayName(folder) {
-  const key = folder.toLowerCase();
-  if (folderDisplayNames.has(key)) return folderDisplayNames.get(key);
-  return key.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+function productNameFor(key) {
+  return key ? taxonomyNames.products.get(key) ?? key : "";
 }
 
-// CIS benchmark levels (L1/L2) live in tags ("L1"/"L2" or "CIS E3 Level 1"). Prefix the level so
+function featureNameFor(test) {
+  return test.Feature ? taxonomyNames.features.get(`${test.Product}|${test.Feature}`) ?? test.Feature : "";
+}
+
+function areaNameFor(key) {
+  return key ? taxonomyNames.areas.get(key) ?? key : "";
+}
+
+// "T1110 Brute Force" for a technique the pinned ATT&CK release names, the ID alone otherwise.
+function mitreLabelFor(id) {
+  const name = taxonomyNames.techniques.get(id);
+  return name ? `${id} ${name}` : id;
+}
+
+// CIS benchmark levels (L1/L2) are not an attribute. Until the suites have framework files they are read
+// from the tags the test carried in Maester 2.x ("L1"/"L2" or "CIS E3 Level 1"). Prefix the level so
 // generated titles stay consistent, e.g. "(L1) Ensure ...".
-function titleFor(test, tags) {
+function titleFor(test, legacyTags) {
   const title = String(test.Title ?? "").trim();
   if (!test.Id.startsWith("CIS.") || /^\(L\d\)\s*/i.test(title)) return title;
-  const levelTag = tags.find((tag) => /^L[12]$/i.test(tag));
-  const levelFromSuite = tags.map((tag) => tag.match(/level\s*([12])\b/i)?.[1]).find(Boolean);
+  const levelTag = legacyTags.find((tag) => /^L[12]$/i.test(tag));
+  const levelFromSuite = legacyTags.map((tag) => tag.match(/level\s*([12])\b/i)?.[1]).find(Boolean);
   const level = levelTag ? levelTag.toUpperCase() : levelFromSuite ? `L${levelFromSuite}` : null;
   return level ? `(${level}) ${title}` : title;
 }
@@ -395,8 +403,11 @@ function buildInventory(catalog) {
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- paths come from the exported catalog of repo files
     const markdown = markdownFile && existsSync(markdownFile) ? normalizeMarkdown(stripGeneratedResultPlaceholder(readFileSync(markdownFile, "utf8"))) : "";
     const helpDescription = normalizeMarkdown(help.description ?? "");
-    const tags = unique([test.Id, ...(test.EffectiveTag ?? test.Tag ?? [])]).sort((a, b) => a.localeCompare(b));
-    const title = titleFor(test, tags);
+    // Tag holds the labels the test's author wrote. LegacyTag holds the tags the test carried in
+    // Maester 2.x, which -Tag still matches; they are listed on the tags page and used as search keywords.
+    const tags = unique(test.Tag ?? []).sort((a, b) => a.localeCompare(b));
+    const legacyTags = unique(test.LegacyTag ?? []).sort((a, b) => a.localeCompare(b));
+    const title = titleFor(test, legacyTags);
     const description = markdown ? trimDescription(markdown) : trimDescription(helpDescription || help.synopsis || title);
     const defaultHelpUrl = `https://maester.dev/docs/tests/${test.Id}`;
     testsById.set(key, {
@@ -405,11 +416,22 @@ function buildInventory(catalog) {
       description,
       severity: test.Severity || "Unknown",
       suite: suiteFor(test),
-      category: categoryFor(test, tags),
+      product: productNameFor(test.Product),
+      relatedProducts: (test.RelatedProduct ?? []).map(productNameFor),
+      feature: featureNameFor(test),
+      area: areaNameFor(test.Area),
+      resourceType: test.ResourceType ?? "",
+      userImpact: test.UserImpact ?? "",
+      implementationCost: test.ImplementationCost ?? "",
+      mitre: (test.Mitre ?? []).map(mitreLabelFor),
+      controls: test.Control ?? [],
       tags,
+      legacyTags,
       services: test.Service ?? [],
       licenses: test.License ?? [],
-      preview: Boolean(test.Preview),
+      permissions: test.Permission ?? [],
+      lifecycle: test.Lifecycle || "Stable",
+      replacedBy: test.ReplacedBy ?? "",
       longRunning: Boolean(test.LongRunning),
       instanceSource: test.InstanceSource ?? "",
       helpUrl: test.HelpUrl && test.HelpUrl.toLowerCase() !== defaultHelpUrl.toLowerCase() ? test.HelpUrl : "",
@@ -434,7 +456,7 @@ function pagePathFor(test) {
 }
 
 function renderTestPage(test, contributorData) {
-  const keywords = unique(["Maester", "Microsoft 365 security", test.id, test.severity, suiteConfig[test.suite]?.label, test.category, ...test.tags]);
+  const keywords = unique(["Maester", "Microsoft 365 security", test.id, test.severity, suiteConfig[test.suite]?.label, test.product, test.feature, test.area, ...test.tags, ...test.legacyTags]);
   const body = [];
   body.push(generatedMarker);
   body.push("", `# ${test.id} - ${test.title}`, "");
@@ -445,18 +467,29 @@ function renderTestPage(test, contributorData) {
   body.push(`| Test ID | ${escapeTable(test.id)} |`);
   body.push(`| Severity | ${escapeTable(test.severity)} |`);
   body.push(`| Suite | ${escapeTable(suiteConfig[test.suite]?.label ?? test.suite)} |`);
-  body.push(`| Category | ${escapeTable(test.category)} |`);
+  if (test.product) body.push(`| Product | ${escapeTable(test.product)} |`);
+  if (test.relatedProducts.length > 0) body.push(`| Related products | ${escapeTable(test.relatedProducts.join(", "))} |`);
+  if (test.feature) body.push(`| Feature | ${escapeTable(test.feature)} |`);
+  if (test.area) body.push(`| Area | ${escapeTable(test.area)} |`);
+  if (test.resourceType) body.push(`| Resource type | ${escapeTable(test.resourceType)} |`);
+  if (test.userImpact) body.push(`| User impact | ${escapeTable(test.userImpact)} |`);
+  if (test.implementationCost) body.push(`| Implementation cost | ${escapeTable(test.implementationCost)} |`);
+  if (test.mitre.length > 0) body.push(`| MITRE ATT&CK | ${escapeTable(test.mitre.join(", "))} |`);
+  if (test.controls.length > 0) body.push(`| Controls | ${escapeTable(test.controls.join(", "))} |`);
   if (test.functionName) {
     const commandReference = test.commandLink ? `[${test.functionName}](${test.commandLink})` : `\`${test.functionName}\``;
     body.push(`| PowerShell test | ${commandReference} |`);
   }
   if (test.services.length > 0) body.push(`| Services | ${escapeTable(test.services.join(", "))} |`);
   if (test.licenses.length > 0) body.push(`| Compatible licenses | ${escapeTable(test.licenses.join(", "))} |`);
+  if (test.permissions.length > 0) body.push(`| Permissions | ${escapeTable(test.permissions.join(", "))} |`);
   if (test.instanceSource) body.push(`| Runs per instance | Yes, one result per instance from \`${test.instanceSource}\` |`);
-  if (test.preview) body.push("| Preview | Yes |");
+  if (test.lifecycle !== "Stable") body.push(`| Lifecycle | ${escapeTable(test.lifecycle)} |`);
+  if (test.replacedBy) body.push(`| Replaced by | ${escapeTable(test.replacedBy)} |`);
   if (test.longRunning) body.push("| Long running | Yes |");
   if (test.helpUrl) body.push(`| Learn more | [${escapeTable(test.helpUrl)}](${test.helpUrl}) |`);
-  body.push(`| Tags | ${escapeTable(test.tags.join(", "))} |`, "");
+  if (test.tags.length > 0) body.push(`| Tags | ${escapeTable(test.tags.join(", "))} |`);
+  body.push("");
   if (test.remediation && !test.markdown.includes(test.remediation)) {
     body.push("## Remediation", "", test.remediation, "");
   }
@@ -484,7 +517,7 @@ ${body.join("\n")}`;
 
 function renderSuiteIndex(suite, tests) {
   const config = suiteConfig[suite];
-  const rows = tests.map((test) => `| [${test.id}](./${test.id}.md) | ${escapeTable(test.title)} | ${escapeTable(test.severity)} | ${escapeTable(test.category)} |`).join("\n");
+  const rows = tests.map((test) => `| [${test.id}](./${test.id}.md) | ${escapeTable(test.title)} | ${escapeTable(test.severity)} | ${escapeTable(test.product)} | ${escapeTable(test.feature)} |`).join("\n");
   return `---
 id: overview
 title: ${yamlQuote(config.title)}
@@ -503,8 +536,8 @@ ${config.overview}
 
 ## Tests
 
-| Test ID | Title | Severity | Category |
-| --- | --- | --- | --- |
+| Test ID | Title | Severity | Product | Feature |
+| --- | --- | --- | --- | --- |
 ${rows}
 `;
 }
@@ -516,7 +549,7 @@ function renderRootIndex(tests) {
     .join("\n");
   const testRows = tests
     .toSorted((a, b) => a.id.localeCompare(b.id))
-    .map((test) => `| [${test.id}](./${test.id}) | ${escapeTable(test.title)} | ${escapeTable(suiteConfig[test.suite]?.label ?? test.suite)} | ${escapeTable(test.severity)} | ${escapeTable(test.category)} |`)
+    .map((test) => `| [${test.id}](./${test.id}) | ${escapeTable(test.title)} | ${escapeTable(suiteConfig[test.suite]?.label ?? test.suite)} | ${escapeTable(test.severity)} | ${escapeTable(test.product)} | ${escapeTable(test.feature)} |`)
     .join("\n");
   return `---
 id: overview
@@ -525,14 +558,14 @@ sidebar_label: Tests Overview
 sidebar_position: 1
 className: generated-test-doc
 hide_table_of_contents: true
-description: ${yamlQuote("Searchable Maester test documentation generated from the native test metadata, test documentation, and tags.")}
+description: ${yamlQuote("Searchable Maester test documentation generated from the native test metadata and test documentation.")}
 ---
 
 ${generatedMarker}
 
 # Tests Overview
 
-This section is generated from the Maester test source (each test's \`[MaesterTest]\` metadata and its \`Test.<ID>.md\` documentation). Each page includes the test ID, severity, tags, PowerShell command, overview, remediation details, and related references when available.
+This section is generated from the Maester test source (each test's \`[MaesterTest]\` metadata and its \`Test.<ID>.md\` documentation). Each page includes the test ID, severity, product, feature, PowerShell command, overview, remediation details, and related references when available.
 
 Every test is researched, written, and refined by security experts from the Maester community — [meet the contributors](/contributors).
 
@@ -544,16 +577,18 @@ ${suiteRows}
 
 ## All Tests
 
-| Test ID | Title | Suite | Severity | Category |
-| --- | --- | --- | --- | --- |
+| Test ID | Title | Suite | Severity | Product | Feature |
+| --- | --- | --- | --- | --- | --- |
 ${testRows}
 `;
 }
 
+// The tags page lists what -Tag still accepts beyond a test's own ID: the tags of Maester 2.x (LegacyTag in
+// the export) and the tags written in a test's Tag attribute.
 function renderTagsIndex(tests) {
   const tagMap = new Map();
   for (const test of tests) {
-    for (const tag of test.tags) {
+    for (const tag of unique([...test.tags, ...test.legacyTags])) {
       if (!tagMap.has(tag)) tagMap.set(tag, []);
       tagMap.get(tag).push(test);
     }
@@ -586,37 +621,34 @@ sidebar_label: ${yamlQuote("🏷️ Tags")}
 sidebar_position: 999
 className: generated-test-doc
 hide_table_of_contents: true
-description: ${yamlQuote("Tags discovered from Maester test metadata and linked to generated test documentation.")}
+description: ${yamlQuote("The Maester 2.x tags that still select tests, and the typed selectors that replace them.")}
 ---
 
 ${generatedMarker}
 
 # Tags Overview
 
-Tags are used by Maester to identify and group related tests. They can also be used to select specific tests to run or exclude during test execution. To keep tags useful, we focus on a few key areas:
+The tests that ship with Maester say what they are about with typed attributes, not tags. Select them with \`-Product\`, \`-Feature\`, \`-Area\`, \`-Severity\` and \`-Suite\` on \`Invoke-Maester\`, or with \`-TestId\`:
 
-- **Test suites** use standardized categories that align with well-known benchmarks and baselines or with Maester's own suite of tests:
-  - **CIS Benchmarks**: Tags prefixed with \`CIS\` (for example, \`CIS.M365.1.1\` or \`CIS.Azure.3.2\`).
-  - **CISA and Microsoft Baseline**: Tags prefixed with \`CISA\` or \`MS\` (for example, \`CISA.M365.Baseline\` or \`MS.Azure.Baseline\`).
-  - **EIDSCA**: Tags prefixed with \`EIDSCA\` (for example, \`EIDSCA.EntraID.2.1\`).
-  - **ORCA**: Tags prefixed with \`ORCA\` (for example, \`ORCA.Exchange.1.1\`).
-  - **Active Directory**: Tags prefixed with \`AD\` (for example, \`AD.User\` or \`AD-USER-07\`).
-  - **Maester**: Tags prefixed with \`Maester\` or \`MT\` (for example, \`MT.1001\` or \`MT.1024\`).
-  - **Azure DevOps**: Tags prefixed with \`AZDO\` (for example, \`AZDO\` or \`AZDO.1000\`).
-- **Product areas** identify the products and services being tested, such as Azure, Defender XDR, Entra ID, Exchange, Microsoft 365, SharePoint, and Teams.
-- **Practices or capabilities** identify security topics such as authentication, Conditional Access (CA), Data Loss Prevention (DLP), Extended Security Posture Management (XSPM), Hybrid Identity, Privileged Access Management (PAM), and Privileged Identity Management (PIM).
+| To select | Maester 2.x | Now |
+| --- | --- | --- |
+| A suite | \`-Tag CISA\` | \`-Suite cisa\` |
+| A product | \`-Tag Entra\` | \`-Product entra\` |
+| A topic | \`-Tag CA\` | \`-Feature conditional-access\` or \`-Area authentication\` |
+| A severity | \`-Tag Severity:High\` | \`-Severity High\` |
+| One test | \`-Tag MT.1001\` | \`-TestId MT.1001\` |
 
-## Recommendations for Tag Usage
+## Tags from Maester 2.x
 
-Less is more. When creating or assigning tags to tests:
+Every tag of Maester 2.x still works with \`-Tag\` and \`-ExcludeTag\`: it selects the built-in tests that carried it in 2.x, and Maester writes a warning that names the typed selector where there is one. A built-in test's own ID is a tag too. Tests added after Maester 3.0 do not carry these tags; select them by their attributes or their ID.
 
-1. Each test gets one **test suite** tag that identifies the benchmark or baseline. Suites that list it in their \`suite.json\` (\`Tags\`) add it to every test automatically; otherwise put it in the \`Tag\` value of the test's \`[MaesterTest]\` attribute.
-2. Assign **product area** tags for the products or services most relevant to the test. Limit these to one to three tags per test.
-3. Use **practice** or **capability** tags sparingly and only when they add significant value. Avoid overly specific tags that apply to only one test.
+## Tags in your own tests
+
+\`Tag\` in the \`[MaesterTest]\` attribute remains for labels the owner of a test folder finds useful, and \`-Tag\` and \`-ExcludeTag\` match them. A \`suite.json\` can add tags to every test in its folder.
 
 ## Tags Used
 
-The tables below list every tag discovered from the test metadata and link to example tests that use it.
+The tables below list every Maester 2.x tag, and every tag written in a built-in test, with examples of the tests it selects.
 
 ${sections}
 `;
@@ -648,7 +680,9 @@ function clearGeneratedDocs() {
 }
 
 function main() {
-  catalogTests = loadCatalog();
+  const catalog = loadCatalog();
+  catalogTests = catalog?.Tests ?? null;
+  loadTaxonomyNames(catalog?.Taxonomy);
   if (!catalogTests) {
     if (checkMode) {
       console.error("Cannot check the generated test docs without the test catalog.");

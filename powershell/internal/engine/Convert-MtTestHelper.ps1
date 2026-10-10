@@ -77,6 +77,10 @@ function New-MtTestAttributeText {
     <#
     .SYNOPSIS
     Returns the text of a [MaesterTest(...)] attribute (used by Convert-MtTest).
+
+    .DESCRIPTION
+    The properties are written in the order of the test attribute design. -Preview is written as
+    Lifecycle = 'Preview'.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Returns text only.')]
     [CmdletBinding()]
@@ -84,13 +88,13 @@ function New-MtTestAttributeText {
     param(
         [Parameter(Mandatory)] [string] $Id,
         [Parameter(Mandatory)] [string] $Title,
-        [Parameter()] [string] $Severity = 'Medium',
-        [Parameter()] [string] $Category,
         [Parameter()] [string] $Product,
-        [Parameter()] [string[]] $Tag,
+        [Parameter()] [string] $Feature,
+        [Parameter()] [string] $Severity = 'Medium',
+        [Parameter()] [string[]] $Service,
         [Parameter()] [switch] $Preview,
         [Parameter()] [switch] $LongRunning,
-        [Parameter()] [string[]] $Service,
+        [Parameter()] [string[]] $Tag,
         [Parameter()] [string] $HelpUrl
     )
 
@@ -99,13 +103,13 @@ function New-MtTestAttributeText {
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add("    Id = $(& $quote $Id)")
     $lines.Add("    Title = $(& $quote $Title)")
-    $lines.Add("    Severity = $(& $quote $Severity)")
-    if ($Category) { $lines.Add("    Category = $(& $quote $Category)") }
     if ($Product) { $lines.Add("    Product = $(& $quote $Product)") }
-    if (@($Tag).Count -gt 0) { $lines.Add("    Tag = $(& $list $Tag)") }
-    if ($Preview) { $lines.Add('    Preview = $true') }
-    if ($LongRunning) { $lines.Add('    LongRunning = $true') }
+    if ($Feature) { $lines.Add("    Feature = $(& $quote $Feature)") }
+    $lines.Add("    Severity = $(& $quote $Severity)")
     if (@($Service).Count -gt 0) { $lines.Add("    Service = $(& $list $Service)") }
+    if ($Preview) { $lines.Add("    Lifecycle = 'Preview'") }
+    if ($LongRunning) { $lines.Add('    LongRunning = $true') }
+    if (@($Tag).Count -gt 0) { $lines.Add("    Tag = $(& $list $Tag)") }
     if ($HelpUrl) { $lines.Add("    HelpUrl = $(& $quote $HelpUrl)") }
     "[MaesterTest(`n" + ($lines -join ",`n") + "`n)]"
 }
