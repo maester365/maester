@@ -477,23 +477,27 @@ Describe 'MtConsoleRenderer panels' {
         $narrow.Renderer.Close()
     }
 
-    It 'Shows the connections in a grid, with long names cut at the end and tenants cut in the middle' {
+    It 'Shows the connections in a grid, connected ones with a green dot, and cuts a name that is too long' {
         $t = New-TestPanelDashboard -Panels 'Connections'
-        $t.Renderer.SetConnections(
-            @('Graph', 'Exchange Online', 'Security & Compliance', 'Teams', 'Azure DevOps'),
-            @($true, $true, $true, $false, $false),
-            @('contoso', 'contoso', 'averylongtenantname-production', 'ignored', $null))
+        $t.Renderer.SetConnections(@('Graph', 'Exchange Online', 'Security & Compliance', 'Teams', 'Azure DevOps'), @($true, $true, $true, $false, $false))
         $t.Renderer.Start(1)
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
         $box[0] | Should -Match '^╭─ Connections ─+ 3 of 5 ─╮$'
-        # Two columns of 26 with two spaces between them; the tenant is at the right of its cell.
-        $box[1] | Should -Be '│ ● Graph            contoso  ● Exchange Online  contoso │'
-        $box[2] | Should -Be '│ ● Security &… averyl…ction  ○ Teams                    │'
+        $box[1] | Should -Match '^│ ● Graph +● Exchange Online +│$'
+        $box[2] | Should -Match '^│ ● Security & Compliance +○ Teams +│$'
         $box[3] | Should -Match '^│ ○ Azure DevOps +│$'
+        # The second column starts at the same place on every row.
+        $box[1].IndexOf('● Exchange') | Should -Be $box[2].IndexOf('○ Teams')
         # Connected is green; not connected is dim.
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[32m●$esc[0m Graph"))
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[2m○$esc[0m $esc[2mTeams$esc[0m"))
         $t.Renderer.Close()
+
+        $narrow = New-TestPanelDashboard -Width 142 -Panels 'Connections'
+        $narrow.Renderer.SetConnections(@('Security & Compliance', 'Graph'), @($true, $true))
+        $narrow.Renderer.Start(1)
+        ($narrow.Renderer.GetPlainScreen(142, 44) -join "`n") | Should -Match '│ ● Security & Com… +● Graph +│'
+        $narrow.Renderer.Close()
     }
 
     It 'Says how long ago the earlier run was, and when' {

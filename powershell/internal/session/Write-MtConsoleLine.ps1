@@ -119,7 +119,7 @@ function Initialize-MtDashboard {
     them. Results is the chart under the lanes; the others stack in a column on the right when the console
     is wide enough (about 140 columns).
 
-      Connections  the services of the run, and the tenant each is connected to (set later, by Invoke-Maester)
+      Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Tenant    the tenant, its primary domain, the account and its object counts (set later, by Set-MtDashboardTenant)
       Failed    failed tests by severity
       Drift     changes against the newest earlier results file in the output folder, for the same tenant

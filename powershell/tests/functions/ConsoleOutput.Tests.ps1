@@ -235,36 +235,6 @@ Describe 'Connection info' {
         $services.Text | Should -Be ' ● Graph  ● Exchange Online  ○ Teams'
     }
 
-    It 'Shortens a domain to the part that names the tenant' {
-        $cases = [ordered]@{
-            'contoso.onmicrosoft.com' = 'contoso'; 'Contoso.OnMicrosoft.us' = 'contoso'; 'contoso.sharepoint.com' = 'contoso'
-            'contoso-admin.sharepoint.com' = 'contoso'; 'elapora.com' = 'elapora'; 'contoso.co.uk' = 'contoso.co'; 'myorg' = 'myorg'; '' = ''
-        }
-        foreach ($case in $cases.GetEnumerator()) {
-            InModuleScope Maester -Parameters @{ d = $case.Key } { param($d) Get-MtTenantShortName $d } | Should -Be $case.Value
-        }
-    }
-
-    It 'Reads the tenant a service is connected to from what the session already holds' {
-        $context = [pscustomobject]@{ InitialDomain = 'contoso.onmicrosoft.com'; PrimaryDomain = 'contoso.com' }
-        InModuleScope Maester -Parameters @{ t = $context } {
-            param($t)
-            Mock Get-MtExo {
-                @(
-                    [pscustomobject]@{ State = 'Connected'; IsEopSession = $false; Organization = 'fabrikam.onmicrosoft.com' }
-                    [pscustomobject]@{ State = 'Connected'; IsEopSession = $true; Organization = 'contoso.onmicrosoft.com' }
-                )
-            }
-            Get-MtConnectionIdentity -Service Graph -TenantContext $t | Should -Be 'contoso'
-            Get-MtConnectionIdentity -Service ExchangeOnline -TenantContext $t | Should -Be 'fabrikam'
-            Get-MtConnectionIdentity -Service SecurityCompliance -TenantContext $t | Should -Be 'contoso'
-            # Not known without a request, and a service that cannot be read: empty, never an error.
-            Get-MtConnectionIdentity -Service Teams -TenantContext $t | Should -Be ''
-            Mock Get-MtExo { throw 'not connected' }
-            Get-MtConnectionIdentity -Service ExchangeOnline -TenantContext $t | Should -Be ''
-        }
-    }
-
     It 'Writes a count in a few characters' {
         $cases = [ordered]@{ 0 = '0'; 87 = '87'; 999 = '999'; 1000 = '1K'; 1204 = '1.2K'; 48211 = '48.2K'; 999960 = '1M'; 3400000 = '3.4M'; 1100000000 = '1.1B' }
         foreach ($case in $cases.GetEnumerator()) {

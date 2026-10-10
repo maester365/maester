@@ -723,9 +723,8 @@
             $tenantCount = if ($tenantPanel -and $tenantContext -and $tenantContext.Services.PSObject.Properties['Graph'] -and $tenantContext.Services.Graph) { Get-MtDashboardTenantCount } else { $null }
             Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Count $tenantCount -Console $console
             if ($connections.Count -gt 0 -and $renderer.IsFullScreen -and $renderer.HasPanel('Connections')) {
-                # The services in their panel, each with the tenant it is connected to.
-                $identities = foreach ($c in $connections) { if ($c.Connected) { Get-MtConnectionIdentity -Service $c.Service -TenantContext $tenantContext } else { '' } }
-                $renderer.SetConnections([string[]]@($connections.Name), [bool[]]@($connections.Connected), [string[]]@($identities))
+                # The services in their panel: which are connected, and which are not.
+                $renderer.SetConnections([string[]]@($connections.Name), [bool[]]@($connections.Connected))
             } elseif ($connections.Count -gt 0) {
                 # Without the panels (a narrow console, or a config that leaves them out): one line under the banner.
                 $connectionLine = Format-MtConnectionInfo -Connection $connections -OneLine -NoTenant:$tenantPanel -Console $console
