@@ -5,6 +5,7 @@ BeforeAll {
     $script:esc = [char]27
 
     function New-TestRenderer {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
         param([int] $Width = 100, [switch] $Ascii, [switch] $NoColor, [switch] $Taskbar)
         $writer = [System.IO.StringWriter]::new()
         $renderer = [Maester.Engine.MtConsoleRenderer]::new($writer)
@@ -17,7 +18,7 @@ BeforeAll {
     }
 
     $script:fixtureModule = New-Module -Name MtRendererFixture -ScriptBlock {
-        function Test-Warns { [CmdletBinding()] param() Write-Warning 'careful'; $true }
+        function Test-Warning { [CmdletBinding()] param() Write-Warning 'careful'; $true }
         function Test-Quiet { [CmdletBinding()] param() $ProgressPreference }
         Export-ModuleMember -Function @()
     }
@@ -157,7 +158,7 @@ Describe 'Invoke-MtEngineRun -Renderer' {
     It 'Pauses the region around replayed records' {
         $t = New-TestRenderer
         $t.Renderer.Start(1)
-        $item = [Maester.Engine.MtWorkItem]@{ Id = 'R.1'; Command = 'Test-Warns'; Title = 'Warns' }
+        $item = [Maester.Engine.MtWorkItem]@{ Id = 'R.1'; Command = 'Test-Warning'; Title = 'Warns' }
         $mark = $t.Writer.ToString().Length
         $null = Invoke-MtEngineRun -WorkItem $item -Module $script:fixtureModule -Renderer $t.Renderer 3>$null
         $t.Writer.ToString().Substring($mark) | Should -Match "$esc\[2K"

@@ -6,7 +6,9 @@ BeforeAll {
     $script:savedEnv = @{}
     foreach ($n in $script:envNames) { $script:savedEnv[$n] = [System.Environment]::GetEnvironmentVariable($n) }
 
-    function Set-TestEnvironment([hashtable] $Values = @{}) {
+    function Set-TestEnvironment {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+        param([hashtable] $Values = @{})
         foreach ($n in $script:envNames) { [System.Environment]::SetEnvironmentVariable($n, $Values[$n]) }
     }
 
