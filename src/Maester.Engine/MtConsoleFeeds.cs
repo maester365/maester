@@ -126,14 +126,23 @@ namespace Maester.Engine
             return posts;
         }
 
-        /// <summary>Text from the web without control characters, so that it cannot write escape sequences to the console.</summary>
+        /// <summary>
+        /// Text from the web made safe for a panel. Control characters become spaces, so that it cannot write
+        /// escape sequences to the console. Emoji and other pictographs are left out: terminals do not agree on
+        /// how wide they are, and a wrong guess pushes the border of the panel out of line.
+        /// </summary>
         private static string Clean(string text)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
             var sb = new System.Text.StringBuilder(text.Length);
             foreach (char c in text)
             {
-                sb.Append(char.IsControl(c) ? ' ' : c);
+                bool pictograph = char.IsSurrogate(c) || c == '\uFE0F' || c == '\u200D' ||
+                    char.GetUnicodeCategory(c) == UnicodeCategory.OtherSymbol;
+                if (pictograph) continue;
+                bool space = char.IsControl(c) || char.IsWhiteSpace(c);
+                if (space && sb.Length > 0 && sb[sb.Length - 1] == ' ') continue;
+                sb.Append(space ? ' ' : c);
             }
             return sb.ToString().Trim();
         }

@@ -230,6 +230,44 @@ Describe 'Connection info' {
         $one = InModuleScope Maester -Parameters @{ c = $script:stream; x = $script:connections } { param($c, $x) Format-MtConnectionInfo -Connection $x -OneLine -Console $c }
         $one.Text | Should -Be ' Contoso · merill@contoso.com · ● Graph  ● Exchange Online  ○ Teams'
         $one.Length | Should -Be $one.Text.Length
+        # The dashboard has the tenant in its own panel: the line then has the services only.
+        $services = InModuleScope Maester -Parameters @{ c = $script:stream; x = $script:connections } { param($c, $x) Format-MtConnectionInfo -Connection $x -OneLine -NoTenant -Console $c }
+        $services.Text | Should -Be ' ● Graph  ● Exchange Online  ○ Teams'
+    }
+
+    It 'Writes a count in a few characters' {
+        $cases = [ordered]@{ 0 = '0'; 87 = '87'; 999 = '999'; 1000 = '1K'; 1204 = '1.2K'; 48211 = '48.2K'; 999960 = '1M'; 3400000 = '3.4M'; 1100000000 = '1.1B' }
+        foreach ($case in $cases.GetEnumerator()) {
+            InModuleScope Maester -Parameters @{ n = $case.Key } { param($n) Format-MtCompactNumber $n } | Should -Be $case.Value
+        }
+    }
+
+    It 'Counts the objects of the tenant in one batch request, and leaves out a count it cannot read' {
+        $counts = InModuleScope Maester {
+            Mock Invoke-MgGraphRequest {
+                [pscustomobject]@{ responses = @(
+                        [pscustomobject]@{ id = 'Groups'; status = 200; body = '310' }
+                        [pscustomobject]@{ id = 'Users'; status = 200; body = 1204 }
+                        [pscustomobject]@{ id = 'Guests'; status = 200; body = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('87')) }
+                        [pscustomobject]@{ id = 'Devices'; status = 403; body = [pscustomobject]@{ error = 'denied' } }
+                        [pscustomobject]@{ id = 'Apps'; status = 200; body = 'not a number' }
+                    )
+                }
+            } -ParameterFilter { $Method -eq 'POST' -and $Uri -eq '/v1.0/$batch' -and $Body -match 'ConsistencyLevel' -and $Body -match 'agentIdentity' }
+            Get-MtDashboardTenantCount
+        }
+        @($counts.Keys) | Should -Be @('Users', 'Guests', 'Groups')
+        $counts['Users'] | Should -Be 1204
+        $counts['Guests'] | Should -Be 87
+        $counts['Groups'] | Should -Be 310
+    }
+
+    It 'Has no counts when the request fails' {
+        $none = InModuleScope Maester {
+            Mock Invoke-MgGraphRequest { throw 'offline' }
+            Get-MtDashboardTenantCount
+        }
+        $none.Count | Should -Be 0
     }
 }
 
@@ -338,16 +376,19 @@ Describe 'Dashboard panels' {
     It 'Shows the tenant, the account and the cloud in the Tenant panel, without the services' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{
-            TenantName = 'Contoso'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
+            TenantName = 'Contoso'; PrimaryDomain = 'contoso.com'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
             Services   = [pscustomobject]@{ Graph = $true; Teams = $false }
         }
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context } {
             param($r, $c, $t)
             $r.SetPanels([string[]]@('Tenant'))
             $r.Open()
-            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Console $c
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Count ([ordered]@{ Users = 1204; Guests = 87; Devices = 2500000 }) -Console $c
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '│ contoso\.com +│'
+        $screen | Should -Match '│ Users 1\.2K +Guests 87 +│'
+        $screen | Should -Match '│ Devices 2\.5M +│'
         $screen | Should -Match 'Contoso'
         $screen | Should -Match 'merill@contoso\.com · Delegated'
         $screen | Should -Match 'Commercial · Workforce'

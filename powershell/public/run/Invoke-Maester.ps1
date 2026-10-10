@@ -719,9 +719,12 @@
         $connections = @(Get-MtConnectionInfo -TenantContext $tenantContext -Plan $nativePlan)
         if ($console.Mode -eq 'Interactive') {
             # The tenant in its panel on a wide console, and the services as one line under the banner.
-            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Console $console
+            $tenantPanel = $renderer.IsFullScreen -and $renderer.HasPanel('Tenant')
+            $tenantCount = if ($tenantPanel -and $tenantContext -and $tenantContext.Services.PSObject.Properties['Graph'] -and $tenantContext.Services.Graph) { Get-MtDashboardTenantCount } else { $null }
+            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Count $tenantCount -Console $console
             if ($connections.Count -gt 0) {
-                $connectionLine = Format-MtConnectionInfo -Connection $connections -OneLine -Console $console
+                # The tenant and the account are in the Tenant panel when there is one; the line then has the services only.
+                $connectionLine = Format-MtConnectionInfo -Connection $connections -OneLine -NoTenant:$tenantPanel -Console $console
                 $renderer.SetInfo($connectionLine.Text, $connectionLine.Length)
             }
         }

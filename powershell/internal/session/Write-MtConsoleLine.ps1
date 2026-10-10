@@ -119,7 +119,7 @@ function Initialize-MtDashboard {
     them. Results is the chart under the lanes; the others stack in a column on the right when the console
     is wide enough (about 140 columns).
 
-      Tenant    the tenant, its ID, the account and the cloud (set later, by Set-MtDashboardTenant)
+      Tenant    the tenant, its domain and ID, the account, the cloud and its object counts (set later, by Set-MtDashboardTenant)
       Failed    failed tests by severity
       Drift     changes against the newest earlier results file in the output folder, for the same tenant
       Pace      tests per second and the slowest tests
@@ -194,10 +194,60 @@ function Initialize-MtDashboard {
     }
 }
 
+function Get-MtDashboardTenantCount {
+    <#
+    .SYNOPSIS
+    Counts the users, guests, devices, groups, apps and agents of the tenant, for the Tenant panel.
+
+    .DESCRIPTION
+    One Graph batch request with six $count queries, so one round trip. A count that cannot be read (a missing
+    permission, a tenant without the feature) is left out; when the request itself fails there are none.
+    Returns an ordered dictionary of label to count.
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Collections.Specialized.OrderedDictionary])]
+    param()
+
+    $queries = [ordered]@{
+        Users   = 'users/$count'
+        Guests  = "users/`$count?`$filter=userType eq 'Guest'"
+        Devices = 'devices/$count'
+        Groups  = 'groups/$count'
+        Apps    = 'applications/$count'
+        Agents  = 'servicePrincipals/microsoft.graph.agentIdentity/$count'
+    }
+    $counts = [ordered]@{}
+    try {
+        $requests = foreach ($name in $queries.Keys) {
+            @{ id = $name; method = 'GET'; url = $queries[$name]; headers = @{ ConsistencyLevel = 'eventual' } }
+        }
+        $body = @{ requests = @($requests) } | ConvertTo-Json -Depth 5
+        $response = Invoke-MgGraphRequest -Method POST -Uri '/v1.0/$batch' -Body $body -ContentType 'application/json' -OutputType PSObject -ErrorAction Stop
+        $byId = @{}
+        foreach ($item in @($response.responses)) { $byId[[string]$item.id] = $item }
+        foreach ($name in $queries.Keys) {
+            $item = $byId[$name]
+            if (-not $item -or [int]$item.status -ne 200) { continue }
+            # A count comes back as a number, as text, or as base64 text, depending on the service.
+            $value = 0L
+            $text = [string]$item.body
+            if (-not [long]::TryParse($text, [ref]$value)) {
+                try { $text = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($text)).Trim([char]0xFEFF, ' ') } catch { continue }
+                if (-not [long]::TryParse($text, [ref]$value)) { continue }
+            }
+            $counts[$name] = $value
+        }
+    } catch {
+        Write-Verbose "Could not count the objects of the tenant: $($_.Exception.Message)"
+    }
+    $counts
+}
+
 function Set-MtDashboardTenant {
     <#
     .SYNOPSIS
-    Fills the Tenant panel of the dashboard: the tenant, its ID, the account and the cloud.
+    Fills the Tenant panel of the dashboard: the tenant, its primary domain and ID, the account, the cloud, and
+    how many users, guests, devices, groups, apps and agents it has.
 
     .DESCRIPTION
     Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show, and the panel says so.
@@ -208,17 +258,34 @@ function Set-MtDashboardTenant {
     param(
         [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
         [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
+        # From Get-MtDashboardTenantCount: label to count.
+        [Parameter()] [AllowNull()] [System.Collections.IDictionary] $Count,
         [Parameter()] [AllowNull()] [pscustomobject] $Console
     )
     $lines = [System.Collections.Generic.List[string]]::new()
     $graph = $TenantContext -and $TenantContext.Services -and $TenantContext.Services.PSObject.Properties['Graph'] -and $TenantContext.Services.Graph
     if ($graph) {
         if ($TenantContext.TenantName) { $lines.Add((Format-MtConsoleText ([string]$TenantContext.TenantName) -Style Bold -Console $Console)) }
+        if ($TenantContext.PSObject.Properties['PrimaryDomain'] -and $TenantContext.PrimaryDomain) { $lines.Add([string]$TenantContext.PrimaryDomain) }
         if ($TenantContext.TenantId) { $lines.Add((Format-MtConsoleText ([string]$TenantContext.TenantId) -Style Dim -Console $Console)) }
         $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
         if ($account) { $lines.Add($account) }
         $kind = @($TenantContext.Cloud, $TenantContext.TenantType | Where-Object { $_ -and $_ -ne 'Unknown' }) -join ' · '
         if ($kind) { $lines.Add((Format-MtConsoleText $kind -Style Dim -Console $Console)) }
+        # The counts, two to a line, in columns.
+        if ($Count -and $Count.Count -gt 0) {
+            $labels = @($Count.Keys)
+            $index = 0
+            while ($index -lt $labels.Count) {
+                $line = ''
+                foreach ($label in $labels[$index..([math]::Min($index + 1, $labels.Count - 1))]) {
+                    $number = Format-MtCompactNumber ([long]$Count[$label])
+                    $line += "$(Format-MtConsoleText $label -Style Dim -Console $Console) $(Format-MtConsoleText $number -Style Bold -Console $Console)$(' ' * [math]::Max(2, 17 - $label.Length - 1 - $number.Length))"
+                }
+                $lines.Add($line.TrimEnd())
+                $index += 2
+            }
+        }
     } else {
         $lines.Add((Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
     }

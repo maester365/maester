@@ -284,6 +284,15 @@ namespace Maester.Engine
             return room <= StandardPaneWidth ? room : Math.Min(MaxPaneWidth, StandardPaneWidth + (room - StandardPaneWidth) / 3);
         }
 
+        /// <summary>Whether the right column is on screen at the current width and has this panel in it.</summary>
+        public bool HasPanel(string name)
+        {
+            lock (_gate)
+            {
+                return PanelShown(name) && PaneWidth(CurrentWidth()) > 0;
+            }
+        }
+
         private bool PanelShown(string name)
         {
             foreach (var p in _panels)
@@ -484,7 +493,7 @@ namespace Maester.Engine
         private PanelContent BuildDriftPanel(int width, bool ansi)
         {
             if (_baseline == null) return null;
-            var panel = new PanelContent { Title = "Since the last run", Badge = _baselineLabel };
+            var panel = new PanelContent { Title = "Drift since last run", Badge = _baselineLabel };
             if (_baselineWhen.HasValue) panel.Badge = FormatAge(DateTime.Now - _baselineWhen.Value);
             if (_newlyFailing.Count > 0) panel.Colour = Amber;
             else if (_fixedCount > 0) panel.Colour = "32";

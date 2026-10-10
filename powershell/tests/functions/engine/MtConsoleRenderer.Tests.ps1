@@ -383,7 +383,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemFinished('A.3', 'Passed', 'High')
         $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '╭─ Since the last run ─+ Oct 9, 08:12 ─╮'
+        $screen | Should -Match '╭─ Drift since last run ─+ Oct 9, 08:12 ─╮'
         $screen | Should -Match '1 newly failing'
         $screen | Should -Match 'A\.1'
         $screen | Should -Match '1 fixed'
@@ -437,7 +437,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.SetBaseline($before, $when)
         $t.Renderer.Start(2)
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '╭─ Since the last run ─+ 4 days ago ─╮'
+        $screen | Should -Match '╭─ Drift since last run ─+ 4 days ago ─╮'
         $screen | Should -Match ([regex]::Escape($when.ToString('MMM d, HH:mm', [cultureinfo]::InvariantCulture)) + '  ✓ 1  ✗ 0  \? 1 ')
         $t.Renderer.Close()
     }
@@ -470,7 +470,7 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard
         $t.Renderer.Start(1)
         $t.Renderer.ItemFinished('Passed')
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Since the last run'
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Drift since last run'
         $t.Renderer.Close()
     }
 
@@ -489,7 +489,7 @@ Describe 'MtConsoleRenderer panels' {
         $other.Renderer.LoadBaselineAsync((Join-Path $TestDrive 'missing.json'), 'tenant-a').Wait()
         $other.Renderer.Start(1)
         $other.Renderer.ItemFinished('A.1', 'Failed', 'High')
-        ($other.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Since the last run'
+        ($other.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Drift since last run'
         $other.Renderer.Close()
     }
 
@@ -571,7 +571,7 @@ Describe 'MtConsoleRenderer panels' {
 Describe 'MtConsoleFeeds' {
     It 'Reads the newest posts of an RSS feed' {
         $xml = '<?xml version="1.0"?><rss version="2.0"><channel><title>Blog</title>' +
-            '<item><title><![CDATA[First post]]></title><link>https://maester.dev/blog/first</link><pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate></item>' +
+            '<item><title><![CDATA[First post 🚀]]></title><link>https://maester.dev/blog/first</link><pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate></item>' +
             '<item><title>Second post</title><link>javascript:alert(1)</link><pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate></item>' +
             '<item><title>Third&#x9;&#xA;post</title></item><item><title>Fourth post</title></item></channel></rss>'
         $posts = [Maester.Engine.MtConsoleFeeds]::ParseFeed($xml, 3)
@@ -580,9 +580,10 @@ Describe 'MtConsoleFeeds' {
         $posts[0].Title | Should -Be 'First post'
         $posts[0].Link | Should -Be 'https://maester.dev/blog/first'
         $posts[1].Title | Should -Be 'Second post'
-        # A link that is not a web address is dropped, and control characters cannot reach the console.
+        # A link that is not a web address is dropped, control characters cannot reach the console, and an
+        # emoji (whose width terminals do not agree on) is left out.
         $posts[1].Link | Should -BeNullOrEmpty
-        $posts[2].Title | Should -Be 'Third  post'
+        $posts[2].Title | Should -Be 'Third post'
         $posts[2].Published | Should -BeNullOrEmpty
     }
 

@@ -72,10 +72,10 @@ redraw freely.
 
 ```
 ┌──                                                                                  ──┐
-     ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗        ▟██████  ▟▙
-     ...                                                                 (the flame)
+     ▟██████  ▟▙       ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗
+     (the flame)       ...
 └──                                                                                  ──┘
- Contoso · merill@contoso.com · ● Graph  ● Exchange Online  ○ Teams
+ ● Graph  ● Exchange Online  ○ Teams
 
  ✓ Prepare 1.0 s  ─  ● Run tests 0:15  ─  ○ Results  ─  ○ Reports
 
@@ -130,7 +130,7 @@ default is all of them, and an empty list turns them off.
 
 | Panel | Shows | Where it comes from | Cost |
 | --- | --- | --- | --- |
-| `Tenant` | Tenant name and ID, account, auth type and cloud. Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are not here: they are the line under the banner. | The tenant context of the run | none |
+| `Tenant` | Tenant name, primary domain and ID, account, auth type and cloud, then the number of users, guests, devices, groups, apps and agents (1.2K, 3.4M). Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are not here: they are the line under the banner, which leaves out the tenant and the account when this panel is on screen. | The tenant context of the run (the name, the domain and the tenant type come from the one `organization` request every run makes; the ID, the account and the cloud from the local Graph context), and one Graph batch request of six `$count` queries for the counts | one Graph request |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
 | `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests (three, or up to ten when rows are free) | Finish times of the run | none |

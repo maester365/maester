@@ -5,8 +5,8 @@
 
     .DESCRIPTION
     Returns Lines (with colour when the console uses it), the Width they need, and Compact, a one-line
-    replacement. The banner is 88 columns: the "ANSI Shadow" wordmark next to the Maester flame drawn with
-    quadrant characters (two by two pixels per cell, sampled from assets/logo/maester.png). The wordmark has a
+    replacement. The banner is 88 columns: the Maester flame on the left, as on maester.dev, drawn with
+    quadrant characters (two by two pixels per cell, sampled from assets/logo/maester.png), and the "ANSI Shadow" wordmark next to it. The wordmark has a
     gradient from left to right, Maester red to amber, with its shadow in a darker shade of the same colour.
     The flame has the logo's own gradient, orange at the top to red at the bottom. Truecolor where the
     terminal supports it, then 256 colours, then 16. Consoles narrower than 90 columns get a small flame next to a
@@ -113,10 +113,10 @@
         $width = 88
         $lines.Add("$dim┌──$reset$(' ' * ($width - 6))$dim──┐$reset")
         for ($r = 0; $r -lt $flame.Count; $r++) {
-            $left = if ($r -ge 3 -and $r -le 8) { (& $paintWordmark $wordmark[$r - 3] 60) + (' ' * (64 - $wordmark[$r - 3].Length)) }
-            elseif ($r -eq 9) { (' ' * (60 - $tagline.Length)) + "$dim$tagline$reset" + '    ' }
-            else { ' ' * 64 }
-            $lines.Add("     $left $(& $paint $flame[$r] (& $rowColor $r $flame.Count))")
+            $right = if ($r -ge 3 -and $r -le 8) { & $paintWordmark $wordmark[$r - 3] 60 }
+            elseif ($r -eq 9) { (' ' * (60 - $tagline.Length)) + "$dim$tagline$reset" }
+            else { '' }
+            $lines.Add("   $(& $paint $flame[$r] (& $rowColor $r $flame.Count))    $right".TrimEnd())
         }
         $lines.Add("$dim└──$reset$(' ' * ($width - 6))$dim──┘$reset")
     } else {
