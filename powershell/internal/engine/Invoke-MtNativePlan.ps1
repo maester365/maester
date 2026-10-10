@@ -10,7 +10,6 @@
     row with the 2.x fields plus the 3.0 fields (ConvertTo-MtNativeRow). Rows for tests that did not
     run are produced from the plan.
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Console progress lines, as Pester writes them')]
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(
@@ -67,19 +66,62 @@
     }
 
     if ($workItems.Count -gt 0) {
-        $foreignLoaded = @{}
+        # Console output (design section 5.4 and docs/proposals/maester-3.0-console-output.md): an interactive
+        # run draws the live status region; Stream and Plain write lines, with a heartbeat and log groups in CI.
+        $console = if ($__MtSession.Console) { $__MtSession.Console } else { Get-MtConsoleMode }
+        # Invoke-Maester creates the renderer of an interactive run; a run started another way gets its own.
+        $renderer = $null
+        $ownRenderer = $false
+        if ($console.Mode -eq 'Interactive') {
+            $renderer = $script:__MtConsoleRenderer
+            if (-not $renderer) { $renderer = New-MtConsoleRenderer -Console $console; $ownRenderer = $true }
+        }
+        $ci = if ($console.Mode -ne 'Interactive') { $console.CI } else { $null }
+        $heartbeat = @{ Done = 0; Failed = 0; Total = $workItems.Count; Clock = [System.Diagnostics.Stopwatch]::StartNew(); Last = [System.Diagnostics.Stopwatch]::StartNew() }
+
+        $writeStartLines = $Verbosity -in 'Detailed', 'Diagnostic'
+        $writeResultLines = $Verbosity -ne 'None'
+
+        # Rows are made as each test finishes, so the live counts use the same result as the report.
+        $converted = @{}
         $starting = {
             param($item)
-            if ($Verbosity -in 'Detailed', 'Diagnostic') { Write-Host "Running $($item.Id)" -ForegroundColor DarkGray }
+            if (-not $renderer -and $writeStartLines) { Write-MtConsoleLine (Format-MtConsoleText "Running $($item.Id)" -Style Dim -Console $console) }
         }
         $finished = {
             param($result)
-            if (Remove-MtForeignModule) { $foreignLoaded[$result.Id] = $true }
+            $foreignWarning = $null
+            $foreign = Remove-MtForeignModule -WarningAction SilentlyContinue -WarningVariable foreignWarning
+            if ($foreignWarning) {
+                if ($renderer) { $renderer.Pause() }
+                try { foreach ($w in $foreignWarning) { Write-Warning $w.Message } } finally { if ($renderer) { $renderer.Resume() } }
+            }
+            $row = ConvertTo-MtNativeRow -PlanRow $result.Tag.PlanRow -RunResult $result -Instance $result.Tag.Instance -ForeignModuleLoaded:$foreign
+            $converted[$result] = $row
+            if ($renderer) { $renderer.ItemFinished([string]$row.Result) }
+            if ($writeResultLines) { Write-MtNativeResultLine -Row $row -Console $console }
+            $heartbeat.Done++
+            if ($row.Result -in 'Failed', 'Error') { $heartbeat.Failed++ }
+            if ($ci -and $heartbeat.Done -lt $heartbeat.Total -and ($heartbeat.Done % 50 -eq 0 -or $heartbeat.Last.Elapsed.TotalSeconds -ge 10)) {
+                Write-MtRunHeartbeat -Done $heartbeat.Done -Total $heartbeat.Total -Failed $heartbeat.Failed -Elapsed $heartbeat.Clock.Elapsed -Console $console
+                $heartbeat.Last.Restart()
+            }
         }
-        $results = @(Invoke-MtEngineRun -WorkItem $workItems.ToArray() -Module $maester -OnItemStarting $starting -OnItemFinished $finished)
+
+        if ($ci) { Write-MtCIGroup -Name "Maester: $($workItems.Count) native tests" -Console $console }
+        try {
+            if ($renderer) { $renderer.Start($workItems.Count) }
+            $results = @(Invoke-MtEngineRun -WorkItem $workItems.ToArray() -Module $maester -OnItemStarting $starting -OnItemFinished $finished -Renderer $renderer)
+        } finally {
+            if ($renderer) {
+                $renderer.Stop()
+                if ($ownRenderer) { $script:__MtConsoleRenderer = $null }
+            }
+            if ($ci) { Write-MtCIGroup -End -Console $console }
+        }
         foreach ($result in $results) {
-            $row = ConvertTo-MtNativeRow -PlanRow $result.Tag.PlanRow -RunResult $result -Instance $result.Tag.Instance -ForeignModuleLoaded:($foreignLoaded.ContainsKey($result.Id))
-            if ($Verbosity -ne 'None') { Write-MtNativeResultLine -Row $row }
+            # Items the run never started (Ctrl+C) get a result but no OnItemFinished call.
+            $row = if ($converted.ContainsKey($result)) { $converted[$result] } else { ConvertTo-MtNativeRow -PlanRow $result.Tag.PlanRow -RunResult $result -Instance $result.Tag.Instance }
             $rows.Add($row)
         }
     }
@@ -118,6 +160,7 @@ function New-MtNativeWorkItem {
     $item = [Maester.Engine.MtWorkItem]::new()
     $item.Id = $Id
     $item.Command = $PlanRow.Test.FunctionName
+    $item.Title = if ($Instance -and $Instance.PSObject.Properties['Title'] -and $Instance.Title) { [string]$Instance.Title } else { [string]$PlanRow.Test.Title }
     $item.Parameters = $Parameters
     $item.Module = $Module
     $item.Lane = 'Main'
@@ -412,11 +455,16 @@ function Write-MtNativeResultLine {
     .SYNOPSIS
     Writes the one-line console result of a finished native test (design section 5.4).
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Console output, as Pester writes it')]
     [CmdletBinding()]
-    param([Parameter(Mandatory)] [object] $Row)
-    $color = switch ($Row.Result) { 'Passed' { 'Green' } 'Failed' { 'Red' } 'Error' { 'Red' } 'Investigate' { 'Magenta' } default { 'DarkGray' } }
-    $line = "[{0}] {1}: {2} ({3})" -f $Row.Result, $Row.Id, $Row.Title, $Row.Duration
+    param(
+        [Parameter(Mandatory)] [object] $Row,
+        [Parameter()] [AllowNull()] [pscustomobject] $Console
+    )
+    if (-not $Console) { $Console = Get-MtConsoleMode }
+    $style = switch ($Row.Result) { 'Passed' { 'Passed' } 'Failed' { 'Failed' } 'Error' { 'Error' } 'Investigate' { 'Investigate' } default { 'Dim' } }
+    $label = Format-MtResultLabel -Result $Row.Result -Console $Console
+    $duration = try { Format-MtDuration ([timespan]::Parse($Row.Duration, [cultureinfo]::InvariantCulture)) } catch { $Row.Duration }
+    $line = "$(Format-MtConsoleText $label -Style $style -Console $Console) $($Row.Id): $($Row.Title) $(Format-MtConsoleText "($duration)" -Style Dim -Console $Console)"
     if ($Row.Result -in 'Failed', 'Error' -and $Row.ReasonDetail) { $line += " - $(Get-MtFirstLine $Row.ReasonDetail)" }
-    Write-Host $line -ForegroundColor $color
+    Write-MtConsoleLine $line
 }

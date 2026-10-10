@@ -27,6 +27,14 @@
         [switch]$Completed
     )
 
+    # An interactive Invoke-Maester run shows progress with its console renderer instead of Write-Progress
+    # (see Maester.Engine.MtConsoleRenderer for why).
+    if ($script:__MtConsoleRenderer) {
+        $text = if ($Completed) { $null } elseif ($Status) { ([string]$Status).TrimEnd('.', ' ') } else { $Activity }
+        $script:__MtConsoleRenderer.ShowStatus($text)
+        return
+    }
+
     try {
         $Activity = "🔥 $Activity"
 

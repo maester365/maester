@@ -678,6 +678,11 @@ Lines go to the information stream, as Pester's do. Hosts should treat any recor
 proof of life rather than parse the text. The contract is "at least one record per
 finished test at `Normal` or above", not a line format.
 
+How the lines and the progress are drawn depends on the output mode (`-OutputMode`
+Interactive, Stream or Plain): an interactive console gets a live status region drawn by
+the engine's `MtConsoleRenderer` instead of `Write-Progress`, and CI gets log groups, a
+heartbeat and annotations. See [Console output](maester-3.0-console-output.md).
+
 ### 5.5 Implementation language: a small C# core inside the module
 
 **Decision.** The scheduling core of the engine is C#, shipped as `Maester.Engine.dll`

@@ -238,6 +238,8 @@ output, keep every timeout below that period: a test writes nothing while it run
 | `ErrorsAsFailures` | bool | `false` | When `true`, a test that threw (`TestError`, `Timeout`, `InvalidReturn`) fails the run's `Result` and is a failure in the XML file. |
 | `TestResult.Path` | string | none | Writes NUnit or JUnit XML for native and Pester-format tests to this path. From a config file found by folder discovery, only a relative path inside the current folder is accepted; `-Config` and `MAESTER_CONFIG` may name any path. |
 | `TestResult.Format` | string | `NUnitXml` | `NUnitXml` or `JUnitXml`. |
+| `ConsoleMode` | string | `Auto` | How the console output is written: `Interactive` (a live status line with the result counts and the running test), `Stream` (lines only, for CI and redirected output), `Plain` (lines without colour or symbols) or `Auto` (Interactive on a terminal, Stream otherwise). `-OutputMode` and the `MAESTER_OUTPUT_MODE` environment variable win over it. |
+| `CIAnnotations` | bool | `true` | On GitHub Actions and Azure Pipelines, writes the first 20 Failed (as warnings) and Error (as errors) rows as annotations. |
 
 See [CI test results](../result-schema.md#ci-test-results-nunit-and-junit-xml) for how each result maps to an XML
 outcome.
