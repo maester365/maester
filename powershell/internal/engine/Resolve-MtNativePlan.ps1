@@ -5,8 +5,13 @@ function Resolve-MtNativePlan {
 
     .DESCRIPTION
     Gates apply in this order, and the first failing gate gives the reason (design section 6):
-    invalid metadata; disabled by config; selection (IDs, tags, Preview, long-running, opt-in service);
-    platform; tenant type; cloud; service; licence; parameter binding.
+    invalid metadata; disabled by config; selection (IDs, typed selectors, tags, opt-in service, Preview,
+    long-running); platform; tenant type; cloud; service; licence; parameter binding.
+
+    The default exclusions are decided by attribute, not by tag (test attribute design, section 4): a test
+    with Lifecycle = 'Preview' or LongRunning is left out when the run excludes them by default
+    (-AutoExcludedTag) and the test is not named by its exact ID, and a test whose service is opt-in, such
+    as Active Directory, when that service is not connected.
 
     Each plan row has: Test, Disposition (Run, NotRun, Skipped or Error), ReasonCode, ReasonDetail,
     LegacySkipCode, Parameters (the bound hashtable), EffectiveParameters, TimeoutSeconds, Setting (the
@@ -19,7 +24,8 @@ function Resolve-MtNativePlan {
         [Parameter(Mandatory)] [pscustomobject] $Selection,
         [Parameter(Mandatory)] [pscustomobject] $RunConfig,
         [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
-        # The include and exclude tags of the run, and which exclusions the engine added by default.
+        # The include and exclude tags of the run, and which exclusions the engine added by default
+        # (Preview, LongRunning, AD). The defaults are applied to native tests by attribute.
         [Parameter()] [string[]] $IncludeTag = @(),
         [Parameter()] [string[]] $ExcludeTag = @(),
         [Parameter()] [string[]] $AutoExcludedTag = @(),
@@ -43,6 +49,9 @@ function Resolve-MtNativePlan {
             if ($ts -and $ts.Id -and $ts.PSObject.Properties['Enabled'] -and $ts.Enabled -eq $true) { $null = $allowListIds.Add([string]$ts.Id) }
         }
     }
+
+    $selectorInUse = Test-MtSelectorInUse -Selection $Selection
+    $userExcludeTag = @($ExcludeTag | Where-Object { $_ -and $_ -notin $AutoExcludedTag })
 
     foreach ($t in $Test) {
         $row = [ordered]@{
@@ -105,6 +114,16 @@ function Resolve-MtNativePlan {
             $row.ExactlyNamed = [bool]($includedBy | Where-Object { -not $_.Contains('*') })
         }
 
+        # Typed selectors: Product (or RelatedProduct), Feature, Area, the effective severity and Suite.
+        if ($selectorInUse) {
+            $severity = if ($setting -and $setting.PSObject.Properties['Severity'] -and $setting.Severity) { [string]$setting.Severity } else { [string]$t.Severity }
+            $miss = Test-MtSelectorMatch -Selection $Selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $severity -Suite $t.Suite
+            if ($miss) {
+                & $set 'NotRun' 'NotSelected' "Not selected by -$($miss.Selector) ($($miss.Value -join ', '))."
+                [pscustomobject]$row; continue
+            }
+        }
+
         # Selection by tag.
         $tags = @($t.EffectiveTag)
         $included = $IncludeTag.Count -eq 0
@@ -115,21 +134,29 @@ function Resolve-MtNativePlan {
             & $set 'NotRun' 'NotSelected' "Matched none of the tags $($IncludeTag -join ', ')."
             [pscustomobject]$row; continue
         }
-        $hits = @(foreach ($pattern in $ExcludeTag) { foreach ($tag in $tags) { if ($tag -like $pattern) { $pattern; break } } })
-        if ($row.ExactlyNamed) {
-            # A test named by its exact ID runs even if it is a preview or long-running test.
-            $hits = @($hits | Where-Object { -not ($_ -in 'Preview', 'LongRunning' -and $AutoExcludedTag -contains $_) })
-        }
+
+        # Default exclusions, by attribute. An opt-in service that is not connected comes first.
         $optIn = @($t.Service | Where-Object { $registry.Services[$_].OptIn })
         $optInDisconnected = @($optIn | Where-Object { $TenantContext -and $TenantContext.Services.PSObject.Properties[$_] -and -not $TenantContext.Services.$_ })
-        if ($optInDisconnected -or ($hits -contains 'AD' -and $AutoExcludedTag -contains 'AD')) {
+        if ($optInDisconnected) {
             & $set 'NotRun' 'OptInServiceNotConnected' 'Active Directory tests run only after Connect-Maester -Service ActiveDirectory.'
             [pscustomobject]$row; continue
         }
+        # A test named by its exact ID runs even if it is a preview or long-running test.
+        if (-not $row.ExactlyNamed) {
+            if ($t.Lifecycle -eq 'Preview' -and $AutoExcludedTag -contains 'Preview') {
+                & $set 'NotRun' 'Preview' 'Preview test. Use -IncludePreview to run it.'
+                [pscustomobject]$row; continue
+            }
+            if ($t.LongRunning -and $AutoExcludedTag -contains 'LongRunning') {
+                & $set 'NotRun' 'LongRunning' 'Long-running test. Use -IncludeLongRunning to run it.'
+                [pscustomobject]$row; continue
+            }
+        }
+        # The tags the caller excludes. The tags the engine adds for Pester-format tests are not among them.
+        $hits = @(foreach ($pattern in $userExcludeTag) { foreach ($tag in $tags) { if ($tag -like $pattern) { $pattern; break } } })
         if ($hits) {
-            if ($hits -contains 'Preview' -and $AutoExcludedTag -contains 'Preview') { & $set 'NotRun' 'Preview' 'Preview test. Use -IncludePreview to run it.' }
-            elseif ($hits -contains 'LongRunning' -and $AutoExcludedTag -contains 'LongRunning') { & $set 'NotRun' 'LongRunning' 'Long-running test. Use -IncludeLongRunning to run it.' }
-            else { & $set 'NotRun' 'ExcludedByTag' "Excluded by tag ($(@($hits | Select-Object -Unique) -join ', '))." }
+            & $set 'NotRun' 'ExcludedByTag' "Excluded by tag ($(@($hits | Select-Object -Unique) -join ', '))."
             [pscustomobject]$row; continue
         }
 

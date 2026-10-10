@@ -8,7 +8,9 @@
 
     For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively, except Active Directory tests and tests tagged as LongRunning or Preview. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
+    By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the current directory and all subdirectories recursively, except Active Directory tests, preview tests and long-running tests. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
+
+    -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes. Each takes a list: the values of one selector are alternatives, and different selectors must all match. They combine the same way with -Tag and -TestId. The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
 
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
@@ -28,12 +30,12 @@
     .EXAMPLE
     Invoke-Maester
 
-    Runs all the test files under the current folder (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the ./test-results folder.
+    Runs the built-in tests and the custom tests under the current folder (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester ./maester-tests
 
-    Runs all the tests in the folder ./tests/Maester (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the default ./test-results folder.
+    Runs the built-in tests and the custom tests in the folder ./maester-tests (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester -Tag 'CA' -IncludeLongRunning
@@ -44,6 +46,16 @@
     Invoke-Maester -Tag 'CA', 'App' -IncludePreview
 
     Runs the tests with the tags 'CA' and 'App' and includes preview tests. Generates a report of the results in the default ./test-results folder.
+
+    .EXAMPLE
+    Invoke-Maester -Product entra -Severity Critical, High
+
+    Runs the Entra ID tests whose severity is Critical or High. Values of one selector are alternatives; different selectors must all match.
+
+    .EXAMPLE
+    Invoke-Maester -Suite cisa -Area authentication
+
+    Runs the tests of the CISA suite that are about authentication. -Product, -Feature, -Area, -Severity and -Suite select by the typed attributes of the tests and combine with -Tag and -TestId.
 
     .EXAMPLE
     Invoke-Maester -OutputFolder './my-test-results'
@@ -103,7 +115,7 @@
     .EXAMPLE
     ```powershell
     Connect-Maester -Service ActiveDirectory
-    Invoke-Maester -Tag 'AD' -SkipGraphConnect
+    Invoke-Maester -Product ad -SkipGraphConnect
     ```
 
     Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
@@ -140,6 +152,23 @@
 
         # Exclude the tests that match this tag(s).
         [string[]] $ExcludeTag,
+
+        # Only run the tests of these products: keys such as entra or exchange, or an alias such as 'Entra ID'.
+        # Matches a test's Product or any of its RelatedProduct values. '*' wildcards are allowed.
+        [string[]] $Product,
+
+        # Only run the tests about these features of a product, for example conditional-access. '*' wildcards are allowed.
+        [string[]] $Feature,
+
+        # Only run the tests of these security areas, for example authentication or privileged-access. '*' wildcards are allowed.
+        [string[]] $Area,
+
+        # Only run the tests with these severities: Critical, High, Medium, Low or Info.
+        # A severity set for a test in the run configuration is the one that counts.
+        [string[]] $Severity,
+
+        # Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD. '*' wildcards are allowed.
+        [string[]] $Suite,
 
         # Include long running tests.
         [switch] $IncludeLongRunning,
@@ -438,6 +467,7 @@
         }
 
         $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
+            -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite `
             -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
         if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
         $Tag = $selection.Tag
@@ -691,16 +721,16 @@
             }
         }
 
-        # Stage 5: ID-based selection and config admission. Pester selects by tag only, so tests that
-        # these rules deselect are excluded by line and reported as NotRun with a reason.
+        # Stage 5: ID-based selection, the typed selectors and config admission. Pester selects by tag only,
+        # so tests that these rules deselect are excluded by line and reported as NotRun with a reason.
         $plan = $null
-        $needsIdSelection = $selection.TestId.Count -gt 0 -or $selection.ExcludeTestId.Count -gt 0 -or
+        $needsIdSelection = $selection.TestId.Count -gt 0 -or $selection.ExcludeTestId.Count -gt 0 -or (Test-MtSelectorInUse -Selection $selection) -or
             $selection.DefaultAction -eq 'Skip' -or (@($runConfig.TestSettings) | Where-Object { $_ -and $_.PSObject.Properties['Enabled'] })
         if ($needsIdSelection) {
             Write-MtProgress -Activity 'Starting Maester' -Status 'Selecting tests by ID...' -Force
             if ($null -eq $builtInInventory) { $builtInInventory = if ($testSource.BuiltInFiles.Count -gt 0) { @(Get-MtPesterFileInventory -Path $testSource.BuiltInFiles) } else { @() } }
             $inventory = @($builtInInventory | Where-Object { $_.File -in $testSource.BuiltInFiles }) + $customInventory
-            $plan = Get-MtPesterSelectionPlan -Inventory $inventory -Selection $selection -RunConfig $runConfig
+            $plan = Get-MtPesterSelectionPlan -Inventory $inventory -Selection $selection -RunConfig $runConfig -FileOrigin $fileOrigin
             if ($plan.ExcludeLines.Count -gt 0) {
                 $pesterFilter.ExcludeLine = @(@($pesterFilter.ExcludeLine) + $plan.ExcludeLines | Where-Object { $_ })
             }
