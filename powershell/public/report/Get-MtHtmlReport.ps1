@@ -82,8 +82,8 @@
             $copy = & $copyWithout $Results ''
             if ($null -ne $copy.Tests) {
                 # Assign directly so a single test or no tests still serializes as an array.
-                $copy.Tests = @($copy.Tests | ForEach-Object {
-                        $test = & $copyWithout $_ 'ErrorRecord'
+                $copy.Tests = @(foreach ($sourceTest in $copy.Tests) {
+                        $test = & $copyWithout $sourceTest 'ErrorRecord'
                         # RelatedObjects only feeds the AffectedObjects built from it, which the report carries.
                         if ($null -ne $test.ResultDetail) {
                             $test.ResultDetail = [PSCustomObject](& $copyWithout $test.ResultDetail 'RelatedObjects')

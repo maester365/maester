@@ -99,11 +99,15 @@ function Resolve-MtNativePlan {
 
         # Selection by tag.
         $tags = @($t.EffectiveTag)
-        if ($IncludeTag.Count -gt 0 -and -not ($tags | Where-Object { $tag = $_; $IncludeTag | Where-Object { $tag -like $_ } })) {
+        $included = $IncludeTag.Count -eq 0
+        if (-not $included) {
+            foreach ($tag in $tags) { foreach ($pattern in $IncludeTag) { if ($tag -like $pattern) { $included = $true; break } }; if ($included) { break } }
+        }
+        if (-not $included) {
             & $set 'NotRun' 'NotSelected' "Matched none of the tags $($IncludeTag -join ', ')."
             [pscustomobject]$row; continue
         }
-        $hits = @($ExcludeTag | Where-Object { $pattern = $_; $tags | Where-Object { $_ -like $pattern } })
+        $hits = @(foreach ($pattern in $ExcludeTag) { foreach ($tag in $tags) { if ($tag -like $pattern) { $pattern; break } } })
         if ($row.ExactlyNamed) {
             # A test named by its exact ID runs even if it is a preview or long-running test.
             $hits = @($hits | Where-Object { -not ($_ -in 'Preview', 'LongRunning' -and $AutoExcludedTag -contains $_) })

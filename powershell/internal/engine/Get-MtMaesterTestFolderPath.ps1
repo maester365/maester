@@ -11,13 +11,18 @@
     [OutputType([string])]
     param()
 
+    # Called for every result row: the answer does not change for a loaded module, so it is resolved once.
+    if ($script:__MtTestFolderPath) { return $script:__MtTestFolderPath }
+
     $moduleBase = $ExecutionContext.SessionState.Module.ModuleBase
     $builtIn = Join-Path -Path $moduleBase -ChildPath 'builtin-pester'
-    if (Test-Path -LiteralPath $builtIn -PathType Container) { return $builtIn }
-
     $sourceTests = Join-Path -Path $moduleBase -ChildPath '../tests'
-    if (Test-Path -LiteralPath $sourceTests -PathType Container) {
-        return (Resolve-Path -LiteralPath $sourceTests).Path
+    $script:__MtTestFolderPath = if (Test-Path -LiteralPath $builtIn -PathType Container) {
+        $builtIn
+    } elseif (Test-Path -LiteralPath $sourceTests -PathType Container) {
+        (Resolve-Path -LiteralPath $sourceTests).Path
+    } else {
+        $builtIn
     }
-    return $builtIn
+    $script:__MtTestFolderPath
 }

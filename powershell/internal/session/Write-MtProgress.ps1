@@ -16,9 +16,9 @@
         [Parameter(Mandatory = $false)]
         [object]$Status,
 
-        # Forces this message to be displayed by adding a 200ms sleep for the update to be displayed
-        # Use sparingly as it can slow down the script
-        # This is a workaround for bug on macOS where first call does not show the progress bar. See https://github.com/PowerShell/PowerShell/issues/5741
+        # Makes sure this message is displayed. On macOS the first progress update of a session is not drawn
+        # (https://github.com/PowerShell/PowerShell/issues/5741), so the first forced call waits 200ms and repeats it.
+        # Later calls, and calls whose progress is not shown, do not wait.
         [Parameter(Mandatory = $false)]
         [switch]$Force,
 
@@ -29,6 +29,11 @@
 
     try {
         $Activity = "🔥 $Activity"
+
+        # The macOS workaround is needed once per session, and only when progress is drawn on a console.
+        $flush = $Force -and $IsMacOS -and -not $script:__MtProgressFlushed -and
+            $ProgressPreference -notin 'SilentlyContinue', 'Ignore' -and -not [System.Console]::IsOutputRedirected
+        if ($flush) { $script:__MtProgressFlushed = $true }
 
         if ($Status) {
             $statusString = if ($Status -is [string]) { $Status } else { Out-String -InputObject $Status }
@@ -55,8 +60,7 @@
 
             Write-Progress -Activity $Activity -Status $statusString -Completed:$Completed
 
-            # Improved macOS workaround - only apply when needed
-            if ($Force -and $IsMacOS) {
+            if ($flush) {
                 Start-Sleep -Milliseconds 200
                 Write-Progress -Activity $Activity -Status $statusString -Completed:$Completed
             }
@@ -64,8 +68,7 @@
         } else {
             Write-Progress -Activity $Activity -Completed:$Completed
 
-            # Improved macOS workaround - only apply when needed
-            if ($Force -and $IsMacOS) {
+            if ($flush) {
                 Start-Sleep -Milliseconds 200
                 Write-Progress -Activity $Activity -Completed:$Completed
             }

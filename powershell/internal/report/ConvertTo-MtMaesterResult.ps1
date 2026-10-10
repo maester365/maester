@@ -481,26 +481,41 @@
             }
         }
     }
-    # Native tests: one block per category.
+    # Native tests: one block per category. The rows are indexed by block once (a row whose Block is a list
+    # counts in each of its blocks), instead of filtering every row for every category.
+    $rowsByBlock = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.List[object]]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($row in $mtTests) {
+        foreach ($blockName in @($row.Block | Where-Object { $_ } | Select-Object -Unique)) {
+            if (-not $rowsByBlock.ContainsKey($blockName)) { $rowsByBlock[$blockName] = [System.Collections.Generic.List[object]]::new() }
+            $rowsByBlock[$blockName].Add($row)
+        }
+    }
+    $countByResult = {
+        param($rows)
+        $counts = @{ Failed = 0; Passed = 0; Error = 0; Investigate = 0; Skipped = 0; NotRun = 0 }
+        foreach ($r in $rows) { if ($counts.ContainsKey([string]$r.Result)) { $counts[[string]$r.Result]++ } }
+        $counts
+    }
     foreach ($category in @($NativeRows | ForEach-Object { $_.Block } | Where-Object { $_ } | Select-Object -Unique)) {
-        if ($mtBlocks | Where-Object { $_.Name -eq $category }) {
-            $existing = $mtBlocks | Where-Object { $_.Name -eq $category } | Select-Object -First 1
+        $blockRows = if ($rowsByBlock.ContainsKey($category)) { $rowsByBlock[$category].ToArray() } else { @() }
+        $counts = & $countByResult $blockRows
+        $existing = $mtBlocks | Where-Object { $_.Name -eq $category } | Select-Object -First 1
+        if ($existing) {
             foreach ($counter in 'Failed', 'Passed', 'Error', 'Investigate', 'Skipped', 'NotRun') {
-                $existing."$($counter)Count" = @($mtTests | Where-Object { $_.Result -eq $counter -and $_.Block -eq $category }).Count
+                $existing."$($counter)Count" = $counts[$counter]
             }
-            $existing.TotalCount = @($mtTests | Where-Object { $_.Block -eq $category }).Count
+            $existing.TotalCount = $blockRows.Count
             continue
         }
-        $blockRows = @($mtTests | Where-Object { $_.Block -eq $category })
         $mtBlocks += [PSCustomObject]@{
             Name             = $category
-            Result           = if ($blockRows | Where-Object { $_.Result -eq 'Failed' }) { 'Failed' } else { 'Passed' }
-            FailedCount      = @($blockRows | Where-Object { $_.Result -eq 'Failed' }).Count
-            PassedCount      = @($blockRows | Where-Object { $_.Result -eq 'Passed' }).Count
-            ErrorCount       = @($blockRows | Where-Object { $_.Result -eq 'Error' }).Count
-            InvestigateCount = @($blockRows | Where-Object { $_.Result -eq 'Investigate' }).Count
-            SkippedCount     = @($blockRows | Where-Object { $_.Result -eq 'Skipped' }).Count
-            NotRunCount      = @($blockRows | Where-Object { $_.Result -eq 'NotRun' }).Count
+            Result           = if ($counts.Failed -gt 0) { 'Failed' } else { 'Passed' }
+            FailedCount      = $counts.Failed
+            PassedCount      = $counts.Passed
+            ErrorCount       = $counts.Error
+            InvestigateCount = $counts.Investigate
+            SkippedCount     = $counts.Skipped
+            NotRunCount      = $counts.NotRun
             TotalCount       = $blockRows.Count
             Tag              = @($blockRows | ForEach-Object { $_.Tag } | Select-Object -Unique)
         }
