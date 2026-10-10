@@ -67,6 +67,13 @@ namespace Maester.Engine
         [Parameter]
         public ScriptBlock OnItemFinished { get; set; }
 
+        /// <summary>
+        /// Live console region of an interactive run. The engine reports each item start to it, pauses it while
+        /// an item's records are replayed, and silences Write-Progress inside tests, which would draw over it.
+        /// </summary>
+        [Parameter]
+        public MtConsoleRenderer Renderer { get; set; }
+
         // The invocation script. It runs in the caller's scope (nested pipeline), so every local uses the
         // reserved $__mt prefix: a test function can read the variables of its callers, and 78 built-in
         // checks read a variable before assigning it.
@@ -80,11 +87,12 @@ namespace Maester.Engine
         //  - Exactly one MtOutcome object is written when the command returned or threw. None means it left
         //    through exit, break or a pipeline stop.
         private const string InvocationScript = @"
-param($__mtId, $__mtModule, $__mtCommand, $__mtParameters)
+param($__mtId, $__mtModule, $__mtCommand, $__mtParameters, $__mtQuietProgress)
 $__mtBody = {
-    param($__mtId, $__mtCommand, $__mtParameters)
+    param($__mtId, $__mtCommand, $__mtParameters, $__mtQuietProgress)
     $ErrorActionPreference = 'Continue'
     $WarningPreference = 'Continue'
+    if ($__mtQuietProgress) { $ProgressPreference = 'SilentlyContinue' }
     $__mtPrevious = [Maester.Engine.MtSession]::EnterTest($__mtId)
     try {
         $__mtReturned = $false
@@ -102,9 +110,9 @@ $__mtBody = {
         [Maester.Engine.MtSession]::ExitTest($__mtPrevious)
     }
 }
-if ($null -eq $__mtModule) { & $__mtBody $__mtId $__mtCommand $__mtParameters }
-elseif ($__mtModule -is [string]) { & (Get-Module -Name $__mtModule | Select-Object -First 1) $__mtBody $__mtId $__mtCommand $__mtParameters }
-else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
+if ($null -eq $__mtModule) { & $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietProgress }
+elseif ($__mtModule -is [string]) { & (Get-Module -Name $__mtModule | Select-Object -First 1) $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietProgress }
+else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietProgress }
 ";
 
         private sealed class EngineEvent
@@ -264,6 +272,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
 
         private void Starting(MtWorkItem item)
         {
+            if (Renderer != null) Renderer.ItemStarting(item.Id, item.Title);
             if (OnItemStarting != null) OnItemStarting.Invoke(item);
         }
 
@@ -271,7 +280,13 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
         {
             _results[item] = r;
             Interlocked.Increment(ref _finishedCount);
-            if (!NoStreamReplay.IsPresent) Replay(r);
+            if (!NoStreamReplay.IsPresent && HasRecords(r))
+            {
+                // Replayed records are host output: the live region is erased while they are written.
+                if (Renderer != null) Renderer.Pause();
+                try { Replay(r); }
+                finally { if (Renderer != null) Renderer.Resume(); }
+            }
             if (OnItemFinished != null) OnItemFinished.Invoke(r);
             WriteObject(r);
         }
@@ -282,6 +297,11 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             for (int i = 0; i < r.Verbose.Count; i++) WriteVerbose(r.Verbose[i].Message);
             for (int i = 0; i < r.Debug.Count; i++) WriteDebug(r.Debug[i].Message);
             for (int i = 0; i < r.Information.Count; i++) WriteInformation(r.Information[i]);
+        }
+
+        private static bool HasRecords(MtRunResult r)
+        {
+            return r.Warnings.Count + r.Verbose.Count + r.Debug.Count + r.Information.Count > 0;
         }
 
         private void Summarise(TimeSpan wall)
@@ -310,7 +330,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             var result = new MtRunResult(item) { Lane = "Main", Started = DateTime.Now };
             int timeoutSec = item.TimeoutSeconds ?? TimeoutSeconds;
             var ps = PowerShell.Create(RunspaceMode.CurrentRunspace);
-            AddInvocation(ps, item, (object)Module);
+            AddInvocation(ps, item, (object)Module, Renderer != null);
             // A nested pipeline does not fill ps.Streams.Warning/Information/Verbose (they go to the host),
             // so every stream is merged into the output and sorted out afterwards, as *>&1 would.
             ps.Commands.Commands[0].MergeMyResults(PipelineResultTypes.All, PipelineResultTypes.Output);
@@ -416,9 +436,9 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             if (item.Module != null)
             {
                 // A module object belongs to the caller's runspace; a worker finds its own instance by name.
-                invocation = new MtWorkItem { Id = item.Id, Command = item.Command, Parameters = item.Parameters, ModuleName = item.Module.Name };
+                invocation = new MtWorkItem { Id = item.Id, Title = item.Title, Command = item.Command, Parameters = item.Parameters, ModuleName = item.Module.Name };
             }
-            AddInvocation(ps, invocation, module);
+            AddInvocation(ps, invocation, module, Renderer != null);
             ps.Commands.Commands[0].MergeMyResults(PipelineResultTypes.All, PipelineResultTypes.Output);
             var output = new PSDataCollection<PSObject>();
             _inFlight[item] = ps;
@@ -521,14 +541,15 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             _events.Dispose();
         }
 
-        private static void AddInvocation(PowerShell ps, MtWorkItem item, object defaultModule)
+        private static void AddInvocation(PowerShell ps, MtWorkItem item, object defaultModule, bool quietProgress)
         {
             object module = item.Module != null ? (object)item.Module : item.ModuleName != null ? (object)item.ModuleName : defaultModule;
             ps.AddScript(InvocationScript, useLocalScope: false)
               .AddArgument(item.Id)
               .AddArgument(module)
               .AddArgument(item.Command)
-              .AddArgument(item.Parameters);
+              .AddArgument(item.Parameters)
+              .AddArgument(quietProgress);
         }
 
         /// <summary>Sorts the merged output into streams and the outcome, and sets Status and ReturnKind.</summary>

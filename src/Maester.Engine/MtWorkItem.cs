@@ -11,6 +11,9 @@ namespace Maester.Engine
         /// <summary>Test ID (or instance ID). Used as the key of the result and as the "current test".</summary>
         public string Id { get; set; }
 
+        /// <summary>Title shown by the console renderer while the item runs.</summary>
+        public string Title { get; set; }
+
         /// <summary>Name of the function to call.</summary>
         public string Command { get; set; }
 
