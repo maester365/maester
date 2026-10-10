@@ -11,4 +11,4 @@ Write your own test with New-MtTest -Id CONTOSO.1001 -Title '...'.
 Send the results by mail or to Teams with -MailRecipient or -TeamChannelWebhookUri.
 Use -OutputMode Plain for output without colour or symbols, and -OutputMode Stream for lines only.
 Run Maester on a schedule in GitHub Actions or Azure DevOps: see maester.dev/docs/monitoring.
-Create the app for unattended runs, with its permissions granted, in one line: New-MtMaesterApp. Add -GitHubActions -SetGitHubSecrets to connect your GitHub repository too.
+Create the app for unattended runs, with its permissions granted, in one line: New-MtMaesterApp.
