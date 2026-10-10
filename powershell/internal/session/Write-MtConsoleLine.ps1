@@ -154,7 +154,17 @@ function Initialize-MtDashboard {
 
     if ($panels -contains 'Tips') {
         $tipsFile = Join-Path $PSScriptRoot '../../assets/ConsoleTips.txt'
-        if (Test-Path -LiteralPath $tipsFile) { $Renderer.SetTips([string[]]@(Get-Content -LiteralPath $tipsFile | Where-Object { $_.Trim() })) }
+        if (Test-Path -LiteralPath $tipsFile) {
+            # One tip per line, optionally followed by " | " and the address of a page that says more.
+            $tips = [System.Collections.Generic.List[string]]::new()
+            $links = [System.Collections.Generic.List[string]]::new()
+            foreach ($line in Get-Content -LiteralPath $tipsFile | Where-Object { $_.Trim() }) {
+                $text, $link = $line -split '\s+\|\s+(?=https://)', 2
+                $tips.Add($text.Trim())
+                $links.Add([string]$link)
+            }
+            $Renderer.SetTips($tips.ToArray(), $links.ToArray())
+        }
     }
 
     $Renderer.Open()

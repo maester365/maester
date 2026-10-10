@@ -411,6 +411,24 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Shows the address of a tip under it, as a hyperlink' {
+        $t = New-TestPanelDashboard -Panels 'Tips'
+        $t.Renderer.SetTips(@('A tip with a page'), @('https://maester.dev/docs/monitoring'))
+        $t.Renderer.Start(1)
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '│ A tip with a page +│'
+        $screen | Should -Match '│ maester\.dev/docs/monitoring +│'
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/docs/monitoring$esc\maester.dev/docs/monitoring$esc]8;;$esc\"))
+        $t.Renderer.Close()
+
+        # A tip without an address has no extra line.
+        $plain = New-TestPanelDashboard -Panels 'Tips'
+        $plain.Renderer.SetTips(@('A tip', 'Another'), @($null))
+        $plain.Renderer.Start(1)
+        ($plain.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '│ A tip +│\n[^\n]*╰'
+        $plain.Renderer.Close()
+    }
+
     It 'Says how long ago the earlier run was, and when' {
         $t = New-TestPanelDashboard
         $before = [System.Collections.Generic.Dictionary[string, string]]::new()

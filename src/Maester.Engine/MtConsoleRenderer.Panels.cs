@@ -56,6 +56,7 @@ namespace Maester.Engine
         private readonly List<string> _newlyFailing = new List<string>();
         private readonly System.Diagnostics.Stopwatch _runClock = new System.Diagnostics.Stopwatch();
         private string[] _tips = new string[0];
+        private string[] _tipLinks = new string[0];
         private Dictionary<string, string> _baseline;
         private string _baselineLabel;
         private DateTime? _baselineWhen;
@@ -104,9 +105,19 @@ namespace Maester.Engine
         /// <summary>The tips of the Tips panel. One is shown at a time, for about twelve seconds each.</summary>
         public void SetTips(string[] tips)
         {
+            SetTips(tips, null);
+        }
+
+        /// <summary>
+        /// The tips of the Tips panel, each with the address of a page that says more (or null). The address is
+        /// shown under the tip, as a hyperlink where the terminal supports them.
+        /// </summary>
+        public void SetTips(string[] tips, string[] links)
+        {
             lock (_gate)
             {
                 _tips = tips ?? new string[0];
+                _tipLinks = links ?? new string[0];
                 Redraw();
             }
         }
@@ -526,9 +537,18 @@ namespace Maester.Engine
         private PanelContent BuildTipsPanel(int width, bool ansi)
         {
             if (_tips.Length == 0) return null;
-            string tip = _tips[(int)(_clock.Elapsed.TotalSeconds / 12) % _tips.Length];
+            int index = (int)(_clock.Elapsed.TotalSeconds / 12) % _tips.Length;
             var panel = new PanelContent { Title = "Tip", Colour = "36" };
-            foreach (var wrapped in Wrap(tip, width)) panel.Lines.Add(new LineBuilder(ansi).Add(wrapped, "2").Build());
+            foreach (var wrapped in Wrap(_tips[index], width)) panel.Lines.Add(new LineBuilder(ansi).Add(wrapped, "2").Build());
+            string link = index < _tipLinks.Length ? _tipLinks[index] : null;
+            if (!string.IsNullOrEmpty(link))
+            {
+                // The address without its scheme, so that it can be read (and typed) where it cannot be clicked.
+                int scheme = link.IndexOf("://", StringComparison.Ordinal);
+                string shown = scheme < 0 ? link : link.Substring(scheme + 3);
+                var line = new Line { Text = ansi ? Esc + "36m" + Hyperlink(shown, link) + Esc + "0m" : shown, Plain = shown };
+                panel.Lines.Add(Truncate(line, width, ansi));
+            }
             return panel;
         }
 

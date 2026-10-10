@@ -136,7 +136,7 @@ default is all of them, and an empty list turns them off.
 | `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests (three, or up to ten when rows are free) | Finish times of the run | none |
 | `Blog` | The three newest posts on maester.dev, newest first, each a hyperlink (OSC 8) to the post | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Whether a newer stable Maester is on the PowerShell Gallery | The gallery, on a background thread | one web request |
-| `Tips` | One tip at a time, changing every twelve seconds | `assets/ConsoleTips.txt` in the module | none |
+| `Tips` | One tip at a time, changing every twelve seconds, with a hyperlink to the page on maester.dev that says more | `assets/ConsoleTips.txt` in the module | none |
 | `Results` | One square per test under the product lanes, edge to edge, filled in the order tests finish and coloured by result. The squares of the tests that are running pulse (a dot, a small square, a full square). With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
 
 - Each panel in the right column is a rounded box with its title in the top border, and where there is one a badge
