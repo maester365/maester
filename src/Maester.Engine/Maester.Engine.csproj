@@ -33,7 +33,9 @@
   <ItemGroup>
     <Compile Include="InvokeMtEngineRunCommand.cs" />
     <Compile Include="MaesterTestAttribute.cs" />
+    <Compile Include="MtConsoleFeeds.cs" />
     <Compile Include="MtConsoleRenderer.cs" />
+    <Compile Include="MtConsoleRenderer.Panels.cs" />
     <Compile Include="MtSession.cs" />
     <Compile Include="MtWorkItem.cs" />
   </ItemGroup>

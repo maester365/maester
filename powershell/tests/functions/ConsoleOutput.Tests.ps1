@@ -277,3 +277,82 @@ Describe 'Show-MtLogo' {
         foreach ($line in $banner.Lines) { $line.Length | Should -BeLessOrEqual $banner.Width }
     }
 }
+
+Describe 'Dashboard panels' {
+    BeforeAll {
+        function New-PanelRenderer {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param()
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 160; $renderer.Height = 44; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer
+        }
+        $script:wide = $script:stream.PSObject.Copy(); $script:wide.Mode = 'Interactive'; $script:wide.Width = 160
+    }
+
+    It 'Uses the panels of Output.DashboardPanels, and warns about a name it does not know' {
+        $renderer = New-PanelRenderer
+        $config = [pscustomobject]@{ Output = [pscustomobject]@{ DashboardPanels = @('Tips', 'Nonsense') } }
+        $warnings = $null
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; cfg = $config } {
+            param($r, $c, $cfg)
+            Initialize-MtDashboard -Renderer $r -Console $c -RunConfig $cfg -SkipVersionCheck -WarningVariable w -WarningAction SilentlyContinue
+            $script:__panelWarnings = $w
+        }
+        $warnings = InModuleScope Maester { $script:__panelWarnings }
+        "$warnings" | Should -Match 'Nonsense'
+        $renderer.Start(2)
+        $renderer.ItemFinished('Failed')
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match 'Tip'
+        $screen | Should -Not -Match 'Failed so far'
+        $renderer.Close()
+    }
+
+    It 'Shows no panels for an empty Output.DashboardPanels' {
+        $renderer = New-PanelRenderer
+        $config = [pscustomobject]@{ Output = [pscustomobject]@{ DashboardPanels = @() } }
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; cfg = $config } { param($r, $c, $cfg) Initialize-MtDashboard -Renderer $r -Console $c -RunConfig $cfg -SkipVersionCheck }
+        $renderer.Start(2)
+        $renderer.ItemFinished('Failed')
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Not -Match 'Tip|Failed so far|■'
+        $renderer.Close()
+    }
+
+    It 'Says so in the Tenant panel when Graph is not connected, and still lists connected services' {
+        $renderer = New-PanelRenderer
+        $context = [pscustomobject]@{ TenantName = $null; Services = [pscustomobject]@{ Graph = $false; ExchangeOnline = $true } }
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context } {
+            param($r, $c, $t)
+            $r.SetPanels([string[]]@('Tenant'))
+            $r.Open()
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Connection @(Get-MtConnectionInfo -TenantContext $t) -Console $c
+        }
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match 'Not connected to Microsoft Graph'
+        $screen | Should -Match '● Exchange Online'
+        $renderer.Close()
+    }
+
+    It 'Shows the tenant, the account and each service in the Tenant panel' {
+        $renderer = New-PanelRenderer
+        $context = [pscustomobject]@{
+            TenantName = 'Contoso'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
+            Services   = [pscustomobject]@{ Graph = $true; Teams = $false }
+        }
+        $plan = @([pscustomobject]@{ Disposition = 'Skipped'; Test = [pscustomobject]@{ Service = @('Teams') } })
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context; p = $plan } {
+            param($r, $c, $t, $p)
+            $r.SetPanels([string[]]@('Tenant'))
+            $r.Open()
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Connection @(Get-MtConnectionInfo -TenantContext $t -Plan $p) -Console $c
+        }
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match 'Contoso'
+        $screen | Should -Match 'merill@contoso\.com · Delegated'
+        $screen | Should -Match 'Commercial · Workforce'
+        $screen | Should -Match '○ Teams\s+not connected · 1 test will be skipped'
+        $renderer.Close()
+    }
+}

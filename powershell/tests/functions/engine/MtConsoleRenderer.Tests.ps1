@@ -292,3 +292,175 @@ Describe 'MtConsoleRenderer dashboard' {
         $r.Warnings.Count | Should -Be 1
     }
 }
+
+Describe 'MtConsoleRenderer panels' {
+    BeforeAll {
+        function New-TestPanelDashboard {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param([int] $Width = 160, [string[]] $Panels = @('Tenant', 'Failed', 'Drift', 'Pace', 'Tips', 'Results'))
+            $t = New-TestRenderer -Width $Width
+            $t.Renderer.Height = 44
+            $t.Renderer.FullScreen = $true
+            $t.Renderer.SetPanels($Panels)
+            $t.Renderer.SetInfo(' Contoso · Graph', 16)
+            $t.Renderer.Open()
+            $t
+        }
+    }
+
+    It 'Puts the panels in a right column on a wide console, and leaves them out on a narrow one' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso', 'merill@contoso.com'))
+        $wide = $t.Renderer.GetPlainScreen(160, 44)
+        ($wide | Where-Object { $_ -match 'Tenant$' }).IndexOf('Tenant') | Should -BeGreaterThan 98
+        ($wide -join "`n") | Should -Match 'merill@contoso\.com'
+        ($t.Renderer.GetPlainScreen(120, 44) -join "`n") | Should -Not -Match 'merill@contoso\.com'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows the connection line under the banner only when the Tenant panel is not shown' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Contoso · Graph'
+        ($t.Renderer.GetPlainScreen(120, 44) -join "`n") | Should -Match 'Contoso · Graph'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows only the panels it was given, in their order' {
+        $t = New-TestPanelDashboard -Panels 'Tips', 'Tenant'
+        $t.Renderer.SetTips(@('A tip'))
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
+        $t.Renderer.Start(2)
+        $t.Renderer.ItemFinished('Failed')
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen.IndexOf('Tip') | Should -BeLessThan $screen.IndexOf('Tenant')
+        $screen | Should -Not -Match 'Failed so far'
+        $screen | Should -Not -Match '■'
+        $t.Renderer.Close()
+    }
+
+    It 'Counts failed tests by severity' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Start(4)
+        $t.Renderer.ItemFinished('A.1', 'Failed', 'Critical')
+        $t.Renderer.ItemFinished('A.2', 'Failed', 'critical')
+        $t.Renderer.ItemFinished('A.3', 'Failed', 'Medium')
+        $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        ($screen | Where-Object { $_ -match 'Failed so far' }) | Should -Match '3$'
+        ($screen | Where-Object { $_ -match ' Critical ' }) | Should -Match '█+\s+2$'
+        ($screen | Where-Object { $_ -match ' High ' }) | Should -Match '\s0$'
+        ($screen | Where-Object { $_ -match ' Medium ' }) | Should -Match '█+.?\s+1$'
+        $t.Renderer.Close()
+    }
+
+    It 'Fills one square per finished test in the results chart' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Ansi = $false
+        $t.Renderer.Start(10)
+        1..4 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
+        $chart = $t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[■□]' }
+        ([regex]::Matches($chart, '■')).Count | Should -Be 4
+        ([regex]::Matches($chart, '□')).Count | Should -Be 6
+        $t.Renderer.Close()
+    }
+
+    It 'Groups tests into squares when there are more than fit, and says how many' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Start(2000)
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match 'each square is \d+ tests'
+        $t.Renderer.Close()
+    }
+
+    It 'Reports drift against the results of an earlier run' {
+        $t = New-TestPanelDashboard
+        $before = [System.Collections.Generic.Dictionary[string, string]]::new()
+        $before['A.1'] = 'Passed'; $before['A.2'] = 'Failed'; $before['A.3'] = 'Passed'
+        $t.Renderer.Start(4)
+        $t.Renderer.ItemFinished('A.1', 'Failed', 'High')   # finished before the baseline arrived
+        $t.Renderer.SetBaseline($before, 'Oct 9, 08:12')
+        $t.Renderer.ItemFinished('A.2', 'Passed', 'High')
+        $t.Renderer.ItemFinished('A.3', 'Passed', 'High')
+        $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match 'Since the last run\s+Oct 9, 08:12'
+        $screen | Should -Match '1 newly failing'
+        $screen | Should -Match 'A\.1'
+        $screen | Should -Match '1 fixed'
+        $screen | Should -Match '1 new test\b'
+        $t.Renderer.Close()
+    }
+
+    It 'Has no Drift panel without a baseline' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Start(1)
+        $t.Renderer.ItemFinished('Passed')
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Since the last run'
+        $t.Renderer.Close()
+    }
+
+    It 'Loads a baseline from a results file, and ignores a file from another tenant' {
+        $file = Join-Path $TestDrive 'TestResults-old.json'
+        @{ TenantId = 'tenant-a'; ExecutedAt = '2026-10-09T08:12:00'; Tests = @(@{ Id = 'A.1'; Result = 'Passed' }) } | ConvertTo-Json -Depth 4 | Set-Content $file
+        $same = New-TestPanelDashboard
+        $same.Renderer.LoadBaselineAsync($file, 'tenant-a').Wait()
+        $same.Renderer.Start(1)
+        $same.Renderer.ItemFinished('A.1', 'Failed', 'High')
+        ($same.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '1 newly failing'
+        $same.Renderer.Close()
+
+        $other = New-TestPanelDashboard
+        $other.Renderer.LoadBaselineAsync($file, 'tenant-b').Wait()
+        $other.Renderer.LoadBaselineAsync((Join-Path $TestDrive 'missing.json'), 'tenant-a').Wait()
+        $other.Renderer.Start(1)
+        $other.Renderer.ItemFinished('A.1', 'Failed', 'High')
+        ($other.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Since the last run'
+        $other.Renderer.Close()
+    }
+
+    It 'Shows the pace and the slowest tests' {
+        $t = New-TestPanelDashboard
+        $t.Renderer.Start(3)
+        $t.Renderer.ItemStarting('S.1', 'Slow one')
+        Start-Sleep -Milliseconds 60
+        $t.Renderer.ItemFinished('S.1', 'Passed', 'Low')
+        $t.Renderer.ItemStarting('S.2', 'Quick one')
+        $t.Renderer.ItemFinished('S.2', 'Passed', 'Low')
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        ($screen -join "`n") | Should -Match 'Pace\s+[\d.]+ tests/s'
+        $slow = @($screen | Where-Object { $_ -match ' S\.[12] ' })
+        $slow[0] | Should -Match 'S\.1 .*Slow one'
+        $t.Renderer.Close()
+    }
+
+    It 'Wraps a tip to the width of the column' {
+        $t = New-TestPanelDashboard -Width 141
+        $t.Renderer.SetTips(@('one two three four five six seven eight nine ten eleven twelve thirteen fourteen'))
+        $screen = $t.Renderer.GetPlainScreen(141, 44)
+        ($screen | Where-Object { $_ -match 'Tip$' }) | Should -Not -BeNullOrEmpty
+        foreach ($line in $screen) { $line.Length | Should -BeLessThan 141 }
+        ($screen -join ' ') | Should -Match 'fourteen'
+        $t.Renderer.Close()
+    }
+}
+
+Describe 'MtConsoleFeeds' {
+    It 'Reads the newest posts of an RSS feed' {
+        $xml = '<?xml version="1.0"?><rss version="2.0"><channel><title>Blog</title>' +
+            '<item><title><![CDATA[First post]]></title><pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate></item>' +
+            '<item><title>Second post</title><pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate></item>' +
+            '<item><title>Third post</title></item><item><title>Fourth post</title></item></channel></rss>'
+        $posts = [Maester.Engine.MtConsoleFeeds]::ParseFeed($xml, 3)
+        $posts.Count | Should -Be 3
+        $posts[0] | Should -Be 'Oct 07  First post'
+        $posts[1] | Should -Be 'Oct 06  Second post'
+        $posts[2] | Should -Match 'Third post$'
+    }
+
+    It 'Reads the latest version from a PowerShell Gallery response' {
+        $xml = '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">' +
+            '<entry><m:properties><d:Version>2.3.0</d:Version></m:properties></entry></feed>'
+        [Maester.Engine.MtConsoleFeeds]::ParseGalleryVersion($xml) | Should -Be ([version]'2.3.0')
+        [Maester.Engine.MtConsoleFeeds]::ParseGalleryVersion('<feed xmlns="http://www.w3.org/2005/Atom" />') | Should -BeNullOrEmpty
+    }
+}

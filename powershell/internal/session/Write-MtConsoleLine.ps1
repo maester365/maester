@@ -1,4 +1,4 @@
-function Write-MtConsoleLine {
+﻿function Write-MtConsoleLine {
     <#
     .SYNOPSIS
     Writes a line to the host without disturbing the console renderer of an interactive run.
@@ -107,4 +107,118 @@ function Set-MtConsolePhase {
     [CmdletBinding()]
     param([Parameter(Mandatory, Position = 0)] [string] $Name)
     if ($script:__MtConsoleRenderer) { $script:__MtConsoleRenderer.StartPhase($Name) }
+}
+
+function Initialize-MtDashboard {
+    <#
+    .SYNOPSIS
+    Sets up the panels of the dashboard of an interactive run, and opens it.
+
+    .DESCRIPTION
+    The panels and their order come from Output.DashboardPanels in the run config; the default is all of
+    them. Results is the chart under the lanes; the others stack in a column on the right when the console
+    is wide enough (about 140 columns).
+
+      Tenant    the tenant and the connected services (set later, by Set-MtDashboardTenant)
+      Failed    failed tests by severity
+      Drift     changes against the newest earlier results file in the output folder, for the same tenant
+      Pace      tests per second and the slowest tests
+      Blog      the newest posts on maester.dev (one web request, cached for a day)
+      Version   whether a newer Maester is on the PowerShell Gallery (one web request)
+      Tips      a tip from assets/ConsoleTips.txt
+      Results   one square per test
+
+    Blog and Version are the only panels that use the network. They run on background threads, only when the
+    dashboard is wide enough to show them, and never with -SkipVersionCheck.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
+        [Parameter(Mandatory)] [pscustomobject] $Console,
+        [Parameter()] [AllowNull()] [pscustomobject] $RunConfig,
+        # The results JSON file this run writes: the Drift panel looks for earlier results next to it.
+        [Parameter()] [string] $OutputJsonFile,
+        [Parameter()] [switch] $SkipVersionCheck
+    )
+
+    $known = 'Tenant', 'Failed', 'Drift', 'Pace', 'Blog', 'Version', 'Tips', 'Results'
+    $panels = $known
+    $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
+    if ($output -and $output.PSObject.Properties['DashboardPanels']) {
+        $panels = @($output.DashboardPanels | Where-Object { $_ })
+        $unknown = @($panels | Where-Object { $_ -notin $known })
+        if ($unknown.Count -gt 0) { Write-Warning "Output.DashboardPanels: unknown panel$(if ($unknown.Count -gt 1) { 's' }) $($unknown -join ', '). The panels are $($known -join ', ')." }
+        $panels = @($panels | Where-Object { $_ -in $known })
+    }
+    $Renderer.SetPanels([string[]]$panels)
+
+    if ($panels -contains 'Tips') {
+        $tipsFile = Join-Path $PSScriptRoot '../../assets/ConsoleTips.txt'
+        if (Test-Path -LiteralPath $tipsFile) { $Renderer.SetTips([string[]]@(Get-Content -LiteralPath $tipsFile | Where-Object { $_.Trim() })) }
+    }
+
+    $Renderer.Open()
+    if (-not $Renderer.IsFullScreen) { return }
+
+    if ($panels -contains 'Drift' -and $OutputJsonFile) {
+        $folder = Split-Path -Path $OutputJsonFile -Parent
+        $current = Split-Path -Path $OutputJsonFile -Leaf
+        $previous = Get-ChildItem -LiteralPath $folder -Filter '*.json' -File -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -ne $current -and $_.Name -notlike '*-affected-objects.json' -and $_.Length -gt 0 } |
+            Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
+        if ($previous) {
+            $tenantId = try { [string](Get-MgContext).TenantId } catch { $null }
+            $null = $Renderer.LoadBaselineAsync($previous.FullName, $tenantId)
+        }
+    }
+
+    # The network panels: only when the right column can be shown, and never with -SkipVersionCheck.
+    if (-not $SkipVersionCheck -and $Console.Width -ge 140) {
+        if ($panels -contains 'Blog') {
+            $cache = Join-Path ([System.Environment]::GetFolderPath('LocalApplicationData')) 'Maester/blog-posts.txt'
+            $null = [Maester.Engine.MtConsoleFeeds]::StartBlog($Renderer, 'https://maester.dev/blog/rss.xml', $cache, 3)
+        }
+        if ($panels -contains 'Version') {
+            $null = [Maester.Engine.MtConsoleFeeds]::StartVersion($Renderer, 'Maester', [string](Get-MtModuleVersion))
+        }
+    }
+}
+
+function Set-MtDashboardTenant {
+    <#
+    .SYNOPSIS
+    Fills the Tenant panel of the dashboard: the tenant, the account and the services of the run.
+
+    .DESCRIPTION
+    Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show: the panel says so and
+    still lists the services that are connected.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
+        [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
+        # From Get-MtConnectionInfo.
+        [Parameter()] [AllowEmptyCollection()] [object[]] $Connection = @(),
+        [Parameter()] [AllowNull()] [pscustomobject] $Console
+    )
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $graph = $TenantContext -and $TenantContext.Services -and $TenantContext.Services.PSObject.Properties['Graph'] -and $TenantContext.Services.Graph
+    if ($graph) {
+        if ($TenantContext.TenantName) { $lines.Add((Format-MtConsoleText ([string]$TenantContext.TenantName) -Style Bold -Console $Console)) }
+        if ($TenantContext.TenantId) { $lines.Add((Format-MtConsoleText ([string]$TenantContext.TenantId) -Style Dim -Console $Console)) }
+        $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
+        if ($account) { $lines.Add($account) }
+        $kind = @($TenantContext.Cloud, $TenantContext.TenantType | Where-Object { $_ -and $_ -ne 'Unknown' }) -join ' · '
+        if ($kind) { $lines.Add((Format-MtConsoleText $kind -Style Dim -Console $Console)) }
+    } else {
+        $lines.Add((Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
+    }
+    $services = @($Connection | ForEach-Object { if ($_.Name -eq 'Graph' -and $_.Connected) { [pscustomobject]@{ Name = $_.Name; Connected = $true; Detail = 'connected' } } else { $_ } })
+    if ($services.Count -gt 0) {
+        foreach ($line in @(Format-MtConnectionInfo -Connection $services -Console $Console)) { $lines.Add($line.Substring(1)) }
+    } elseif (-not $graph) {
+        $lines.Add((Format-MtConsoleText 'No services connected. Run Connect-Maester.' -Style Dim -Console $Console))
+    }
+    $Renderer.SetPanelText('Tenant', 'Tenant', $lines.ToArray())
 }

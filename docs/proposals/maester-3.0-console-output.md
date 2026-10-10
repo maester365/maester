@@ -119,6 +119,32 @@ redraw freely.
 cursor position (`ESC[6n`). A terminal that doesn't answer in time gets the pane, and anything drawn after it, at the top
 of the screen. This happened in the Claude desktop app's embedded terminal. The renderer never reads the cursor position.
 
+### Dashboard panels
+
+On a console of about 140 columns or more the dashboard has a second column on the right, and the main content keeps
+a fixed width of 98 columns. `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
+default is all of them, and an empty list turns them off.
+
+| Panel | Shows | Where it comes from | Cost |
+| --- | --- | --- | --- |
+| `Tenant` | Tenant name and ID, account, auth type, cloud, and each service with its status and the tests skipped for it. Without a Graph connection (or with `-SkipGraphConnect`) it says so and still lists what is connected. | The tenant context of the run | none |
+| `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
+| `Drift` | Newly failing, fixed and new tests against the last run | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
+| `Pace` | Tests per second, a sparkline of the run so far, and the three slowest tests | Finish times of the run | none |
+| `Blog` | The three newest posts on maester.dev | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
+| `Version` | Whether a newer stable Maester is on the PowerShell Gallery | The gallery, on a background thread | one web request |
+| `Tips` | One tip at a time, changing every twelve seconds | `assets/ConsoleTips.txt` in the module | none |
+| `Results` | One square per test under the product lanes, filled in the order tests finish and coloured by result. With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
+
+- A panel with nothing to show is left out (no drift without an earlier file, no blog offline), and a panel that does
+  not fit in the rows that are left is skipped.
+- With the `Tenant` panel on screen, the connection line under the banner is not shown. On a narrower console the
+  line is back and the right column is gone.
+- `Blog` and `Version` are the only panels that use the network. They are started only when the dashboard is wide
+  enough to show them, never with `-SkipVersionCheck`, with a five-second timeout, and a failure leaves the panel out.
+- The text panels are filled by the caller (`SetPanelText`); the live ones are worked out in the renderer from
+  `ItemFinished(id, result, severity)`. Building a frame with every panel takes well under a millisecond.
+
 ### Interactive: the compact layout
 
 Used when the console is smaller than 80 by 16, and at `-Verbosity Normal` and above, where per-test lines have to

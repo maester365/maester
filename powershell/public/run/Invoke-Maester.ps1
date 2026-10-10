@@ -569,7 +569,7 @@
             $banner = Get-MtBanner -Console $console
             $renderer.SetHeader($(if ($console.Unicode) { [string[]]$banner.Lines } else { $null }), $banner.Width, $banner.Compact)
             $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
-            $renderer.Open()
+            Initialize-MtDashboard -Renderer $renderer -Console $console -RunConfig $runConfig -OutputJsonFile $out.OutputJsonFile -SkipVersionCheck:$SkipVersionCheck
             $renderer.StartPhase('Prepare')
         }
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
@@ -717,11 +717,15 @@
 
         # The services of this run: one line in the dashboard header, and the list in the scrollback.
         $connections = @(Get-MtConnectionInfo -TenantContext $tenantContext -Plan $nativePlan)
-        if ($connections.Count -gt 0 -and -not $NonInteractive.IsPresent) {
-            if ($console.Mode -eq 'Interactive') {
+        if ($console.Mode -eq 'Interactive') {
+            # The Tenant panel on a wide console, and one line under the banner otherwise.
+            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Connection $connections -Console $console
+            if ($connections.Count -gt 0) {
                 $connectionLine = Format-MtConnectionInfo -Connection $connections -OneLine -Console $console
                 $renderer.SetInfo($connectionLine.Text, $connectionLine.Length)
             }
+        }
+        if ($connections.Count -gt 0 -and -not $NonInteractive.IsPresent) {
             foreach ($line in @(Format-MtConnectionInfo -Connection $connections -Console $console)) { Write-MtConsoleLine $line }
         }
 

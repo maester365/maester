@@ -111,7 +111,7 @@
             $row = ConvertTo-MtNativeRow -PlanRow $result.Tag.PlanRow -RunResult $result -Instance $result.Tag.Instance -ForeignModuleLoaded:$foreign
             $converted[$result] = $row
             if ($renderer) {
-                $renderer.ItemFinished([string]$result.Id, [string]$row.Result)
+                $renderer.ItemFinished([string]$result.Id, [string]$row.Result, [string]$row.Severity)
                 # The dashboard has no scrollback: what the test wrote is replayed once the screen is restored.
                 if ($renderer.IsFullScreen -and ($result.Warnings.Count + $result.Verbose.Count + $result.Debug.Count + $result.Information.Count) -gt 0) { Add-MtDeferredOutput -RunResult $result }
             }

@@ -27,7 +27,7 @@ namespace Maester.Engine
     /// Threading: a timer redraws so elapsed times keep moving while the pipeline thread is busy in a test, and
     /// results may arrive from several threads when tests run in parallel. Every call takes one lock.
     /// </summary>
-    public sealed class MtConsoleRenderer : IDisposable
+    public sealed partial class MtConsoleRenderer : IDisposable
     {
         private const string Esc = "\u001b[";
         private const int MinFullScreenWidth = 80;
@@ -260,6 +260,7 @@ namespace Maester.Engine
                     Write(Esc + "?25l");
                 }
                 _status = null;
+                ResetPanelState();
                 _running = true;
                 Draw();
                 if (!_fullScreen) StartTimer();
@@ -308,16 +309,28 @@ namespace Maester.Engine
         /// <summary>The test with this ID finished with a Maester result.</summary>
         public void ItemFinished(string id, string result)
         {
+            ItemFinished(id, result, null);
+        }
+
+        /// <summary>The test with this ID finished with a Maester result; its severity feeds the Failed panel.</summary>
+        public void ItemFinished(string id, string result, string severity)
+        {
             lock (_gate)
             {
                 int index = id == null ? (_workers.Count > 0 ? 0 : -1) : _workers.FindIndex(w => string.Equals(w.Id, id, StringComparison.OrdinalIgnoreCase));
                 Lane lane = null;
+                string title = null;
+                var duration = TimeSpan.Zero;
                 if (index >= 0)
                 {
                     lane = _workers[index].Lane;
+                    title = _workers[index].Title;
+                    duration = _workers[index].Clock.Elapsed;
+                    id = id ?? _workers[index].Id;
                     _workers.RemoveAt(index);
                     if (lane != null && lane.Running > 0) lane.Running--;
                 }
+                RecordFinished(id, title, result, severity, duration);
                 switch (result)
                 {
                     case "Passed":
@@ -395,6 +408,7 @@ namespace Maester.Engine
                     return;
                 }
                 _running = false;
+                _runClock.Stop();
                 _workers.Clear();
                 foreach (var l in _lanes) l.Running = 0;
                 _status = null;
@@ -668,10 +682,14 @@ namespace Maester.Engine
 
         private List<Line> BuildScreen(int width, int height, bool ansi)
         {
-            int max = Math.Max(20, width - 1);
             int rows = Math.Max(8, height - 1);
+            // On a wide console the panels take a column on the right and the main content keeps a fixed width.
+            int paneWidth = PaneWidth(width);
+            int max = paneWidth > 0 ? MainWidth - 1 : Math.Max(20, width - 1);
             Func<Line> blank = () => new Line { Text = string.Empty, Plain = string.Empty };
             bool tests = _running || _total > 0;
+            // The Tenant panel carries the tenant and connections; without it they are one line under the banner.
+            bool info = _info != null && !(paneWidth > 0 && PanelShown("Tenant") && _text.ContainsKey("Tenant"));
 
             // Phases and overall progress.
             var body = new List<Line>();
@@ -723,8 +741,8 @@ namespace Maester.Engine
             // Header: the banner when it fits next to everything else, else one line.
             var header = new List<Line>();
             int lanesWanted = tests ? _lanes.Count : 0;
-            int needed = body.Count + tail.Count + 2 + (_info != null ? 1 : 0) + (lanesWanted > 0 ? Math.Min(lanesWanted, 4) + 1 : 0);
-            if (_header != null && width > _headerWidth && rows >= _header.Length + needed)
+            int needed = body.Count + tail.Count + 2 + (info ? 1 : 0) + (lanesWanted > 0 ? Math.Min(lanesWanted, 4) + 1 : 0);
+            if (_header != null && max >= _headerWidth && rows >= _header.Length + needed)
             {
                 foreach (var h in _header) header.Add(new Line { Text = ansi ? h : StripAnsi(h), Plain = StripAnsi(h) });
             }
@@ -732,7 +750,7 @@ namespace Maester.Engine
             {
                 header.Add(Truncate(new LineBuilder(ansi).Add(" " + _compactHeader, "1").Build(), max, ansi));
             }
-            if (_info != null)
+            if (info)
             {
                 string plainInfo = StripAnsi(_info);
                 header.Add(_infoLength <= max
@@ -788,12 +806,22 @@ namespace Maester.Engine
                 lanes.Add(blank());
             }
 
+            // The results chart takes rows that are still free under the lanes.
+            var chart = tests ? BuildResultsChart(max, rows - header.Count - body.Count - lanes.Count - tail.Count - 1, ansi) : new List<Line>();
+            if (chart.Count > 0) chart.Add(blank());
+
             var screen = new List<Line>();
             screen.AddRange(header);
             screen.AddRange(body);
             screen.AddRange(lanes);
+            screen.AddRange(chart);
             screen.AddRange(tail);
             if (screen.Count > rows) screen.RemoveRange(rows, screen.Count - rows);
+            if (paneWidth > 0)
+            {
+                var pane = BuildPane(paneWidth, rows, ansi);
+                if (pane.Count > 0) return Beside(screen, pane, MainWidth, rows);
+            }
             return screen;
         }
 
