@@ -542,6 +542,11 @@ Describe 'MtConsoleRenderer panels' {
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
         $screen | Should -Match '╭─ Drift since last run ─+ 4 days ago ─╮'
         $screen | Should -Match ([regex]::Escape($when.ToString('MMM d, HH:mm', [cultureinfo]::InvariantCulture)) + '  ✓ 1  ✗ 0  \? 1 ')
+        # The date opens the report of that run, when its address is known.
+        $date = $when.ToString('MMM d, HH:mm', [cultureinfo]::InvariantCulture)
+        $t.Writer.ToString() | Should -Not -Match ([regex]::Escape("$esc]8;;file:"))
+        $t.Renderer.SetBaselineReport('file:///results/TestResults-old.html')
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;file:///results/TestResults-old.html$esc\$date$esc]8;;$esc\"))
         $t.Renderer.Close()
     }
 
@@ -581,10 +586,11 @@ Describe 'MtConsoleRenderer panels' {
         $file = Join-Path $TestDrive 'TestResults-old.json'
         @{ TenantId = 'tenant-a'; ExecutedAt = '2026-10-09T08:12:00'; Tests = @(@{ Id = 'A.1'; Result = 'Passed' }) } | ConvertTo-Json -Depth 4 | Set-Content $file
         $same = New-TestPanelDashboard
-        $same.Renderer.LoadBaselineAsync($file, 'tenant-a').Wait()
+        $same.Renderer.LoadBaselineAsync($file, 'tenant-a', 'file:///results/old.html').Wait()
         $same.Renderer.Start(1)
         $same.Renderer.ItemFinished('A.1', 'Failed', 'High')
         ($same.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '1 newly failing'
+        $same.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;file:///results/old.html$esc\"))
         $same.Renderer.Close()
 
         $other = New-TestPanelDashboard

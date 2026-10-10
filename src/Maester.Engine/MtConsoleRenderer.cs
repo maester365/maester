@@ -656,6 +656,18 @@ namespace Maester.Engine
                 _plain.Append(s);
                 return this;
             }
+            /// <summary>Text that is a hyperlink (OSC 8) to <paramref name="url"/> when colour is on and there is an address.</summary>
+            public LineBuilder AddLink(string s, string url, string sgr = null)
+            {
+                if (string.IsNullOrEmpty(s)) return this;
+                if (!_ansi || string.IsNullOrEmpty(url)) return Add(s, sgr);
+                if (sgr != null) _text.Append(Esc).Append(sgr).Append('m');
+                _text.Append(Hyperlink(s, url));
+                if (sgr != null) _text.Append(Esc).Append("0m");
+                _plain.Append(s);
+                return this;
+            }
+
             public Line Build() { return new Line { Text = _text.ToString(), Plain = _plain.ToString() }; }
         }
 

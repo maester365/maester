@@ -78,6 +78,7 @@ namespace Maester.Engine
         private Dictionary<string, string> _baseline;
         private string _baselineLabel;
         private DateTime? _baselineWhen;
+        private string _baselineReport;
         private int _fixedCount;
         private int _newTests;
         private int _slowestShown = SlowestShown;
@@ -208,11 +209,30 @@ namespace Maester.Engine
             }
         }
 
+        /// <summary>The address of the report of the earlier run, which the date in the Drift panel then links to. Null for none.</summary>
+        public void SetBaselineReport(string url)
+        {
+            lock (_gate)
+            {
+                _baselineReport = url;
+                Redraw();
+            }
+        }
+
         /// <summary>
         /// Reads an earlier Maester results file on a background thread and makes it the baseline of the Drift
         /// panel. A file from another tenant, or one that cannot be read, is ignored.
         /// </summary>
         public Task LoadBaselineAsync(string path, string tenantId)
+        {
+            return LoadBaselineAsync(path, tenantId, null);
+        }
+
+        /// <summary>
+        /// The same, with the address of the report of that run (a file:// address of its HTML report): the date
+        /// in the Drift panel is then a hyperlink that opens it.
+        /// </summary>
+        public Task LoadBaselineAsync(string path, string tenantId, string reportUrl)
         {
             return Task.Run(() =>
             {
@@ -241,7 +261,11 @@ namespace Maester.Engine
                             if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(result)) results[id] = result;
                         }
                     }
-                    if (results.Count > 0) SetBaseline(results, null, executedAt);
+                    if (results.Count > 0)
+                    {
+                        SetBaseline(results, null, executedAt);
+                        SetBaselineReport(reportUrl);
+                    }
                 }
                 catch (Exception)
                 {
@@ -672,7 +696,11 @@ namespace Maester.Engine
                 else if (result == "Investigate") investigate++;
             }
             var last = new LineBuilder(ansi);
-            if (_baselineWhen.HasValue) last.Add(_baselineWhen.Value.ToString("MMM d, HH:mm", CultureInfo.InvariantCulture) + "  ", "2");
+            if (_baselineWhen.HasValue)
+            {
+                // The date opens the report of that run, when there is one.
+                last.AddLink(_baselineWhen.Value.ToString("MMM d, HH:mm", CultureInfo.InvariantCulture), _baselineReport, "2").Add("  ");
+            }
             last.Add(Ok + " " + N(passed), "32").Add("  ").Add(Bad + " " + N(failed), failed > 0 ? "31" : "2").Add("  ").Add("? " + N(investigate), investigate > 0 ? "35" : "2");
             panel.Lines.Add(Truncate(last.Build(), width, ansi));
             if (_newlyFailing.Count == 0 && _fixedCount == 0 && _newTests == 0)

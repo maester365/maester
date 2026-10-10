@@ -180,7 +180,10 @@ function Initialize-MtDashboard {
             Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
         if ($previous) {
             $tenantId = try { [string](Get-MgContext).TenantId } catch { $null }
-            $null = $Renderer.LoadBaselineAsync($previous.FullName, $tenantId)
+            # The HTML report of that run, written next to its results: the date in the panel opens it.
+            $report = [System.IO.Path]::ChangeExtension($previous.FullName, '.html')
+            $reportUrl = if (Test-Path -LiteralPath $report -PathType Leaf) { [System.Uri]::new($report).AbsoluteUri } else { $null }
+            $null = $Renderer.LoadBaselineAsync($previous.FullName, $tenantId, $reportUrl)
         }
     }
 
