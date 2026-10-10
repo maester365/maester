@@ -889,7 +889,7 @@ namespace Maester.Engine
             string[] forms = _durations.Count <= width
                 ? new[] { "how long each test took, in run order", "how long each test took" }
                 : new[] { "how long the last " + N(width) + " tests took, newest on the right", "the last " + N(width) + " tests, newest on the right", "the last " + N(width) + " tests" };
-            string what = forms[forms.Length - 1];
+            string what = null;
             foreach (string form in forms)
             {
                 if (form.Length + numbers.Length + 3 <= width)
@@ -898,8 +898,10 @@ namespace Maester.Engine
                     break;
                 }
             }
+            // When no form fits next to the numbers, the numbers alone say more than the words alone.
+            if (what == null) what = numbers.Length > 0 && numbers.Length <= width ? string.Empty : forms[forms.Length - 1];
             var caption = new LineBuilder(ansi).Add(indent + what, "2");
-            if (numbers.Length > 0 && what.Length + numbers.Length + 3 <= width) caption.Add(new string(' ', width - what.Length - numbers.Length)).Add(numbers, "2");
+            if (numbers.Length > 0 && what.Length + numbers.Length + (what.Length > 0 ? 3 : 0) <= width) caption.Add(new string(' ', width - what.Length - numbers.Length)).Add(numbers, "2");
             lines.Add(Truncate(caption.Build(), indent.Length + width, ansi));
             return lines;
         }
@@ -1081,35 +1083,28 @@ namespace Maester.Engine
         /// The results chart of the main column: one square per test (or per group of tests when there are more
         /// than fit), filled in the order the tests finish and coloured by the worst result in the square.
         /// </summary>
-        // The spinner of the running tests (⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏) with every dot one row lower, so that it is as tall as a
-        // big block and stands on the same line; and one of two rows of dots, as tall as a small square.
-        private static readonly string[] LowSpinner = { "⠖", "⠲", "⢲", "⢰", "⣰", "⣠", "⣄", "⣆", "⡆", "⡖" };
-        private static readonly string[] MidSpinner = { "⠲", "⠴", "⠦", "⠖" };
+        // The spinner of a running test in the result blocks: like the one of the list of running tests, in the
+        // two middle rows of dots, so that it is as tall as a square.
+        private static readonly string[] SquareSpinner = { "⠲", "⠴", "⠦", "⠖" };
 
         private List<Line> BuildResultsChart(int width, int maxRows, bool ansi)
         {
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
-            // One square per test for as long as the rows that are free allow it. In a console with room to
-            // spare a test gets a block of two cells and three quarters of a row, which is close to a square
-            // four times the size, with a cell of space to the next block and a quarter of a row to the row
-            // above. That is when all the tests then still fit, with three rows left over for the list of the
-            // tests that ran.
+            // One square per test for as long as the rows that are free allow it: a cell each, edge to edge.
             int columns = Math.Max(10, width - 2);
             int rows = Math.Min(16, maxRows);
-            bool big = Unicode && _total <= (columns / 3) * Math.Min(16, maxRows - 3);
-            int perRow = big ? columns / 3 : columns;
-            int perSquare = big ? 1 : Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
+            int perRow = columns;
+            int perSquare = Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
             int squares = (int)Math.Ceiling((double)_total / perSquare);
             bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);
-            string mark = big ? "▆▆ " : (Unicode ? "■" : "#");
-            string waiting = ansi ? mark : (big ? "░░ " : (Unicode ? "□" : "."));
+            string mark = Unicode ? "■" : "#";
+            string waiting = ansi ? mark : (Unicode ? "□" : ".");
             // The tests that are running take the next places after the finished ones, and show the spinner
-            // that is in front of them in the list of running tests, at the size of a block: its dots moved
-            // down a row for the big blocks, and two rows of dots for the small squares.
+            // that is in front of them in the list of running tests, at the size of a square: two rows of dots.
             int done = _sequence.Count;
             int active = done + (_running ? _workers.Count : 0);
-            string spinning = !Unicode ? Spinner() : (big ? LowSpinner[_tick % LowSpinner.Length] + "  " : MidSpinner[_tick % MidSpinner.Length]);
+            string spinning = Unicode ? SquareSpinner[_tick % SquareSpinner.Length] : Spinner();
 
             LineBuilder row = null;
             for (int i = 0; i < squares; i++)

@@ -327,18 +327,17 @@ Describe 'Show-MtLogo' {
         $big.Lines[10].StartsWith($big.Tagline.Prefix) | Should -BeTrue
         $big.Tagline.Version | Should -Match '^v\d'
         $small.Tagline.Row | Should -Be -1
-        # The wordmark that the dashboard shows at the top while tests run: five rows, with the two lines of
-        # the wordmark in the rows of the bottom of the Pace graph and the version in the row of its caption.
-        # No flame.
+        # The wordmark that the dashboard shows at the top while tests run: five rows, the wordmark in the
+        # four rows of the Pace graph and the version in the row of its caption. No flame.
         $band = $big.Band
         $band.Lines.Count | Should -Be 5
-        $band.Lines[0..1] | Should -Be @('', '')
         $strip = { param($line) $line -replace "$([char]27)\[[0-9;]*m" }
-        (& $strip $band.Lines[2]) | Should -Be ' █▀▄▀█ ▄▀█ █▀▀ █▀ ▀█▀ █▀▀ █▀█'
-        (& $strip $band.Lines[3]) | Should -Be ' █ ▀ █ █▀█ ██▄ ▄█  █  ██▄ █▀▄'
+        (& $strip $band.Lines[0]) | Should -Be ' ▄▄   ▄▄  ▄▄▄▄  ▄▄▄▄▄▄  ▄▄▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄ '
+        (& $strip $band.Lines[3]) | Should -Be ' ██   ██ ██  ██ ██▄▄▄▄ ▄▄▄▄█▀   ██   ██▄▄▄▄ ██  ██'
         $band.TaglineRow | Should -Be 4
         (& $strip $band.Lines[4]) | Should -Match '^ v\d'
-        $band.Width | Should -Be 29
+        $band.Width | Should -Be 50
+        foreach ($line in $band.Lines) { (& $strip $line).Length | Should -BeLessOrEqual $band.Width }
         ($band.Lines -join '') | Should -Not -Match '[▟▙▗▖]'
     }
 

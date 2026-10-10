@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Returns Lines (with colour when the console uses it), the Width they need, Compact, a one-line
-    replacement, and Band, the two-line wordmark that the dashboard shows while tests run. The banner is 88 columns: the Maester flame on the left, as on maester.dev, drawn with
+    replacement, and Band, the four-row wordmark that the dashboard shows while tests run. The banner is 88 columns: the Maester flame on the left, as on maester.dev, drawn with
     quadrant characters (two by two pixels per cell, sampled from assets/logo/maester.png), and the "ANSI Shadow" wordmark next to it. The wordmark has a
     gradient from left to right, Maester red to amber, with its shadow in a darker shade of the same colour.
     The flame has the logo's own gradient, orange at the top to red at the bottom, in two steps per row. Truecolor where the
@@ -45,6 +45,14 @@
     $smallWordmark = @(
         '█▀▄▀█ ▄▀█ █▀▀ █▀ ▀█▀ █▀▀ █▀█'
         '█ ▀ █ █▀█ ██▄ ▄█  █  ██▄ █▀▄'
+    )
+    # The wordmark of the dashboard while tests run: four rows of half blocks (a seven-pixel font), as tall
+    # as the Pace graph next to it.
+    $bandWordmark = @(
+        '▄▄   ▄▄  ▄▄▄▄  ▄▄▄▄▄▄  ▄▄▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄ '
+        '███▄███ ██  ██ ██     ██       ██   ██     ██  ██'
+        '██ ▀ ██ ██▀▀██ ██▀▀▀   ▀▀▀█▄   ██   ██▀▀▀  ██▀██ '
+        '██   ██ ██  ██ ██▄▄▄▄ ▄▄▄▄█▀   ██   ██▄▄▄▄ ██  ██'
     )
     $smallFlame = @(
         '  ▄▟   '
@@ -178,12 +186,12 @@
 
     [pscustomobject]@{
         # The wordmark for the top of the dashboard while tests run: five rows, as tall as the Pace graph and
-        # its caption next to it. The two lines of the wordmark are the last two rows of the graph, so the
-        # letters stand on the same line as the bars, and the version is in the row of the caption. The
-        # dashboard writes that row itself.
+        # its caption next to it. The four rows of the wordmark are the rows of the graph, so the letters
+        # stand on the same line as the bars, and the version is in the row of the caption. The dashboard
+        # writes that row itself.
         Band    = [pscustomobject]@{
-            Lines         = @('', '', " $(& $paintWordmark $smallWordmark[0] $smallWordmark[0].Length)", " $(& $paintWordmark $smallWordmark[1] $smallWordmark[0].Length)", " ${dim}v$version$reset")
-            Width         = $smallWordmark[0].Length + 1
+            Lines         = @(@($bandWordmark | ForEach-Object { " $(& $paintWordmark $_ $bandWordmark[0].Length)" }) + " ${dim}v$version$reset")
+            Width         = $bandWordmark[0].Length + 1
             TaglineRow    = 4
             TaglinePrefix = ' '
             Version       = "v$version"
