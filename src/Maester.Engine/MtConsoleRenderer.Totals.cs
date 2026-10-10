@@ -21,23 +21,18 @@ namespace Maester.Engine
     }
 
     /// <summary>
-    /// Two panels of the right column: Ring, the results so far as a ring chart, and Contributor, one of the
-    /// people who built Maester, a different one every minute.
+    /// Two panels of the right column: Totals, the results so far as a bar split by result, and Contributor,
+    /// one of the people who built Maester, a different one every minute.
     /// </summary>
     public sealed partial class MtConsoleRenderer
     {
-        // The ring is drawn on a grid of square pixels, two to a character cell (an upper and a lower half
-        // block): ten by ten pixels in five rows of ten cells.
-        private const int RingRows = 5;
-        private const double RingOuter = 5.0;
-        private const double RingInner = 2.5;
-        private const int RingEmpty = 5;
+        private const int TotalsEmpty = 5;
         private const string ContributorSite = "https://maester.dev/contributors/";
         private const int ContributorSeconds = 60;
 
-        // Passed, failed, error, investigate, skipped, and the ring before there are results.
-        private static readonly string[] RingFg = { "32", "31", "33", "35", "38;5;244", "38;5;238" };
-        private static readonly string[] RingBg = { "42", "41", "43", "45", "48;5;244", "48;5;238" };
+        // Passed, failed, error, investigate, skipped, and the bar before there are results.
+        private static readonly string[] TotalsFg = { "32", "31", "33", "35", "38;5;244", "38;5;238" };
+        private static readonly string[] TotalsBg = { "42", "41", "43", "45", "48;5;244", "48;5;238" };
 
         private MtContributor[] _contributors = new MtContributor[0];
         private int _contributorStart;
@@ -125,44 +120,33 @@ namespace Maester.Engine
             return panel;
         }
 
-        // ------------------------------------------------------------------ the ring
+        // ------------------------------------------------------------------ the results so far
 
-        private PanelContent BuildRingPanel(int width, bool ansi)
+        /// <summary>
+        /// The Totals panel: one bar across the panel, split by result in the share each has of the tests that
+        /// finished, and under it the count and share of each result that has tests.
+        /// </summary>
+        private PanelContent BuildTotalsPanel(int width, bool ansi)
         {
             if (!_running && _sequence.Count == 0) return null;
             int[] counts = { _passed, _failed, _error, _investigate, _skipped + _other };
             int total = 0;
             foreach (int count in counts) total += count;
             var panel = new PanelContent { Title = "Results", Badge = N(total) + " of " + N(_total) };
-
-            // Without Unicode there are no half blocks to draw a ring with: the counts alone.
-            if (!Unicode)
-            {
-                panel.Lines.AddRange(RingLegend(counts, total, width, ansi));
-                return panel;
-            }
-            // In the middle of the ring: the share of the tests with a verdict that passed.
-            int judged = _passed + _failed + _error + _investigate;
-            string centre = judged > 0 ? N((int)Math.Round(100.0 * _passed / judged)) + "%" : string.Empty;
-            double[] ends = RingShares(counts, total);
-            var legend = RingLegend(counts, total, width - 2 * RingRows - 3, ansi);
-            for (int row = 0; row < RingRows; row++)
-            {
-                var ring = RingRow(row, ends, centre, ansi);
-                panel.Lines.Add(new Line { Text = ring.Text + "   " + legend[row].Text, Plain = ring.Plain + "   " + legend[row].Plain });
-            }
+            panel.Lines.Add(TotalsBar(counts, total, Math.Max(1, width), ansi));
+            panel.Lines.Add(TotalsLegend(counts, total, width, ansi));
             return panel;
         }
 
         /// <summary>
-        /// Where each slice of the ring ends, as a part of a full turn, or null before there are results. A slice
-        /// that would be too thin to see gets a twenty-fifth of the ring, so that one failure among hundreds of
-        /// passed tests still shows.
+        /// Where each part of the bar ends, in cells, or null before there are results. A part that would be
+        /// too thin to see gets a twenty-fifth of the bar (a cell at least), so that one failure among hundreds
+        /// of passed tests still shows.
         /// </summary>
-        private static double[] RingShares(int[] counts, int total)
+        private static double[] TotalsEnds(int[] counts, int total, int width)
         {
             if (total <= 0) return null;
-            const double least = 0.04;
+            double least = Math.Max(0.04, 1.0 / width);
             var share = new double[counts.Length];
             double sum = 0;
             for (int i = 0; i < counts.Length; i++)
@@ -174,78 +158,72 @@ namespace Maester.Engine
             double at = 0;
             for (int i = 0; i < counts.Length; i++)
             {
-                at += share[i] / sum;
+                at += share[i] / sum * width;
                 ends[i] = at;
             }
+            ends[counts.Length - 1] = width;
             return ends;
         }
 
-        /// <summary>The slice a pixel of the ring belongs to, or -1 for a pixel outside the ring or in its hole.</summary>
-        private static int RingPixel(int px, int py, double[] ends)
-        {
-            double dx = px + 0.5 - RingRows;
-            double dy = py + 0.5 - RingRows;
-            double distance = Math.Sqrt(dx * dx + dy * dy);
-            if (distance > RingOuter || distance < RingInner) return -1;
-            if (ends == null) return RingEmpty;
-            // Clockwise from twelve o'clock.
-            double turn = Math.Atan2(dx, -dy) / (2 * Math.PI);
-            if (turn < 0) turn += 1;
-            int slice = 0;
-            while (slice < ends.Length - 1 && turn >= ends[slice]) slice++;
-            return slice;
-        }
-
         /// <summary>
-        /// One row of the ring: for each cell an upper and a lower pixel. Two pixels of different slices make an
-        /// upper half block in the colour of the upper one on a background in the colour of the lower one.
+        /// The bar. Where two results meet inside a cell, the cell is a partial block in the colour of the left
+        /// one on a background in the colour of the right one, so the split is exact to an eighth of a cell.
+        /// Without colour each result has its own shade; without Unicode its own character.
         /// </summary>
-        private Line RingRow(int row, double[] ends, string centre, bool ansi)
+        private Line TotalsBar(int[] counts, int total, int width, bool ansi)
         {
-            int columns = 2 * RingRows;
+            double[] ends = TotalsEnds(counts, total, width);
             var b = new LineBuilder(ansi);
-            string label = row == RingRows / 2 ? centre.PadLeft(4) : null;
-            for (int x = 0; x < columns; x++)
+            if (ends == null)
             {
-                int upper = RingPixel(x, 2 * row, ends);
-                int lower = RingPixel(x, 2 * row + 1, ends);
-                if (upper < 0 && lower < 0)
+                return b.Add(new string(Unicode ? (ansi ? '█' : '░') : '.', width), TotalsFg[TotalsEmpty]).Build();
+            }
+            string shades = Unicode ? "█▓▒▒░" : "#x!?-";
+            int part = 0;
+            for (int x = 0; x < width; x++)
+            {
+                while (part < ends.Length - 1 && ends[part] <= x) part++;
+                // The next part that has tests, when this one ends inside the cell.
+                int next = part;
+                if (ends[part] < x + 1)
                 {
-                    // The hole: the percentage goes in the four cells in the middle of the middle row.
-                    int at = x - (RingRows - 2);
-                    bool text = label != null && at >= 0 && at < label.Length;
-                    b.Add(text ? label[at].ToString() : " ", text ? "1" : null);
+                    next = part + 1;
+                    while (next < ends.Length - 1 && ends[next] <= ends[part]) next++;
                 }
-                else if (lower < 0) b.Add("▀", RingFg[upper]);
-                else if (upper < 0) b.Add("▄", RingFg[lower]);
-                else if (upper == lower || !ansi) b.Add("█", RingFg[upper]);
-                else b.Add("▀", RingFg[upper] + ";" + RingBg[lower]);
+                int eighths = next == part ? 8 : (int)Math.Round((ends[part] - x) * 8);
+                if (eighths >= 8 || next == part) b.Add(ansi ? "█" : shades[part].ToString(), TotalsFg[part]);
+                else if (eighths <= 0) b.Add(ansi ? "█" : shades[next].ToString(), TotalsFg[next]);
+                else if (ansi && Unicode) b.Add(Eighths[eighths - 1].ToString(), TotalsFg[part] + ";" + TotalsBg[next]);
+                else b.Add(shades[eighths >= 4 ? part : next].ToString(), null);
             }
             return b.Build();
         }
 
-        /// <summary>The counts next to the ring, one result to a line, with its share of the tests when there is room.</summary>
-        private List<Line> RingLegend(int[] counts, int total, int width, bool ansi)
+        /// <summary>
+        /// The counts under the bar: each result that has tests, with its name and its share when they fit, in
+        /// fewer words when they do not.
+        /// </summary>
+        private Line TotalsLegend(int[] counts, int total, int width, bool ansi)
         {
+            if (total <= 0) return new LineBuilder(ansi).Add("Waiting for results" + Ellipsis(), "2").Build();
             string[] marks = { Ok, Bad, "!", "?", Dash };
             string[] names = { "passed", "failed", counts[2] == 1 ? "error" : "errors", "investigate", "skipped" };
-            string[] colours = { "32", "31", "33", "35", "2" };
-            int digits = 1;
-            foreach (int count in counts) digits = Math.Max(digits, N(count).Length);
-            bool shares = width >= digits + 20;
-            var lines = new List<Line>();
-            for (int i = 0; i < counts.Length; i++)
+            // From the most words to the fewest: names and shares, names, shares, counts alone.
+            for (int form = 0; form < 4; form++)
             {
-                bool any = counts[i] > 0;
-                var b = new LineBuilder(ansi).Add(marks[i] + " " + N(counts[i]).PadLeft(digits), any ? colours[i] : "2").Add(" " + names[i], any && i < 4 ? null : "2");
-                if (shares)
+                var b = new LineBuilder(ansi);
+                string gap = form < 3 ? "   " : "  ";
+                for (int i = 0; i < counts.Length; i++)
                 {
-                    string share = total > 0 ? N((int)Math.Round(100.0 * counts[i] / total)) + "%" : string.Empty;
-                    b.Add(new string(' ', Math.Max(1, width - b.Length - share.Length))).Add(share, "2");
+                    if (counts[i] == 0) continue;
+                    if (b.Length > 0) b.Add(gap);
+                    b.Add(marks[i] + " " + N(counts[i]), TotalsFg[i]);
+                    if (form < 2) b.Add(" " + names[i], i < 4 ? null : "2");
+                    if (form == 0 || form == 2) b.Add(" " + N((int)Math.Round(100.0 * counts[i] / total)) + "%", "2");
                 }
-                lines.Add(Truncate(b.Build(), Math.Max(1, width), ansi));
+                if (b.Length <= width || form == 3) return Truncate(b.Build(), Math.Max(1, width), ansi);
             }
-            return lines;
+            return new LineBuilder(ansi).Build();
         }
     }
 }

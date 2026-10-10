@@ -506,48 +506,69 @@ Describe 'MtConsoleRenderer panels' {
         $narrow.Renderer.Close()
     }
 
-    It 'Draws the results so far as a ring, with the pass rate in its middle and the counts next to it' {
-        $t = New-TestPanelDashboard -Panels 'Ring'
+    It 'Draws the results so far as one bar split by result, with the count and the share of each under it' {
+        $t = New-TestPanelDashboard -Panels 'Totals'
         $t.Renderer.Start(100)
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '╭─ Results ─+ 0 of 100 ─╮'
+        $empty = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $empty[0] | Should -Match '^╭─ Results ─+ 0 of 100 ─╮$'
+        $empty[1] | Should -Be ('│ ' + ('░' * 54) + ' │')
+        $empty[2] | Should -Match '^│ Waiting for results… +│$'
+
         $results = @('Passed') * 6 + @('Failed') * 2 + 'Investigate', 'Skipped'
         $n = 0
         foreach ($result in $results) { $n++; $t.Renderer.ItemStarting("R.$n", "Test $n", $null); $t.Renderer.ItemFinished("R.$n", $result, 'High') }
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
-        $box.Count | Should -Be 7
+        $box.Count | Should -Be 4
         $box[0] | Should -Match '^╭─ Results ─+ 10 of 100 ─╮$'
-        # Ten cells by five rows; six of the nine tests with a verdict passed.
-        $box[1] | Should -Match '^│  ▄▄████▄▄    ✓ 6 passed +60% │$'
-        $box[2] | Should -Match '^│ ▄██▀▀▀▀██▄   ✗ 2 failed +20% │$'
-        $box[3] | Should -Match '^│ ███ 67%███   ! 0 errors +0% │$'
-        $box[4] | Should -Match '^│ ▀██▄▄▄▄██▀   \? 1 investigate +10% │$'
-        $box[5] | Should -Match '^│  ▀▀████▀▀    – 1 skipped +10% │$'
-        # Each slice in the colour of its result, clockwise from the top: passed first.
+        # 54 cells: six tenths passed, two failed, one to investigate, one skipped. Without colour each
+        # result has its own shade.
+        $bar = $box[1].Substring(2, 54)
+        ($bar -replace '[^█]').Length | Should -BeIn 32, 33
+        ($bar -replace '[^▓]').Length | Should -BeIn 10, 11
+        ($bar -replace '[^▒]').Length | Should -BeIn 5, 6
+        ($bar -replace '[^░]').Length | Should -BeIn 5, 6
+        $bar | Should -Match '^█+▓+▒+░+$'
+        # Four results do not fit with their names and shares in 54 columns: the shares stay, the names go.
+        $box[2] | Should -Match '^│ ✓ 6 60%   ✗ 2 20%   \? 1 10%   – 1 10% +│$'
+
+        # With colour: every cell a full block in the colour of its result, and where two results meet
+        # inside a cell, a partial block in the colour of the left one on that of the right one.
         $out = $t.Writer.ToString()
-        $out | Should -Match "$esc\[32(;4\d)?m[▀▄█]"
-        $out | Should -Match "$esc\[31(;4\d)?m[▀▄█]|$esc\[3\d;41m▀"
+        $out | Should -Match "$esc\[32m█"
+        $out | Should -Match "$esc\[31m█"
+        $out | Should -Match "$esc\[32;41m[▏▎▍▌▋▊▉]"
         $t.Renderer.Close()
     }
 
-    It 'Keeps one failure among hundreds of passed tests visible in the ring' {
-        $t = New-TestPanelDashboard -Panels 'Ring'
+    It 'Names the results under the bar when there is room for the names' {
+        $t = New-TestPanelDashboard -Panels 'Totals'
+        $t.Renderer.Start(300)
+        1..34 | ForEach-Object { $t.Renderer.ItemFinished("P.$_", 'Passed', 'Low') }
+        1..36 | ForEach-Object { $t.Renderer.ItemFinished("F.$_", 'Failed', 'High') }
+        1..9 | ForEach-Object { $t.Renderer.ItemFinished("S.$_", 'Skipped', 'Low') }
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '│ ✓ 34 passed 43%   ✗ 36 failed 46%   – 9 skipped 11% +│'
+        $t.Renderer.Close()
+    }
+
+    It 'Keeps one failure among hundreds of passed tests visible in the bar' {
+        $t = New-TestPanelDashboard -Panels 'Totals'
         $t.Renderer.Start(300)
         1..299 | ForEach-Object { $t.Renderer.ItemFinished("P.$_", 'Passed', 'Low') }
-        $before = $t.Writer.ToString().Length
         $t.Renderer.ItemFinished('F.1', 'Failed', 'High')
-        $t.Writer.ToString().Substring($before) | Should -Match "$esc\[31(;4\d)?m[▀▄█]|$esc\[3\d;41m▀"
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '███100%███|███ 99%███|███ 100%'
+        $bar = (@($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '│$' })[0] -replace '^.*?(?=│)').Substring(2, 54)
+        ($bar -replace '[^▓]').Length | Should -BeGreaterOrEqual 2
         $t.Renderer.Close()
     }
 
-    It 'Shows the counts without a ring when the console has no Unicode' {
-        $t = New-TestPanelDashboard -Panels 'Ring'
+    It 'Draws the bar with plain characters when the console has no Unicode' {
+        $t = New-TestPanelDashboard -Panels 'Totals'
         $t.Renderer.Unicode = $false
         $t.Renderer.Start(4)
         $t.Renderer.ItemFinished('A.1', 'Passed', 'Low')
+        $t.Renderer.ItemFinished('A.2', 'Failed', 'Low')
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '\| \+ 1 passed'
-        $screen | Should -Not -Match '[▀▄█]'
+        $screen | Should -Match '\| #{27}x{27} \|'
+        $screen | Should -Match '\| \+ 1 passed 50%   x 1 failed 50% +\|'
         $t.Renderer.Close()
     }
 

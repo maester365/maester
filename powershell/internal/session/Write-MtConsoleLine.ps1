@@ -122,7 +122,7 @@ function Initialize-MtDashboard {
     panel takes what is left over.
 
       Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
-      Ring         the results so far as a ring chart
+      Totals       the results so far: a bar split by result, and the count of each
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Failed       failed tests by severity
       Drift        changes against the newest earlier results file in the output folder, for the same tenant
@@ -148,7 +148,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Ring', 'Connections', 'Failed', 'Drift', 'Pace', 'Contributor', 'Blog', 'Version', 'Tips', 'Results'
+    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Drift', 'Pace', 'Contributor', 'Blog', 'Version', 'Tips', 'Results'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
     if ($output -and $output.PSObject.Properties['DashboardPanels']) {

@@ -710,8 +710,8 @@ namespace Maester.Engine
                     return _tenant != null ? BuildTenantPanel(width, ansi) : BuildTextPanel(name, ansi);
                 case "connections":
                     return BuildConnectionsPanel(width, ansi);
-                case "ring":
-                    return BuildRingPanel(width, ansi);
+                case "totals":
+                    return BuildTotalsPanel(width, ansi);
                 case "contributor":
                     return BuildContributorPanel(width, ansi);
                 case "blog":

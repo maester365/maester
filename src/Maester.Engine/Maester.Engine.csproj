@@ -36,7 +36,7 @@
     <Compile Include="MtConsoleFeeds.cs" />
     <Compile Include="MtConsoleRenderer.cs" />
     <Compile Include="MtConsoleRenderer.Panels.cs" />
-    <Compile Include="MtConsoleRenderer.Ring.cs" />
+    <Compile Include="MtConsoleRenderer.Totals.cs" />
     <Compile Include="MtSession.cs" />
     <Compile Include="MtWorkItem.cs" />
   </ItemGroup>
