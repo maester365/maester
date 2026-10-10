@@ -887,7 +887,7 @@ namespace Maester.Engine
             }
             // What the bars are, from the most words to the fewest: the first that fits next to the numbers.
             string[] forms = _durations.Count <= width
-                ? new[] { "how long each test took, in run order", "how long each test took" }
+                ? new[] { "how long each test took, newest on the right", "how long each test took" }
                 : new[] { "how long the last " + N(width) + " tests took, newest on the right", "the last " + N(width) + " tests, newest on the right", "the last " + N(width) + " tests" };
             string what = null;
             foreach (string form in forms)
@@ -929,12 +929,13 @@ namespace Maester.Engine
         }
 
         /// <summary>
-        /// The Pace graph: one bar for each test that ran, in the order they ran, as tall as the
-        /// test took. It fills from the left with every test that finishes, a quick one a low green bar; once
-        /// it is full it shows the latest tests, the newest at the right edge, and moves left as tests finish.
-        /// The height is on a logarithmic scale (a test of 34 seconds would otherwise flatten the other 280)
-        /// against the longest test of the whole run, so the bars keep their height as they move. It is exact
-        /// to an eighth of a row, and each row has its colour: green at the bottom to red at the top.
+        /// The Pace graph: one bar for each test that ran, as tall as the test took. It moves from right to left,
+        /// like a ticker: the bar of the test that just finished comes in at the right edge and the others move
+        /// one place to the left, so the newest test is always at the right and the graph fills up from there.
+        /// A quick test is a low green bar. The height is on a logarithmic scale (a test of 34 seconds would
+        /// otherwise flatten the other 280) against the longest test of the whole run, so the bars keep their
+        /// height as they move. It is exact to an eighth of a row, and each row has its colour: green at the
+        /// bottom to red at the top.
         /// </summary>
         private List<Line> PaceGraph(int width, int rows, double longest, bool ansi)
         {
@@ -951,7 +952,8 @@ namespace Maester.Engine
             var lines = new List<Line>();
             for (int row = rows - 1; row >= 0; row--)
             {
-                var sb = new StringBuilder(bars);
+                // The bars stand against the right edge.
+                var sb = new StringBuilder(width).Append(' ', width - bars);
                 foreach (int level in levels)
                 {
                     int part = Math.Max(0, Math.Min(8, level - row * 8));

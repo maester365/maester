@@ -1038,8 +1038,10 @@ namespace Maester.Engine
                     lines.Add(left);
                     continue;
                 }
-                string gap = new string(' ', Math.Max(1, _runLogoWidth + 3 - left.Plain.Length));
-                lines.Add(Truncate(new Line { Text = left.Text + gap + graph[i].Text, Plain = left.Plain + gap + graph[i].Plain }, max, ansi));
+                // The graph keeps its place: a left side that is too long is the one that is cut, not the newest bars.
+                left = Truncate(left, _runLogoWidth + 2, ansi);
+                string gap = new string(' ', _runLogoWidth + 3 - left.Plain.Length);
+                lines.Add(new Line { Text = left.Text + gap + graph[i].Text, Plain = left.Plain + gap + graph[i].Plain });
             }
             return lines;
         }
