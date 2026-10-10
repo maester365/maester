@@ -78,6 +78,7 @@ namespace Maester.Engine
         private readonly List<Recent> _recent = new List<Recent>();
         private readonly List<string> _barLabels = new List<string>();
         private readonly List<string> _barLinks = new List<string>();
+        private int _barRight;
         private const int RecentKept = 100;
         private readonly Dictionary<string, string> _finished = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _newlyFailing = new List<string>();
@@ -170,6 +171,15 @@ namespace Maester.Engine
         /// </summary>
         public void SetStatusBar(string[] labels, string[] links)
         {
+            SetStatusBar(labels, links, 0);
+        }
+
+        /// <summary>
+        /// The same, with the last <paramref name="rightAligned"/> labels at the right edge of the window and the
+        /// others at the left, so that the bar spans the whole width.
+        /// </summary>
+        public void SetStatusBar(string[] labels, string[] links, int rightAligned)
+        {
             lock (_gate)
             {
                 _barLabels.Clear();
@@ -177,37 +187,69 @@ namespace Maester.Engine
                 int count = labels == null ? 0 : labels.Length;
                 for (int i = 0; i < count; i++)
                 {
-                    if (string.IsNullOrEmpty(labels[i])) continue;
-                    _barLabels.Add(labels[i]);
+                    _barLabels.Add(labels[i] ?? string.Empty);
                     _barLinks.Add(links != null && i < links.Length ? links[i] : null);
                 }
+                _barRight = Math.Max(0, Math.Min(rightAligned, _barLabels.Count));
                 Redraw();
             }
         }
 
-        /// <summary>The status bar: as many of its labels as fit, then its background to the edge of the window.</summary>
+        /// <summary>
+        /// The status bar: the labels of the left group from the left edge and those of the right group up to the
+        /// right edge, with the background between them. In a window that is too narrow for all of them the right
+        /// group goes first, from its left, and then the left group from its right.
+        /// </summary>
         private Line BuildStatusBar(int width, bool ansi)
         {
-            const string first = "1;97;48;5;161";
-            const string rest = "38;5;252;48;5;236";
-            const string rule = "38;5;242;48;5;236";
             int max = Math.Max(1, width - 1);
+            int leftCount = _barLabels.Count - _barRight;
+            int used = 0;
+            var left = new List<int>();
+            for (int i = 0; i < leftCount; i++)
+            {
+                int need = BarSegmentWidth(i, left.Count);
+                if (used + need > max) break;
+                left.Add(i);
+                used += need;
+            }
+            // The right group, from its last label back, in the room that is left (and a gap of two columns).
+            var right = new List<int>();
+            for (int i = _barLabels.Count - 1; i >= leftCount && left.Count == leftCount; i--)
+            {
+                int need = _barLabels[i].Length + 2 + (right.Count > 0 ? 1 : 0);
+                if (used + need + 2 > max) break;
+                right.Insert(0, i);
+                used += need;
+            }
             var text = new StringBuilder();
             var plain = new StringBuilder();
-            for (int i = 0; i < _barLabels.Count; i++)
-            {
-                string separator = i > 1 ? (Unicode ? "│" : "|") : string.Empty;
-                string label = " " + _barLabels[i] + " ";
-                if (plain.Length + separator.Length + label.Length > max) break;
-                plain.Append(separator).Append(label);
-                if (!ansi) continue;
-                if (separator.Length > 0) text.Append(Esc).Append(rule).Append('m').Append(separator).Append(Esc).Append("0m");
-                text.Append(Esc).Append(i == 0 ? first : rest).Append('m').Append(Hyperlink(label, _barLinks[i])).Append(Esc).Append("0m");
-            }
-            string fill = new string(' ', max - plain.Length);
-            if (ansi) text.Append(Esc).Append(rest).Append('m').Append(fill).Append(Esc).Append("0m");
+            for (int n = 0; n < left.Count; n++) AppendBarSegment(text, plain, left[n], n > 1, n == 0, ansi);
+            string fill = new string(' ', max - used);
+            if (ansi) text.Append(Esc).Append(BarRest).Append('m').Append(fill).Append(Esc).Append("0m");
             plain.Append(fill);
+            for (int n = 0; n < right.Count; n++) AppendBarSegment(text, plain, right[n], n > 0, false, ansi);
             return new Line { Text = ansi ? text.ToString() : plain.ToString(), Plain = plain.ToString() };
+        }
+
+        private const string BarFirst = "1;97;48;5;161";
+        private const string BarRest = "38;5;252;48;5;236";
+        private const string BarRule = "38;5;242;48;5;236";
+
+        /// <summary>The columns a label of the left group takes: a space on each side, and a separator from the third on.</summary>
+        private int BarSegmentWidth(int index, int position)
+        {
+            return _barLabels[index].Length + 2 + (position > 1 ? 1 : 0);
+        }
+
+        private void AppendBarSegment(StringBuilder text, StringBuilder plain, int index, bool separator, bool first, bool ansi)
+        {
+            string rule = separator ? (Unicode ? "│" : "|") : string.Empty;
+            string label = " " + _barLabels[index] + " ";
+            plain.Append(rule).Append(label);
+            if (!ansi) return;
+            if (rule.Length > 0) text.Append(Esc).Append(BarRule).Append('m').Append(rule).Append(Esc).Append("0m");
+            text.Append(Esc).Append(first ? BarFirst : BarRest).Append('m').Append(Hyperlink(label, _barLinks[index])).Append(Esc).Append("0m");
         }
 
         /// <summary>The tests that ran before the ones that are running, newest first, to fill <paramref name="rows"/> rows.</summary>

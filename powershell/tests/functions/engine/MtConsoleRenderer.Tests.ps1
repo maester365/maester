@@ -569,6 +569,12 @@ Describe 'MtConsoleRenderer panels' {
         $out | Should -Match ([regex]::Escape("$esc]8;;https://github.com/maester365/maester?sponsor=1$esc\ ♥ Sponsor $esc]8;;$esc\"))
         # A narrow window keeps the labels that fit.
         $t.Renderer.GetPlainScreen(40, 30)[29] | Should -Be (' maester.dev  Contributors ').PadRight(39)
+
+        # With a right group the bar spans the window; a narrow window drops the right group from its left.
+        $t.Renderer.SetStatusBar(@('maester.dev', 'Docs', 'Issues', 'Sponsor'), @($null, $null, $null, $null), 2)
+        $t.Renderer.GetPlainScreen(60, 30)[29] | Should -Be (' maester.dev  Docs ' + (' ' * 22) + ' Issues │ Sponsor ')
+        $t.Renderer.GetPlainScreen(32, 30)[29] | Should -Be (' maester.dev  Docs ' + (' ' * 3) + ' Sponsor ')
+        $t.Renderer.GetPlainScreen(24, 30)[29] | Should -Be (' maester.dev  Docs ').PadRight(23)
         $t.Renderer.Close()
     }
 
