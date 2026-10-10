@@ -260,6 +260,10 @@ Maester's banner (`Get-MtBanner`, printed by `Show-MtLogo` and used as the dashb
   run time. It has the logo's own gradient, orange `#F7941D` at the top to red `#D6282F` at the bottom. With true colour or 256 colours a
   full cell is an upper half block on a background of the next shade, which gives two steps of the gradient per
   row.
+- **Windows.** A Windows console starts with the output code page of the system, in which the symbols, the
+  borders and the flame cannot be written. In Windows Terminal and the terminal of VS Code an interactive run
+  switches the console to UTF-8 and puts the earlier encoding back when it ends; other Windows consoles get
+  plain characters.
 - **Colour.** Truecolor when `COLORTERM`, `WT_SESSION` or `TERM_PROGRAM` says the terminal supports it, then the
   256-colour cube, then yellow and red.
 - **Sizes.** 88 columns by 13 rows at 90 columns or more. Below that, a small flame next to a two-line wordmark

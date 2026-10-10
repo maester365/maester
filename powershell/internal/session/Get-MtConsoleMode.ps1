@@ -73,3 +73,45 @@
         Hyperlink  = $interactive -and ($env:WT_SESSION -or $termProgram -in 'vscode', 'iTerm.app', 'WezTerm', 'ghostty', 'WarpTerminal' -or [int]"0$env:VTE_VERSION" -ge 5000)
     }
 }
+
+function Enable-MtConsoleUtf8 {
+    <#
+    .SYNOPSIS
+    Switches the console to UTF-8 output for an interactive run on Windows, so that the dashboard can be drawn.
+
+    .DESCRIPTION
+    A Windows console starts with the output code page of the system (437, 850 and the like), in which the
+    symbols, the box borders and the flame of the dashboard cannot be written, so the run falls back to plain
+    characters. Windows Terminal and the terminal of VS Code can show them: there the run switches the console
+    to UTF-8 and Restore-MtConsoleEncoding puts the earlier encoding back when the run ends. Other Windows
+    consoles are left alone, because their fonts often lack these characters.
+
+    Returns whether the encoding was changed.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+    if (-not $IsWindows -or -not ($env:WT_SESSION -or $env:TERM_PROGRAM -eq 'vscode')) { return $false }
+    try {
+        if ([System.Console]::IsOutputRedirected -or [System.Console]::OutputEncoding.CodePage -eq 65001) { return $false }
+        $earlier = [System.Console]::OutputEncoding
+        [System.Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+        $script:__MtConsoleEncoding = $earlier
+        return $true
+    } catch {
+        Write-Debug "Could not switch the console to UTF-8: $_"
+        return $false
+    }
+}
+
+function Restore-MtConsoleEncoding {
+    <#
+    .SYNOPSIS
+    Puts back the console output encoding that Enable-MtConsoleUtf8 replaced. Safe to call when nothing was changed.
+    #>
+    [CmdletBinding()]
+    param()
+    if (-not $script:__MtConsoleEncoding) { return }
+    try { [System.Console]::OutputEncoding = $script:__MtConsoleEncoding } catch { Write-Debug "Could not restore the console encoding: $_" }
+    $script:__MtConsoleEncoding = $null
+}

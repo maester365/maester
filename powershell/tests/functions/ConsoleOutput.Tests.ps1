@@ -59,6 +59,30 @@ Describe 'Get-MtConsoleMode' {
         (InModuleScope Maester { Get-MtConsoleMode -Requested Stream }).Mode | Should -Be 'Stream'
     }
 
+    It 'Switches the console to UTF-8 only on Windows, in a terminal that can draw the dashboard' {
+        InModuleScope Maester {
+            $earlier = [System.Console]::OutputEncoding
+            $wt = $env:WT_SESSION; $program = $env:TERM_PROGRAM
+            try {
+                # Not a terminal that is known to draw it: nothing changes.
+                $env:WT_SESSION = $null; $env:TERM_PROGRAM = 'Apple_Terminal'
+                Enable-MtConsoleUtf8 | Should -BeFalse
+                # Windows Terminal: only Windows needs the switch, and only when the console is not UTF-8 already.
+                $env:WT_SESSION = 'test'
+                $needed = $IsWindows -and -not [System.Console]::IsOutputRedirected -and $earlier.CodePage -ne 65001
+                Enable-MtConsoleUtf8 | Should -Be $needed
+                if ($needed) { [System.Console]::OutputEncoding.CodePage | Should -Be 65001 }
+                Restore-MtConsoleEncoding
+                [System.Console]::OutputEncoding.CodePage | Should -Be $earlier.CodePage
+                # Nothing to restore: no error.
+                { Restore-MtConsoleEncoding } | Should -Not -Throw
+            } finally {
+                $env:WT_SESSION = $wt; $env:TERM_PROGRAM = $program
+                [System.Console]::OutputEncoding = $earlier
+            }
+        }
+    }
+
     It 'Uses Plain without colour or Unicode for TERM=dumb' {
         Set-TestEnvironment @{ TERM = 'dumb' }
         $m = InModuleScope Maester { Get-MtConsoleMode }

@@ -361,6 +361,10 @@
         $version = Get-MtModuleVersion
 
         $console = Get-MtConsoleMode -Requested $OutputMode -NonInteractive:$NonInteractive
+        # Windows Terminal can draw the dashboard, but a Windows console does not start in UTF-8: switch it for the run.
+        if ($console.Mode -eq 'Interactive' -and -not $console.Unicode -and (Enable-MtConsoleUtf8)) {
+            $console = Get-MtConsoleMode -Requested $OutputMode -NonInteractive:$NonInteractive
+        }
         if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
             Write-Verbose "Running Maester v$Version"
         } else {
@@ -403,6 +407,9 @@
         $configConsoleMode = if ($runConfig.PSObject.Properties['Output'] -and $runConfig.Output -and $runConfig.Output.PSObject.Properties['ConsoleMode']) { [string]$runConfig.Output.ConsoleMode } else { $null }
         if ($OutputMode -eq 'Auto' -and -not $env:MAESTER_OUTPUT_MODE -and $configConsoleMode -in 'Interactive', 'Stream', 'Plain') {
             $console = Get-MtConsoleMode -Requested $configConsoleMode -NonInteractive:$NonInteractive
+            if ($console.Mode -eq 'Interactive' -and -not $console.Unicode -and (Enable-MtConsoleUtf8)) {
+                $console = Get-MtConsoleMode -Requested $configConsoleMode -NonInteractive:$NonInteractive
+            }
             $__MtSession.Console = $console
         }
 
@@ -1006,5 +1013,6 @@
         # Always restore the console: the status line or live region of an interactive run must not
         # outlive the command, whether it returned early, failed or was stopped with Ctrl+C.
         Stop-MtConsoleOutput
+        Restore-MtConsoleEncoding
     }
 }
