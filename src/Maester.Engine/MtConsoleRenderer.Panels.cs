@@ -316,6 +316,21 @@ namespace Maester.Engine
             for (int i = 0; i < label.Length; i++) owner.Add(index);
         }
 
+        private const int IdWidth = 15;
+
+        /// <summary>
+        /// A test ID in the column the lists have for it: fifteen characters, which fits all but a few of the
+        /// IDs. A longer one is cut in its middle, because what tells two IDs apart is at the end
+        /// (CISA.MS.SHAREPOINT.1.1 becomes CISA.MS…INT.1.1).
+        /// </summary>
+        private string FitId(string id)
+        {
+            id = id ?? string.Empty;
+            if (id.Length <= IdWidth) return id.PadRight(IdWidth);
+            int tail = (IdWidth - 1) / 2;
+            return id.Substring(0, IdWidth - 1 - tail) + (Unicode ? "…" : ".") + id.Substring(id.Length - tail);
+        }
+
         /// <summary>The tests that ran before the ones that are running, newest first, to fill <paramref name="rows"/> rows.</summary>
         private List<Line> BuildRecent(int max, int rows, bool ansi)
         {
@@ -345,7 +360,7 @@ namespace Maester.Engine
                         break;
                 }
                 string time = Short(r.Duration).PadLeft(7);
-                var b = new LineBuilder(ansi).Add(" " + mark + " ", colour).Add((r.Id ?? string.Empty).PadRight(17) + " ", "2").Add(r.Title, "2");
+                var b = new LineBuilder(ansi).Add(" " + mark + " ", colour).Add(FitId(r.Id) + " ", "2").Add(r.Title, "2");
                 var cut = Truncate(b.Build(), max - time.Length - 1, ansi);
                 string gap = new string(' ', Math.Max(1, max - time.Length - cut.Plain.Length));
                 lines.Add(new Line { Text = cut.Text + gap + (ansi ? Esc + "2m" + time + Esc + "0m" : time), Plain = cut.Plain + gap + time });
@@ -910,7 +925,7 @@ namespace Maester.Engine
                 if (listed >= shown) break;
                 listed++;
                 string time = Short(s.Duration).PadLeft(7);
-                var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
+                var left = Truncate(new LineBuilder(ansi).Add(FitId(s.Id) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
                 string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
                 panel.Lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
             }

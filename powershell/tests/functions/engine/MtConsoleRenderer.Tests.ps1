@@ -762,6 +762,25 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Gives a test ID fifteen columns in the lists, and cuts a longer one in its middle' {
+        $t = New-TestPanelDashboard -Panels 'Slowest'
+        $t.Renderer.Start(10)
+        $t.Renderer.ItemStarting('MT.1066', 'A short one', $null)
+        $t.Renderer.ItemFinished('MT.1066', 'Passed', 'Low', 2)
+        $t.Renderer.ItemStarting('CIS.M365.5.1.2.2', 'One character too long', $null)
+        $t.Renderer.ItemFinished('CIS.M365.5.1.2.2', 'Failed', 'High', 3)
+        $t.Renderer.ItemStarting('CISA.MS.SHAREPOINT.1.1', 'Running now', $null)
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        # The title starts in the same column on every row: three for the mark, fifteen for the ID, one space.
+        ($screen | Where-Object { $_ -match 'Running now' }) | Should -Match '^ . CISA\.MS…INT\.1\.1 Running now '
+        ($screen | Where-Object { $_ -match '^ ✗ ' }) | Should -Match '^ ✗ CIS\.M36…5\.1\.2\.2 One character too long '
+        ($screen | Where-Object { $_ -match '^ ✓ ' }) | Should -Match '^ ✓ MT\.1066 {9}A short one '
+        # The same column in the Slowest panel.
+        ($screen -join "`n") | Should -Match '│ CIS\.M36…5\.1\.2\.2 One character too long +3\.0 s │'
+        ($screen -join "`n") | Should -Match '│ MT\.1066 {9}A short one +2\.0 s │'
+        $t.Renderer.Close()
+    }
+
     It 'Fills the rows under the running tests with the tests that ran before, newest first' {
         $t = New-TestPanelDashboard -Panels 'Results'
         $t.Renderer.Start(60)

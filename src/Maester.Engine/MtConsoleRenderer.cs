@@ -852,7 +852,7 @@ namespace Maester.Engine
                 foreach (var w in _workers)
                 {
                     string time = Short(w.Clock.Elapsed).PadLeft(7);
-                    var b = new LineBuilder(ansi).Add(" " + Spinner() + " ", "36").Add((w.Id ?? string.Empty).PadRight(17) + " ", "1").Add(w.Title);
+                    var b = new LineBuilder(ansi).Add(" " + Spinner() + " ", "36").Add(FitId(w.Id) + " ", "1").Add(w.Title);
                     var cut = Truncate(b.Build(), max - time.Length - 1, ansi);
                     string gap = new string(' ', Math.Max(1, max - time.Length - cut.Plain.Length));
                     tail.Add(new Line { Text = cut.Text + gap + (ansi ? Esc + "2m" + time + Esc + "0m" : time), Plain = cut.Plain + gap + time });
