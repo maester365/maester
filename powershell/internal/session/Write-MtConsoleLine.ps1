@@ -170,10 +170,20 @@ function Initialize-MtDashboard {
     }
 
     # The status bar on the last row: where to read more about the project, each a hyperlink.
-    $heart = if ($Console -and $Console.Unicode) { [string][char]0x2665 + ' ' } else { '' }
-    $Renderer.SetStatusBar(
-        [string[]]@('maester.dev', 'Contributors', 'Our Manifesto', "${heart}Sponsor"),
-        [string[]]@('https://maester.dev', 'https://maester.dev/contributors', 'https://maester.cloud/manifesto', 'https://github.com/maester365/maester?sponsor=1'))
+    # A window that is too narrow for all of them keeps the first ones.
+    $unicode = $Console -and $Console.Unicode
+    $star = if ($unicode) { [string][char]0x2605 + ' ' } else { '' }
+    $heart = if ($unicode) { [string][char]0x2665 + ' ' } else { '' }
+    $bar = [ordered]@{
+        'maester.dev'           = 'https://maester.dev'
+        'Contributors'          = 'https://maester.dev/contributors'
+        'Our Manifesto'         = 'https://maester.cloud/manifesto'
+        "${star}Star on GitHub" = 'https://github.com/maester365/maester'
+        'Discord'               = 'https://discord.maester.dev'
+        'Issues'                = 'https://github.com/maester365/maester/issues'
+        "${heart}Sponsor"       = 'https://github.com/maester365/maester?sponsor=1'
+    }
+    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values))
 
     $Renderer.Open()
     if (-not $Renderer.IsFullScreen) { return }

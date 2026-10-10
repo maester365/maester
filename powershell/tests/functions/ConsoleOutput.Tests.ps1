@@ -388,6 +388,14 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
+    It 'Puts the links of the project in the status bar' {
+        $renderer = New-PanelRenderer
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
+        $screen = $renderer.GetPlainScreen(160, 44)
+        $screen[-1] | Should -Match '^ maester\.dev  Contributors │ Our Manifesto │ ★ Star on GitHub │ Discord │ Issues │ ♥ Sponsor +$'
+        $renderer.Close()
+    }
+
     It 'Says so in the Tenant panel when Graph is not connected' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{ TenantName = $null; Services = [pscustomobject]@{ Graph = $false; ExchangeOnline = $true } }
