@@ -396,7 +396,7 @@ Describe 'MtConsoleRenderer panels' {
     It 'Fills a console that is wider and taller than the standard layout' {
         $t = New-TestPanelDashboard -Width 200 -Panels 'Failed', 'Pace', 'Results'
         $t.Renderer.Start(700)
-        1..12 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
+        1..40 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
         $screen = $t.Renderer.GetPlainScreen(200, 50)
         # The right column ends at the edge of the window, and is wider than on a 160-column console.
         $boxes = @($screen | Where-Object { $_ -match '╮$' })
@@ -406,8 +406,22 @@ Describe 'MtConsoleRenderer panels' {
         # One square per test: 700 squares over more rows than the standard six would hold.
         (($screen -join '') -replace '[^■□]').Length | Should -Be 700
         ($screen -join "`n") | Should -Not -Match 'each square is'
-        # The Pace panel stays at the three slowest tests.
-        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 3
+        # The Pace panel fills the rows that are free with more of the slowest tests (twenty at most).
+        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 20
+        $t.Renderer.Close()
+
+        # It gives the rows back when another panel needs them: every panel is still there, and the column is full.
+        $t = New-TestPanelDashboard -Width 200 -Panels 'Tenant', 'Failed', 'Pace', 'Tips'
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('One', 'Two', 'Three'))
+        $t.Renderer.SetTips(@('A tip'))
+        $t.Renderer.Start(700)
+        1..40 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
+        $short = $t.Renderer.GetPlainScreen(200, 30)
+        @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Pace|Tip) ' }).Count | Should -Be 4
+        $slow = @($short | Where-Object { $_ -match '│ W\.\d+ ' }).Count
+        $slow | Should -BeGreaterThan 3
+        $slow | Should -BeLessThan 20
+        @($short | Where-Object { $_ -match '[│╮╯]$' }).Count | Should -Be 29
         $t.Renderer.Close()
     }
 

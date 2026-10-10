@@ -25,6 +25,7 @@ namespace Maester.Engine
         private const int StandardPaneWidth = 58;
         private const int MaxPaneWidth = 90;
         private const int SlowestShown = 3;
+        private const int SlowestKept = 20;
         private const string ResultsPanel = "Results";
         private static readonly string[] SeverityOrder = { "Critical", "High", "Medium", "Low" };
         private static readonly string[] SeverityColor = { "31", "38;5;208", "33", "2" };
@@ -79,6 +80,7 @@ namespace Maester.Engine
         private DateTime? _baselineWhen;
         private int _fixedCount;
         private int _newTests;
+        private int _slowestShown = SlowestShown;
 
         /// <summary>
         /// The panels to show, in order. "Results" is the chart in the main column; the others stack in the right
@@ -283,7 +285,7 @@ namespace Maester.Engine
             {
                 _slowest.Add(new Slow { Id = id, Title = title, Duration = duration });
                 _slowest.Sort((a, b) => b.Duration.CompareTo(a.Duration));
-                if (_slowest.Count > SlowestShown) _slowest.RemoveAt(SlowestShown);
+                if (_slowest.Count > SlowestKept) _slowest.RemoveAt(SlowestKept);
                 _finished[id] = result;
                 CountDrift(id, result);
             }
@@ -377,6 +379,21 @@ namespace Maester.Engine
         /// A panel that does not fit in the rows that are left is skipped.
         /// </summary>
         private List<Line> BuildPane(int paneWidth, int rows, bool ansi)
+        {
+            // Every panel first, with the Pace panel at its smallest. The rows that are then left over go to the
+            // Pace panel, which lists more of the slowest tests: it fills the column and never pushes a panel out.
+            _slowestShown = SlowestShown;
+            var pane = StackPanels(paneWidth, rows, ansi);
+            int spare = rows - pane.Count;
+            if (spare > 0 && _slowest.Count > SlowestShown && PanelShown("Pace"))
+            {
+                _slowestShown = Math.Min(_slowest.Count, SlowestShown + spare);
+                pane = StackPanels(paneWidth, rows, ansi);
+            }
+            return pane;
+        }
+
+        private List<Line> StackPanels(int paneWidth, int rows, bool ansi)
         {
             var pane = new List<Line>();
             int inner = paneWidth - 4;
@@ -626,6 +643,7 @@ namespace Maester.Engine
                 panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
                 foreach (var s in _slowest)
                 {
+                    if (panel.Lines.Count >= 2 + _slowestShown) break;
                     string time = Short(s.Duration).PadLeft(7);
                     var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
                     string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
@@ -694,6 +712,11 @@ namespace Maester.Engine
             int index = (int)(_clock.Elapsed.TotalSeconds / 12) % _tips.Length;
             var panel = new PanelContent { Title = "Tip", Colour = "36" };
             foreach (var wrapped in Wrap(_tips[index], width)) panel.Lines.Add(new LineBuilder(ansi).Add(wrapped, "2").Build());
+            // The panel is as tall as the longest tip needs, so that the panels under and around it do not move
+            // when the tip changes.
+            int tallest = 0;
+            foreach (var tip in _tips) tallest = Math.Max(tallest, Wrap(tip, width).Count);
+            while (panel.Lines.Count < tallest) panel.Lines.Add(new Line { Text = string.Empty, Plain = string.Empty });
             string link = index < _tipLinks.Length ? _tipLinks[index] : null;
             if (!string.IsNullOrEmpty(link))
             {
