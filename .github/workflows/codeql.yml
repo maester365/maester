@@ -53,6 +53,9 @@ jobs:
           build-mode: none
         - language: javascript-typescript
           build-mode: none
+        # The engine in src/Maester.Engine. A traced build gives CodeQL the compiler's own view of the code.
+        - language: csharp
+          build-mode: manual
         # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
         # Use `c-cpp` to analyze code written in C, C++ or both
         # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
@@ -72,6 +75,11 @@ jobs:
     # or others). This is typically only required for manual builds.
     # - name: Setup runtime (example)
     #   uses: actions/setup-example@v1
+    - name: Setup .NET
+      if: matrix.language == 'csharp'
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+      with:
+        global-json-file: src/global.json
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -93,16 +101,12 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - name: Run manual build steps
+    - name: Build the engine
       if: matrix.build-mode == 'manual'
       shell: bash
-      run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
+      # src/global.json pins the SDK, and it only applies inside src.
+      working-directory: src/Maester.Engine
+      run: dotnet build Maester.Engine.csproj -c Release -o "$RUNNER_TEMP/maester-engine" -nologo
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4

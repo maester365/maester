@@ -21,6 +21,18 @@ updates:
     commit-message:
       prefix: "chore(deps): "
 
+  - package-ecosystem: "nuget"
+    directory: "/src/Maester.Engine"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps): "
+    ignore:
+      # Pinned to the oldest supported PowerShell: the engine compiles against it and the
+      # runtime supplies the assembly, so a newer reference stops the DLL loading on 7.4.0.
+      - dependency-name: "System.Management.Automation"
+
   - package-ecosystem: "npm"
     directory: "/website"
     schedule:
