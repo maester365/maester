@@ -35,7 +35,7 @@ namespace Maester.Engine
             return client;
         }
 
-        /// <summary>Shows the newest posts of an RSS feed in the Blog panel.</summary>
+        /// <summary>Shows the newest post of an RSS feed in the Blog panel.</summary>
         public static Task StartBlog(MtConsoleRenderer renderer, string feedUrl, string cacheFile, int count)
         {
             return Task.Run(async () =>
@@ -50,8 +50,7 @@ namespace Maester.Engine
                         WriteCache(cacheFile, posts);
                     }
                     if (posts.Count == 0) return;
-                    string blog = new Uri(feedUrl).GetLeftPart(UriPartial.Authority) + "/blog";
-                    renderer.SetPanelText("Blog", "From the blog", FormatPosts(posts, count, blog));
+                    renderer.SetBlogPost(posts[0]);
                 }
                 catch (Exception)
                 {
@@ -84,27 +83,6 @@ namespace Maester.Engine
                     // The gallery could not be reached: the panel is left out.
                 }
             });
-        }
-
-        /// <summary>
-        /// The lines of the Blog panel: the newest post first, each with its date dimmed and its title as a
-        /// hyperlink to the post, then the address of the blog.
-        /// </summary>
-        public static string[] FormatPosts(IList<MtBlogPost> posts, int count, string blogUrl)
-        {
-            var lines = new List<string>();
-            foreach (var post in posts)
-            {
-                if (lines.Count >= count) break;
-                string date = string.IsNullOrEmpty(post.Published) ? "      " : post.Published;
-                lines.Add("\u001b[2m" + date + "\u001b[0m  " + MtConsoleRenderer.Hyperlink(post.Title, post.Link));
-            }
-            if (!string.IsNullOrEmpty(blogUrl))
-            {
-                string shown = blogUrl.Substring(blogUrl.IndexOf("://", StringComparison.Ordinal) + 3);
-                lines.Add("\u001b[2m" + MtConsoleRenderer.Hyperlink(shown, blogUrl) + "\u001b[0m");
-            }
-            return lines.ToArray();
         }
 
         /// <summary>The newest posts of an RSS 2.0 feed, in the order of the feed (newest first).</summary>

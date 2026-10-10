@@ -119,11 +119,11 @@ function Initialize-MtDashboard {
     them. Results is the chart under the lanes; the others stack in a column on the right when the console
     is wide enough (about 140 columns).
 
-      Tenant    the tenant, its domain and ID, the account, the cloud and its object counts (set later, by Set-MtDashboardTenant)
+      Tenant    the tenant, its primary domain, the account and its object counts (set later, by Set-MtDashboardTenant)
       Failed    failed tests by severity
       Drift     changes against the newest earlier results file in the output folder, for the same tenant
       Pace      tests per second and the slowest tests
-      Blog      the newest posts on maester.dev (one web request, cached for a day)
+      Blog      the newest post on maester.dev (one web request, cached for a day)
       Version   whether a newer Maester is on the PowerShell Gallery (one web request)
       Tips      a tip from assets/ConsoleTips.txt
       Results   one square per test
@@ -246,8 +246,8 @@ function Get-MtDashboardTenantCount {
 function Set-MtDashboardTenant {
     <#
     .SYNOPSIS
-    Fills the Tenant panel of the dashboard: the tenant, its primary domain and ID, the account, the cloud, and
-    how many users, guests, devices, groups, apps and agents it has.
+    Fills the Tenant panel of the dashboard: the tenant and its primary domain, the account, and how many
+    users, guests, devices, groups, apps and agents it has.
 
     .DESCRIPTION
     Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show, and the panel says so.
@@ -262,32 +262,20 @@ function Set-MtDashboardTenant {
         [Parameter()] [AllowNull()] [System.Collections.IDictionary] $Count,
         [Parameter()] [AllowNull()] [pscustomobject] $Console
     )
-    $lines = [System.Collections.Generic.List[string]]::new()
     $graph = $TenantContext -and $TenantContext.Services -and $TenantContext.Services.PSObject.Properties['Graph'] -and $TenantContext.Services.Graph
-    if ($graph) {
-        if ($TenantContext.TenantName) { $lines.Add((Format-MtConsoleText ([string]$TenantContext.TenantName) -Style Bold -Console $Console)) }
-        if ($TenantContext.PSObject.Properties['PrimaryDomain'] -and $TenantContext.PrimaryDomain) { $lines.Add([string]$TenantContext.PrimaryDomain) }
-        if ($TenantContext.TenantId) { $lines.Add((Format-MtConsoleText ([string]$TenantContext.TenantId) -Style Dim -Console $Console)) }
-        $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
-        if ($account) { $lines.Add($account) }
-        $kind = @($TenantContext.Cloud, $TenantContext.TenantType | Where-Object { $_ -and $_ -ne 'Unknown' }) -join ' · '
-        if ($kind) { $lines.Add((Format-MtConsoleText $kind -Style Dim -Console $Console)) }
-        # The counts, two to a line, in columns.
-        if ($Count -and $Count.Count -gt 0) {
-            $labels = @($Count.Keys)
-            $index = 0
-            while ($index -lt $labels.Count) {
-                $line = ''
-                foreach ($label in $labels[$index..([math]::Min($index + 1, $labels.Count - 1))]) {
-                    $number = Format-MtCompactNumber ([long]$Count[$label])
-                    $line += "$(Format-MtConsoleText $label -Style Dim -Console $Console) $(Format-MtConsoleText $number -Style Bold -Console $Console)$(' ' * [math]::Max(2, 17 - $label.Length - 1 - $number.Length))"
-                }
-                $lines.Add($line.TrimEnd())
-                $index += 2
-            }
-        }
-    } else {
-        $lines.Add((Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
+    if (-not $graph) {
+        $Renderer.SetPanelText('Tenant', 'Tenant', [string[]]@(Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
+        return
     }
-    $Renderer.SetPanelText('Tenant', 'Tenant', $lines.ToArray())
+    $domain = if ($TenantContext.PSObject.Properties['PrimaryDomain']) { [string]$TenantContext.PrimaryDomain } else { '' }
+    $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
+    $labels = [System.Collections.Generic.List[string]]::new()
+    $values = [System.Collections.Generic.List[string]]::new()
+    if ($Count) {
+        foreach ($label in $Count.Keys) {
+            $labels.Add([string]$label)
+            $values.Add((Format-MtCompactNumber ([long]$Count[$label])))
+        }
+    }
+    $Renderer.SetTenant([string]$TenantContext.TenantName, $domain, $account, $labels.ToArray(), $values.ToArray())
 }

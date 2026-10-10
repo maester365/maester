@@ -130,11 +130,11 @@ default is all of them, and an empty list turns them off.
 
 | Panel | Shows | Where it comes from | Cost |
 | --- | --- | --- | --- |
-| `Tenant` | Tenant name, primary domain and ID, account, auth type and cloud, then the number of users, guests, devices, groups, apps and agents (1.2K, 3.4M). Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are not here: they are the line under the banner, which leaves out the tenant and the account when this panel is on screen. | The tenant context of the run (the name, the domain and the tenant type come from the one `organization` request every run makes; the ID, the account and the cloud from the local Graph context), and one Graph batch request of six `$count` queries for the counts | one Graph request |
+| `Tenant` | Tenant name with the primary domain on the right of the same line, the account and auth type, then the number of users, guests, devices, groups, apps and agents (1.2K, 3.4M) in right-aligned columns. Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are not here: they are the line under the banner, which leaves out the tenant and the account when this panel is on screen. | The tenant context of the run (the name, the domain and the tenant type come from the one `organization` request every run makes; the ID, the account and the cloud from the local Graph context), and one Graph batch request of six `$count` queries for the counts | one Graph request |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
 | `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests (three, or up to ten when rows are free) | Finish times of the run | none |
-| `Blog` | The three newest posts on maester.dev, newest first, each a hyperlink (OSC 8) to the post | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
+| `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Whether a newer stable Maester is on the PowerShell Gallery | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds, with a hyperlink to the page on maester.dev that says more | `assets/ConsoleTips.txt` in the module | none |
 | `Results` | One square per test under the product lanes, edge to edge, filled in the order tests finish and coloured by result. The squares of the tests that are running pulse (a dot, a small square, a full square). With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
@@ -249,7 +249,9 @@ Maester's banner (`Get-MtBanner`, printed by `Show-MtLogo` and used as the dashb
   colour (owner ruling: this over the light outline of the Copilot banner).
 - **Flame.** The official logo (`assets/logo/maester.png`), sampled into quadrant characters (`▘▝▖▗▚▞▛▜▙▟`): two by two
   pixels per character cell, which every terminal font has. It is static art in the source; nothing reads the image at
-  run time. It has the logo's own gradient, orange `#F7941D` at the top to red `#D6282F` at the bottom.
+  run time. It has the logo's own gradient, orange `#F7941D` at the top to red `#D6282F` at the bottom. With true colour or 256 colours a
+  full cell is an upper half block on a background of the next shade, which gives two steps of the gradient per
+  row.
 - **Colour.** Truecolor when `COLORTERM`, `WT_SESSION` or `TERM_PROGRAM` says the terminal supports it, then the
   256-colour cube, then yellow and red.
 - **Sizes.** 88 columns by 13 rows at 90 columns or more. Below that, a small flame next to a two-line wordmark

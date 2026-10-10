@@ -429,6 +429,54 @@ Describe 'MtConsoleRenderer panels' {
         $plain.Renderer.Close()
     }
 
+    It 'Shows the newest blog post as a hyperlink over two lines at most, with its date in the border' {
+        $t = New-TestPanelDashboard -Panels 'Blog'
+        $post = [Maester.Engine.MtBlogPost]@{ Published = 'Oct 07'; Title = 'Maester 3.0: a new test engine, and a heads-up for preview users of the automation'; Link = 'https://maester.dev/blog/3' }
+        $t.Renderer.SetBlogPost($post)
+        $t.Renderer.Start(1)
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        ($screen -join "`n") | Should -Match '╭─ From the blog ─+ Oct 07 ─╮'
+        $lines = @($screen | Where-Object { $_ -match '│ (Maester 3\.0|preview users)' })
+        $lines.Count | Should -Be 2
+        ($screen -join "`n") | Should -Not -Match 'maester\.dev/blog'
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/blog/3$esc\Maester 3.0:"))
+        $t.Renderer.Close()
+
+        # A title that needs more than two lines is cut on the second.
+        $long = New-TestPanelDashboard -Panels 'Blog'
+        $long.Renderer.SetBlogPost([Maester.Engine.MtBlogPost]@{ Title = ('word ' * 60).Trim() })
+        $long.Renderer.Start(1)
+        $body = @($long.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '│ word' })
+        $body.Count | Should -Be 2
+        $body[1] | Should -Match '… │$'
+        $long.Renderer.Close()
+    }
+
+    It 'Lays out the Tenant panel: name and domain on one line, the counts in right-aligned columns' {
+        $t = New-TestPanelDashboard -Panels 'Tenant'
+        $t.Renderer.SetTenant('Contoso', 'contoso.com', 'merill@contoso.com · Delegated', @('Users', 'Guests', 'Devices', 'Groups', 'Apps', 'Agents'), @('1.2K', '87', '432', '310', '95', '4'))
+        $t.Renderer.Start(1)
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        $box = @($screen | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box[1] | Should -Match '^│ Contoso +contoso\.com │$'
+        $box[2] | Should -Match '^│ merill@contoso\.com · Delegated +│$'
+        # Six columns of nine: each value ends where its label ends.
+        $box[3] | Should -Be '│      1.2K       87      432      310       95        4 │'
+        $box[4] | Should -Be '│     Users   Guests  Devices   Groups     Apps   Agents │'
+        $t.Renderer.Close()
+
+        # A narrower panel has two rows of three, and a long name is cut to keep the domain.
+        $narrow = New-TestPanelDashboard -Width 142 -Panels 'Tenant'
+        $narrow.Renderer.SetTenant('A tenant with a very long display name', 'contoso.onmicrosoft.com', $null, @('Users', 'Guests', 'Devices', 'Groups', 'Apps', 'Agents'), @('1.2K', '87', '432', '310', '95', '4'))
+        $narrow.Renderer.Start(1)
+        $small = @($narrow.Renderer.GetPlainScreen(142, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $small[1] | Should -Match '^│ A tenant…? ?\S*… +contoso\.onmicrosoft\.com │$|^│ A tenant\S*… contoso\.onmicrosoft\.com │$'
+        $small[2] | Should -Match '^│ +1\.2K +87 +432 │$'
+        $small[3] | Should -Match '^│ +Users +Guests +Devices │$'
+        $small[5] | Should -Match '^│ +Groups +Apps +Agents │$'
+        $narrow.Renderer.Close()
+    }
+
     It 'Says how long ago the earlier run was, and when' {
         $t = New-TestPanelDashboard
         $before = [System.Collections.Generic.Dictionary[string, string]]::new()
@@ -585,19 +633,6 @@ Describe 'MtConsoleFeeds' {
         $posts[1].Link | Should -BeNullOrEmpty
         $posts[2].Title | Should -Be 'Third post'
         $posts[2].Published | Should -BeNullOrEmpty
-    }
-
-    It 'Shows each post as a hyperlink, newest first, with the date dimmed' {
-        $esc = [char]27
-        $posts = [System.Collections.Generic.List[Maester.Engine.MtBlogPost]]::new()
-        $posts.Add([Maester.Engine.MtBlogPost]@{ Published = 'Oct 07'; Title = 'Newest'; Link = 'https://maester.dev/blog/newest' })
-        $posts.Add([Maester.Engine.MtBlogPost]@{ Published = 'Jul 26'; Title = 'Older' })
-        $posts.Add([Maester.Engine.MtBlogPost]@{ Published = 'Jan 01'; Title = 'Oldest' })
-        $lines = [Maester.Engine.MtConsoleFeeds]::FormatPosts($posts, 2, 'https://maester.dev/blog')
-        $lines.Count | Should -Be 3
-        $lines[0] | Should -Be "$esc[2mOct 07$esc[0m  $esc]8;;https://maester.dev/blog/newest$esc\Newest$esc]8;;$esc\"
-        $lines[1] | Should -Be "$esc[2mJul 26$esc[0m  Older"
-        $lines[2] | Should -Be "$esc[2m$esc]8;;https://maester.dev/blog$esc\maester.dev/blog$esc]8;;$esc\$esc[0m"
     }
 
     It 'Reads the latest version from a PowerShell Gallery response' {

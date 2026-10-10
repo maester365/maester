@@ -373,7 +373,7 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
-    It 'Shows the tenant, the account and the cloud in the Tenant panel, without the services' {
+    It 'Shows the tenant, its domain, the account and the counts in the Tenant panel, without the services' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{
             TenantName = 'Contoso'; PrimaryDomain = 'contoso.com'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
@@ -386,12 +386,12 @@ Describe 'Dashboard panels' {
             Set-MtDashboardTenant -Renderer $r -TenantContext $t -Count ([ordered]@{ Users = 1204; Guests = 87; Devices = 2500000 }) -Console $c
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '│ contoso\.com +│'
-        $screen | Should -Match '│ Users 1\.2K +Guests 87 +│'
-        $screen | Should -Match '│ Devices 2\.5M +│'
-        $screen | Should -Match 'Contoso'
+        $screen | Should -Match '│ Contoso +contoso\.com │'
         $screen | Should -Match 'merill@contoso\.com · Delegated'
-        $screen | Should -Match 'Commercial · Workforce'
+        $screen | Should -Match '│ +1\.2K +87 +2\.5M │'
+        $screen | Should -Match '│ +Users +Guests +Devices │'
+        # The tenant ID, the cloud and the tenant type are not shown.
+        $screen | Should -Not -Match '0817c655|Commercial|Workforce'
         $screen | Should -Not -Match 'Teams'
         $renderer.Close()
     }

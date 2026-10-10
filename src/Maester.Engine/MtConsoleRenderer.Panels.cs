@@ -39,6 +39,15 @@ namespace Maester.Engine
             public string Colour;
         }
 
+        private sealed class TenantInfo
+        {
+            public string Name;
+            public string Domain;
+            public string Detail;
+            public string[] Labels;
+            public string[] Values;
+        }
+
         private sealed class Slow
         {
             public string Id;
@@ -55,6 +64,8 @@ namespace Maester.Engine
         private readonly Dictionary<string, string> _finished = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _newlyFailing = new List<string>();
         private readonly System.Diagnostics.Stopwatch _runClock = new System.Diagnostics.Stopwatch();
+        private TenantInfo _tenant;
+        private MtBlogPost _blogPost;
         private string[] _tips = new string[0];
         private string[] _tipLinks = new string[0];
         private Dictionary<string, string> _baseline;
@@ -98,6 +109,29 @@ namespace Maester.Engine
             {
                 if (lines == null || lines.Length == 0) _text.Remove(name);
                 else _text[name] = new TextPanel { Title = title, Lines = lines, Colour = borderColour };
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        /// The Tenant panel: the name on the left of the first line and the primary domain on its right, a line
+        /// of detail (the account), and the counts (label and value, such as "Users" and "1.2K") in columns.
+        /// </summary>
+        public void SetTenant(string name, string domain, string detail, string[] labels, string[] values)
+        {
+            lock (_gate)
+            {
+                _tenant = new TenantInfo { Name = name, Domain = domain, Detail = detail, Labels = labels ?? new string[0], Values = values ?? new string[0] };
+                Redraw();
+            }
+        }
+
+        /// <summary>The Blog panel: the newest post, its title a hyperlink over at most two lines, its date in the border.</summary>
+        public void SetBlogPost(MtBlogPost post)
+        {
+            lock (_gate)
+            {
+                _blogPost = post;
                 Redraw();
             }
         }
@@ -398,6 +432,10 @@ namespace Maester.Engine
                     return BuildDriftPanel(width, ansi);
                 case "tips":
                     return BuildTipsPanel(width, ansi);
+                case "tenant":
+                    return _tenant != null ? BuildTenantPanel(width, ansi) : BuildTextPanel(name, ansi);
+                case "blog":
+                    return _blogPost != null ? BuildBlogPanel(width, ansi) : BuildTextPanel(name, ansi);
                 default:
                     return BuildTextPanel(name, ansi);
             }
@@ -412,6 +450,71 @@ namespace Maester.Engine
             {
                 string plain = StripAnsi(raw);
                 panel.Lines.Add(new Line { Text = ansi ? raw : plain, Plain = plain });
+            }
+            return panel;
+        }
+
+        private PanelContent BuildTenantPanel(int width, bool ansi)
+        {
+            var panel = new PanelContent { Title = "Tenant" };
+            string name = _tenant.Name ?? string.Empty;
+            string domain = _tenant.Domain ?? string.Empty;
+            // The domain keeps its place on the right; the name is cut when the two do not fit.
+            if (domain.Length > 0 && width - domain.Length - 2 < 8) domain = string.Empty;
+            int nameRoom = domain.Length > 0 ? width - domain.Length - 2 : width;
+            if (name.Length > nameRoom) name = name.Substring(0, Math.Max(0, nameRoom - 1)) + (Unicode ? "…" : ".");
+            if (name.Length > 0 || domain.Length > 0)
+            {
+                panel.Lines.Add(new LineBuilder(ansi).Add(name, "1").Add(new string(' ', Math.Max(0, width - name.Length - domain.Length))).Add(domain).Build());
+            }
+            if (!string.IsNullOrEmpty(_tenant.Detail)) panel.Lines.Add(Truncate(new LineBuilder(ansi).Add(_tenant.Detail, "2").Build(), width, ansi));
+
+            // The counts: each value over its label, right-aligned in columns of the same width. All in one row
+            // when the panel is wide enough, else in rows of the same length.
+            int count = Math.Min(_tenant.Labels.Length, _tenant.Values.Length);
+            if (count > 0)
+            {
+                int perRow = Math.Max(1, Math.Min(count, width / 9));
+                int rows = (count + perRow - 1) / perRow;
+                perRow = (count + rows - 1) / rows;
+                int cell = width / perRow;
+                int first = 0;
+                while (first < count)
+                {
+                    // Columns that do not divide the width leave their remainder on the left.
+                    string lead = new string(' ', width - cell * perRow);
+                    var values = new LineBuilder(ansi).Add(lead);
+                    var labels = new LineBuilder(ansi).Add(lead);
+                    int end = Math.Min(count, first + perRow);
+                    for (int i = first; i < end; i++)
+                    {
+                        values.Add(Fit(_tenant.Values[i] ?? string.Empty, cell - 1).PadLeft(cell), "1");
+                        labels.Add(Fit(_tenant.Labels[i] ?? string.Empty, cell - 1).PadLeft(cell), "2");
+                    }
+                    panel.Lines.Add(values.Build());
+                    panel.Lines.Add(labels.Build());
+                    first = end;
+                }
+            }
+            return panel.Lines.Count > 0 ? panel : null;
+        }
+
+        private PanelContent BuildBlogPanel(int width, bool ansi)
+        {
+            if (string.IsNullOrEmpty(_blogPost.Title)) return null;
+            var panel = new PanelContent { Title = "From the blog", Badge = string.IsNullOrEmpty(_blogPost.Published) ? null : _blogPost.Published };
+            var wrapped = Wrap(_blogPost.Title, width);
+            // Two lines at most: what is left over joins the second line, which is then cut.
+            if (wrapped.Count > 2)
+            {
+                string rest = string.Join(" ", wrapped.GetRange(1, wrapped.Count - 1));
+                wrapped.RemoveRange(1, wrapped.Count - 1);
+                wrapped.Add(rest);
+            }
+            foreach (var text in wrapped)
+            {
+                var line = new Line { Text = ansi ? Hyperlink(text, _blogPost.Link) : text, Plain = text };
+                panel.Lines.Add(Truncate(line, width, ansi));
             }
             return panel;
         }
