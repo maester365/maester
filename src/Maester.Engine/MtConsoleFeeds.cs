@@ -17,7 +17,7 @@ namespace Maester.Engine
     }
 
     /// <summary>
-    /// Fills the Blog and Version panels of the dashboard from the web, on background threads, so a run never
+    /// Fills the Blog panel of the dashboard and looks for a newer version, from the web, on background threads, so a run never
     /// waits for them. Each makes one GET request with a five-second timeout; a failure (offline, proxy, a
     /// changed feed) leaves the panel out. The blog posts are kept in a cache file for a day.
     ///
@@ -59,7 +59,10 @@ namespace Maester.Engine
             });
         }
 
-        /// <summary>Shows in the Version panel whether a newer stable version of the module is on the PowerShell Gallery.</summary>
+        /// <summary>
+        /// Looks for a newer stable version of the module on the PowerShell Gallery, and mentions it in the tagline
+        /// of the banner ("v3.1.0 available") as a hyperlink to that version in the gallery.
+        /// </summary>
         public static Task StartVersion(MtConsoleRenderer renderer, string moduleName, string currentVersion)
         {
             return Task.Run(async () =>
@@ -72,15 +75,13 @@ namespace Maester.Engine
                     var latest = ParseGalleryVersion(xml);
                     Version current;
                     if (latest == null || !Version.TryParse(currentVersion, out current)) return;
-                    string[] lines = latest > current
-                        ? new[] { moduleName + " " + latest + " is available (this is " + current + ")", "Update-Module " + moduleName }
-                        : new[] { moduleName + " " + current + " is the latest version" };
-                    // An update is worth a glance: its box gets an amber border.
-                    renderer.SetPanelText("Version", "Version", lines, latest > current ? "38;5;215" : null);
+                    if (latest <= current) return;
+                    renderer.SetHeaderUpdate("v" + latest + " available",
+                        "https://www.powershellgallery.com/packages/" + Uri.EscapeDataString(moduleName) + "/" + latest);
                 }
                 catch (Exception)
                 {
-                    // The gallery could not be reached: the panel is left out.
+                    // The gallery could not be reached: nothing is mentioned.
                 }
             });
         }

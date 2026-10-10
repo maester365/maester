@@ -163,7 +163,17 @@
         }
     }
 
+    # The tagline of the wide banner, for a caller that writes that row itself (the dashboard adds to it when
+    # there is a newer version): the row, what is left of the tagline, and the columns it is right-aligned in.
+    $taglineRow = -1
+    $taglinePrefix = ''
+    if ($Console.Width -ge 90) {
+        $taglineRow = 10
+        $taglinePrefix = "   $(& $paintFlame $flame[9] 9 $flame.Count)    "
+    }
+
     [pscustomobject]@{
+        Tagline = [pscustomobject]@{ Row = $taglineRow; Prefix = $taglinePrefix; Width = 60; Version = "v$version"; Site = 'maester.dev'; SiteUrl = 'https://maester.dev' }
         Lines   = $lines.ToArray()
         Width   = $width
         Compact = "Maester v$version"

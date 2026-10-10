@@ -331,6 +331,12 @@ Describe 'Show-MtLogo' {
         ($big.Lines -join "`n") | Should -Match ([regex]::Escape("$([char]27)[38;2;"))
         $small.Lines.Count | Should -BeLessThan $big.Lines.Count
         $big.Compact | Should -Match '^Maester v\d'
+        # The tagline row, for the dashboard, which writes that row itself.
+        $big.Tagline.Row | Should -Be 10
+        $big.Lines[10] | Should -Match 'maester\.dev'
+        $big.Lines[10].StartsWith($big.Tagline.Prefix) | Should -BeTrue
+        $big.Tagline.Version | Should -Match '^v\d'
+        $small.Tagline.Row | Should -Be -1
     }
 
     It 'Never makes a banner line wider than the width it reports' {

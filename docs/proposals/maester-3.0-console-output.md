@@ -124,8 +124,7 @@ of the screen. This happened in the Claude desktop app's embedded terminal. The 
 On a console of about 140 columns or more the dashboard has a second column on the right. The dashboard fills the
 window: the main content takes 98 columns, the right column grows to 58 (a 160-column console), and beyond that the
 extra width is shared, two parts to the main content (longer bars, more squares per row) and one to the right column
-(up to 90 columns). Rows that are free go to the results chart (up to 16 rows, one square per test while they fit)
-and to the Pace panel (up to ten slowest tests). `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
+(up to 90 columns). Rows that are free go to the results chart (up to 16 rows, one square per test while they fit). `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
 default is all of them, and an empty list turns them off.
 
 | Panel | Shows | Where it comes from | Cost |
@@ -134,9 +133,9 @@ default is all of them, and an empty list turns them off.
 | `Connections` | The services of the run in a grid: a green dot when connected, a hollow one when not, and how many are connected in the border. A name that is too long is cut at its end. With this panel on screen there is no connection line under the banner. | The tenant context of the run | none |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
-| `Pace` | Tests per second, a sparkline of the run so far, and the slowest tests (three, or up to ten when rows are free) | Finish times of the run | none |
+| `Pace` | Tests per second, a sparkline of the run so far, and the three slowest tests | Finish times of the run | none |
 | `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
-| `Version` | Whether a newer stable Maester is on the PowerShell Gallery | The gallery, on a background thread | one web request |
+| `Version` | Not a panel: when a newer stable Maester is on the PowerShell Gallery, the tagline under the logo says so ("v3.0.0 · v3.1.0 available · maester.dev"), as a hyperlink to that version in the gallery. | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds, with a hyperlink to the page on maester.dev that says more | `assets/ConsoleTips.txt` in the module | none |
 | `Results` | One square per test under the product lanes, edge to edge, filled in the order tests finish and coloured by result. The squares of the tests that are running pulse (a dot, a small square, a full square). With more tests than squares, each square stands for several and takes the colour of its worst result. | Each result as it arrives | none |
 
@@ -150,8 +149,8 @@ default is all of them, and an empty list turns them off.
   not fit in the rows that are left is skipped.
 - The connection line stays under the banner at every width (owner ruling: the services belong in the main
   content, not in a panel). On a narrower console the right column is gone.
-- `Blog` and `Version` are the only panels that use the network. They are started only when the dashboard is wide
-  enough to show them, never with `-SkipVersionCheck`, with a five-second timeout, and a failure leaves the panel out.
+- `Blog` and `Version` are the only ones that use the network. They are started only when the dashboard is wide
+  enough to show them, never with `-SkipVersionCheck`, with a five-second timeout, and a failure shows nothing.
 - The text panels are filled by the caller (`SetPanelText`); the live ones are worked out in the renderer from
   `ItemFinished(id, result, severity)`. Building a frame with every panel takes well under a millisecond.
 

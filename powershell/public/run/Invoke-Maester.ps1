@@ -568,6 +568,9 @@
             $renderer = New-MtConsoleRenderer -Console $console -FullScreen:($Verbosity -eq 'None')
             $banner = Get-MtBanner -Console $console
             $renderer.SetHeader($(if ($console.Unicode) { [string[]]$banner.Lines } else { $null }), $banner.Width, $banner.Compact)
+            if ($console.Unicode -and $banner.Tagline.Row -ge 0) {
+                $renderer.SetHeaderTagline($banner.Tagline.Row, $banner.Tagline.Prefix, $banner.Tagline.Width, $banner.Tagline.Version, $banner.Tagline.Site, $banner.Tagline.SiteUrl)
+            }
             $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
             Initialize-MtDashboard -Renderer $renderer -Console $console -RunConfig $runConfig -OutputJsonFile $out.OutputJsonFile -SkipVersionCheck:$SkipVersionCheck
             $renderer.StartPhase('Prepare')

@@ -125,11 +125,12 @@ function Initialize-MtDashboard {
       Drift     changes against the newest earlier results file in the output folder, for the same tenant
       Pace      tests per second and the slowest tests
       Blog      the newest post on maester.dev (one web request, cached for a day)
-      Version   whether a newer Maester is on the PowerShell Gallery (one web request)
+      Version   not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
+                (one web request)
       Tips      a tip from assets/ConsoleTips.txt
       Results   one square per test
 
-    Blog and Version are the only panels that use the network. They run on background threads, only when the
+    Blog and Version are the only ones that use the network. They run on background threads, only when the
     dashboard is wide enough to show them, and never with -SkipVersionCheck.
     #>
     [CmdletBinding()]
@@ -183,13 +184,14 @@ function Initialize-MtDashboard {
         }
     }
 
-    # The network panels: only when the right column can be shown, and never with -SkipVersionCheck.
-    if (-not $SkipVersionCheck -and $Console.Width -ge 140) {
-        if ($panels -contains 'Blog') {
+    # What comes from the web, never with -SkipVersionCheck: the newest blog post when the right column can be
+    # shown, and a newer version, which the banner mentions, when the console is wide enough for the banner.
+    if (-not $SkipVersionCheck) {
+        if ($panels -contains 'Blog' -and $Console.Width -ge 140) {
             $cache = Join-Path ([System.Environment]::GetFolderPath('LocalApplicationData')) 'Maester/blog-posts.txt'
             $null = [Maester.Engine.MtConsoleFeeds]::StartBlog($Renderer, 'https://maester.dev/blog/rss.xml', $cache, 3)
         }
-        if ($panels -contains 'Version') {
+        if ($panels -contains 'Version' -and $Console.Width -ge 90) {
             $null = [Maester.Engine.MtConsoleFeeds]::StartVersion($Renderer, 'Maester', [string](Get-MtModuleVersion))
         }
     }

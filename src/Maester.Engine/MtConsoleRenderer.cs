@@ -86,6 +86,14 @@ namespace Maester.Engine
         private string[] _header;
         private int _headerWidth;
         private string _compactHeader;
+        private int _taglineRow = -1;
+        private string _taglinePrefix;
+        private int _taglineWidth;
+        private string _taglineVersion;
+        private string _taglineSite;
+        private string _taglineSiteUrl;
+        private string _updateLabel;
+        private string _updateUrl;
         private string _info;
         private int _infoLength;
 
@@ -142,6 +150,60 @@ namespace Maester.Engine
         /// The banner of the dashboard: lines that may contain colour, the columns they need, and a one-line
         /// replacement for consoles that are too narrow or too short for them.
         /// </summary>
+        /// <summary>
+        /// The tagline of the banner ("v3.0.0 · maester.dev"), which the renderer then writes itself so that it can
+        /// add to it: <paramref name="row"/> of the header becomes <paramref name="prefix"/> followed by the
+        /// tagline, right-aligned in <paramref name="width"/> columns. The site is a hyperlink.
+        /// </summary>
+        public void SetHeaderTagline(int row, string prefix, int width, string version, string site, string siteUrl)
+        {
+            lock (_gate)
+            {
+                _taglineRow = row;
+                _taglinePrefix = prefix ?? string.Empty;
+                _taglineWidth = width;
+                _taglineVersion = version ?? string.Empty;
+                _taglineSite = site ?? string.Empty;
+                _taglineSiteUrl = siteUrl;
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        /// A newer version to mention in the tagline ("v3.1.0 available"), as a hyperlink to where it can be had.
+        /// Null removes it.
+        /// </summary>
+        public void SetHeaderUpdate(string label, string url)
+        {
+            lock (_gate)
+            {
+                _updateLabel = label;
+                _updateUrl = url;
+                Redraw();
+            }
+        }
+
+        /// <summary>The tagline row of the banner: version, the update when there is one, and the site.</summary>
+        private Line BuildTagline(bool ansi)
+        {
+            string dot = Unicode ? " · " : " - ";
+            bool update = !string.IsNullOrEmpty(_updateLabel) &&
+                _taglineVersion.Length + _updateLabel.Length + _taglineSite.Length + 2 * dot.Length <= _taglineWidth;
+            string plain = _taglineVersion + dot + (update ? _updateLabel + dot : string.Empty) + _taglineSite;
+            string pad = new string(' ', Math.Max(0, _taglineWidth - plain.Length));
+            string prefixPlain = StripAnsi(_taglinePrefix);
+            if (!ansi) return new Line { Text = prefixPlain + pad + plain, Plain = prefixPlain + pad + plain };
+            var sb = new StringBuilder(_taglinePrefix).Append(pad);
+            sb.Append(Esc).Append("2m").Append(_taglineVersion).Append(dot).Append(Esc).Append("0m");
+            if (update)
+            {
+                sb.Append(Esc).Append("38;5;215m").Append(Hyperlink(_updateLabel, _updateUrl)).Append(Esc).Append("0m");
+                sb.Append(Esc).Append("2m").Append(dot).Append(Esc).Append("0m");
+            }
+            sb.Append(Esc).Append("2m").Append(Hyperlink(_taglineSite, _taglineSiteUrl)).Append(Esc).Append("0m");
+            return new Line { Text = sb.ToString(), Plain = prefixPlain + pad + plain };
+        }
+
         public void SetHeader(string[] lines, int width, string compact)
         {
             lock (_gate)
@@ -744,7 +806,11 @@ namespace Maester.Engine
             int needed = body.Count + tail.Count + 2 + (info ? 1 : 0) + (lanesWanted > 0 ? Math.Min(lanesWanted, 4) + 1 : 0);
             if (_header != null && max >= _headerWidth && rows >= _header.Length + needed)
             {
-                foreach (var h in _header) header.Add(new Line { Text = ansi ? h : StripAnsi(h), Plain = StripAnsi(h) });
+                for (int i = 0; i < _header.Length; i++)
+                {
+                    string h = _header[i];
+                    header.Add(i == _taglineRow ? BuildTagline(ansi) : new Line { Text = ansi ? h : StripAnsi(h), Plain = StripAnsi(h) });
+                }
             }
             else if (_compactHeader != null)
             {

@@ -406,8 +406,8 @@ Describe 'MtConsoleRenderer panels' {
         # One square per test: 700 squares over more rows than the standard six would hold.
         (($screen -join '') -replace '[^■□]').Length | Should -Be 700
         ($screen -join "`n") | Should -Not -Match 'each square is'
-        # The rows that are free list more than three of the slowest tests.
-        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 10
+        # The Pace panel stays at the three slowest tests.
+        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 3
         $t.Renderer.Close()
     }
 
@@ -498,6 +498,24 @@ Describe 'MtConsoleRenderer panels' {
         $narrow.Renderer.Start(1)
         ($narrow.Renderer.GetPlainScreen(142, 44) -join "`n") | Should -Match '│ ● Security & Com… +● Graph +│'
         $narrow.Renderer.Close()
+    }
+
+    It 'Writes the tagline of the banner, and mentions a newer version in it as a link' {
+        $t = New-TestPanelDashboard -Panels 'Tips'
+        $t.Renderer.SetHeader(@('top', 'FLAME  old tagline', 'bottom'), 30, 'Maester v3.0.0')
+        $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 40, 'v3.0.0', 'maester.dev', 'https://maester.dev')
+        $t.Renderer.Start(1)
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        $screen[1] | Should -Match ('^FLAME  ' + (' ' * 20) + 'v3\.0\.0 · maester\.dev\b')
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\"))
+
+        $t.Renderer.SetHeaderUpdate('v3.1.0 available', 'https://www.powershellgallery.com/packages/Maester/3.1.0')
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        $screen[1] | Should -Match '^FLAME   v3\.0\.0 · v3\.1\.0 available · maester\.dev\b'
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\v3.1.0 available$esc]8;;$esc\"))
+        # There is no Version panel.
+        ($screen -join "`n") | Should -Not -Match '╭─ Version'
+        $t.Renderer.Close()
     }
 
     It 'Says how long ago the earlier run was, and when' {
