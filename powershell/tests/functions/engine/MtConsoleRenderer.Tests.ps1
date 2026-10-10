@@ -889,17 +889,21 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
-    It 'Makes a bar stand for several tests when there are more tests than columns' {
+    It 'Shows the latest tests, the newest on the right, when more tests ran than there are columns' {
         $t = New-TestPanelDashboard -Panels 'Pace'
-        # 200 tests in 54 columns: four tests to a bar, as tall as the slowest of them.
         $t.Renderer.Start(200)
-        $n = 0
-        foreach ($seconds in 1, 0, 0, 0, 0, 0, 0, 0, 30) {
-            $n++
-            $t.Renderer.ItemFinished("B.$n", 'Passed', 'Low', $seconds)
-        }
-        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '│ █▁█ +│\n[^\n]*│ each bar is the slowest of 4 tests +longest 0:30 │'
+        # 54 columns. Before they are full the bars fill from the left, one to a test.
+        1..6 | ForEach-Object { $t.Renderer.ItemFinished("B.$_", 'Passed', 'Low', 30) }
+        1..40 | ForEach-Object { $t.Renderer.ItemFinished("Q.$_", 'Passed', 'Low', 0) }
+        $part = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $part | Should -Match ('│ ' + ('█' * 6) + ('▁' * 40) + ' {8} │\n[^\n]*│ each bar is a test, in run order +longest 0:30 │')
+        # Twenty more: the six slow tests of the start have moved out at the left, and the scale is still theirs.
+        1..20 | ForEach-Object { $t.Renderer.ItemFinished("R.$_", 'Passed', 'Low', 0) }
+        $full = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $full | Should -Match ('│ ' + ('▁' * 54) + ' │\n[^\n]*│ the last 54 tests, newest on the right +longest 0:30 │')
+        # A slow test comes in at the right edge.
+        $t.Renderer.ItemFinished('S.1', 'Passed', 'Low', 30)
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match ('│ ' + ('▁' * 53) + '█ │\n')
         $t.Renderer.Close()
     }
 

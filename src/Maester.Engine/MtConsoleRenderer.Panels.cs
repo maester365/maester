@@ -879,13 +879,12 @@ namespace Maester.Engine
             bool caption = extra > 0;
             if (caption) extra--;
 
-            int per = Math.Max(1, (int)Math.Ceiling((double)Math.Max(_total, _durations.Count) / Math.Max(1, width)));
             double longest = 0;
             foreach (double d in _durations) longest = Math.Max(longest, d);
-            panel.Lines.AddRange(PaceGraph(width, graphRows, per, longest, ansi));
+            panel.Lines.AddRange(PaceGraph(width, graphRows, longest, ansi));
             if (caption)
             {
-                string what = per == 1 ? "each bar is a test, in run order" : "each bar is the slowest of " + N(per) + " tests";
+                string what = _durations.Count <= width ? "each bar is a test, in run order" : "the last " + N(width) + " tests, newest on the right";
                 string most = "longest " + Short(TimeSpan.FromSeconds(longest));
                 var line = new LineBuilder(ansi).Add(what, "2");
                 if (what.Length + most.Length + 2 <= width) line.Add(new string(' ', width - what.Length - most.Length)).Add(most, "2");
@@ -912,24 +911,23 @@ namespace Maester.Engine
 
         /// <summary>
         /// The graph of the Pace panel: one bar for each test that ran, in the order they ran, as tall as the
-        /// test took. With more tests than columns a bar stands for several tests and is as tall as the slowest
-        /// of them; how many is fixed for the run, so the bars do not move as it goes on. The height is on a
-        /// logarithmic scale (a test of 34 seconds would otherwise flatten the other 280), exact to an eighth of
-        /// a row, and each row has its colour: green at the bottom to red at the top.
+        /// test took. It fills from the left with every test that finishes, a quick one a low green bar; once
+        /// it is full it shows the latest tests, the newest at the right edge, and moves left as tests finish.
+        /// The height is on a logarithmic scale (a test of 34 seconds would otherwise flatten the other 280)
+        /// against the longest test of the whole run, so the bars keep their height as they move. It is exact
+        /// to an eighth of a row, and each row has its colour: green at the bottom to red at the top.
         /// </summary>
-        private List<Line> PaceGraph(int width, int rows, int per, double longest, bool ansi)
+        private List<Line> PaceGraph(int width, int rows, double longest, bool ansi)
         {
             const double floor = 0.05;
             double top = Math.Log(1 + Math.Max(1.0, longest) / floor);
-            int bars = Math.Min(width, (_durations.Count + per - 1) / per);
+            int bars = Math.Min(width, _durations.Count);
+            int first = _durations.Count - bars;
             var levels = new int[bars];
             for (int b = 0; b < bars; b++)
             {
-                double slowest = 0;
-                int end = Math.Min(_durations.Count, (b + 1) * per);
-                for (int i = b * per; i < end; i++) slowest = Math.Max(slowest, _durations[i]);
                 // A test that ran always shows, however fast it was.
-                levels[b] = Math.Max(1, (int)Math.Round(Math.Log(1 + slowest / floor) / top * rows * 8));
+                levels[b] = Math.Max(1, (int)Math.Round(Math.Log(1 + _durations[first + b] / floor) / top * rows * 8));
             }
             var lines = new List<Line>();
             for (int row = rows - 1; row >= 0; row--)
