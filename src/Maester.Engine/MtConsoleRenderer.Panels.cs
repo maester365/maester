@@ -1073,8 +1073,10 @@ namespace Maester.Engine
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
             // One square per test for as long as the rows that are free allow it. In a console with room to
-            // spare a test gets a block of two cells, a square four times the size: when all the tests then
-            // still fit, with three rows left over for the list of the tests that ran.
+            // spare a test gets two cells: a block half as wide again as the square, with a gap of half a cell
+            // to the next one and of half a row to the row above (a lower half block and a lower left quadrant).
+            // That is when all the tests then still fit, with three rows left over for the list of the tests
+            // that ran.
             int columns = Math.Max(10, width - 2);
             int rows = Math.Min(16, maxRows);
             bool big = Unicode && _total <= (columns / 2) * Math.Min(16, maxRows - 3);
@@ -1082,14 +1084,13 @@ namespace Maester.Engine
             int perSquare = big ? 1 : Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
             int squares = (int)Math.Ceiling((double)_total / perSquare);
             bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);
-            string mark = big ? "▇▇" : (Unicode ? "■" : "#");
-            string waiting = ansi ? mark : (big ? "░░" : (Unicode ? "□" : "."));
-            // The tests that are running take the next places after the finished ones; their squares pulse
-            // (a big block fills up and empties).
+            string mark = big ? "▄▖" : (Unicode ? "■" : "#");
+            string waiting = ansi ? mark : (big ? "░ " : (Unicode ? "□" : "."));
+            // The tests that are running take the next places after the finished ones, and show the spinner
+            // that is in front of them in the list of running tests.
             int done = _sequence.Count;
             int active = done + (_running ? _workers.Count : 0);
-            string[] pulse = Unicode ? new[] { "·", "▪", "■", "▪" } : new[] { ".", "o", "O", "o" };
-            if (big) pulse = new[] { "▁▁", "▃▃", "▅▅", "▇▇", "▅▅", "▃▃" };
+            string spinning = Spinner() + (big ? " " : string.Empty);
 
             LineBuilder row = null;
             for (int i = 0; i < squares; i++)
@@ -1103,7 +1104,7 @@ namespace Maester.Engine
                 int last = Math.Min(_total, first + perSquare);
                 if (last > done && first < active)
                 {
-                    row.Add(pulse[(_tick / 2) % pulse.Length], "1;97");
+                    row.Add(spinning, "36");
                 }
                 else if (first < done)
                 {
