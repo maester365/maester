@@ -327,6 +327,13 @@ Describe 'Show-MtLogo' {
         $big.Lines[10].StartsWith($big.Tagline.Prefix) | Should -BeTrue
         $big.Tagline.Version | Should -Match '^v\d'
         $small.Tagline.Row | Should -Be -1
+        # The small banner, which the dashboard shows at the top while tests run: on a wide console too.
+        $big.Small.Lines.Count | Should -Be 5
+        $big.Small.Width | Should -Be 37
+        $big.Small.Lines[$big.Small.TaglineRow] | Should -Match 'v\d'
+        $big.Small.Lines[$big.Small.TaglineRow].StartsWith($big.Small.TaglinePrefix) | Should -BeTrue
+        $big.Small.Version | Should -Match '^v\d'
+        ($small.Lines -join "`n") | Should -Be ($small.Small.Lines -join "`n")
     }
 
     It 'Never makes a banner line wider than the width it reports' {

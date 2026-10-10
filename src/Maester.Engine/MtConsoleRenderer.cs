@@ -820,14 +820,19 @@ namespace Maester.Engine
                 phases = Truncate(strip.Build(), max, ansi);
             }
 
-            // Before the tests start the phases have a line under the banner. Once they run, the phases are in
-            // the header line and the overall progress is here.
+            // While tests run the top of the screen is a band of five rows: the small logo, and the Pace graph
+            // to its right. It needs a console of some size; a smaller one gets one line.
+            bool band = tests && _runLogo != null && rows >= RunBandLeastRows && max >= _runLogoWidth + 3 + RunBandLeastGraph;
+
+            // Before the tests start the phases have a line under the banner. Once they run, the phases are
+            // right above the overall progress (under the band), or in the header when that is one line.
             var body = new List<Line>();
             if (!tests && phases != null)
             {
                 body.Add(phases);
                 body.Add(blank());
             }
+            if (band && phases != null) body.Add(phases);
             if (tests)
             {
                 int done = FinishedCount();
@@ -860,11 +865,16 @@ namespace Maester.Engine
             }
 
             // Header. While the run prepares: the banner, when it fits next to everything else. Once the tests
-            // start the banner makes room for them: one line with the name, the version and the phases.
+            // start the banner makes room for them: the band with the small logo and the Pace graph, or one line
+            // with the name, the version and the phases.
             var header = new List<Line>();
             int lanesWanted = tests ? _lanes.Count : 0;
             int needed = body.Count + tail.Count + 2 + (info ? 1 : 0);
-            if (tests)
+            if (band)
+            {
+                header.AddRange(BuildRunBand(max, ansi));
+            }
+            else if (tests)
             {
                 header.AddRange(BuildRunHeader(max, phases, ansi));
             }
@@ -937,13 +947,14 @@ namespace Maester.Engine
                 lanes.Add(blank());
             }
 
-            // Under the lanes: the Pace graph, when there are rows for it next to the result blocks and a few of
-            // the tests that ran (two to five rows of graph, and the line that says what it shows).
+            // Without the band the Pace graph is under the lanes, when there are rows for it next to the result
+            // blocks and a few of the tests that ran (two to five rows of graph, and the line that says what it
+            // shows).
             int free = rows - header.Count - body.Count - lanes.Count - tail.Count - 1;
             var pace = new List<Line>();
-            if (tests && PanelShown(PacePanel) && free >= 10)
+            if (tests && !band && PanelShown(PacePanel) && free >= 10)
             {
-                pace = BuildPaceSection(max, Math.Max(PaceGraphLeast, Math.Min(PaceGraphMost, free - 8)), ansi);
+                pace = BuildPaceSection(Math.Max(1, max - 1), Math.Max(PaceGraphLeast, Math.Min(PaceGraphMost, free - 8)), " ", ansi);
                 pace.Add(blank());
             }
 
@@ -969,8 +980,72 @@ namespace Maester.Engine
             return screen;
         }
 
+        private const int RunBandLeastRows = 26;
+        private const int RunBandLeastGraph = 24;
+        private string[] _runLogo;
+        private int _runLogoWidth;
+        private int _runLogoTaglineRow = -1;
+        private string _runLogoPrefix;
+        private string _runLogoVersion;
+
         /// <summary>
-        /// The header while tests run: the name in the colours of the wordmark, the version, a newer version
+        /// The logo for the top of the screen while tests run: a few lines (the small flame next to a two-line
+        /// wordmark), the columns they take, and the row that has the version, which the renderer writes itself
+        /// (<paramref name="taglinePrefix"/>, then the version and a newer version when there is one). The Pace
+        /// graph is drawn to its right, in the same rows.
+        /// </summary>
+        public void SetRunLogo(string[] lines, int width, int taglineRow, string taglinePrefix, string version)
+        {
+            lock (_gate)
+            {
+                _runLogo = lines != null && lines.Length > 0 ? lines : null;
+                _runLogoWidth = width;
+                _runLogoTaglineRow = taglineRow;
+                _runLogoPrefix = taglinePrefix ?? string.Empty;
+                _runLogoVersion = version ?? string.Empty;
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        /// The band at the top while tests run: the small logo at the left and, when the Pace panel is on, the
+        /// graph of how long each test took in the same rows to its right, with its caption in the last row.
+        /// </summary>
+        private List<Line> BuildRunBand(int max, bool ansi)
+        {
+            int graphWidth = max - _runLogoWidth - 3;
+            List<Line> graph = null;
+            if (PanelShown(PacePanel) && _runLogo.Length >= 3) graph = BuildPaceSection(graphWidth, _runLogo.Length - 1, string.Empty, ansi);
+            var lines = new List<Line>();
+            for (int i = 0; i < _runLogo.Length; i++)
+            {
+                Line left;
+                if (i == _runLogoTaglineRow)
+                {
+                    var b = new LineBuilder(ansi).Add(_runLogoVersion, "2");
+                    if (!string.IsNullOrEmpty(_updateLabel)) b.Add(Unicode ? " · " : " - ", "2").AddLink((Unicode ? "↑ " : "^ ") + _updateLabel, _updateUrl, "1;38;5;215");
+                    var version = b.Build();
+                    string prefixPlain = StripAnsi(_runLogoPrefix);
+                    left = new Line { Text = (ansi ? _runLogoPrefix : prefixPlain) + version.Text, Plain = prefixPlain + version.Plain };
+                }
+                else
+                {
+                    string plain = StripAnsi(_runLogo[i]);
+                    left = new Line { Text = ansi ? _runLogo[i] : plain, Plain = plain };
+                }
+                if (graph == null || i >= graph.Count)
+                {
+                    lines.Add(left);
+                    continue;
+                }
+                string gap = new string(' ', Math.Max(1, _runLogoWidth + 3 - left.Plain.Length));
+                lines.Add(Truncate(new Line { Text = left.Text + gap + graph[i].Text, Plain = left.Plain + gap + graph[i].Plain }, max, ansi));
+            }
+            return lines;
+        }
+
+        /// <summary>
+        /// The header while tests run on a console that is too small for the band: the name in the colours of the wordmark, the version, a newer version
         /// when there is one, and the phases at the right of the same line (on a line of their own when they do
         /// not fit next to the name).
         /// </summary>

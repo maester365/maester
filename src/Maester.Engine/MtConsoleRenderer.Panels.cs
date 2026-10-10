@@ -866,28 +866,41 @@ namespace Maester.Engine
         private const string PacePanel = "Pace";
 
         /// <summary>
-        /// The Pace graph of the main column: how long each test took, across the width of the column, and a
-        /// line under it that says what the bars are, how many tests a second ran and how long the longest took.
+        /// The Pace graph with its caption: how long each test took, in <paramref name="width"/> columns, and a
+        /// line under it that says what the bars are, how many tests a second ran and how long the longest
+        /// took, in as many words as fit. <paramref name="indent"/> goes in front of every line.
         /// </summary>
-        private List<Line> BuildPaceSection(int max, int graphRows, bool ansi)
+        private List<Line> BuildPaceSection(int width, int graphRows, string indent, bool ansi)
         {
-            int width = Math.Max(1, max - 1);
             double longest = 0;
             foreach (double d in _durations) longest = Math.Max(longest, d);
             var lines = new List<Line>();
             foreach (var row in PaceGraph(width, graphRows, longest, ansi))
             {
-                lines.Add(new Line { Text = " " + row.Text, Plain = " " + row.Plain });
+                lines.Add(new Line { Text = indent + row.Text, Plain = indent + row.Plain });
             }
-            string what = _durations.Count <= width ? "how long each test took, in run order" : "how long the last " + N(width) + " tests took, newest on the right";
-            var caption = new LineBuilder(ansi).Add(" " + what, "2");
+            string numbers = string.Empty;
             if (_durations.Count > 0)
             {
                 double elapsed = Math.Max(0.001, _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
-                string numbers = (_durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" + (Unicode ? " · " : ", ") + "longest " + Short(TimeSpan.FromSeconds(longest));
-                if (what.Length + numbers.Length + 3 <= width) caption.Add(new string(' ', max - 1 - what.Length - numbers.Length)).Add(numbers, "2");
+                numbers = (_durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" + (Unicode ? " · " : ", ") + "longest " + Short(TimeSpan.FromSeconds(longest));
             }
-            lines.Add(Truncate(caption.Build(), max, ansi));
+            // What the bars are, from the most words to the fewest: the first that fits next to the numbers.
+            string[] forms = _durations.Count <= width
+                ? new[] { "how long each test took, in run order", "how long each test took" }
+                : new[] { "how long the last " + N(width) + " tests took, newest on the right", "the last " + N(width) + " tests, newest on the right", "the last " + N(width) + " tests" };
+            string what = forms[forms.Length - 1];
+            foreach (string form in forms)
+            {
+                if (form.Length + numbers.Length + 3 <= width)
+                {
+                    what = form;
+                    break;
+                }
+            }
+            var caption = new LineBuilder(ansi).Add(indent + what, "2");
+            if (numbers.Length > 0 && what.Length + numbers.Length + 3 <= width) caption.Add(new string(' ', width - what.Length - numbers.Length)).Add(numbers, "2");
+            lines.Add(Truncate(caption.Build(), indent.Length + width, ansi));
             return lines;
         }
 

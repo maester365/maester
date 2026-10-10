@@ -449,6 +449,44 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Shows the small logo and the Pace graph in a band at the top while tests run' {
+        $t = New-TestPanelDashboard -Panels 'Pace', 'Results'
+        $t.Renderer.SetHeader(@('BANNER 1', 'BANNER 2'), 30, 'Maester v3')
+        $t.Renderer.SetRunLogo(@('L0', 'L1 WORDMARK', 'L2 WORDMARK', 'L3  old tagline', 'L4'), 12, 3, 'L3  ', 'v3.0.0')
+        $t.Renderer.SetPhases(@('Prepare', 'Run tests'))
+        # While the run prepares: the banner, not the band.
+        $t.Renderer.ShowStatus('Reading the tenant context')
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '^BANNER 1\nBANNER 2\n'
+        $t.Renderer.Start(100)
+        $n = 0
+        foreach ($seconds in 0.05, 34, 0.4, 3, 0.0) { $n++; $t.Renderer.ItemFinished("S.$n", 'Passed', 'Low', $seconds) }
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        ($screen -join "`n") | Should -Not -Match 'BANNER'
+        # Five rows: the logo at the left, and from the sixteenth column four rows of graph and its caption.
+        $screen[0].TrimEnd() | Should -Be ('L0'.PadRight(15) + ' █')
+        $screen[1].TrimEnd() | Should -Be ('L1 WORDMARK'.PadRight(15) + ' █ ▄')
+        $screen[2].TrimEnd() | Should -Be ('L2 WORDMARK'.PadRight(15) + ' █▃█')
+        $screen[3].TrimEnd() | Should -Be ('L3  v3.0.0'.PadRight(15) + '▃███▁')
+        $screen[4] | Should -Match ('^' + 'L4'.PadRight(15) + 'how long each test took, in run order +[\d.]+ tests/s · longest 0:34$')
+        $screen[4].Length | Should -Be 159
+        # Under the band: the connection line of this dashboard, then the phases and right under them the
+        # overall progress.
+        $screen[5] | Should -Be ' Contoso · Graph'
+        $screen[6] | Should -Be ''
+        $screen[7] | Should -Match '^ ○ Prepare  ─  ○ Run tests$'
+        $screen[8] | Should -Match '5/100 +5%'
+        # The graph is in the band, so it is not under the lanes as well.
+        @($screen | Where-Object { $_ -match 'how long each test took' }).Count | Should -Be 1
+        # A newer version is mentioned next to the version.
+        $t.Renderer.SetHeaderUpdate('v3.1.0 available', 'https://www.powershellgallery.com/packages/Maester/3.1.0')
+        $t.Renderer.GetPlainScreen(160, 44)[3] | Should -Match '^L3  v3\.0\.0 · ↑ v3\.1\.0 available +▃███▁$'
+        # A console that is short of rows gets the one line.
+        $short = $t.Renderer.GetPlainScreen(160, 25)
+        $short[0] | Should -Match '^ Maester v3 {2,}○ Prepare'
+        ($short -join "`n") | Should -Not -Match 'WORDMARK'
+        $t.Renderer.Close()
+    }
+
     It 'Fills a console that is wider and taller than the standard layout' {
         $t = New-TestPanelDashboard -Width 200 -Panels 'Failed', 'Slowest', 'Results'
         $t.Renderer.Start(700)

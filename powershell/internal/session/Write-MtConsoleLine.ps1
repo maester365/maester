@@ -117,7 +117,8 @@ function Initialize-MtDashboard {
 
     .DESCRIPTION
     The panels and their order come from Output.DashboardPanels in the run config; the default is all of
-    them. Pace and Results are in the main column, under the lanes; the others stack in a column on the
+    them. Pace and Results are in the main column (the graph at the top, next to the logo; the blocks
+    under the lanes); the others stack in a column on the
     right when the console is wide enough (about 140 columns). Every panel is shown when the column has the
     rows for it; the Slowest panel takes what is left over.
 
@@ -133,7 +134,8 @@ function Initialize-MtDashboard {
       Version      not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
                    (one web request)
       Tips         a tip from assets/ConsoleTips.txt
-      Pace         a graph of how long each test took, with the tests per second, in the main column
+      Pace         a graph of how long each test took, with the tests per second, at the top of the main
+                   column next to the logo
       Results      one block per test, in the main column
 
     Blog and Version are the only ones that use the network. They run on background threads, only when the
