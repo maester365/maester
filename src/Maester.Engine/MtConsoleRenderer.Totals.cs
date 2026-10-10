@@ -102,12 +102,13 @@ namespace Maester.Engine
             // The one panel with an accent of its own: the people are what the project is.
             var panel = new PanelContent { Title = "Featured contributor", Colour = "36" };
 
-            // The name on the left and the handle on the right, both a hyperlink to the person's page.
+            // The name on the left and the handle on the right, in the same colour, both a hyperlink to the
+            // person's page.
             string handle = "@" + c.GitHub;
             if (width - handle.Length - 2 < 8) handle = string.Empty;
             int nameRoom = handle.Length > 0 ? width - handle.Length - 2 : width;
             string name = c.Name.Length <= nameRoom ? c.Name : c.Name.Substring(0, Math.Max(0, nameRoom - 1)) + (Unicode ? "…" : ".");
-            panel.Lines.Add(new LineBuilder(ansi).AddLink(name, url, "1").Add(new string(' ', Math.Max(0, width - name.Length - handle.Length))).AddLink(handle, url, "36").Build());
+            panel.Lines.Add(new LineBuilder(ansi).AddLink(name, url, "1;36").Add(new string(' ', Math.Max(0, width - name.Length - handle.Length))).AddLink(handle, url, "36").Build());
 
             // What the person did. A count of nothing is left out, not shown as 0.
             var parts = new List<string>();

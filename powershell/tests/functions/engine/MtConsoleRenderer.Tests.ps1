@@ -503,22 +503,13 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
-    It 'Shows the address of a tip under it, as a hyperlink' {
+    It 'Shows a tip as its text alone, with no address under it' {
         $t = New-TestPanelDashboard -Panels 'Tips'
-        $t.Renderer.SetTips(@('A tip with a page'), @('https://maester.dev/docs/monitoring'))
+        $t.Renderer.SetTips(@('A tip', 'Another'))
         $t.Renderer.Start(1)
-        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '│ A tip with a page +│'
-        $screen | Should -Match '│ maester\.dev/docs/monitoring +│'
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/docs/monitoring$esc\maester.dev/docs/monitoring$esc]8;;$esc\"))
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '╭─ Tip ─+╮\n[^\n]*│ A tip +│\n[^\n]*╰'
+        $t.Writer.ToString() | Should -Not -Match ([regex]::Escape("$esc]8;;"))
         $t.Renderer.Close()
-
-        # A tip without an address has no extra line.
-        $plain = New-TestPanelDashboard -Panels 'Tips'
-        $plain.Renderer.SetTips(@('A tip', 'Another'), @($null))
-        $plain.Renderer.Start(1)
-        ($plain.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '│ A tip +│\n[^\n]*╰'
-        $plain.Renderer.Close()
     }
 
     It 'Shows the newest blog post as a hyperlink over two lines at most, with its date in the border' {
@@ -647,6 +638,9 @@ Describe 'MtConsoleRenderer panels' {
         # A count of nothing is left out.
         $box[2] | Should -Match '^│ 63 tests · since 2024 +│$'
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\"))
+        # The name has the colour of the handle.
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;36m$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\Thomas Naunheim"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\@Cloud-Architekt"))
         # It is the panel with the accent border.
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m╭─ $esc[0m$esc[1mFeatured contributor"))
 

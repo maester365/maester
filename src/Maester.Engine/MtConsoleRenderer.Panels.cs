@@ -86,7 +86,6 @@ namespace Maester.Engine
         private MtBlogPost _blogPost;
         private readonly List<Connection> _connections = new List<Connection>();
         private string[] _tips = new string[0];
-        private string[] _tipLinks = new string[0];
         private Dictionary<string, string> _baseline;
         private string _baselineLabel;
         private DateTime? _baselineWhen;
@@ -367,19 +366,9 @@ namespace Maester.Engine
         /// <summary>The tips of the Tips panel. One is shown at a time, for about twelve seconds each.</summary>
         public void SetTips(string[] tips)
         {
-            SetTips(tips, null);
-        }
-
-        /// <summary>
-        /// The tips of the Tips panel, each with the address of a page that says more (or null). The address is
-        /// shown under the tip, as a hyperlink where the terminal supports them.
-        /// </summary>
-        public void SetTips(string[] tips, string[] links)
-        {
             lock (_gate)
             {
                 _tips = tips ?? new string[0];
-                _tipLinks = links ?? new string[0];
                 Redraw();
             }
         }
@@ -1050,15 +1039,6 @@ namespace Maester.Engine
                 foreach (var tip in _tips) tallest = Math.Max(tallest, Wrap(tip, width).Count);
             }
             while (panel.Lines.Count < tallest) panel.Lines.Add(new Line { Text = string.Empty, Plain = string.Empty });
-            string link = index < _tipLinks.Length ? _tipLinks[index] : null;
-            if (!string.IsNullOrEmpty(link))
-            {
-                // The address without its scheme, so that it can be read (and typed) where it cannot be clicked.
-                int scheme = link.IndexOf("://", StringComparison.Ordinal);
-                string shown = scheme < 0 ? link : link.Substring(scheme + 3);
-                var line = new Line { Text = ansi ? Esc + "36m" + Hyperlink(shown, link) + Esc + "0m" : shown, Plain = shown };
-                panel.Lines.Add(Truncate(line, width, ansi));
-            }
             return panel;
         }
 
