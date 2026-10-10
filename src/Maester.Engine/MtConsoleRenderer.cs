@@ -980,7 +980,7 @@ namespace Maester.Engine
             return screen;
         }
 
-        private const int RunBandLeastRows = 26;
+        private const int RunBandLeastRows = 28;
         private const int RunBandLeastGraph = 24;
         private string[] _runLogo;
         private int _runLogoWidth;

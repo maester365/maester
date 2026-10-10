@@ -645,6 +645,8 @@ Describe 'MtConsoleRenderer panels' {
         # A count of nothing is left out.
         $box[2] | Should -Match '^│ 63 tests · since 2024 +│$'
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\"))
+        # It is the panel with the accent border.
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m╭─ $esc[0m$esc[1mFeatured contributor"))
 
         $t.Renderer.SetContributors($people, 1)
         (& $pane)[2] | Should -Match '^│ 1 test · 12 improvements · since 2025 +│$'
@@ -968,6 +970,8 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.SetTips(@('one two three four five six seven eight nine ten eleven twelve thirteen fourteen'))
         $screen = $t.Renderer.GetPlainScreen(141, 44)
         ($screen | Where-Object { $_ -match '╭─ Tip ─+╮$' }) | Should -Not -BeNullOrEmpty
+        # The Tip panel has the border of the other panels, not an accent.
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[38;5;240m╭─ $esc[0m$esc[1mTip"))
         foreach ($line in $screen) { $line.Length | Should -BeLessThan 141 }
         ($screen -join ' ') | Should -Match 'fourteen'
         $t.Renderer.Close()

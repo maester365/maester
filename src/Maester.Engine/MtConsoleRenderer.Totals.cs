@@ -99,7 +99,8 @@ namespace Maester.Engine
             if (_contributors.Length == 0) return null;
             var c = _contributors[(_contributorStart + (int)(_clock.Elapsed.TotalSeconds / ContributorSeconds)) % _contributors.Length];
             string url = ContributorSite + c.GitHub.ToLowerInvariant();
-            var panel = new PanelContent { Title = "Featured contributor" };
+            // The one panel with an accent of its own: the people are what the project is.
+            var panel = new PanelContent { Title = "Featured contributor", Colour = "36" };
 
             // The name on the left and the handle on the right, both a hyperlink to the person's page.
             string handle = "@" + c.GitHub;

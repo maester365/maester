@@ -327,16 +327,17 @@ Describe 'Show-MtLogo' {
         $big.Lines[10].StartsWith($big.Tagline.Prefix) | Should -BeTrue
         $big.Tagline.Version | Should -Match '^v\d'
         $small.Tagline.Row | Should -Be -1
-        # The wordmark that the dashboard shows at the top while tests run: five rows, the wordmark in the
-        # four rows of the Pace graph and the version in the row of its caption. No flame.
+        # The wordmark that the dashboard shows at the top while tests run: the lettering of the banner in
+        # the six rows of the Pace graph, and the version in the row of its caption. No flame.
         $band = $big.Band
-        $band.Lines.Count | Should -Be 5
+        $band.Lines.Count | Should -Be 7
         $strip = { param($line) $line -replace "$([char]27)\[[0-9;]*m" }
-        (& $strip $band.Lines[0]) | Should -Be ' ▄▄   ▄▄  ▄▄▄▄  ▄▄▄▄▄▄  ▄▄▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄▄ ▄▄▄▄▄ '
-        (& $strip $band.Lines[3]) | Should -Be ' ██   ██ ██  ██ ██▄▄▄▄ ▄▄▄▄█▀   ██   ██▄▄▄▄ ██  ██'
-        $band.TaglineRow | Should -Be 4
-        (& $strip $band.Lines[4]) | Should -Match '^ v\d'
-        $band.Width | Should -Be 50
+        (& $strip $band.Lines[0]) | Should -Be ' ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗ '
+        (& $strip $band.Lines[5]) | Should -Be ' ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝'
+        $band.TaglineRow | Should -Be 6
+        (& $strip $band.Lines[6]) | Should -Match '^ v\d'
+        $band.Width | Should -Be 61
+        ($band.Lines -join '') | Should -Not -Match '[▟▙▗▖▜▛]'
         foreach ($line in $band.Lines) { (& $strip $line).Length | Should -BeLessOrEqual $band.Width }
         ($band.Lines -join '') | Should -Not -Match '[▟▙▗▖]'
     }
@@ -417,6 +418,9 @@ Describe 'Dashboard panels' {
             Start-Sleep -Milliseconds 50
         }
         $shown | Should -BeTrue
+        # It is the last panel of the column, under the tip.
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen.IndexOf('╭─ Featured contributor ') | Should -BeGreaterThan $screen.IndexOf('╭─ Tip ')
         $renderer.Close()
     }
 

@@ -128,12 +128,13 @@ function Initialize-MtDashboard {
       Failed       failed tests by severity
       Drift        changes against the newest earlier results file in the output folder, for the same tenant
       Slowest      the tests that took the longest: one at least, more in the rows that are left over
-      Contributor  one of the people who built Maester, a different one every minute, from
-                   assets/ConsoleContributors.json (written by build/Update-ConsoleContributors.ps1)
       Blog         the newest post on maester.dev (one web request, cached for a day)
       Version      not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
                    (one web request)
       Tips         a tip from assets/ConsoleTips.txt
+      Contributor  one of the people who built Maester, a different one every minute, from
+                   assets/ConsoleContributors.json (written by build/Update-ConsoleContributors.ps1); the
+                   last panel of the column, and the one with an accent border
       Pace         a graph of how long each test took, with the tests per second, at the top of the main
                    column next to the logo
       Results      one block per test, in the main column
@@ -151,7 +152,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Drift', 'Slowest', 'Contributor', 'Blog', 'Version', 'Tips', 'Pace', 'Results'
+    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Drift', 'Slowest', 'Blog', 'Version', 'Tips', 'Contributor', 'Pace', 'Results'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
     if ($output -and $output.PSObject.Properties['DashboardPanels']) {

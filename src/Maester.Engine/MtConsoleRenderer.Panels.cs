@@ -1038,7 +1038,7 @@ namespace Maester.Engine
         {
             if (_tips.Length == 0) return null;
             int index = (int)(_clock.Elapsed.TotalSeconds / 12) % _tips.Length;
-            var panel = new PanelContent { Title = "Tip", Colour = "36" };
+            var panel = new PanelContent { Title = "Tip" };
             foreach (var wrapped in Wrap(_tips[index], width)) panel.Lines.Add(new LineBuilder(ansi).Add(wrapped, "2").Build());
             // The panel is as tall as the longest tip needs, so that the panels under and around it do not move
             // when the tip changes.
