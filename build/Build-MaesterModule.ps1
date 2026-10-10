@@ -679,10 +679,12 @@ foreach ($MarkdownFile in $MarkdownFiles) {
 
 # Built-in native tests: validate them, write the catalog, and bundle each test's Markdown by ID
 # (design appendix A.4). The build fails on a schema error, a duplicate ID or function name, a missing
-# .md file or an unknown licence token.
+# .md file, an unknown licence token, or a Mitre technique that the pinned ATT&CK release does not know
+# or has retired. The catalog also carries the full Taxonomy (the names of every product, feature, area,
+# resource type and ATT&CK technique), so that a consumer can render them without the module.
 # The source module is imported in a separate runspace, so the caller's session (which may itself have
 # Maester loaded, as in the module's own tests) is not changed.
-$CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @() }
+$CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @(); Taxonomy = $null }
 if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); try {
     $null = $CatalogRunspace.AddScript({
             param($SourceManifest, $TestsRoot)
@@ -700,6 +702,7 @@ if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); t
                             if ($token -and -not ($licenseTokens | Where-Object { $_ -eq $token })) { "$($t.File): licence token '$token' is not in the licence table." }
                         }
                     }
+                    foreach ($message in @(Get-MtAttackTechniqueProblem -Mitre $t.Mitre)) { "$($t.File): $message" }
                 }
                 $suites = @{}
                 foreach ($manifest in Get-ChildItem -Path $TestsRoot -Filter 'suite.json' -Recurse -File) {
@@ -712,6 +715,7 @@ if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); t
                     Suites     = $suites
                     Version    = (Get-MtModuleVersion)
                     GraphScope = @(Get-MtGraphScope)
+                    Taxonomy   = Get-MtResultTaxonomy -All
                 }
             } $TestsRoot
         }).AddArgument((Join-Path $SourceRoot 'Maester.psd1')).AddArgument($TestsRoot)
@@ -749,6 +753,7 @@ $Catalog = [ordered]@{
     CatalogVersion   = [string]$CatalogResult.Version
     GraphPermissions = $CatalogResult.GraphScope
     Suites           = $CatalogResult.Suites
+    Taxonomy         = $CatalogResult.Taxonomy
     Tests            = @($CatalogTests)
 }
 $CatalogPath = Join-Path $OutputRoot 'Maester.TestCatalog.json'

@@ -150,7 +150,7 @@ Describe 'Built-in families' {
         }
         AfterAll { $env:MAESTER_FOLDER_DRIFT = $script:savedDrift }
 
-        It 'Names instances MT.1060.folder.n with the folder name sanitised, and keeps the 2.x titles and tags' {
+        It 'Names instances MT.1060.folder.n with the folder name sanitised, and keeps the 2.x titles and instance tags' {
             $titles = @{ 1 = "Drift baseline in '{0}' is valid JSON"; 2 = "Drift current in '{0}' is valid JSON"; 3 = "Drift current in '{0}' has no missing properties"; 4 = "Drift all values in '{0}' match" }
             foreach ($folder in @(@{ Name = 'Policy A'; Safe = 'Policy_A' }, @{ Name = 'ok'; Safe = 'ok' })) {
                 foreach ($n in 1..4) {
@@ -159,7 +159,9 @@ Describe 'Built-in families' {
                     # 2.x: "MT1060.<_.Name>.<n>: <title>" with the same title.
                     $row.Title | Should -BeExactly ($titles[$n] -f $folder.Name)
                     $row.ParentId | Should -Be 'MT.1060'
-                    foreach ($tag in 'MT1060', "MT1060.$n", "MT1060.$($folder.Name)", "MT1060.$($folder.Name).$n") { $row.Tag | Should -Contain $tag }
+                    # A row carries the instance's own tags and nothing the engine adds: not the 2.x tag of the
+                    # family (MT1060 selects it through the legacy tag table), not the test ID.
+                    @($row.Tag | Sort-Object) | Should -Be @("MT1060.$n", "MT1060.$($folder.Name)", "MT1060.$($folder.Name).$n" | Sort-Object)
                 }
             }
         }

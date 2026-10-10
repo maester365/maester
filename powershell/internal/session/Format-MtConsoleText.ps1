@@ -217,7 +217,9 @@ function Write-MtRunSummary {
 
     .DESCRIPTION
     The table has one row per product (the Product of each test; tests without one are under Other) with
-    the tests that ran or were skipped, and the highest severity among the product's failed tests.
+    the tests that ran or were skipped, and the highest severity among the product's failed tests. A row's
+    Product is a key: the name comes from the result's Taxonomy, else from the taxonomy registry, and the
+    order of the rows from the registry.
     #>
     [CmdletBinding()]
     param(
@@ -235,9 +237,20 @@ function Write-MtRunSummary {
     # Results by product.
     $severityRank = @{ Critical = 4; High = 3; Medium = 2; Low = 1; Info = 0 }
     $severityStyle = @{ Critical = 'Failed'; High = 'Error'; Medium = 'Error'; Low = 'Dim'; Info = 'Dim' }
-    $order = @((Get-MtTestSchema).Products)
+    $order = [System.Collections.Generic.List[string]]@((Get-MtTaxonomy).Products.Name)
+    # A result read from a file names its products itself, which also covers a product this version does not know.
+    $productNames = @{}
+    if ($MaesterResults.PSObject.Properties['Taxonomy'] -and $MaesterResults.Taxonomy) {
+        foreach ($p in @($MaesterResults.Taxonomy.Products)) { if ($p -and $p.Key) { $productNames[[string]$p.Key] = [string]$p.Name } }
+    }
+    $nameOf = {
+        param($row)
+        if (-not ($row.PSObject.Properties['Product'] -and $row.Product)) { return 'Other' }
+        if ($productNames.ContainsKey([string]$row.Product)) { return $productNames[[string]$row.Product] }
+        Get-MtProductName -Product ([string]$row.Product)
+    }
     $groups = @($MaesterResults.Tests | Where-Object { $_.Result -ne 'NotRun' } |
-            Group-Object { if ($_.PSObject.Properties['Product'] -and $_.Product) { [string]$_.Product } else { 'Other' } } |
+            Group-Object { & $nameOf $_ } |
             Sort-Object { $i = $order.IndexOf($_.Name); if ($i -lt 0) { 999 } else { $i } }, Name)
     if ($groups.Count -gt 0) {
         $nameWidth = [math]::Max(12, ($groups | ForEach-Object { $_.Name.Length } | Measure-Object -Maximum).Maximum)

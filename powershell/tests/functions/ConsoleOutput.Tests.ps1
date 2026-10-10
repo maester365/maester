@@ -220,7 +220,7 @@ Describe 'Run summary with a severity outside the known five' {
     It 'Shows the severity as it is instead of failing' {
         $results = [pscustomobject]@{
             PassedCount = 0; FailedCount = 1; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 1; TotalDuration = '00:00:01'
-            Tests = @([pscustomobject]@{ Id = 'A.1'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Informational' })
+            Tests = @([pscustomobject]@{ Id = 'A.1'; Product = 'entra'; Result = 'Failed'; Severity = 'Informational' })
         }
         $lines = InModuleScope Maester -Parameters @{ r = $results; c = $script:stream } { param($r, $c) $ErrorActionPreference = 'Stop'; Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } | ForEach-Object { "$_" }
         ($lines -join "`n") | Should -Match 'Informational'
@@ -233,11 +233,11 @@ Describe 'Write-MtRunSummary' {
         $script:results = [pscustomobject]@{
             PassedCount = 2; FailedCount = 2; ErrorCount = 1; InvestigateCount = 0; SkippedCount = 1; NotRunCount = 1; TotalCount = 7; TotalDuration = '00:00:01.5'
             Tests = @(
-                [pscustomobject]@{ Id = 'A.1'; Product = 'Exchange Online'; Result = 'Passed'; Severity = 'High' }
-                [pscustomobject]@{ Id = 'A.2'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Medium' }
-                [pscustomobject]@{ Id = 'A.3'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Critical' }
-                [pscustomobject]@{ Id = 'A.4'; Product = 'Entra ID'; Result = 'Passed'; Severity = 'Low' }
-                [pscustomobject]@{ Id = 'A.5'; Product = 'Entra ID'; Result = 'NotRun'; Severity = 'Low' }
+                [pscustomobject]@{ Id = 'A.1'; Product = 'exchange'; Result = 'Passed'; Severity = 'High' }
+                [pscustomobject]@{ Id = 'A.2'; Product = 'entra'; Result = 'Failed'; Severity = 'Medium' }
+                [pscustomobject]@{ Id = 'A.3'; Product = 'entra'; Result = 'Failed'; Severity = 'Critical' }
+                [pscustomobject]@{ Id = 'A.4'; Product = 'entra'; Result = 'Passed'; Severity = 'Low' }
+                [pscustomobject]@{ Id = 'A.5'; Product = 'entra'; Result = 'NotRun'; Severity = 'Low' }
                 [pscustomobject]@{ Id = 'A.6'; Product = $null; Result = 'Error'; Severity = 'Low' }
                 [pscustomobject]@{ Id = 'A.7'; Result = 'Skipped' }
             )
@@ -252,12 +252,26 @@ Describe 'Write-MtRunSummary' {
         $text | Should -Match 'Report out/report\.html'
     }
 
-    It 'Has one row per product, in the order of the product list, with tests that have no product under Other' {
+    It 'Has one row per product, named and ordered by the taxonomy registry, with tests that have no product under Other' {
         $rows = @($script:summary | Where-Object { $_ -match '^ (Entra ID|Exchange Online|Other) ' })
         $rows.Count | Should -Be 3
         $rows[0] | Should -Match '^ Entra ID'
         $rows[1] | Should -Match '^ Exchange Online'
         $rows[2] | Should -Match '^ Other'
+    }
+
+    It 'Takes a product name from the result when it has one, and shows a product it cannot name as written' {
+        $results = [pscustomobject]@{
+            PassedCount = 2; FailedCount = 0; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 2; TotalDuration = '00:00:01'
+            Taxonomy = [pscustomobject]@{ Products = @([pscustomobject]@{ Key = 'contoso-crm'; Name = 'Contoso CRM' }) }
+            Tests = @(
+                [pscustomobject]@{ Id = 'A.1'; Product = 'contoso-crm'; Result = 'Passed'; Severity = 'High' }
+                [pscustomobject]@{ Id = 'A.2'; Product = 'My product'; Result = 'Passed'; Severity = 'High' }
+            )
+        }
+        $lines = @(InModuleScope Maester -Parameters @{ c = $script:plain; r = $results } { param($c, $r) Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } | ForEach-Object { "$_" })
+        @($lines | Where-Object { $_ -match '^ Contoso CRM ' }).Count | Should -Be 1
+        @($lines | Where-Object { $_ -match '^ My product ' }).Count | Should -Be 1
     }
 
     It 'Counts each result per product, leaves NotRun out, and names the worst failed severity' {

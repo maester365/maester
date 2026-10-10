@@ -5,9 +5,9 @@ function Get-MtNativeTestInventory {
 
     .DESCRIPTION
     Reads every Test.*.ps1 file statically (Read-MtNativeTest) and applies the nearest suite.json between
-    the file and the root: suite tags, default category, Source, Suite, help URL template and
-    RequiresMaester (design section 3.6). Adds the effective tag set (suite tags + Id + Tag + Preview /
-    LongRunning) and the resolved help URL. Tests that share an ID or a function name get a DuplicateId
+    the file and the root: suite tags, Source, Suite, help URL template and RequiresMaester (design
+    section 3.6). Adds the derived values (test attribute design, section 2.3): Block, the tag set that
+    selection uses and the resolved help URL. Tests that share an ID or a function name get a DuplicateId
     error. A built-in root skips its Custom folder.
     #>
     [CmdletBinding()]
@@ -66,7 +66,15 @@ function Get-MtNativeTestInventory {
 function Complete-MtNativeTest {
     <#
     .SYNOPSIS
-    Adds Source, Suite, Category, effective tags and help URL to a test read by Read-MtNativeTest.
+    Adds Source, Suite, Block, the selection tags and the help URL to a test read by Read-MtNativeTest.
+
+    .DESCRIPTION
+    Block is kept on the result row for 2.x consumers and for XML test-case names. It is the display name of
+    Product when the taxonomy registry knows it, else Product as written, else Feature, else the suite's
+    Name, else Custom.
+
+    EffectiveTag is what -Tag and -ExcludeTag match. It is never written to a result row: a row's Tag holds
+    the tags the test's author wrote.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -78,13 +86,16 @@ function Complete-MtNativeTest {
 
     $source = if ($Suite -and $Suite.Source) { [string]$Suite.Source } elseif ($BuiltIn) { 'Maester' } else { 'Custom' }
     $suiteId = if ($Suite -and $Suite.Id) { [string]$Suite.Id } elseif ($BuiltIn) { 'Maester' } else { 'Custom' }
-    $category = if ($Test.Category) { $Test.Category } elseif ($Suite -and $Suite.DefaultCategory) { [string]$Suite.DefaultCategory } elseif ($BuiltIn) { $suiteId } else { 'Custom' }
+    $block = if ($Test.Product) { Get-MtProductName -Product $Test.Product }
+    elseif ($Test.Feature) { [string]$Test.Feature }
+    elseif ($Suite -and $Suite.PSObject.Properties['Name'] -and $Suite.Name) { [string]$Suite.Name }
+    else { 'Custom' }
 
     $tags = [System.Collections.Generic.List[string]]::new()
     foreach ($t in @($(if ($Suite) { $Suite.Tags } else { @() })) + @($Test.Id) + @($Test.Tag)) {
         if ($t -and -not ($tags | Where-Object { $_ -eq $t })) { $tags.Add([string]$t) }
     }
-    if ($Test.Preview -and -not ($tags -contains 'Preview')) { $tags.Add('Preview') }
+    if ($Test.Lifecycle -eq 'Preview' -and -not ($tags -contains 'Preview')) { $tags.Add('Preview') }
     if ($Test.LongRunning -and -not ($tags -contains 'LongRunning')) { $tags.Add('LongRunning') }
 
     $helpUrl = $Test.HelpUrl
@@ -106,7 +117,7 @@ function Complete-MtNativeTest {
     $Test | Add-Member -NotePropertyMembers ([ordered]@{
             Source       = $source
             Suite        = $suiteId
-            Category     = $category
+            Block        = $block
             EffectiveTag = $tags.ToArray()
             HelpUrl      = $helpUrl
             Format       = 'Native'
@@ -155,7 +166,7 @@ function Get-MtTestCatalog {
     Returns the built-in native tests: the shipped Maester.TestCatalog.json, or a scan of tests/ in a source checkout.
 
     .DESCRIPTION
-    Each row has the attribute properties plus Source, Suite, Category, EffectiveTag, HelpUrl, FunctionName,
+    Each row has the attribute properties plus Source, Suite, Block, EffectiveTag, HelpUrl, FunctionName,
     File, Parameters and MarkdownPath (design appendix A.4). Cached for the session.
     #>
     [CmdletBinding()]
