@@ -70,6 +70,11 @@ At `-Verbosity None` on a console of at least 80 columns by 16 rows, the run tak
 terminal's alternate screen, as `less` and `vim` do, so nothing it draws ends up in the scrollback and it can
 redraw freely.
 
+The banner (the flame and the wordmark, 13 rows) is the opening screen: it is shown while the run prepares. Once
+the tests start it makes room for them and the header is one line, with the name in the colours of the wordmark,
+the version (and a newer one, when there is one) and the phases at its right. The rows it gives up go to the Pace
+graph and to the list of the tests that ran. The sketch below is the opening screen.
+
 ```
 ┌──                                                                                  ──┐
      ▟██████  ▟▙       ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗
@@ -132,9 +137,8 @@ Discord (discord.maester.dev), Issues and Sponsor (the Sponsor dialog of the rep
 `.github/FUNDING.yml`), each a hyperlink. With the bar on screen the tagline under the logo
 has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit).
 
-Every panel of the right column is shown whenever the column has the rows for it. The Pace panel is the one that
-gives: it starts at two rows of graph and one test, and takes the rows that are left over for a taller graph and
-more tests. In a column that is still too short the panels that can do with less take less (the Tips panel the
+Every panel of the right column is shown whenever the column has the rows for it. The Slowest panel is the one that
+gives: it starts at one test, and takes the rows that are left over for more (twenty at most). In a column that is still too short the panels that can do with less take less (the Tips panel the
 height of the tip it shows instead of that of its longest tip, the Failed panel only the severities that have
 failures, the Blog panel one line); only then is a panel that does not fit left out. With the default panels that
 takes a window of about 44 rows. `Output.DashboardPanels` in maester-config.json chooses the panels and their order; the
@@ -147,7 +151,8 @@ default is all of them, and an empty list turns them off.
 | `Connections` | The services of the run in a grid: a green dot when connected, a hollow one when not, and how many are connected in the border. A name that is too long is cut at its end. With this panel on screen there is no connection line under the banner. | The tenant context of the run | none |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date (a hyperlink that opens the HTML report of that run, when it is next to the results file) and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
-| `Pace` | Tests per second, a graph of how long each test took, and the slowest tests. The graph has one bar for each test that ran, in the order they ran: it fills from the left with every test that finishes (a quick one is a low green bar), and once it is full it shows the latest tests, the newest at the right edge, and moves left as tests finish. Its height is on a logarithmic scale against the longest test of the whole run, exact to an eighth of a row, and each row has its colour, green at the bottom to red at the top. The panel always has two rows of graph and one test; the rows of the column that no other panel needs go to the graph (five rows at most), then to a line that says what the bars are, then to a heading and more of the slowest tests (twenty at most). | The time each test took, kept as it finishes | none |
+| `Slowest` | The tests that took the longest: always one, and more (twenty at most) in the rows of the column that no other panel needs. A test that was skipped did not run and is not listed. | The time each test took, kept as it finishes | none |
+| `Pace` | In the main column, between the product lanes and the result blocks: a graph of how long each test took, two to five rows tall as the console has room, and a line under it with the tests per second and the longest test. The graph has one bar for each test that ran, in the order they ran: it fills from the left with every test that finishes (a quick one is a low green bar), and once it is full it shows the latest tests, the newest at the right edge, and moves left as tests finish. Its height is on a logarithmic scale against the longest test of the whole run, exact to an eighth of a row, and each row has its colour, green at the bottom to red at the top. It is left out on a console that is too short for it. | The time each test took, kept as it finishes | none |
 | `Contributor` | Featured contributor: one of the people who built Maester, a different one every minute, starting with a different one each run. The name and the GitHub handle (both a hyperlink to the person's page on maester.dev/contributors), how many tests they wrote and how many they improved (a count of nothing is left out), and the year of their first contribution. | `assets/ConsoleContributors.json`, which ships with the module. `build/Update-ConsoleContributors.ps1` writes it from the contributor data of the website, and the module build runs it. People who are pinned last on the contributors page are left out. | none |
 | `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Not a panel: when a newer stable Maester is on the PowerShell Gallery, the tagline under the logo says so ("v3.0.0 · ↑ v3.1.0 available · maester.dev"), in bold amber, as a hyperlink to that version in the gallery. | The gallery, on a background thread | one web request |

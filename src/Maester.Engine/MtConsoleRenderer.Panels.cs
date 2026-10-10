@@ -575,7 +575,7 @@ namespace Maester.Engine
             bool any = false;
             foreach (var p in _panels)
             {
-                if (!string.Equals(p, ResultsPanel, StringComparison.OrdinalIgnoreCase)) any = true;
+                if (!InMainColumn(p)) any = true;
             }
             if (!any) return 0;
             int room = width - 1 - MainWidth - PaneGap;
@@ -590,6 +590,12 @@ namespace Maester.Engine
             {
                 return PanelShown(name) && PaneWidth(CurrentWidth()) > 0;
             }
+        }
+
+        /// <summary>The panels that are drawn in the main column, not in the right one: the result blocks and the Pace graph.</summary>
+        private static bool InMainColumn(string name)
+        {
+            return string.Equals(name, ResultsPanel, StringComparison.OrdinalIgnoreCase) || string.Equals(name, PacePanel, StringComparison.OrdinalIgnoreCase);
         }
 
         private bool PanelShown(string name)
@@ -617,9 +623,8 @@ namespace Maester.Engine
         /// The right column: each panel that has something to show, in order, as a box with its title in the top
         /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
         ///
-        /// Every panel is shown whenever the column has the rows for it. The Pace panel is the one that gives:
-        /// it starts at a small graph and one test, and takes the rows that are left over for a taller graph and
-        /// more tests. In a column
+        /// Every panel is shown whenever the column has the rows for it. The Slowest panel is the one that
+        /// gives: it starts at one test, and takes the rows that are left over for more. In a column
         /// that is still too short, the panels that can do with less take less (the Tips panel the height of the
         /// tip it shows, the Failed panel the severities that have failures, the Blog panel one line). Only then
         /// is a panel that does not fit left out.
@@ -636,7 +641,7 @@ namespace Maester.Engine
                 pane = StackPanels(paneWidth, rows, ansi, out all);
             }
             int spare = rows - pane.Count;
-            if (all && spare > 0 && _durations.Count > 0 && PanelShown("Pace"))
+            if (all && spare > 0 && _slowest.Count > 1 && PanelShown("Slowest"))
             {
                 _paceExtra = spare;
                 pane = StackPanels(paneWidth, rows, ansi, out all);
@@ -651,7 +656,7 @@ namespace Maester.Engine
             all = true;
             foreach (var name in _panels)
             {
-                if (string.Equals(name, ResultsPanel, StringComparison.OrdinalIgnoreCase)) continue;
+                if (InMainColumn(name)) continue;
                 var panel = BuildPanel(name, inner, ansi);
                 if (panel == null || panel.Lines.Count == 0) continue;
                 if (pane.Count + panel.Lines.Count + 2 > rows)
@@ -708,8 +713,8 @@ namespace Maester.Engine
             {
                 case "failed":
                     return BuildFailedPanel(width, ansi);
-                case "pace":
-                    return BuildPacePanel(width, ansi);
+                case "slowest":
+                    return BuildSlowestPanel(width, ansi);
                 case "drift":
                     return BuildDriftPanel(width, ansi);
                 case "tips":
@@ -858,59 +863,58 @@ namespace Maester.Engine
 
         private const int PaceGraphLeast = 2;
         private const int PaceGraphMost = 5;
+        private const string PacePanel = "Pace";
 
         /// <summary>
-        /// The Pace panel: a graph of how long each test took, and the slowest tests. It always has the graph
-        /// (two rows; one in a column that is short of rows) and one test. The rows that the column has left
-        /// over go first to the graph (five rows at most), then to a line that says what the bars are, then to
-        /// a heading and more of the slowest tests.
+        /// The Pace graph of the main column: how long each test took, across the width of the column, and a
+        /// line under it that says what the bars are, how many tests a second ran and how long the longest took.
         /// </summary>
-        private PanelContent BuildPacePanel(int width, bool ansi)
+        private List<Line> BuildPaceSection(int max, int graphRows, bool ansi)
         {
-            if (_durations.Count == 0) return null;
-            double elapsed = Math.Max(0.001, _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
-            var panel = new PanelContent { Title = "Pace", Badge = (_durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" };
-
-            int extra = _paceExtra;
-            int graphRows = _tight ? 1 : PaceGraphLeast;
-            int grow = Math.Max(0, Math.Min(extra, PaceGraphMost - graphRows));
-            graphRows += grow;
-            extra -= grow;
-            bool caption = extra > 0;
-            if (caption) extra--;
-
+            int width = Math.Max(1, max - 1);
             double longest = 0;
             foreach (double d in _durations) longest = Math.Max(longest, d);
-            panel.Lines.AddRange(PaceGraph(width, graphRows, longest, ansi));
-            if (caption)
+            var lines = new List<Line>();
+            foreach (var row in PaceGraph(width, graphRows, longest, ansi))
             {
-                string what = _durations.Count <= width ? "each bar is a test, in run order" : "the last " + N(width) + " tests, newest on the right";
-                string most = "longest " + Short(TimeSpan.FromSeconds(longest));
-                var line = new LineBuilder(ansi).Add(what, "2");
-                if (what.Length + most.Length + 2 <= width) line.Add(new string(' ', width - what.Length - most.Length)).Add(most, "2");
-                panel.Lines.Add(Truncate(line.Build(), width, ansi));
+                lines.Add(new Line { Text = " " + row.Text, Plain = " " + row.Plain });
             }
-
-            if (_slowest.Count > 0)
+            string what = _durations.Count <= width ? "how long each test took, in run order" : "how long the last " + N(width) + " tests took, newest on the right";
+            var caption = new LineBuilder(ansi).Add(" " + what, "2");
+            if (_durations.Count > 0)
             {
-                int shown = Math.Max(1, Math.Min(_slowest.Count, extra));
-                if (extra > 0) panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
-                int listed = 0;
-                foreach (var s in _slowest)
-                {
-                    if (listed >= shown) break;
-                    listed++;
-                    string time = Short(s.Duration).PadLeft(7);
-                    var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
-                    string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
-                    panel.Lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
-                }
+                double elapsed = Math.Max(0.001, _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
+                string numbers = (_durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" + (Unicode ? " · " : ", ") + "longest " + Short(TimeSpan.FromSeconds(longest));
+                if (what.Length + numbers.Length + 3 <= width) caption.Add(new string(' ', max - 1 - what.Length - numbers.Length)).Add(numbers, "2");
+            }
+            lines.Add(Truncate(caption.Build(), max, ansi));
+            return lines;
+        }
+
+        /// <summary>
+        /// The Slowest panel: the tests that took the longest, one at least. It is the panel of the right column
+        /// that gives: the rows that the column has left over go to more tests (twenty at most).
+        /// </summary>
+        private PanelContent BuildSlowestPanel(int width, bool ansi)
+        {
+            if (_slowest.Count == 0) return null;
+            var panel = new PanelContent { Title = "Slowest so far" };
+            int shown = Math.Max(1, Math.Min(_slowest.Count, 1 + _paceExtra));
+            int listed = 0;
+            foreach (var s in _slowest)
+            {
+                if (listed >= shown) break;
+                listed++;
+                string time = Short(s.Duration).PadLeft(7);
+                var left = Truncate(new LineBuilder(ansi).Add((s.Id ?? string.Empty).PadRight(16) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
+                string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
+                panel.Lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
             }
             return panel;
         }
 
         /// <summary>
-        /// The graph of the Pace panel: one bar for each test that ran, in the order they ran, as tall as the
+        /// The Pace graph: one bar for each test that ran, in the order they ran, as tall as the
         /// test took. It fills from the left with every test that finishes, a quick one a low green bar; once
         /// it is full it shows the latest tests, the newest at the right edge, and moves left as tests finish.
         /// The height is on a logarithmic scale (a test of 34 seconds would otherwise flatten the other 280)

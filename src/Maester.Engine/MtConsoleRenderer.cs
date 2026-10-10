@@ -800,8 +800,8 @@ namespace Maester.Engine
             bool tests = _running || _total > 0;
             bool info = _info != null;
 
-            // Phases and overall progress.
-            var body = new List<Line>();
+            // The phases of the run, on one line.
+            Line phases = null;
             if (_phases.Count > 0)
             {
                 var strip = new LineBuilder(ansi).Add(" ");
@@ -813,7 +813,15 @@ namespace Maester.Engine
                     else strip.Add(Unicode ? "○" : "o", "2").Add(" " + p.Name, "2");
                     if (i < _phases.Count - 1) strip.Add(Unicode ? "  ─  " : "  -  ", "2");
                 }
-                body.Add(Truncate(strip.Build(), max, ansi));
+                phases = Truncate(strip.Build(), max, ansi);
+            }
+
+            // Before the tests start the phases have a line under the banner. Once they run, the phases are in
+            // the header line and the overall progress is here.
+            var body = new List<Line>();
+            if (!tests && phases != null)
+            {
+                body.Add(phases);
                 body.Add(blank());
             }
             if (tests)
@@ -847,11 +855,16 @@ namespace Maester.Engine
                 tail.Add(new LineBuilder(ansi).Add(" " + Spinner() + " ", "36").Add(_status + Ellipsis()).Build());
             }
 
-            // Header: the banner when it fits next to everything else, else one line.
+            // Header. While the run prepares: the banner, when it fits next to everything else. Once the tests
+            // start the banner makes room for them: one line with the name, the version and the phases.
             var header = new List<Line>();
             int lanesWanted = tests ? _lanes.Count : 0;
-            int needed = body.Count + tail.Count + 2 + (info ? 1 : 0) + (lanesWanted > 0 ? Math.Min(lanesWanted, 4) + 1 : 0);
-            if (_header != null && max >= _headerWidth && rows >= _header.Length + needed)
+            int needed = body.Count + tail.Count + 2 + (info ? 1 : 0);
+            if (tests)
+            {
+                header.AddRange(BuildRunHeader(max, phases, ansi));
+            }
+            else if (_header != null && max >= _headerWidth && rows >= _header.Length + needed)
             {
                 for (int i = 0; i < _header.Length; i++)
                 {
@@ -920,14 +933,25 @@ namespace Maester.Engine
                 lanes.Add(blank());
             }
 
-            // The results chart takes rows that are still free under the lanes.
-            var chart = tests ? BuildResultsChart(max, rows - header.Count - body.Count - lanes.Count - tail.Count - 1, ansi) : new List<Line>();
+            // Under the lanes: the Pace graph, when there are rows for it next to the result blocks and a few of
+            // the tests that ran (two to five rows of graph, and the line that says what it shows).
+            int free = rows - header.Count - body.Count - lanes.Count - tail.Count - 1;
+            var pace = new List<Line>();
+            if (tests && PanelShown(PacePanel) && free >= 10)
+            {
+                pace = BuildPaceSection(max, Math.Max(PaceGraphLeast, Math.Min(PaceGraphMost, free - 8)), ansi);
+                pace.Add(blank());
+            }
+
+            // The results chart takes rows that are still free.
+            var chart = tests ? BuildResultsChart(max, free - pace.Count, ansi) : new List<Line>();
             if (chart.Count > 0) chart.Add(blank());
 
             var screen = new List<Line>();
             screen.AddRange(header);
             screen.AddRange(body);
             screen.AddRange(lanes);
+            screen.AddRange(pace);
             screen.AddRange(chart);
             screen.AddRange(tail);
             // The rows that are left under the running tests list the tests that ran before them.
@@ -939,6 +963,58 @@ namespace Maester.Engine
                 if (pane.Count > 0) return Beside(screen, pane, mainWidth, rows);
             }
             return screen;
+        }
+
+        /// <summary>
+        /// The header while tests run: the name in the colours of the wordmark, the version, a newer version
+        /// when there is one, and the phases at the right of the same line (on a line of their own when they do
+        /// not fit next to the name).
+        /// </summary>
+        private List<Line> BuildRunHeader(int max, Line phases, bool ansi)
+        {
+            var lines = new List<Line>();
+            LineBuilder b = null;
+            if (!string.IsNullOrEmpty(_taglineVersion))
+            {
+                b = new LineBuilder(ansi).Add(" ");
+                const string name = "MAESTER";
+                for (int i = 0; i < name.Length; i++) b.Add(name[i].ToString(), WordmarkColour(i, name.Length));
+                b.Add(" " + _taglineVersion, "2");
+                if (!string.IsNullOrEmpty(_updateLabel))
+                {
+                    b.Add(Unicode ? " · " : " - ", "2").AddLink((Unicode ? "↑ " : "^ ") + _updateLabel, _updateUrl, "1;38;5;215");
+                }
+            }
+            else if (_compactHeader != null)
+            {
+                b = new LineBuilder(ansi).Add(" " + _compactHeader, "1");
+            }
+            if (b == null)
+            {
+                if (phases != null) lines.Add(phases);
+                return lines;
+            }
+            var name0 = Truncate(b.Build(), max, ansi);
+            if (phases != null && name0.Plain.Length + 2 + phases.Plain.Length <= max)
+            {
+                string gap = new string(' ', max - name0.Plain.Length - phases.Plain.Length);
+                lines.Add(new Line { Text = name0.Text + gap + phases.Text, Plain = name0.Plain + gap + phases.Plain });
+                return lines;
+            }
+            lines.Add(name0);
+            if (phases != null) lines.Add(phases);
+            return lines;
+        }
+
+        /// <summary>The colour of a letter of the name: the gradient of the wordmark, Maester red to amber.</summary>
+        private string WordmarkColour(int index, int count)
+        {
+            if (!TrueColor) return "1;38;5;208";
+            double t = count > 1 ? (double)index / (count - 1) * (BarStops.Length - 1) : 0;
+            int segment = Math.Min((int)t, BarStops.Length - 2);
+            var rgb = new int[3];
+            for (int i = 0; i < 3; i++) rgb[i] = (int)(BarStops[segment][i] + (BarStops[segment + 1][i] - BarStops[segment][i]) * (t - segment));
+            return "1;38;2;" + N(rgb[0]) + ";" + N(rgb[1]) + ";" + N(rgb[2]);
         }
 
         private static string Fit(string s, int width)

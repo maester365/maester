@@ -254,6 +254,41 @@ Describe 'MtConsoleRenderer dashboard' {
         $t.Renderer.Close()
     }
 
+    It 'Shows the banner while the run prepares, and one line with the phases once the tests start' {
+        $t = New-TestDashboard -Height 40
+        $t.Renderer.Open()
+        $t.Renderer.StartPhase('Prepare')
+        $t.Renderer.ShowStatus('Reading the tenant context')
+        $before = $t.Renderer.GetPlainScreen(100, 40)
+        $before[0..2] | Should -Be @('BANNER 1', 'BANNER 2', 'BANNER 3')
+        ($before -join "`n") | Should -Match '\n ● Prepare [\d.]+ s  ─  ○ Run tests'
+        $t.Renderer.StartPhase('Run tests')
+        $t.Renderer.Start(10)
+        $after = $t.Renderer.GetPlainScreen(100, 40)
+        ($after -join "`n") | Should -Not -Match 'BANNER'
+        $after[0] | Should -Match '^ Maester v3 {2,}✓ Prepare [\d.]+ s  ─  ● Run tests [\d.]+ s  ─  ○ Results  ─  ○ Reports$'
+        $after[0].Length | Should -Be 99
+        # It stays one line for the rest of the run.
+        1..10 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
+        $t.Renderer.Stop()
+        $t.Renderer.StartPhase('Results')
+        ($t.Renderer.GetPlainScreen(100, 40) -join "`n") | Should -Not -Match 'BANNER'
+        $t.Renderer.Close()
+    }
+
+    It 'Writes the name in the colours of the wordmark in the one-line header' {
+        $t = New-TestDashboard -Height 40
+        $t.Renderer.TrueColor = $true
+        $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 44, 'v3.0.0', 'maester.dev', 'https://maester.dev')
+        $t.Renderer.Open()
+        $t.Renderer.Start(10)
+        $t.Renderer.GetPlainScreen(100, 40)[0] | Should -Match '^ MAESTER v3\.0\.0 {2,}○ Prepare'
+        $out = $t.Writer.ToString()
+        $out | Should -Match ([regex]::Escape("$esc[1;38;2;229;36;59mM"))
+        $out | Should -Match ([regex]::Escape("$esc[1;38;2;255;181;71mR"))
+        $t.Renderer.Close()
+    }
+
     It 'Uses the one-line header and hides lanes when the console is short, and never draws more rows than it has' {
         $t = New-TestDashboard -Height 16
         $t.Renderer.Open()
@@ -262,7 +297,8 @@ Describe 'MtConsoleRenderer dashboard' {
         $t.Renderer.ItemStarting('P.1', 'Running one', 'Product 7')
         $screen = $t.Renderer.GetPlainScreen(100, 16)
         $screen.Count | Should -BeLessThan 16
-        $screen[0] | Should -Be ' Maester v3'
+        # One line: the name, and the phases at its right.
+        $screen[0] | Should -Match '^ Maester v3 {2,}○ Prepare  ─  ○ Run tests  ─  ○ Results  ─  ○ Reports$'
         ($screen -join "`n") | Should -Not -Match 'BANNER'
         ($screen -join "`n") | Should -Match 'Product 7'
         ($screen -join "`n") | Should -Match 'and \d+ more'
@@ -414,7 +450,7 @@ Describe 'MtConsoleRenderer panels' {
     }
 
     It 'Fills a console that is wider and taller than the standard layout' {
-        $t = New-TestPanelDashboard -Width 200 -Panels 'Failed', 'Pace', 'Results'
+        $t = New-TestPanelDashboard -Width 200 -Panels 'Failed', 'Slowest', 'Results'
         $t.Renderer.Start(700)
         1..40 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
         $screen = $t.Renderer.GetPlainScreen(200, 50)
@@ -426,18 +462,18 @@ Describe 'MtConsoleRenderer panels' {
         # One square per test: 700 squares over more rows than the standard six would hold.
         ([regex]::Matches(($screen -join ''), '▇▇|░░')).Count | Should -Be 700
         ($screen -join "`n") | Should -Not -Match 'each square is'
-        # The Pace panel fills the rows that are free with more of the slowest tests (twenty at most).
+        # The Slowest panel fills the rows that are free with more tests (twenty at most).
         @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 20
         $t.Renderer.Close()
 
         # It gives the rows back when another panel needs them: every panel is still there, and the column is full.
-        $t = New-TestPanelDashboard -Width 200 -Panels 'Tenant', 'Failed', 'Pace', 'Tips'
+        $t = New-TestPanelDashboard -Width 200 -Panels 'Tenant', 'Failed', 'Slowest', 'Tips'
         $t.Renderer.SetPanelText('Tenant', 'Tenant', @('One', 'Two', 'Three'))
         $t.Renderer.SetTips(@('A tip'))
         $t.Renderer.Start(700)
         1..40 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
         $short = $t.Renderer.GetPlainScreen(200, 30)
-        @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Pace|Tip) ' }).Count | Should -Be 4
+        @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count | Should -Be 4
         $slow = @($short | Where-Object { $_ -match '│ W\.\d+ ' }).Count
         $slow | Should -BeGreaterThan 3
         $slow | Should -BeLessThan 20
@@ -618,50 +654,29 @@ Describe 'MtConsoleRenderer panels' {
         $none.Renderer.Close()
     }
 
-    It 'Keeps every panel in a short column: the Pace panel shrinks to a small graph and one test' {
-        $t = New-TestPanelDashboard -Panels 'Tenant', 'Failed', 'Pace', 'Tips'
+    It 'Keeps every panel in a short column: the Slowest panel shrinks to one test' {
+        $t = New-TestPanelDashboard -Panels 'Tenant', 'Failed', 'Slowest', 'Tips'
         $t.Renderer.SetPanelText('Tenant', 'Tenant', @('One', 'Two', 'Three'))
         $t.Renderer.SetTips(@('A tip'))
         $t.Renderer.Start(50)
         1..12 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
-        # The lines inside the Pace box of a screen of this height.
-        $pace = {
+        $count = {
             param($height)
-            $screen = @($t.Renderer.GetPlainScreen(160, $height) | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
-            $top = [array]::IndexOf($screen, ($screen | Where-Object { $_ -match '^╭─ Pace ' }))
-            $lines = [System.Collections.Generic.List[string]]::new()
-            for ($i = $top + 1; $screen[$i] -notmatch '^╰'; $i++) { $lines.Add($screen[$i]) }
+            $screen = $t.Renderer.GetPlainScreen(160, $height)
             [pscustomobject]@{
-                Panels  = @($screen | Where-Object { $_ -match '^╭─ (Tenant|Failed so far|Pace|Tip) ' }).Count
-                Graph   = @($lines | Where-Object { $_ -match '^│ [ ▁▂▃▄▅▆▇█]+ │$' }).Count
-                Tests   = @($lines | Where-Object { $_ -match '^│ W\.\d+ ' }).Count
-                Caption = [bool]($lines -match 'each bar is')
-                Heading = [bool]($lines -match 'Slowest so far')
+                Panels = @($screen | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count
+                Tests  = @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count
             }
         }
-        # 19 rows hold the four panels with the Pace panel at its smallest: two rows of graph and one test.
-        $least = & $pace 20
-        $least.Panels | Should -Be 4
-        $least.Graph | Should -Be 2
-        $least.Tests | Should -Be 1
-        $least.Caption | Should -BeFalse
-        $least.Heading | Should -BeFalse
-        # The rows that are left over go to the graph first, five rows at most,
-        (& $pace 23).Graph | Should -Be 5
-        (& $pace 23).Caption | Should -BeFalse
-        # then to the line that says what the bars are,
-        (& $pace 24).Caption | Should -BeTrue
-        (& $pace 24).Heading | Should -BeFalse
-        # then to a heading and more of the slowest tests.
-        $roomy = & $pace 26
-        $roomy.Graph | Should -Be 5
-        $roomy.Heading | Should -BeTrue
-        $roomy.Tests | Should -Be 2
-        # One row short of the smallest: the other panels take less, and the four are still there.
-        $tight = & $pace 19
-        $tight.Panels | Should -Be 4
-        $tight.Tests | Should -Be 1
-        $tight.Graph | Should -BeGreaterOrEqual 1
+        # 17 rows hold the four panels with the Slowest panel at its smallest: one test.
+        (& $count 18).Panels | Should -Be 4
+        (& $count 18).Tests | Should -Be 1
+        # Each row that is left over goes to one more test.
+        (& $count 19).Tests | Should -Be 2
+        (& $count 22).Tests | Should -Be 5
+        # One row short: the other panels take less, and the four are still there.
+        (& $count 17).Panels | Should -Be 4
+        (& $count 17).Tests | Should -BeGreaterOrEqual 1
         $t.Renderer.Close()
     }
 
@@ -711,7 +726,8 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard -Panels 'Tips'
         $t.Renderer.SetHeader(@('top', 'FLAME  old tagline', 'bottom'), 30, 'Maester v3.0.0')
         $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 44, 'v3.0.0', 'maester.dev', 'https://maester.dev')
-        $t.Renderer.Start(1)
+        # While the run prepares, the banner is on screen.
+        $t.Renderer.ShowStatus('Reading the tenant context')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
         $screen[1] | Should -Match ('^FLAME  ' + (' ' * 24) + 'v3\.0\.0 · maester\.dev\b')
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\"))
@@ -722,6 +738,9 @@ Describe 'MtConsoleRenderer panels' {
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;38;5;215m$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\↑ v3.1.0 available$esc]8;;$esc\"))
         # There is no Version panel.
         ($screen -join "`n") | Should -Not -Match '╭─ Version'
+        # Once the tests start, the one line that replaces the banner mentions it too.
+        $t.Renderer.Start(1)
+        $t.Renderer.GetPlainScreen(160, 44)[0] | Should -Be ' MAESTER v3.0.0 · ↑ v3.1.0 available'
         $t.Renderer.Close()
     }
 
@@ -750,11 +769,12 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.SetHeader(@('top', 'FLAME  old tagline', 'bottom'), 30, 'Maester v3.0.0')
         $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 44, 'v3.0.0', 'maester.dev', 'https://maester.dev')
         $t.Renderer.SetStatusBar(@('maester.dev', 'Contributors', 'Our Manifesto', '♥ Sponsor'), @('https://maester.dev', 'https://maester.dev/contributors', 'https://maester.cloud/manifesto', 'https://github.com/maester365/maester?sponsor=1'))
-        $t.Renderer.Start(1)
+        $t.Renderer.ShowStatus('Reading the tenant context')
         $screen = $t.Renderer.GetPlainScreen(160, 30)
         $screen.Count | Should -Be 30
         $screen[29] | Should -Be (' maester.dev  Contributors │ Our Manifesto │ ♥ Sponsor ').PadRight(159)
         $screen[1] | Should -Match '^FLAME +v3\.0\.0$'
+        $t.Renderer.Start(1)
         $out = $t.Writer.ToString()
         # Without true colour: dark text on one orange, the name in bold, each label a hyperlink.
         $out | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\$esc[1;38;5;232;48;5;208m maester.dev $esc]8;;$esc\"))
@@ -854,8 +874,8 @@ Describe 'MtConsoleRenderer panels' {
         $other.Renderer.Close()
     }
 
-    It 'Graphs how long each test took, in run order, on a logarithmic scale' {
-        $t = New-TestPanelDashboard -Panels 'Pace'
+    It 'Graphs how long each test took in the main column, in run order, on a logarithmic scale' {
+        $t = New-TestPanelDashboard -Panels 'Pace', 'Slowest'
         $t.Renderer.TrueColor = $true
         $t.Renderer.Start(20)
         $n = 0
@@ -864,22 +884,27 @@ Describe 'MtConsoleRenderer panels' {
             $t.Renderer.ItemStarting("S.$n", "Test $n", $null)
             $t.Renderer.ItemFinished("S.$n", 'Passed', 'Low', $seconds)
         }
-        # A test that was skipped did not run: it has no bar.
+        # A test that was skipped did not run: it has no bar, and is not among the slowest.
         $t.Renderer.ItemFinished('K.1', 'Skipped', 'Low', 9)
-        $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
-        $box[0] | Should -Match '^╭─ Pace ─+ [\d.]+ tests/s ─╮$'
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        # The main column is the first 98 characters of a row; the panels are to its right.
+        $main = @($screen | ForEach-Object { $_.PadRight(98).Substring(0, 98).TrimEnd() })
+        $caption = [array]::IndexOf($main, ($main | Where-Object { $_ -match '^ how long each test took' }))
+        $main[$caption] | Should -Match '^ how long each test took, in run order +[\d.]+ tests/s · longest 0:34$'
         # Five rows, forty steps of height. The 34 seconds fill them; 3 seconds reach the fourth row,
         # 0.4 seconds the second, 50 milliseconds half of the first, and the fastest test still shows.
-        $box[1] | Should -Match '^│  █ +│$'
-        $box[2] | Should -Match '^│  █ ▁ +│$'
-        $box[3] | Should -Match '^│  █ █ +│$'
-        $box[4] | Should -Match '^│  █▅█ +│$'
-        $box[5] | Should -Match '^│ ▄███▁ +│$'
-        $box[6] | Should -Match '^│ each bar is a test, in run order +longest 0:34 │$'
-        $box[7] | Should -Match '^│ Slowest so far +│$'
-        $box[8] | Should -Match '^│ S\.2 +Test 2 +0:34 │$'
-        $box[9] | Should -Match '^│ S\.4 +Test 4 +3\.0 s │$'
-        # Each row has its colour: green at the bottom to red at the top.
+        $main[$caption - 5] | Should -Be '  █'
+        $main[$caption - 4] | Should -Be '  █ ▁'
+        $main[$caption - 3] | Should -Be '  █ █'
+        $main[$caption - 2] | Should -Be '  █▅█'
+        $main[$caption - 1] | Should -Be ' ▄███▁'
+        # The slowest tests have their panel in the right column.
+        $box = @($screen | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box[0] | Should -Match '^╭─ Slowest so far ─+╮$'
+        $box[1] | Should -Match '^│ S\.2 +Test 2 +0:34 │$'
+        $box[2] | Should -Match '^│ S\.4 +Test 4 +3\.0 s │$'
+        ($box -join "`n") | Should -Not -Match 'K\.1'
+        # Each row of the graph has its colour: green at the bottom to red at the top.
         $out = $t.Writer.ToString()
         $out | Should -Match ([regex]::Escape("$esc[38;2;63;182;139m▄███▁"))
         $out | Should -Match ([regex]::Escape("$esc[38;2;224;108;117m █"))
@@ -889,21 +914,32 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Leaves the graph out when the console is too short for it' {
+        $t = New-TestPanelDashboard -Panels 'Pace', 'Results'
+        $t.Renderer.Start(20)
+        $t.Renderer.ItemFinished('S.1', 'Passed', 'Low', 1)
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match 'how long each test took'
+        $short = $t.Renderer.GetPlainScreen(160, 12) -join "`n"
+        $short | Should -Not -Match 'how long each test took'
+        $short | Should -Match '[■▇]'
+        $t.Renderer.Close()
+    }
+
     It 'Shows the latest tests, the newest on the right, when more tests ran than there are columns' {
-        $t = New-TestPanelDashboard -Panels 'Pace'
+        $t = New-TestPanelDashboard -Width 100 -Panels 'Pace'
         $t.Renderer.Start(200)
-        # 54 columns. Before they are full the bars fill from the left, one to a test.
+        # 98 columns. Before they are full the bars fill from the left, one to a test.
         1..6 | ForEach-Object { $t.Renderer.ItemFinished("B.$_", 'Passed', 'Low', 30) }
         1..40 | ForEach-Object { $t.Renderer.ItemFinished("Q.$_", 'Passed', 'Low', 0) }
-        $part = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $part | Should -Match ('│ ' + ('█' * 6) + ('▁' * 40) + ' {8} │\n[^\n]*│ each bar is a test, in run order +longest 0:30 │')
-        # Twenty more: the six slow tests of the start have moved out at the left, and the scale is still theirs.
-        1..20 | ForEach-Object { $t.Renderer.ItemFinished("R.$_", 'Passed', 'Low', 0) }
-        $full = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $full | Should -Match ('│ ' + ('▁' * 54) + ' │\n[^\n]*│ the last 54 tests, newest on the right +longest 0:30 │')
+        $part = $t.Renderer.GetPlainScreen(100, 44) -join "`n"
+        $part | Should -Match ('\n ' + ('█' * 6) + ('▁' * 40) + ' *\n how long each test took, in run order +[\d.]+ tests/s · longest 0:30\n')
+        # Sixty more: the six slow tests of the start have moved out at the left, and the scale is still theirs.
+        1..60 | ForEach-Object { $t.Renderer.ItemFinished("R.$_", 'Passed', 'Low', 0) }
+        $full = $t.Renderer.GetPlainScreen(100, 44) -join "`n"
+        $full | Should -Match ('\n ' + ('▁' * 98) + '\n how long the last 98 tests took, newest on the right +[\d.]+ tests/s · longest 0:30\n')
         # A slow test comes in at the right edge.
         $t.Renderer.ItemFinished('S.1', 'Passed', 'Low', 30)
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match ('│ ' + ('▁' * 53) + '█ │\n')
+        ($t.Renderer.GetPlainScreen(100, 44) -join "`n") | Should -Match ('\n ' + ('▁' * 97) + '█\n')
         $t.Renderer.Close()
     }
 

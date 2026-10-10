@@ -117,24 +117,24 @@ function Initialize-MtDashboard {
 
     .DESCRIPTION
     The panels and their order come from Output.DashboardPanels in the run config; the default is all of
-    them. Results is the chart under the lanes; the others stack in a column on the right when the console
-    is wide enough (about 140 columns). Every panel is shown when the column has the rows for it; the Pace
-    panel takes what is left over.
+    them. Pace and Results are in the main column, under the lanes; the others stack in a column on the
+    right when the console is wide enough (about 140 columns). Every panel is shown when the column has the
+    rows for it; the Slowest panel takes what is left over.
 
       Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
       Totals       the results so far: a bar split by result, and the count of each
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Failed       failed tests by severity
       Drift        changes against the newest earlier results file in the output folder, for the same tenant
-      Pace         tests per second, a graph of how long each test took, and the slowest tests; it takes the
-                   rows that are left over for a taller graph and more tests
+      Slowest      the tests that took the longest: one at least, more in the rows that are left over
       Contributor  one of the people who built Maester, a different one every minute, from
                    assets/ConsoleContributors.json (written by build/Update-ConsoleContributors.ps1)
       Blog         the newest post on maester.dev (one web request, cached for a day)
       Version      not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
                    (one web request)
       Tips         a tip from assets/ConsoleTips.txt
-      Results      one square per test
+      Pace         a graph of how long each test took, with the tests per second, in the main column
+      Results      one block per test, in the main column
 
     Blog and Version are the only ones that use the network. They run on background threads, only when the
     dashboard is wide enough to show them, and never with -SkipVersionCheck.
@@ -149,7 +149,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Drift', 'Pace', 'Contributor', 'Blog', 'Version', 'Tips', 'Results'
+    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Drift', 'Slowest', 'Contributor', 'Blog', 'Version', 'Tips', 'Pace', 'Results'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
     if ($output -and $output.PSObject.Properties['DashboardPanels']) {
