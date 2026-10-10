@@ -585,6 +585,11 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.GetPlainScreen(60, 30)[29] | Should -Be (' maester.dev  Docs ' + (' ' * 22) + ' Issues │ Sponsor ')
         $t.Renderer.GetPlainScreen(32, 30)[29] | Should -Be (' maester.dev  Docs ' + (' ' * 3) + ' Sponsor ')
         $t.Renderer.GetPlainScreen(24, 30)[29] | Should -Be (' maester.dev  Docs ').PadRight(23)
+
+        # A hint sits in the middle of the room between the groups, and is left out when it does not fit.
+        $t.Renderer.SetStatusBarHint('click me')
+        $t.Renderer.GetPlainScreen(60, 30)[29] | Should -Be (' maester.dev  Docs ' + (' ' * 7) + 'click me' + (' ' * 7) + ' Issues │ Sponsor ')
+        $t.Renderer.GetPlainScreen(48, 30)[29] | Should -Be (' maester.dev  Docs ' + (' ' * 10) + ' Issues │ Sponsor ')
         $t.Renderer.Close()
     }
 

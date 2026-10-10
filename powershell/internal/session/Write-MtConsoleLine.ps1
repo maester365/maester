@@ -184,6 +184,9 @@ function Initialize-MtDashboard {
         "${heart}Sponsor"       = 'https://github.com/maester365/maester?sponsor=1'
     }
     $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 4)
+    # Terminals open a hyperlink on a click with a modifier key: say which.
+    $modifier = if (-not $IsMacOS) { 'Ctrl' } elseif ($Console -and $Console.Unicode) { [string][char]0x2318 } else { 'Cmd' }
+    $Renderer.SetStatusBarHint("$modifier-click to open")
 
     $Renderer.Open()
     if (-not $Renderer.IsFullScreen) { return }

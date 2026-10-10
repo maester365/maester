@@ -79,6 +79,7 @@ namespace Maester.Engine
         private readonly List<string> _barLabels = new List<string>();
         private readonly List<string> _barLinks = new List<string>();
         private int _barRight;
+        private string _barHint;
         private const int RecentKept = 100;
         private readonly Dictionary<string, string> _finished = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _newlyFailing = new List<string>();
@@ -196,6 +197,19 @@ namespace Maester.Engine
         }
 
         /// <summary>
+        /// A hint in the middle of the status bar, between its two groups ("⌘-click to open"). It is left out when
+        /// there is no room for it. Null for none.
+        /// </summary>
+        public void SetStatusBarHint(string hint)
+        {
+            lock (_gate)
+            {
+                _barHint = hint;
+                Redraw();
+            }
+        }
+
+        /// <summary>
         /// The status bar: the labels of the left group from the left edge and those of the right group up to the
         /// right edge, with the background between them. In a window that is too narrow for all of them the right
         /// group goes first, from its left, and then the left group from its right.
@@ -226,7 +240,17 @@ namespace Maester.Engine
             var plain = new StringBuilder();
             var owner = new List<int>();
             for (int n = 0; n < left.Count; n++) AppendBarSegment(plain, owner, left[n], n > 1);
-            plain.Append(' ', max - used);
+            // Between the groups: the hint in the middle, when it fits with two columns on each side.
+            int gap = max - used;
+            if (!string.IsNullOrEmpty(_barHint) && _barHint.Length + 4 <= gap)
+            {
+                int before = (gap - _barHint.Length) / 2;
+                plain.Append(' ', before).Append(_barHint).Append(' ', gap - before - _barHint.Length);
+            }
+            else
+            {
+                plain.Append(' ', gap);
+            }
             while (owner.Count < plain.Length) owner.Add(-1);
             for (int n = 0; n < right.Count; n++) AppendBarSegment(plain, owner, right[n], n > 0);
             if (!ansi) return new Line { Text = plain.ToString(), Plain = plain.ToString() };

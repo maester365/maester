@@ -393,7 +393,7 @@ Describe 'Dashboard panels' {
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
         $screen = $renderer.GetPlainScreen(160, 44)
         # Four at the left, four at the right edge, and the bar spans the window.
-        $screen[-1] | Should -Match '^ maester\.dev  Docs │ Contributors │ Our Manifesto  +Star on GitHub │ Discord │ Issues │ ♥ Sponsor $'
+        $screen[-1] | Should -Match '^ maester\.dev  Docs │ Contributors │ Our Manifesto  +(⌘|Ctrl)-click to open  +Star on GitHub │ Discord │ Issues │ ♥ Sponsor $'
         $screen[-1].Length | Should -Be 159
         $renderer.Close()
     }
