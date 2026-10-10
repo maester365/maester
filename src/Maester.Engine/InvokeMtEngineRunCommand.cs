@@ -131,6 +131,10 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
         private volatile PowerShell _currentMain;
         private int _finishedCount;
         private int _abandoned;
+        // The pipelines of abandoned runspaces: each task ends when its blocking call returns and it is disposed.
+        private readonly ConcurrentBag<Task> _abandonedTasks = new ConcurrentBag<Task>();
+        // How long to wait for the pool to close when no runspace is stuck. It closes in milliseconds then.
+        private const int ClosePoolWaitMs = 30000;
         private MtRunSummary _summary;
 
         public InvokeMtEngineRunCommand()
@@ -167,6 +171,8 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
             }
 
             Task dispatcher = null;
+            bool faulted = false;
+            var notRun = new List<MtRunResult>();
             try
             {
                 if (poolItems.Count > 0)
@@ -203,12 +209,21 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
                 foreach (var kv in _inFlight) { BestEffort(() => kv.Value.BeginStop(null, null)); }
                 throw;
             }
+            catch (Exception)
+            {
+                // A callback or the host threw. Stop what the pool is running instead of waiting for every
+                // remaining test before the caller sees the error.
+                faulted = true;
+                _cts.Cancel();
+                foreach (var kv in _inFlight) { BestEffort(() => kv.Value.BeginStop(null, null)); }
+                throw;
+            }
             finally
             {
                 if (_cts.IsCancellationRequested)
                 {
                     // After a stop request every Write* throws, so only collect from here on.
-                    _summary.StopRequested = true;
+                    if (!faulted) _summary.StopRequested = true;
                     if (dispatcher != null) dispatcher.Wait(TimeSpan.FromMilliseconds(StopGraceMs + 1000));
                     EngineEvent ev;
                     while (_events.TryTake(out ev, 50))
@@ -221,20 +236,21 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
                     dispatcher.Wait();
                 }
                 ClosePool();
+                // Items that never started still get a result, so the caller always receives one per item. They
+                // are counted here, before the summary: after a stop the first WriteObject below throws.
+                foreach (var i in _items)
+                {
+                    if (!_results.ContainsKey(i))
+                    {
+                        var nr = new MtRunResult(i) { Status = MtRunStatus.NotRun, Reason = "The run was stopped before this test started." };
+                        _results[i] = nr;
+                        notRun.Add(nr);
+                    }
+                }
                 Summarise(wall.Elapsed);
             }
 
-            // Items that never started still get a result, so the caller always receives one per item.
-            foreach (var i in _items)
-            {
-                if (!_results.ContainsKey(i))
-                {
-                    var nr = new MtRunResult(i) { Status = MtRunStatus.NotRun, Reason = "The run was stopped before this test started." };
-                    _results[i] = nr;
-                    _summary.NotRun++;
-                    WriteObject(nr);
-                }
-            }
+            foreach (var nr in notRun) WriteObject(nr);
         }
 
         /// <summary>Called on Ctrl+C, on a thread that is not the pipeline thread.</summary>
@@ -398,15 +414,27 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
             if (_pool == null) return;
             var pool = _pool;
             _pool = null;
-            // Close() waits for every runspace to stop. A runspace stuck in a blocking .NET call cannot be
-            // interrupted on .NET Core, so the wait is bounded and the runspace is abandoned otherwise.
-            // Dispose runs even if Close throws: it stops the pool's idle-cleanup timer, which must not outlive the pool.
-            var closeTask = Task.Run(() =>
+            var abandoned = _abandonedTasks.ToArray();
+            if (abandoned.Length > 0)
             {
-                try { BestEffort(() => pool.Close()); }
-                finally { BestEffort(() => pool.Dispose()); }
-            });
-            closeTask.Wait(TimeSpan.FromMilliseconds(StopGraceMs));
+                // A runspace is still inside a blocking .NET call, which nothing on .NET Core can interrupt.
+                // Close() would block until that call returns, and closing the pool while the stuck pipeline
+                // hands its runspace back is where PowerShell can fail. So close only once every abandoned
+                // pipeline has ended and been disposed. The continuation keeps the pool alive until then.
+                Task.WhenAll(abandoned).ContinueWith(_ => CloseAndDispose(pool));
+                return;
+            }
+            // Nothing is running, so Close() returns at once. Wait for it: a pool that is still closing when
+            // the cmdlet returns can be torn down by the process exit.
+            var closeTask = Task.Run(() => CloseAndDispose(pool));
+            closeTask.Wait(TimeSpan.FromMilliseconds(Math.Max(StopGraceMs, ClosePoolWaitMs)));
+        }
+
+        /// <summary>Dispose runs even if Close throws: it stops the pool's idle-cleanup timer, which must not outlive the pool.</summary>
+        private static void CloseAndDispose(RunspacePool pool)
+        {
+            try { BestEffort(() => pool.Close()); }
+            finally { BestEffort(() => pool.Dispose()); }
         }
 
         private void Dispatch(List<MtWorkItem> items, CancellationToken ct)
@@ -501,7 +529,7 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters $__mtQuietPr
                         Interlocked.Increment(ref _abandoned);
                         BestEffort(() => _pool.SetMaxRunspaces(_pool.GetMaxRunspaces() + 1));
                         var psCopy = ps;
-                        var ignored = invokeTask.ContinueWith(_ => BestEffort(() => psCopy.Dispose()));
+                        _abandonedTasks.Add(invokeTask.ContinueWith(_ => BestEffort(() => psCopy.Dispose())));
                     }
                 }
             }

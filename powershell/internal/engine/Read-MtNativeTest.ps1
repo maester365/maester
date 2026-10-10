@@ -180,7 +180,8 @@ function Read-MtNativeTest {
     $test.Service = @($services | Select-Object -Unique)
     $test.UnregisteredServices = $unregistered.ToArray()
 
-    if ($BuiltIn -and $test.Product -and $test.Product -notin $schema.Products) {
+    # Exact spelling and case: the product groups the console progress and the run summary.
+    if ($BuiltIn -and $test.Product -and $test.Product -cnotin $schema.Products) {
         & $addError 'InvalidMetadata' "Product '$($test.Product)' is not one of the products of the tests shipped with Maester ($($schema.Products -join ', '))." $attribute.Extent.StartLineNumber
     }
 

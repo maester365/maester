@@ -35,6 +35,14 @@ function Resolve-MtNativePlan {
     }
     $execution = if ($RunConfig.PSObject.Properties['Execution']) { $RunConfig.Execution } else { $null }
     $registry = Get-MtServiceRegistry
+    # Allow-list mode needs the rows that enable a test. Read them once, not once per test: a config copied
+    # from 2.x has hundreds of rows.
+    $allowListIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    if ($Selection.DefaultAction -eq 'Skip') {
+        foreach ($ts in @($RunConfig.TestSettings)) {
+            if ($ts -and $ts.Id -and $ts.PSObject.Properties['Enabled'] -and $ts.Enabled -eq $true) { $null = $allowListIds.Add([string]$ts.Id) }
+        }
+    }
 
     foreach ($t in $Test) {
         $row = [ordered]@{
@@ -65,12 +73,12 @@ function Resolve-MtNativePlan {
         $row.Setting = $setting
 
         # Config admission.
-        $enabledRows = @(@($RunConfig.TestSettings) | Where-Object { $_ -and $_.PSObject.Properties['Enabled'] -and ($_.Id -eq $t.Id -or ($isFamily -and $_.Id -like "$($t.Id).*")) })
         if ($setting -and $setting.PSObject.Properties['Enabled'] -and $setting.Enabled -eq $false) {
             & $set 'NotRun' 'DisabledByConfig' $(if ($setting.PSObject.Properties['Reason'] -and $setting.Reason) { [string]$setting.Reason } else { 'Disabled in the Maester config.' })
             [pscustomobject]$row; continue
         }
-        if ($Selection.DefaultAction -eq 'Skip' -and -not ($enabledRows | Where-Object { $_.Enabled -eq $true })) {
+        # A family is also admitted by a row for one of its instances.
+        if ($Selection.DefaultAction -eq 'Skip' -and -not ($allowListIds.Contains([string]$t.Id) -or ($isFamily -and ($allowListIds | Where-Object { $_ -like "$($t.Id).*" })))) {
             & $set 'NotRun' 'NotListed' 'Selection.DefaultAction is Skip and no TestSettings row enables this test.'
             [pscustomobject]$row; continue
         }

@@ -177,7 +177,8 @@ function New-MtNativeWorkItem {
     $item.Id = $Id
     $item.Command = $PlanRow.Test.FunctionName
     $item.Group = if ($PlanRow.Test.Product) { [string]$PlanRow.Test.Product } else { 'Other' }
-    $item.Title = if ($Instance -and $Instance.PSObject.Properties['Title'] -and $Instance.Title) { [string]$Instance.Title } else { [string]$PlanRow.Test.Title }
+    $instanceTitle = Get-MtInstanceValue -Instance $Instance -Name 'Title'
+    $item.Title = if ($instanceTitle) { [string]$instanceTitle } else { [string]$PlanRow.Test.Title }
     $item.Parameters = $Parameters
     $item.Module = $Module
     $item.Lane = 'Main'
@@ -185,6 +186,28 @@ function New-MtNativeWorkItem {
     if ($PlanRow.TimeoutSeconds -gt 0) { $item.TimeoutSeconds = $PlanRow.TimeoutSeconds }
     $item.Tag = @{ PlanRow = $PlanRow; Instance = $Instance }
     $item
+}
+
+function Get-MtInstanceValue {
+    <#
+    .SYNOPSIS
+    Reads an optional field (Title, Severity, Tag) of a family instance, which an instance source can return as
+    an object or as a hashtable. Returns $null when the instance does not have it.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter()] [AllowNull()] [object] $Instance,
+        [Parameter(Mandatory)] [string] $Name
+    )
+
+    if ($null -eq $Instance) { return $null }
+    if ($Instance -is [System.Collections.IDictionary]) {
+        if ($Instance.Contains($Name)) { return $Instance[$Name] }
+        return $null
+    }
+    $property = $Instance.PSObject.Properties[$Name]
+    if ($property) { return $property.Value }
+    $null
 }
 
 function Expand-MtTestFamily {
@@ -238,7 +261,8 @@ function Expand-MtTestFamily {
     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     foreach ($i in $instances) {
         $suffix = [string]$i.Id
-        if ($suffix -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$' -or -not $seen.Add($suffix)) {
+        # \z, not $: $ also matches before a final newline.
+        if ($suffix -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}\z' -or -not $seen.Add($suffix)) {
             return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Error' 'InvalidInstanceId' "The instance source returned an invalid or repeated instance ID '$suffix'.") }
         }
     }
@@ -327,20 +351,22 @@ function ConvertTo-MtNativeRow {
     # Title: the instance's, else the helper's -TestTitle for a family instance, else the attribute's.
     $title = $test.Title
     if ($isInstance) {
-        if ($Instance.PSObject.Properties['Title'] -and $Instance.Title) { $title = [string]$Instance.Title }
+        $instanceTitle = Get-MtInstanceValue -Instance $Instance -Name 'Title'
+        if ($instanceTitle) { $title = [string]$instanceTitle }
         elseif ($detail -and $detail.TestTitle) { $title = [string]$detail.TestTitle -replace "^$([regex]::Escape($id)):\s*", '' }
     }
 
     # Severity: config row (instance, then parent), the instance's, the attribute's, then the helper's.
     $setting = if ($__MtSession.MaesterConfig) { Get-MtTestSetting -RunConfig $__MtSession.MaesterConfig -Id $id -ParentId $(if ($isInstance) { $test.Id } else { $null }) } else { $null }
     $severity = if ($setting -and $setting.PSObject.Properties['Severity'] -and $setting.Severity) { [string]$setting.Severity }
-    elseif ($isInstance -and $Instance.PSObject.Properties['Severity'] -and $Instance.Severity) { [string]$Instance.Severity }
+    elseif ($isInstance -and (Get-MtInstanceValue -Instance $Instance -Name 'Severity')) { [string](Get-MtInstanceValue -Instance $Instance -Name 'Severity') }
     elseif ($test.Severity) { [string]$test.Severity }
     elseif ($detail -and $detail.Severity) { [string]$detail.Severity }
     else { '' }
 
     $tags = @($test.EffectiveTag)
-    if ($isInstance -and $Instance.PSObject.Properties['Tag'] -and $Instance.Tag) { $tags = @($tags + @($Instance.Tag) | Select-Object -Unique) }
+    $instanceTag = if ($isInstance) { Get-MtInstanceValue -Instance $Instance -Name 'Tag' } else { $null }
+    if ($instanceTag) { $tags = @($tags + @($instanceTag) | Select-Object -Unique) }
 
     $result = $PlanRow.Disposition
     $reasonCode = $PlanRow.ReasonCode

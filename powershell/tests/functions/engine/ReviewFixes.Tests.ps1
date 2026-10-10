@@ -165,6 +165,55 @@ Describe 'Engine review fixes' {
         }
     }
 
+    Context 'Family instances' {
+        BeforeAll {
+            function New-FamilyFile {
+                [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+                param([string] $Folder, [string] $Id, [string] $Source)
+                $null = New-Item -ItemType Directory -Path $Folder -Force
+                $name = $Id -replace '[^A-Za-z0-9]', ''
+                @"
+function Get-Instance$name {
+    [CmdletBinding()]
+    param()
+    $Source
+}
+
+function Test-Family$name {
+    [MaesterTest(Id = '$Id', Title = 'Attribute title', Severity = 'Low', Service = 'None', InstanceSource = 'Get-Instance$name')]
+    [CmdletBinding()]
+    param(
+        # The instance, supplied by the engine.
+        `$Instance
+    )
+    `$true
+}
+"@ | Set-Content (Join-Path $Folder "Test.$Id.ps1")
+                "Description of $Id.`n`n<!--- Results --->`n%TestResult%" | Set-Content (Join-Path $Folder "Test.$Id.md")
+                Join-Path $Folder "Test.$Id.ps1"
+            }
+        }
+
+        It 'Reads Title, Severity and Tag of an instance returned as a <Shape>' -ForEach @(
+            @{ Shape = 'hashtable'; Source = "@{ Id = 'a'; Title = 'Instance title'; Severity = 'Critical'; Tag = 'FromInstance' }" }
+            @{ Shape = 'object'; Source = "[pscustomobject]@{ Id = 'a'; Title = 'Instance title'; Severity = 'Critical'; Tag = 'FromInstance' }" }
+        ) {
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive "family-$Shape") -Id 'CONTOSO.50' -Source $Source
+            $row = Invoke-MtTest -Path $file
+            $row.Id | Should -Be 'CONTOSO.50.a'
+            $row.Title | Should -Be 'Instance title'
+            $row.Severity | Should -Be 'Critical'
+            $row.Tag | Should -Contain 'FromInstance'
+        }
+
+        It 'Rejects an instance ID that ends in a newline' {
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-newline') -Id 'CONTOSO.51' -Source '[pscustomobject]@{ Id = "c`n" }'
+            $row = Invoke-MtTest -Path $file
+            $row.Result | Should -Be 'Error'
+            $row.ReasonCode | Should -Be 'InvalidInstanceId'
+        }
+    }
+
     Context 'Metadata that cannot be read' {
         It 'Reports a parameter validation that is not a constant as one invalid test, also under ErrorActionPreference Stop' {
             $folder = Join-Path $TestDrive 'badrange'

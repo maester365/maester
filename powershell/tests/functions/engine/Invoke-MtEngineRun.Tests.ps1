@@ -251,3 +251,56 @@ Describe 'Invoke-MtEngineRun pool lane' {
         (Invoke-MtEngineRun -WorkItem $item -MaxParallel 2 -NoStreamReplay).Status | Should -Be 'Timeout'
     }
 }
+
+Describe 'Invoke-MtEngineRun stop and failure handling' {
+    It 'Counts the items that never started when the run is stopped' {
+        # The run is stopped from this thread while its first item sleeps, as Ctrl+C does.
+        $dll = (Resolve-Path "$PSScriptRoot/../../../lib/Maester.Engine.dll").Path
+        $ps = [powershell]::Create()
+        try {
+            $null = $ps.AddScript({
+                    param($Dll)
+                    Import-Module $Dll
+                    $items = 1..3 | ForEach-Object { [Maester.Engine.MtWorkItem]@{ Id = "STOP.$_"; Command = 'Start-Sleep'; Parameters = @{ Seconds = 30 } } }
+                    Invoke-MtEngineRun -WorkItem $items -NoStreamReplay
+                }).AddArgument($dll)
+            $before = [Maester.Engine.MtSession]::LastRun
+            $async = $ps.BeginInvoke()
+            # Wait until this run has begun (a new summary object), give its first item time to start, then stop.
+            foreach ($try in 1..400) {
+                $run = [Maester.Engine.MtSession]::LastRun
+                if ($run -and -not [object]::ReferenceEquals($run, $before) -and $run.Total -eq 3) { break }
+                Start-Sleep -Milliseconds 50
+            }
+            Start-Sleep -Milliseconds 500
+            $ps.Stop()
+            $null = $async.AsyncWaitHandle.WaitOne(15000)
+        } finally { $ps.Dispose() }
+
+        $summary = [Maester.Engine.MtSession]::LastRun
+        $summary.Total | Should -Be 3
+        $summary.StopRequested | Should -BeTrue
+        $summary.NotRun | Should -Be 2 -Because 'the two items after the stopped one never started'
+        ($summary.Completed + $summary.Cancelled + $summary.Error + $summary.Aborted + $summary.Timeout + $summary.Skipped + $summary.NotRun) | Should -Be 3
+    }
+
+    It 'Stops the pool when a callback throws instead of waiting for every running item' {
+        $items = 1..4 | ForEach-Object { [Maester.Engine.MtWorkItem]@{ Id = "FAIL.$_"; Command = 'Start-Sleep'; Parameters = @{ Seconds = 20 }; Lane = 'Pool' } }
+        $clock = [System.Diagnostics.Stopwatch]::StartNew()
+        { Invoke-MtEngineRun -WorkItem $items -MaxParallel 4 -NoStreamReplay -OnItemStarting { throw 'callback failed' } } | Should -Throw '*callback failed*'
+        $clock.Elapsed.TotalSeconds | Should -BeLessThan 12 -Because 'the items sleep for 20 seconds and are stopped when the callback fails'
+        [Maester.Engine.MtSession]::LastRun.StopRequested | Should -BeFalse -Because 'nobody asked for a stop'
+    }
+
+    It 'Returns at the deadline of a pool item that is stuck in a blocking call, and reports the abandoned runspace' {
+        # Thread.Sleep cannot be interrupted, unlike Start-Sleep: the runspace is abandoned and closed later.
+        $item = [Maester.Engine.MtWorkItem]@{ Id = 'STUCK.1'; Command = 'Invoke-Expression'; Parameters = @{ Command = '[System.Threading.Thread]::Sleep(6000)' }; Lane = 'Pool'; TimeoutSeconds = 1 }
+        $clock = [System.Diagnostics.Stopwatch]::StartNew()
+        $r = Invoke-MtEngineRun -WorkItem $item -MaxParallel 2 -NoStreamReplay
+        $clock.Elapsed.TotalSeconds | Should -BeLessThan 5 -Because 'the run does not wait for the blocking call to return'
+        $r.Status | Should -Be 'Timeout'
+        [Maester.Engine.MtSession]::LastRun.AbandonedRunspaces | Should -Be 1
+        # Let the blocking call return while the process is alive: the pool is closed then, in the background.
+        Start-Sleep -Seconds 6
+    }
+}

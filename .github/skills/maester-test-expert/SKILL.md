@@ -168,7 +168,7 @@ schema lives in `powershell/assets/MaesterTestSchema.psd1`.
 | `Contributor` | string[] | GitHub handles | No | Add yourself when you substantially change a check. |
 | `HelpUrl` | string | `https://...` | No | Defaults to `https://maester.dev/docs/tests/<Id>`. |
 
-Reserved names (rejected today): `Product`, `GraphScope`, `OptionalService`, `TimeoutSeconds`, `Deprecated`.
+Reserved names (rejected today): `GraphScope`, `OptionalService`, `TimeoutSeconds`, `Deprecated`.
 
 Licence tokens: `AAD_PREMIUM` (Entra ID P1 or better), `AAD_PREMIUM_P2`, `Entra_Identity_Governance`,
 `AAD_WRKLDID_P1`, `AAD_WRKLDID_P2`, `ATP_ENTERPRISE` (MDO P1 or P2), `THREAT_INTELLIGENCE` (MDO P2),

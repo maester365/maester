@@ -67,7 +67,11 @@ namespace Maester.Engine
             ExitTest(null);
         }
 
-        /// <summary>Clears per-run state. Called at the start of every engine run.</summary>
+        /// <summary>
+        /// Clears the state of every test. The engine does not call this: a test can start a nested run
+        /// (Invoke-MtTest inside a test), which must keep the outer test's state, so the module clears the
+        /// state of each test it is about to run instead. For hosts and tests that need a clean slate.
+        /// </summary>
         public static void Reset()
         {
             ResultDetail.Clear();
