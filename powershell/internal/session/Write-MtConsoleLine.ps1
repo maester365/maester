@@ -176,6 +176,7 @@ function Initialize-MtDashboard {
     $heart = if ($unicode) { [string][char]0x2665 + ' ' } else { '' }
     $bar = [ordered]@{
         'maester.dev'           = 'https://maester.dev'
+        'Docs'                  = 'https://maester.dev/docs'
         'Contributors'          = 'https://maester.dev/contributors'
         'Our Manifesto'         = 'https://maester.cloud/manifesto'
         "${star}Star on GitHub" = 'https://github.com/maester365/maester'

@@ -392,7 +392,7 @@ Describe 'Dashboard panels' {
         $renderer = New-PanelRenderer
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
         $screen = $renderer.GetPlainScreen(160, 44)
-        $screen[-1] | Should -Match '^ maester\.dev  Contributors │ Our Manifesto │ ★ Star on GitHub │ Discord │ Issues │ ♥ Sponsor +$'
+        $screen[-1] | Should -Match '^ maester\.dev  Docs │ Contributors │ Our Manifesto │ ★ Star on GitHub │ Discord │ Issues │ ♥ Sponsor +$'
         $renderer.Close()
     }
 

@@ -126,7 +126,7 @@ window: the main content takes 98 columns, the right column grows to 58 (a 160-c
 extra width is shared, two parts to the main content (longer bars, more squares per row) and one to the right column
 (up to 90 columns). The rows under the running tests list the tests that ran before them, newest first, each with the mark of its
 result and its duration. The last row of the window is a status bar on a solid background: maester.dev,
-Contributors (maester.dev/contributors), Our Manifesto (maester.cloud/manifesto), Star on GitHub (the repository),
+Docs (maester.dev/docs), Contributors (maester.dev/contributors), Our Manifesto (maester.cloud/manifesto), Star on GitHub (the repository),
 Discord (discord.maester.dev), Issues and Sponsor (the Sponsor dialog of the repository, fed by
 `.github/FUNDING.yml`), each a hyperlink. With the bar on screen the tagline under the logo
 has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit) and to the Pace
