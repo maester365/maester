@@ -184,6 +184,7 @@ Describe 'Invoke-MtEngineRun -Renderer' {
 Describe 'MtConsoleRenderer dashboard' {
     BeforeAll {
         function New-TestDashboard {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
             param([int] $Width = 100, [int] $Height = 30)
             $t = New-TestRenderer -Width $Width
             $t.Renderer.Height = $Height
