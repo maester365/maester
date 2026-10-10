@@ -8,7 +8,8 @@ BeforeDiscovery {
         }
         @{
             Path     = '.github/workflows/build-validation.yaml'
-            Pattern  = 'Install-Module Pester -MinimumVersion 5\.7\.1 -MaximumVersion 5\.7\.1'
+            # The workflow installs through a retry helper, which takes the module as a hashtable.
+            Pattern  = "Name = 'Pester'; MinimumVersion = '5\.7\.1'; MaximumVersion = '5\.7\.1'"
             Because  = 'CI must continue pinning the supported Pester baseline'
         }
         @{
