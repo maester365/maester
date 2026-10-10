@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0015',
         Title    = 'break at the top level of the function',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0003',
         Title    = 'Returns $null with no skip and no -Investigate',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

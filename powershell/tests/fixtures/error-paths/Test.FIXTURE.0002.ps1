@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0002',
         Title    = 'Returns $false',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

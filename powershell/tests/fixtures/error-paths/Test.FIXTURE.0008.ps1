@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0008',
         Title    = 'Method call on $null, then returns $true',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

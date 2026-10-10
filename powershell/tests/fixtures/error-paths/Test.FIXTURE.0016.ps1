@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0016',
         Title    = 'exit inside the test function',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

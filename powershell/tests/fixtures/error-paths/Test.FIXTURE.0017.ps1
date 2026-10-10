@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0017',
         Title    = 'Sleeps 30 seconds, then returns $true',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

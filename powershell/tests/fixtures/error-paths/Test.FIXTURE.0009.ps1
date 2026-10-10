@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0009',
         Title    = 'Write-Error (non-terminating), then returns $true',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

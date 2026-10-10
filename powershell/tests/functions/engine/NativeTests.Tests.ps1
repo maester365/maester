@@ -49,7 +49,7 @@ Describe 'Read-MtNativeTest' {
     It 'Reports <Case> as <Code>' -ForEach @(
         @{ Case = 'an unknown property'; Attribute = "Nope = 'x'"; Code = 'InvalidMetadata' }
         @{ Case = 'a value outside the allowed list'; Attribute = "Cloud = 'Mars'"; Code = 'InvalidMetadata' }
-        @{ Case = 'a reserved property'; Attribute = "GraphScope = 'x'"; Code = 'InvalidMetadata' }
+        @{ Case = 'a reserved property'; Attribute = "OptionalService = 'x'"; Code = 'InvalidMetadata' }
     ) {
         $file = New-NativeTestFile -Folder (Join-Path $TestDrive ("bad" + [guid]::NewGuid().ToString('n'))) -Id 'BAD.1' -Attribute $Attribute
         $t = InModuleScope Maester -Parameters @{ File = $file } { Read-MtNativeTest -Path $File }
@@ -228,9 +228,9 @@ Describe 'Native rows in Invoke-Maester results' {
     BeforeAll {
         $script:folder = Join-Path $TestDrive 'mixed'
         $null = New-Item -ItemType Directory -Path $script:folder -Force
-        $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.1' -Attribute "Service = 'None', Category = 'Mixed'"
-        $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.2' -Attribute "Service = 'ExchangeOnline', Category = 'Mixed'"
-        $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.3' -Attribute "Service = 'None', Category = 'Mixed'" -Body 'throw "broken"'
+        $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.1' -Attribute "Service = 'None', Feature = 'Mixed'"
+        $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.2' -Attribute "Service = 'ExchangeOnline', Feature = 'Mixed'"
+        $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.3' -Attribute "Service = 'None', Feature = 'Mixed'" -Body 'throw "broken"'
         "Describe 'Pester' { It 'PES.1: pester test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:folder 'Pester.Tests.ps1')
         $json = Join-Path $TestDrive 'mixed.json'
         $xml = Join-Path $TestDrive 'mixed.xml'
