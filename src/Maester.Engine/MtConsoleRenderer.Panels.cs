@@ -1002,22 +1002,29 @@ namespace Maester.Engine
         {
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
-            // One square per test for as long as the rows that are free allow it.
+            // One square per test for as long as the rows that are free allow it. In a console with room to
+            // spare a test gets a block of two cells, a square four times the size: when all the tests then
+            // still fit, with three rows left over for the list of the tests that ran.
             int columns = Math.Max(10, width - 2);
             int rows = Math.Min(16, maxRows);
-            int perSquare = Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
+            bool big = Unicode && _total <= (columns / 2) * Math.Min(16, maxRows - 3);
+            int perRow = big ? columns / 2 : columns;
+            int perSquare = big ? 1 : Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
             int squares = (int)Math.Ceiling((double)_total / perSquare);
             bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);
-            string mark = Unicode ? "■" : "#";
-            // The tests that are running take the next places after the finished ones; their squares pulse.
+            string mark = big ? "▇▇" : (Unicode ? "■" : "#");
+            string waiting = ansi ? mark : (big ? "░░" : (Unicode ? "□" : "."));
+            // The tests that are running take the next places after the finished ones; their squares pulse
+            // (a big block fills up and empties).
             int done = _sequence.Count;
             int active = done + (_running ? _workers.Count : 0);
             string[] pulse = Unicode ? new[] { "·", "▪", "■", "▪" } : new[] { ".", "o", "O", "o" };
+            if (big) pulse = new[] { "▁▁", "▃▃", "▅▅", "▇▇", "▅▅", "▃▃" };
 
             LineBuilder row = null;
             for (int i = 0; i < squares; i++)
             {
-                if (i % columns == 0)
+                if (i % perRow == 0)
                 {
                     if (row != null) lines.Add(row.Build());
                     row = new LineBuilder(ansi).Add(" ");
@@ -1034,7 +1041,7 @@ namespace Maester.Engine
                 }
                 else
                 {
-                    row.Add(ansi ? mark : (Unicode ? "□" : "."), "38;5;238");
+                    row.Add(waiting, "38;5;238");
                 }
             }
             if (row != null) lines.Add(row.Build());
