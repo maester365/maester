@@ -378,7 +378,12 @@ else { & $__mtModule $__mtBody $__mtId $__mtCommand $__mtParameters }
             _pool = null;
             // Close() waits for every runspace to stop. A runspace stuck in a blocking .NET call cannot be
             // interrupted on .NET Core, so the wait is bounded and the runspace is abandoned otherwise.
-            var closeTask = Task.Run(() => BestEffort(() => { pool.Close(); pool.Dispose(); }));
+            // Dispose runs even if Close throws: it stops the pool's idle-cleanup timer, which must not outlive the pool.
+            var closeTask = Task.Run(() =>
+            {
+                try { BestEffort(() => pool.Close()); }
+                finally { BestEffort(() => pool.Dispose()); }
+            });
             closeTask.Wait(TimeSpan.FromMilliseconds(StopGraceMs));
         }
 
