@@ -18,6 +18,7 @@
         Title = 'Android Enterprise account connection should be healthy',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

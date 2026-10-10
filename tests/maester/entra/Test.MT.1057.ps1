@@ -19,6 +19,7 @@
         Title = 'App registrations should no longer use secrets.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         LongRunning,
         Service = 'Graph',

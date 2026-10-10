@@ -20,6 +20,7 @@
         Title = 'App registrations with privileged API permissions should not have owners.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         LongRunning,
         Service = 'Graph',

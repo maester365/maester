@@ -25,6 +25,7 @@ function Test-AzdoLogAuditEvent {
         Title = 'Log Audit Events.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

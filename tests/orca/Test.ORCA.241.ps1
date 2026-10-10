@@ -16,6 +16,7 @@ function Test-ORCA241 {
         Title = 'Anti-phishing policy exists and EnableFirstContactSafetyTips is true.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

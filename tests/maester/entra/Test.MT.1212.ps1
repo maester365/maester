@@ -19,6 +19,7 @@
         Title = 'Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview).',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
         Preview,
         Service = 'Graph',

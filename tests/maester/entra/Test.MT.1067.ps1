@@ -26,6 +26,7 @@
         Title = 'Authentication method policies should not reference non-existent groups.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Authentication', 'Maester'),
         Service = 'Graph',
         Author = 'SamErde'

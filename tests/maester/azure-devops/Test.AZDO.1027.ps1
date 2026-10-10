@@ -11,6 +11,7 @@
         Title = 'Disable showing Gravatar images for users outside of your enterprise.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

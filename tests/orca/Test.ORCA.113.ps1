@@ -16,6 +16,7 @@ function Test-ORCA113 {
         Title = 'AllowClickThrough is disabled in Safe Links policies.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

@@ -19,6 +19,7 @@
         Title = 'Group owners SHALL NOT be allowed to consent to applications.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Deprecated', 'Entra ID Free', 'MS.AAD', 'MS.AAD.5.4'),
         Service = 'Graph',
         Author = 'soulemike',

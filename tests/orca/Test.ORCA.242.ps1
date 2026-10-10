@@ -16,6 +16,7 @@ function Test-ORCA242 {
         Title = 'Important protection alerts responsible for AIR activities are enabled.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

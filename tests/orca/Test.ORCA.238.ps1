@@ -16,6 +16,7 @@ function Test-ORCA238 {
         Title = 'Safe Links is enabled for office documents.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

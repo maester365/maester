@@ -22,6 +22,7 @@
         Title = 'High privileged user should be linked to an identity.',
         Severity = 'Low',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         Preview,
         LongRunning,

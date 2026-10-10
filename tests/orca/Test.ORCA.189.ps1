@@ -16,6 +16,7 @@ function Test-ORCA189 {
         Title = 'Safe Attachments is not bypassed.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

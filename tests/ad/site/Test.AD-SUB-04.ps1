@@ -21,6 +21,7 @@
         Title = 'IPv6 subnets count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Sites and Subnets',
+        Product = 'Active Directory',
         Tag = 'AD.Site',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -20,6 +20,7 @@
         Title = 'Pending approvals for Critical Asset Management should not be present.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'Graph'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'

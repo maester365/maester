@@ -19,6 +19,7 @@
         Title = 'External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'SharePoint',
         Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.1.1'),
         Service = 'SharePointOnline',
         Author = 'soulemike',

@@ -19,6 +19,7 @@
         Title = 'If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.3'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

@@ -22,6 +22,7 @@
         Title = 'Conditional Access policies should not use the deprecated Approved Client App grant.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'HenrikPiecha'

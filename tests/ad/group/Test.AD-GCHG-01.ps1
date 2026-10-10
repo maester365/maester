@@ -27,6 +27,7 @@
         Title = 'Average group membership changes per year should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Changes',
+        Product = 'Active Directory',
         Tag = ('AD.GCHG', 'AD.Group'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'

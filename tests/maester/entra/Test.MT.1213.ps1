@@ -20,6 +20,7 @@
         Title = 'Agent Identity Blueprints should not use wildcard or plain-http redirect URIs (Preview).',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
         Preview,
         Service = 'Graph',

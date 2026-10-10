@@ -22,6 +22,7 @@
         Title = 'User SPN service class usage should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
+        Product = 'Active Directory',
         Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -19,6 +19,7 @@
         Title = 'At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.8.4'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',

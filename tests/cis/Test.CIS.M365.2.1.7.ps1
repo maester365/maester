@@ -20,6 +20,7 @@
         Title = 'Ensure that an anti-phishing policy has been created (Only Checks Default Policy)',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Defender',
         Tag = ('CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

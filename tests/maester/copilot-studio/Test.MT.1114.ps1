@@ -25,6 +25,7 @@ function Test-MtAIAgentNoAuthentication {
         Title = 'AI agents should require user authentication.',
         Severity = 'High',
         Category = 'Copilot Studio Agent Security',
+        Product = 'Copilot Studio',
         Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'

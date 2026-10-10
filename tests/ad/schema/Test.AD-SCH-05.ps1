@@ -24,6 +24,7 @@
         Title = 'LAPS should be installed in Active Directory',
         Severity = 'Medium',
         Category = 'Active Directory - Schema',
+        Product = 'Active Directory',
         Tag = 'AD.Schema',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

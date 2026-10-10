@@ -16,6 +16,7 @@ function Test-MtCheckEidscaCR04 {
         Title = 'Consent Framework - Admin Consent Request - Consent request duration (days).',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

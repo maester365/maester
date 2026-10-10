@@ -99,6 +99,7 @@ function Test-ContosoDisabledCaPolicyReason {
         Title    = 'Disabled Conditional Access policies state why they are disabled.',
         Severity = 'Medium',
         Category = 'Contoso/Entra',
+        Product  = 'Entra ID',
         Tag      = ('CA', 'Contoso'),
         Service  = 'Graph',
         License = 'AAD_PREMIUM'
@@ -165,6 +166,7 @@ release than the one you run.
 | `Title` | string | One line | Always | | The title shown in the report. The result row's `Name` is `<Id>: <Title>`. |
 | `Severity` | string | `Critical`, `High`, `Medium`, `Low`, `Info` | Built-in tests | Empty | Default severity. A `TestSettings` row in the config overrides it. |
 | `Category` | string | Free text | No | The suite's `DefaultCategory`, else `Custom` | Report grouping. Written to the result as `Block`. |
+| `Product` | string | One line, up to 40 characters. Built-in tests use one of: `Entra ID`, `Exchange Online`, `Defender`, `Intune`, `Purview`, `SharePoint`, `Teams`, `Microsoft 365`, `Azure`, `Azure DevOps`, `GitHub`, `Active Directory`, `Copilot Studio` | Built-in tests | Empty | The product the test checks. The console progress and the run summary group tests by it; tests without one are shown under Other. Written to the result as `Product`. |
 | `Tag` | string[] | Non-empty, no commas (spaces allowed) | No | None | Tags for `-Tag` and `-ExcludeTag`. |
 | `Preview` | bool | | No | `$false` | Not run unless `-IncludePreview`, any `-Tag`, or its exact ID in `-TestId`. |
 | `LongRunning` | bool | | No | `$false` | Not run unless `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, or its exact ID in `-TestId`. |

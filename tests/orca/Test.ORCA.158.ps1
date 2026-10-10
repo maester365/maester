@@ -16,6 +16,7 @@ function Test-ORCA158 {
         Title = 'Safe Attachments is enabled for SharePoint and Teams.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

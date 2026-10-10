@@ -16,6 +16,7 @@ function Test-ORCA112 {
         Title = 'Anti-spoofing protection action is configured to Move message to the recipients'' Junk Email folders in Anti-phishing policy.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

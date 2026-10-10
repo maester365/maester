@@ -26,6 +26,7 @@
         Title = 'The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Preview,
         Service = 'Graph',

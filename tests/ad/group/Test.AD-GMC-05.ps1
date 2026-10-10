@@ -25,6 +25,7 @@
         Title = 'Trust members details by group should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
+        Product = 'Active Directory',
         Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

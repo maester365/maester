@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAS04 {
         Title = 'Authentication Method - SMS - Use for sign-in.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

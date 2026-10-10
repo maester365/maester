@@ -19,6 +19,7 @@
         Title = 'A DMARC policy SHALL be published for every second-level domain.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.4.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

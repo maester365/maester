@@ -11,6 +11,7 @@
         Title = 'Request access to Azure DevOps by e-mail notifications to administrators.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

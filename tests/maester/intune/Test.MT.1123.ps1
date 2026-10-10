@@ -39,6 +39,7 @@
         Title = 'Ensure BitLocker full disk encryption is configured',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

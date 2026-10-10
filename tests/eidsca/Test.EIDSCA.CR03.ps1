@@ -16,6 +16,7 @@ function Test-MtCheckEidscaCR03 {
         Title = 'Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

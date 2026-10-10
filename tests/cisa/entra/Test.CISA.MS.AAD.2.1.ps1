@@ -19,6 +19,7 @@
         Title = 'Users detected as high risk SHALL be blocked.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.2.1'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',

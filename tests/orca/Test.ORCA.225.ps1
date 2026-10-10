@@ -16,6 +16,7 @@ function Test-ORCA225 {
         Title = 'Safe Documents is enabled for Office clients.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

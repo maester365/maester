@@ -21,6 +21,7 @@
         Title = 'SMBv1 should be disabled on all domain controllers',
         Severity = 'Critical',
         Category = 'Active Directory - Domain Controllers',
+        Product = 'Active Directory',
         Tag = 'AD.DomainController',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

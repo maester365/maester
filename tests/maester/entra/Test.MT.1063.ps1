@@ -20,6 +20,7 @@
         Title = 'All App registration owners should have MFA registered',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Maester'),
         LongRunning,
         Service = 'Graph',

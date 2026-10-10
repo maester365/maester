@@ -16,6 +16,7 @@ function Test-ORCA102 {
         Title = 'Advanced Spam filter options are turned off.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

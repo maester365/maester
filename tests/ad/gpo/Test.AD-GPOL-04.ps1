@@ -23,6 +23,7 @@
         Title = 'Enforced GPO link count should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - Group Policy',
+        Product = 'Active Directory',
         Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

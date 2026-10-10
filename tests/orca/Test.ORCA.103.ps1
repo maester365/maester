@@ -16,6 +16,7 @@ function Test-ORCA103 {
         Title = 'Outbound spam filter policy settings configured.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

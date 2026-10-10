@@ -100,6 +100,7 @@ Added in 2.1:
 | --- | --- | --- |
 | `Source` | string | Where the test comes from: `Maester`, `CISA`, `CIS`, `EIDSCA`, `ORCA` or `Custom` (or the `Source` of a custom `suite.json`). |
 | `Suite` | string | The suite ID, for example `Maester`, `CISA`, `AD` or `Custom`. |
+| `Product` | string | Native tests: the attribute's `Product`, for example `Entra ID` or `Exchange Online`; null when the test does not set one. Not present on Pester rows. |
 | `Format` | string | `Native` or `Pester`. |
 | `ReasonCode` | string | Why the test did not run or did not produce a verdict. Empty for `Passed`, `Failed` and `Investigate`. See [Applicability and reason codes](./configuration/applicability.md#reason-codes). |
 | `ReasonDetail` | string | The reason in words. For `TestError`, the first line of the error. |

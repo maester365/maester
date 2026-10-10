@@ -19,6 +19,7 @@
         Title = 'Safe lists SHOULD NOT be enabled.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.12.2'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

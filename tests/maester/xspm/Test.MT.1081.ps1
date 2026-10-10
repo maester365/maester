@@ -20,6 +20,7 @@
         Title = 'Hybrid users should not be assigned Entra ID role assignments.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         LongRunning,
         Service = 'Graph',

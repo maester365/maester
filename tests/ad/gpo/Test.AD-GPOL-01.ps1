@@ -23,6 +23,7 @@
         Title = 'GPO linked count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Policy',
+        Product = 'Active Directory',
         Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

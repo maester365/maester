@@ -20,6 +20,7 @@
         Title = 'Reversible encryption user count should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - Users',
+        Product = 'Active Directory',
         Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

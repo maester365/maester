@@ -11,6 +11,7 @@
         Title = 'Only users with Presenter role are allowed to present in Teams meetings',
         Severity = 'High',
         Category = 'Maester/Teams',
+        Product = 'Teams',
         Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',

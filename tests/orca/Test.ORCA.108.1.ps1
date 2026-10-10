@@ -16,6 +16,7 @@ function Test-ORCA108_1 {
         Title = 'DNS Records have been set up to support DKIM.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'

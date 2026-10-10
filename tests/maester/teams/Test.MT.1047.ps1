@@ -11,6 +11,7 @@
         Title = 'Restrict anonymous users from starting Teams meetings',
         Severity = 'Medium',
         Category = 'Maester/Teams',
+        Product = 'Teams',
         Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',

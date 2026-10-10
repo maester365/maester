@@ -21,6 +21,7 @@
         Title = 'Agent Identity Blueprints should not use the allAllowed inheritance pattern for delegated scopes or application roles (Preview).',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
         Preview,
         LongRunning,

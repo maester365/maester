@@ -16,6 +16,7 @@ function Test-ORCA179 {
         Title = 'Safe Links is enabled intra-organization.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

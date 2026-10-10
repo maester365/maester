@@ -18,6 +18,7 @@
         Title = 'At least one Conditional Access policy explicitly includes Azure DevOps.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

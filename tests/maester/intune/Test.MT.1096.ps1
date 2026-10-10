@@ -19,6 +19,7 @@
         Title = 'Ensure at least one Intune Multi Admin Approval policy is configured',
         Severity = 'Medium',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

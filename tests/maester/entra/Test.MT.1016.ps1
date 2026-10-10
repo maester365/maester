@@ -20,6 +20,7 @@
         Title = 'At least one Conditional Access policy is configured to require MFA for guest access.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

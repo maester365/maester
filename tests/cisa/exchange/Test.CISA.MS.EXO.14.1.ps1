@@ -19,6 +19,7 @@
         Title = 'A spam filter SHALL be enabled.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.14.1'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',

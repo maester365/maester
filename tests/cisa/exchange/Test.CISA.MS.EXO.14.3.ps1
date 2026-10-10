@@ -19,6 +19,7 @@
         Title = 'Allowed domains SHALL NOT be added to inbound anti-spam protection policies.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.14.3'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',

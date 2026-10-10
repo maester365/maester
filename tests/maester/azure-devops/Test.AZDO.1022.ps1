@@ -23,6 +23,7 @@ function Test-AzdoOrganizationTriggerPullRequestGitHubRepository {
         Title = 'Limit building pull requests from forked GitHub repositories.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

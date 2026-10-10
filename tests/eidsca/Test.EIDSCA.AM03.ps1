@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAM03 {
         Title = 'Authentication Method - Microsoft Authenticator - Require number matching for push notifications.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

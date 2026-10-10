@@ -21,6 +21,7 @@
         Title = 'Empty non-privileged group count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
+        Product = 'Active Directory',
         Tag = ('AD.GMC', 'AD.Group'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'

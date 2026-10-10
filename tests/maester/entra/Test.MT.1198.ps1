@@ -31,6 +31,7 @@
         Title = 'App registration certificates should not have excessive validity periods.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         LongRunning,
         Service = 'Graph',

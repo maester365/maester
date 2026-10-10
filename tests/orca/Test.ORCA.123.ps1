@@ -16,6 +16,7 @@ function Test-ORCA123 {
         Title = 'Unusual Characters Safety Tips is enabled.',
         Severity = 'Info',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

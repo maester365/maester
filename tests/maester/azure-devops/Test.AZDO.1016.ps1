@@ -23,6 +23,7 @@ function Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline {
         Title = 'Limit job authorization scope to current project for non-release pipelines.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

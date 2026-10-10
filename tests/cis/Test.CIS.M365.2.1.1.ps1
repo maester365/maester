@@ -20,6 +20,7 @@
         Title = 'Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy)',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Defender',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

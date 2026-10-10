@@ -24,6 +24,7 @@ function Test-AzdoEnforceAADConditionalAccess {
         Title = 'IP Conditional Access policy validation.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

@@ -25,6 +25,7 @@
         Title = 'Universal group count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Groups',
+        Product = 'Active Directory',
         Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

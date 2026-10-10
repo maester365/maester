@@ -32,6 +32,7 @@
         Title = 'Sample Submission should send safe samples automatically.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

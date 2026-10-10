@@ -26,6 +26,7 @@
         Title = 'KRBTGT password age should not exceed 180 days',
         Severity = 'High',
         Category = 'Active Directory - Security Accounts',
+        Product = 'Active Directory',
         Tag = 'AD.Security',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

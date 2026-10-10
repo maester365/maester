@@ -32,6 +32,7 @@
         Title = 'Signature Update Interval should be 1-4 hours.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

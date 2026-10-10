@@ -23,6 +23,7 @@ function Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask {
         Title = 'Disable Marketplace tasks.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

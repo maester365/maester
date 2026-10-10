@@ -31,6 +31,7 @@
         Title = 'Root DSE should be synchronized',
         Severity = 'High',
         Category = 'Active Directory - Replication',
+        Product = 'Active Directory',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

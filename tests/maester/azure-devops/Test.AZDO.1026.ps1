@@ -24,6 +24,7 @@ function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
         Title = 'Enable automatic enrollment to Advanced Security for Azure DevOps.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

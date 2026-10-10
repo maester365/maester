@@ -38,6 +38,7 @@
         Title = 'Ensure App Control for Business is enabled.',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

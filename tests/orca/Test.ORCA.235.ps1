@@ -16,6 +16,7 @@ function Test-ORCA235 {
         Title = 'SPF records is set up for all your custom domains.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

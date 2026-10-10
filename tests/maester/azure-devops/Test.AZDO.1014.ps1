@@ -24,6 +24,7 @@ function Test-AzdoOrganizationBadgesArePrivate {
         Title = 'Anonymous access to pipeline badges.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

@@ -19,6 +19,7 @@
         Title = 'Never-logged-in enabled user count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Users',
+        Product = 'Active Directory',
         Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

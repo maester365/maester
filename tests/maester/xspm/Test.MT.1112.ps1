@@ -20,6 +20,7 @@
         Title = 'Privileged user accounts should not remain enabled when the linked primary account is disabled.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         Preview,
         LongRunning,

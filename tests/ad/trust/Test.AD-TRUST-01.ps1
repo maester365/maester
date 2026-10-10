@@ -22,6 +22,7 @@
         Title = 'Trust total count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Trusts',
+        Product = 'Active Directory',
         Tag = 'AD.Trust',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

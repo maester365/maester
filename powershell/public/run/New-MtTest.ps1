@@ -22,6 +22,9 @@ function New-MtTest {
     .PARAMETER Category
     The report grouping. Defaults to Custom.
 
+    .PARAMETER Product
+    The product the test checks, for example Entra ID. Groups the console progress and the run summary.
+
     .PARAMETER Path
     The folder to create the files in. Defaults to ./custom (an existing ./Custom folder is reused).
 
@@ -54,6 +57,9 @@ function New-MtTest {
 
         [Parameter()]
         [string] $Category = 'Custom',
+
+        [Parameter()]
+        [string] $Product,
 
         [Parameter()]
         [string] $Path = './custom',
@@ -96,7 +102,7 @@ function $functionName {
         Id       = '$(& $escape $Id)',
         Title    = '$(& $escape $Title)',
         Severity = '$Severity',
-        Category = '$(& $escape $Category)',
+        Category = '$(& $escape $Category)',$(if ($Product) { "`n        Product  = '$(& $escape $Product)'," })
         Service  = $serviceList
     )]
     [CmdletBinding()]

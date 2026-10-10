@@ -23,6 +23,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
         Title = 'No GPOs should contain a cpassword',
         Severity = 'Critical',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

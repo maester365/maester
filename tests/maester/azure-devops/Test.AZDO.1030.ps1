@@ -23,6 +23,7 @@ function Test-AzdoProjectCollectionAdministrator {
         Title = 'Project Collection Administrators.',
         Severity = 'Critical',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

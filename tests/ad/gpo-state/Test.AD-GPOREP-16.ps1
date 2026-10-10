@@ -23,6 +23,7 @@ function Test-MtAdGpoVersionMismatchDetails {
         Title = 'No GPOs should have version mismatches',
         Severity = 'High',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

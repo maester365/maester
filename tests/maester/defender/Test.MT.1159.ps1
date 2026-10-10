@@ -32,6 +32,7 @@
         Title = 'Quick Scan Time configuration is not required.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

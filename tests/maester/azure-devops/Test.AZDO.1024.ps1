@@ -24,6 +24,7 @@ function Test-AzdoOrganizationTaskRestrictionsDisableNode6Task {
         Title = 'Disable Node 6 tasks.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

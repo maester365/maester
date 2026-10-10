@@ -22,6 +22,7 @@
         Title = 'All Conditional Access policies are configured to exclude at least one emergency/break glass account or group.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

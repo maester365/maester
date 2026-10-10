@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAM01 {
         Title = 'Authentication Method - Microsoft Authenticator - State.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

@@ -16,6 +16,7 @@ function Test-ORCA140 {
         Title = 'High Confidence Spam action set to Quarantine message.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

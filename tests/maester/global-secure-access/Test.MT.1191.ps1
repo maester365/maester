@@ -25,6 +25,7 @@
         Title = 'Break-glass accounts should be excluded from the Compliant Network Conditional Access policy.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Entra', 'Maester'),
         Preview,
         Service = 'Graph',

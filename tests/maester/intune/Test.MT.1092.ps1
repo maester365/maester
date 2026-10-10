@@ -18,6 +18,7 @@
         Title = 'Intune APNS certificate should be valid for more than 30 days',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

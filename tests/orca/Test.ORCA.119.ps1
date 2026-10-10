@@ -16,6 +16,7 @@ function Test-ORCA119 {
         Title = 'Similar Domains Safety Tips is enabled.',
         Severity = 'Info',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

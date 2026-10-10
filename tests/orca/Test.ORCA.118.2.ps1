@@ -16,6 +16,7 @@ function Test-ORCA118_2 {
         Title = 'Domains are not being allow listed in an unsafe manner in Transport Rules.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'

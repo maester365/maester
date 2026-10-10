@@ -19,6 +19,7 @@
         Title = 'Ensure intune device clean-up rule is configured',
         Severity = 'Medium',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

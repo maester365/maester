@@ -20,6 +20,7 @@
         Title = 'Devices should not share both critical and non-critical user credentials.',
         Severity = 'Low',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = 'Device',
         LongRunning,
         Service = 'Graph',

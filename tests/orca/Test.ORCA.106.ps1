@@ -16,6 +16,7 @@ function Test-ORCA106 {
         Title = 'Quarantine retention period is 30 days.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

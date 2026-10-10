@@ -44,6 +44,7 @@
         Title = 'Ensure ASR Rules are configured correctly.',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

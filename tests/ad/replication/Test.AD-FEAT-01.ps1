@@ -26,6 +26,7 @@
         Title = 'Optional feature count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Replication',
+        Product = 'Active Directory',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

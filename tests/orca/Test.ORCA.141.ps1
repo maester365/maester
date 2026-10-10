@@ -16,6 +16,7 @@ function Test-ORCA141 {
         Title = 'Bulk action set to Move message to Junk Email Folder.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

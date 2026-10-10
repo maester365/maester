@@ -21,6 +21,7 @@
         Title = 'No GPOs should be missing permissions',
         Severity = 'Medium',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

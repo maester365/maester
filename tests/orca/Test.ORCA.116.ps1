@@ -16,6 +16,7 @@ function Test-ORCA116 {
         Title = 'Mailbox intelligence based impersonation protection action set to move message to junk mail folder.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

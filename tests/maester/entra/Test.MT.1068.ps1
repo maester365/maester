@@ -16,6 +16,7 @@
         Title = 'Restrict non-admin users from creating tenants.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'marcel-ngn'

@@ -23,6 +23,7 @@
         Title = 'OU stale count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Organizational Units',
+        Product = 'Active Directory',
         Tag = 'AD.OU',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

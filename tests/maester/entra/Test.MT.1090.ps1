@@ -18,6 +18,7 @@
         Title = 'Global Administrator role should not be added as local administrator on the device during Microsoft Entra join',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Device', 'Entra', 'Maester'),
         Service = 'Graph',
         Author = 'nicolonsky'

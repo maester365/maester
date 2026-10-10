@@ -18,6 +18,7 @@
         Title = 'Agent Users should not have privileged directory roles or membership in role-assignable groups (Preview).',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
         Preview,
         LongRunning,

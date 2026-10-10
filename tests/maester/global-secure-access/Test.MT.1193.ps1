@@ -34,6 +34,7 @@
         Title = 'Entra Private Access application segments should avoid broad or risky destinations.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Preview,
         Service = 'Graph',

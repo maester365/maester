@@ -19,6 +19,7 @@
         Title = 'A list of approved IP addresses for sending mail SHALL be maintained.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('Deprecated', 'MS.EXO', 'MS.EXO.2.1'),
         Service = 'Graph',
         Author = 'soulemike',

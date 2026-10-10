@@ -11,6 +11,7 @@
         Title = 'User activation of other highly privileged roles SHOULD trigger an alert.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.7.9'),
         Service = 'Graph',
         Author = 'soulemike',

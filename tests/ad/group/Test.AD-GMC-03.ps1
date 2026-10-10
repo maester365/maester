@@ -25,6 +25,7 @@
         Title = 'Member account types breakdown should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
+        Product = 'Active Directory',
         Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

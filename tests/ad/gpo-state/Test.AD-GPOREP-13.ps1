@@ -23,6 +23,7 @@ function Test-MtAdGpoDisabledLinkDetails {
         Title = 'GPO disabled link details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

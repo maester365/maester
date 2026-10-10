@@ -16,6 +16,7 @@ function Test-MtCheckEidscaPR01 {
         Title = 'Default Settings - Password Rule Settings - Password Protection - Mode.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

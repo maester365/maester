@@ -16,6 +16,7 @@ function Test-ORCA239 {
         Title = 'No exclusions for the built-in protection policies.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

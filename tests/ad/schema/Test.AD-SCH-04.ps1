@@ -24,6 +24,7 @@
         Title = 'Schema version details should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Schema',
+        Product = 'Active Directory',
         Tag = 'AD.Schema',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

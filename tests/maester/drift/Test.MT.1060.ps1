@@ -122,6 +122,7 @@ function Test-MtDriftFolder {
         Title = 'Drift folders should match their baseline.',
         Severity = 'Medium',
         Category = 'Maester/Drift',
+        Product = 'Microsoft 365',
         Tag = ('Maester', 'MT1060'),
         Service = 'None',
         InstanceSource = 'Get-MtDriftFolderInstance',

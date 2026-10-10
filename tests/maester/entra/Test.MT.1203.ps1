@@ -17,6 +17,7 @@
         Title = 'Agent Identity Blueprint Principals should have an existing Blueprint (Preview).',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
         Preview,
         Service = 'Graph',

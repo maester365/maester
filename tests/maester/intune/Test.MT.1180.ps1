@@ -42,6 +42,7 @@
         Title = 'Ensure Managed Installer Rules are configured correctly.',
         Severity = 'Medium',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

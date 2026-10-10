@@ -23,6 +23,7 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
         Title = 'Disable creation of TFVC repositories.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

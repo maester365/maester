@@ -19,6 +19,7 @@
         Title = 'User click tracking SHOULD be enabled.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.15.3'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

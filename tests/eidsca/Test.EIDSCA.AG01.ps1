@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAG01 {
         Title = 'Authentication Method - General Settings - Manage migration.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

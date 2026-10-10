@@ -16,6 +16,7 @@ function Test-ORCA142 {
         Title = 'Phish action set to Quarantine message.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

@@ -20,6 +20,7 @@
         Title = 'Ensure Office 365 SharePoint infected files are disallowed for download',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'SharePoint',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'SharePoint Online'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'

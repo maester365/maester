@@ -16,6 +16,7 @@ function Test-ORCA114 {
         Title = 'No IP Allow Lists have been configured.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

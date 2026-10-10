@@ -31,6 +31,7 @@
         Title = 'Full Scan Removable Drives should be enabled.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

@@ -21,6 +21,7 @@
         Title = 'Microsoft 365 Group (and Team) creation should be restricted to approved users.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Group', 'Maester'),
         Service = 'Graph',
         Author = 'merill'

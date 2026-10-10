@@ -16,6 +16,7 @@
         Title = 'Restrict device join to selected users/groups or none.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Device', 'Entra', 'Maester'),
         Service = 'Graph',
         Author = 'marcel-ngn'

@@ -33,6 +33,7 @@ function Test-AzdoOrganizationSecretProtectionEnrollment {
         Title = '(Organization) Secret Protection: existing repositories enrolled.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

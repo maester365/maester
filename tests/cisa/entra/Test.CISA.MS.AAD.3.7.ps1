@@ -19,6 +19,7 @@
         Title = 'Managed devices SHOULD be required for authentication.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.7'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

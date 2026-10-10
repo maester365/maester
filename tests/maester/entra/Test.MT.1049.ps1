@@ -11,6 +11,7 @@
         Title = 'Conditional Access policies for User Risk and Sign-in Risk should be configured separately.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',

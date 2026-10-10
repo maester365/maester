@@ -11,6 +11,7 @@
         Title = 'Stale accounts are not assigned to privileged roles.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Maester', 'PIM', 'Privileged'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',

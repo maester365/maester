@@ -21,6 +21,7 @@
         Title = 'No users should be configured for unconstrained delegation',
         Severity = 'High',
         Category = 'Active Directory - Users',
+        Product = 'Active Directory',
         Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -24,6 +24,7 @@ function Test-AzdoOrganizationProtectAccessToRepository {
         Title = 'Protect access to repositories in YAML pipelines.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

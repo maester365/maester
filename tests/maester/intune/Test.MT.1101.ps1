@@ -18,6 +18,7 @@
         Title = 'Default Branding Profile should be customized',
         Severity = 'Low',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

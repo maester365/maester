@@ -23,6 +23,7 @@
         Title = 'Computer SPN unknown service class details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
+        Product = 'Active Directory',
         Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAG02 {
         Title = 'Authentication Method - General Settings - Report suspicious activity - State.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

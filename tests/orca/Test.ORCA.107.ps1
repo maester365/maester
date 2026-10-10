@@ -16,6 +16,7 @@ function Test-ORCA107 {
         Title = 'End-user spam notification is enabled.',
         Severity = 'Low',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

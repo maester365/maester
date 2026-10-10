@@ -23,6 +23,7 @@
       Title = 'At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins.',
       Severity = 'High',
       Category = 'Maester/Entra',
+      Product = 'Entra ID',
       Tag = ('CA', 'Maester'),
       Service = 'Graph',
       License = 'AAD_PREMIUM',

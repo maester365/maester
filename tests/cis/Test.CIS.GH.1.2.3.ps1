@@ -23,6 +23,7 @@
         Title = 'Ensure repository deletion is limited to specific users',
         Severity = 'High',
         Category = 'CIS',
+        Product = 'GitHub',
         Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
         Service = 'GitHub',
         Author = 'thetechgy'

@@ -22,6 +22,7 @@
         Title = 'DC operating system details should be retrievable',
         Severity = 'High',
         Category = 'Active Directory - Domain Controllers',
+        Product = 'Active Directory',
         Tag = 'AD.DomainController',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

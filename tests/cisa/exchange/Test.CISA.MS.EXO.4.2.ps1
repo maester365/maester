@@ -19,6 +19,7 @@
         Title = 'The DMARC message rejection option SHALL be p=reject.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.4.2'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

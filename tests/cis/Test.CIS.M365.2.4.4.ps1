@@ -20,6 +20,7 @@
         Title = 'Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Defender',
         Tag = ('CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = 'Teams',
         License = 'THREAT_INTELLIGENCE',

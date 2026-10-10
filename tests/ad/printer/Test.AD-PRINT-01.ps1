@@ -24,6 +24,7 @@
         Title = 'Printer total count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Printer',
+        Product = 'Active Directory',
         Tag = 'AD.Printer',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

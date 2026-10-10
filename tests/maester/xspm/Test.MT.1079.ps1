@@ -20,6 +20,7 @@
         Title = 'Privileged API permissions on service principals should not remain unused.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         LongRunning,
         Service = 'Graph',

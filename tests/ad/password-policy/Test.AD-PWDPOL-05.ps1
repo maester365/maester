@@ -23,6 +23,7 @@
         Title = 'Password reversible encryption status should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Password Policy',
+        Product = 'Active Directory',
         Tag = 'AD.PasswordPolicy',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

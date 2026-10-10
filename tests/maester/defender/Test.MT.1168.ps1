@@ -32,6 +32,7 @@
         Title = 'Cleaned Malware should be retained for at least 30 days.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

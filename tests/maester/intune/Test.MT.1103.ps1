@@ -18,6 +18,7 @@
       Title = 'Ensure Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable groups',
       Severity = 'High',
       Category = 'Maester/Intune',
+      Product = 'Intune',
       Tag = ('Intune', 'Maester'),
       Service = 'Graph',
       License = ('AAD_PREMIUM', 'INTUNE_A'),

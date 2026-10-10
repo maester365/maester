@@ -11,6 +11,7 @@
         Title = 'Limited number of Global Admins are assigned.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Maester', 'PIM', 'Privileged'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',

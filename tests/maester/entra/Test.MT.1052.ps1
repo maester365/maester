@@ -22,6 +22,7 @@
         Title = 'At least one Conditional Access policy is targeting the Device Code authentication flow.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan',

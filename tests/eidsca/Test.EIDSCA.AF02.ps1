@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAF02 {
         Title = 'Authentication Method - FIDO2 security key - Allow self-service set up.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

@@ -34,6 +34,7 @@
         Title = 'Ensure macOS compliance policy requires a Defender machine risk score level.',
         Severity = 'Medium',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

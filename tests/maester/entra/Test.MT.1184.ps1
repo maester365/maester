@@ -25,6 +25,7 @@
         Title = 'Conditional Access policy without any target resources configured.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'

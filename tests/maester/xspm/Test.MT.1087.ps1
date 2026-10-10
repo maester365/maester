@@ -26,6 +26,7 @@
         Title = 'Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE''s.',
         Severity = 'High',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = 'Device',
         LongRunning,
         Service = 'Graph',

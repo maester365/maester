@@ -21,6 +21,7 @@
         Title = 'SMB signing should be enabled on all domain controllers',
         Severity = 'High',
         Category = 'Active Directory - Domain Controllers',
+        Product = 'Active Directory',
         Tag = 'AD.DomainController',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

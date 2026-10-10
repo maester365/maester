@@ -27,6 +27,7 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
         Title = '(Tenant) Enable automatic revocation of leaked Personal Access Tokens.',
         Severity = 'Critical',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

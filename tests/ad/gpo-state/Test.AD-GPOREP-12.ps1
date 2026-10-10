@@ -11,6 +11,7 @@
         Title = 'GPO disabled link count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

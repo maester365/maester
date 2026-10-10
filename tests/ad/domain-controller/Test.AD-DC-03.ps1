@@ -21,6 +21,7 @@
         Title = 'SMBv3.1.1 enabled count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Domain Controllers',
+        Product = 'Active Directory',
         Tag = 'AD.DomainController',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

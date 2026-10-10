@@ -16,6 +16,7 @@ function Test-MtCheckEidscaCP03 {
         Title = 'Default Settings - Consent Policy Settings - Block user consent for risky apps.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

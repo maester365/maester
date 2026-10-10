@@ -45,6 +45,7 @@ function Test-MtEntraRecommendation {
         Title = 'Entra recommendations should be completed.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester', 'Recommendation'),
         Service = 'Graph',
         InstanceSource = 'Get-MtEntraRecommendationInstance',

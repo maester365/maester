@@ -16,6 +16,7 @@ function Test-ORCA100 {
         Title = 'Bulk Complaint Level threshold is between 4 and 6.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

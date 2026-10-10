@@ -19,6 +19,7 @@
         Title = 'Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.16.2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

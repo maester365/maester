@@ -16,6 +16,7 @@ function Test-ORCA243 {
         Title = 'Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

@@ -21,6 +21,7 @@
         Title = 'Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains',
         Severity = 'Medium',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',

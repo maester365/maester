@@ -22,6 +22,7 @@ function Test-MtAdGpoDefaultPasswordFoundCount {
         Title = 'No GPOs should contain a default password',
         Severity = 'High',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

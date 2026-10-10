@@ -27,6 +27,7 @@
         Title = 'No enabled computers should be stale for 180 days or more',
         Severity = 'Medium',
         Category = 'Active Directory - Security Accounts',
+        Product = 'Active Directory',
         Tag = 'AD.Security',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

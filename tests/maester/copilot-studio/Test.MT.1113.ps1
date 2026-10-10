@@ -24,6 +24,7 @@ function    Test-MtAIAgentBroadSharing {
         Title = 'AI agents should not be shared with broad access control policies.',
         Severity = 'High',
         Category = 'Copilot Studio Agent Security',
+        Product = 'Copilot Studio',
         Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'

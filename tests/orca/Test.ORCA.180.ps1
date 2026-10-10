@@ -16,6 +16,7 @@ function Test-ORCA180 {
         Title = 'Anti-phishing policy exists and EnableSpoofIntelligence is true.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

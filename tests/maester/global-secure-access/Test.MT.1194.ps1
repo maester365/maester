@@ -23,6 +23,7 @@
         Title = 'The baseline Global Secure Access security profile should enforce a threat-intelligence floor.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Preview,
         Service = 'Graph',

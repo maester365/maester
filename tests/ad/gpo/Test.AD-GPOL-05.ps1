@@ -28,6 +28,7 @@
         Title = 'GPO blocked inheritance count should be compliant',
         Severity = 'Medium',
         Category = 'Active Directory - Group Policy',
+        Product = 'Active Directory',
         Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

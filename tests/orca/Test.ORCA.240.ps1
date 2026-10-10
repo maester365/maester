@@ -16,6 +16,7 @@ function Test-ORCA240 {
         Title = 'Outlook is configured to display external tags for external emails.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

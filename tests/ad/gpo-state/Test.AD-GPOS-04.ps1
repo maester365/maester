@@ -28,6 +28,7 @@ function Test-MtAdGpoSettingsDisabledCount {
         Title = 'Disabled GPO settings count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

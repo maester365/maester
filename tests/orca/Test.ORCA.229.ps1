@@ -16,6 +16,7 @@ function Test-ORCA229 {
         Title = 'No trusted domains in Anti-phishing policy.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

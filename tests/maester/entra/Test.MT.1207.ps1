@@ -20,6 +20,7 @@
         Title = 'Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview).',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
         Preview,
         LongRunning,

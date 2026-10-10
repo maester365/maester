@@ -25,6 +25,7 @@
         Title = 'Block legacy MSOnline (MSOL) PowerShell module.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'

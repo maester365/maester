@@ -33,6 +33,7 @@ function Test-AzdoOrganizationCodeSecurityEnrollment {
         Title = '(Organization) Code Security: existing repositories enrolled.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

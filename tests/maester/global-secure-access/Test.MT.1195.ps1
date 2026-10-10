@@ -39,6 +39,7 @@
         Title = 'The Quick Access app should not be subject to a sign-in frequency Conditional Access control.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Entra', 'Maester'),
         Preview,
         Service = 'Graph',

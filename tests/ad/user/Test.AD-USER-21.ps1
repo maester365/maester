@@ -21,6 +21,7 @@
         Title = 'Known service account details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Users',
+        Product = 'Active Directory',
         Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

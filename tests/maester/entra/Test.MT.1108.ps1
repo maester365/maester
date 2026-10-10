@@ -38,6 +38,7 @@
         Title = 'Access packages should not reference inactive or orphaned assignment policies.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('AccessPackages', 'Entra', 'Governance', 'Maester'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),

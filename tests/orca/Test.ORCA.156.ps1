@@ -16,6 +16,7 @@ function Test-ORCA156 {
         Title = 'Safe Links Policies are tracking when user clicks on safe links.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

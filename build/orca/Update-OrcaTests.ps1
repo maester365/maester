@@ -271,6 +271,7 @@ foreach ($check in $checks) {
     $attribute.Add("Title = $(Format-OrcaString $title)")
     $attribute.Add("Severity = $(Format-OrcaString $meta.Severity)")
     $attribute.Add("Category = 'ORCA'")
+    $attribute.Add("Product = 'Defender'")
     $attribute.Add("Tag = 'EXO'")
     $attribute.Add("Service = $(Format-OrcaList $services)")
     # Defender for Office 365 Plan 1 or 2. ORCA detects MDO itself and reports 'not completed' without it.

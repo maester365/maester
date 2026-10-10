@@ -25,6 +25,7 @@
       Title = 'All security groups assigned to Conditional Access Policies should be protected by RMAU.',
       Severity = 'High',
       Category = 'Maester/Entra',
+      Product = 'Entra ID',
       Tag = ('CA', 'Maester'),
       Service = 'Graph',
       License = 'AAD_PREMIUM',

@@ -23,6 +23,7 @@
         Title = 'No domain admin accounts should have SPNs configured',
         Severity = 'Critical',
         Category = 'Active Directory - SPN Analysis',
+        Product = 'Active Directory',
         Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

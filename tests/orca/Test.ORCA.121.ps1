@@ -16,6 +16,7 @@ function Test-ORCA121 {
         Title = 'Supported filter policy action used.',
         Severity = 'Low',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

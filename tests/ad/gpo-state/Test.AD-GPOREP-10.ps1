@@ -22,6 +22,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
         Title = 'GPO no-apply Group Policy ACE count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

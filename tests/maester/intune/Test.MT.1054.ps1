@@ -19,6 +19,7 @@
         Title = 'Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as ''Not compliant''',
         Severity = 'Medium',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

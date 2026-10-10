@@ -16,6 +16,7 @@ function Test-ORCA111 {
         Title = 'Anti-phishing policy exists and EnableUnauthenticatedSender is true.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

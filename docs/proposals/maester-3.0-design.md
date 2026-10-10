@@ -17,7 +17,7 @@ custom tests.
 The design in one page:
 
 - **A check is `Test.<ID>.ps1` + `Test.<ID>.md`.** Metadata sits on the function in one
-  `[MaesterTest(...)]` attribute with 17 properties (section 4). Tunable values are ordinary
+  `[MaesterTest(...)]` attribute with 18 properties (section 4). Tunable values are ordinary
   function parameters, each able to say what kind of thing it holds (a group, a user, a
   Conditional Access policy, an Azure resource group) so a UI can offer a picker
   (section 3.4). Nothing about a built-in check lives in `maester-config.json` or in a
@@ -415,6 +415,7 @@ parameter itself (section 3.4), not here.
 | 2 | `Title` | string | one line | yes | — | The only title | `It` name after the colon (wrapper title wins over config title) | `Title` |
 | 3 | `Severity` | string | Critical, High, Medium, Low, Info | built-ins, except checks that compute it at run time (MT.1182) | empty | Default severity; run config may override | config row, else a literal `-Severity` in code, else `Severity:` tag | `RiskLevel` |
 | 4 | `Category` | string | the suite's `Categories`; free text for a test with no suite manifest | built-ins, unless the suite has a default | suite default, else `Custom` | Report grouping; written to the result as `Block` | `Describe` name | `Category` (free text in ZTA) |
+| 4a | `Product` | string | one line, up to 40 characters; a built-in test uses one of the schema's `Products` | built-ins | empty | The product the test checks. Groups the console dashboard and the run summary; written to the result as `Product` | none (2.x derived it from `Block`) | none |
 | 5 | `Tag` | string[] | non-empty; no commas; inner spaces allowed | no | none | Free selection tags | Pester tags, minus the ID, suite tags and the two flags | none (`Pillar`, `SfiPillar` map here) |
 | 6 | `Preview` | bool | — | no | false | Not run unless `-IncludePreview` or any `-Tag` | `Preview` tag (28 checks) | none |
 | 7 | `LongRunning` | bool | — | no | false | Not run unless included (section 7.1) | `LongRunning` tag (30 checks) | none |
@@ -467,11 +468,16 @@ the name Maester users, the report and downstream consumers already use.
 mechanically: ZTA tests report a status through the helper and return nothing, and
 some take an injected database.
 
-**Reserved names, additive to the format:** `Product`, `GraphScope`, `OptionalService`,
+**Reserved names, additive to the format:** `GraphScope`, `OptionalService`,
 `TimeoutSeconds`, `Deprecated`. Adding one does not break existing tests. Populating one
 is another scripted pass over the files it applies to: `GraphScope` 272 tests,
-`OptionalService` the 67 ORCA checks, `Product` nearly all of them unless it is
-delivered as a per-suite mapping.
+`OptionalService` the 67 ORCA checks.
+
+`Product` was on this list until 2026-10-10, when Merill asked for it as a real property
+so that nothing parses a product out of `Category`: the console dashboard and the run
+summary group tests by it. `build/migration/Add-MtTestProduct.ps1` wrote it into all 746
+built-in tests from each suite's own structure (the CIS benchmark section, the CISA
+baseline, the Maester category).
 
 ### How the attribute is implemented
 
@@ -1046,7 +1052,7 @@ In 3.0:
 | Hold new tests until reviewed | `Selection.DefaultAction = Skip` plus `Enabled: true` rows for reviewed IDs; unreviewed tests come back as `NotRun`/`NotListed` without executing |
 | Supply config without touching the file system | `-Config <object>`, hermetic |
 | Know the catalog before any run | `Get-MtTest` and the shipped `Maester.TestCatalog.json`, no tenant needed |
-| Classify rows by origin | `Source` and `Suite` on every row; product is still derived from `Block`, which the golden file keeps stable |
+| Classify rows by origin | `Source` and `Suite` on every row, and `Product` on native rows; `Block` is kept stable by the golden file |
 | Know the Graph permissions a release needs | the `Get-MtGraphScope` lists are written into the catalog at build time |
 | Customise a test per tenant | `TestSettings[].Parameters`, with the catalog's parameter kinds driving the host's pickers (section 3.4) |
 | Tolerate IDs the engine does not know | `Selection.UnknownIds` and `OnUnknownId` |
@@ -1704,7 +1710,8 @@ M4 to M8 move the remaining checks across.
 - A `$null` return is `Skipped`; any uncaught exception is `Error`.
 - A test disabled by config stays in the result as a `NotRun` row with a reason.
 - The per-test timeout is off by default.
-- No `Product` property in 3.0; consumers keep deriving product from `Block`.
+- `Product` is a property of the attribute and of native result rows (added 2026-10-10, reversing the earlier
+  "no `Product` in 3.0"). `Block` is unchanged, so consumers that derive product from it keep working.
 - Calling a built-in check function directly from a custom Pester test is unsupported;
   `Invoke-MtTest -Id` replaces it. No "copy under `Custom/` wins" rule.
 - A test that threw does not fail the run or the CI XML by default

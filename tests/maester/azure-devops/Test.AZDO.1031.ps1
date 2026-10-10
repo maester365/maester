@@ -24,6 +24,7 @@ function Test-AzdoValidateSshKeyExpiration {
         Title = 'Validate SSH Key Expiration.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

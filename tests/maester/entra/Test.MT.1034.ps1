@@ -39,6 +39,7 @@ function Test-MtCaWhatIfEmergencyAccessNotBlocked {
         Title = 'Emergency access users should not be blocked.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'CAWhatIf', 'Maester'),
         LongRunning,
         Service = 'Graph',

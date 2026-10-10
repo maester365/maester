@@ -16,6 +16,7 @@ function Test-ORCA223 {
         Title = 'User impersonation action is set to move to Quarantine.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

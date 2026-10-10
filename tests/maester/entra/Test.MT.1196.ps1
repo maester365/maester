@@ -24,6 +24,7 @@
         Title = 'Review who can change attributes used by dynamic group rules.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'agnivesh'

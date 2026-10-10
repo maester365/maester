@@ -16,6 +16,7 @@ function Test-ORCA104 {
         Title = 'High Confidence Phish action set to Quarantine message.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

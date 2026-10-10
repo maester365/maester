@@ -20,6 +20,7 @@
         Title = 'Ensure that write permissions are required to create new management groups',
         Severity = 'High',
         Category = 'AzureConfig',
+        Product = 'Azure',
         Tag = ('Azure', 'Maester'),
         Service = 'Azure',
         Author = 'brianveldman',

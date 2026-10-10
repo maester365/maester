@@ -18,6 +18,7 @@
         Title = 'Windows Diagnostic Data Processing should be enabled',
         Severity = 'Low',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

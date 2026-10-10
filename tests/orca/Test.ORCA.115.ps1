@@ -16,6 +16,7 @@ function Test-ORCA115 {
         Title = 'Mailbox intelligence based impersonation protection is enabled in anti-phishing policies.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

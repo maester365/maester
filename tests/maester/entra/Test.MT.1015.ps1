@@ -20,6 +20,7 @@
         Title = 'At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

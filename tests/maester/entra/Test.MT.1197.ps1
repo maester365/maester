@@ -15,6 +15,7 @@
         Title = 'Remove memberOf rules.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Service = 'Graph',
         Author = 'agnivesh'

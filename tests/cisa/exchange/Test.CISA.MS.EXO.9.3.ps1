@@ -11,6 +11,7 @@
         Title = 'Disallowed file types SHALL be determined and enforced.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.9.3'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'

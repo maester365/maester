@@ -23,6 +23,7 @@ function Test-AzdoResourceUsageProject {
         Title = 'Project Resource Limits.',
         Severity = 'Info',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

@@ -11,6 +11,7 @@
         Title = 'Only invited users should be automatically admitted to Teams meetings',
         Severity = 'Medium',
         Category = 'Maester/Teams',
+        Product = 'Teams',
         Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',

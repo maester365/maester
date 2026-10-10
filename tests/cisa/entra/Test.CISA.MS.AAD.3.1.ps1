@@ -19,6 +19,7 @@
         Title = 'Phishing-resistant MFA SHALL be enforced for all users.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.1'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

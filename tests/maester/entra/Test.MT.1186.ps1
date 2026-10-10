@@ -26,6 +26,7 @@
         Title = 'Require explicit assignment of high-privilege first-party Entra Apps.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'

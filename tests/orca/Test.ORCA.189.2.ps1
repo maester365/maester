@@ -16,6 +16,7 @@ function Test-ORCA189_2 {
         Title = 'Safe Links is not bypassed.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

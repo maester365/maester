@@ -22,6 +22,7 @@
         Title = 'Computer SPN unknown service class count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
+        Product = 'Active Directory',
         Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

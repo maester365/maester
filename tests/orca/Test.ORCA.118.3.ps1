@@ -16,6 +16,7 @@ function Test-ORCA118_3 {
         Title = 'Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'

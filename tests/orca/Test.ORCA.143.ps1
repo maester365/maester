@@ -16,6 +16,7 @@ function Test-ORCA143 {
         Title = 'Safety Tips are enabled.',
         Severity = 'Info',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

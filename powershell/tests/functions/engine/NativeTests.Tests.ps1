@@ -49,7 +49,7 @@ Describe 'Read-MtNativeTest' {
     It 'Reports <Case> as <Code>' -ForEach @(
         @{ Case = 'an unknown property'; Attribute = "Nope = 'x'"; Code = 'InvalidMetadata' }
         @{ Case = 'a value outside the allowed list'; Attribute = "Cloud = 'Mars'"; Code = 'InvalidMetadata' }
-        @{ Case = 'a reserved property'; Attribute = "Product = 'x'"; Code = 'InvalidMetadata' }
+        @{ Case = 'a reserved property'; Attribute = "GraphScope = 'x'"; Code = 'InvalidMetadata' }
     ) {
         $file = New-NativeTestFile -Folder (Join-Path $TestDrive ("bad" + [guid]::NewGuid().ToString('n'))) -Id 'BAD.1' -Attribute $Attribute
         $t = InModuleScope Maester -Parameters @{ File = $file } { Read-MtNativeTest -Path $File }

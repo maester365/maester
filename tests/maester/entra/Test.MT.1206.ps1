@@ -21,6 +21,7 @@
         Title = 'Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview).',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
         Preview,
         LongRunning,

@@ -32,6 +32,7 @@
         Title = 'CPU Load Factor should be optimized (20-30%).',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

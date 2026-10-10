@@ -23,6 +23,7 @@
         Title = 'A notification SHOULD be sent to the administrator when high-risk users are detected.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P2', 'MS.AAD', 'MS.AAD.2.2'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',

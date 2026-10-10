@@ -19,6 +19,7 @@
         Title = 'Only administrators SHALL be allowed to consent to applications.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.5.2'),
         Service = 'Graph',
         Author = 'soulemike',

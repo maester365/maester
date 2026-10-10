@@ -19,6 +19,7 @@
         Title = 'Alerts SHALL be enabled.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.16.1'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

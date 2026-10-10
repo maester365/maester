@@ -26,6 +26,7 @@ function Test-MtAIAgentMissingInstructions {
         Title = 'AI agents with generative orchestration should have custom instructions.',
         Severity = 'Medium',
         Category = 'Copilot Studio Agent Security',
+        Product = 'Copilot Studio',
         Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'

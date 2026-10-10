@@ -11,6 +11,7 @@
         Title = 'Security Defaults are enabled.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'f-bader',

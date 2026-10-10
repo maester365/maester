@@ -30,6 +30,7 @@
         Title = 'DLP policy is configured for the Microsoft 365 Copilot location.',
         Severity = 'High',
         Category = 'Maester/Purview',
+        Product = 'Purview',
         Tag = ('Maester', 'Purview'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',

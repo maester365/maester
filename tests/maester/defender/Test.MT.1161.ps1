@@ -32,6 +32,7 @@
         Title = 'Cloud Block Level should be High or higher.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

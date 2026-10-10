@@ -23,6 +23,7 @@
         Title = 'Entra Private Access applications should not use the Default connector group.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Preview,
         Service = 'Graph',

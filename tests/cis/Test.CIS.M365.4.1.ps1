@@ -20,6 +20,7 @@
         Title = 'Ensure devices without a compliance policy are marked ''not compliant''',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Intune',
         Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
         Service = 'Graph',
         License = 'INTUNE_A',

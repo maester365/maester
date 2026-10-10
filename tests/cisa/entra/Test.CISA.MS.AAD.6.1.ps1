@@ -20,6 +20,7 @@
         Title = 'User passwords SHALL NOT expire.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.6.1'),
         Service = 'Graph',
         Author = 'soulemike',

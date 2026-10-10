@@ -20,6 +20,7 @@
         Title = 'Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         LongRunning,
         Service = 'Graph',

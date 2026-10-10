@@ -16,6 +16,7 @@ function Test-ORCA233 {
         Title = 'Domains are pointed directly at EOP or enhanced filtering is used.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

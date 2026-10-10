@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAP06 {
         Title = 'Default Authorization Settings - User can join the tenant by email validation.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

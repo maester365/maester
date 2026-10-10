@@ -11,6 +11,7 @@
         Title = 'Apps with high-risk permissions having an indirect path to Global Administrator',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         Preview,
         LongRunning,

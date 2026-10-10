@@ -22,6 +22,7 @@
         Title = 'Foreign SID details by domain should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
+        Product = 'Active Directory',
         Tag = ('AD.GMC', 'AD.Group'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'

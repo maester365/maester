@@ -23,6 +23,7 @@
         Title = 'Ensure repository creation is limited to specific members',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'GitHub',
         Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
         Service = 'GitHub',
         Author = 'thetechgy'

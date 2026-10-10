@@ -16,6 +16,7 @@ function Test-ORCA101 {
         Title = 'Bulk is marked as spam.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

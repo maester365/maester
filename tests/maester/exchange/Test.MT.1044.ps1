@@ -21,6 +21,7 @@
         Title = 'Ensure modern authentication for Exchange Online is enabled',
         Severity = 'High',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',

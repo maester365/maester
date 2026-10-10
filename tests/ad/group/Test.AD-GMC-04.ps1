@@ -24,6 +24,7 @@
         Title = 'Trust members count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
+        Product = 'Active Directory',
         Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

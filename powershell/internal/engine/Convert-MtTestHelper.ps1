@@ -86,6 +86,7 @@ function New-MtTestAttributeText {
         [Parameter(Mandatory)] [string] $Title,
         [Parameter()] [string] $Severity = 'Medium',
         [Parameter()] [string] $Category,
+        [Parameter()] [string] $Product,
         [Parameter()] [string[]] $Tag,
         [Parameter()] [switch] $Preview,
         [Parameter()] [switch] $LongRunning,
@@ -100,6 +101,7 @@ function New-MtTestAttributeText {
     $lines.Add("    Title = $(& $quote $Title)")
     $lines.Add("    Severity = $(& $quote $Severity)")
     if ($Category) { $lines.Add("    Category = $(& $quote $Category)") }
+    if ($Product) { $lines.Add("    Product = $(& $quote $Product)") }
     if (@($Tag).Count -gt 0) { $lines.Add("    Tag = $(& $list $Tag)") }
     if ($Preview) { $lines.Add('    Preview = $true') }
     if ($LongRunning) { $lines.Add('    LongRunning = $true') }

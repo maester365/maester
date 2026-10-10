@@ -21,6 +21,7 @@
       Title = 'At least one Conditional Access policy is configured with device compliance.',
       Severity = 'Medium',
       Category = 'Maester/Entra',
+      Product = 'Entra ID',
       Tag = ('CA', 'Maester'),
       Service = 'Graph',
       License = 'AAD_PREMIUM',

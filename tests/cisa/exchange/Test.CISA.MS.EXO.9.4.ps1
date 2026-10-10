@@ -19,6 +19,7 @@
         Title = 'Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender''s Common Attachment Filter.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.9.4'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         Author = 'soulemike',

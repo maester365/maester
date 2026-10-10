@@ -19,6 +19,7 @@
         Title = 'Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles (Preview).',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
         Preview,
         LongRunning,

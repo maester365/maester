@@ -31,6 +31,7 @@ function Test-AzdoOrganizationCopilotCodeReview {
         Title = '(Organization) Copilot code review: allowed for repositories.',
         Severity = 'Info',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Preview,
         Service = 'AzureDevOps',

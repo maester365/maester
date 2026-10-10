@@ -19,6 +19,7 @@
         Title = 'Expiration days for Anyone links SHALL be set to 30 days or less.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'SharePoint',
         Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.3.1'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'

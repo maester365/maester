@@ -20,6 +20,7 @@
         Title = 'App registrations with highly privileged directory roles should not have owners.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
         LongRunning,
         Service = 'Graph',

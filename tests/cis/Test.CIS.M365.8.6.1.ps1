@@ -20,6 +20,7 @@
         Title = 'Ensure users can report security concerns in Teams',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Teams',
         Tag = ('CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = 'Teams',
         Author = 'HenrikPiecha',

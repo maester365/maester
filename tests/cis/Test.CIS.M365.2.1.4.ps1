@@ -20,6 +20,7 @@
         Title = 'Ensure Safe Attachments policy is enabled (Only Checks Default Policy)',
         Severity = 'High',
         Category = 'CIS',
+        Product = 'Defender',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

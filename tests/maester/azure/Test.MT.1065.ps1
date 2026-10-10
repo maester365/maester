@@ -21,6 +21,7 @@
         Title = 'Ensure all Recovery Services Vaults have soft delete enabled',
         Severity = 'High',
         Category = 'AzureConfig',
+        Product = 'Azure',
         Tag = ('Azure', 'Backup', 'Maester'),
         Service = 'Azure',
         Author = 'brianveldman',

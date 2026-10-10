@@ -33,6 +33,7 @@
         Title = 'All Conditional Access policies are configured to exclude Directory/OnPremises synchronization accounts or do not scope them.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

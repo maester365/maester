@@ -18,6 +18,7 @@
         Title = 'Windows Feature Update Policy Settings should not reference end of support builds',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

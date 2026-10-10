@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAP04 {
         Title = 'Default Authorization Settings - Guest invite restrictions.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

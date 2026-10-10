@@ -27,6 +27,7 @@
         Title = 'Conditional Access policies should not reference non-existent users, groups, or roles.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'SamErde'

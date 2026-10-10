@@ -34,6 +34,7 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
         Title = '(Organization) Secret Protection: push protection blocks secret commits.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

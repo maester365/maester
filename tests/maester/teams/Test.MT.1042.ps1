@@ -11,6 +11,7 @@
         Title = 'Restrict dial-in users from bypassing a meeting lobby',
         Severity = 'Medium',
         Category = 'Maester/Teams',
+        Product = 'Teams',
         Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',

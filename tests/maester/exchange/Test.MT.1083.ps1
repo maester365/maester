@@ -21,6 +21,7 @@
         Title = 'Ensure Delicensing Resiliency is enabled',
         Severity = 'Low',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'l-gosling'

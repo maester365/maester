@@ -27,6 +27,7 @@
         Title = 'Sensitivity labels are published for files used by Microsoft 365 Copilot.',
         Severity = 'Medium',
         Category = 'Maester/Purview',
+        Product = 'Purview',
         Tag = ('Maester', 'Purview'),
         Service = 'SecurityCompliance',
         Author = 'OfirGavish'

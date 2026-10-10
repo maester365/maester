@@ -27,6 +27,7 @@
         Title = 'No replication connections should be disabled',
         Severity = 'High',
         Category = 'Active Directory - Replication',
+        Product = 'Active Directory',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

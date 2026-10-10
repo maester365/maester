@@ -16,6 +16,7 @@ function Test-ORCA108 {
         Title = 'DKIM signing is set up for all your custom domains.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

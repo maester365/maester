@@ -25,7 +25,12 @@
     ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.')
 
     # Names reserved for future properties. Adding one later does not break existing tests.
-    ReservedNames    = @('Product', 'GraphScope', 'OptionalService', 'TimeoutSeconds', 'Deprecated')
+    ReservedNames    = @('GraphScope', 'OptionalService', 'TimeoutSeconds', 'Deprecated')
+
+    # Product names of the tests shipped with Maester. A built-in test must use one of them; a custom
+    # test may name any product.
+    Products         = @('Entra ID', 'Exchange Online', 'Defender', 'Intune', 'Purview', 'SharePoint', 'Teams',
+        'Microsoft 365', 'Azure', 'Azure DevOps', 'GitHub', 'Active Directory', 'Copilot Studio')
 
     # Parameter names a test cannot declare for configuration: the engine supplies them.
     ReservedParameterNames    = @('Instance')
@@ -59,6 +64,13 @@
             Required    = 'No'
             Default     = 'The suite default, else Custom'
             Description = 'Report grouping, written to the result as Block.'
+        }
+        Product           = @{
+            Type        = 'string'
+            Required    = 'BuiltIn'
+            Pattern     = '^[^\r\n]+$'
+            MaxLength   = 40
+            Description = 'The product the test checks, for example Entra ID. Groups console progress and the run summary; written to the result as Product.'
         }
         Tag               = @{
             Type        = 'string[]'

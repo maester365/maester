@@ -18,6 +18,7 @@
         Title = 'Intune Diagnostic Settings should include Audit Logs',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Azure',
         License = 'INTUNE_A',

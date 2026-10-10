@@ -16,6 +16,7 @@
         Title = 'Restrict non-admin users from creating security groups.',
         Severity = 'Low',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Group', 'Maester'),
         Service = 'Graph',
         Author = 'marcel-ngn'

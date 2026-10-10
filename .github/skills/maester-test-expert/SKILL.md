@@ -86,7 +86,7 @@ Scaffold it, then edit:
 
 ```powershell
 New-MtTest -Id MT.1234 -Title 'At least one Conditional Access policy blocks device code flow.' `
-    -Service Graph -Severity High -Category 'Maester/Entra' -Path ./tests/maester/entra
+    -Service Graph -Severity High -Category 'Maester/Entra' -Product 'Entra ID' -Path ./tests/maester/entra
 ```
 
 ```powershell
@@ -103,6 +103,7 @@ function Test-MtCaBlockDeviceCodeFlow {
         Title             = 'At least one Conditional Access policy blocks device code flow.',
         Severity          = 'High',
         Category          = 'Maester/Entra',
+        Product           = 'Entra ID',
         Tag               = ('CA', 'Entra', 'Maester'),
         Service           = 'Graph',
         License = 'AAD_PREMIUM',
@@ -152,6 +153,7 @@ schema lives in `powershell/assets/MaesterTestSchema.psd1`.
 | `Title` | string | One line | Yes | The only title. |
 | `Severity` | string | `Critical`, `High`, `Medium`, `Low`, `Info` | Yes | See [severity levels](../../../website/docs/configuration/severity-levels.md). |
 | `Category` | string | Free text | Effectively yes | Report grouping (`Block`). Use the suite's convention: `Maester/Entra`, `CISA`, `CIS`, ... |
+| `Product` | string | `Entra ID`, `Exchange Online`, `Defender`, `Intune`, `Purview`, `SharePoint`, `Teams`, `Microsoft 365`, `Azure`, `Azure DevOps`, `GitHub`, `Active Directory`, `Copilot Studio` | Yes | The product the test checks. Groups the console progress and the run summary. The unit tests reject a built-in test without one, or with a name that is not in this list (`Products` in `powershell/assets/MaesterTestSchema.psd1`). |
 | `Tag` | string[] | No commas | No | See tagging below. |
 | `Preview` | bool | | No | Depends on preview APIs or still being validated. |
 | `LongRunning` | bool | | No | Slow in large tenants. |
@@ -356,7 +358,7 @@ The effective tags of a check are: the suite's `Tags` (from `suite.json`) + the 
 
 1. **Reserve an ID.** Check [issue #697](https://github.com/maester365/maester/issues/697) and comment to reserve
    the next `MT.xxxx` (the maester-issue-manager agent can do this). `Get-MtTest MT.12*` shows which IDs exist.
-2. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Severity <level> -Category '<suite/area>'
+2. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Severity <level> -Category '<suite/area>' -Product '<product>'
    -Path ./tests/<suite>/<area>`.
 3. **Fill in the attribute**: `Tag`, `License`, `Author`, flags as needed.
 4. **Write the function**: read with `Invoke-MtGraphRequest` or the helpers, decide, `Add-MtTestResultDetail`,
@@ -402,7 +404,7 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 
 ### Attribute and files
 - [ ] `Test.<Id>.ps1` and `Test.<Id>.md` in the right suite folder; ID unique and not reused.
-- [ ] `Id`, `Title`, `Severity`, `Category`, `Service`, `Author` set; values constant.
+- [ ] `Id`, `Title`, `Severity`, `Category`, `Product`, `Service`, `Author` set; values constant.
 - [ ] Tags follow the taxonomy; `Preview`/`LongRunning` as flags.
 - [ ] `[CmdletBinding()]` and `[OutputType([bool])]`; comment-based help inside the function.
 - [ ] `Get-MtTest -Path <file>` reports no errors.

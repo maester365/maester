@@ -22,6 +22,7 @@
         Title = 'Domain functional level should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - Domain',
+        Product = 'Active Directory',
         Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

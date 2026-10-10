@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAP10 {
         Title = 'Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

@@ -27,6 +27,7 @@
         Title = 'Computers with unconstrained delegation count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - Security Accounts',
+        Product = 'Active Directory',
         Tag = 'AD.Security',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

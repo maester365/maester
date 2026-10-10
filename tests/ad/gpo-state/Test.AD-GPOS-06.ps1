@@ -29,6 +29,7 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
         Title = 'User disabled GPO settings details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -11,6 +11,7 @@
         Title = '(Organization) Disallow extensions from accessing resources on the local network.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

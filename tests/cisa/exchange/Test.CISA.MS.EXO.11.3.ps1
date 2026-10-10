@@ -19,6 +19,7 @@
         Title = 'The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.11.3'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',

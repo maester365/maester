@@ -21,6 +21,7 @@
         Title = 'GPOs without authenticated users details should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

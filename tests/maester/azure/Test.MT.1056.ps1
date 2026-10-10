@@ -19,6 +19,7 @@
         Title = 'Ensure that no person has permanent access to all Azure subscriptions at the root scope',
         Severity = 'High',
         Category = 'AzureConfig',
+        Product = 'Azure',
         Tag = ('Azure', 'Maester', 'Privileged'),
         Service = ('Azure', 'Graph'),
         Author = 'Oppedijk',

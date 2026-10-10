@@ -22,6 +22,7 @@
         Title = 'Forest functional level should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - Forest',
+        Product = 'Active Directory',
         Tag = 'AD.Forest',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

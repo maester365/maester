@@ -20,6 +20,7 @@
         Title = 'Ensure the customer lockbox feature is enabled',
         Severity = 'High',
         Category = 'CIS',
+        Product = 'Microsoft 365',
         Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = 'ExchangeOnline',
         License = 'LOCKBOX_ENTERPRISE',

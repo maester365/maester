@@ -24,6 +24,7 @@ function Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation {
         Title = 'Enable shell tasks arguments validation.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

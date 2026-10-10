@@ -38,6 +38,7 @@ function Read-MtNativeTest {
         Title             = $null
         Severity          = $null
         Category          = $null
+        Product           = $null
         Tag               = @()
         Preview           = $false
         LongRunning       = $false
@@ -178,6 +179,10 @@ function Read-MtNativeTest {
     }
     $test.Service = @($services | Select-Object -Unique)
     $test.UnregisteredServices = $unregistered.ToArray()
+
+    if ($BuiltIn -and $test.Product -and $test.Product -notin $schema.Products) {
+        & $addError 'InvalidMetadata' "Product '$($test.Product)' is not one of the products of the tests shipped with Maester ($($schema.Products -join ', '))." $attribute.Extent.StartLineNumber
+    }
 
     foreach ($name in $schema.Properties.Keys) {
         $required = $schema.Properties[$name].Required

@@ -20,6 +20,7 @@
         Title = 'Devices with critical credentials should be protected by TPM.',
         Severity = 'Medium',
         Category = 'Exposure Management',
+        Product = 'Defender',
         Tag = 'Device',
         LongRunning,
         Service = 'Graph',

@@ -23,6 +23,7 @@
         Title = 'Allowed DNS suffixes count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Domain',
+        Product = 'Active Directory',
         Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

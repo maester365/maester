@@ -43,6 +43,7 @@ function Test-MtCaWhatIfLegacyAuthenticationBlocked {
         Title = 'Users should be blocked from using legacy authentication.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'CAWhatIf', 'Maester'),
         LongRunning,
         Service = 'Graph',

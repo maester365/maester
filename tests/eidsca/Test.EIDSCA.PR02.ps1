@@ -16,6 +16,7 @@ function Test-MtCheckEidscaPR02 {
         Title = 'Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

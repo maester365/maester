@@ -32,6 +32,7 @@
         Title = 'Retention policy is configured for the Microsoft Copilot location.',
         Severity = 'Medium',
         Category = 'Maester/Purview',
+        Product = 'Purview',
         Tag = ('Maester', 'Purview'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'OfirGavish'

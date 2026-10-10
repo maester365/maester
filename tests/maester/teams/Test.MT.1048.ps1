@@ -11,6 +11,7 @@
         Title = 'Limit external participants from having control in a Teams meeting',
         Severity = 'Medium',
         Category = 'Maester/Teams',
+        Product = 'Teams',
         Tag = ('Maester', 'Teams'),
         Service = 'Teams',
         Author = 'weyCC81',

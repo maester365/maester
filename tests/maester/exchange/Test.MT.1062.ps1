@@ -21,6 +21,7 @@
         Title = 'Ensure Direct Send is set to be rejected',
         Severity = 'Medium',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'bastienperez'

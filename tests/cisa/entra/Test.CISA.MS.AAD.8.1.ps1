@@ -19,6 +19,7 @@
         Title = 'Guest users SHOULD have limited or restricted access to Entra ID directory objects.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.8.1'),
         Service = 'Graph',
         Author = 'soulemike',

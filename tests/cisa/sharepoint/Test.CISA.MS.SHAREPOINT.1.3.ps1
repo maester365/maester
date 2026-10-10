@@ -19,6 +19,7 @@
         Title = 'External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'SharePoint',
         Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.1.3'),
         Service = 'SharePointOnline',
         Author = 'soulemike',

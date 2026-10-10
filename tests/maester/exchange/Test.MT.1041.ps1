@@ -21,6 +21,7 @@
         Title = 'Ensure users installing Outlook add-ins is not allowed',
         Severity = 'High',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',

@@ -19,6 +19,7 @@
         Title = 'A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.7.1'),
         Service = 'Graph',
         Author = 'soulemike',

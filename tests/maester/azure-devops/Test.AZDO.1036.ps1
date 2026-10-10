@@ -24,6 +24,7 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
         Title = '(Tenant) Restrict Personal Access Token full scope.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

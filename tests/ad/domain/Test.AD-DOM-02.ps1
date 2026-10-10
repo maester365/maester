@@ -22,6 +22,7 @@
         Title = 'Machine account quota should be retrievable',
         Severity = 'Low',
         Category = 'Active Directory - Domain',
+        Product = 'Active Directory',
         Tag = 'AD.Domain',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

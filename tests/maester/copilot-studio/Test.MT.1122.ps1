@@ -25,6 +25,7 @@ function Test-MtAIAgentOrphaned {
         Title = 'AI agents should not have orphaned ownership.',
         Severity = 'Medium',
         Category = 'Copilot Studio Agent Security',
+        Product = 'Copilot Studio',
         Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'

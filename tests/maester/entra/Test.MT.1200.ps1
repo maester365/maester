@@ -18,6 +18,7 @@
         Title = 'Agent Identities should have an active Agent Identity Blueprint Principal (Preview).',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
         Preview,
         Service = 'Graph',

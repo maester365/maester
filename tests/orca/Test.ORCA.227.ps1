@@ -16,6 +16,7 @@ function Test-ORCA227 {
         Title = 'Each domain has a Safe Attachments policy applied to it.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

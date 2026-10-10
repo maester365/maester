@@ -19,6 +19,7 @@
         Title = 'If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.2'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

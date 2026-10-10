@@ -16,6 +16,7 @@ function Test-ORCA220 {
         Title = 'Advanced Phish filter Threshold level is adequate.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

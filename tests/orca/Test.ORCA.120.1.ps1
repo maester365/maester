@@ -16,6 +16,7 @@ function Test-ORCA120_phish {
         Title = 'Zero Hour Autopurge Enabled for Phish.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'

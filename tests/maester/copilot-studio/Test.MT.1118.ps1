@@ -30,6 +30,7 @@ function Test-MtAIAgentAuthorAuthentication {
         Title = 'AI agents should not use author (maker) authentication for connections.',
         Severity = 'Medium',
         Category = 'Copilot Studio Agent Security',
+        Product = 'Copilot Studio',
         Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
         Service = 'Graph',
         Author = 'lnfernux'

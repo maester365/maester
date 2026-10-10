@@ -30,6 +30,7 @@
         Title = 'Unified audit log ingestion is enabled.',
         Severity = 'High',
         Category = 'Maester/Purview',
+        Product = 'Purview',
         Tag = ('Maester', 'Purview'),
         Service = 'ExchangeOnline',
         Author = 'OfirGavish'

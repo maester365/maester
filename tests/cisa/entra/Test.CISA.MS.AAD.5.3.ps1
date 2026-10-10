@@ -19,6 +19,7 @@
         Title = 'An admin consent workflow SHALL be configured for applications.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.5.3'),
         Service = 'Graph',
         Author = 'soulemike'

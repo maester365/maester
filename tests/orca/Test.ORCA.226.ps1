@@ -16,6 +16,7 @@ function Test-ORCA226 {
         Title = 'Each domain has a Safe Link policy applied to it.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

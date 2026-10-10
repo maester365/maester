@@ -23,6 +23,7 @@
         Title = 'Non-RFC1918 (public IP) subnets details should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Sites and Subnets',
+        Product = 'Active Directory',
         Tag = 'AD.Site',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

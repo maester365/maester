@@ -21,6 +21,7 @@
         Title = 'DKIM SHOULD be enabled for all domains.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.3.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

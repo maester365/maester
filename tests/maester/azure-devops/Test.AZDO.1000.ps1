@@ -24,6 +24,7 @@ function Test-AzdoThirdPartyAccessViaOauth {
         Title = 'Azure DevOps OAuth apps can access resources in your organization through OAuth.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

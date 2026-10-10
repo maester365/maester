@@ -20,6 +20,7 @@
         Title = 'Soft- and hard-matching of synchronized objects should be blocked.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
         Author = 'HenrikPiecha'

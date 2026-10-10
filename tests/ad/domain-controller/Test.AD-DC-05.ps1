@@ -21,6 +21,7 @@
         Title = 'DCs with all FSMO roles count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Domain Controllers',
+        Product = 'Active Directory',
         Tag = 'AD.DomainController',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

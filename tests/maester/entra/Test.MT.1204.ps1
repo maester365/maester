@@ -18,6 +18,7 @@
         Title = 'Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview).',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
         Preview,
         LongRunning,

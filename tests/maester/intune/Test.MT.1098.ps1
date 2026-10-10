@@ -18,6 +18,7 @@
         Title = 'Mobile Threat Defense Connectors should be healthy',
         Severity = 'Critical',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

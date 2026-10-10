@@ -19,6 +19,7 @@
         Title = 'Do not sync krbtgt_AzureAD to Entra ID.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
         Author = 'f-bader'

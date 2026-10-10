@@ -22,6 +22,7 @@
         Title = 'DNSSEC record count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - DNS Infrastructure',
+        Product = 'Active Directory',
         Tag = 'AD.DNS',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

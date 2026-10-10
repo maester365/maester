@@ -16,6 +16,7 @@ function Test-ORCA120_spam {
         Title = 'Zero Hour Autopurge Enabled for Spam.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'

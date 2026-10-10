@@ -27,6 +27,7 @@ function Test-AzdoDisableGlobalPATCreation {
         Title = '(Tenant) Restrict creation of global Personal Access Tokens.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

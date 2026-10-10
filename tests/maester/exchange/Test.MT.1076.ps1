@@ -20,6 +20,7 @@ function Test-MtExoMoeraMailActivity {
         Title = 'MOERA SHOULD NOT be used for sent mail',
         Severity = 'High',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = 'Graph',
         Author = 'soulemike',

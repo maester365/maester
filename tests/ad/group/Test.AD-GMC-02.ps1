@@ -23,6 +23,7 @@
         Title = 'Distinct account types of members count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Group Members',
+        Product = 'Active Directory',
         Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

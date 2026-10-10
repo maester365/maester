@@ -26,6 +26,7 @@
         Title = 'Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Entra', 'Maester'),
         Preview,
         Service = 'Graph',

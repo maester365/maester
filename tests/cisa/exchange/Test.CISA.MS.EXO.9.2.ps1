@@ -11,6 +11,7 @@
         Title = 'The attachment filter SHOULD attempt to determine the true file type and assess the file extension.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.9.2'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'

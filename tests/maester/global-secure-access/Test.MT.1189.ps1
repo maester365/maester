@@ -26,6 +26,7 @@
         Title = 'Groups assigned to Global Secure Access traffic forwarding profiles should not be nested.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Maester'),
         Preview,
         Service = 'Graph',

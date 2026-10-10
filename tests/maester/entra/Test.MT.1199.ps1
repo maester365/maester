@@ -34,6 +34,7 @@
         Title = 'App registration credentials should not be expired or expiring soon.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         LongRunning,
         Service = 'Graph',

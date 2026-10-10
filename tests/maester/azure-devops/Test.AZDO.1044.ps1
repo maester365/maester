@@ -33,6 +33,7 @@ function Test-AzdoOrganizationCodeSecurityScanning {
         Title = '(Organization) Code Security: dependency and CodeQL alerts enabled.',
         Severity = 'Medium',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

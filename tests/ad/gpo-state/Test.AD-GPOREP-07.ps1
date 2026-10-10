@@ -21,6 +21,7 @@
         Title = 'GPOs with deny ACE count should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - GPO State',
+        Product = 'Active Directory',
         Tag = 'AD.GPOState',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

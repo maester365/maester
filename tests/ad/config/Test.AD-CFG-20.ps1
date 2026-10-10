@@ -22,6 +22,7 @@
         Title = 'CRL distribution points count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Configuration',
+        Product = 'Active Directory',
         Tag = 'AD.Config',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

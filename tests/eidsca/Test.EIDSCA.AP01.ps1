@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAP01 {
         Title = 'Default Authorization Settings - Enabled Self service password reset for administrators.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

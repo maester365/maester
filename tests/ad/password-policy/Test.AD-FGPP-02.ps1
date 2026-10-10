@@ -22,6 +22,7 @@
         Title = 'Fine-grained password policy value count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Password Policy',
+        Product = 'Active Directory',
         Tag = 'AD.PasswordPolicy',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -20,6 +20,7 @@
         Title = 'Conditional Access policy is present that blocks high agent risk sign-ins.',
         Severity = 'High',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         Author = 'ExeqZ'

@@ -19,6 +19,7 @@
         Title = 'External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'SharePoint',
         Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.1.2'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'

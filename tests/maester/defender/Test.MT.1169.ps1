@@ -31,6 +31,7 @@
         Title = 'Catch-up Full Scan should be disabled.',
         Severity = 'High',
         Category = 'Maester/Defender',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester'),
         Service = 'Graph',
         Author = 'bdrogja'

@@ -28,6 +28,7 @@
         Title = 'Insider Risk Management policy for Risky AI usage is enabled.',
         Severity = 'Medium',
         Category = 'Maester/Purview',
+        Product = 'Purview',
         Tag = ('Maester', 'Purview'),
         Service = ('Graph', 'SecurityCompliance'),
         Author = 'OfirGavish'

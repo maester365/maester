@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAP05 {
         Title = 'Default Authorization Settings - Sign-up for email based subscription.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

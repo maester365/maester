@@ -16,6 +16,7 @@ function Test-ORCA110 {
         Title = 'Internal Sender notifications are disabled.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

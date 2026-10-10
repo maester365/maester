@@ -23,6 +23,7 @@
         Title = 'User SPN total count should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
+        Product = 'Active Directory',
         Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

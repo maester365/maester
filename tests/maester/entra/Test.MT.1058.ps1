@@ -19,6 +19,7 @@
         Title = 'Exchange application access policies must be configured.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         LongRunning,
         Service = ('Graph', 'ExchangeOnline'),

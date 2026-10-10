@@ -16,6 +16,7 @@ function Test-ORCA228 {
         Title = 'No trusted senders in Anti-phishing policy.',
         Severity = 'High',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

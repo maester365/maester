@@ -19,6 +19,7 @@
         Title = 'No pre-authentication user count should be retrievable',
         Severity = 'High',
         Category = 'Active Directory - Users',
+        Product = 'Active Directory',
         Tag = 'AD.User',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

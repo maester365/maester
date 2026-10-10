@@ -20,6 +20,7 @@
         Title = 'Ensure external Teams users cannot initiate conversations',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Teams',
         Tag = ('CIS E3 Level 1', 'CIS M365 v7.0.0'),
         Service = 'Teams',
         Author = 'Mynster9361',

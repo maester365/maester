@@ -19,6 +19,7 @@
         Title = 'Require explicit assignment of Third Party Entra Apps.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('App', 'Entra', 'Graph', 'Maester'),
         LongRunning,
         Service = 'Graph',

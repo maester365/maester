@@ -16,6 +16,7 @@ function Test-ORCA109 {
         Title = 'Senders are not being allow listed in an unsafe manner.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

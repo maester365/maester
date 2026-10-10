@@ -20,6 +20,7 @@
         Title = 'Ensure only people in my org can bypass the lobby',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Teams',
         Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = 'Teams',
         Author = 'HenrikPiecha',

@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAV01 {
         Title = 'Authentication Method - Voice call - State.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

@@ -25,6 +25,7 @@
         Title = 'GPO created before 2020 count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Group Policy',
+        Product = 'Active Directory',
         Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

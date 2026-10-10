@@ -23,6 +23,7 @@
         Title = 'Recycle Bin status should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Forest',
+        Product = 'Active Directory',
         Tag = 'AD.Forest',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

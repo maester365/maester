@@ -24,6 +24,7 @@ function Test-AzdoSSHAuthentication {
         Title = 'Identities can connect to your organization''s Git repos through SSH.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

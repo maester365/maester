@@ -11,6 +11,7 @@
         Title = 'Emails SHALL be filtered by attachment file types.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.9.1'),
         Service = 'Graph',
         Author = 'soulemike',

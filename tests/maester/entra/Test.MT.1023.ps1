@@ -11,6 +11,7 @@
         Title = 'All users utilizing a P2 license should be licensed.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Entra', 'License', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

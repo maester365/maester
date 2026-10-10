@@ -42,6 +42,7 @@
         Title = 'Ensure macOS LAPS is configured on Automated Device Enrollment profiles.',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',

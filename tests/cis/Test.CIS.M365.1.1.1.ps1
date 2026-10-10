@@ -20,6 +20,7 @@
         Title = 'Ensure Administrative accounts are cloud-only',
         Severity = 'High',
         Category = 'CIS',
+        Product = 'Microsoft 365',
         Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
         Service = 'Graph',
         Author = 'soulemike',

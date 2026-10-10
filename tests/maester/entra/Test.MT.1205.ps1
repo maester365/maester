@@ -18,6 +18,7 @@
         Title = 'Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview).',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
         Preview,
         LongRunning,

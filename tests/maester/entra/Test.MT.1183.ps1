@@ -25,6 +25,7 @@
         Title = 'Temporary bypass for onPremisesObjectIdentifier updates should be disabled.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
         Service = 'Graph',
         Author = 'BakkerJan'

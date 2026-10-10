@@ -32,6 +32,7 @@
         Title = 'All domain controllers should have DFS-R subscriptions',
         Severity = 'High',
         Category = 'Active Directory - Replication',
+        Product = 'Active Directory',
         Tag = 'AD.Replication',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

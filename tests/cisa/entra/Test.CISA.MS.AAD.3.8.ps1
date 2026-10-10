@@ -19,6 +19,7 @@
         Title = 'Managed Devices SHOULD be required to register MFA.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.8'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

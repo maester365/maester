@@ -16,6 +16,7 @@ function Test-MtCheckEidscaCP01 {
         Title = 'Default Settings - Consent Policy Settings - Group owner consent for apps accessing data.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

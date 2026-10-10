@@ -26,6 +26,7 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
         Title = 'Additional protections when using public package registries.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

@@ -20,6 +20,7 @@
         Title = 'At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices.',
         Severity = 'Medium',
         Category = 'Maester/Entra',
+        Product = 'Entra ID',
         Tag = ('CA', 'Maester'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',

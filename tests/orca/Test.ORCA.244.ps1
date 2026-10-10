@@ -16,6 +16,7 @@ function Test-ORCA244 {
         Title = 'Policies are configured to honor sending domains DMARC.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

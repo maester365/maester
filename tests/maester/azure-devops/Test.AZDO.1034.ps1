@@ -27,6 +27,7 @@ function Test-AzdoOrganizationCreationRestriction {
         Title = '(Tenant) Restrict creation of new Azure DevOps organizations.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

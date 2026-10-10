@@ -25,6 +25,7 @@
         Title = 'GPO unlinked details should be compliant',
         Severity = 'Medium',
         Category = 'Active Directory - Group Policy',
+        Product = 'Active Directory',
         Tag = 'AD.GPO',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

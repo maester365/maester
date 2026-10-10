@@ -19,6 +19,7 @@
         Title = 'Only administrators SHALL be allowed to register applications.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Entra ID',
         Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.5.1'),
         Service = 'Graph',
         Author = 'soulemike',

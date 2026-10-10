@@ -19,6 +19,7 @@
         Title = 'Automatic forwarding to external domains SHALL be disabled.',
         Severity = 'High',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.1.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

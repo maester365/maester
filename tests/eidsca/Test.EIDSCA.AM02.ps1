@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAM02 {
         Title = 'Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP.',
         Severity = 'Medium',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

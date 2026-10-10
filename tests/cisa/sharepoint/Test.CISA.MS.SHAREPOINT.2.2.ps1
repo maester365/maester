@@ -19,6 +19,7 @@
         Title = 'File and folder default sharing permissions SHALL be set to View only.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'SharePoint',
         Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.2.2'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'

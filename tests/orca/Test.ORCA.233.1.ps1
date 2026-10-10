@@ -16,6 +16,7 @@ function Test-ORCA233_1 {
         Title = 'Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'

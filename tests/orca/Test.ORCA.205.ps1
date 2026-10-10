@@ -16,6 +16,7 @@ function Test-ORCA205 {
         Title = 'Common attachment type filter is enabled.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         Author = 'soulemike'

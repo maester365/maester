@@ -20,6 +20,7 @@
         Title = 'Ensure MailTips are enabled for end users',
         Severity = 'Low',
         Category = 'Maester/Exchange',
+        Product = 'Exchange Online',
         Tag = ('Exchange', 'Maester'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',

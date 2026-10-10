@@ -554,6 +554,7 @@ function GetMaesterTestAttribute($meta) {
     $lines.Add("        Title = $(FormatAttributeString $meta.Title)")
     if ($meta.Severity) { $lines.Add("        Severity = $(FormatAttributeString $meta.Severity)") }
     $lines.Add("        Category = $(FormatAttributeString $meta.Category)")
+    $lines.Add("        Product = $(FormatAttributeString $meta.Product)")
     $lines.Add("        Service = $(FormatAttributeList $meta.Service)")
     if ($meta.License.Count -gt 0) { $lines.Add("        License = $(FormatAttributeList $meta.License)") }
     if ($meta.Author.Count -gt 0) { $lines.Add("        Author = $(FormatAttributeList $meta.Author)") }
@@ -686,6 +687,7 @@ foreach ($control in $aadsc) {
             Title             = "$($control.ControlName) - $($controlItem.DisplayName)."
             Severity          = $severity
             Category          = 'EIDSCA'
+            Product           = 'Entra ID'
             Service           = @('Graph')
             License = @($skipCheck.License)
             Author            = $authors

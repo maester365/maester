@@ -25,6 +25,7 @@
         Title = 'Group SID History count should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - Groups',
+        Product = 'Active Directory',
         Tag = 'AD.Group',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

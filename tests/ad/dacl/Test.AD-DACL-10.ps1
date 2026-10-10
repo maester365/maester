@@ -22,6 +22,7 @@
         Title = 'Privileged allow ACE details should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - DACL',
+        Product = 'Active Directory',
         Tag = 'AD.DACL',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

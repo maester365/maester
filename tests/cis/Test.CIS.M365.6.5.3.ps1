@@ -23,6 +23,7 @@
         Title = 'Ensure additional storage providers are restricted in Outlook on the web',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Exchange Online',
         Tag = ('CIS E3', 'CIS E3 Level 2', 'CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'Security'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',

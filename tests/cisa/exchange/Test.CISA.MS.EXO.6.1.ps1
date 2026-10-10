@@ -19,6 +19,7 @@
         Title = 'Contact folders SHALL NOT be shared with all domains.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('MS.EXO', 'MS.EXO.6.1'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

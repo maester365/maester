@@ -16,6 +16,7 @@ function Test-MtCheckEidscaAT02 {
         Title = 'Authentication Method - Temporary Access Pass - One-time.',
         Severity = 'High',
         Category = 'EIDSCA',
+        Product = 'Entra ID',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

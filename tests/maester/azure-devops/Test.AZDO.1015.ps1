@@ -23,6 +23,7 @@ function Test-AzdoOrganizationLimitVariablesAtQueueTime {
         Title = 'Limit variables that can be set at queue time.',
         Severity = 'High',
         Category = 'Azure DevOps',
+        Product = 'Azure DevOps',
         Tag = 'AZDO',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',

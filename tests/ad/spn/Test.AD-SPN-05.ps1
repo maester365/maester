@@ -23,6 +23,7 @@
         Title = 'Computer SPN non-FQDN hosts should be investigated',
         Severity = 'Info',
         Category = 'Active Directory - SPN Analysis',
+        Product = 'Active Directory',
         Tag = 'AD.SPN',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -70,6 +70,7 @@ function Test-MtMdiHealthIssue {
         Title = 'Microsoft Defender for Identity health issues should be resolved',
         Severity = 'Medium',
         Category = 'Defender for Identity health issues',
+        Product = 'Defender',
         Tag = ('Defender', 'Maester', 'MDI'),
         Service = 'Graph',
         InstanceSource = 'Get-MtMdiHealthIssueInstance',

@@ -20,6 +20,7 @@
         Title = 'Ensure ''External sharing'' of calendars is not available',
         Severity = 'Medium',
         Category = 'CIS',
+        Product = 'Microsoft 365',
         Tag = ('CIS E3', 'CIS E3 Level 2', 'CIS M365 v7.0.0', 'L2'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',

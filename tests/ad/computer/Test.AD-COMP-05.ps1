@@ -25,6 +25,7 @@
         Title = 'Computer SID History count should be retrievable',
         Severity = 'Medium',
         Category = 'Active Directory - Computer Objects',
+        Product = 'Active Directory',
         Tag = 'AD.Computer',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

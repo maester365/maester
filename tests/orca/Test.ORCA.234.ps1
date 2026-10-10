@@ -16,6 +16,7 @@ function Test-ORCA234 {
         Title = 'Click through is disabled for Safe Documents.',
         Severity = 'Medium',
         Category = 'ORCA',
+        Product = 'Defender',
         Tag = 'EXO',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',

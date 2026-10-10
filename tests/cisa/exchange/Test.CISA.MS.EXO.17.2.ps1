@@ -19,6 +19,7 @@
         Title = 'Microsoft Purview Audit (Premium) logging SHALL be enabled.',
         Severity = 'Medium',
         Category = 'CISA',
+        Product = 'Exchange Online',
         Tag = ('Deprecated', 'MS.EXO', 'MS.EXO.17.2'),
         Service = 'Graph',
         Author = 'soulemike',

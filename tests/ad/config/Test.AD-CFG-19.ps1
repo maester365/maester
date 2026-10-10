@@ -22,6 +22,7 @@
         Title = 'Intermediate CA details should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Configuration',
+        Product = 'Active Directory',
         Tag = 'AD.Config',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

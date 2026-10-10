@@ -26,6 +26,7 @@
         Title = 'Computer default container count should be retrievable',
         Severity = 'Info',
         Category = 'Active Directory - Computer Objects',
+        Product = 'Active Directory',
         Tag = 'AD.Computer',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

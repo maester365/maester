@@ -18,6 +18,7 @@
         Title = 'Ensure all Intune Certificate Connectors are healthy and running supported versions',
         Severity = 'High',
         Category = 'Maester/Intune',
+        Product = 'Intune',
         Tag = ('Intune', 'Maester'),
         Service = 'Graph',
         License = 'INTUNE_A',
