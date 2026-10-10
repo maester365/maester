@@ -119,8 +119,10 @@ The sketch below is the opening screen.
   as soon as the screen is restored.
 - **When the run ends.** The screen is restored, and the scrollback gets the banner (printed before the dashboard
   opened), the connection list, the queued output and the summary.
-- **Taskbar progress.** OSC `9;4` in Windows Terminal, ConEmu, Ghostty and iTerm2 3.6.6+, detected from the environment.
-  It is never sent to older iTerm2, which shows OSC 9 as a notification.
+- **Taskbar progress.** OSC `9;4` in Windows Terminal and ConEmu, detected from the environment: there it is shown
+  on the taskbar button and the tab, where it can be seen when the window is not in front. iTerm2 and Ghostty
+  understand it too, but draw it as a line across the top of the window, which only repeats the progress bar of
+  the dashboard under it, so it is not sent to them.
 - **Cleanup.** `Invoke-Maester` has a `clean {}` block (PowerShell 7.3+) that restores the screen and the cursor on
   every path out: normal return, early return, error and Ctrl+C.
 

@@ -49,7 +49,6 @@
     $utf8 = try { [System.Console]::OutputEncoding.CodePage -eq 65001 } catch { $false }
 
     $termProgram = "$env:TERM_PROGRAM"
-    $iTermVersion = if ($termProgram -eq 'iTerm.app' -and $env:TERM_PROGRAM_VERSION -match '^(\d+\.\d+(\.\d+)?)') { [version]$Matches[1] } else { $null }
     $colorDepth = if (-not $ansi) { 'None' }
     elseif ($env:COLORTERM -in 'truecolor', '24bit' -or $env:WT_SESSION -or $termProgram -in 'vscode', 'iTerm.app', 'WezTerm', 'WarpTerminal', 'ghostty') { 'TrueColor' }
     elseif ($env:TERM -like '*256color*') { '256' }
@@ -67,8 +66,10 @@
         ColorDepth = $colorDepth
         Unicode    = $mode -ne 'Plain' -and $utf8
         Width      = $width
-        # OSC 9;4 (taskbar or tab progress): older iTerm2 shows OSC 9 as a notification instead.
-        Taskbar    = $interactive -and ($env:WT_SESSION -or $env:ConEmuANSI -eq 'ON' -or $termProgram -eq 'ghostty' -or ($iTermVersion -and $iTermVersion -ge [version]'3.6.6'))
+        # OSC 9;4, progress on the taskbar button and the tab: only where it is shown outside the window
+        # (Windows Terminal, ConEmu). iTerm2 and Ghostty draw it as a line across the top of the window,
+        # which only repeats the progress bar of the dashboard under it, so they do not get it.
+        Taskbar    = $interactive -and ($env:WT_SESSION -or $env:ConEmuANSI -eq 'ON')
         # OSC 8 hyperlinks: terminals that ignore them print the text without the link.
         Hyperlink  = $interactive -and ($env:WT_SESSION -or $termProgram -in 'vscode', 'iTerm.app', 'WezTerm', 'ghostty', 'WarpTerminal' -or [int]"0$env:VTE_VERSION" -ge 5000)
     }
