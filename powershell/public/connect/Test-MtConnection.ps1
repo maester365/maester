@@ -176,12 +176,16 @@
         #region Exchange Online
         if ($ServicesToCheck -contains 'ExchangeOnline' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
-            try {
-                # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
-                $MtConnections.ExchangeOnline = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and -not $_.IsEopSession })
-                $IsConnected = $null -ne ($MtConnections.ExchangeOnline)
-            } catch {
-                Write-Debug "Exchange Online: $false"
+            # An Exchange Online connection lives in the session: without the module imported there is none,
+            # and asking would only auto-load the module.
+            if (Test-MtModuleImported 'ExchangeOnlineManagement') {
+                try {
+                    # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
+                    $MtConnections.ExchangeOnline = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and -not $_.IsEopSession })
+                    $IsConnected = $null -ne ($MtConnections.ExchangeOnline)
+                } catch {
+                    Write-Debug "Exchange Online: $false"
+                }
             }
             Write-Verbose "Exchange Online: $IsConnected"
             if (!$IsConnected) { $ConnectionState = $false }
@@ -191,13 +195,15 @@
         #region Exchange Online Protection (EOP)
         if (($ServicesToCheck -contains 'SecurityCompliance' -or $ServicesToCheck -contains 'EOP') -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
-            try {
-                # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
-                $MtConnections.ExchangeOnlineProtection = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession })
-                $IsConnected = $null -ne ($MtConnections.ExchangeOnlineProtection)
-            } catch {
-                # Re-test
-                Write-Debug "Security & Compliance: $false"
+            if (Test-MtModuleImported 'ExchangeOnlineManagement') {
+                try {
+                    # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
+                    $MtConnections.ExchangeOnlineProtection = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession })
+                    $IsConnected = $null -ne ($MtConnections.ExchangeOnlineProtection)
+                } catch {
+                    # Re-test
+                    Write-Debug "Security & Compliance: $false"
+                }
             }
             Write-Verbose "Security & Compliance: $IsConnected"
             if (!$IsConnected) { $ConnectionState = $false }
@@ -207,12 +213,15 @@
         #region Teams
         if ($ServicesToCheck -contains 'Teams' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
-            try {
-                $MtConnections.Teams = Get-CsTenant
-                $IsConnected = $null -ne ($MtConnections.Teams)
-            } catch {
-                # Re-test
-                Write-Debug "Teams: $false"
+            # A Teams connection lives in the session, like Exchange Online.
+            if (Test-MtModuleImported 'MicrosoftTeams') {
+                try {
+                    $MtConnections.Teams = Get-CsTenant
+                    $IsConnected = $null -ne ($MtConnections.Teams)
+                } catch {
+                    # Re-test
+                    Write-Debug "Teams: $false"
+                }
             }
             Write-Verbose "Teams: $IsConnected"
             if (!$IsConnected) { $ConnectionState = $false }
@@ -222,11 +231,14 @@
         #region SharePoint
         if ($ServicesToCheck -contains 'SharePointOnline' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
-            try {
-                $MtConnections.SharePointOnline = Get-PnPConnection
-                $IsConnected = $null -ne ($MtConnections.SharePointOnline)
-            } catch {
-                Write-Debug "SharePointOnline: $false"
+            # A PnP connection lives in the session, like Exchange Online.
+            if (Test-MtModuleImported 'PnP.PowerShell') {
+                try {
+                    $MtConnections.SharePointOnline = Get-PnPConnection
+                    $IsConnected = $null -ne ($MtConnections.SharePointOnline)
+                } catch {
+                    Write-Debug "SharePointOnline: $false"
+                }
             }
             Write-Verbose "SharePointOnline: $IsConnected"
             if (!$IsConnected) { $ConnectionState = $false }

@@ -59,12 +59,16 @@ What remains of the ~1.3 s step after the fixes: the HTML report (~0.5 s, most o
 
 1. **`-DryRun` does almost all the work of a real run**, including every report. If it's meant as a quick "what would run" check,
    it could skip reports unless output was requested.
-2. **Connection probing when nothing is connected.** `Get-MtTenantContext` calls `Test-MtConnection` for every service the catalog
-   uses. That calls `Get-AzContext`, `Get-ConnectionInformation`, `Get-CsTenant` and `Get-PnPConnection`, which auto-load any of those
-   modules that are installed. Checking `Get-Module <name>` first would avoid that, because a module that isn't imported can't be connected.
+2. **Connection probing** (fixed after these measurements). The probe took about 2.9 s on the test machine with every
+   module installed: Azure 1.4 s and Azure DevOps 0.5 s (each validates a saved sign-in with one network call), Teams
+   0.6 s, Exchange Online 0.3 s, SharePoint 0.1 s. The last three were spent auto-loading a module to learn that
+   nothing was connected. Their connections only exist inside a session, so `Test-MtConnection` now reports them as
+   not connected when the module is not imported, without calling it: about 0.9 s less, and three modules fewer in
+   the process. An earlier note here blamed this probe for a 40 s start; that was a misreading of a stale
+   `Write-Progress` line, which kept showing "Reading the tenant context" while tests were already running.
 3. **Runs with the user's own modules visible** (`-ModulePath Inherit`) took 52.8 s (2.3) vs 47.6 s (3.0 before the fixes). In that environment,
    an installed ADOPS module with a live Azure DevOps session made the AZDO tests actually run, so those runs measured real service calls,
-   not engine cost. Importing the modules involved takes only about 1.4 s.
+   not engine cost.
 4. **Console output** is reviewed separately in `docs/proposals/maester-3.0-console-output.md`.
 
 ## Not measured

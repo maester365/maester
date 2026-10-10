@@ -264,7 +264,3 @@ the summary is linear. `-OutputMode Plain` and `MAESTER_OUTPUT_MODE=Plain` are d
 - **A data collection phase.** The phase list is the caller's, so adding one is a `SetPhases` change plus reporting its
   work as running items.
 - **Screen-reader detection.** PSReadLine does this on Windows (`SPI_GETSCREENREADER`); Maester doesn't yet.
-- **Cold-start cost when other modules are installed.** When ExchangeOnlineManagement, MicrosoftTeams, PnP.PowerShell or Az are installed
-  but not connected, the tenant-context probe auto-loads them. The first run on a machine then waits in the Prepare phase while
-  PowerShell builds its module analysis cache: about 40 s on the author's machine. Checking `Get-Module <name>` before probing a
-  service would avoid it.

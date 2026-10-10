@@ -11,6 +11,10 @@
             $script:createdStubs += $cmd
         }
     }
+
+    # The Exchange Online, Teams and SharePoint probes only run when their module is imported. These tests
+    # mock the probe commands instead of importing the modules, so they say the modules are imported.
+    Mock Test-MtModuleImported { $true } -ModuleName Maester
 }
 
 AfterAll {
@@ -690,5 +694,35 @@ Describe 'Test-MtConnection AzureDevOps cache' {
             $__MtSession.AzureDevOpsConnectionCache | Should -BeNullOrEmpty
             $__MtSession.ContainsKey('AzureDevOpsConnection') | Should -BeFalse
         }
+    }
+}
+
+Describe 'Test-MtConnection — services whose module is not imported' {
+    BeforeEach {
+        Mock Get-MtExo { throw 'Get-MtExo must not be called.' } -ModuleName Maester
+        Mock Get-CsTenant { throw 'Get-CsTenant must not be called.' } -ModuleName Maester
+        Mock Get-PnPConnection { throw 'Get-PnPConnection must not be called.' } -ModuleName Maester
+        Mock Test-MtModuleImported { $false } -ModuleName Maester
+    }
+
+    It 'Reports <_> as not connected without calling its commands' -ForEach 'ExchangeOnline', 'SecurityCompliance', 'Teams', 'SharePointOnline' {
+        Test-MtConnection -Service $_ | Should -BeFalse
+        Should -Invoke Get-MtExo -ModuleName Maester -Times 0 -Exactly
+        Should -Invoke Get-CsTenant -ModuleName Maester -Times 0 -Exactly
+        Should -Invoke Get-PnPConnection -ModuleName Maester -Times 0 -Exactly
+    }
+
+    It 'Asks for the module of each service' {
+        $null = Test-MtConnection -Service ExchangeOnline, Teams, SharePointOnline
+        Should -Invoke Test-MtModuleImported -ModuleName Maester -ParameterFilter { $Name -eq 'ExchangeOnlineManagement' }
+        Should -Invoke Test-MtModuleImported -ModuleName Maester -ParameterFilter { $Name -eq 'MicrosoftTeams' }
+        Should -Invoke Test-MtModuleImported -ModuleName Maester -ParameterFilter { $Name -eq 'PnP.PowerShell' }
+    }
+
+    It 'Still probes a service whose module is imported' {
+        Mock Test-MtModuleImported { $Name -eq 'MicrosoftTeams' } -ModuleName Maester
+        Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
+        Test-MtConnection -Service Teams | Should -BeTrue
+        Test-MtConnection -Service SharePointOnline | Should -BeFalse
     }
 }
