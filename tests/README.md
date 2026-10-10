@@ -5,7 +5,7 @@ This folder contains the security checks that ship with Maester. From Maester 3.
 and remediation steps. The tests are part of the module: the build defines their functions in it, and
 `Invoke-Maester` runs them from the module. You do not need a copy of this folder to run them.
 
-The tests are organized into suites, each with a `suite.json` that sets its tags, default category and source.
+The tests are organized into suites, each with a `suite.json` that sets its ID, name and source.
 The nearest `suite.json` above a test applies, so a suite can live inside another suite's folder. Folder names
 are lowercase kebab-case; see the [repository layout](../website/docs/contributing.md#repository-layout).
 

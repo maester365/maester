@@ -7,9 +7,13 @@ description: Reference for the Maester 3.0 result JSON (schema 2.1), the NUnit a
 # Result schema
 
 `Invoke-Maester -PassThru` returns the result object, and `-OutputFolder` or `-OutputJsonFile` writes the same
-object as JSON. Maester 3.0 keeps the 2.x shape: every 2.x field is still there with the same name and meaning,
-and the new fields are additions. The result says which shape it has with `SchemaVersion = "2.1"`, meaning "the
-2.x shape plus the additions on this page". A reader written for 2.x keeps working.
+object as JSON. Maester 3.0 keeps the 2.x shape: every 2.x field is still there with the same name, and the new
+fields are additions. The result says which shape it has with `SchemaVersion = "2.1"`, meaning "the 2.x shape
+plus the additions on this page". A reader written for 2.x keeps working.
+
+Two 2.x fields have other values for the tests that ship with Maester, because those tests are now described by
+typed attributes instead of a category and tags: `Block` is the name of the test's product, and `Tag` no longer
+lists suite, product or benchmark tags or the test ID. See [Test rows](#test-rows).
 
 ## Top level
 
@@ -27,6 +31,7 @@ Added in 2.1:
 | `SchemaVersion` | string | `"2.1"`. |
 | `CatalogVersion` | string | The version of the built-in test catalog, equal to the module version. Results are comparable when this matches. |
 | `TenantContext` | object | The facts the run used to decide which tests apply (below). |
+| `Taxonomy` | object | The display names of the product, feature, area and resource type keys and of the ATT&CK techniques that the rows use (below). |
 | `RunMetadata` | object | The `Metadata` section of the run configuration, echoed as given (for example a run ID). An empty object when not set. |
 | `Selection` | object | How the run selected tests (below). |
 | `Partitions` | array | Only in a result merged with `Merge-MtMaesterResult -SameRun` (see [Splitting a run](#splitting-a-run-across-processes)). |
@@ -42,6 +47,31 @@ Added in 2.1:
 | `Services` | One property per service the run's tests need, `true` when connected. |
 | `Licenses` | `State` (`Known` or `Unknown`), `ServicePlanNames`, `ServicePlanIds`, `SkuIds`, `Source` (`Detected`, `Config` or `Unknown`). |
 | `AuthType`, `Account`, `Scopes` | From the Graph connection. |
+
+### Taxonomy
+
+A row names its product, feature, area and resource type by key and its ATT&CK techniques by ID. `Taxonomy`
+gives the names, so a report can show them without the Maester module:
+
+```json
+"Taxonomy": {
+  "Products":      [{ "Key": "entra", "Name": "Entra ID" }],
+  "Features":      [{ "Product": "entra", "Key": "conditional-access", "Name": "Conditional Access" }],
+  "Areas":         [{ "Key": "authentication", "Name": "Authentication" }],
+  "ResourceTypes": [{ "Key": "Tenant" }],
+  "Attack":        { "Version": "19.2",
+                     "Techniques": [{ "Id": "T1110", "Name": "Brute Force", "Tactics": ["TA0006"] }],
+                     "Tactics":    [{ "Id": "TA0006", "Name": "Credential Access" }] }
+}
+```
+
+- It lists only the keys and techniques that the rows of this result use, in the order of the Maester taxonomy:
+  `Products` is the order in which reports list products. A feature key is scoped to its product.
+- `Attack.Version` is the MITRE ATT&CK Enterprise release the technique IDs were checked against. `Tactics`
+  lists the tactics of the listed techniques.
+- A custom test may use a product, feature, area or resource type of its own. Such a value has no entry; show it
+  as written.
+- `Merge-MtMaesterResult -SameRun` rebuilds it for the merged rows.
 
 ### Selection
 
@@ -79,13 +109,22 @@ an `Error` row without running the test (reason `InvalidMetadata`, `InvalidConfi
 `Tests` has one row per test, or per instance of a family. Rows are sorted as in 2.x: `Passed` and `Failed` rows
 first, then the rest, each group by `Name`; `Index` numbers them in that order.
 
-The 2.x fields are unchanged: `Index`, `Id`, `Title`, `Name`, `HelpUrl`, `Severity`, `Tag`, `Result`,
+The 2.x fields are all there: `Index`, `Id`, `Title`, `Name`, `HelpUrl`, `Severity`, `Tag`, `Result`,
 `ScriptBlock`, `ScriptBlockFile`, `ErrorRecord`, `Block`, `Duration` and `ResultDetail`. `Result` is still exactly
 one of `Passed`, `Failed`, `Error`, `Investigate`, `Skipped` and `NotRun`.
 
 For native tests:
 
-- `Name` is `<Id>: <Title>`, and `Block` is the attribute's `Category`.
+- `Name` is `<Id>: <Title>`.
+- `Block` is derived from the test's attributes: the display name of its `Product` when the Maester taxonomy
+  knows it (`Entra ID`), else `Product` as written, else `Feature`, else the `Name` of its `suite.json`, else
+  `Custom`. For a test that ships with Maester it is always the product name. In 2.x it was the `Describe` name,
+  such as `Maester/Entra`. A test converted with `Convert-MtTest` keeps its `Describe` name, which is written to
+  `Feature`.
+- `Tag` lists the tags written in the test's `Tag` attribute and, for a family, the instance's own tags. It does
+  not list the tags of the `suite.json`, the test ID, or `Preview` and `LongRunning`. The tests that ship with
+  Maester carry no tags for suite, product, benchmark or severity: read `Suite`, `Product`, `Feature`, `Area` and
+  `Severity` instead. The Maester 2.x tags still select tests with `-Tag`, but they are not written to the row.
 - `ScriptBlock` is empty. `ScriptBlockFile` is the path relative to the repository (`tests/...`) for a built-in
   test, and the full path for a custom test.
 - `Duration` has millisecond precision (`hh:mm:ss.fff`).
@@ -100,7 +139,20 @@ Added in 2.1:
 | --- | --- | --- |
 | `Source` | string | Where the test comes from: `Maester`, `CISA`, `CIS`, `EIDSCA`, `ORCA` or `Custom` (or the `Source` of a custom `suite.json`). |
 | `Suite` | string | The suite ID, for example `Maester`, `CISA`, `AD` or `Custom`. |
-| `Product` | string | Native tests: the attribute's `Product`, for example `Entra ID` or `Exchange Online`; null when the test does not set one. Not present on Pester rows. |
+| `Product` | string | The key of the product where the fix is made, for example `entra` or `exchange`. `Taxonomy.Products` gives the name. A custom test may use a name of its own. |
+| `RelatedProduct` | array of strings | Keys of other products the test also checks or depends on. |
+| `Feature` | string | The key of the part of the product the test is about, for example `conditional-access`. `Taxonomy.Features` gives the name. |
+| `Area` | string | The key of the security theme, for example `authentication`. `Taxonomy.Areas` gives the name. |
+| `ResourceType` | string | What a failing result points at, for example `Tenant` or `User`. |
+| `UserImpact` | string | `Low`, `Medium` or `High`: how much the recommended fix disrupts end users. |
+| `ImplementationCost` | string | `Low`, `Medium` or `High`: how much administrator work the recommended fix takes. |
+| `Mitre` | array of strings | MITRE ATT&CK technique IDs the checked control prevents or detects, or the single value `None`. `Taxonomy.Attack` gives the names and tactics. |
+| `Control` | array of strings | Framework controls the test supports, written `<framework-key>:<control-id>`. |
+| `Lifecycle` | string | `Preview`, `Stable` or `Deprecated`. `Stable` when the test does not say. |
+| `ReplacedBy` | string | For a `Deprecated` test, the ID of the test that took its place. |
+| `Service` | array of strings | The services the test needs, by their names in the service registry. |
+| `License` | array of strings | The service plans the test needs; the tenant needs any one. |
+| `Permission` | array of strings | The permissions the test declares. Recorded; not enforced. |
 | `Format` | string | `Native` or `Pester`. |
 | `ReasonCode` | string | Why the test did not run or did not produce a verdict. Empty for `Passed`, `Failed` and `Investigate`. See [Applicability and reason codes](./configuration/applicability.md#reason-codes). |
 | `ReasonDetail` | string | The reason in words. For `TestError`, the first line of the error. |
@@ -109,10 +161,16 @@ Added in 2.1:
 | `Parameters` | array | Native tests: the effective parameter values, each `{ Name, Value, Source, Kind }`, where `Source` is `Default`, `Config` or `Parameter`. Empty for Pester rows. |
 | `Diagnostics` | array of strings | Warnings (`WARNING: ...`) and non-terminating errors (`ERROR: ...`) the test wrote. |
 
+The fields from `Product` to `Permission` are the test's attributes; see
+[the `[MaesterTest]` attribute](./writing-tests/index.mdx#the-maestertest-attribute). A native row always has
+all of them: one the test does not declare is `null`, or `[]` for an array. A Pester-format row has them too,
+all `null`.
+
 A consumer that tracks results over time should key family rows on `ParentId` when it is present: a family that
 did not run is one row on the parent ID, which 2.x never produced.
 
-`Blocks` has one entry per `Block` (category), with the same counters as 2.x.
+`Blocks` has one entry per `Block`, with the same counters as 2.x. For native tests that is one entry per
+product.
 
 ## CI test results (NUnit and JUnit XML)
 
@@ -134,8 +192,10 @@ Pester-format tests, with a warning. No XML is written for a `-DryRun`.
 - With `-RedactUserIdentity AllOutputs` the XML file is redacted like the other exports.
 - If the file cannot be written, Maester warns and still writes the other reports.
 
-Each test case is named `<Block>.<Name>`, as Pester names it, so test history in Azure DevOps and similar
-systems continues across the upgrade. Outcomes:
+Each test case is named `<Block>.<Name>`, as Pester names it. The names of Pester-format tests, and of tests
+converted with `Convert-MtTest`, are what they were in 2.x, so their test history in Azure DevOps and similar
+systems continues across the upgrade. The names of the tests that ship with Maester change once, because their
+`Block` is now the product name (`Entra ID.MT.1001: ...` instead of `Maester/Entra.MT.1001: ...`). Outcomes:
 
 | Row | XML outcome |
 | --- | --- |

@@ -26,8 +26,11 @@ installed, selected, configured and written has moved on. This page lists every 
 5. If you have Pester-format custom tests, install Pester 5.7.1 or later yourself, or convert the tests with
    `Convert-MtTest`.
 6. If a custom test calls a built-in `Test-Mt*` function, replace the call with `Invoke-MtTest -Id <ID>`.
-7. If you read the result JSON or XML, review the [result changes](#result-changes).
-8. Try your usual command with `-DryRun -PassThru` first to see what would run.
+7. If you select tests with `-Tag`, your tags still work. Move to `-Product`, `-Feature`, `-Area`, `-Severity`
+   and `-Suite` when you can; see [Tags](#tags).
+8. If you read the result JSON or XML, review the [result changes](#result-changes). `Block` and `Tag` of the
+   built-in tests changed.
+9. Try your usual command with `-DryRun -PassThru` first to see what would run.
 
 ## Requirements
 
@@ -52,7 +55,8 @@ own tests and your configuration.
 - **The built-in tests always run.** `-Path` is now "where my custom tests and config live". Commands documented
   for 2.x, such as `Invoke-Maester -Path ./tests/Maester` or `Invoke-Maester ./tests/Custom`, now run every
   built-in test plus the custom tests under that path. To run only your custom tests, add `-SkipBuiltIn` (or set
-  `Selection.BuiltIn` to `None`). To run only some built-in tests, use `-Tag` or `-TestId`.
+  `Selection.BuiltIn` to `None`). To run only some built-in tests, use `-Product`, `-Suite` and the other
+  selectors below, or `-TestId`.
 - **A run needs no test folder.** Without `-Path`, Maester looks for custom tests in the current folder only when
   it looks like a Maester folder (a `maester-config*.json` file, a `Custom` folder, a 2.x suite folder, or a test
   file). Otherwise it runs the built-in tests and tells you to pass `-Path` for custom tests.
@@ -110,11 +114,22 @@ New `Invoke-Maester` parameters:
 
 | Parameter | Effect |
 | --- | --- |
+| `-Product` | Run only the tests of these products: keys such as `entra` or `exchange`, or an alias such as `Entra ID`. |
+| `-Feature` | Run only the tests about these features of a product, for example `conditional-access`. |
+| `-Area` | Run only the tests of these security areas, for example `authentication` or `privileged-access`. |
+| `-Severity` | Run only the tests with these severities. |
+| `-Suite` | Run only the tests of these suites, for example `cisa` or `eidsca`. |
 | `-TestId` | Run only these test IDs. Exact IDs or `*` wildcards, case-insensitive. A test named by its exact ID runs even if it is preview or long-running. |
 | `-ExcludeTestId` | Do not run these IDs. Wins over `-TestId`. |
 | `-Config` | The run configuration, instead of the files next to the tests. |
 | `-DryRun` | Work out what would run, and why the rest would not, without running any test. Each test that would have run is `NotRun` with reason `DryRun`. |
 | `-SkipBuiltIn` | Run only the custom tests under `-Path`. |
+
+Each of the five selectors takes a list. The values of one selector are alternatives, different selectors must
+all match, and they combine the same way with `-Tag` and `-TestId`:
+`Invoke-Maester -Product entra, exchange -Severity Critical, High` runs the critical and high tests of both
+products. The same keys work in the `Selection` section of the config. See
+[Selection](./configuration/run-configuration.md#selection).
 
 Every existing parameter stays. Changed behaviour:
 
@@ -125,10 +140,38 @@ Every existing parameter stays. Changed behaviour:
   `Filter.Tag`, `Filter.ExcludeTag` and `TestResult` options apply to native tests too. Its `Filter.ExcludeTag`
   is now added to the default exclusions; 2.x discarded it whenever Preview or long-running tests were excluded
   by default, so those tests ran. See [Pester-format tests](./writing-tests/pester-format-tests.md#-pesterconfiguration).
+- **Preview tests are chosen by an attribute.** A built-in test says `Lifecycle = 'Preview'` instead of
+  carrying the `Preview` tag. The rule is the same: it runs with `-IncludePreview`, with any `-Tag`, or when its
+  exact ID is in `-TestId`.
+- **Active Directory tests are chosen by their service.** A test that needs Active Directory runs only after
+  `Connect-Maester -Service ActiveDirectory`. The `AD` tag no longer decides this.
 - **Deselected tests carry a reason.** `NotRun` rows say why: not selected, excluded by tag or ID, disabled,
   preview, long-running, Active Directory not connected. See
   [Applicability and reason codes](./configuration/applicability.md).
 - **`-Verbosity Normal`** prints one line per finished test, and `Detailed` also a line when each test starts.
+
+### Tags
+
+In 2.x a tag could mean a suite, a product, a topic, a benchmark control, a licence or a severity. In 3.0 each of
+those is an attribute of the test, and the tests that ship with Maester carry no tags for them.
+
+**Your `-Tag` and `-ExcludeTag` values keep working.** Every 2.x tag selects the built-in tests that carried it
+in 2.x, and a built-in test's ID is still one of its tags. A run that selects through a 2.x tag writes one
+warning that names the tag and, where there is one, the selector that replaces it. Tests added after 3.0 do not
+carry 2.x tags, so a tag no longer grows with the product; a selector does.
+
+| 2.x | 3.0 |
+| --- | --- |
+| `-Tag CISA`, `-Tag Maester` | `-Suite cisa`, `-Suite maester` |
+| `-Tag EXO`, `-Tag Entra` | `-Product exchange`, `-Product entra` |
+| `-Tag CA`, `-Tag Privileged` | `-Feature conditional-access`, `-Area privileged-access` |
+| `-Tag MS.AAD.3.5` | `-TestId CISA.MS.AAD.3.5` |
+| `-Tag Severity:High` | `-Severity High` |
+| `-Tag MT.1068` | `-TestId MT.1068` |
+
+`Tag` remains for your own tests: a label in the `Tag` of a `[MaesterTest]` attribute, or in the `Tags` of a
+`suite.json`, is matched by `-Tag` and `-ExcludeTag`. Pester-format tests are selected by their Pester tags as
+before.
 
 ## Exported commands
 
@@ -160,13 +203,22 @@ does that.
 - **New tests should be native tests**: `Test.<ID>.ps1` with a `[MaesterTest(...)]` attribute plus
   `Test.<ID>.md`, no connection checks, no `try`/`catch`. See [Writing native tests](./writing-tests/index.mdx).
 - **`Convert-MtTest -Path ./Custom`** converts Pester-format tests to native tests and reports what needs a
-  manual touch.
+  manual touch. The `Describe` name becomes the test's `Feature`, so the `Block` of its result rows and the name
+  of its test case in CI stay what they were.
+- **Native tests written for a 3.0 preview** may use `Category` or `Preview` in the attribute. Both were removed:
+  such a test is an `Error` row with reason `InvalidMetadata` and a message that names the replacement. Use
+  `Product` and `Feature` instead of `Category` (to keep the row's `Block`, put the old `Category` text in
+  `Feature`), and `Lifecycle = 'Preview'` instead of `Preview`. A custom native test is no longer selected by
+  `-Tag <its ID>`; use `-TestId`.
 - **Name your Pester tests `<ID>: <title>`** so that they can be selected with `-TestId` and configured by ID.
 
 ## Result changes
 
 The result JSON keeps its 2.x shape; the new fields are additions (`SchemaVersion` is `2.1`). See the
-[result schema](./result-schema.md). These rows can come out differently from 2.x:
+[result schema](./result-schema.md). Each row now says what the test is about in typed fields (`Product`,
+`RelatedProduct`, `Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control`,
+`Lifecycle`, `ReplacedBy`, `Service`, `License`, `Permission`), and the top-level `Taxonomy` gives the names of
+the keys. These rows can come out differently from 2.x:
 
 1. **A built-in test that throws is `Error`, not `Failed`.** In 2.x most exceptions that escaped a check were
    reported as `Failed`. A native test has no assertion, so an exception is never a verdict. `FailedCount` can go
@@ -185,9 +237,17 @@ The result JSON keeps its 2.x shape; the new fields are additions (`SchemaVersio
    that failed discovery used to produce no rows.
 8. **The top-level `Result` is `Failed`** when any row failed or when Maester itself raised an `Error` row (an
    invalid test or configuration, a file that did not load, a duplicate ID), not when a test merely threw.
-9. **Two tests gain tags.** `MT.1022` and `MT.1023` now carry the tags of their whole group, which 2.x dropped.
-10. **Maester writes the NUnit/JUnit XML** for native and Pester tests together, with the same test-case names
-    (`<Block>.<Name>`) and outcome rules that keep pipelines failing on what they failed on before. See
+9. **`Block` of a built-in test is the name of its product**, for example `Entra ID`, where 2.x had the
+   `Describe` name, for example `Maester/Entra`. `Blocks` therefore has one entry per product. Pester-format
+   tests keep their `Describe` or `Context` name.
+10. **`Tag` of a built-in test no longer lists suite, product or benchmark tags, or the test ID.** It lists only
+    tags written in the test, and the built-in tests have none. Read `Suite`, `Product`, `Feature`, `Area` and
+    `Severity` instead. A family instance keeps its own tags (for example the recommendation type of an
+    `MT.1024` row).
+11. **Maester writes the NUnit/JUnit XML** for native and Pester tests together, with outcome rules that keep
+    pipelines failing on what they failed on before. Test cases are still named `<Block>.<Name>`, so the names of
+    the built-in tests change once with their `Block` (`Entra ID.MT.1001: ...`), and their history in a CI system
+    starts again; the names of Pester-format tests do not change. See
     [CI test results](./result-schema.md#ci-test-results-nunit-and-junit-xml).
 
 ## CI pipelines

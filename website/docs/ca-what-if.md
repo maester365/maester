@@ -62,11 +62,13 @@ function Test-ContosoM365AccessRequiresMfa {
     [MaesterTest(
         Id       = 'CONTOSO.2001',
         Title    = 'Microsoft 365 access requires MFA.',
+        Product  = 'entra',
+        Feature  = 'conditional-access',
+        Area     = 'authentication',
         Severity = 'High',
-        Category = 'Contoso/Conditional Access',
-        Tag      = ('CA', 'Contoso'),
         Service  = 'Graph',
-        License = 'AAD_PREMIUM'
+        License  = 'AAD_PREMIUM',
+        Tag      = 'Contoso'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -102,11 +104,13 @@ function Test-ContosoAzurePortalBlockedForUsers {
     [MaesterTest(
         Id       = 'CONTOSO.2002',
         Title    = 'Users without admin roles are blocked from the Azure portal.',
+        Product  = 'entra',
+        Feature  = 'conditional-access',
+        Area     = 'access-control',
         Severity = 'High',
-        Category = 'Contoso/Conditional Access',
-        Tag      = ('CA', 'Contoso'),
         Service  = 'Graph',
-        License = 'AAD_PREMIUM'
+        License  = 'AAD_PREMIUM',
+        Tag      = 'Contoso'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

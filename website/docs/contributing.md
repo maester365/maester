@@ -73,7 +73,7 @@ powershell/
   (`/docs/tests/cis/...`) and the rest of the module (`public`, `internal`, `assets`). Prowler, the closest open
   source project to Maester, uses the same convention.
 - **Suites are found by `suite.json`, not by folder name**, so a folder name can follow the convention without
-  changing a suite's ID, tags or documentation URLs. That is what lets `XSPM` live in `maester/xspm`.
+  changing a suite's ID or documentation URLs. That is what lets `XSPM` live in `maester/xspm`.
 - **Grouping by job, then by service, gives every file one obvious home.** Before 3.0, Exchange code could be in four
   places (a suite folder under `public/`, a suite folder under `internal/checks/`, a loose file, or a service
   folder). Well-run projects separate the layers the same way: ScubaGear splits connection, per-product data
@@ -81,12 +81,13 @@ powershell/
   code in `lib/`; PSFramework and dbatools split exported and internal functions, then group by feature.
 - **`public/` is grouped by what the user is doing**, so the folder tells you which commands belong together in the
   [command reference](./commands/readme.md).
-- **Folders name products, tags name themes.** A check goes in the folder of the product whose settings it reads,
+- **Folders name products, areas name themes.** A check goes in the folder of the product whose settings it reads,
   because that is what an author knows when adding a check and what an admin knows when looking for one. Themes
-  that cut across products, such as AI, are tags: Copilot Studio agent checks live in `maester/copilot-studio/`,
-  an Entra agent identity check lives in `maester/entra/`, and both carry the `AI` tag, so `Invoke-Maester -Tag AI`
-  runs them together. A theme folder such as `ai/` would end up holding checks for Copilot, Copilot Studio,
-  Foundry, Entra Agent ID and Purview, each with its own API, portal and permissions.
+  that cut across products, such as AI, are the `Area` attribute of a test: Copilot Studio agent checks live in
+  `maester/copilot-studio/`, an Entra agent identity check lives in `maester/entra/`, and both declare
+  `Area = 'ai'`, so `Invoke-Maester -Area ai` runs them together. A theme folder such as `ai/` would end up
+  holding checks for Copilot, Copilot Studio, Foundry, Entra Agent ID and Purview, each with its own API, portal
+  and permissions.
 - **Data access is shared, check logic is not.** Code that reads a service (`services/`) is reused by many checks and
   by custom tests. Code that only one suite's checks need stays in `checks/<suite>/`.
 
@@ -205,7 +206,7 @@ Every built-in check is a [native test](./writing-tests/index.mdx): `Test.<ID>.p
 - `/ad` - Active Directory tests
 - `/custom` - Folder for users to add tests (do not add any tests to this folder).
 
-Each suite folder has a `suite.json` with the suite's tags, default category and source. Folder names follow the
+Each suite folder has a `suite.json` with the suite's ID, name and source. Folder names follow the
 [repository layout](#repository-layout).
 
 ### Checklist for writing good tests
@@ -219,8 +220,9 @@ When contributing tests, please ensure the following:
 
 #### Writing the test
 
-- [x] Scaffold the files in the right suite folder, for example `New-MtTest -Id MT.1234 -Title '...' -Service Graph -Category 'Maester/Entra' -Path ./tests/maester/entra`, then follow [Writing native tests](./writing-tests/index.mdx).
-- [x] Built-in tests must set `Severity`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, and describe every parameter.
+- [x] Scaffold the files in the right suite folder, for example `New-MtTest -Id MT.1234 -Title '...' -Service Graph -Product entra -Feature conditional-access -Area authentication -Path ./tests/maester/entra`, then follow [Writing native tests](./writing-tests/index.mdx).
+- [x] Built-in tests must set `Product`, `Severity`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, and describe every parameter. Choose `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost` and `Mitre` with the [attribute rubric](./writing-tests/attribute-rubric.md), using keys from `powershell/assets/MaesterTaxonomy.psd1`.
+- [x] Do not add a `Tag` for the product, feature, area, suite, benchmark, licence or severity of a test, or for its ID: each of those has an attribute or is derived.
 - [x] Do not check connections or licences in the test and do not wrap it in a `try`/`catch` that only reports `-SkippedBecause Error`: declare `Service` and `License` and let the engine handle it. The unit tests enforce this.
 - [x] Tunable values (thresholds, objects to exclude) are parameters of the test function, not hard-coded.
 - [x] The test's `.md` file explains the test in detail and provides all the context required for the user to resolve the issue, including deep links to the admin portal page to resolve the issue. This will be shown to the user when they view the test report. The file should include:

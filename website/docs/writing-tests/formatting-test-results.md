@@ -22,8 +22,9 @@ function Test-Contoso0001 {
     [MaesterTest(
         Id       = 'CONTOSO.0001',
         Title    = 'Disabled CA policies must have reason for being disabled',
+        Product  = 'entra',
+        Feature  = 'conditional-access',
         Severity = 'Medium',
-        Category = 'Contoso',
         Service  = 'Graph'
     )]
     [CmdletBinding()]
@@ -137,8 +138,9 @@ function Test-Contoso0002 {
     [MaesterTest(
         Id       = 'CONTOSO.0002',
         Title    = 'Report-only CA policies should be reviewed',
+        Product  = 'entra',
+        Feature  = 'conditional-access',
         Severity = 'Low',
-        Category = 'Contoso',
         Service  = 'Graph'
     )]
     [CmdletBinding()]
