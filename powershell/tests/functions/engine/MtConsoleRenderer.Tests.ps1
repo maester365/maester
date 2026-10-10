@@ -318,10 +318,10 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
-    It 'Shows the connection line under the banner only when the Tenant panel is not shown' {
+    It 'Shows the connection line under the banner whether or not the Tenant panel is shown' {
         $t = New-TestPanelDashboard
         $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match 'Contoso · Graph'
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match 'Contoso · Graph'
         ($t.Renderer.GetPlainScreen(120, 44) -join "`n") | Should -Match 'Contoso · Graph'
         $t.Renderer.Close()
     }

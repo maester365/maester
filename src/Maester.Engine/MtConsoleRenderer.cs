@@ -688,8 +688,7 @@ namespace Maester.Engine
             int max = paneWidth > 0 ? MainWidth - 1 : Math.Max(20, width - 1);
             Func<Line> blank = () => new Line { Text = string.Empty, Plain = string.Empty };
             bool tests = _running || _total > 0;
-            // The Tenant panel carries the tenant and connections; without it they are one line under the banner.
-            bool info = _info != null && !(paneWidth > 0 && PanelShown("Tenant") && _text.ContainsKey("Tenant"));
+            bool info = _info != null;
 
             // Phases and overall progress.
             var body = new List<Line>();

@@ -320,39 +320,38 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
-    It 'Says so in the Tenant panel when Graph is not connected, and still lists connected services' {
+    It 'Says so in the Tenant panel when Graph is not connected' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{ TenantName = $null; Services = [pscustomobject]@{ Graph = $false; ExchangeOnline = $true } }
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context } {
             param($r, $c, $t)
             $r.SetPanels([string[]]@('Tenant'))
             $r.Open()
-            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Connection @(Get-MtConnectionInfo -TenantContext $t) -Console $c
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Console $c
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
         $screen | Should -Match 'Not connected to Microsoft Graph'
-        $screen | Should -Match '● Exchange Online'
+        $screen | Should -Not -Match 'Exchange Online'
         $renderer.Close()
     }
 
-    It 'Shows the tenant, the account and each service in the Tenant panel' {
+    It 'Shows the tenant, the account and the cloud in the Tenant panel, without the services' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{
             TenantName = 'Contoso'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
             Services   = [pscustomobject]@{ Graph = $true; Teams = $false }
         }
-        $plan = @([pscustomobject]@{ Disposition = 'Skipped'; Test = [pscustomobject]@{ Service = @('Teams') } })
-        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context; p = $plan } {
-            param($r, $c, $t, $p)
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context } {
+            param($r, $c, $t)
             $r.SetPanels([string[]]@('Tenant'))
             $r.Open()
-            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Connection @(Get-MtConnectionInfo -TenantContext $t -Plan $p) -Console $c
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Console $c
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
         $screen | Should -Match 'Contoso'
         $screen | Should -Match 'merill@contoso\.com · Delegated'
         $screen | Should -Match 'Commercial · Workforce'
-        $screen | Should -Match '○ Teams\s+not connected · 1 test will be skipped'
+        $screen | Should -Not -Match 'Teams'
         $renderer.Close()
     }
 }

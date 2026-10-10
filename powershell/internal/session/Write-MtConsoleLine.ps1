@@ -119,7 +119,7 @@ function Initialize-MtDashboard {
     them. Results is the chart under the lanes; the others stack in a column on the right when the console
     is wide enough (about 140 columns).
 
-      Tenant    the tenant and the connected services (set later, by Set-MtDashboardTenant)
+      Tenant    the tenant, its ID, the account and the cloud (set later, by Set-MtDashboardTenant)
       Failed    failed tests by severity
       Drift     changes against the newest earlier results file in the output folder, for the same tenant
       Pace      tests per second and the slowest tests
@@ -187,19 +187,17 @@ function Initialize-MtDashboard {
 function Set-MtDashboardTenant {
     <#
     .SYNOPSIS
-    Fills the Tenant panel of the dashboard: the tenant, the account and the services of the run.
+    Fills the Tenant panel of the dashboard: the tenant, its ID, the account and the cloud.
 
     .DESCRIPTION
-    Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show: the panel says so and
-    still lists the services that are connected.
+    Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show, and the panel says so.
+    The connected services are not here: they are the line under the banner.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
         [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
-        # From Get-MtConnectionInfo.
-        [Parameter()] [AllowEmptyCollection()] [object[]] $Connection = @(),
         [Parameter()] [AllowNull()] [pscustomobject] $Console
     )
     $lines = [System.Collections.Generic.List[string]]::new()
@@ -213,12 +211,6 @@ function Set-MtDashboardTenant {
         if ($kind) { $lines.Add((Format-MtConsoleText $kind -Style Dim -Console $Console)) }
     } else {
         $lines.Add((Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
-    }
-    $services = @($Connection | ForEach-Object { if ($_.Name -eq 'Graph' -and $_.Connected) { [pscustomobject]@{ Name = $_.Name; Connected = $true; Detail = 'connected' } } else { $_ } })
-    if ($services.Count -gt 0) {
-        foreach ($line in @(Format-MtConnectionInfo -Connection $services -Console $Console)) { $lines.Add($line.Substring(1)) }
-    } elseif (-not $graph) {
-        $lines.Add((Format-MtConsoleText 'No services connected. Run Connect-Maester.' -Style Dim -Console $Console))
     }
     $Renderer.SetPanelText('Tenant', 'Tenant', $lines.ToArray())
 }

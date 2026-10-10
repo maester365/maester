@@ -127,7 +127,7 @@ default is all of them, and an empty list turns them off.
 
 | Panel | Shows | Where it comes from | Cost |
 | --- | --- | --- | --- |
-| `Tenant` | Tenant name and ID, account, auth type, cloud, and each service with its status and the tests skipped for it. Without a Graph connection (or with `-SkipGraphConnect`) it says so and still lists what is connected. | The tenant context of the run | none |
+| `Tenant` | Tenant name and ID, account, auth type and cloud. Without a Graph connection (or with `-SkipGraphConnect`) it says so. The connected services are not here: they are the line under the banner. | The tenant context of the run | none |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | Newly failing, fixed and new tests against the last run | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
 | `Pace` | Tests per second, a sparkline of the run so far, and the three slowest tests | Finish times of the run | none |
@@ -138,8 +138,8 @@ default is all of them, and an empty list turns them off.
 
 - A panel with nothing to show is left out (no drift without an earlier file, no blog offline), and a panel that does
   not fit in the rows that are left is skipped.
-- With the `Tenant` panel on screen, the connection line under the banner is not shown. On a narrower console the
-  line is back and the right column is gone.
+- The connection line stays under the banner at every width (owner ruling: the services belong in the main
+  content, not in a panel). On a narrower console the right column is gone.
 - `Blog` and `Version` are the only panels that use the network. They are started only when the dashboard is wide
   enough to show them, never with `-SkipVersionCheck`, with a five-second timeout, and a failure leaves the panel out.
 - The text panels are filled by the caller (`SetPanelText`); the live ones are worked out in the renderer from
@@ -235,13 +235,14 @@ What other CLIs do:
 
 Maester's banner (`Get-MtBanner`, printed by `Show-MtLogo` and used as the dashboard header):
 
-- **Wordmark.** The "ANSI Shadow" MAESTER wordmark. The block characters use the logo's gradient, and the box-drawing
-  shadow characters are a light outline, as in the Copilot banner.
+- **Wordmark.** The "ANSI Shadow" MAESTER wordmark with a gradient from left to right, Maester red `#E5243B`
+  through orange `#FF6A3D` to amber `#FFB547`. The box-drawing shadow characters are a darker shade of the same
+  colour (owner ruling: this over the light outline of the Copilot banner).
 - **Flame.** The official logo (`assets/logo/maester.png`), sampled into quadrant characters (`▘▝▖▗▚▞▛▜▙▟`): two by two
-  pixels per character cell, which every terminal font has. It is static art in the source; nothing reads the image at run time.
-- **Colour.** Both use the logo's gradient, orange `#F7941D` at the top to red `#D6282F` at the bottom, one colour per
-  row: truecolor when `COLORTERM`, `WT_SESSION` or `TERM_PROGRAM` says the terminal supports it, then the 256-colour
-  cube, then yellow and red.
+  pixels per character cell, which every terminal font has. It is static art in the source; nothing reads the image at
+  run time. It has the logo's own gradient, orange `#F7941D` at the top to red `#D6282F` at the bottom.
+- **Colour.** Truecolor when `COLORTERM`, `WT_SESSION` or `TERM_PROGRAM` says the terminal supports it, then the
+  256-colour cube, then yellow and red.
 - **Sizes.** 88 columns by 13 rows at 90 columns or more. Below that, a small flame next to a two-line wordmark
   (37 columns). Below 40 columns, in Stream or Plain mode, or without UTF-8, one plain line.
 - **No animation.** `-NoLogo` and `-NonInteractive` still turn the banner off.

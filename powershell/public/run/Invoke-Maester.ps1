@@ -718,8 +718,8 @@
         # The services of this run: one line in the dashboard header, and the list in the scrollback.
         $connections = @(Get-MtConnectionInfo -TenantContext $tenantContext -Plan $nativePlan)
         if ($console.Mode -eq 'Interactive') {
-            # The Tenant panel on a wide console, and one line under the banner otherwise.
-            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Connection $connections -Console $console
+            # The tenant in its panel on a wide console, and the services as one line under the banner.
+            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Console $console
             if ($connections.Count -gt 0) {
                 $connectionLine = Format-MtConnectionInfo -Connection $connections -OneLine -Console $console
                 $renderer.SetInfo($connectionLine.Text, $connectionLine.Length)
