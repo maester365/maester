@@ -384,6 +384,20 @@ namespace Maester.Engine
         /// <summary>The test with this ID finished with a Maester result; its severity feeds the Failed panel.</summary>
         public void ItemFinished(string id, string result, string severity)
         {
+            Finish(id, result, severity, null);
+        }
+
+        /// <summary>
+        /// The same, for a caller that measured the test itself: <paramref name="seconds"/> is how long it ran,
+        /// instead of the time since ItemStarting.
+        /// </summary>
+        public void ItemFinished(string id, string result, string severity, double seconds)
+        {
+            Finish(id, result, severity, TimeSpan.FromSeconds(Math.Max(0, seconds)));
+        }
+
+        private void Finish(string id, string result, string severity, TimeSpan? measured)
+        {
             lock (_gate)
             {
                 int index = id == null ? (_workers.Count > 0 ? 0 : -1) : _workers.FindIndex(w => string.Equals(w.Id, id, StringComparison.OrdinalIgnoreCase));
@@ -399,6 +413,7 @@ namespace Maester.Engine
                     _workers.RemoveAt(index);
                     if (lane != null && lane.Running > 0) lane.Running--;
                 }
+                if (measured.HasValue) duration = measured.Value;
                 RecordFinished(id, title, result, severity, duration);
                 switch (result)
                 {

@@ -126,7 +126,8 @@ function Initialize-MtDashboard {
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Failed       failed tests by severity
       Drift        changes against the newest earlier results file in the output folder, for the same tenant
-      Pace         tests per second and the slowest tests: one at least, more in the rows that are left over
+      Pace         tests per second, a graph of how long each test took, and the slowest tests; it takes the
+                   rows that are left over for a taller graph and more tests
       Contributor  one of the people who built Maester, a different one every minute, from
                    assets/ConsoleContributors.json (written by build/Update-ConsoleContributors.ps1)
       Blog         the newest post on maester.dev (one web request, cached for a day)

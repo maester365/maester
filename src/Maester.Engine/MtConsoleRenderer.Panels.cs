@@ -71,6 +71,7 @@ namespace Maester.Engine
         private readonly Dictionary<string, int> _failedBySeverity = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _sequence = new List<string>();
         private readonly List<double> _finishSeconds = new List<double>();
+        private readonly List<double> _durations = new List<double>();
         private readonly List<Slow> _slowest = new List<Slow>();
         private readonly List<Recent> _recent = new List<Recent>();
         private readonly List<string> _barLabels = new List<string>();
@@ -489,6 +490,7 @@ namespace Maester.Engine
             _failedBySeverity.Clear();
             _sequence.Clear();
             _finishSeconds.Clear();
+            _durations.Clear();
             _slowest.Clear();
             _recent.Clear();
             _finished.Clear();
@@ -502,6 +504,7 @@ namespace Maester.Engine
             _finishSeconds.Add(_runClock.Elapsed.TotalSeconds);
             // The tests that ran, newest first, for the list under the running tests.
             bool ran = result == "Passed" || result == "Failed" || result == "Error" || result == "Investigate";
+            if (ran) _durations.Add(duration.TotalSeconds);
             if (ran && !string.IsNullOrEmpty(id))
             {
                 _recent.Insert(0, new Recent { Id = id, Title = title, Result = result, Duration = duration });
@@ -516,9 +519,13 @@ namespace Maester.Engine
             }
             if (!string.IsNullOrEmpty(id))
             {
-                _slowest.Add(new Slow { Id = id, Title = title, Duration = duration });
-                _slowest.Sort((a, b) => b.Duration.CompareTo(a.Duration));
-                if (_slowest.Count > SlowestKept) _slowest.RemoveAt(SlowestKept);
+                // Only a test that ran has a time worth listing.
+                if (ran)
+                {
+                    _slowest.Add(new Slow { Id = id, Title = title, Duration = duration });
+                    _slowest.Sort((a, b) => b.Duration.CompareTo(a.Duration));
+                    if (_slowest.Count > SlowestKept) _slowest.RemoveAt(SlowestKept);
+                }
                 _finished[id] = result;
                 CountDrift(id, result);
             }
@@ -611,7 +618,8 @@ namespace Maester.Engine
         /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
         ///
         /// Every panel is shown whenever the column has the rows for it. The Pace panel is the one that gives:
-        /// it starts at its chart and one test, and takes the rows that are left over for more tests. In a column
+        /// it starts at a small graph and one test, and takes the rows that are left over for a taller graph and
+        /// more tests. In a column
         /// that is still too short, the panels that can do with less take less (the Tips panel the height of the
         /// tip it shows, the Failed panel the severities that have failures, the Blog panel one line). Only then
         /// is a panel that does not fit left out.
@@ -628,7 +636,7 @@ namespace Maester.Engine
                 pane = StackPanels(paneWidth, rows, ansi, out all);
             }
             int spare = rows - pane.Count;
-            if (all && spare > 0 && _slowest.Count > 0 && PanelShown("Pace"))
+            if (all && spare > 0 && _durations.Count > 0 && PanelShown("Pace"))
             {
                 _paceExtra = spare;
                 pane = StackPanels(paneWidth, rows, ansi, out all);
@@ -848,36 +856,46 @@ namespace Maester.Engine
             return sb.ToString();
         }
 
+        private const int PaceGraphLeast = 2;
+        private const int PaceGraphMost = 5;
+
+        /// <summary>
+        /// The Pace panel: a graph of how long each test took, and the slowest tests. It always has the graph
+        /// (two rows; one in a column that is short of rows) and one test. The rows that the column has left
+        /// over go first to the graph (five rows at most), then to a line that says what the bars are, then to
+        /// a heading and more of the slowest tests.
+        /// </summary>
         private PanelContent BuildPacePanel(int width, bool ansi)
         {
-            if (_finishSeconds.Count == 0) return null;
+            if (_durations.Count == 0) return null;
             double elapsed = Math.Max(0.001, _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
-            var panel = new PanelContent { Title = "Pace", Badge = (_finishSeconds.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" };
+            var panel = new PanelContent { Title = "Pace", Badge = (_durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" };
 
-            // Tests finished in each slice of the run so far.
-            int buckets = Math.Max(8, width);
-            var counts = new int[buckets];
-            int top = 1;
-            foreach (var t in _finishSeconds)
-            {
-                int index = Math.Min(buckets - 1, (int)(t / elapsed * buckets));
-                counts[index]++;
-                top = Math.Max(top, counts[index]);
-            }
-            var spark = new StringBuilder();
-            foreach (var c in counts)
-            {
-                if (Unicode) spark.Append(c == 0 ? ' ' : Spark[Math.Min(Spark.Length - 1, (int)((double)c / top * (Spark.Length - 1)))]);
-                else spark.Append(c == 0 ? ' ' : (c * 2 > top ? '#' : '-'));
-            }
-            panel.Lines.Add(new LineBuilder(ansi).Add(spark.ToString(), "36").Build());
+            int extra = _paceExtra;
+            int graphRows = _tight ? 1 : PaceGraphLeast;
+            int grow = Math.Max(0, Math.Min(extra, PaceGraphMost - graphRows));
+            graphRows += grow;
+            extra -= grow;
+            bool caption = extra > 0;
+            if (caption) extra--;
 
-            // The slowest tests: always one, right under the chart. Rows that the column has left over go to a
-            // heading and then to more tests.
+            int per = Math.Max(1, (int)Math.Ceiling((double)Math.Max(_total, _durations.Count) / Math.Max(1, width)));
+            double longest = 0;
+            foreach (double d in _durations) longest = Math.Max(longest, d);
+            panel.Lines.AddRange(PaceGraph(width, graphRows, per, longest, ansi));
+            if (caption)
+            {
+                string what = per == 1 ? "each bar is a test, in run order" : "each bar is the slowest of " + N(per) + " tests";
+                string most = "longest " + Short(TimeSpan.FromSeconds(longest));
+                var line = new LineBuilder(ansi).Add(what, "2");
+                if (what.Length + most.Length + 2 <= width) line.Add(new string(' ', width - what.Length - most.Length)).Add(most, "2");
+                panel.Lines.Add(Truncate(line.Build(), width, ansi));
+            }
+
             if (_slowest.Count > 0)
             {
-                int shown = Math.Max(1, Math.Min(_slowest.Count, _paceExtra));
-                if (_paceExtra > 0) panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
+                int shown = Math.Max(1, Math.Min(_slowest.Count, extra));
+                if (extra > 0) panel.Lines.Add(new LineBuilder(ansi).Add("Slowest so far", "2").Build());
                 int listed = 0;
                 foreach (var s in _slowest)
                 {
@@ -890,6 +908,56 @@ namespace Maester.Engine
                 }
             }
             return panel;
+        }
+
+        /// <summary>
+        /// The graph of the Pace panel: one bar for each test that ran, in the order they ran, as tall as the
+        /// test took. With more tests than columns a bar stands for several tests and is as tall as the slowest
+        /// of them; how many is fixed for the run, so the bars do not move as it goes on. The height is on a
+        /// logarithmic scale (a test of 34 seconds would otherwise flatten the other 280), exact to an eighth of
+        /// a row, and each row has its colour: green at the bottom to red at the top.
+        /// </summary>
+        private List<Line> PaceGraph(int width, int rows, int per, double longest, bool ansi)
+        {
+            const double floor = 0.05;
+            double top = Math.Log(1 + Math.Max(1.0, longest) / floor);
+            int bars = Math.Min(width, (_durations.Count + per - 1) / per);
+            var levels = new int[bars];
+            for (int b = 0; b < bars; b++)
+            {
+                double slowest = 0;
+                int end = Math.Min(_durations.Count, (b + 1) * per);
+                for (int i = b * per; i < end; i++) slowest = Math.Max(slowest, _durations[i]);
+                // A test that ran always shows, however fast it was.
+                levels[b] = Math.Max(1, (int)Math.Round(Math.Log(1 + slowest / floor) / top * rows * 8));
+            }
+            var lines = new List<Line>();
+            for (int row = rows - 1; row >= 0; row--)
+            {
+                var sb = new StringBuilder(bars);
+                foreach (int level in levels)
+                {
+                    int part = Math.Max(0, Math.Min(8, level - row * 8));
+                    if (Unicode) sb.Append(part == 0 ? ' ' : Spark[part - 1]);
+                    else sb.Append(part == 0 ? ' ' : (part >= 7 ? '#' : (part >= 4 ? ':' : '.')));
+                }
+                lines.Add(new LineBuilder(ansi).Add(sb.ToString(), PaceColour(row, rows)).Build());
+            }
+            return lines;
+        }
+
+        private static readonly int[][] PaceStops = { new[] { 63, 182, 139 }, new[] { 229, 192, 123 }, new[] { 224, 108, 117 } };
+
+        /// <summary>The colour of a row of the graph, counted from the bottom: green, through amber, to red at the top.</summary>
+        private string PaceColour(int row, int rows)
+        {
+            double t = rows > 1 ? (double)row / (rows - 1) : 0;
+            if (!TrueColor) return t < 0.34 ? "32" : (t < 0.67 ? "33" : "31");
+            double at = t * (PaceStops.Length - 1);
+            int segment = Math.Min((int)at, PaceStops.Length - 2);
+            var rgb = new int[3];
+            for (int i = 0; i < 3; i++) rgb[i] = (int)Math.Round(PaceStops[segment][i] + (PaceStops[segment + 1][i] - PaceStops[segment][i]) * (at - segment));
+            return "38;2;" + N(rgb[0]) + ";" + N(rgb[1]) + ";" + N(rgb[2]);
         }
 
         private PanelContent BuildDriftPanel(int width, bool ansi)
