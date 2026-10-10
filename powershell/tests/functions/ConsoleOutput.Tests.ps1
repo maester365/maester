@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 
     # Environment variables the detection reads; each test sets what it needs and the rest are cleared.
@@ -164,13 +164,91 @@ Describe 'Write-MtCIAnnotation' {
 }
 
 Describe 'Write-MtRunSummary' {
+    BeforeAll {
+        $script:plain = $script:stream.PSObject.Copy(); $script:plain.Unicode = $false
+        $script:results = [pscustomobject]@{
+            PassedCount = 2; FailedCount = 2; ErrorCount = 1; InvestigateCount = 0; SkippedCount = 1; NotRunCount = 1; TotalCount = 7; TotalDuration = '00:00:01.5'
+            Tests = @(
+                [pscustomobject]@{ Id = 'A.1'; Product = 'Exchange Online'; Result = 'Passed'; Severity = 'High' }
+                [pscustomobject]@{ Id = 'A.2'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Medium' }
+                [pscustomobject]@{ Id = 'A.3'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Critical' }
+                [pscustomobject]@{ Id = 'A.4'; Product = 'Entra ID'; Result = 'Passed'; Severity = 'Low' }
+                [pscustomobject]@{ Id = 'A.5'; Product = 'Entra ID'; Result = 'NotRun'; Severity = 'Low' }
+                [pscustomobject]@{ Id = 'A.6'; Product = $null; Result = 'Error'; Severity = 'Low' }
+                [pscustomobject]@{ Id = 'A.7'; Result = 'Skipped' }
+            )
+        }
+        $script:summary = @(InModuleScope Maester -Parameters @{ c = $script:plain; r = $script:results } { param($c, $r) Write-MtRunSummary -MaesterResults $r -ReportPath 'out/report.html' -Console $c 6>&1 } | ForEach-Object { "$_" })
+    }
+
     It 'Writes every count, the total and the report path' {
-        $plain = $script:stream.PSObject.Copy(); $plain.Unicode = $false
-        $results = [pscustomobject]@{ PassedCount = 3; FailedCount = 2; ErrorCount = 1; InvestigateCount = 0; SkippedCount = 4; NotRunCount = 5; TotalCount = 15; TotalDuration = '00:00:01.5' }
-        $text = (InModuleScope Maester -Parameters @{ c = $plain; r = $results } { param($c, $r) Write-MtRunSummary -MaesterResults $r -ReportPath 'out/report.html' -Console $c 6>&1 } | ForEach-Object { "$_" }) -join "`n"
-        $text | Should -Match 'Passed: 3, Failed: 2, Errors: 1, Investigate: 0, Skipped: 4, Not run: 5'
-        $text | Should -Match '\(15 tests, 1\.5 s\)'
-        $text | Should -Match 'Report: out/report\.html'
+        $text = $script:summary -join "`n"
+        $text | Should -Match 'Passed: 2, Failed: 2, Errors: 1, Investigate: 0, Skipped: 1, Not run: 1'
+        $text | Should -Match '\(7 tests, 1\.5 s\)'
+        $text | Should -Match 'Report out/report\.html'
+    }
+
+    It 'Has one row per product, in the order of the product list, with tests that have no product under Other' {
+        $rows = @($script:summary | Where-Object { $_ -match '^ (Entra ID|Exchange Online|Other) ' })
+        $rows.Count | Should -Be 3
+        $rows[0] | Should -Match '^ Entra ID'
+        $rows[1] | Should -Match '^ Exchange Online'
+        $rows[2] | Should -Match '^ Other'
+    }
+
+    It 'Counts each result per product, leaves NotRun out, and names the worst failed severity' {
+        $entra = $script:summary | Where-Object { $_ -match '^ Entra ID' }
+        ($entra -split '\s+' | Where-Object { $_ })[2..7] -join ' ' | Should -Be '1 2 0 0 0 Critical'
+        ($script:summary | Where-Object { $_ -match '^ Other' }) | Should -Match '^ Other\s+0\s+0\s+1\s+0\s+1$'
+    }
+}
+
+Describe 'Connection info' {
+    BeforeAll {
+        $script:context = [pscustomobject]@{
+            TenantName = 'Contoso'; Account = 'merill@contoso.com'
+            Services   = [pscustomobject]@{ Graph = $true; ExchangeOnline = $true; Teams = $false; Azure = $false; ActiveDirectory = $false }
+        }
+        $script:planRows = @(
+            [pscustomobject]@{ Disposition = 'Skipped'; Test = [pscustomobject]@{ Service = @('Teams') } }
+            [pscustomobject]@{ Disposition = 'Skipped'; Test = [pscustomobject]@{ Service = @('Teams') } }
+            [pscustomobject]@{ Disposition = 'Run'; Test = [pscustomobject]@{ Service = @('Graph') } }
+        )
+        $script:connections = @(InModuleScope Maester -Parameters @{ t = $script:context; p = $script:planRows } { param($t, $p) Get-MtConnectionInfo -TenantContext $t -Plan $p })
+    }
+
+    It 'Lists connected services, and services that are not connected only when tests are skipped for them' {
+        $script:connections.Name | Should -Be @('Graph', 'Exchange Online', 'Teams')
+        ($script:connections | Where-Object Name -EQ 'Graph').Detail | Should -Be 'Contoso · merill@contoso.com'
+        ($script:connections | Where-Object Name -EQ 'Teams').Detail | Should -Be 'not connected · 2 tests will be skipped'
+    }
+
+    It 'Formats one line per service, and one line for the dashboard with its visible length' {
+        $lines = @(InModuleScope Maester -Parameters @{ c = $script:stream; x = $script:connections } { param($c, $x) Format-MtConnectionInfo -Connection $x -Console $c })
+        $lines.Count | Should -Be 3
+        $lines[2] | Should -Match '○ Teams\s+not connected'
+        $one = InModuleScope Maester -Parameters @{ c = $script:stream; x = $script:connections } { param($c, $x) Format-MtConnectionInfo -Connection $x -OneLine -Console $c }
+        $one.Text | Should -Be ' Contoso · merill@contoso.com · ● Graph  ● Exchange Online  ○ Teams'
+        $one.Length | Should -Be $one.Text.Length
+    }
+}
+
+Describe 'Deferred console output' {
+    It 'Keeps lines while the dashboard owns the screen and writes them when it closes' {
+        $lines = InModuleScope Maester {
+            $writer = [System.IO.StringWriter]::new()
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new($writer)
+            $renderer.Width = 100; $renderer.Height = 30; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $script:__MtConsoleRenderer = $renderer
+            $script:__MtDeferredOutput = $null
+            $renderer.Open()
+            $during = @(Write-MtConsoleLine 'kept for later' 6>&1)
+            $after = @(Stop-MtConsoleOutput 6>&1)
+            [pscustomobject]@{ During = $during.Count; After = @($after | ForEach-Object { "$_" }); Renderer = $script:__MtConsoleRenderer }
+        }
+        $lines.During | Should -Be 0
+        $lines.After | Should -Be @('kept for later')
+        $lines.Renderer | Should -BeNullOrEmpty
     }
 }
 
@@ -181,12 +259,21 @@ Describe 'Show-MtLogo' {
         $text | Should -Match '^Maester v\d'
     }
 
-    It 'Writes the compact wordmark on a narrow console and the full one on a wide console' {
-        $narrow = $script:stream.PSObject.Copy(); $narrow.Mode = 'Interactive'; $narrow.Width = 50; $narrow.Ansi = $true; $narrow.ColorDepth = 'TrueColor'
-        $wide = $narrow.PSObject.Copy(); $wide.Width = 120
-        $small = (InModuleScope Maester -Parameters @{ c = $narrow } { param($c) Show-MtLogo -Console $c 6>&1 } | ForEach-Object { "$_" }) -join "`n"
-        $big = (InModuleScope Maester -Parameters @{ c = $wide } { param($c) Show-MtLogo -Console $c 6>&1 } | ForEach-Object { "$_" }) -join "`n"
-        ($small -split "`n").Count | Should -BeLessThan ($big -split "`n").Count
-        $big | Should -Match ([regex]::Escape("$([char]27)[38;2;"))
+    It 'Builds the banner with the flame for a wide console and a small one for a narrow console' {
+        $wide = $script:stream.PSObject.Copy(); $wide.Mode = 'Interactive'; $wide.Width = 120; $wide.Ansi = $true; $wide.ColorDepth = 'TrueColor'
+        $narrow = $wide.PSObject.Copy(); $narrow.Width = 60
+        $big = InModuleScope Maester -Parameters @{ c = $wide } { param($c) Get-MtBanner -Console $c }
+        $small = InModuleScope Maester -Parameters @{ c = $narrow } { param($c) Get-MtBanner -Console $c }
+        $big.Width | Should -Be 88
+        $big.Lines.Count | Should -Be 13
+        ($big.Lines -join "`n") | Should -Match ([regex]::Escape("$([char]27)[38;2;"))
+        $small.Lines.Count | Should -BeLessThan $big.Lines.Count
+        $big.Compact | Should -Match '^Maester v\d'
+    }
+
+    It 'Never makes a banner line wider than the width it reports' {
+        $plain = $script:stream.PSObject.Copy(); $plain.Mode = 'Interactive'; $plain.Width = 120
+        $banner = InModuleScope Maester -Parameters @{ c = $plain } { param($c) Get-MtBanner -Console $c }
+        foreach ($line in $banner.Lines) { $line.Length | Should -BeLessOrEqual $banner.Width }
     }
 }

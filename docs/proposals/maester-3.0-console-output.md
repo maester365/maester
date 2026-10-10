@@ -5,12 +5,19 @@ section 5.4 (console levels) and rule 11 ("the engine owns progress and console 
 
 ## Owner rulings (2026-10-10)
 
-1. In Interactive mode at `-Verbosity None`, print **no** per-test lines, not even Failed and Error. The live result
-   counts in the status region are the interactive feedback.
+1. In Interactive mode at `-Verbosity None`, print **no** per-test lines, not even Failed and Error. Live result
+   counts are the interactive feedback.
 2. CI annotations: no ruling. Implemented as on by default in Stream mode, capped at 20, with `Output.CIAnnotations = $false`
    to turn them off.
-3. Keep the logo, and refresh it for 3.0 with colour in interactive runs (see "Logo").
+3. Keep the logo. The interactive banner follows the GitHub Copilot CLI: a block wordmark with an outline, next to the
+   official Maester flame, with the connection info under it.
 4. Write the renderer in C#, in Maester.Engine.
+5. While a run is in progress the console may take over the whole screen. It shows a dashboard: the overall phase,
+   one lane per product, and the tests that are running. It has to work for parallel runs, and for phases Maester
+   does not have yet (collecting data, as the Zero Trust Assessment does).
+6. Tests are grouped by product. `Product` is a property of `[MaesterTest]`, set on every built-in test; nothing parses
+   it out of another value.
+7. The summary is a table of results by product, then the totals and the report link.
 
 ## Where we were
 
@@ -41,7 +48,7 @@ How a 3.0 run wrote to the console before this work:
 
 | Mode | When (`Auto`) | Live status | Colour | Symbols |
 | --- | --- | --- | --- | --- |
-| `Interactive` | ConsoleHost with virtual terminal support, stdout not redirected, not CI, not `-NonInteractive` | Status line, then a live region during the tests | ANSI | `✓ ✗ ! ? –` (single width) |
+| `Interactive` | ConsoleHost with virtual terminal support, stdout not redirected, not CI, not `-NonInteractive` | A full-screen dashboard, or a status line and a two-line region on a small console | ANSI | `✓ ✗ ! ? –` (single width) |
 | `Stream` | CI (`CI`, `GITHUB_ACTIONS`, `TF_BUILD`), redirected output, another host (VS Code, Azure Automation, remoting), `-NonInteractive` | In CI, a heartbeat line every 10 s or 50 tests | ANSI where the host supports it, and on GitHub Actions | single width |
 | `Plain` | `TERM=dumb`, or chosen | none | none | ASCII `[PASS] [FAIL] [ERROR] [SKIP] …` |
 
@@ -52,66 +59,110 @@ How a 3.0 run wrote to the console before this work:
 
 `-Verbosity` still decides *what* is printed, and the mode decides *how*:
 
-- At `None`, Interactive shows the status line, the live counts and the summary, with no per-test lines (ruling 1).
+- At `None`, Interactive shows the dashboard and then the summary, with no per-test lines (ruling 1).
 - At `None`, Stream and Plain print only the summary, plus the heartbeat in CI.
 - At `Normal` and above, every mode prints one line per finished test: symbol and word, ID, title, duration, and for
-  Failed and Error the first line of the reason.
+  Failed and Error the first line of the reason. Interactive uses the compact layout so the lines can scroll.
 
-### Interactive: status line and live region
+### Interactive: the dashboard
 
-**Before and after the tests**, one dim status line shows the current phase ("› Reading the tenant context…").
+At `-Verbosity None` on a console of at least 80 columns by 16 rows, the run takes over the screen. It uses the
+terminal's alternate screen, as `less` and `vim` do, so nothing it draws ends up in the scrollback and it can
+redraw freely.
 
-- It is drawn when the phase changes, with no timer.
-- It is left with the cursor at the start of the line, so a line the host writes without pausing replaces it instead of following it.
+```
+┌──                                                                                  ──┐
+     ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗        ▟██████  ▟▙
+     ...                                                                 (the flame)
+└──                                                                                  ──┘
+ Contoso · merill@contoso.com · ● Graph  ● Exchange Online  ○ Teams
 
-**Interactive runs never call `Write-Progress`.**
+ ✓ Prepare 1.0 s  ─  ● Run tests 0:15  ─  ○ Results  ─  ○ Reports
 
-- The host's progress pane finds its place by asking the terminal for the cursor position (`ESC[6n`).
-- A terminal that doesn't answer in time gets the pane, and anything drawn after it, at the top of the screen. This
-  happened in the Claude desktop app's embedded terminal.
+ ━━━━━━━━━━━━━━━━━━━━────────────────────  269/431  62%  ETA 0:44   ✓ 212  ✗ 41  ! 3  ? 9  – 4
 
-**While the tests run**, there are two lines at the bottom, redrawn in place:
+ Entra ID        ━━━━━━━━━━━━━━━━━━━━━━━━  182/182  ✓ 150  ✗ 28  ! 0  ? 4
+ Exchange Online ━━━━━━━━━━━━━━━─────────    61/98  ✓ 48   ✗ 11  ! 2  ? 0   2 running
+ Defender        ━━━━━───────────────────   26/127  ✓ 14   ✗ 2   ! 1  ? 5   1 running
+ Teams           ────────────────────────      0/0                          24 skipped
+
+ Running · 3 tests
+ ⠸ MT.1041           Mailbox auditing is enabled for all users                        2.4 s
+ ⠸ CISA.MS.EXO.4.1   DMARC records are published for every domain                     0.8 s
+ ⠸ MT.1059           Defender for Identity health issues are resolved                 5.1 s
+```
+
+- **Phases.** The strip shows the phases of the run in order: done (with its time), current, and to come. Today they are
+  Prepare, Run tests, Results and Reports. The renderer takes the list from the caller (`SetPhases`, `StartPhase`), so a
+  data collection phase can be added without changing the renderer. Outside the test phase, the line under the strip
+  shows what the phase is doing ("Creating html report…").
+- **Lanes.** One per product, from the `Product` of each test, in the order of the schema's product list. A product
+  whose tests are all skipped gets a lane with the number skipped, so it is clear why nothing runs for it. When there
+  are more lanes than rows, the lanes with work left stay and the rest are counted in "… and n more".
+- **Running tests.** One line per running test with its elapsed time. With one worker it is one line; with parallel
+  lanes it is one per worker. Results are matched to their test by ID, so they can finish in any order.
+- **Size.** The banner is shown when the console is wide and tall enough for it next to everything else. Otherwise the
+  header is one line. The width and height are read on every redraw, so resizing works.
+- **Redraw.** Every 100 ms and on every event: home the cursor, write each line followed by erase-to-end-of-line, then
+  erase below, all inside a synchronized-output bracket (`` `e[?2026h `` … `` `e[?2026l ``).
+- **What the tests write.** There is no scrollback while the dashboard is up. Warnings and `Write-Host` output from
+  tests stay on the engine's result, and anything Maester itself wants to print is queued. Both are written, in order,
+  as soon as the screen is restored.
+- **When the run ends.** The screen is restored, and the scrollback gets the banner (printed before the dashboard
+  opened), the connection list, the queued output and the summary.
+- **Taskbar progress.** OSC `9;4` in Windows Terminal, ConEmu, Ghostty and iTerm2 3.6.6+, detected from the environment.
+  It is never sent to older iTerm2, which shows OSC 9 as a notification.
+- **Cleanup.** `Invoke-Maester` has a `clean {}` block (PowerShell 7.3+) that restores the screen and the cursor on
+  every path out: normal return, early return, error and Ctrl+C.
+
+**Interactive runs never call `Write-Progress`.** The host's progress pane finds its place by asking the terminal for the
+cursor position (`ESC[6n`). A terminal that doesn't answer in time gets the pane, and anything drawn after it, at the top
+of the screen. This happened in the Claude desktop app's embedded terminal. The renderer never reads the cursor position.
+
+### Interactive: the compact layout
+
+Used when the console is smaller than 80 by 16, and at `-Verbosity Normal` and above, where per-test lines have to
+scroll past.
+
+- Before and after the tests, one dim status line shows what the run is doing ("› Reading the tenant context…"). It is
+  drawn when the text changes, and left with the cursor at its start, so a line the host writes replaces it.
+- While tests run, two lines at the bottom are redrawn in place: the counts, a bar, done/total and ETA, then the running
+  test. Host output (result lines, replayed warnings) is written between `Pause()` and `Resume()`.
 
 ```
 ⠸ ✓ 32  ✗ 6  ! 0  ? 0  – 0  ━━━━━━━━━━━━━━━━━━━───────────  38/60  63%  0:20  ETA 0:11
   CONTOSO.44  Mailbox auditing is enabled (44) (0:01)
 ```
 
-- **Redraw:** move to the start of the region and erase it (`` `r`e[2K ``, `` `e[1A ``), then write the new frame as one write inside a
-  synchronized-output bracket (`` `e[?2026h `` … `` `e[?2026l ``).
-- **Timer:** redraws every 100 ms, so the spinner and the elapsed time of a long test keep moving.
-- **Width:** the width is read on every redraw, and lines are cut to width − 1, so the region never wraps.
-- **Resizing:** the erase works out how many rows the last frame now takes, so a console that got narrower doesn't leave rows behind.
-- **Taskbar progress:** OSC `9;4` in Windows Terminal, ConEmu, Ghostty and iTerm2 3.6.6+, detected from the environment.
-  It is never sent to older iTerm2, which shows OSC 9 as a notification.
-- **Cleanup:** `Invoke-Maester` has a `clean {}` block (PowerShell 7.3+) that erases the region or status line and shows the cursor
-  again. It runs on every path out: normal return, early return, error and Ctrl+C.
-
 ### Where it lives
 
-`MtConsoleRenderer` in Maester.Engine (C#) draws only the status line and the region:
+`MtConsoleRenderer` in Maester.Engine (C#) draws both layouts:
 
-- `Start`, `ItemStarting`, `ItemFinished`, `ShowStatus`, `Pause`, `Resume`, `Stop`.
-- One lock, and nothing is drawn while paused.
-- It writes to a `TextWriter` (`Console.Out`), so its tests use a `StringWriter`.
+- Content: `SetHeader`, `SetInfo`, `SetPhases`, `StartPhase`, `ShowStatus`.
+- Lifecycle: `Open` (takes the screen when it can), `Start` (with the lanes), `ItemStarting`, `ItemFinished`, `Pause`,
+  `Resume`, `Stop` (ends the test phase), `Close` (gives the screen back).
+- One lock for every call, because a timer thread redraws and parallel lanes will report from several threads.
+- It writes to a `TextWriter` (`Console.Out`), and takes a fixed width and height, so its tests use a `StringWriter`.
 
 `Invoke-MtEngineRun -Renderer`:
 
-- Reports each item start to the renderer.
-- Pauses the renderer around the records it replays after a test (warnings, `Write-Host` output).
-- Sets `$ProgressPreference = 'SilentlyContinue'` inside tests, because a module's own `Write-Progress` would draw over the region.
-
-Everything that stays in the scrollback goes through `Write-Host` between `Pause()` and `Resume()` (`Write-MtConsoleLine`).
-Result lines, the summary and warnings therefore still reach the information stream and transcripts.
+- Reports each item start to the renderer, with the item's `Title` and `Group` (its product).
+- In the compact layout, pauses the renderer around the records it replays after a test. In the dashboard it leaves
+  them on the result for the caller to replay later.
+- Sets `$ProgressPreference = 'SilentlyContinue'` inside tests, because a module's own `Write-Progress` would draw over it.
 
 The PowerShell side owns the decisions:
 
-- Mode detection, and the phase names (`Write-MtProgress` sends them to `ShowStatus` during an interactive run).
-- Turning each finished test into its Maester result. `Invoke-MtNativePlan` now builds rows in `OnItemFinished`, so the live counts and
-  the report agree.
-- Formatting the result lines and the summary.
+- Mode detection (`Get-MtConsoleMode`), the banner (`Get-MtBanner`), the connection info (`Get-MtConnectionInfo`).
+- The phases (`Set-MtConsolePhase`) and what each is doing (`Write-MtProgress` goes to `ShowStatus` during an
+  interactive run).
+- Turning each finished test into its Maester result. `Invoke-MtNativePlan` builds rows in `OnItemFinished`, so the live
+  counts and the report agree.
+- Everything that stays in the scrollback: `Write-MtConsoleLine` pauses the compact layout around a `Write-Host`, or
+  queues the line while the dashboard is up. `Stop-MtConsoleOutput` closes the renderer and writes the queue.
 
-Pester-format tests run after the native tests, once the region has stopped, so Pester's own output is unchanged.
+Pester-format tests run after the native tests. Pester writes its own output, so the screen is given back before
+`Invoke-MtPesterProvider` runs.
 
 ### Stream mode in CI
 
@@ -124,29 +175,50 @@ Pester-format tests run after the native tests, once the region has stopped, so 
 
 ### Summary
 
-One line of counts (symbol, number and word, so it never relies on colour alone), the number of tests and the duration,
-then the report path, which is an OSC 8 hyperlink in Interactive mode on terminals that support it. The summary replaces the
-2.x line with emoji.
+A table with one row per product: Passed, Failed, Errors, Investigate, Skipped, and the highest severity among the
+product's failed tests. Tests that were not run are left out, and tests without a `Product` are under Other. Then one
+line of totals (symbol, number and word, so it never relies on colour alone) with the number of tests and the duration,
+and the report path, which is an OSC 8 hyperlink in Interactive mode on terminals that support it.
 
-### Logo
+```
+ Product          Passed  Failed  Errors  Investigate  Skipped   Worst failure
+ Entra ID            150      28       0            4        0   Critical
+ Exchange Online      79      15       2            2        0   High
+ ─────────────────────────────────────────────────────────────────────────────
+ ✓ 229 passed  ✗ 43 failed  ! 2 errors  ? 6 investigate  – 0 skipped  – 0 not run  (280 tests, 1:58)
+ Report ./test-results/TestResults-2026-10-10-121500.html
+```
+
+### Connection info
+
+After the tenant context is read, the run lists the services it uses: connected ones with a filled dot (Graph with the
+tenant name and account), and services that are not connected with the number of tests skipped for them. Opt-in
+services (Active Directory) are only listed when connected. It reads the tenant context the run already has, so it
+makes no calls. The dashboard shows it as one line under the banner.
+
+### Banner
 
 What other CLIs do:
 
-- **GitHub Copilot CLI** animates a 4-bit colour banner on first run (`banner: always|once|never`) and skips it with `--screen-reader`.
-- **Gemini CLI** picks the widest of three ASCII logos that fits and colours it with a theme gradient. `ui.hideBanner` turns it off.
+- **GitHub Copilot CLI** shows a block wordmark with an outline next to a pixel-art mascot, inside corner brackets,
+  with the version and connection lines under it. It is animated on first run (`banner: always|once|never`) and
+  skipped with `--screen-reader`.
+- **Gemini CLI** picks the widest of three ASCII logos that fits and colours it with a theme gradient.
 - **opencode** prints a 256-colour half-block wordmark, and plain text when not on a TTY.
 - **Claude Code** shows a compact box with the version and folder.
 
-Maester takes the static parts (`Show-MtLogo`):
+Maester's banner (`Get-MtBanner`, printed by `Show-MtLogo` and used as the dashboard header):
 
-- **Wordmark by width:** the "ANSI Shadow" wordmark (64 columns) at 72 columns or more, and a two-line half-block wordmark (31 columns)
-  down to 36. Below that, or in Stream or Plain mode, or without UTF-8, it prints one plain line.
-- **Gradient:** a fire gradient by column, from Maester red `#E5243B` through orange `#FF6A3D` to amber `#FFB547` (the red of maester.dev,
-  and the 🔥 Maester uses everywhere). The box-drawing shadow characters are at 55% brightness so the letters stand out.
-- **Colour depth:** truecolor when `COLORTERM`, `WT_SESSION` or `TERM_PROGRAM` says the terminal supports it, then the 256-colour cube,
-  then red and yellow.
-- **Info line:** one dim line, `v3.0.0 · PowerShell 7.6.2 · maester.dev`.
-- **No animation.** `-NoLogo` and `-NonInteractive` still turn the logo off.
+- **Wordmark.** The "ANSI Shadow" MAESTER wordmark. The block characters use the logo's gradient, and the box-drawing
+  shadow characters are a light outline, as in the Copilot banner.
+- **Flame.** The official logo (`assets/logo/maester.png`), sampled into quadrant characters (`▘▝▖▗▚▞▛▜▙▟`): two by two
+  pixels per character cell, which every terminal font has. It is static art in the source; nothing reads the image at run time.
+- **Colour.** Both use the logo's gradient, orange `#F7941D` at the top to red `#D6282F` at the bottom, one colour per
+  row: truecolor when `COLORTERM`, `WT_SESSION` or `TERM_PROGRAM` says the terminal supports it, then the 256-colour
+  cube, then yellow and red.
+- **Sizes.** 88 columns by 13 rows at 90 columns or more. Below that, a small flame next to a two-line wordmark
+  (37 columns). Below 40 columns, in Stream or Plain mode, or without UTF-8, one plain line.
+- **No animation.** `-NoLogo` and `-NonInteractive` still turn the banner off.
 
 ### Accessibility
 
@@ -155,9 +227,11 @@ the summary is linear. `-OutputMode Plain` and `MAESTER_OUTPUT_MODE=Plain` are d
 
 ## Not done (follow-ups)
 
+- **Parallel execution itself.** The dashboard and the renderer's API are ready for it; the engine still runs tests one at a time.
+- **A data collection phase.** The phase list is the caller's, so adding one is a `SetPhases` change plus reporting its
+  work as running items.
 - **Screen-reader detection.** PSReadLine does this on Windows (`SPI_GETSCREENREADER`); Maester doesn't yet.
-- **Slowest tests and the first failures in the summary.** Left out for now, because ruling 1 keeps interactive output short.
 - **Cold-start cost when other modules are installed.** When ExchangeOnlineManagement, MicrosoftTeams, PnP.PowerShell or Az are installed
-  but not connected, the tenant-context probe auto-loads them. The first run on a machine then waits while PowerShell builds its
-  module analysis cache: about 40 s on the author's machine before the first test. Checking `Get-Module <name>` before probing a
+  but not connected, the tenant-context probe auto-loads them. The first run on a machine then waits in the Prepare phase while
+  PowerShell builds its module analysis cache: about 40 s on the author's machine. Checking `Get-Module <name>` before probing a
   service would avoid it.

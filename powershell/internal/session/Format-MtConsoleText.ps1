@@ -121,10 +121,97 @@ function Write-MtCIAnnotation {
     }
 }
 
+function Get-MtConnectionInfo {
+    <#
+    .SYNOPSIS
+    Lists the services of a run for the console: connected or not, and how many tests are skipped for it.
+
+    .DESCRIPTION
+    Reads the tenant context the run already has; it makes no calls. A service that is not connected is listed
+    when tests are skipped for it. Opt-in services (Active Directory) are only listed when connected.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter(Mandatory)] [AllowNull()] [pscustomobject] $TenantContext,
+        # Rows from Resolve-MtNativePlan.
+        [Parameter()] [AllowEmptyCollection()] [object[]] $Plan = @()
+    )
+    if (-not $TenantContext -or -not $TenantContext.Services) { return }
+    $display = @{ ExchangeOnline = 'Exchange Online'; SecurityCompliance = 'Security & Compliance'; SharePointOnline = 'SharePoint Online'; AzureDevOps = 'Azure DevOps'; ActiveDirectory = 'Active Directory' }
+    $registry = Get-MtServiceRegistry
+    # Skipped tests per service, counted in one pass over the plan.
+    $skippedFor = @{}
+    foreach ($row in $Plan) {
+        if ($row.Disposition -ne 'Skipped') { continue }
+        foreach ($service in @($row.Test.Service)) { $skippedFor[[string]$service] = 1 + [int]$skippedFor[[string]$service] }
+    }
+    foreach ($property in $TenantContext.Services.PSObject.Properties) {
+        $name = $property.Name
+        $connected = [bool]$property.Value
+        $skipped = [int]$skippedFor[$name]
+        if (-not $connected -and ($registry.Services[$name].OptIn -or $skipped -eq 0)) { continue }
+        $detail = if (-not $connected) { "not connected · $skipped test$(if ($skipped -ne 1) { 's' }) will be skipped" }
+        elseif ($name -eq 'Graph') { (@($TenantContext.TenantName, $TenantContext.Account) | Where-Object { $_ }) -join ' · ' }
+        else { 'connected' }
+        [pscustomobject]@{
+            Name      = if ($display.ContainsKey($name)) { $display[$name] } else { $name }
+            Connected = $connected
+            Detail    = $detail
+        }
+    }
+}
+
+function Format-MtConnectionInfo {
+    <#
+    .SYNOPSIS
+    Formats the connection list: one line per service, or -OneLine for the dashboard header.
+
+    .DESCRIPTION
+    -OneLine returns Text (with colour when the console uses it) and Length, its visible length.
+    #>
+    [CmdletBinding()]
+    [OutputType([string], [pscustomobject])]
+    param(
+        [Parameter(Mandatory)] [AllowEmptyCollection()] [object[]] $Connection,
+        [Parameter()] [switch] $OneLine,
+        [Parameter()] [AllowNull()] [pscustomobject] $Console
+    )
+    $on = if ($Console -and $Console.Unicode) { '●' } else { '*' }
+    $off = if ($Console -and $Console.Unicode) { '○' } else { 'o' }
+    if ($OneLine) {
+        $graph = $Connection | Where-Object { $_.Name -eq 'Graph' -and $_.Connected } | Select-Object -First 1
+        $plain = ' '
+        $text = ' '
+        if ($graph -and $graph.Detail) {
+            $plain += "$($graph.Detail) · "
+            $text += "$(Format-MtConsoleText $graph.Detail -Style Bold -Console $Console)$(Format-MtConsoleText ' · ' -Style Dim -Console $Console)"
+        }
+        foreach ($c in $Connection) {
+            $plain += "$(if ($c.Connected) { $on } else { $off }) $($c.Name)  "
+            $text += if ($c.Connected) { "$(Format-MtConsoleText $on -Style Passed -Console $Console) $(Format-MtConsoleText $c.Name -Style Dim -Console $Console)  " }
+            else { Format-MtConsoleText "$off $($c.Name)  " -Style Dim -Console $Console }
+        }
+        return [pscustomobject]@{ Text = $text.TrimEnd(); Length = $plain.TrimEnd().Length }
+    }
+    $width = (@($Connection | ForEach-Object { $_.Name.Length }) + 5 | Measure-Object -Maximum).Maximum + 3
+    foreach ($c in $Connection) {
+        if ($c.Connected) {
+            " $(Format-MtConsoleText $on -Style Passed -Console $Console) $($c.Name.PadRight($width))$(Format-MtConsoleText $c.Detail -Style $(if ($c.Name -eq 'Graph') { 'Bold' } else { 'Dim' }) -Console $Console)"
+        } else {
+            Format-MtConsoleText " $off $($c.Name.PadRight($width))$($c.Detail)" -Style Dim -Console $Console
+        }
+    }
+}
+
 function Write-MtRunSummary {
     <#
     .SYNOPSIS
-    Writes the end-of-run summary: the count of each result, the duration and the report path.
+    Writes the end-of-run summary: results by product, the count of each result, the duration and the report path.
+
+    .DESCRIPTION
+    The table has one row per product (the Product of each test; tests without one are under Other) with
+    the tests that ran or were skipped, and the highest severity among the product's failed tests.
     #>
     [CmdletBinding()]
     param(
@@ -137,6 +224,32 @@ function Write-MtRunSummary {
     if ($MaesterResults.PSObject.Properties['TotalDuration'] -and $MaesterResults.TotalDuration) {
         try { $duration = Format-MtDuration ([timespan]::Parse([string]$MaesterResults.TotalDuration, [cultureinfo]::InvariantCulture)) } catch { $duration = $null }
     }
+    Write-MtConsoleLine ''
+
+    # Results by product.
+    $severityRank = @{ Critical = 4; High = 3; Medium = 2; Low = 1; Info = 0 }
+    $severityStyle = @{ Critical = 'Failed'; High = 'Error'; Medium = 'Error'; Low = 'Dim'; Info = 'Dim' }
+    $order = @((Get-MtTestSchema).Products)
+    $groups = @($MaesterResults.Tests | Where-Object { $_.Result -ne 'NotRun' } |
+            Group-Object { if ($_.PSObject.Properties['Product'] -and $_.Product) { [string]$_.Product } else { 'Other' } } |
+            Sort-Object { $i = $order.IndexOf($_.Name); if ($i -lt 0) { 999 } else { $i } }, Name)
+    if ($groups.Count -gt 0) {
+        $nameWidth = [math]::Max(12, ($groups | ForEach-Object { $_.Name.Length } | Measure-Object -Maximum).Maximum)
+        $cell = { param($value, $width, $style) $value = [int]$value; $text = ([string]$value).PadLeft($width); if ($value -gt 0) { Format-MtConsoleText $text -Style $style -Console $Console } else { Format-MtConsoleText $text -Style Dim -Console $Console } }
+        Write-MtConsoleLine (Format-MtConsoleText " $('Product'.PadRight($nameWidth))  Passed  Failed  Errors  Investigate  Skipped   Worst failure" -Style Dim -Console $Console)
+        foreach ($g in $groups) {
+            $count = @{}
+            foreach ($t in $g.Group) { $count[[string]$t.Result]++ }
+            $worst = $g.Group | Where-Object { $_.Result -eq 'Failed' -and $_.Severity } | Sort-Object { $severityRank[[string]$_.Severity] } -Descending | Select-Object -First 1
+            $worstText = if ($worst) { Format-MtConsoleText ([string]$worst.Severity) -Style $severityStyle[[string]$worst.Severity] -Console $Console } else { '' }
+            Write-MtConsoleLine (" $(Format-MtConsoleText $g.Name.PadRight($nameWidth) -Style Bold -Console $Console)" +
+                (& $cell $count['Passed'] 8 'Passed') + (& $cell $count['Failed'] 8 'Failed') + (& $cell $count['Error'] 8 'Error') +
+                (& $cell $count['Investigate'] 13 'Investigate') + (& $cell $count['Skipped'] 9 'Dim') + "   $worstText").TrimEnd()
+        }
+        Write-MtConsoleLine (Format-MtConsoleText " $($(if ($Console.Unicode) { '─' } else { '-' }) * ($nameWidth + 62))" -Style Dim -Console $Console)
+    }
+
+    # Totals.
     $parts = @(
         [pscustomobject]@{ Result = 'Passed'; Count = $MaesterResults.PassedCount; Label = 'passed' }
         [pscustomobject]@{ Result = 'Failed'; Count = $MaesterResults.FailedCount; Label = 'failed' }
@@ -156,8 +269,7 @@ function Write-MtRunSummary {
     }
     $separator = if ($Console.Unicode) { '  ' } else { ', ' }
     $total = "$($MaesterResults.TotalCount) tests$(if ($duration) { ", $duration" })"
-    Write-MtConsoleLine ''
-    Write-MtConsoleLine "  $($text -join $separator)  $(Format-MtConsoleText "($total)" -Style Dim -Console $Console)"
+    Write-MtConsoleLine " $($text -join $separator)  $(Format-MtConsoleText "($total)" -Style Dim -Console $Console)"
     if ($ReportPath) {
         $shown = $ReportPath
         if ($Console.Hyperlink) {
@@ -165,7 +277,7 @@ function Write-MtRunSummary {
             $uri = ([System.Uri]::new([System.IO.Path]::GetFullPath($ReportPath))).AbsoluteUri
             $shown = "$esc]8;;$uri$esc\$ReportPath$esc]8;;$esc\"
         }
-        Write-MtConsoleLine "  $(Format-MtConsoleText 'Report:' -Style Bold -Console $Console) $shown"
+        Write-MtConsoleLine " $(Format-MtConsoleText 'Report' -Style Bold -Console $Console) $shown"
     }
     Write-MtConsoleLine ''
 }

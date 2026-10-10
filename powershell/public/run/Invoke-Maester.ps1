@@ -366,7 +366,6 @@
         } else {
             Show-MtLogo -Console $console
         }
-        if ($console.Mode -eq 'Interactive') { $null = New-MtConsoleRenderer -Console $console }
 
         # Reset the graph cache and urls to avoid stale data.
         Clear-ModuleVariable
@@ -563,6 +562,16 @@
         $maesterResults = $null
 
         Set-MtProgressView
+        if ($console.Mode -eq 'Interactive') {
+            # The dashboard takes over the screen. With per-test lines (-Verbosity Normal and above) the
+            # compact region is used instead, so the lines can scroll past it.
+            $renderer = New-MtConsoleRenderer -Console $console -FullScreen:($Verbosity -eq 'None')
+            $banner = Get-MtBanner -Console $console
+            $renderer.SetHeader($(if ($console.Unicode) { [string[]]$banner.Lines } else { $null }), $banner.Width, $banner.Compact)
+            $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
+            $renderer.Open()
+            $renderer.StartPhase('Prepare')
+        }
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
         Write-Verbose "Reading Maester config from: $($testSource.ConfigSearchPath)"
         # Resolve tenant ID for tenant-specific config lookup (maester-config.{tenantId}.json)
@@ -706,6 +715,16 @@
                     -IncludeTag @($pesterFilter.Tag) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -DryRun:$DryRun)
         }
 
+        # The services of this run: one line in the dashboard header, and the list in the scrollback.
+        $connections = @(Get-MtConnectionInfo -TenantContext $tenantContext -Plan $nativePlan)
+        if ($connections.Count -gt 0 -and -not $NonInteractive.IsPresent) {
+            if ($console.Mode -eq 'Interactive') {
+                $connectionLine = Format-MtConnectionInfo -Connection $connections -OneLine -Console $console
+                $renderer.SetInfo($connectionLine.Text, $connectionLine.Length)
+            }
+            foreach ($line in @(Format-MtConnectionInfo -Connection $connections -Console $console)) { Write-MtConsoleLine $line }
+        }
+
         # CI test results (NUnit/JUnit XML): Maester writes one file for native and Pester rows, requested
         # through Output.TestResult in the config or a caller's PesterConfiguration.TestResult (appendix A.2).
         $xmlRequest = $null
@@ -763,12 +782,15 @@
         try {
             # Stage 7: native tests first, then one Invoke-Pester call if the plan has Pester files.
             if ($nativePlan.Count -gt 0) {
+                Set-MtConsolePhase 'Run tests'
                 Write-MtProgress -Activity 'Running tests' -Status "$(@($nativePlan | Where-Object Disposition -EQ 'Run').Count) native test(s)" -Force
                 $nativeRows = @(Invoke-MtNativePlan -Plan $nativePlan -RunConfig $runConfig -Selection $selection -Verbosity $Verbosity)
             }
             $nativeTimer.Stop()
             $pesterConfig = $null
             if ($pesterRunPath.Count -gt 0) {
+                # Pester writes its own output: give the screen back first.
+                Stop-MtConsoleOutput
                 $provider = Invoke-MtPesterProvider -Filter $pesterFilter -Configuration $PesterConfiguration -Verbosity $Verbosity
                 if ($provider.Unavailable) {
                     # Pester is not installed: each Pester-format test becomes an Error row; native results stand.
@@ -799,6 +821,7 @@
 
         if ($pesterResults -or $nativeRows.Count -gt 0) {
 
+            Set-MtConsolePhase 'Results'
             Write-MtProgress -Activity 'Processing test results' -Status "$(@($pesterResults.Tests).Count + $nativeRows.Count) test(s)" -Force
 
             # Build the Invoke-Maester command string from bound parameters
@@ -843,6 +866,8 @@
                     ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements -JsonEncoded |
                         ConvertFrom-Json
             }
+
+            Set-MtConsolePhase 'Reports'
 
             # The XML file follows -RedactUserIdentity AllOutputs like the other machine-readable exports. A
             # failure here must not stop the HTML, JSON and Markdown reports from being written.
@@ -939,6 +964,8 @@
             }
 
             Write-MtProgress -Activity '🔥 Completed tests' -Completed
+            # Restore the screen and write what was kept while the dashboard owned it, then the summary.
+            Stop-MtConsoleOutput
             if (-not $NonInteractive.IsPresent) {
                 Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console
             }

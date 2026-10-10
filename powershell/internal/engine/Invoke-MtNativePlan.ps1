@@ -76,6 +76,18 @@
             $renderer = $script:__MtConsoleRenderer
             if (-not $renderer) { $renderer = New-MtConsoleRenderer -Console $console; $ownRenderer = $true }
         }
+
+        # One lane per product, in the order of the schema's product list, then the others. A product whose
+        # tests are all skipped gets a lane too, so the dashboard shows why nothing runs for it.
+        $laneOf = { param($test) if ($test.Product) { [string]$test.Product } else { 'Other' } }
+        $laneTotals = [ordered]@{}
+        $productOrder = @((Get-MtTestSchema).Products)
+        foreach ($item in ($workItems | Sort-Object { $i = $productOrder.IndexOf($_.Group); if ($i -lt 0) { 999 } else { $i } }, Group)) { $laneTotals[$item.Group] = 1 + [int]$laneTotals[$item.Group] }
+        $laneNotes = @{}
+        foreach ($group in ($Plan | Where-Object { $_.Disposition -eq 'Skipped' } | Group-Object { & $laneOf $_.Test })) {
+            if (-not $laneTotals.Contains($group.Name)) { $laneTotals[$group.Name] = 0; $laneNotes[$group.Name] = "$($group.Count) skipped" }
+        }
+        $laneNames = [string[]]@($laneTotals.Keys)
         $ci = if ($console.Mode -ne 'Interactive') { $console.CI } else { $null }
         $heartbeat = @{ Done = 0; Failed = 0; Total = $workItems.Count; Clock = [System.Diagnostics.Stopwatch]::StartNew(); Last = [System.Diagnostics.Stopwatch]::StartNew() }
 
@@ -98,7 +110,11 @@
             }
             $row = ConvertTo-MtNativeRow -PlanRow $result.Tag.PlanRow -RunResult $result -Instance $result.Tag.Instance -ForeignModuleLoaded:$foreign
             $converted[$result] = $row
-            if ($renderer) { $renderer.ItemFinished([string]$row.Result) }
+            if ($renderer) {
+                $renderer.ItemFinished([string]$result.Id, [string]$row.Result)
+                # The dashboard has no scrollback: what the test wrote is replayed once the screen is restored.
+                if ($renderer.IsFullScreen -and ($result.Warnings.Count + $result.Verbose.Count + $result.Debug.Count + $result.Information.Count) -gt 0) { Add-MtDeferredOutput -RunResult $result }
+            }
             if ($writeResultLines) { Write-MtNativeResultLine -Row $row -Console $console }
             $heartbeat.Done++
             if ($row.Result -in 'Failed', 'Error') { $heartbeat.Failed++ }
@@ -110,7 +126,7 @@
 
         if ($ci) { Write-MtCIGroup -Name "Maester: $($workItems.Count) native tests" -Console $console }
         try {
-            if ($renderer) { $renderer.Start($workItems.Count) }
+            if ($renderer) { $renderer.Start($workItems.Count, $laneNames, [int[]]@($laneNames | ForEach-Object { $laneTotals[$_] }), [string[]]@($laneNames | ForEach-Object { $laneNotes[$_] })) }
             $results = @(Invoke-MtEngineRun -WorkItem $workItems.ToArray() -Module $maester -OnItemStarting $starting -OnItemFinished $finished -Renderer $renderer)
         } finally {
             if ($renderer) {
@@ -160,6 +176,7 @@ function New-MtNativeWorkItem {
     $item = [Maester.Engine.MtWorkItem]::new()
     $item.Id = $Id
     $item.Command = $PlanRow.Test.FunctionName
+    $item.Group = if ($PlanRow.Test.Product) { [string]$PlanRow.Test.Product } else { 'Other' }
     $item.Title = if ($Instance -and $Instance.PSObject.Properties['Title'] -and $Instance.Title) { [string]$Instance.Title } else { [string]$PlanRow.Test.Title }
     $item.Parameters = $Parameters
     $item.Module = $Module
@@ -407,6 +424,7 @@ function ConvertTo-MtNativeRow {
         ScriptBlockFile = $file
         ErrorRecord     = $errorRecords
         Block           = $test.Category
+        Product         = $test.Product
         Duration        = $duration.ToString('hh\:mm\:ss\.fff')
         ResultDetail    = $detail
         Source          = $test.Source
