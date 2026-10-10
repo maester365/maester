@@ -22,7 +22,7 @@ namespace Maester.Engine
 
     /// <summary>
     /// Two panels of the right column: Ring, the results so far as a ring chart, and Contributor, one of the
-    /// people who built Maester, a different one every twenty seconds.
+    /// people who built Maester, a different one every minute.
     /// </summary>
     public sealed partial class MtConsoleRenderer
     {
@@ -33,6 +33,7 @@ namespace Maester.Engine
         private const double RingInner = 2.5;
         private const int RingEmpty = 5;
         private const string ContributorSite = "https://maester.dev/contributors/";
+        private const int ContributorSeconds = 60;
 
         // Passed, failed, error, investigate, skipped, and the ring before there are results.
         private static readonly string[] RingFg = { "32", "31", "33", "35", "38;5;244", "38;5;238" };
@@ -42,7 +43,7 @@ namespace Maester.Engine
         private int _contributorStart;
 
         /// <summary>
-        /// The people of the Featured contributor panel. One is shown at a time, for twenty seconds each,
+        /// The people of the Featured contributor panel. One is shown at a time, for a minute each,
         /// beginning with the one at <paramref name="start"/> (any number: it wraps around).
         /// </summary>
         public void SetContributors(MtContributor[] contributors, int start)
@@ -101,7 +102,7 @@ namespace Maester.Engine
         private PanelContent BuildContributorPanel(int width, bool ansi)
         {
             if (_contributors.Length == 0) return null;
-            var c = _contributors[(_contributorStart + (int)(_clock.Elapsed.TotalSeconds / 20)) % _contributors.Length];
+            var c = _contributors[(_contributorStart + (int)(_clock.Elapsed.TotalSeconds / ContributorSeconds)) % _contributors.Length];
             string url = ContributorSite + c.GitHub.ToLowerInvariant();
             var panel = new PanelContent { Title = "Featured contributor" };
 

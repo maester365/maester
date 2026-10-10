@@ -127,7 +127,7 @@ function Initialize-MtDashboard {
       Failed       failed tests by severity
       Drift        changes against the newest earlier results file in the output folder, for the same tenant
       Pace         tests per second and the slowest tests: one at least, more in the rows that are left over
-      Contributor  one of the people who built Maester, a different one every twenty seconds, from
+      Contributor  one of the people who built Maester, a different one every minute, from
                    assets/ConsoleContributors.json (written by build/Update-ConsoleContributors.ps1)
       Blog         the newest post on maester.dev (one web request, cached for a day)
       Version      not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
