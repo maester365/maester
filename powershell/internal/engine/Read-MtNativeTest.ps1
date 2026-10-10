@@ -213,7 +213,10 @@ function Read-MtNativeTest {
 
     if ($test.RequiresMaester) {
         $current = $ExecutionContext.SessionState.Module.Version
-        if ([version]$test.RequiresMaester -gt $current) {
+        $required = ConvertTo-MtRequiredVersion -Value $test.RequiresMaester
+        if (-not $required) {
+            & $addError 'InvalidMetadata' "The required Maester version '$($test.RequiresMaester)' is not a version number, for example 3.0." 1
+        } elseif ($required -gt $current) {
             & $addError 'RequiresNewerMaester' "The test requires Maester $($test.RequiresMaester) or later; this is $current." 1
         }
     }
@@ -255,6 +258,25 @@ function ConvertFrom-MtAttributeArgument {
     [pscustomobject]@{ Values = @($values); Error = $null }
 }
 
+function ConvertTo-MtRequiredVersion {
+    <#
+    .SYNOPSIS
+    Reads a required Maester version ('3', '3.0', '3.0.1') as a [version], or returns $null when it is not one.
+    #>
+    [CmdletBinding()]
+    [OutputType([version])]
+    param(
+        [Parameter(Mandatory)] [AllowNull()] [AllowEmptyString()] [object] $Value
+    )
+
+    if ($Value -is [version]) { return $Value }
+    $text = "$Value".Trim()
+    if ($text -match '^\d+$') { $text = "$text.0" }
+    $parsed = $null
+    if ([version]::TryParse($text, [ref] $parsed)) { return $parsed }
+    $null
+}
+
 function Read-MtTestParameter {
     <#
     .SYNOPSIS
@@ -282,8 +304,16 @@ function Read-MtTestParameter {
             continue
         }
         switch ($a.TypeName.Name) {
-            'ValidateSet' { $allowed = @($a.PositionalArguments | ForEach-Object { $_.SafeGetValue() }) }
-            'ValidateRange' { if ($a.PositionalArguments.Count -eq 2) { $range = @($a.PositionalArguments[0].SafeGetValue(), $a.PositionalArguments[1].SafeGetValue()) } }
+            'ValidateSet' {
+                try { $allowed = @($a.PositionalArguments | ForEach-Object { $_.SafeGetValue() }) }
+                catch { & $OnError 'InvalidMetadata' "Parameter '$name': the [ValidateSet] values must be constants." $line }
+            }
+            'ValidateRange' {
+                if ($a.PositionalArguments.Count -eq 2) {
+                    try { $range = @($a.PositionalArguments[0].SafeGetValue(), $a.PositionalArguments[1].SafeGetValue()) }
+                    catch { & $OnError 'InvalidMetadata' "Parameter '$name': the [ValidateRange] limits must be constants, for example [ValidateRange(1, 365)]." $line }
+                }
+            }
             { $_ -in 'MaesterParameter', 'MaesterParameterAttribute' } {
                 $k = $a.NamedArguments | Where-Object ArgumentName -EQ 'Kind' | Select-Object -First 1
                 if ($k -and $k.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $kind = $k.Argument.Value }

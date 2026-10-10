@@ -131,8 +131,11 @@ function Get-MtPesterSelectionPlan {
         $setting = $null
         if ($r.Id -and $enabledRows.ContainsKey($r.Id)) { $setting = $enabledRows[$r.Id] }
         elseif ($r.ParentId) {
+            # A row that enables the parent or any instance admits the family. Only a row on the parent disables
+            # it: a row that disables one instance is applied to that instance after the run (DisabledInstances).
             $setting = $enabledRows.Keys | Where-Object { $_ -eq $r.ParentId -or $_ -like "$($r.ParentId).*" } |
-                ForEach-Object { $enabledRows[$_] } | Sort-Object { -not $_.Enabled } | Select-Object -First 1
+                ForEach-Object { $enabledRows[$_] } | Where-Object { $_.Enabled -eq $true } | Select-Object -First 1
+            if (-not $setting -and $enabledRows.ContainsKey($r.ParentId)) { $setting = $enabledRows[$r.ParentId] }
         }
         if ($setting -and $setting.Enabled -eq $false) {
             $reasons[$r.Key] = New-MtSelectionReason -ReasonCode 'DisabledByConfig' -Detail $(if ($setting.Reason) { [string]$setting.Reason } else { 'Disabled in the Maester config.' })
@@ -192,13 +195,21 @@ function Get-MtPesterSelectionPlan {
         $id
     }
 
+    # Instances of a family that a TestSettings row disables: the family still runs, and these rows become NotRun.
+    $disabledInstances = @{}
+    foreach ($id in @($enabledRows.Keys)) {
+        if ($enabledRows[$id].Enabled -ne $false) { continue }
+        if ($familyParents | Where-Object { $id -like "$_.*" }) { $disabledInstances[$id] = $enabledRows[$id] }
+    }
+
     [pscustomobject]@{
-        ExcludeLines    = @($reasons.Keys)
-        Reasons         = $reasons
-        LiftPreview     = $liftPreview
-        LiftLongRunning = $liftLongRunning
-        UnknownIds      = @($unknown)
-        FamilyParents   = @($familyParents | Select-Object -Unique)
+        ExcludeLines      = @($reasons.Keys)
+        Reasons           = $reasons
+        LiftPreview       = $liftPreview
+        LiftLongRunning   = $liftLongRunning
+        UnknownIds        = @($unknown)
+        FamilyParents     = @($familyParents | Select-Object -Unique)
+        DisabledInstances = $disabledInstances
     }
 }
 

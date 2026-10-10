@@ -137,3 +137,77 @@ Describe 'Update-MaesterTests on a 2.x config copy' {
         $kept[0].Id | Should -Be $catalog[0].Id
     }
 }
+
+Describe 'Engine review fixes' {
+    Context '-Path that is one test file' {
+        It 'Looks for the config files in the folder of the file' {
+            $file = New-TestFile -Folder (Join-Path $TestDrive 'onefile') -Id 'CONTOSO.20' -Body '$true' -Extra ", Service = 'None'"
+            $source = InModuleScope Maester -Parameters @{ File = $file } { Resolve-MtTestSource -Path $File -SkipBuiltIn }
+            $source.Error | Should -BeNullOrEmpty
+            $source.ConfigSearchPath | Should -Be (Split-Path (Resolve-Path $file).Path -Parent)
+            # A file is never read as the config: only real config files of its folder are found.
+            InModuleScope Maester -Parameters @{ File = $file } { @(Find-MtConfigFile -Path $File) } | Should -HaveCount 0
+        }
+
+        It 'Runs the test and applies the maester-config.json beside it' {
+            $folder = Join-Path $TestDrive 'onefile-run'
+            $file = New-TestFile -Folder $folder -Id 'CONTOSO.21' -Extra ", Service = 'None'" -Body @'
+    Add-MtTestResultDetail -Result 'ok'
+    $true
+'@
+            '{ "TestSettings": [ { "Id": "CONTOSO.21", "Severity": "Critical" } ] }' | Set-Content (Join-Path $folder 'maester-config.json')
+            $result = Invoke-Maester -Path $file -SkipBuiltIn -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck `
+                -OutputFolder (Join-Path $TestDrive 'onefile-out') -PassThru 6>$null
+            $result.TotalCount | Should -Be 1
+            $result.Tests[0].Id | Should -Be 'CONTOSO.21'
+            $result.Tests[0].Result | Should -Be 'Passed'
+            $result.Tests[0].Severity | Should -Be 'Critical'
+        }
+    }
+
+    Context 'Metadata that cannot be read' {
+        It 'Reports a parameter validation that is not a constant as one invalid test, also under ErrorActionPreference Stop' {
+            $folder = Join-Path $TestDrive 'badrange'
+            $null = New-Item -ItemType Directory -Path $folder -Force
+            @'
+function Test-ContosoBadRange {
+    [MaesterTest(Id = 'CONTOSO.30', Title = 'Bad range', Severity = 'High', Service = 'None')]
+    [CmdletBinding()]
+    param(
+        [ValidateRange(1, [int]::MaxValue)] [int] $Days = 5
+    )
+    $true
+}
+'@ | Set-Content (Join-Path $folder 'Test.CONTOSO.30.ps1')
+            'Description.' | Set-Content (Join-Path $folder 'Test.CONTOSO.30.md')
+            New-TestFile -Folder $folder -Id 'CONTOSO.31' -Body '$true' -Extra ", Service = 'None'" | Out-Null
+
+            $tests = & { $ErrorActionPreference = 'Stop'; @(Get-MtTest -Path $folder) }
+            $bad = $tests | Where-Object Id -EQ 'CONTOSO.30'
+            $bad.IsValid | Should -BeFalse
+            $bad.Errors.Code | Should -Be 'InvalidMetadata'
+            $bad.Errors.Message | Should -Match 'ValidateRange'
+            # The file next to it is not affected.
+            ($tests | Where-Object Id -EQ 'CONTOSO.31').IsValid | Should -BeTrue
+        }
+
+        It 'Reads RequiresMaester <Value> in suite.json as <Expected>' -ForEach @(
+            @{ Value = '3'; Expected = 'valid' }
+            @{ Value = '3.0'; Expected = 'valid' }
+            @{ Value = '99'; Expected = 'RequiresNewerMaester' }
+            @{ Value = 'soon'; Expected = 'InvalidMetadata' }
+        ) {
+            $folder = Join-Path $TestDrive "suite-$Value"
+            New-TestFile -Folder $folder -Id 'CONTOSO.40' -Body '$true' -Extra ", Service = 'None'" | Out-Null
+            @{ Id = 'CONTOSO'; Source = 'Custom'; RequiresMaester = $Value } | ConvertTo-Json | Set-Content (Join-Path $folder 'suite.json')
+            $test = & { $ErrorActionPreference = 'Stop'; Get-MtTest -Path $folder }
+            if ($Expected -eq 'valid') {
+                $test.IsValid | Should -BeTrue -Because ($test.Errors.Message -join '; ')
+            } else {
+                $test.IsValid | Should -BeFalse
+                $inventory = InModuleScope Maester -Parameters @{ Folder = $folder } { @(Get-MtNativeTestInventory -Path $Folder) }
+                $inventory[0].Errors.Code | Should -Contain $Expected
+            }
+        }
+    }
+}

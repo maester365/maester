@@ -290,10 +290,9 @@ function Find-MtConfigFile {
     )
 
     if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
-        if (Test-Path -LiteralPath $Path -PathType Leaf) {
-            [pscustomobject]@{ Kind = 'Root'; Path = (Resolve-Path -LiteralPath $Path).Path; Name = Split-Path $Path -Leaf }
-        }
-        return
+        # A file is never the config itself (-Config is for that): look for the config files from its folder.
+        if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return }
+        $Path = Split-Path -Path (Resolve-Path -LiteralPath $Path).Path -Parent
     }
     $Path = (Resolve-Path -LiteralPath $Path).Path
 

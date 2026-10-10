@@ -134,6 +134,17 @@ Describe 'Get-MtPesterSelectionPlan' {
         Get-Reason (Get-Plan -Selection @{ ExcludeTestId = @('FAM.1.a') }) 'FAM.1' | Should -BeNullOrEmpty
     }
 
+    It 'Disables a whole family only through a row on its parent ID' {
+        Get-Reason (Get-Plan -TestSettings @(@{ Id = 'FAM.1'; Enabled = $false })) 'FAM.1' | Should -Be 'DisabledByConfig'
+        # A row for one instance leaves the family running; that instance is marked after the run.
+        $plan = Get-Plan -TestSettings @(@{ Id = 'FAM.1.a'; Enabled = $false; Reason = 'Not ours' })
+        Get-Reason $plan 'FAM.1' | Should -BeNullOrEmpty
+        $plan.DisabledInstances.Keys | Should -Be @('FAM.1.a')
+        $plan.DisabledInstances['FAM.1.a'].Reason | Should -Be 'Not ours'
+        # A disabled row of an ordinary test is not an instance.
+        (Get-Plan -TestSettings @(@{ Id = 'S.1001'; Enabled = $false })).DisabledInstances.Count | Should -Be 0
+    }
+
     It 'Admits a family through a row on its parent or instance ID' {
         Get-Reason (Get-Plan -Selection @{ DefaultAction = 'Skip' } -TestSettings @(@{ Id = 'FAM.1.b'; Enabled = $true })) 'FAM.1' | Should -BeNullOrEmpty
     }

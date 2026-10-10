@@ -95,7 +95,10 @@ function Complete-MtNativeTest {
 
     if ($Suite -and $Suite.RequiresMaester -and -not $Test.RequiresMaester) {
         $Test.RequiresMaester = [string]$Suite.RequiresMaester
-        if ([version]$Test.RequiresMaester -gt $ExecutionContext.SessionState.Module.Version) {
+        $required = ConvertTo-MtRequiredVersion -Value $Test.RequiresMaester
+        if (-not $required) {
+            $Test.Errors.Add([pscustomobject]@{ Code = 'InvalidMetadata'; Message = "RequiresMaester in suite.json is '$($Test.RequiresMaester)', which is not a version number, for example 3.0."; Line = 1 })
+        } elseif ($required -gt $ExecutionContext.SessionState.Module.Version) {
             $Test.Errors.Add([pscustomobject]@{ Code = 'RequiresNewerMaester'; Message = "The suite requires Maester $($Test.RequiresMaester) or later; this is $($ExecutionContext.SessionState.Module.Version)."; Line = 1 })
         }
     }

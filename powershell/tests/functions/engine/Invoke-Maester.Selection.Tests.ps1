@@ -25,6 +25,7 @@ Describe 'Sample' -Tag 'Sample' {
         UnknownError    = "-TestId 'NOPE.1' -Config @{ Selection = @{ OnUnknownId = 'Error' } }"
         ExcludeTestId   = "-ExcludeTestId 'S.1002'"
         Disabled        = "-Config @{ TestSettings = @(@{ Id = 'S.1002'; Enabled = `$false; Reason = 'Accepted' }) }"
+        DisabledInstance = "-Config @{ TestSettings = @(@{ Id = 'FAM.1.a'; Enabled = `$false; Reason = 'Not ours' }) }"
         AllowList       = "-Config @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'S.1001'; Enabled = `$true }) }"
         Metadata        = "-Config @{ Metadata = @{ RunId = 'run-42' } }"
         DryRunExclude   = "-DryRun -ExcludeTestId 'S.1002'"
@@ -145,6 +146,16 @@ Describe 'Invoke-Maester selection (Pester provider)' {
             $other = Get-Row $r 'FAM.1.a'
             $other.Result | Should -Be 'NotRun'
             $other.ReasonCode | Should -Be 'DeselectedAtRuntime'
+        }
+
+        It 'Disables one instance of a family and still runs the others' {
+            $r = Invoke-MaesterRun 'DisabledInstance'
+            $disabled = Get-Row $r 'FAM.1.a'
+            $disabled.Result | Should -Be 'NotRun'
+            $disabled.ReasonCode | Should -Be 'DisabledByConfig'
+            $disabled.ReasonDetail | Should -Be 'Not ours'
+            (Get-Row $r 'FAM.1.b').Result | Should -Be 'Passed'
+            (Get-Row $r 'FAM.1.c').Result | Should -Be 'Passed'
         }
 
         It 'Lists unknown IDs and stops when OnUnknownId is Error' {

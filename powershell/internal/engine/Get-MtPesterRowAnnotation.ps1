@@ -77,6 +77,16 @@ function Get-MtPesterRowAnnotation {
         }
     }
 
+    # A family instance that a TestSettings row disables. The family ran for its other instances.
+    if ($annotation.InstanceId -and $plan -and $Result -ne 'NotRun' -and $plan.PSObject.Properties['DisabledInstances'] -and
+        $plan.DisabledInstances -and $plan.DisabledInstances.ContainsKey($Id)) {
+        $row = $plan.DisabledInstances[$Id]
+        $annotation.ResultOverride = 'NotRun'
+        $annotation.ReasonCode = 'DisabledByConfig'
+        $annotation.ReasonDetail = if ($row.PSObject.Properties['Reason'] -and $row.Reason) { [string]$row.Reason } else { 'Disabled in the Maester config.' }
+        return [pscustomobject]$annotation
+    }
+
     switch ($Result) {
         'NotRun' {
             if ($plan -and $key -and $plan.Reasons.Contains($key)) {

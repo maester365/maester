@@ -38,7 +38,8 @@ function Resolve-MtTestSource {
     if (-not [string]::IsNullOrWhiteSpace($Path)) {
         if (Test-Path -LiteralPath $Path) {
             $customRoot = (Resolve-Path -LiteralPath $Path).Path
-            $configSearchPath = $customRoot
+            # -Path can be one test file: its folder is where the config files are looked for.
+            $configSearchPath = if (Test-Path -LiteralPath $customRoot -PathType Leaf) { Split-Path -Path $customRoot -Parent } else { $customRoot }
         } else {
             $parent = $Path
             while ($parent -and -not (Test-Path -LiteralPath $parent)) { $parent = Split-Path -Path $parent -Parent }

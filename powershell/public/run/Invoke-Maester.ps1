@@ -131,7 +131,7 @@
     [Alias('Invoke-MtMaester')]
     [CmdletBinding()]
     param (
-        # Specifies path to files containing tests. The value is a path\file name or a name pattern. Wildcards are permitted.
+        # The folder that holds your tests and configuration, or the path of one test file. Wildcards are not expanded.
         [Parameter(Position = 0)]
         [string] $Path,
 

@@ -184,7 +184,8 @@ One row per test you want to change, built-in or custom, native or Pester-format
 | `Parameters` | object | Values for the test's parameters, by name. Native tests only. |
 | `TimeoutSeconds` | int | A timeout for this test, overriding `Execution`. Native tests only. |
 
-For a family, a row on an instance ID wins over a row on the parent ID.
+For a family, a row on an instance ID wins over a row on the parent ID. `"Enabled": false` on the parent ID turns off the whole family; on an instance ID it
+turns off only that instance, and the others still run.
 
 Parameter values are checked against the test's `param()` block before it runs. Use `Get-MtTest <ID>` to see a
 test's parameters, their types, defaults, allowed values and descriptions.
