@@ -185,8 +185,16 @@ namespace Maester.Engine
                 for (int i = 0; i < _phases.Count; i++)
                 {
                     var p = _phases[i];
-                    if (i < index) { if (p.Clock != null) p.Clock.Stop(); p.Done = true; }
-                    else if (i == index) { if (p.Clock == null) p.Clock = Stopwatch.StartNew(); p.Done = false; }
+                    if (i < index)
+                    {
+                        if (p.Clock != null) p.Clock.Stop();
+                        p.Done = true;
+                    }
+                    else if (i == index)
+                    {
+                        if (p.Clock == null) p.Clock = Stopwatch.StartNew();
+                        p.Done = false;
+                    }
                 }
                 _status = null;
                 Redraw();
@@ -312,12 +320,30 @@ namespace Maester.Engine
                 }
                 switch (result)
                 {
-                    case "Passed": _passed++; if (lane != null) lane.Passed++; break;
-                    case "Failed": _failed++; if (lane != null) lane.Failed++; break;
-                    case "Error": _error++; if (lane != null) lane.Error++; break;
-                    case "Investigate": _investigate++; if (lane != null) lane.Investigate++; break;
-                    case "Skipped": _skipped++; if (lane != null) lane.Skipped++; break;
-                    default: _other++; if (lane != null) lane.Other++; break;
+                    case "Passed":
+                        _passed++;
+                        if (lane != null) lane.Passed++;
+                        break;
+                    case "Failed":
+                        _failed++;
+                        if (lane != null) lane.Failed++;
+                        break;
+                    case "Error":
+                        _error++;
+                        if (lane != null) lane.Error++;
+                        break;
+                    case "Investigate":
+                        _investigate++;
+                        if (lane != null) lane.Investigate++;
+                        break;
+                    case "Skipped":
+                        _skipped++;
+                        if (lane != null) lane.Skipped++;
+                        break;
+                    default:
+                        _other++;
+                        if (lane != null) lane.Other++;
+                        break;
                 }
                 Redraw();
             }
@@ -782,9 +808,15 @@ namespace Maester.Engine
         {
             if (string.IsNullOrEmpty(s) || s.IndexOf('\u001b') < 0) return s ?? string.Empty;
             var sb = new StringBuilder(s.Length);
-            for (int i = 0; i < s.Length; i++)
+            int i = 0;
+            while (i < s.Length)
             {
-                if (s[i] != '\u001b') { sb.Append(s[i]); continue; }
+                if (s[i] != '\u001b')
+                {
+                    sb.Append(s[i]);
+                    i++;
+                    continue;
+                }
                 if (i + 1 < s.Length && s[i + 1] == '[')
                 {
                     i += 2;
@@ -796,6 +828,7 @@ namespace Maester.Engine
                     while (i < s.Length && s[i] != '\u0007' && !(s[i] == '\u001b' && i + 1 < s.Length && s[i + 1] == '\\')) i++;
                     if (i < s.Length && s[i] == '\u001b') i++;
                 }
+                i++; // past the sequence's final character (or a lone escape)
             }
             return sb.ToString();
         }
