@@ -222,7 +222,7 @@ Describe 'Run summary with a severity outside the known five' {
             PassedCount = 0; FailedCount = 1; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 1; TotalDuration = '00:00:01'
             Tests = @([pscustomobject]@{ Id = 'A.1'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Informational' })
         }
-        $lines = InModuleScope Maester -Parameters @{ r = $results; c = $script:stream } { param($r, $c) & { $ErrorActionPreference = 'Stop'; Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } } | ForEach-Object { "$_" }
+        $lines = InModuleScope Maester -Parameters @{ r = $results; c = $script:stream } { param($r, $c) $ErrorActionPreference = 'Stop'; Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } | ForEach-Object { "$_" }
         ($lines -join "`n") | Should -Match 'Informational'
     }
 }

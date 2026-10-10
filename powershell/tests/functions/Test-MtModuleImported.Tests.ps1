@@ -16,7 +16,7 @@ Describe 'Test-MtModuleImported' {
         $folder = Join-Path $TestDrive 'MtInnerForMaesterTests'
         $null = New-Item -ItemType Directory -Path $folder -Force
         'function Get-MtInnerThing { 1 }' | Set-Content (Join-Path $folder 'MtInnerForMaesterTests.psm1')
-        $wrapper = New-Module -Name MtWrapperForMaesterTests -ArgumentList $folder -ScriptBlock {
+        $null = New-Module -Name MtWrapperForMaesterTests -ArgumentList $folder -ScriptBlock {
             param($Folder)
             Import-Module (Join-Path $Folder 'MtInnerForMaesterTests.psm1')
             function Get-MtWrapperThing { Get-MtInnerThing }
