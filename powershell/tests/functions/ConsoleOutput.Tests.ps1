@@ -411,9 +411,10 @@ Describe 'Dashboard panels' {
         }
         $renderer = New-PanelRenderer
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
-        # The list is read on a background thread.
+        # The list is read on a background thread. Allow up to 20 s: the first JSON read on a cold thread
+        # has taken longer than 2 s on a busy Windows CI runner. The loop ends as soon as the panel is drawn.
         $shown = $false
-        foreach ($try in 1..40) {
+        foreach ($try in 1..400) {
             if (($renderer.GetPlainScreen(160, 44) -join "`n") -match '╭─ Featured contributor ') { $shown = $true; break }
             Start-Sleep -Milliseconds 50
         }
