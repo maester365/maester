@@ -166,8 +166,8 @@ namespace Maester.Engine
         }
 
         /// <summary>
-        /// The status bar on the last row of the dashboard: a row of labels on a solid background, each a hyperlink
-        /// to its address. The first is the name of the project and stands out. No labels, no bar.
+        /// The status bar on the last row of the dashboard: a row of labels on the colours of the wordmark, each a
+        /// hyperlink to its address. The first is the name of the project, in bold. No labels, no bar.
         /// </summary>
         public void SetStatusBar(string[] labels, string[] links)
         {
@@ -222,19 +222,59 @@ namespace Maester.Engine
                 right.Insert(0, i);
                 used += need;
             }
-            var text = new StringBuilder();
+            // The text of the bar, and for each column the label it belongs to (or -1).
             var plain = new StringBuilder();
-            for (int n = 0; n < left.Count; n++) AppendBarSegment(text, plain, left[n], n > 1, n == 0, ansi);
-            string fill = new string(' ', max - used);
-            if (ansi) text.Append(Esc).Append(BarRest).Append('m').Append(fill).Append(Esc).Append("0m");
-            plain.Append(fill);
-            for (int n = 0; n < right.Count; n++) AppendBarSegment(text, plain, right[n], n > 0, false, ansi);
-            return new Line { Text = ansi ? text.ToString() : plain.ToString(), Plain = plain.ToString() };
+            var owner = new List<int>();
+            for (int n = 0; n < left.Count; n++) AppendBarSegment(plain, owner, left[n], n > 1);
+            plain.Append(' ', max - used);
+            while (owner.Count < plain.Length) owner.Add(-1);
+            for (int n = 0; n < right.Count; n++) AppendBarSegment(plain, owner, right[n], n > 0);
+            if (!ansi) return new Line { Text = plain.ToString(), Plain = plain.ToString() };
+
+            // The colours of the wordmark, from left to right, behind the text; each label is a hyperlink.
+            var text = new StringBuilder();
+            string colour = null;
+            int link = -1;
+            for (int x = 0; x < plain.Length; x++)
+            {
+                if (owner[x] != link)
+                {
+                    if (link >= 0 && !string.IsNullOrEmpty(_barLinks[link])) text.Append(LinkEnd);
+                    link = owner[x];
+                    if (link >= 0 && !string.IsNullOrEmpty(_barLinks[link])) text.Append(Esc8).Append(_barLinks[link]).Append("\u001b\\");
+                }
+                string want = BarColour(x, plain.Length, owner[x] == 0);
+                if (want != colour)
+                {
+                    text.Append(Esc).Append(want).Append('m');
+                    colour = want;
+                }
+                text.Append(plain[x]);
+            }
+            if (link >= 0 && !string.IsNullOrEmpty(_barLinks[link])) text.Append(LinkEnd);
+            text.Append(Esc).Append("0m");
+            return new Line { Text = text.ToString(), Plain = plain.ToString() };
         }
 
-        private const string BarFirst = "1;97;48;5;161";
-        private const string BarRest = "38;5;252;48;5;236";
-        private const string BarRule = "38;5;242;48;5;236";
+        private static readonly int[][] BarStops = { new[] { 229, 36, 59 }, new[] { 255, 106, 61 }, new[] { 255, 181, 71 } };
+
+        /// <summary>
+        /// The colours of a column of the status bar: the gradient of the wordmark (Maester red to amber) behind
+        /// white text where it is dark and dark text where it is light. Without true colour the bar is one
+        /// orange, with dark text.
+        /// </summary>
+        private string BarColour(int column, int columns, bool bold)
+        {
+            string weight = bold ? "1;" : "22;";
+            if (!TrueColor) return weight + "38;5;232;48;5;208";
+            double t = columns > 1 ? (double)column / (columns - 1) * (BarStops.Length - 1) : 0;
+            int segment = Math.Min((int)t, BarStops.Length - 2);
+            var rgb = new int[3];
+            for (int i = 0; i < 3; i++) rgb[i] = (int)(BarStops[segment][i] + (BarStops[segment + 1][i] - BarStops[segment][i]) * (t - segment));
+            double luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+            string fg = luminance < 125 ? "38;2;255;255;255" : "38;2;43;13;6";
+            return weight + fg + ";48;2;" + N(rgb[0]) + ";" + N(rgb[1]) + ";" + N(rgb[2]);
+        }
 
         /// <summary>The columns a label of the left group takes: a space on each side, and a separator from the third on.</summary>
         private int BarSegmentWidth(int index, int position)
@@ -242,14 +282,16 @@ namespace Maester.Engine
             return _barLabels[index].Length + 2 + (position > 1 ? 1 : 0);
         }
 
-        private void AppendBarSegment(StringBuilder text, StringBuilder plain, int index, bool separator, bool first, bool ansi)
+        private void AppendBarSegment(StringBuilder plain, List<int> owner, int index, bool separator)
         {
-            string rule = separator ? (Unicode ? "│" : "|") : string.Empty;
+            if (separator)
+            {
+                plain.Append(Unicode ? "│" : "|");
+                owner.Add(-1);
+            }
             string label = " " + _barLabels[index] + " ";
-            plain.Append(rule).Append(label);
-            if (!ansi) return;
-            if (rule.Length > 0) text.Append(Esc).Append(BarRule).Append('m').Append(rule).Append(Esc).Append("0m");
-            text.Append(Esc).Append(first ? BarFirst : BarRest).Append('m').Append(Hyperlink(label, _barLinks[index])).Append(Esc).Append("0m");
+            plain.Append(label);
+            for (int i = 0; i < label.Length; i++) owner.Add(index);
         }
 
         /// <summary>The tests that ran before the ones that are running, newest first, to fill <paramref name="rows"/> rows.</summary>

@@ -125,7 +125,8 @@ On a console of about 140 columns or more the dashboard has a second column on t
 window: the main content takes 98 columns, the right column grows to 58 (a 160-column console), and beyond that the
 extra width is shared, two parts to the main content (longer bars, more squares per row) and one to the right column
 (up to 90 columns). The rows under the running tests list the tests that ran before them, newest first, each with the mark of its
-result and its duration. The last row of the window is a status bar on a solid background: maester.dev,
+result and its duration. The last row of the window is a status bar across the whole width, on the gradient of the wordmark (Maester red to
+amber; one orange without true colour), with a group of links at each edge: maester.dev,
 Docs (maester.dev/docs), Contributors (maester.dev/contributors), Our Manifesto (maester.cloud/manifesto), Star on GitHub (the repository),
 Discord (discord.maester.dev), Issues and Sponsor (the Sponsor dialog of the repository, fed by
 `.github/FUNDING.yml`), each a hyperlink. With the bar on screen the tagline under the logo

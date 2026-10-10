@@ -118,6 +118,9 @@ namespace Maester.Engine
         /// <summary>Also report progress to the terminal tab or taskbar with OSC 9;4.</summary>
         public bool TaskbarProgress { get; set; }
 
+        /// <summary>Whether the terminal has 24-bit colour. Without it the status bar is one colour instead of a gradient.</summary>
+        public bool TrueColor { get; set; }
+
         /// <summary>Timer redraw interval. 0 turns the timer off (redraws only happen on events).</summary>
         public int RefreshIntervalMs { get; set; }
 

@@ -62,6 +62,7 @@ function New-MtConsoleRenderer {
     $renderer = [Maester.Engine.MtConsoleRenderer]::new()
     $renderer.Ansi = $Console.Ansi
     $renderer.Unicode = $Console.Unicode
+    $renderer.TrueColor = $Console.ColorDepth -eq 'TrueColor'
     $renderer.TaskbarProgress = $Console.Taskbar
     $renderer.FullScreen = $FullScreen.IsPresent
     $script:__MtConsoleRenderer = $renderer

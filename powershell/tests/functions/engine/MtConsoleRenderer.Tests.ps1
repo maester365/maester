@@ -565,8 +565,18 @@ Describe 'MtConsoleRenderer panels' {
         $screen[29] | Should -Be (' maester.dev  Contributors │ Our Manifesto │ ♥ Sponsor ').PadRight(159)
         $screen[1] | Should -Match '^FLAME +v3\.0\.0$'
         $out = $t.Writer.ToString()
-        $out | Should -Match ([regex]::Escape("$esc[1;97;48;5;161m$esc]8;;https://maester.dev$esc\ maester.dev $esc]8;;$esc\"))
+        # Without true colour: dark text on one orange, the name in bold, each label a hyperlink.
+        $out | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\$esc[1;38;5;232;48;5;208m maester.dev $esc]8;;$esc\"))
         $out | Should -Match ([regex]::Escape("$esc]8;;https://github.com/maester365/maester?sponsor=1$esc\ ♥ Sponsor $esc]8;;$esc\"))
+        # With true colour: the gradient of the wordmark, Maester red at the left edge to amber at the right,
+        # with white text on the red and dark text on the amber.
+        $t.Renderer.TrueColor = $true
+        $t.Renderer.SetStatusBar(@('maester.dev', 'Sponsor'), @('https://maester.dev', $null), 1)
+        $out = $t.Writer.ToString()
+        $out | Should -Match ([regex]::Escape("$esc[1;38;2;255;255;255;48;2;229;36;59m "))
+        $out | Should -Match ([regex]::Escape("38;2;43;13;6;48;2;255;181;71m $esc[0m"))
+        $t.Renderer.TrueColor = $false
+        $t.Renderer.SetStatusBar(@('maester.dev', 'Contributors', 'Our Manifesto', '♥ Sponsor'), @($null, $null, $null, $null))
         # A narrow window keeps the labels that fit.
         $t.Renderer.GetPlainScreen(40, 30)[29] | Should -Be (' maester.dev  Contributors ').PadRight(39)
 
