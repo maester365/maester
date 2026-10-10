@@ -517,15 +517,15 @@ Describe 'MtConsoleRenderer panels' {
     It 'Writes the tagline of the banner, and mentions a newer version in it as a link' {
         $t = New-TestPanelDashboard -Panels 'Tips'
         $t.Renderer.SetHeader(@('top', 'FLAME  old tagline', 'bottom'), 30, 'Maester v3.0.0')
-        $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 40, 'v3.0.0', 'maester.dev', 'https://maester.dev')
+        $t.Renderer.SetHeaderTagline(1, 'FLAME  ', 44, 'v3.0.0', 'maester.dev', 'https://maester.dev')
         $t.Renderer.Start(1)
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        $screen[1] | Should -Match ('^FLAME  ' + (' ' * 20) + 'v3\.0\.0 · maester\.dev\b')
+        $screen[1] | Should -Match ('^FLAME  ' + (' ' * 24) + 'v3\.0\.0 · maester\.dev\b')
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\"))
 
         $t.Renderer.SetHeaderUpdate('v3.1.0 available', 'https://www.powershellgallery.com/packages/Maester/3.1.0')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        $screen[1] | Should -Match '^FLAME v3\.0\.0 · ↑ v3\.1\.0 available · maester\.dev\b'
+        $screen[1] | Should -Match '^FLAME     v3\.0\.0 · ↑ v3\.1\.0 available · maester\.dev\b'
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;38;5;215m$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\↑ v3.1.0 available$esc]8;;$esc\"))
         # There is no Version panel.
         ($screen -join "`n") | Should -Not -Match '╭─ Version'
