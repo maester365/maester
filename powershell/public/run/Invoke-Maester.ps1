@@ -365,12 +365,6 @@
         if ($console.Mode -eq 'Interactive' -and -not $console.Unicode -and (Enable-MtConsoleUtf8)) {
             $console = Get-MtConsoleMode -Requested $OutputMode -NonInteractive:$NonInteractive
         }
-        if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
-            Write-Verbose "Running Maester v$Version"
-        } else {
-            Show-MtLogo -Console $console
-        }
-
         # Reset the graph cache and urls to avoid stale data.
         Clear-ModuleVariable
         $__MtSession.Console = $console
@@ -411,6 +405,12 @@
                 $console = Get-MtConsoleMode -Requested $configConsoleMode -NonInteractive:$NonInteractive
             }
             $__MtSession.Console = $console
+        }
+        # The logo comes after the config, so that Output.ConsoleMode (Plain, for example) applies to it too.
+        if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
+            Write-Verbose "Running Maester v$Version"
+        } else {
+            Show-MtLogo -Console $console
         }
 
         if (-not $SkipBuiltIn -and $runConfig.Selection.BuiltIn -eq 'None') {
@@ -568,6 +568,16 @@
 
         $maesterResults = $null
 
+        $configTenantId = $null
+        if (Test-MtConnection Graph) {
+            $configTenantId = (Get-MgContext).TenantId
+        }
+        if ($null -eq $Config -and [string]::IsNullOrWhiteSpace($env:MAESTER_CONFIG)) {
+            # Second pass: the discovered files, now including maester-config.<tenantId>.json.
+            $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -TenantId $configTenantId
+        }
+        $__MtSession.MaesterConfig = $runConfig
+
         Set-MtProgressView
         if ($console.Mode -eq 'Interactive') {
             # The dashboard takes over the screen. With per-test lines (-Verbosity Normal and above) the
@@ -586,18 +596,23 @@
             Initialize-MtDashboard -Renderer $renderer -Console $console -RunConfig $runConfig -OutputJsonFile $out.OutputJsonFile -SkipVersionCheck:$SkipVersionCheck
             $renderer.StartPhase('Prepare')
         }
+        # While the full-screen dashboard owns the screen, a warning or error this command writes is drawn over
+        # and lost when the screen is restored. Collect them (as -WarningVariable and -ErrorVariable do, for every
+        # command called from here) and let Stop-MtConsoleOutput write them once the screen is back.
+        $mtDashboardWarnings = $null
+        $mtDashboardErrors = $null
+        $collectDashboardMessages = [bool]($script:__MtConsoleRenderer -and $script:__MtConsoleRenderer.IsFullScreen)
+        $defaultParameterValues = $PSDefaultParameterValues
+        $collectingDefaults = $null
+        if ($collectDashboardMessages) {
+            $collectingDefaults = @{} + $PSDefaultParameterValues
+            $collectingDefaults['*:WarningVariable'] = '+mtDashboardWarnings'
+            $collectingDefaults['*:ErrorVariable'] = '+mtDashboardErrors'
+            $PSDefaultParameterValues = $collectingDefaults
+        }
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
         Write-Verbose "Reading Maester config from: $($testSource.ConfigSearchPath)"
         # Resolve tenant ID for tenant-specific config lookup (maester-config.{tenantId}.json)
-        $configTenantId = $null
-        if (Test-MtConnection Graph) {
-            $configTenantId = (Get-MgContext).TenantId
-        }
-        if ($null -eq $Config -and [string]::IsNullOrWhiteSpace($env:MAESTER_CONFIG)) {
-            # Second pass: the discovered files, now including maester-config.<tenantId>.json.
-            $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -TenantId $configTenantId
-        }
-        $__MtSession.MaesterConfig = $runConfig
 
         # Where each row came from (Source and Suite, design appendix A.6).
         $originCache = @{}
@@ -708,7 +723,11 @@
             if ($plan.UnknownIds.Count -gt 0) {
                 $unknownMessage = "These test IDs match no test: $($plan.UnknownIds -join ', ')"
                 switch ($selection.OnUnknownId) {
-                    'Error' { Write-Error -Message "$unknownMessage. Selection.OnUnknownId is Error, so the run was stopped."; Reset-MtProgressView; return }
+                    'Error' {
+                        # Give the screen back first: the error must be readable.
+                        Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))
+                        Write-Error -Message "$unknownMessage. Selection.OnUnknownId is Error, so the run was stopped."; Reset-MtProgressView; return
+                    }
                     'Warn' { Write-Warning $unknownMessage }
                 }
             }
@@ -807,13 +826,19 @@
             if ($nativePlan.Count -gt 0) {
                 Set-MtConsolePhase 'Run tests'
                 Write-MtProgress -Activity 'Running tests' -Status "$(@($nativePlan | Where-Object Disposition -EQ 'Run').Count) native test(s)" -Force
+                # Not while the tests run: what a test writes is kept with its result, and the collection would
+                # add work to every command of every test.
+                if ($collectDashboardMessages) { $PSDefaultParameterValues = $defaultParameterValues }
                 $nativeRows = @(Invoke-MtNativePlan -Plan $nativePlan -RunConfig $runConfig -Selection $selection -Verbosity $Verbosity)
+                if ($collectDashboardMessages) { $PSDefaultParameterValues = $collectingDefaults }
             }
             $nativeTimer.Stop()
             $pesterConfig = $null
             if ($pesterRunPath.Count -gt 0) {
                 # Pester writes its own output: give the screen back first.
-                Stop-MtConsoleOutput
+                Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))
+                $mtDashboardWarnings = $null; $mtDashboardErrors = $null
+                if ($collectDashboardMessages) { $PSDefaultParameterValues = $defaultParameterValues; $collectDashboardMessages = $false }
                 $provider = Invoke-MtPesterProvider -Filter $pesterFilter -Configuration $PesterConfiguration -Verbosity $Verbosity
                 if ($provider.Unavailable) {
                     # Pester is not installed: each Pester-format test becomes an Error row; native results stand.
@@ -988,15 +1013,23 @@
 
             Write-MtProgress -Activity '🔥 Completed tests' -Completed
             # Restore the screen and write what was kept while the dashboard owned it, then the summary.
-            Stop-MtConsoleOutput
-            if (-not $NonInteractive.IsPresent) {
-                Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console
-            }
+            if ($collectDashboardMessages) { $PSDefaultParameterValues = $defaultParameterValues; $collectDashboardMessages = $false }
+            Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))
+            $mtDashboardWarnings = $null; $mtDashboardErrors = $null
+            # The run is finished and its reports are written: the summary and the annotations are display
+            # only, and a failure in them must not fail the command or keep -PassThru from returning.
+            try {
+                if (-not $NonInteractive.IsPresent) {
+                    Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console
+                }
 
-            # GitHub Actions and Azure Pipelines annotations for the first Failed and Error rows (Output.CIAnnotations).
-            $annotate = -not ($outputSection -and $outputSection.PSObject.Properties['CIAnnotations'] -and $outputSection.CIAnnotations -eq $false)
-            if ($console.CI -and $annotate -and -not $DryRun) {
-                Write-MtCIAnnotation -Tests @($maesterResults.Tests) -Console $console
+                # GitHub Actions and Azure Pipelines annotations for the first Failed and Error rows (Output.CIAnnotations).
+                $annotate = -not ($outputSection -and $outputSection.PSObject.Properties['CIAnnotations'] -and $outputSection.CIAnnotations -eq $false)
+                if ($console.CI -and $annotate -and -not $DryRun) {
+                    Write-MtCIAnnotation -Tests @($maesterResults.Tests) -Console $console
+                }
+            } catch {
+                Write-Warning "The run summary could not be written: $($_.Exception.Message)"
             }
 
             if (-not $SkipVersionCheck -and 'Next' -ne $version -and -not $NonInteractive.IsPresent) {
@@ -1015,7 +1048,9 @@
     clean {
         # Always restore the console: the status line or live region of an interactive run must not
         # outlive the command, whether it returned early, failed or was stopped with Ctrl+C.
-        Stop-MtConsoleOutput
+        Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))
         Restore-MtConsoleEncoding
+        # The console mode is this run's: a later Invoke-MtTest works out its own.
+        $__MtSession.Console = $null
     }
 }

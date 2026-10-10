@@ -100,7 +100,9 @@ function Write-MtCIAnnotation {
         [Parameter()] [AllowNull()] [pscustomobject] $Console
     )
     if (-not $Console -or $Console.CI -notin 'GitHubActions', 'AzureDevOps') { return }
-    $rows = @($Tests | Where-Object { $_.Result -in 'Failed', 'Error' })
+    # Error rows first: they are the only error-level annotations, and with many failures the cap would
+    # otherwise leave them all out.
+    $rows = @($Tests | Where-Object { $_.Result -eq 'Error' }) + @($Tests | Where-Object { $_.Result -eq 'Failed' })
     foreach ($row in ($rows | Select-Object -First $Limit)) {
         $level = if ($row.Result -eq 'Error') { 'error' } else { 'warning' }
         $title = if ($row.PSObject.Properties['Id'] -and $row.Id) { [string]$row.Id } else { [string]$row.Name }
@@ -245,7 +247,10 @@ function Write-MtRunSummary {
             $count = @{}
             foreach ($t in $g.Group) { $count[[string]$t.Result]++ }
             $worst = $g.Group | Where-Object { $_.Result -eq 'Failed' -and $_.Severity } | Sort-Object { $severityRank[[string]$_.Severity] } -Descending | Select-Object -First 1
-            $worstText = if ($worst) { Format-MtConsoleText ([string]$worst.Severity) -Style $severityStyle[[string]$worst.Severity] -Console $Console } else { '' }
+            # A severity outside the known five (a config row or a custom test can carry any text) is shown as it is.
+            $worstStyle = if ($worst) { $severityStyle[[string]$worst.Severity] } else { $null }
+            if (-not $worstStyle) { $worstStyle = 'Dim' }
+            $worstText = if ($worst) { Format-MtConsoleText ([string]$worst.Severity) -Style $worstStyle -Console $Console } else { '' }
             Write-MtConsoleLine (" $(Format-MtConsoleText $g.Name.PadRight($nameWidth) -Style Bold -Console $Console)" +
                 (& $cell $count['Passed'] 8 'Passed') + (& $cell $count['Failed'] 8 'Failed') + (& $cell $count['Error'] 8 'Error') +
                 (& $cell $count['Investigate'] 13 'Investigate') + (& $cell $count['Skipped'] 9 'Dim') + "   $worstText").TrimEnd()

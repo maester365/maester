@@ -163,10 +163,10 @@ namespace Maester.Engine
             lock (_gate)
             {
                 _taglineRow = row;
-                _taglinePrefix = prefix ?? string.Empty;
+                _taglinePrefix = SgrOnly(prefix) ?? string.Empty;
                 _taglineWidth = width;
-                _taglineVersion = version ?? string.Empty;
-                _taglineSite = site ?? string.Empty;
+                _taglineVersion = PlainText(version) ?? string.Empty;
+                _taglineSite = PlainText(site) ?? string.Empty;
                 _taglineSiteUrl = siteUrl;
                 Redraw();
             }
@@ -180,7 +180,7 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _updateLabel = label;
+                _updateLabel = PlainText(label);
                 _updateUrl = url;
                 Redraw();
             }
@@ -215,9 +215,9 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _header = lines;
+                _header = SgrOnly(lines);
                 _headerWidth = width;
-                _compactHeader = compact;
+                _compactHeader = SgrOnly(compact);
                 Redraw();
             }
         }
@@ -227,7 +227,7 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _info = text;
+                _info = SgrOnly(text);
                 _infoLength = visibleLength;
                 Redraw();
             }
@@ -239,7 +239,7 @@ namespace Maester.Engine
             lock (_gate)
             {
                 _phases.Clear();
-                if (names != null) foreach (var n in names) _phases.Add(new Phase { Name = n });
+                if (names != null) foreach (var n in names) _phases.Add(new Phase { Name = PlainText(n) });
                 Redraw();
             }
         }
@@ -249,6 +249,7 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
+                name = PlainText(name);
                 int index = _phases.FindIndex(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
                 if (index < 0) return;
                 for (int i = 0; i < _phases.Count; i++)
@@ -285,7 +286,11 @@ namespace Maester.Engine
                 _clock.Restart();
                 _fullScreen = FullScreen && CurrentWidth() >= MinFullScreenWidth && CurrentHeight() >= MinFullScreenHeight;
                 if (!_fullScreen) return;
-                Write(Esc + "?1049h" + Esc + "?25l"); // alternate screen, cursor hidden
+                // If the process ends without Close() (a kill signal, Environment.Exit in a test), still give the screen back.
+                AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+                // Alternate screen, cursor hidden, no auto-wrap: a row that is too wide (wide characters are
+                // counted as one column) is clipped instead of wrapping and scrolling the dashboard.
+                Write(Esc + "?1049h" + Esc + "?25l" + Esc + "?7l");
                 Draw();
                 StartTimer();
             }
@@ -314,9 +319,9 @@ namespace Maester.Engine
                     {
                         _lanes.Add(new Lane
                         {
-                            Name = laneNames[i],
+                            Name = PlainText(laneNames[i]),
                             Total = laneTotals != null && i < laneTotals.Length ? laneTotals[i] : 0,
-                            Note = laneNotes != null && i < laneNotes.Length ? laneNotes[i] : null
+                            Note = laneNotes != null && i < laneNotes.Length ? PlainText(laneNotes[i]) : null
                         });
                     }
                 }
@@ -344,7 +349,7 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _status = string.IsNullOrEmpty(text) ? null : text;
+                _status = string.IsNullOrEmpty(text) ? null : PlainText(text);
                 if (_fullScreen || _running) { Redraw(); return; }
                 if (_pauseDepth > 0) return;
                 Write(_status == null ? ClearStatus() : StatusFrame());
@@ -362,9 +367,11 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                var l = FindLane(lane);
+                // IDs and titles of custom tests, and anything a test puts in a family instance title, are not ours.
+                id = PlainText(id);
+                var l = FindLane(PlainText(lane));
                 if (l != null) l.Running++;
-                _workers.Add(new Worker { Id = id, Title = title, Lane = l, Clock = Stopwatch.StartNew() });
+                _workers.Add(new Worker { Id = id, Title = PlainText(title), Lane = l, Clock = Stopwatch.StartNew() });
                 Redraw();
             }
         }
@@ -398,6 +405,7 @@ namespace Maester.Engine
 
         private void Finish(string id, string result, string severity, TimeSpan? measured)
         {
+            id = PlainText(id); // as ItemStarting stored it
             lock (_gate)
             {
                 int index = id == null ? (_workers.Count > 0 ? 0 : -1) : _workers.FindIndex(w => string.Equals(w.Id, id, StringComparison.OrdinalIgnoreCase));
@@ -513,7 +521,9 @@ namespace Maester.Engine
         /// <summary>Ends the run: restores the screen the dashboard took over, and the cursor. Safe to call more than once.</summary>
         public void Close()
         {
-            Stop();
+            // Whatever Stop() does, the screen and the cursor are given back.
+            try { Stop(); }
+            catch (Exception) { /* A last frame that cannot be drawn must not keep the screen from being restored. */ }
             Timer timer;
             lock (_gate)
             {
@@ -523,15 +533,34 @@ namespace Maester.Engine
                 _timer = null;
                 if (_fullScreen)
                 {
-                    var sb = new StringBuilder();
-                    if (TaskbarProgress) sb.Append("\u001b]9;4;0;0\u0007");
-                    sb.Append(Esc).Append("0m").Append(Esc).Append("?25h").Append(Esc).Append("?1049l");
-                    Write(sb.ToString());
+                    AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+                    Write(RestoreSequence());
                     _fullScreen = false;
                 }
                 _clock.Stop();
             }
             if (timer != null) timer.Dispose();
+        }
+
+        /// <summary>Leaves the alternate screen with the cursor shown, colours reset, auto-wrap on and no taskbar progress.</summary>
+        private string RestoreSequence()
+        {
+            var sb = new StringBuilder();
+            if (TaskbarProgress) sb.Append("\u001b]9;4;0;0\u0007");
+            sb.Append(Esc).Append("0m").Append(Esc).Append("?7h").Append(Esc).Append("?25h").Append(Esc).Append("?1049l");
+            return sb.ToString();
+        }
+
+        /// <summary>The process is ending and Close() was not called. No lock: the thread that holds it may never run again.</summary>
+        private void OnProcessExit(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_open || !_fullScreen) return;
+                _writer.Write(RestoreSequence());
+                _writer.Flush();
+            }
+            catch (Exception) { /* Nothing more can be done for the console. */ }
         }
 
         public void Dispose()
@@ -593,7 +622,14 @@ namespace Maester.Engine
             if (_fullScreen || (_running && _pauseDepth == 0)) Draw();
         }
 
+        /// <summary>Draws a frame. A frame that cannot be drawn is skipped: the display must never fail the run.</summary>
         private void Draw()
+        {
+            try { DrawFrame(); }
+            catch (Exception) { /* The next frame is a new attempt. */ }
+        }
+
+        private void DrawFrame()
         {
             var sb = new StringBuilder();
             sb.Append(Esc).Append("?2026h"); // synchronized output: terminals that support it paint the frame at once
@@ -618,7 +654,7 @@ namespace Maester.Engine
             sb.Append(Esc).Append("?2026l");
             if (TaskbarProgress && _running)
             {
-                int pct = _total > 0 ? (int)(100L * FinishedCount() / _total) : 0;
+                int pct = _total > 0 ? (int)Math.Min(100L, 100L * FinishedCount() / _total) : 0;
                 if (pct != _lastPercent)
                 {
                     sb.Append("\u001b]9;4;1;").Append(N(pct)).Append('\u0007');
@@ -729,7 +765,7 @@ namespace Maester.Engine
         /// <summary>done/total, percent and, once there is something to go on, the estimated time left.</summary>
         private string ProgressText(int done, Stopwatch clock, bool withElapsed)
         {
-            int pct = _total > 0 ? (int)(100L * done / _total) : 0;
+            int pct = _total > 0 ? (int)Math.Min(100L, 100L * done / _total) : 0;
             string text = N(done) + "/" + N(_total) + "  " + N(pct) + "%";
             if (withElapsed) text += "  " + Time(clock.Elapsed);
             if (done >= 5 && done < _total) text += "  ETA " + Time(TimeSpan.FromTicks(clock.Elapsed.Ticks / done * (_total - done)));
@@ -998,11 +1034,11 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _runLogo = lines != null && lines.Length > 0 ? lines : null;
+                _runLogo = lines != null && lines.Length > 0 ? SgrOnly(lines) : null;
                 _runLogoWidth = width;
                 _runLogoTaglineRow = taglineRow;
-                _runLogoPrefix = taglinePrefix ?? string.Empty;
-                _runLogoVersion = version ?? string.Empty;
+                _runLogoPrefix = SgrOnly(taglinePrefix) ?? string.Empty;
+                _runLogoVersion = PlainText(version) ?? string.Empty;
                 Redraw();
             }
         }
@@ -1165,8 +1201,121 @@ namespace Maester.Engine
         /// <summary>Text that a terminal with hyperlink support (OSC 8) opens at <paramref name="url"/>; other terminals show the text alone.</summary>
         public static string Hyperlink(string text, string url)
         {
-            if (string.IsNullOrEmpty(url)) return text ?? string.Empty;
+            if (string.IsNullOrEmpty(url) || !IsSafeLink(url)) return text ?? string.Empty;
             return Esc8 + url + "\u001b\\" + text + LinkEnd;
+        }
+
+        /// <summary>
+        /// An address that may go into a hyperlink sequence: an absolute https address, or a file (the report
+        /// of a run), with no control character that could end the sequence early.
+        /// </summary>
+        internal static bool IsSafeLink(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return false;
+            foreach (char c in url) if (char.IsControl(c)) return false;
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri)) return false;
+            return uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFile;
+        }
+
+        /// <summary>
+        /// Text from outside the renderer (test IDs and titles, product, tenant and connection names, status
+        /// text) made safe to draw. Control characters, which include the escape character and line breaks,
+        /// become spaces, so the text cannot issue terminal commands or add rows to a frame. Characters that
+        /// reorder or hide text (bidirectional overrides, zero-width marks) are dropped.
+        /// </summary>
+        internal static string PlainText(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            StringBuilder sb = null;
+            for (int i = 0; i < s.Length; i++)
+            {
+                char c = s[i];
+                bool control = char.IsControl(c) || c == '\u2028' || c == '\u2029';
+                bool hidden = IsHiddenFormat(c);
+                if (!control && !hidden)
+                {
+                    if (sb != null) sb.Append(c);
+                    continue;
+                }
+                if (sb == null) sb = new StringBuilder(s, 0, i, s.Length);
+                if (control) sb.Append(' ');
+            }
+            return sb == null ? s : sb.ToString();
+        }
+
+        private static bool IsHiddenFormat(char c)
+        {
+            return (c >= '\u200B' && c <= '\u200F') || (c >= '\u202A' && c <= '\u202E') || (c >= '\u2066' && c <= '\u2069') || c == '\uFEFF';
+        }
+
+        /// <summary>
+        /// Text that Maester formatted itself (the banner, the connection line, panel text): colour sequences
+        /// (CSI ... m) and hyperlinks to a safe address (OSC 8) are kept. Every other escape sequence and
+        /// control character is taken out, because such text can still contain a tenant or account name.
+        /// </summary>
+        internal static string SgrOnly(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            var sb = new StringBuilder(s.Length);
+            int i = 0;
+            while (i < s.Length)
+            {
+                char c = s[i];
+                if (c == '\u001b')
+                {
+                    int j = i + 1;
+                    if (j < s.Length && s[j] == '[')
+                    {
+                        j++;
+                        while (j < s.Length && ((s[j] >= '0' && s[j] <= '9') || s[j] == ';')) j++;
+                        if (j < s.Length && s[j] == 'm')
+                        {
+                            sb.Append(s, i, j - i + 1);
+                            i = j + 1;
+                            continue;
+                        }
+                    }
+                    // A hyperlink (OSC 8) to a safe address, and the sequence that ends one.
+                    if (i + 4 < s.Length && s[i + 1] == ']' && s[i + 2] == '8' && s[i + 3] == ';' && s[i + 4] == ';')
+                    {
+                        int k = i + 5;
+                        while (k < s.Length && s[k] != '\u0007' && s[k] != '\u001b') k++;
+                        bool bell = k < s.Length && s[k] == '\u0007';
+                        bool st = k + 1 < s.Length && s[k] == '\u001b' && s[k + 1] == '\\';
+                        if (bell || st)
+                        {
+                            string url = s.Substring(i + 5, k - (i + 5));
+                            int end = k + (bell ? 1 : 2);
+                            if (url.Length == 0 || IsSafeLink(url)) sb.Append(s, i, end - i);
+                            i = end;
+                            continue;
+                        }
+                    }
+                    i++; // any other sequence loses its escape character and is shown as text
+                    continue;
+                }
+                if (char.IsControl(c) || c == '\u2028' || c == '\u2029') sb.Append(' ');
+                else if (!IsHiddenFormat(c)) sb.Append(c);
+                i++;
+            }
+            return sb.ToString();
+        }
+
+        internal static string[] SgrOnly(string[] lines)
+        {
+            if (lines == null) return null;
+            var clean = new string[lines.Length];
+            for (int i = 0; i < lines.Length; i++) clean[i] = SgrOnly(lines[i]);
+            return clean;
+        }
+
+        internal static string[] PlainText(string[] lines)
+        {
+            if (lines == null) return null;
+            var clean = new string[lines.Length];
+            for (int i = 0; i < lines.Length; i++) clean[i] = PlainText(lines[i]);
+            return clean;
         }
 
         /// <summary>The index after the escape sequence (CSI or OSC) that starts at <paramref name="start"/>.</summary>
@@ -1218,8 +1367,12 @@ namespace Maester.Engine
         private void Write(string s)
         {
             if (string.IsNullOrEmpty(s)) return;
-            _writer.Write(s);
-            _writer.Flush();
+            try
+            {
+                _writer.Write(s);
+                _writer.Flush();
+            }
+            catch (Exception) { /* A console that cannot be written to (closed, redirected away) must not fail the run. */ }
         }
 
         private static string N(int n) { return n.ToString(CultureInfo.InvariantCulture); }

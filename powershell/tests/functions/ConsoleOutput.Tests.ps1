@@ -162,15 +162,16 @@ Describe 'Write-MtCIAnnotation' {
         $gh = $script:stream.PSObject.Copy(); $gh.CI = 'GitHubActions'
         $lines = InModuleScope Maester -Parameters @{ c = $gh; rows = $script:rows } { param($c, $rows) Write-MtCIAnnotation -Tests $rows -Console $c 6>&1 } | ForEach-Object { "$_" }
         $lines.Count | Should -Be 2
-        $lines[0] | Should -Be '::warning title=Maester MT.1::Failed: Policy, with: comma'
-        $lines[1] | Should -Match '^::error title=Maester MT\.2::Error: Broken - '
+        # Error rows come first, whatever their place in the report.
+        $lines[0] | Should -Match '^::error title=Maester MT\.2::Error: Broken - '
+        $lines[1] | Should -Be '::warning title=Maester MT.1::Failed: Policy, with: comma'
     }
 
     It 'Escapes Azure Pipelines logging command characters' {
         $ado = $script:stream.PSObject.Copy(); $ado.CI = 'AzureDevOps'
         $lines = InModuleScope Maester -Parameters @{ c = $ado; rows = $script:rows } { param($c, $rows) Write-MtCIAnnotation -Tests $rows -Console $c 6>&1 } | ForEach-Object { "$_" }
-        $lines[1] | Should -Match '^##vso\[task\.logissue type=error\]MT\.2: Error: Broken'
-        $lines[1].Substring('##vso[task.logissue type=error]'.Length) | Should -Not -Match '[;\]\r\n]'
+        $lines[0] | Should -Match '^##vso\[task\.logissue type=error\]MT\.2: Error: Broken'
+        $lines[0].Substring('##vso[task.logissue type=error]'.Length) | Should -Not -Match '[;\]\r\n]'
     }
 
     It 'Annotates at most -Limit rows and says how many were left out' {
@@ -181,9 +182,48 @@ Describe 'Write-MtCIAnnotation' {
         $lines[2] | Should -Match '3 more'
     }
 
+    It 'Annotates Error rows before Failed rows when the limit cuts the list' {
+        $gh = $script:stream.PSObject.Copy(); $gh.CI = 'GitHubActions'
+        $many = @(1..5 | ForEach-Object { [pscustomobject]@{ Id = "MT.$_"; Title = 't'; Result = 'Failed'; ReasonDetail = $null } }) +
+            @([pscustomobject]@{ Id = 'MT.9'; Title = 'broken'; Result = 'Error'; ReasonDetail = $null })
+        $lines = InModuleScope Maester -Parameters @{ c = $gh; rows = $many } { param($c, $rows) Write-MtCIAnnotation -Tests $rows -Limit 2 -Console $c 6>&1 } | ForEach-Object { "$_" }
+        $lines[0] | Should -Match '^::error title=Maester MT\.9::'
+    }
+
     It 'Writes nothing outside CI' {
         $lines = InModuleScope Maester -Parameters @{ c = $script:stream; rows = $script:rows } { param($c, $rows) Write-MtCIAnnotation -Tests $rows -Console $c 6>&1 }
         $lines | Should -BeNullOrEmpty
+    }
+}
+
+Describe 'Console text from tests' {
+    It 'Keeps a title or reason on one line and breaks up CI commands' {
+        $ado = $script:stream.PSObject.Copy(); $ado.CI = 'AzureDevOps'
+        $text = "Evil`n::error title=x::y ##vso[task.setvariable variable=X]v`r##[error]z$([char]27)[2J"
+        $safe = InModuleScope Maester -Parameters @{ t = $text; c = $ado } { param($t, $c) ConvertTo-MtConsoleSafeText $t -Console $c }
+        $safe | Should -Not -Match '[\p{Cc}]'
+        $safe | Should -Not -Match '##vso\[|##\['
+        $safe | Should -Match '^Evil ::error'
+        # At the start of a line GitHub Actions would read '::' as a command.
+        InModuleScope Maester -Parameters @{ c = $ado } { param($c) ConvertTo-MtConsoleSafeText '::warning::x' -Console $c } | Should -Be ': :warning::x'
+        # Outside CI only the control characters go.
+        InModuleScope Maester -Parameters @{ c = $script:stream } { param($c) ConvertTo-MtConsoleSafeText "a`tb ##vso[x]" -Console $c } | Should -Be 'a b ##vso[x]'
+    }
+
+    It 'Takes the first line of a reason whatever the line break' {
+        InModuleScope Maester { Get-MtFirstLine "first`rsecond" } | Should -Be 'first'
+        InModuleScope Maester { Get-MtFirstLine "first`r`nsecond" } | Should -Be 'first'
+    }
+}
+
+Describe 'Run summary with a severity outside the known five' {
+    It 'Shows the severity as it is instead of failing' {
+        $results = [pscustomobject]@{
+            PassedCount = 0; FailedCount = 1; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 1; TotalDuration = '00:00:01'
+            Tests = @([pscustomobject]@{ Id = 'A.1'; Product = 'Entra ID'; Result = 'Failed'; Severity = 'Informational' })
+        }
+        $lines = InModuleScope Maester -Parameters @{ r = $results; c = $script:stream } { param($r, $c) & { $ErrorActionPreference = 'Stop'; Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } } | ForEach-Object { "$_" }
+        ($lines -join "`n") | Should -Match 'Informational'
     }
 }
 
@@ -301,6 +341,33 @@ Describe 'Deferred console output' {
         $lines.During | Should -Be 0
         $lines.After | Should -Be @('kept for later')
         $lines.Renderer | Should -BeNullOrEmpty
+    }
+
+    It 'Writes the warnings and errors that were collected while the dashboard owned the screen, each once' {
+        $out = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 30; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $script:__MtConsoleRenderer = $renderer
+            $script:__MtDeferredOutput = $null
+            $renderer.Open()
+            $warning = [System.Management.Automation.WarningRecord]::new('hidden warning')
+            $failure = [System.Management.Automation.ErrorRecord]::new([System.Exception]::new('hidden error'), 'Hidden', 'NotSpecified', $null)
+            # The same record twice: a helper and its caller both collect it.
+            $replayedErrors = $null
+            $replayed = @(Stop-MtConsoleOutput -Message @($warning, $warning, $failure) -ErrorVariable replayedErrors -ErrorAction SilentlyContinue 3>&1)
+            [pscustomobject]@{ Warnings = @($replayed | ForEach-Object { "$_" }); Errors = @($replayedErrors | ForEach-Object { $_.Exception.Message }) }
+        }
+        $out.Warnings | Should -Be @('hidden warning')
+        $out.Errors | Should -Be @('hidden error')
+    }
+
+    It 'Does not repeat collected messages when no full-screen dashboard hid them' {
+        $out = InModuleScope Maester {
+            $script:__MtConsoleRenderer = $null
+            $script:__MtDeferredOutput = $null
+            @(Stop-MtConsoleOutput -Message @([System.Management.Automation.WarningRecord]::new('already shown')) 3>&1)
+        }
+        $out | Should -BeNullOrEmpty
     }
 }
 

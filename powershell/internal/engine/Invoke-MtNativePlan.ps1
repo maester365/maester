@@ -98,7 +98,10 @@
         $converted = @{}
         $starting = {
             param($item)
-            if (-not $renderer -and $writeStartLines) { Write-MtConsoleLine (Format-MtConsoleText "Running $($item.Id)" -Style Dim -Console $console) }
+            # Console output must never fail a test run.
+            try {
+                if (-not $renderer -and $writeStartLines) { Write-MtConsoleLine (Format-MtConsoleText "Running $(ConvertTo-MtConsoleSafeText $item.Id -Console $console)" -Style Dim -Console $console) }
+            } catch { Write-Debug "Console output failed for $($item.Id): $_" }
         }
         $finished = {
             param($result)
@@ -110,30 +113,55 @@
             }
             $row = ConvertTo-MtNativeRow -PlanRow $result.Tag.PlanRow -RunResult $result -Instance $result.Tag.Instance -ForeignModuleLoaded:$foreign
             $converted[$result] = $row
-            if ($renderer) {
-                $renderer.ItemFinished([string]$result.Id, [string]$row.Result, [string]$row.Severity)
-                # The dashboard has no scrollback: what the test wrote is replayed once the screen is restored.
-                if ($renderer.IsFullScreen -and ($result.Warnings.Count + $result.Verbose.Count + $result.Debug.Count + $result.Information.Count) -gt 0) { Add-MtDeferredOutput -RunResult $result }
-            }
-            if ($writeResultLines) { Write-MtNativeResultLine -Row $row -Console $console }
-            $heartbeat.Done++
-            if ($row.Result -in 'Failed', 'Error') { $heartbeat.Failed++ }
-            if ($ci -and $heartbeat.Done -lt $heartbeat.Total -and ($heartbeat.Done % 50 -eq 0 -or $heartbeat.Last.Elapsed.TotalSeconds -ge 10)) {
-                Write-MtRunHeartbeat -Done $heartbeat.Done -Total $heartbeat.Total -Failed $heartbeat.Failed -Elapsed $heartbeat.Clock.Elapsed -Console $console
-                $heartbeat.Last.Restart()
-            }
+            # The row is kept before anything is drawn: a console failure must never cost the run its results.
+            try {
+                if ($renderer) {
+                    $renderer.ItemFinished([string]$result.Id, [string]$row.Result, [string]$row.Severity)
+                    # The dashboard has no scrollback: what the test wrote is replayed once the screen is restored.
+                    if ($renderer.IsFullScreen -and ($result.Warnings.Count + $result.Verbose.Count + $result.Debug.Count + $result.Information.Count) -gt 0) { Add-MtDeferredOutput -RunResult $result }
+                }
+                if ($writeResultLines) { Write-MtNativeResultLine -Row $row -Console $console }
+                $heartbeat.Done++
+                if ($row.Result -in 'Failed', 'Error') { $heartbeat.Failed++ }
+                if ($ci -and $heartbeat.Done -lt $heartbeat.Total -and ($heartbeat.Done % 50 -eq 0 -or $heartbeat.Last.Elapsed.TotalSeconds -ge 10)) {
+                    Write-MtRunHeartbeat -Done $heartbeat.Done -Total $heartbeat.Total -Failed $heartbeat.Failed -Elapsed $heartbeat.Clock.Elapsed -Console $console
+                    $heartbeat.Last.Restart()
+                }
+            } catch { Write-Debug "Console output failed for $($result.Id): $_" }
         }
 
         if ($ci) { Write-MtCIGroup -Name "Maester: $($workItems.Count) native tests" -Console $console }
+        $results = @()
+        $engineFailure = $null
         try {
-            if ($renderer) { $renderer.Start($workItems.Count, $laneNames, [int[]]@($laneNames | ForEach-Object { $laneTotals[$_] }), [string[]]@($laneNames | ForEach-Object { $laneNotes[$_] })) }
-            $results = @(Invoke-MtEngineRun -WorkItem $workItems.ToArray() -Module $maester -OnItemStarting $starting -OnItemFinished $finished -Renderer $renderer)
+            if ($renderer) {
+                try { $renderer.Start($workItems.Count, $laneNames, [int[]]@($laneNames | ForEach-Object { $laneTotals[$_] }), [string[]]@($laneNames | ForEach-Object { $laneNotes[$_] })) }
+                catch { Write-Debug "Console renderer start failed: $_" }
+            }
+            try {
+                $results = @(Invoke-MtEngineRun -WorkItem $workItems.ToArray() -Module $maester -OnItemStarting $starting -OnItemFinished $finished -Renderer $renderer)
+            } catch [System.Management.Automation.PipelineStoppedException] {
+                throw
+            } catch {
+                # The engine failed part way. The tests that finished keep their rows; the failure is reported after them.
+                $engineFailure = $_
+            }
         } finally {
             if ($renderer) {
-                $renderer.Stop()
+                try { $renderer.Stop() } catch { Write-Debug "Console renderer stop failed: $_" }
                 if ($ownRenderer) { $script:__MtConsoleRenderer = $null }
             }
             if ($ci) { Write-MtCIGroup -End -Console $console }
+        }
+        if ($engineFailure) {
+            # No result objects came back: use the rows made as each test finished, in the order of the work items.
+            foreach ($item in $workItems) {
+                $done = $converted.Keys | Where-Object { [object]::ReferenceEquals($_.Tag, $item.Tag) -or $_.Id -eq $item.Id } | Select-Object -First 1
+                if ($done) { $rows.Add($converted[$done]) }
+            }
+            $PSCmdlet.WriteError([System.Management.Automation.ErrorRecord]::new(
+                    [System.InvalidOperationException]::new("The test run stopped early: $($engineFailure.Exception.Message) $($rows.Count) result(s) were kept.", $engineFailure.Exception),
+                    'MaesterEngineRunFailed', [System.Management.Automation.ErrorCategory]::OperationStopped, $null))
         }
         foreach ($result in $results) {
             # Items the run never started (Ctrl+C) get a result but no OnItemFinished call.
@@ -490,7 +518,8 @@ function Get-MtFirstLine {
     [OutputType([string])]
     param([Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Text)
     if (-not $Text) { return $null }
-    $lines = $Text -split "`r?`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -and $_ -ne '```' -and $_ -notlike 'An error occurred while running the test*' }
+    # A lone carriage return is a line break too.
+    $lines = $Text -split "`r`n|`r|`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -and $_ -ne '```' -and $_ -notlike 'An error occurred while running the test*' }
     $lines | Select-Object -First 1
 }
 
@@ -508,7 +537,36 @@ function Write-MtNativeResultLine {
     $style = switch ($Row.Result) { 'Passed' { 'Passed' } 'Failed' { 'Failed' } 'Error' { 'Error' } 'Investigate' { 'Investigate' } default { 'Dim' } }
     $label = Format-MtResultLabel -Result $Row.Result -Console $Console
     $duration = try { Format-MtDuration ([timespan]::Parse($Row.Duration, [cultureinfo]::InvariantCulture)) } catch { $Row.Duration }
-    $line = "$(Format-MtConsoleText $label -Style $style -Console $Console) $($Row.Id): $($Row.Title) $(Format-MtConsoleText "($duration)" -Style Dim -Console $Console)"
-    if ($Row.Result -in 'Failed', 'Error' -and $Row.ReasonDetail) { $line += " - $(Get-MtFirstLine $Row.ReasonDetail)" }
+    # Titles and reasons can carry tenant data and, in custom tests, anything: they must stay one line and
+    # must not be read as a command by a CI system.
+    $id = ConvertTo-MtConsoleSafeText ([string]$Row.Id) -Console $Console
+    $title = ConvertTo-MtConsoleSafeText ([string]$Row.Title) -Console $Console
+    $line = "$(Format-MtConsoleText $label -Style $style -Console $Console) ${id}: $title $(Format-MtConsoleText "($duration)" -Style Dim -Console $Console)"
+    if ($Row.Result -in 'Failed', 'Error' -and $Row.ReasonDetail) { $line += " - $(ConvertTo-MtConsoleSafeText (Get-MtFirstLine $Row.ReasonDetail) -Console $Console)" }
     Write-MtConsoleLine $line
+}
+
+function ConvertTo-MtConsoleSafeText {
+    <#
+    .SYNOPSIS
+    Makes text from a test (ID, title, reason) safe to write as part of one console line.
+
+    .DESCRIPTION
+    Control characters, which include line breaks and the escape character, become spaces. In a CI log the
+    markers that GitHub Actions ('::' at the start of a line) and Azure Pipelines ('##vso[', '##[' anywhere)
+    read as commands are broken up, so text from a tenant or a custom test cannot issue one.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Position = 0)] [AllowNull()] [AllowEmptyString()] [string] $Text,
+        [Parameter()] [AllowNull()] [pscustomobject] $Console
+    )
+    if (-not $Text) { return '' }
+    $safe = [regex]::Replace($Text, '[\p{Cc}\u2028\u2029]+', ' ').Trim()
+    if ($Console -and $Console.CI) {
+        $safe = $safe.Replace('##vso[', '## vso[').Replace('##[', '## [')
+        $safe = [regex]::Replace($safe, '^::', ': :')
+    }
+    $safe
 }

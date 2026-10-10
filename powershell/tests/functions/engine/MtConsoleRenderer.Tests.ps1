@@ -1070,3 +1070,171 @@ Describe 'MtConsoleFeeds' {
         [Maester.Engine.MtConsoleFeeds]::ParseGalleryVersion('<feed xmlns="http://www.w3.org/2005/Atom" />') | Should -BeNullOrEmpty
     }
 }
+
+Describe 'MtConsoleRenderer and text it does not control' {
+    BeforeAll {
+        $script:bel = [char]7
+        # A window title change, a clipboard write, leaving the alternate screen, and clearing the screen.
+        $script:attacks = @("$esc]0;PWNED$bel", "$esc]52;c;AAAA$bel", "$esc[?1049l", "$esc[2J", "$([char]0x9B)2J")
+
+        function New-FullScreenRenderer {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param([string[]] $Panels = @('Tenant', 'Connections', 'Tips', 'Drift', 'Pace'))
+            $t = New-TestRenderer -Width 160
+            $t.Renderer.Height = 44
+            $t.Renderer.FullScreen = $true
+            $t.Renderer.SetPanels($Panels)
+            $t.Renderer.SetPhases(@('Prepare', 'Run tests'))
+            $t.Renderer.Open()
+            $t
+        }
+
+        function Test-NoAttack {
+            param([string] $Output)
+            foreach ($attack in $script:attacks) { $Output.Contains($attack) | Should -BeFalse -Because "the sequence $($attack -replace '[^\x20-\x7E]', '?') must not reach the terminal" }
+        }
+    }
+
+    It 'Takes escape sequences and line breaks out of test IDs, titles and product names' {
+        $t = New-FullScreenRenderer
+        $evil = $script:attacks -join 'x'
+        $t.Renderer.Start(2, @("Entra$evil"), @(2), @("note$evil"))
+        $t.Renderer.ItemStarting("ID.1$evil", "Title one$evil`r`nsecond line`tand a tab", "Entra$evil")
+        $t.Renderer.ItemFinished("ID.1$evil", 'Failed', 'High')
+        $out = $t.Writer.ToString()
+        Test-NoAttack $out
+        $out.Contains("one`r`nsecond") | Should -BeFalse
+        # The text itself is still shown, and the finished test was matched to the one that started.
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match 'Title one'
+        $screen | Should -Match '1/2'
+        $t.Renderer.Close()
+    }
+
+    It 'Takes them out of the tenant, the connections, the status, the tips and the phases' {
+        $t = New-FullScreenRenderer
+        $evil = $script:attacks -join ''
+        $t.Renderer.SetTenant("Contoso$evil", "contoso.com$evil", "admin@contoso.com$evil")
+        $t.Renderer.SetConnections(@("Graph$evil"), @($true))
+        $t.Renderer.SetTips(@("A tip$evil"))
+        $t.Renderer.SetPhases(@("Prepare$evil", 'Run tests'))
+        $t.Renderer.ShowStatus("Reading$evil")
+        $t.Renderer.SetStatusBar(@("Docs$evil"), @('https://maester.dev/docs'))
+        $t.Renderer.SetStatusBarHint("click$evil")
+        $t.Renderer.Start(1)
+        Test-NoAttack $t.Writer.ToString()
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match 'Contoso'
+        $t.Renderer.Close()
+    }
+
+    It 'Drops characters that reorder or hide text' {
+        $t = New-FullScreenRenderer
+        $t.Renderer.Start(1)
+        $t.Renderer.ItemStarting('ID.2', "safe$([char]0x202E)txt.exe$([char]0x200B)", $null)
+        $out = $t.Writer.ToString()
+        $out.Contains([string][char]0x202E) | Should -BeFalse
+        $out.Contains([string][char]0x200B) | Should -BeFalse
+        $t.Renderer.Close()
+    }
+
+    It 'Keeps colours and safe hyperlinks in text that Maester formatted, and nothing else' {
+        $t = New-FullScreenRenderer -Panels 'Blog'
+        $good = [Maester.Engine.MtConsoleRenderer]::Hyperlink('post', 'https://maester.dev/blog/post')
+        $bad = "$esc]8;;javascript:alert(1)$esc\click$esc]8;;$esc\"
+        $t.Renderer.SetPanelText('Blog', 'From the blog', @("$esc[2mOct 07$esc[0m $good $bad $($script:attacks -join '')"))
+        $t.Renderer.SetInfo(" Contoso$($script:attacks[0]) $esc[2mGraph$esc[0m", 14)
+        $t.Renderer.Start(1)
+        $out = $t.Writer.ToString()
+        Test-NoAttack $out
+        $out | Should -Match ([regex]::Escape("$esc[2mOct 07$esc[0m"))
+        $out | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/blog/post"))
+        $out | Should -Not -Match 'javascript:'
+        $t.Renderer.Close()
+    }
+
+    It 'Makes a hyperlink only for an https or file address without control characters' {
+        $h = { param($url) [Maester.Engine.MtConsoleRenderer]::Hyperlink('text', $url) }
+        (& $h 'https://maester.dev/docs') | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/docs"))
+        (& $h ([System.Uri]::new((Join-Path $TestDrive 'report.html')).AbsoluteUri)) | Should -Match ([regex]::Escape("$esc]8;;file://"))
+        (& $h 'javascript:alert(1)') | Should -Be 'text'
+        (& $h 'http://maester.dev') | Should -Be 'text'
+        (& $h "https://maester.dev/$esc\$esc]0;x$([char]7)") | Should -Be 'text'
+        (& $h 'not a url') | Should -Be 'text'
+    }
+
+    It 'Never shows more than 100 percent' {
+        $t = New-TestRenderer -Taskbar
+        $t.Renderer.Start(2)
+        1..5 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
+        $t.Writer.ToString() | Should -Not -Match '9;4;1;(1[0-9][1-9]|[2-9][0-9][0-9])'
+        ($t.Renderer.GetPlainFrame(100) -join "`n") | Should -Match '100%'
+        ($t.Renderer.GetPlainFrame(100) -join "`n") | Should -Not -Match '250%'
+        $t.Renderer.Close()
+    }
+}
+
+Describe 'MtConsoleRenderer and a console that fails' {
+    BeforeAll {
+        if (-not ('MtTestFailingWriter' -as [type])) {
+            Add-Type -TypeDefinition @'
+using System;
+using System.IO;
+public sealed class MtTestFailingWriter : StringWriter
+{
+    public bool Fail;
+    public int Failures;
+    public override void Write(string value)
+    {
+        if (Fail) { Failures++; throw new IOException("The console is gone."); }
+        base.Write(value);
+    }
+}
+'@
+        }
+    }
+
+    It 'Does not throw into the run when a frame cannot be written, and restores the screen when writing works again' {
+        $writer = [MtTestFailingWriter]::new()
+        $renderer = [Maester.Engine.MtConsoleRenderer]::new($writer)
+        $renderer.Width = 120; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+        $renderer.Open()
+        $renderer.Start(2)
+        $writer.Fail = $true
+        { $renderer.ItemStarting('ID.1', 'Title', $null); $renderer.ItemFinished('ID.1', 'Passed', 'Low'); $renderer.Stop() } | Should -Not -Throw
+        $writer.Failures | Should -BeGreaterThan 0
+        $writer.Fail = $false
+        { $renderer.Close() } | Should -Not -Throw
+        $renderer.IsFullScreen | Should -BeFalse
+        $out = $writer.ToString()
+        # The cursor is shown again, auto-wrap is back on and the alternate screen is left.
+        $out | Should -Match ([regex]::Escape("$esc[?25h"))
+        $out | Should -Match ([regex]::Escape("$esc[?7h"))
+        $out.TrimEnd().EndsWith("$esc[?1049l") | Should -BeTrue
+    }
+
+    It 'Closes without throwing when the console fails during shutdown' {
+        $writer = [MtTestFailingWriter]::new()
+        $renderer = [Maester.Engine.MtConsoleRenderer]::new($writer)
+        $renderer.Width = 120; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+        $renderer.Open()
+        $renderer.Start(1)
+        $writer.Fail = $true
+        { $renderer.Close() } | Should -Not -Throw
+        $renderer.IsFullScreen | Should -BeFalse
+    }
+}
+
+Describe 'MtConsoleFeeds links and titles' {
+    It 'Takes only https links from a feed, and drops characters that reorder text from titles' {
+        $xml = "<rss><channel>" +
+            "<item><title>Safe$([char]0x202E)post</title><link>https://maester.dev/blog/a</link><pubDate>Tue, 07 Oct 2026 10:00:00 GMT</pubDate></item>" +
+            "<item><title>Plain http</title><link>http://maester.dev/blog/b</link></item>" +
+            "<item><title>Script</title><link>javascript:alert(1)</link></item>" +
+            "</channel></rss>"
+        $posts = [Maester.Engine.MtConsoleFeeds]::ParseFeed($xml, 5)
+        $posts[0].Title | Should -Be 'Safepost'
+        $posts[0].Link | Should -Be 'https://maester.dev/blog/a'
+        $posts[1].Link | Should -BeNullOrEmpty
+        $posts[2].Link | Should -BeNullOrEmpty
+    }
+}

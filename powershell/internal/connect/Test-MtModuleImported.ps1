@@ -14,5 +14,7 @@ function Test-MtModuleImported {
         [Parameter(Mandatory, Position = 0)]
         [string] $Name
     )
-    [bool](Get-Module -Name $Name)
+    # -All: a module imported inside another module (a company wrapper that connects before it calls
+    # Invoke-Maester) is not in the global module table, but its connection is as real.
+    [bool](Get-Module -Name $Name -All)
 }

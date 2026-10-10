@@ -82,8 +82,14 @@ function Stop-MtConsoleOutput {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Restores the console only.')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Console output, as Pester writes it')]
     [CmdletBinding()]
-    param()
+    param(
+        # Warning and error records that Invoke-Maester collected while the dashboard was up. They are written
+        # only if the full-screen dashboard owned the screen, where they were drawn over and lost.
+        [Parameter()] [AllowNull()] [AllowEmptyCollection()] [object[]] $Message
+    )
+    $wasFullScreen = $false
     if ($script:__MtConsoleRenderer) {
+        try { $wasFullScreen = [bool]$script:__MtConsoleRenderer.IsFullScreen } catch { Write-Debug "Console renderer state: $_" }
         try { $script:__MtConsoleRenderer.Close() } catch { Write-Debug "Console renderer close failed: $_" }
         $script:__MtConsoleRenderer = $null
     }
@@ -96,6 +102,15 @@ function Stop-MtConsoleOutput {
         foreach ($record in $item.Verbose) { Write-Verbose $record.Message }
         foreach ($record in $item.Debug) { Write-Debug $record.Message }
         foreach ($record in $item.Information) { $PSCmdlet.WriteInformation($record) }
+    }
+    if ($wasFullScreen) {
+        # A record written inside a helper is collected by the helper and by its caller: write it once.
+        $seen = [System.Collections.Generic.HashSet[object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance)
+        foreach ($record in @($Message)) {
+            if ($null -eq $record -or -not $seen.Add($record)) { continue }
+            if ($record -is [System.Management.Automation.WarningRecord]) { Write-Warning $record.Message }
+            elseif ($record -is [System.Management.Automation.ErrorRecord]) { $PSCmdlet.WriteError($record) }
+        }
     }
 }
 
@@ -199,14 +214,17 @@ function Initialize-MtDashboard {
     if ($panels -contains 'Drift' -and $OutputJsonFile) {
         $folder = Split-Path -Path $OutputJsonFile -Parent
         $current = Split-Path -Path $OutputJsonFile -Leaf
+        # The newest results file in the folder. With a fixed -OutputJsonFile name that is the file this run
+        # will replace: it still holds the previous run now, so it is the baseline too.
         $previous = Get-ChildItem -LiteralPath $folder -Filter '*.json' -File -ErrorAction SilentlyContinue |
-            Where-Object { $_.Name -ne $current -and $_.Name -notlike '*-affected-objects.json' -and $_.Length -gt 0 } |
+            Where-Object { $_.Name -notlike '*-affected-objects.json' -and $_.Length -gt 0 } |
             Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
         if ($previous) {
             $tenantId = try { [string](Get-MgContext).TenantId } catch { $null }
-            # The HTML report of that run, written next to its results: the date in the panel opens it.
+            # The HTML report of that run, written next to its results: the date in the panel opens it. Not
+            # for a file this run replaces: its report is replaced as well.
             $report = [System.IO.Path]::ChangeExtension($previous.FullName, '.html')
-            $reportUrl = if (Test-Path -LiteralPath $report -PathType Leaf) { [System.Uri]::new($report).AbsoluteUri } else { $null }
+            $reportUrl = if ($previous.Name -ne $current -and (Test-Path -LiteralPath $report -PathType Leaf)) { [System.Uri]::new($report).AbsoluteUri } else { $null }
             $null = $Renderer.LoadBaselineAsync($previous.FullName, $tenantId, $reportUrl)
         }
     }
@@ -215,7 +233,9 @@ function Initialize-MtDashboard {
     # shown, and a newer version, which the banner mentions, when the console is wide enough for the banner.
     if (-not $SkipVersionCheck) {
         if ($panels -contains 'Blog' -and $Console.Width -ge 140) {
-            $cache = Join-Path ([System.Environment]::GetFolderPath('LocalApplicationData')) 'Maester/blog-posts.txt'
+            # No such folder in some containers and service accounts: then the posts are not cached.
+            $appData = [System.Environment]::GetFolderPath('LocalApplicationData')
+            $cache = if ($appData) { Join-Path $appData 'Maester/blog-posts.txt' } else { $null }
             $null = [Maester.Engine.MtConsoleFeeds]::StartBlog($Renderer, 'https://maester.dev/blog/rss.xml', $cache, 3)
         }
         if ($panels -contains 'Version' -and $Console.Width -ge 90) {

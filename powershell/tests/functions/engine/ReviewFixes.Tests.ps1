@@ -165,6 +165,21 @@ Describe 'Engine review fixes' {
         }
     }
 
+    Context 'Console output that fails' {
+        It 'Keeps the result of a test when writing its console line fails' {
+            $file = New-TestFile -Folder (Join-Path $TestDrive 'console-fails') -Id 'CONTOSO.70' -Extra ", Service = 'None'" -Body @'
+    Add-MtTestResultDetail -Result 'ok'
+    $true
+'@
+            Mock -ModuleName Maester Write-MtNativeResultLine { throw 'the console is gone' }
+            $result = Invoke-Maester -Path $file -SkipBuiltIn -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck `
+                -Verbosity Normal -OutputFolder (Join-Path $TestDrive 'console-fails-out') -PassThru 6>$null
+            Should -Invoke -ModuleName Maester Write-MtNativeResultLine -Times 1
+            $result.TotalCount | Should -Be 1
+            $result.Tests[0].Result | Should -Be 'Passed'
+        }
+    }
+
     Context 'Family instances' {
         BeforeAll {
             function New-FamilyFile {

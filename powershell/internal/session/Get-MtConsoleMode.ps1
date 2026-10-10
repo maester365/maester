@@ -45,7 +45,10 @@
     if ($mode -eq 'Interactive' -and ($redirected -or -not $vt -or -not $isConsoleHost)) { $mode = 'Stream' }
 
     $noColor = -not [string]::IsNullOrEmpty($env:NO_COLOR) -or $dumb -or $PSStyle.OutputRendering -eq 'PlainText'
-    $ansi = $mode -ne 'Plain' -and -not $noColor -and ($vt -or $ci -eq 'GitHubActions')
+    # Output redirected to a file or a pipe is not a terminal, whatever the host reports: no colour codes in
+    # the log, unless a mode was asked for or the CI system is known to render them.
+    $requestedMode = $Requested -ne 'Auto' -or $env:MAESTER_OUTPUT_MODE -in 'Interactive', 'Stream', 'Plain'
+    $ansi = $mode -ne 'Plain' -and -not $noColor -and (($vt -and (-not $redirected -or $requestedMode -or $ci)) -or $ci -eq 'GitHubActions')
     $utf8 = try { [System.Console]::OutputEncoding.CodePage -eq 65001 } catch { $false }
 
     $termProgram = "$env:TERM_PROGRAM"

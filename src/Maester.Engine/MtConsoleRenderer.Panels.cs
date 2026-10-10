@@ -128,7 +128,7 @@ namespace Maester.Engine
             lock (_gate)
             {
                 if (lines == null || lines.Length == 0) _text.Remove(name);
-                else _text[name] = new TextPanel { Title = title, Lines = lines, Colour = borderColour };
+                else _text[name] = new TextPanel { Title = PlainText(title), Lines = SgrOnly(lines), Colour = borderColour };
                 Redraw();
             }
         }
@@ -141,7 +141,8 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _tenant = new TenantInfo { Name = name, Domain = domain, Detail = detail };
+                // Set by the administrators of the tenant that is being assessed, not by the person at this console.
+                _tenant = new TenantInfo { Name = PlainText(name), Domain = PlainText(domain), Detail = PlainText(detail) };
                 Redraw();
             }
         }
@@ -158,7 +159,7 @@ namespace Maester.Engine
                 int count = names == null ? 0 : names.Length;
                 for (int i = 0; i < count; i++)
                 {
-                    _connections.Add(new Connection { Name = names[i] ?? string.Empty, Connected = connected != null && i < connected.Length && connected[i] });
+                    _connections.Add(new Connection { Name = PlainText(names[i]) ?? string.Empty, Connected = connected != null && i < connected.Length && connected[i] });
                 }
                 Redraw();
             }
@@ -186,7 +187,7 @@ namespace Maester.Engine
                 int count = labels == null ? 0 : labels.Length;
                 for (int i = 0; i < count; i++)
                 {
-                    _barLabels.Add(labels[i] ?? string.Empty);
+                    _barLabels.Add(PlainText(labels[i]) ?? string.Empty);
                     _barLinks.Add(links != null && i < links.Length ? links[i] : null);
                 }
                 _barRight = Math.Max(0, Math.Min(rightAligned, _barLabels.Count));
@@ -202,7 +203,7 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _barHint = hint;
+                _barHint = PlainText(hint);
                 Redraw();
             }
         }
@@ -383,7 +384,7 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _tips = tips ?? new string[0];
+                _tips = PlainText(tips) ?? new string[0];
                 Redraw();
             }
         }
@@ -407,8 +408,18 @@ namespace Maester.Engine
         {
             lock (_gate)
             {
-                _baseline = results == null ? null : new Dictionary<string, string>(results, StringComparer.OrdinalIgnoreCase);
-                _baselineLabel = label;
+                // The IDs come from the results file of an earlier run and are shown in the Drift panel.
+                _baseline = null;
+                if (results != null)
+                {
+                    _baseline = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var pair in results)
+                    {
+                        string key = PlainText(pair.Key);
+                        if (!string.IsNullOrEmpty(key)) _baseline[key] = pair.Value;
+                    }
+                }
+                _baselineLabel = PlainText(label);
                 _baselineWhen = executedAt;
                 RecountDrift();
                 Redraw();
@@ -429,6 +440,8 @@ namespace Maester.Engine
         /// Reads an earlier Maester results file on a background thread and makes it the baseline of the Drift
         /// panel. A file from another tenant, or one that cannot be read, is ignored.
         /// </summary>
+        private const long MaxBaselineBytes = 64L * 1024 * 1024;
+
         public Task LoadBaselineAsync(string path, string tenantId)
         {
             return LoadBaselineAsync(path, tenantId, null);
@@ -446,6 +459,8 @@ namespace Maester.Engine
                 {
                     var results = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     DateTime? executedAt = null;
+                    // The file is read whole. A results file is a few megabytes; anything far larger is not read.
+                    if (new FileInfo(path).Length > MaxBaselineBytes) return;
                     using (var doc = JsonDocument.Parse(File.ReadAllBytes(path)))
                     {
                         var root = doc.RootElement;
@@ -530,8 +545,10 @@ namespace Maester.Engine
                     _slowest.Sort((a, b) => b.Duration.CompareTo(a.Duration));
                     if (_slowest.Count > SlowestKept) _slowest.RemoveAt(SlowestKept);
                 }
+                // A result that arrives twice for one ID is counted once.
+                bool first = !_finished.ContainsKey(id);
                 _finished[id] = result;
-                CountDrift(id, result);
+                if (first) CountDrift(id, result);
             }
         }
 

@@ -30,7 +30,8 @@ namespace Maester.Engine
 
         private static HttpClient CreateClient()
         {
-            var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+            // A feed or a gallery answer is a few kilobytes: a response beyond one megabyte is refused, not buffered.
+            var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5), MaxResponseContentBufferSize = 1024 * 1024 };
             client.DefaultRequestHeaders.UserAgent.ParseAdd("Maester");
             return client;
         }
@@ -119,6 +120,8 @@ namespace Maester.Engine
                 bool pictograph = char.IsSurrogate(c) || c == '\uFE0F' || c == '\u200D' ||
                     char.GetUnicodeCategory(c) == UnicodeCategory.OtherSymbol;
                 if (pictograph) continue;
+                // Characters that reorder or hide text (bidirectional overrides, zero-width marks).
+                if (char.GetUnicodeCategory(c) == UnicodeCategory.Format) continue;
                 bool space = char.IsControl(c) || char.IsWhiteSpace(c);
                 if (space && sb.Length > 0 && sb[sb.Length - 1] == ' ') continue;
                 sb.Append(space ? ' ' : c);
@@ -126,12 +129,12 @@ namespace Maester.Engine
             return sb.ToString().Trim();
         }
 
-        /// <summary>The address when it is an absolute http or https one, or null.</summary>
+        /// <summary>The address when it is an absolute https one, or null.</summary>
         private static string WebLink(string link)
         {
             Uri uri;
             if (!Uri.TryCreate(link, UriKind.Absolute, out uri)) return null;
-            return uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp ? uri.AbsoluteUri : null;
+            return uri.Scheme == Uri.UriSchemeHttps ? uri.AbsoluteUri : null;
         }
 
         /// <summary>The version in a PowerShell Gallery FindPackagesById response, or null.</summary>
