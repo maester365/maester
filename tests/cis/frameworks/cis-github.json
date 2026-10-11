@@ -1,0 +1,13 @@
+{
+  "Framework": "cis-github",
+  "Name": "CIS GitHub Benchmark",
+  "Version": "1.2.0",
+  "Url": "https://www.cisecurity.org/benchmark/github",
+  "Requirements": [
+    { "Id": "1.2.2", "Level": "L1", "Profile": ["GH Level 1"], "Tests": ["CIS.GH.1.2.2"] },
+    { "Id": "1.2.3", "Level": "L1", "Profile": ["GH Level 1"], "Tests": ["CIS.GH.1.2.3"] },
+    { "Id": "1.2.4", "Level": "L1", "Profile": ["GH Level 1"], "Tests": ["CIS.GH.1.2.4"] },
+    { "Id": "1.3.2", "Level": "L1", "Profile": ["GH Level 1"], "Tests": ["CIS.GH.1.3.2"] },
+    { "Id": "1.3.8", "Level": "L1", "Profile": ["GH Level 1"], "Tests": ["CIS.GH.1.3.8"] }
+  ]
+}

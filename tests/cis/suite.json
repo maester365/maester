@@ -7,5 +7,9 @@
   "Upstream": {
     "Name": "CIS Microsoft 365 Foundations Benchmark",
     "Url": "https://www.cisecurity.org/benchmark/microsoft_365"
-  }
+  },
+  "Frameworks": [
+    { "Key": "cis-m365", "Version": "7.0.0", "IdPrefix": "CIS.M365." },
+    { "Key": "cis-github", "Version": "1.2.0", "IdPrefix": "CIS.GH." }
+  ]
 }
