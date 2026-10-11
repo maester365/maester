@@ -13,7 +13,7 @@
         Feature = 'repositories',
         Area = 'engineering-systems',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1589.002',

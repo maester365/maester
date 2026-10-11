@@ -22,7 +22,7 @@
         Feature = 'mailboxes',
         Area = 'email-protection',
         ResourceType = 'User',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

@@ -23,9 +23,7 @@
         Feature = 'directory-configuration',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'High',
-        UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

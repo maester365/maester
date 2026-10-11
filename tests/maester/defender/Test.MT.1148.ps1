@@ -34,7 +34,7 @@
         Feature = 'endpoint-antivirus',
         Area = 'devices',
         ResourceType = 'Policy',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1027.015', 'T1204.002'),

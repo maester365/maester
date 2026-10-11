@@ -13,7 +13,7 @@
         Feature = 'meetings',
         Area = 'email-protection',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'None',

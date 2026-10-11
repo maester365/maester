@@ -28,7 +28,7 @@
         Feature = 'global-secure-access',
         Area = 'access-control',
         ResourceType = 'Group',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

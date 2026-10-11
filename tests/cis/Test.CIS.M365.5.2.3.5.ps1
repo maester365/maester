@@ -22,7 +22,7 @@
         Feature = 'authentication-methods',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1566.002', 'T1621', 'T1111'),

@@ -23,7 +23,7 @@
         Feature = 'domain-controllers',
         Area = 'infrastructure',
         ResourceType = 'DomainController',
-        Severity = 'Critical',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1210',

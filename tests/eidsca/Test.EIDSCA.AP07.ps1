@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAP07 {
         Feature = 'external-identities',
         Area = 'external-access',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1087.004', 'T1069.003'),

@@ -29,7 +29,7 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
         Feature = 'security-policies',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Critical',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1552.001', 'T1593.003', 'T1550.001'),

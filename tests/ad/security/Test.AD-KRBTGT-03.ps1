@@ -33,7 +33,7 @@
         Feature = 'account-security',
         Area = 'authentication',
         ResourceType = 'User',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1098',

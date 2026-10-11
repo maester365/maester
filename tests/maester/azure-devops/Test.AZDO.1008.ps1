@@ -13,7 +13,7 @@
         Feature = 'users-and-access',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

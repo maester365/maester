@@ -22,7 +22,7 @@
         Feature = 'exposure-management',
         Area = 'logging-and-detection',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

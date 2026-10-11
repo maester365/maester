@@ -36,7 +36,7 @@
         Feature = 'applications',
         Area = 'applications',
         ResourceType = 'Application',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1098.001',

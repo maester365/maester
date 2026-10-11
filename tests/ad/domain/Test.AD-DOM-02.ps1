@@ -24,9 +24,7 @@
         Feature = 'domain-and-forest',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'Low',
-        UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        Severity = 'Info',
         Mitre = 'T1136.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

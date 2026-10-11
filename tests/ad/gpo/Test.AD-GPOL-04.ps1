@@ -25,9 +25,7 @@
         Feature = 'group-policy',
         Area = 'infrastructure',
         ResourceType = 'GroupPolicy',
-        Severity = 'Medium',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
+        Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -41,7 +41,7 @@
         Feature = 'global-secure-access',
         Area = 'authentication',
         ResourceType = 'ConditionalAccessPolicy',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

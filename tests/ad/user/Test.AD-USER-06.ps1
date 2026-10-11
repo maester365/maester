@@ -21,9 +21,7 @@
         Feature = 'users',
         Area = 'authentication',
         ResourceType = 'User',
-        Severity = 'High',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
+        Severity = 'Info',
         Mitre = 'T1558',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

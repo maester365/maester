@@ -19,7 +19,7 @@ function Test-ORCA110 {
         Feature = 'anti-malware',
         Area = 'email-protection',
         ResourceType = 'Policy',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

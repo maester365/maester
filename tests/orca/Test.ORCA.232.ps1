@@ -19,7 +19,7 @@ function Test-ORCA232 {
         Feature = 'anti-malware',
         Area = 'email-protection',
         ResourceType = 'Domain',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

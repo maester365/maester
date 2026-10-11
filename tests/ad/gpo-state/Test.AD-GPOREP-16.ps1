@@ -25,7 +25,7 @@ function Test-MtAdGpoVersionMismatchDetails {
         Feature = 'group-policy',
         Area = 'infrastructure',
         ResourceType = 'GroupPolicy',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

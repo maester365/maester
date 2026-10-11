@@ -22,7 +22,7 @@ function Test-MtExoMoeraMailActivity {
         Feature = 'mailboxes',
         Area = 'email-protection',
         ResourceType = 'User',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

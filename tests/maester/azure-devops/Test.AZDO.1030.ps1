@@ -25,7 +25,7 @@ function Test-AzdoProjectCollectionAdministrator {
         Feature = 'users-and-access',
         Area = 'privileged-access',
         ResourceType = 'User',
-        Severity = 'Critical',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1098.003'),

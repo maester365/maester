@@ -23,7 +23,7 @@
         Feature = 'organization-settings',
         Area = 'authentication',
         ResourceType = 'Domain',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

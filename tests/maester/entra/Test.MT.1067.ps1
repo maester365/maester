@@ -28,7 +28,7 @@
         Feature = 'authentication-methods',
         Area = 'authentication',
         ResourceType = 'Policy',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

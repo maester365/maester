@@ -22,7 +22,7 @@
         Feature = 'conditional-access',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1539', 'T1550.004'),

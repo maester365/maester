@@ -23,7 +23,7 @@
         Feature = 'password-protection',
         Area = 'authentication',
         ResourceType = 'Domain',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

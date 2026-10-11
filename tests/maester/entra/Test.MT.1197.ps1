@@ -17,7 +17,7 @@
         Feature = 'groups',
         Area = 'identity-lifecycle',
         ResourceType = 'Group',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

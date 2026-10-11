@@ -22,7 +22,7 @@
         Feature = 'group-policy',
         Area = 'access-control',
         ResourceType = 'GroupPolicy',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

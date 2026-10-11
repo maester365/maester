@@ -23,7 +23,7 @@
         Feature = 'outlook',
         Area = 'applications',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1137.006', 'T1114.002'),

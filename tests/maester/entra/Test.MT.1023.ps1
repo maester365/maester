@@ -13,7 +13,7 @@
         Feature = 'conditional-access',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

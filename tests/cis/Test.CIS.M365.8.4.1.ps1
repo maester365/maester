@@ -23,7 +23,7 @@
         Feature = 'apps',
         Area = 'applications',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1195', 'T1671'),

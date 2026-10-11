@@ -33,7 +33,7 @@
         Feature = 'replication',
         Area = 'infrastructure',
         ResourceType = 'DomainController',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

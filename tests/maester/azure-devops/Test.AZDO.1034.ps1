@@ -29,7 +29,7 @@ function Test-AzdoOrganizationCreationRestriction {
         Feature = 'organization-policies',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

@@ -19,7 +19,7 @@ function Test-ORCA118_4 {
         Feature = 'mail-flow',
         Area = 'email-protection',
         ResourceType = 'MailFlowRule',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),

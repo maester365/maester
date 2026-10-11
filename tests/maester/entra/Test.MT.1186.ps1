@@ -28,7 +28,7 @@
         Feature = 'applications',
         Area = 'applications',
         ResourceType = 'ServicePrincipal',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1059.009', 'T1087.004', 'T1526'),

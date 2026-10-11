@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAP08 {
         Feature = 'app-consent',
         Area = 'applications',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1528', 'T1566.002'),

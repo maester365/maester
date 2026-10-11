@@ -23,9 +23,7 @@
         Feature = 'domain-controllers',
         Area = 'infrastructure',
         ResourceType = 'DomainController',
-        Severity = 'High',
-        UserImpact = 'Low',
-        ImplementationCost = 'High',
+        Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

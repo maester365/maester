@@ -25,9 +25,7 @@
         Feature = 'users',
         Area = 'identity-lifecycle',
         ResourceType = 'User',
-        Severity = 'Medium',
-        UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

@@ -18,7 +18,7 @@ function Test-MtCheckEidscaCR04 {
         Feature = 'app-consent',
         Area = 'applications',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

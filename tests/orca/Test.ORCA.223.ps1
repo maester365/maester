@@ -19,7 +19,7 @@ function Test-ORCA223 {
         Feature = 'anti-phishing',
         Area = 'email-protection',
         ResourceType = 'Policy',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.001'),

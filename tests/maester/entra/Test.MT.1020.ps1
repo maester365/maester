@@ -35,7 +35,7 @@
         Feature = 'conditional-access',
         Area = 'access-control',
         ResourceType = 'ConditionalAccessPolicy',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

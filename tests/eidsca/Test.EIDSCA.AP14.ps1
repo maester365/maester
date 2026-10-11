@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAP14 {
         Feature = 'user-settings',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

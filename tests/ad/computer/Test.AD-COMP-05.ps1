@@ -27,9 +27,7 @@
         Feature = 'computers',
         Area = 'identity-lifecycle',
         ResourceType = 'Computer',
-        Severity = 'Medium',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
+        Severity = 'Info',
         Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'

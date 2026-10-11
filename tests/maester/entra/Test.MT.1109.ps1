@@ -38,7 +38,7 @@
         Feature = 'identity-governance',
         Area = 'identity-lifecycle',
         ResourceType = 'AccessPackage',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

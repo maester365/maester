@@ -19,7 +19,7 @@ function Test-ORCA121 {
         Feature = 'zero-hour-auto-purge',
         Area = 'email-protection',
         ResourceType = 'Policy',
-        Severity = 'Low',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566',

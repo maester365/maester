@@ -19,7 +19,7 @@ function Test-ORCA231 {
         Feature = 'anti-spam',
         Area = 'email-protection',
         ResourceType = 'Domain',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

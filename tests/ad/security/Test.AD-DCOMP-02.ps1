@@ -30,7 +30,7 @@
         Feature = 'computers',
         Area = 'authentication',
         ResourceType = 'Computer',
-        Severity = 'Critical',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1558', 'T1550.003'),

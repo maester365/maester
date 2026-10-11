@@ -4,7 +4,7 @@
   },
   "Tests": {
     "ORCA.100": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -21,7 +21,7 @@
       ]
     },
     "ORCA.101": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -38,7 +38,7 @@
       ]
     },
     "ORCA.102": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -107,7 +107,7 @@
       ]
     },
     "ORCA.106": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -195,7 +195,7 @@
       ]
     },
     "ORCA.110": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -212,7 +212,7 @@
       ]
     },
     "ORCA.111": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
       ],
@@ -266,7 +266,7 @@
       ]
     },
     "ORCA.114": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
       ],
@@ -356,7 +356,7 @@
       ]
     },
     "ORCA.118.3": {
-      "Severity": "Medium",
+      "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
       ],
@@ -374,7 +374,7 @@
       ]
     },
     "ORCA.118.4": {
-      "Severity": "Medium",
+      "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
       ],
@@ -459,7 +459,7 @@
       ]
     },
     "ORCA.121": {
-      "Severity": "Low",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
       ],
@@ -527,7 +527,7 @@
       ]
     },
     "ORCA.140": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
       ],
@@ -544,7 +544,7 @@
       ]
     },
     "ORCA.141": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -773,7 +773,7 @@
       ]
     },
     "ORCA.223": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
       ],
@@ -857,7 +857,7 @@
       ]
     },
     "ORCA.228": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
       ],
@@ -893,7 +893,7 @@
       ]
     },
     "ORCA.230": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -910,7 +910,7 @@
       ]
     },
     "ORCA.231": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],
@@ -927,7 +927,7 @@
       ]
     },
     "ORCA.232": {
-      "Severity": "High",
+      "Severity": "Low",
       "Author": [
         "soulemike"
       ],

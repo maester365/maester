@@ -21,7 +21,7 @@
         Feature = 'tenant-administration',
         Area = 'devices',
         ResourceType = 'Connector',
-        Severity = 'Critical',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

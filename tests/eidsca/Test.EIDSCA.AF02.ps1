@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAF02 {
         Feature = 'authentication-methods',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566.002',

@@ -14,7 +14,7 @@
     },
     {
       "Id": "EIDSCA.AF02",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -38,7 +38,7 @@
     },
     {
       "Id": "EIDSCA.AF04",
-      "Severity": "High",
+      "Severity": "Medium",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -50,7 +50,7 @@
     },
     {
       "Id": "EIDSCA.AF05",
-      "Severity": "High",
+      "Severity": "Medium",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -136,7 +136,7 @@
     },
     {
       "Id": "EIDSCA.AM03",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -148,7 +148,7 @@
     },
     {
       "Id": "EIDSCA.AM04",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -256,7 +256,7 @@
     },
     {
       "Id": "EIDSCA.AP07",
-      "Severity": "High",
+      "Severity": "Medium",
       "Feature": "external-identities",
       "Area": "external-access",
       "ResourceType": "Tenant",
@@ -269,7 +269,7 @@
     },
     {
       "Id": "EIDSCA.AP08",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "app-consent",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -282,7 +282,7 @@
     },
     {
       "Id": "EIDSCA.AP09",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "app-consent",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -295,7 +295,7 @@
     },
     {
       "Id": "EIDSCA.AP10",
-      "Severity": "High",
+      "Severity": "Medium",
       "Feature": "user-settings",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -308,7 +308,7 @@
     },
     {
       "Id": "EIDSCA.AP14",
-      "Severity": "High",
+      "Severity": "Low",
       "Feature": "user-settings",
       "Area": "access-control",
       "ResourceType": "Tenant",
@@ -333,7 +333,7 @@
     },
     {
       "Id": "EIDSCA.AT01",
-      "Severity": "High",
+      "Severity": "Medium",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -345,7 +345,7 @@
     },
     {
       "Id": "EIDSCA.AT02",
-      "Severity": "High",
+      "Severity": "Medium",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -395,7 +395,7 @@
     },
     {
       "Id": "EIDSCA.CP04",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "app-consent",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -421,7 +421,7 @@
     },
     {
       "Id": "EIDSCA.CR02",
-      "Severity": "Medium",
+      "Severity": "Low",
       "Feature": "app-consent",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -433,7 +433,7 @@
     },
     {
       "Id": "EIDSCA.CR03",
-      "Severity": "Medium",
+      "Severity": "Low",
       "Feature": "app-consent",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -445,7 +445,7 @@
     },
     {
       "Id": "EIDSCA.CR04",
-      "Severity": "High",
+      "Severity": "Low",
       "Feature": "app-consent",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -535,7 +535,7 @@
     },
     {
       "Id": "EIDSCA.ST09",
-      "Severity": "Medium",
+      "Severity": "Low",
       "Feature": "groups",
       "Area": "external-access",
       "ResourceType": "Tenant",

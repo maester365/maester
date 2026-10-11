@@ -21,7 +21,7 @@
         Feature = 'tenant-administration',
         Area = 'devices',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

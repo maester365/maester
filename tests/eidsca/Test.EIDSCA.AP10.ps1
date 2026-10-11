@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAP10 {
         Feature = 'user-settings',
         Area = 'applications',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1098.001', 'T1528'),

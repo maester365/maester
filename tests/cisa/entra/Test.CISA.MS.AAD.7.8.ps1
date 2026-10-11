@@ -13,7 +13,7 @@
         Feature = 'privileged-identity-management',
         Area = 'privileged-access',
         ResourceType = 'DirectoryRole',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1098.003', 'T1548.005'),

@@ -25,7 +25,7 @@
         Feature = 'global-secure-access',
         Area = 'infrastructure',
         ResourceType = 'ServicePrincipal',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

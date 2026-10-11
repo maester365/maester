@@ -26,7 +26,7 @@
         Feature = 'group-policy',
         Area = 'infrastructure',
         ResourceType = 'OrganizationalUnit',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

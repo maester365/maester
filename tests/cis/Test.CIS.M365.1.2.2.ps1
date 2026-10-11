@@ -23,7 +23,7 @@
         Feature = 'teams-and-groups',
         Area = 'access-control',
         ResourceType = 'Mailbox',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',

@@ -27,7 +27,7 @@
         Feature = 'user-settings',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1059.009', 'T1078.004'),

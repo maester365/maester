@@ -23,7 +23,7 @@
         Feature = 'anti-malware',
         Area = 'email-protection',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1566.001', 'T1204.002'),

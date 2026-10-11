@@ -21,7 +21,7 @@
         Feature = 'external-identities',
         Area = 'external-access',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1098.003', 'T1136.003'),

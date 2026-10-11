@@ -22,7 +22,7 @@
         Feature = 'management-groups',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1666',

@@ -25,7 +25,7 @@
         Feature = 'email-authentication',
         Area = 'email-protection',
         ResourceType = 'Domain',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
