@@ -3,7 +3,7 @@
  "Version": "19.2",
  "Modified": "2026-08-05",
  "Url": "https://attack.mitre.org/versions/v19/",
- "License": "© 2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation. MITRE ATT&CK is licensed under the terms at https://attack.mitre.org/resources/legal-and-branding/terms-of-use/.",
+ "License": "(c) 2026 The MITRE Corporation. This work is reproduced and distributed with the permission of The MITRE Corporation. MITRE ATT&CK is licensed under the terms at https://attack.mitre.org/resources/legal-and-branding/terms-of-use/.",
  "Note": "Trimmed copy: technique and tactic identifiers and names only. Regenerate with build/attack/Update-MtAttackTechniques.ps1 when the pinned version changes.",
  "Tactics": [
   {"Id": "TA0001", "Name": "Initial Access"},
