@@ -3,12 +3,14 @@ name: maester-test-expert
 description: >-
   Write, validate, and document Maester security checks for Microsoft 365 tenants.
   Use when asked to create, edit, review, or debug a Maester check (a native test:
-  Test.<ID>.ps1 with a [MaesterTest] attribute plus Test.<ID>.md), its tagging, or a
+  Test.<ID>.ps1 with a [MaesterTest] attribute plus Test.<ID>.md), its attributes, or a
   user's custom test, including converting Pester-format tests. Covers the [MaesterTest]
-  attribute, Service/License gates, test parameters, families, Graph API data
-  retrieval, Add-MtTestResultDetail formatting, the tagging taxonomy (CIS, CISA, EIDSCA,
-  ORCA, MT), remediation guidance, Entra ID, Exchange, SharePoint, Teams, Defender,
-  Conditional Access, and the validation checklist for new checks.
+  attribute, choosing Product, Feature, Area, ResourceType, Severity, UserImpact,
+  ImplementationCost and Mitre with the attribute rubric and the taxonomy, Service/License
+  gates, test parameters, families, Graph API data retrieval, Add-MtTestResultDetail
+  formatting, the MT, CIS, CISA, EIDSCA and ORCA suites, remediation guidance, Entra ID,
+  Exchange, SharePoint, Teams, Defender, Conditional Access, and the validation checklist
+  for new checks.
 ---
 
 # Maester Test Expert
@@ -22,7 +24,9 @@ From Maester 3.0 every check is a **native test**: two files, `Test.<ID>.ps1` an
 licences it declares are available, runs it, catches errors and writes the result row.
 
 The user-facing guide with every rule is `website/docs/writing-tests/index.mdx`. This skill is the contributor's
-condensed version; if they disagree, the code and that page win.
+condensed version; if they disagree, the code and that page win. How to choose the value of each classification,
+priority and ATT&CK attribute is in `website/docs/writing-tests/attribute-rubric.md` (the rubric); this skill
+links to it and does not repeat it.
 
 ## Agent Selection
 
@@ -35,9 +39,10 @@ background to avoid user confusion.
 
 - Creating a new Maester security check
 - Editing or refactoring an existing check
-- Adding or correcting tags, severity, service or licence declarations
+- Adding or correcting a check's attributes: product, feature, area, resource type, severity, user impact,
+  implementation cost, ATT&CK techniques, service or licence declarations
 - Writing or updating a check's `.md` (description, remediation, result template)
-- Reviewing a check for correctness, tagging compliance, or documentation completeness
+- Reviewing a check for correctness, attributes that fit the rubric, or documentation completeness
 - Debugging a failing, erroring or skipped check
 - Writing or converting a user's custom test (`custom/` folder)
 
@@ -63,9 +68,9 @@ background to avoid user confusion.
 
 | File | Location | Purpose |
 | --- | --- | --- |
-| `Test.<ID>.ps1` | `tests/<suite>/[<area>/]` | One function with a `[MaesterTest(...)]` attribute. Reads the tenant, decides, calls `Add-MtTestResultDetail`, returns `$true`/`$false`. |
+| `Test.<ID>.ps1` | `tests/<suite>/[<service>/]` | One function with a `[MaesterTest(...)]` attribute. Reads the tenant, decides, calls `Add-MtTestResultDetail`, returns `$true`/`$false`. |
 | `Test.<ID>.md` | Same folder, same base name | Description, `#### Remediation action`, optional `#### Related links`, then `<!--- Results --->` and `%TestResult%`. Shown in the report. |
-| `suite.json` | Each suite folder (already exists) | Suite tags, `Source`, help URL template. Do not edit for a single check. |
+| `suite.json` | Each suite folder (already exists) | The suite's ID, name, `Source` and help URL template. Do not edit for a single check. |
 
 Suite folders: `tests/maester/<service>/` (`MT.xxxx`; services such as `entra`, `exchange`, `teams`, `defender`,
 `azure`, `intune`, and `xspm` for exposure management, which has its own `suite.json`), `tests/cisa/<service>/`
@@ -86,8 +91,14 @@ Scaffold it, then edit:
 
 ```powershell
 New-MtTest -Id MT.1234 -Title 'At least one Conditional Access policy blocks device code flow.' `
-    -Service Graph -Severity High -Category 'Maester/Entra' -Product 'Entra ID' -Path ./tests/maester/entra
+    -Product entra -Feature conditional-access -Area authentication -ResourceType Tenant `
+    -Severity High -UserImpact Low -ImplementationCost Low -Mitre T1078.004, T1528, T1566 `
+    -Service Graph -Path ./tests/maester/entra
 ```
+
+Only `-Id` and `-Title` are required, so you can scaffold first and set the other values once the `.md` is
+written (see [Choosing the attribute values](#choosing-the-attribute-values)). `New-MtTest` does not write
+`Author`; add it.
 
 ```powershell
 function Test-MtCaBlockDeviceCodeFlow {
@@ -99,15 +110,19 @@ function Test-MtCaBlockDeviceCodeFlow {
     {Detailed description of the control and what the check evaluates.}
     #>
     [MaesterTest(
-        Id                = 'MT.1234',
-        Title             = 'At least one Conditional Access policy blocks device code flow.',
-        Severity          = 'High',
-        Category          = 'Maester/Entra',
-        Product           = 'Entra ID',
-        Tag               = ('CA', 'Entra', 'Maester'),
-        Service           = 'Graph',
-        License = 'AAD_PREMIUM',
-        Author            = 'your-github-handle'
+        Id                 = 'MT.1234',
+        Title              = 'At least one Conditional Access policy blocks device code flow.',
+        Product            = 'entra',
+        Feature            = 'conditional-access',
+        Area               = 'authentication',
+        ResourceType       = 'Tenant',
+        Severity           = 'High',
+        UserImpact         = 'Low',
+        ImplementationCost = 'Low',
+        Mitre              = ('T1078.004', 'T1528', 'T1566'),
+        Service            = 'Graph',
+        License            = 'AAD_PREMIUM',
+        Author             = 'your-github-handle'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -131,7 +146,7 @@ function Test-MtCaBlockDeviceCodeFlow {
 ```
 
 Note what is **not** there: no `Test-MtConnection` guard, no `Get-MtLicenseInformation` check, no outer
-`try`/`catch`, no `-Description`, no `-Severity`, no `-TestTitle`.
+`try`/`catch`, no `-Description`, no `-Severity`, no `-TestTitle`, and no `Tag`.
 
 ### File rules (enforced by `Read-MtNativeTest`; violations are `InvalidMetadata`)
 
@@ -145,30 +160,42 @@ Note what is **not** there: no `Test-MtConnection` guard, no `Get-MtLicenseInfor
 
 Arguments are **named and constant**: quoted strings, `$true`/`$false`, a parenthesised list `('a', 'b')`, a single
 string for a list property, or a bare flag (`LongRunning`). No variables, expressions, `@()` or hashtables. The
-schema lives in `powershell/assets/MaesterTestSchema.psd1`.
+schema lives in `powershell/assets/MaesterTestSchema.psd1`. How to choose the values from `Product` to `Mitre` is
+in [Choosing the attribute values](#choosing-the-attribute-values).
 
 | Property | Type | Values | Required for built-ins | Notes |
 | --- | --- | --- | --- | --- |
 | `Id` | string | `^(?=.*[0-9.\-])[A-Za-z][A-Za-z0-9]*([.\-][A-Za-z0-9_]+)*$`, max 64 | Yes | Never change an existing ID. |
 | `Title` | string | One line | Yes | The only title. |
-| `Severity` | string | `Critical`, `High`, `Medium`, `Low`, `Info` | Yes | See [severity levels](../../../website/docs/configuration/severity-levels.md). |
-| `Category` | string | Free text | Effectively yes | Report grouping (`Block`). Use the suite's convention: `Maester/Entra`, `CISA`, `CIS`, ... |
-| `Product` | string | `Entra ID`, `Exchange Online`, `Defender`, `Intune`, `Purview`, `SharePoint`, `Teams`, `Microsoft 365`, `Azure`, `Azure DevOps`, `GitHub`, `Active Directory`, `Copilot Studio` | Yes | The product the test checks. Groups the console progress and the run summary. The unit tests reject a built-in test without one, or with a name that is not in this list (`Products` in `powershell/assets/MaesterTestSchema.psd1`). |
-| `Tag` | string[] | No commas | No | See tagging below. |
-| `Preview` | bool | | No | Depends on preview APIs or still being validated. |
-| `LongRunning` | bool | | No | Slow in large tenants. |
+| `Product` | string | A product key from the taxonomy: `entra`, `exchange`, `defender`, ... | Yes | Write the key, not an alias such as `Entra ID`. Groups the console progress and the run summary. |
+| `RelatedProduct` | string[] | Product keys | No | Never the same key as `Product`. `-Product` matches it too. |
+| `Feature` | string | A feature key of the test's product: `conditional-access`, ... | Yes | |
+| `Area` | string | An area key: `authentication`, `privileged-access`, ... | Yes | |
+| `ResourceType` | string | A resource type key: `Tenant`, `User`, `ConditionalAccessPolicy`, ... | Yes | |
+| `Severity` | string | `Critical`, `High`, `Medium`, `Low`, `Info` | Yes | A `TestSettings` row in a user's config overrides it. |
+| `UserImpact` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
+| `ImplementationCost` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
+| `Mitre` | string[] | ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Yes | At most five. Never a technique beside one of its own sub-techniques. |
+| `Control` | string[] | `<framework-key>:<control-id>` | Not used | For custom tests. The unit tests reject it on a built-in check. |
 | `Service` | string[] | `Graph`, `Azure`, `ExchangeOnline`, `SecurityCompliance`, `SharePointOnline`, `Teams`, `Dataverse`, `AzureDevOps`, `GitHub`, `ActiveDirectory`, or `None` | Yes | All listed must be connected. Registry: `powershell/assets/MaesterServiceRegistry.psd1`. |
 | `License` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
+| `Permission` | string[] | One permission per element, no commas | No | The permissions the check needs, for example `Policy.Read.All`. Recorded; not enforced in 3.0. |
 | `TenantType` | string[] | `Workforce`, `External` | No | Default `Workforce`. Recorded; enforced only when a run turns it on. |
 | `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | Default all. Recorded; enforced only when a run turns it on. |
 | `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | Declare `Windows` for Windows-only commands (lint checks common ones). |
+| `Lifecycle` | string | `Preview`, `Stable`, `Deprecated` | No | Default `Stable`. Use `Preview` for a check that depends on preview APIs or is still being validated; it is not run by default. A `Deprecated` check still runs. |
+| `ReplacedBy` | string | The ID of an existing test | No | Only with `Lifecycle = 'Deprecated'`. |
+| `LongRunning` | bool | | No | Slow in large tenants. Not run by default. |
 | `InstanceSource` | string | Function in the same file | No | Makes the check a family (below). |
 | `Exclusive` | bool | | No | Must not run concurrently (for example it writes to the tenant). |
+| `Tag` | string[] | No commas | No | Built-in checks do not use it. See [Tags](#tags). |
 | `Author` | string[] | GitHub handles | Yes | The initial author(s). |
 | `Contributor` | string[] | GitHub handles | No | Add yourself when you substantially change a check. |
 | `HelpUrl` | string | `https://...` | No | Defaults to `https://maester.dev/docs/tests/<Id>`. |
 
-Reserved names (rejected today): `GraphScope`, `OptionalService`, `TimeoutSeconds`, `Deprecated`.
+`Category` and `Preview` were removed in 3.0. A test that still has one is `InvalidMetadata`, with the replacement
+in the message: `Product` and `Feature` instead of `Category`, `Lifecycle = 'Preview'` instead of `Preview`.
+Reserved names (rejected today): `OptionalService`, `TimeoutSeconds`.
 
 Licence tokens: `AAD_PREMIUM` (Entra ID P1 or better), `AAD_PREMIUM_P2`, `Entra_Identity_Governance`,
 `AAD_WRKLDID_P1`, `AAD_WRKLDID_P2`, `ATP_ENTERPRISE` (MDO P1 or P2), `THREAT_INTELLIGENCE` (MDO P2),
@@ -324,52 +351,90 @@ No front matter. Template:
   its own.
 - The website page `website/docs/tests/<suite>/<ID>.md` is generated from this file and the attribute.
 
-## Tagging Taxonomy
+## Choosing the Attribute Values
 
-The effective tags of a check are: the suite's `Tags` (from `suite.json`) + the `Id` + the attribute's `Tag` +
-`Preview`/`LongRunning` when set. `-Tag` / `-ExcludeTag` match on these.
+A built-in check says what it is about, how urgent a failure is and which attack techniques it addresses. Each
+of those values is chosen with the [attribute rubric](../../../website/docs/writing-tests/attribute-rubric.md).
+Read the rubric's section for an attribute before you set, change or review its value, and do not take the
+values of a neighbouring check without checking them against it.
 
-### Suite tag (exactly one, mostly automatic)
+| Attribute | The question it answers |
+| --- | --- |
+| `Product` | In which product is the fix made? |
+| `RelatedProduct` | Under which other products would an admin expect to find the check? Optional. |
+| `Feature` | Which part of the product, a settings page or an object type, is the check about? |
+| `Area` | Which security theme is it, whatever the product? |
+| `ResourceType` | What does a failing result point at: the tenant, or a kind of object it lists? |
+| `Severity` | How much risk does the organization carry while the check fails? |
+| `UserImpact` | How much does the recommended fix disrupt end users? |
+| `ImplementationCost` | How much administrator work does the recommended fix take? |
+| `Mitre` | Which MITRE ATT&CK techniques does the checked control prevent or detect? |
 
-| Suite | Where it comes from | Examples of extra tags in `Tag` |
-| --- | --- | --- |
-| Maester | Put `'Maester'` in `Tag` (the Maester `suite.json` has no tags) | `'Maester'` |
-| CISA | `suite.json` adds `CISA` | control tags: `'MS.AAD'`, `'MS.AAD.3.5'`, licence tags such as `'Entra ID P1'` |
-| CIS | `suite.json` adds `CIS` | `'CIS.M365.1.1.3'`, `'L1'`, `'CIS E3 Level 1'`, `'CIS E3'`, `'CIS M365 v5.0.0'` |
-| EIDSCA, ORCA, AD, XSPM | `suite.json` | generated / suite-specific |
+The rubric rates a check by the fix its own `.md` recommends, so write the `.md` before you choose the values.
+The values of the generated EIDSCA and ORCA checks are in `build/eidsca/eidsca-test-metadata.json` and
+`build/orca/orca-test-metadata.json`: change a value there and regenerate.
 
-### Product area (1 to 3)
+### Where the keys come from
 
-`Azure`, `Defender XDR`, `Entra`, `Exchange`, `Microsoft 365`, `SharePoint`, `Teams`.
+- `Product`, `Feature`, `Area` and `ResourceType` take keys from `powershell/assets/MaesterTaxonomy.psd1`: the
+  products with their features, the areas and the resource types. A feature key belongs to one product.
+- `Product` follows the folder: a check in `tests/maester/entra` or `tests/cisa/entra` is `entra`. The folder map
+  is in `powershell/tests/general/NativeTestLint.Tests.ps1`; a new service folder needs an entry there.
+- `Mitre` takes technique IDs from the pinned ATT&CK release, `powershell/assets/MaesterAttackTechniques.json`.
+  An ID that the release retired or does not know fails the unit tests. Tactics are looked up from the ID and
+  never typed.
+- `Get-MtTest -Product entra -Feature conditional-access | Format-Table Id, Title, Severity, Area, ResourceType`
+  lists the existing checks of a feature, to compare your values with.
+- **A new key is added to the taxonomy in the same pull request as the first test that uses it.** Prefer an
+  existing key. Do not add a key ahead of its test: the unit tests fail on a product, feature, area or resource
+  type that no test uses. A new area also needs a row in the rubric's area table, which the unit tests compare
+  with the taxonomy.
 
-### Practice / capability (optional, use sparingly)
+### Tags
 
-`Authentication`, `CA`, `DLP`, `XSPM`, `Hybrid Identity`, `PAM`, `PIM`.
+`Tag` holds free labels for the owner of a test folder. It is not how Maester classifies a check.
 
-### Rules
+- Built-in checks carry no tag for product, feature, area, suite, benchmark, licence, severity or their own ID.
+  Each of those has an attribute or is derived, and the unit tests fail a built-in check that tags one. Remove
+  such a tag when you edit an older check.
+- Do not put `Preview` or `LongRunning` in `Tag`; use `Lifecycle = 'Preview'` and the `LongRunning` flag.
+- Users select checks with `-Product`, `-Feature`, `-Area`, `-Severity` and `-Suite` on `Invoke-Maester` and
+  `Get-MtTest`. The tags of Maester 2.x, such as `CA` or `CIS`, still select the checks that carried them, with a
+  warning, through `powershell/assets/Maester.LegacyTags.json`. That file is generated and never edited, and a
+  check added after 3.0 is not in it, so do not add a tag to make a new check selectable.
+- A user's custom test may tag freely.
 
-- Do not put `Preview` or `LongRunning` in `Tag`; use the flags.
-- Do not use `Severity:*` tags; use `Severity`.
-- Do not use the deprecated `All` and `Full` tags.
-- Keep existing tags verbatim when editing a check: users select on them.
-- See `website/docs/tests/tags/readme.md` for the tag counts.
+### How the values are checked
+
+The unit tests in `powershell/tests/general/NativeTestAttributes.Tests.ps1` check what is mechanical. The
+`attribute-review` check on the pull request has a reviewer model judge each new or changed value against the
+rubric. The person or agent who reviews the pull request applies the same rubric. See
+[How the rubric is enforced](../../../website/docs/writing-tests/attribute-rubric.md#how-the-rubric-is-enforced).
+
+When the attribute review fails, change the value, or explain in the pull request why the declared value fits
+the rubric. When you review a check yourself, follow "Reviewing a test's attributes" in
+[AGENTS.md](../../../AGENTS.md); it also shows how to run the attribute review before you push.
 
 ## Step-by-Step Workflow: Creating a New Check
 
 1. **Reserve an ID.** Check [issue #697](https://github.com/maester365/maester/issues/697) and comment to reserve
    the next `MT.xxxx` (the maester-issue-manager agent can do this). `Get-MtTest MT.12*` shows which IDs exist.
-2. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Severity <level> -Category '<suite/area>' -Product '<product>'
-   -Path ./tests/<suite>/<area>`.
-3. **Fill in the attribute**: `Tag`, `License`, `Author`, flags as needed.
+2. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Product <product key>
+   -Path ./tests/<suite>/<service>`.
+3. **Fill in the attribute**: `License`, `Author`, flags as needed.
 4. **Write the function**: read with `Invoke-MtGraphRequest` or the helpers, decide, `Add-MtTestResultDetail`,
    return a boolean. Add parameters for tunable values.
 5. **Write the `.md`**: summary, rationale, remediation with portal links, related links, results footer.
-6. **Validate offline**: `Import-Module ./powershell/Maester.psd1 -Force; Get-MtTest -Path <file>` must show
-   `IsValid = True` and no `Errors`.
-7. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
+6. **Choose the attribute values** with the rubric: `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`,
+   `ImplementationCost`, `Mitre`, and `RelatedProduct` when one applies. See
+   [Choosing the attribute values](#choosing-the-attribute-values).
+7. **Validate offline**: `Import-Module ./powershell/Maester.psd1 -Force; Get-MtTest <ID>` must show
+   `IsValid = True` and no `Errors`. Name the ID and leave out `-Path`: `Get-MtTest -Path <file>` applies the
+   rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
+8. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
    `-Parameter @{...}` for each parameter. Check the row's `Result`, `ReasonCode`, `ResultDetail.TestResult`.
-8. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
-   checks every built-in test.
+9. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
+   and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test.
 
 ## Converting a User's Pester-format Test
 
@@ -381,14 +446,18 @@ Convert-MtTest -Path ./custom | Format-Table Id, Status, Notes
 ```
 
 It writes `Test.<ID>.ps1` + `.md` per `It`, turns a `Test-MtConnection` guard into `Service`, removes a blanket
-`-SkippedBecause Error` catch, and rewrites a trailing `| Should -Be $true` to `return`. Rows marked `NeedsReview`
-have `TODO` comments; tests with names built at run time are `Skipped` and must be rewritten as families. Once
-converted, delete the Pester file: a native test and a Pester test with the same ID give `DuplicateId` and neither
-runs.
+`-SkippedBecause Error` catch, and rewrites a trailing `| Should -Be $true` to `return`. The `Describe` name
+becomes `Feature`, so the row's `Block` stays what it was. The Pester tags are kept in `Tag`, except that a
+`Preview` tag becomes `Lifecycle = 'Preview'` and a `LongRunning` tag the `LongRunning` flag. Rows marked
+`NeedsReview` have `TODO` comments; tests with names built at run time are `Skipped` and must be rewritten as
+families. Once converted, delete the Pester file: the native test runs and the Pester test with the same ID no
+longer does.
 
 A user's custom native test lives in their `custom/` folder, uses their own ID prefix (not `MT.`, `CISA.`, `CIS.`,
-`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `MT1060.`), needs a `.md`, and may omit `Severity`, `Service` and `Author`. It
-can call only Maester's exported commands; to reuse a built-in check it calls `Invoke-MtTest -Id <ID>`.
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `MT1060.`), needs a `.md`, and needs only `Id` and `Title` in its attribute.
+It may set `Product`, `Feature`, `Area` and `ResourceType` to values of its own (a value that matches the taxonomy
+is stored as the key), may tag freely and may use `Control`; the rubric applies to it only if its owner wants it
+to. It can call only Maester's exported commands; to reuse a built-in check it calls `Invoke-MtTest -Id <ID>`.
 
 ## Validation Checklist
 
@@ -404,10 +473,18 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 
 ### Attribute and files
 - [ ] `Test.<Id>.ps1` and `Test.<Id>.md` in the right suite folder; ID unique and not reused.
-- [ ] `Id`, `Title`, `Severity`, `Category`, `Product`, `Service`, `Author` set; values constant.
-- [ ] Tags follow the taxonomy; `Preview`/`LongRunning` as flags.
+- [ ] `Id`, `Title`, `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `Mitre`, `Service`, `Author` set;
+      values constant.
+- [ ] `UserImpact` and `ImplementationCost` set, or both left out when `Severity` is `Info`.
+- [ ] `Product`, `Feature`, `Area` and `ResourceType` are keys from `powershell/assets/MaesterTaxonomy.psd1`; a
+      new key is added there in this pull request.
+- [ ] Each of those values, and `RelatedProduct` if set, checked against its section of the
+      [attribute rubric](../../../website/docs/writing-tests/attribute-rubric.md), with the reason visible in
+      the description or the remediation text.
+- [ ] No `Category`, `Preview` or `Control`; no `Tag` for product, feature, area, suite, benchmark, licence,
+      severity or the ID. `Lifecycle = 'Preview'` and the `LongRunning` flag where they apply.
 - [ ] `[CmdletBinding()]` and `[OutputType([bool])]`; comment-based help inside the function.
-- [ ] `Get-MtTest -Path <file>` reports no errors.
+- [ ] `Get-MtTest <ID>` (without `-Path`) reports no errors.
 
 ### Documentation
 - [ ] `.md` has summary, rationale, `#### Remediation action` with portal links, and ends with `<!--- Results --->` + `%TestResult%`.
@@ -431,6 +508,11 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 | Returning `$null` for "not applicable" | Reported as `Skipped`/`NoResult` | `Add-MtTestResultDetail -SkippedBecause NotApplicable` |
 | Uncaptured output (`$list.Add(...)`) | `Error`/`InvalidReturn` | `$null = $list.Add(...)` |
 | Variables or `@()` in the attribute | `InvalidMetadata` | Constants and `('a', 'b')` lists only |
+| `Category` or `Preview` in the attribute | `InvalidMetadata`; both were removed in 3.0 | `Product` and `Feature`; `Lifecycle = 'Preview'` |
+| A `Tag` such as `'CA'`, `'Entra'` or `'Maester'` on a built-in check | Unit tests fail; tags are not the taxonomy | Use the attribute that says it; see [Tags](#tags) |
+| A product alias (`'Entra ID'`) or a key that is not in the taxonomy | Unit tests fail | Use the key from `powershell/assets/MaesterTaxonomy.psd1`, or add the key in the same pull request |
+| Copying `Severity`, `Area` or `Mitre` from a similar check | The value may not fit this check, and the attribute review fails a value that does not fit | Choose each value with the rubric |
+| Validating a built-in check with `Get-MtTest -Path` only | It applies the rules of a custom test and reports no missing attribute | `Get-MtTest <ID>` |
 | File name does not match `Id` | `InvalidMetadata` | Rename to `Test.<Id>.ps1` |
 | Missing `[CmdletBinding()]` | `InvalidMetadata` | Add it before `param()` |
 | Hard-coded thresholds or object IDs | Users cannot tune the check | Make them described parameters |
@@ -446,17 +528,22 @@ can call only Maester's exported commands; to reuse a built-in check it calls `I
 - `tests/maester/entra/Test.MT.1012.ps1` + `.md` -- simple Graph check with a licence gate.
 - `tests/maester/entra/Test.MT.1198.ps1` -- check with a `ValidateRange` parameter, `LongRunning`.
 - `tests/maester/drift/Test.MT.1060.ps1` -- family with `InstanceSource` and `$Instance`, `Service = 'None'`.
-- `tests/cisa/entra/Test.CISA.MS.AAD.3.5.ps1` -- CISA check and tags.
+- `tests/cisa/entra/Test.CISA.MS.AAD.3.5.ps1` -- CISA check.
+- `tests/cisa/exchange/Test.CISA.MS.EXO.14.1.ps1` -- check with a `RelatedProduct`.
+- `tests/maester/azure-devops/Test.AZDO.1045.ps1` -- `Info` check with `Mitre = 'None'` and `Lifecycle = 'Preview'`.
 - `tests/eidsca/Test.EIDSCA.AF01.ps1` -- generated thin check comparing a tenant value.
 - `tests/orca/Test.ORCA.100.ps1` -- generated ORCA check.
 - `website/docs/writing-tests/index.mdx` -- the full native test guide.
+- `website/docs/writing-tests/attribute-rubric.md` -- how to choose each attribute value.
+- `powershell/assets/MaesterTaxonomy.psd1` -- the product, feature, area and resource type keys.
 - `website/docs/configuration/applicability.md` -- gate order and reason codes.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Resolution |
 | --- | --- | --- |
-| `Error` / `InvalidMetadata` | Attribute or file rule broken | `Get-MtTest -Path <file>` lists each problem with its line |
+| `Error` / `InvalidMetadata` | Attribute or file rule broken | `Get-MtTest <ID>` lists each problem with its line (`Get-MtTest -Path <file>` for a custom test) |
+| Attribute review fails on the pull request | A value does not fit the rubric | Change it to the expected value, or explain in the pull request why the declared value fits |
 | `Error` / `InvalidReturn` | Non-boolean or multiple outputs | Capture stray output; return one boolean |
 | `Error` / `InvalidConfiguration` | Bad parameter value in config or `-Parameter` | Check `Get-MtTest <ID>` parameters; fix the value |
 | `Error` / `TestError` | Exception in the body (often a permission) | Read `ReasonDetail` / `ErrorRecord` |
