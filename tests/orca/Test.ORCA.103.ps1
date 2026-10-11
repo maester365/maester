@@ -15,7 +15,14 @@ function Test-ORCA103 {
         Id = 'ORCA.103',
         Title = 'Outbound spam filter policy settings configured.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1534'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

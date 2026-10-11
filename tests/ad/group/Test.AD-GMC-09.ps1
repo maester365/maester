@@ -21,7 +21,11 @@
         Id = 'AD-GMC-09',
         Title = 'Empty non-privileged group details should be investigated',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

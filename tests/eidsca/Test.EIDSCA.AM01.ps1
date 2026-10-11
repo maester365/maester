@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAM01 {
         Id = 'EIDSCA.AM01',
         Title = 'Authentication Method - Microsoft Authenticator - State.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

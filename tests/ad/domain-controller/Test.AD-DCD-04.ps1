@@ -23,7 +23,11 @@
         Id = 'AD-DCD-04',
         Title = 'Non-Global Catalog DC count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

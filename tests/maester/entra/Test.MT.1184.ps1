@@ -24,7 +24,13 @@
         Id = 'MT.1184',
         Title = 'Conditional Access policy without any target resources configured.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'access-control',
+        ResourceType = 'ConditionalAccessPolicy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

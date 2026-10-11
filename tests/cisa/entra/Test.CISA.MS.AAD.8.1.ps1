@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.8.1',
         Title = 'Guest users SHOULD have limited or restricted access to Entra ID directory objects.',
         Product = 'entra',
+        Feature = 'external-identities',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1087.003', 'T1087.004', 'T1526', 'T1069.003'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = 'merill'

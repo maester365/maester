@@ -26,7 +26,11 @@
         Id = 'AD-DCOMP-04',
         Title = 'Computer operating system count should be investigated',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'devices',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

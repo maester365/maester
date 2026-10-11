@@ -31,7 +31,14 @@
         Id = 'MT.1160',
         Title = 'Signatures should be checked before scan.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

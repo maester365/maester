@@ -15,7 +15,14 @@ function Test-ORCA244 {
         Id = 'ORCA.244',
         Title = 'Policies are configured to honor sending domains DMARC.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-phishing',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

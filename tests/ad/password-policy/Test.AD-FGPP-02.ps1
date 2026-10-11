@@ -21,7 +21,11 @@
         Id = 'AD-FGPP-02',
         Title = 'Fine-grained password policy value count should be retrievable',
         Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Policy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

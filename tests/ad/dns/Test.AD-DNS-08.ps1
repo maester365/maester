@@ -22,7 +22,11 @@
         Id = 'AD-DNS-08',
         Title = 'Zone delegation count should be retrievable',
         Product = 'ad',
+        Feature = 'dns',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

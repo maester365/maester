@@ -15,7 +15,14 @@ function Test-ORCA121 {
         Id = 'ORCA.121',
         Title = 'Supported filter policy action used.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'zero-hour-auto-purge',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

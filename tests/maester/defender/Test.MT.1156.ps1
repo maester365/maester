@@ -30,7 +30,14 @@
         Id = 'MT.1156',
         Title = 'Scanning Network Files should be enabled.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1080',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

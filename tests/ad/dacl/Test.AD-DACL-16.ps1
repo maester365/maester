@@ -22,7 +22,11 @@
         Id = 'AD-DACL-16',
         Title = 'Unresolved SID details should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

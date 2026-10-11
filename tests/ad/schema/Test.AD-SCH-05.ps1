@@ -23,7 +23,13 @@
         Id = 'AD-SCH-05',
         Title = 'LAPS should be installed in Active Directory',
         Product = 'ad',
+        Feature = 'schema',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.003', 'T1550.002'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

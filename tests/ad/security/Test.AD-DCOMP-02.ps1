@@ -27,7 +27,13 @@
         Id = 'AD-DCOMP-02',
         Title = 'Non-DC computers should not have unconstrained delegation',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

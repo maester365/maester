@@ -22,7 +22,13 @@
         Id = 'CIS.GH.1.2.4',
         Title = 'Ensure issue deletion is limited to specific users',
         Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1070', 'T1485'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

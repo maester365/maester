@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAM06 {
         Id = 'EIDSCA.AM06',
         Title = 'Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1621',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

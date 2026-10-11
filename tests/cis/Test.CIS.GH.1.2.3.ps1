@@ -22,7 +22,13 @@
         Id = 'CIS.GH.1.2.3',
         Title = 'Ensure repository deletion is limited to specific users',
         Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1485', 'T1070'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.1.2.2',
         Title = 'Ensure users cannot register applications',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1098.001', 'T1528'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

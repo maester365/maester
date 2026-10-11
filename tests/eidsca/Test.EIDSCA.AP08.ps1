@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP08 {
         Id = 'EIDSCA.AP08',
         Title = 'Default Authorization Settings - User consent policy assigned for applications.',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

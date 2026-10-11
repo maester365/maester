@@ -31,7 +31,14 @@
         Id = 'MT.1163',
         Title = 'Signature Update Interval should be 1-4 hours.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

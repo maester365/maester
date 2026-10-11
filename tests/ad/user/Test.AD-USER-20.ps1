@@ -22,7 +22,11 @@
         Id = 'AD-USER-20',
         Title = 'Known service account count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'applications',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

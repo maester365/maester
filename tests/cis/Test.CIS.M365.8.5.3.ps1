@@ -19,7 +19,13 @@
         Id = 'CIS.M365.8.5.3',
         Title = 'Ensure only people in my org can bypass the lobby',
         Product = 'teams',
+        Feature = 'meetings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = 'merill'

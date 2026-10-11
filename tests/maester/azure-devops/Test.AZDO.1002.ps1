@@ -24,7 +24,13 @@ function Test-AzdoLogAuditEvent {
         Id = 'AZDO.1002',
         Title = 'Log Audit Events.',
         Product = 'azure-devops',
+        Feature = 'auditing',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing'

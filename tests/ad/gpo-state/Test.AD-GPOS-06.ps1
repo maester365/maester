@@ -28,7 +28,11 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
         Id = 'AD-GPOS-06',
         Title = 'User disabled GPO settings details should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA110 {
         Id = 'ORCA.110',
         Title = 'Internal Sender notifications are disabled.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

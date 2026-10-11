@@ -23,7 +23,13 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
         Id = 'AZDO.1036',
         Title = '(Tenant) Restrict Personal Access Token full scope.',
         Product = 'azure-devops',
+        Feature = 'security-policies',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1550.001'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy'

@@ -20,7 +20,11 @@
         Id = 'AD-DACL-11',
         Title = 'Privileged extended right count should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'privileged-access',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

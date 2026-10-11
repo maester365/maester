@@ -23,7 +23,11 @@
         Id = 'AD-COMP-07',
         Title = 'Computer OU count should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

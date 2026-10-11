@@ -22,7 +22,11 @@
         Id = 'AD-GRP-01',
         Title = 'Group AdminCount should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'privileged-access',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

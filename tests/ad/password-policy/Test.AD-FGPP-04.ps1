@@ -21,7 +21,11 @@
         Id = 'AD-FGPP-04',
         Title = 'Fine-grained password policy application targets should be retrievable',
         Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Policy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

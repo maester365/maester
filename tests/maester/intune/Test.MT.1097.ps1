@@ -17,7 +17,13 @@
         Id = 'MT.1097',
         Title = 'Ensure all Intune Certificate Connectors are healthy and running supported versions',
         Product = 'intune',
+        Feature = 'tenant-administration',
+        Area = 'devices',
+        ResourceType = 'Connector',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

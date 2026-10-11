@@ -19,7 +19,13 @@
         Id = 'CIS.M365.8.2.3',
         Title = 'Ensure external Teams users cannot initiate conversations',
         Product = 'teams',
+        Feature = 'external-access',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566', 'T1204.001', 'T1204.002'),
         Service = 'Teams',
         Author = 'Mynster9361',
         Contributor = 'merill'

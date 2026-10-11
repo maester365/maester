@@ -22,7 +22,11 @@
         Id = 'AD-GMC-02',
         Title = 'Distinct account types of members count should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

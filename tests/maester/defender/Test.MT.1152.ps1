@@ -30,7 +30,14 @@
         Id = 'MT.1152',
         Title = 'Script Scanning should be enabled.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1059',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

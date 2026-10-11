@@ -31,7 +31,14 @@
         Id = 'MT.1161',
         Title = 'Cloud Block Level should be High or higher.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

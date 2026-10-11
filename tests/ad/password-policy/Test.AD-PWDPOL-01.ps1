@@ -22,7 +22,11 @@
         Id = 'AD-PWDPOL-01',
         Title = 'Password history count should be retrievable',
         Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'T1110.004',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

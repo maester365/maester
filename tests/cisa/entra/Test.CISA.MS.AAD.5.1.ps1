@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.5.1',
         Title = 'Only administrators SHALL be allowed to register applications.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1098.001', 'T1098.003', 'T1528'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = 'merill'

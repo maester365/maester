@@ -24,7 +24,13 @@ function Test-MtAIAgentNoAuthentication {
         Id = 'MT.1114',
         Title = 'AI agents should require user authentication.',
         Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1213',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

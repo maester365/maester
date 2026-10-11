@@ -21,7 +21,11 @@
         Id = 'AD-DACL-12',
         Title = 'Privileged extended right details should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'privileged-access',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

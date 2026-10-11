@@ -21,7 +21,11 @@
         Id = 'AD-SUB-05',
         Title = 'IPv6 catch-all subnets count should be retrievable',
         Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

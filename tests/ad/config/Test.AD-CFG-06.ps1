@@ -19,7 +19,11 @@
         Id = 'AD-CFG-06',
         Title = 'LDAP query policy count should be retrievable',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Policy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -18,7 +18,13 @@
         Id = 'CISA.MS.EXO.5.1',
         Title = 'SMTP AUTH SHALL be disabled.',
         Product = 'exchange',
+        Feature = 'client-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

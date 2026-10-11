@@ -22,7 +22,11 @@
         Id = 'AD-SPN-04',
         Title = 'Computer SPN unknown service class details should be investigated',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

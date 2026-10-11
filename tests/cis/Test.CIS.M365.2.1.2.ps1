@@ -19,7 +19,14 @@
         Id = 'CIS.M365.2.1.2',
         Title = 'Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566.001', 'T1204.002'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'NZLostboy'
     )]

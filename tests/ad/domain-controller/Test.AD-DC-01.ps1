@@ -21,7 +21,11 @@
         Id = 'AD-DC-01',
         Title = 'DC site coverage count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

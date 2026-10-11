@@ -33,7 +33,13 @@ function Test-AzdoOrganizationSecretProtectionPushProtection {
         Id = 'AZDO.1041',
         Title = '(Organization) Secret Protection: push protection blocks secret commits.',
         Product = 'azure-devops',
+        Feature = 'repositories',
+        Area = 'engineering-systems',
+        ResourceType = 'Repository',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1552.001',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-secret-scanning'

@@ -19,7 +19,11 @@
         Id = 'AD-CFG-08',
         Title = 'AuthN policy container count should be retrievable',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'authentication',
+        ResourceType = 'Policy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

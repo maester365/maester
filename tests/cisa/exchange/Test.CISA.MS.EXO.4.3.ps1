@@ -23,7 +23,13 @@
         Id = 'CISA.MS.EXO.4.3',
         Title = 'The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov.',
         Product = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1684.002',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

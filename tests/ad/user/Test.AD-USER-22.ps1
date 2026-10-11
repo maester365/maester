@@ -19,7 +19,11 @@
         Id = 'AD-USER-22',
         Title = 'Built-in administrator account count should be investigated',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

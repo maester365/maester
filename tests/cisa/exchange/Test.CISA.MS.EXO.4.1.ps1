@@ -18,7 +18,13 @@
         Id = 'CISA.MS.EXO.4.1',
         Title = 'A DMARC policy SHALL be published for every second-level domain.',
         Product = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566', 'T1598', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'moorereason'

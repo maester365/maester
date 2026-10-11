@@ -19,7 +19,13 @@
         Id = 'CIS.M365.1.3.4',
         Title = 'Ensure ''User owned apps and services'' is restricted',
         Product = 'microsoft-365',
+        Feature = 'organization-settings',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'T1137.006',
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

@@ -18,7 +18,13 @@
         Id = 'MT.1096',
         Title = 'Ensure at least one Intune Multi Admin Approval policy is configured',
         Product = 'intune',
+        Feature = 'tenant-administration',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1072', 'T1078.004'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

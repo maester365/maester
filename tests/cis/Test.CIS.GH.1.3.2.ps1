@@ -21,7 +21,13 @@
         Id = 'CIS.GH.1.3.2',
         Title = 'Ensure team creation is limited to specific members',
         Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

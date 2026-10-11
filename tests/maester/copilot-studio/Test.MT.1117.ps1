@@ -24,7 +24,13 @@ function Test-MtAIAgentDormant {
         Id = 'MT.1117',
         Title = 'Published AI agents should not be dormant.',
         Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

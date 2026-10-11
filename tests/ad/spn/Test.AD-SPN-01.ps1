@@ -21,7 +21,11 @@
         Id = 'AD-SPN-01',
         Title = 'Computer SPN service class count should be retrievable',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

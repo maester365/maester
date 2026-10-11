@@ -22,7 +22,11 @@
         Id = 'AD-SPN-11',
         Title = 'User SPN non-FQDN hosts should be investigated',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -29,7 +29,11 @@
         Id = 'AD-GMC-10',
         Title = 'Privileged groups with members count should be investigated',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'privileged-access',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = ('T1098.007', 'T1078.002'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

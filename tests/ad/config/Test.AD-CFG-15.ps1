@@ -19,7 +19,11 @@
         Id = 'AD-CFG-15',
         Title = 'Enrollment CA certificate details should be retrievable',
         Product = 'ad',
+        Feature = 'certificate-services',
+        Area = 'infrastructure',
+        ResourceType = 'CertificateAuthority',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

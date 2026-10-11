@@ -17,7 +17,13 @@
         Id = 'MT.1090',
         Title = 'Global Administrator role should not be added as local administrator on the device during Microsoft Entra join',
         Product = 'entra',
+        Feature = 'devices',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'nicolonsky'
     )]

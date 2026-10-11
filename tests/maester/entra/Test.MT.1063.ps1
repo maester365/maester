@@ -19,7 +19,13 @@
         Id = 'MT.1063',
         Title = 'All App registration owners should have MFA registered',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1098.001', 'T1110.004'),
         Service = 'Graph',
         LongRunning,
         Author = 'marcel-ngn'

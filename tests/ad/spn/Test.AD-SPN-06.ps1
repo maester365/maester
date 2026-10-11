@@ -22,7 +22,11 @@
         Id = 'AD-SPN-06',
         Title = 'User SPN total count should be investigated',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

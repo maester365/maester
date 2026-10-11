@@ -15,7 +15,13 @@ function Test-MtCheckEidscaCP04 {
         Id = 'EIDSCA.CP04',
         Title = 'Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to.',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

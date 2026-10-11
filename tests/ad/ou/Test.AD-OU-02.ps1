@@ -22,7 +22,11 @@
         Id = 'AD-OU-02',
         Title = 'OU at domain root count should be retrievable',
         Product = 'ad',
+        Feature = 'organizational-units',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

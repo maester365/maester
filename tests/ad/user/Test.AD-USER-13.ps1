@@ -22,7 +22,13 @@
         Id = 'AD-USER-13',
         Title = 'User SID History count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

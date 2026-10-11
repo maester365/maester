@@ -19,7 +19,13 @@
         Id = 'CIS.M365.1.3.5',
         Title = 'Ensure internal phishing protection for Forms is enabled',
         Product = 'microsoft-365',
+        Feature = 'organization-settings',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1534', 'T1598'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

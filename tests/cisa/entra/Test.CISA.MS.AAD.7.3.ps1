@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.7.3',
         Title = 'Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.',
         Product = 'entra',
+        Feature = 'roles',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1556.007', 'T1078.002', 'T1078.004'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'merill', 'mrdos010')

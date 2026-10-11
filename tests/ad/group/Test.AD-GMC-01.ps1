@@ -21,7 +21,11 @@
         Id = 'AD-GMC-01',
         Title = 'Distinct groups with members count should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

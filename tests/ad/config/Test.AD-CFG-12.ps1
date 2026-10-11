@@ -17,7 +17,11 @@
         Id = 'AD-CFG-12',
         Title = 'Enterprise CA count should be retrievable',
         Product = 'ad',
+        Feature = 'certificate-services',
+        Area = 'infrastructure',
+        ResourceType = 'CertificateAuthority',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -26,7 +26,13 @@
         Id = 'MT.1173',
         Title = 'Sensitivity labels are published for files used by Microsoft 365 Copilot.',
         Product = 'purview',
+        Feature = 'information-protection',
+        Area = 'data-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'SecurityCompliance',
         Author = 'OfirGavish'
     )]

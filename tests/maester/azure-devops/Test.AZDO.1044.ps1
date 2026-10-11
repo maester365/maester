@@ -32,7 +32,13 @@ function Test-AzdoOrganizationCodeSecurityScanning {
         Id = 'AZDO.1044',
         Title = '(Organization) Code Security: dependency and CodeQL alerts enabled.',
         Product = 'azure-devops',
+        Feature = 'repositories',
+        Area = 'engineering-systems',
+        ResourceType = 'Repository',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1195.001', 'T1190'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-code-scanning'

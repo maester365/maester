@@ -26,7 +26,13 @@
         Id = 'AD-REPL-01',
         Title = 'No replication connections should be disabled',
         Product = 'ad',
+        Feature = 'replication',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

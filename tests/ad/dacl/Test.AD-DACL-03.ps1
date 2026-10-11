@@ -21,7 +21,11 @@
         Id = 'AD-DACL-03',
         Title = 'Conflict object count should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

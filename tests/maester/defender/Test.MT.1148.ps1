@@ -30,7 +30,14 @@
         Id = 'MT.1148',
         Title = 'Archive Scanning should be enabled.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1027.015', 'T1204.002'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

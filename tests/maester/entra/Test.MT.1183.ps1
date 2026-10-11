@@ -24,7 +24,13 @@
         Id = 'MT.1183',
         Title = 'Temporary bypass for onPremisesObjectIdentifier updates should be disabled.',
         Product = 'entra',
+        Feature = 'hybrid-identity',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1098'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

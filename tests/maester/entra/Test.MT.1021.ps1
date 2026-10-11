@@ -10,7 +10,13 @@
         Id = 'MT.1021',
         Title = 'Security Defaults are enabled.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1110'),
         Service = 'Graph',
         Author = 'f-bader',
         Contributor = 'weyCC81'

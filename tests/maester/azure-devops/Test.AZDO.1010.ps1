@@ -26,7 +26,13 @@ function Test-AzdoAuditStream {
         Id = 'AZDO.1010',
         Title = 'Audit streaming.',
         Product = 'azure-devops',
+        Feature = 'auditing',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1685.002', 'T1070'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops'

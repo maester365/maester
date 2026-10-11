@@ -20,7 +20,13 @@
         Id = 'AD-GPOREP-08',
         Title = 'GPOs with deny ACE details should be retrievable',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

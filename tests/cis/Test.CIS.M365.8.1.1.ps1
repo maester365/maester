@@ -19,7 +19,13 @@
         Id = 'CIS.M365.8.1.1',
         Title = 'Ensure external file sharing in Teams is enabled for only approved cloud storage services',
         Product = 'teams',
+        Feature = 'file-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1567.002',
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'Mynster9361')

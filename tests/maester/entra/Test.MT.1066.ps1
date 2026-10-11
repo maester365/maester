@@ -26,7 +26,13 @@
         Id = 'MT.1066',
         Title = 'Conditional Access policies should not reference non-existent users, groups, or roles.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'access-control',
+        ResourceType = 'ConditionalAccessPolicy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'SamErde'
     )]

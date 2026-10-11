@@ -10,7 +10,13 @@
         Id = 'MT.1004',
         Title = 'At least one Conditional Access policy is configured with All Apps and All Users.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'merill',
         Contributor = 'f-bader'

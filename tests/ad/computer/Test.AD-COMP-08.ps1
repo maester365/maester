@@ -22,7 +22,11 @@
         Id = 'AD-COMP-08',
         Title = 'Computer per OU average should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

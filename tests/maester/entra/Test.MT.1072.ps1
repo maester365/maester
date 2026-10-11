@@ -21,7 +21,13 @@
         Id = 'MT.1072',
         Title = 'Conditional Access policies should not use the deprecated Approved Client App grant.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'access-control',
+        ResourceType = 'ConditionalAccessPolicy',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'HenrikPiecha'
     )]

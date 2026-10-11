@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP14 {
         Id = 'EIDSCA.AP14',
         Title = 'Default Authorization Settings - Default User Role Permissions - Allowed to read other users.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

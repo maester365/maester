@@ -22,7 +22,11 @@
         Id = 'AD-PWDPOL-06',
         Title = 'Account lockout duration should be retrievable',
         Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'T1110',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

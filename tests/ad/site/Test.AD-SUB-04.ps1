@@ -20,7 +20,11 @@
         Id = 'AD-SUB-04',
         Title = 'IPv6 subnets count should be retrievable',
         Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

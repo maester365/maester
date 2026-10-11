@@ -22,7 +22,13 @@ function Test-MtAdGpoCpasswordFoundDetails {
         Id = 'AD-GPOREP-18',
         Title = 'No GPOs should contain a cpassword',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'authentication',
+        ResourceType = 'GroupPolicy',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1552.006',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

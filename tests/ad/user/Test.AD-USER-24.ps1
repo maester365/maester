@@ -19,7 +19,11 @@
         Id = 'AD-USER-24',
         Title = 'Built-in administrator last logon details should be investigated',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

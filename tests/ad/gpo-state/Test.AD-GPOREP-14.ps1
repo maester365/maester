@@ -21,7 +21,11 @@ function Test-MtAdGpoEnforcementCount {
         Id = 'AD-GPOREP-14',
         Title = 'GPO enforcement count should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

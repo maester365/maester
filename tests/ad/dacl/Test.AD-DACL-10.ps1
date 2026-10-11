@@ -21,7 +21,11 @@
         Id = 'AD-DACL-10',
         Title = 'Privileged allow ACE details should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'privileged-access',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = ('T1098', 'T1222.001'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

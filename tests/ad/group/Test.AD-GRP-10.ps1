@@ -24,7 +24,11 @@
         Id = 'AD-GRP-10',
         Title = 'Universal group count should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'infrastructure',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

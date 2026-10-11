@@ -23,7 +23,11 @@
         Id = 'AD-PRINT-01',
         Title = 'Printer total count should be retrievable',
         Product = 'ad',
+        Feature = 'printers',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

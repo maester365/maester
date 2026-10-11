@@ -32,7 +32,11 @@
         Id = 'AD-ROOTDSE-02',
         Title = 'Supported SASL mechanism details should be investigated',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -20,7 +20,13 @@
         Id = 'MT.1041',
         Title = 'Ensure users installing Outlook add-ins is not allowed',
         Product = 'exchange',
+        Feature = 'outlook',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1137.006', 'T1114.002'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

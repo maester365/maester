@@ -15,7 +15,14 @@ function Test-ORCA109 {
         Id = 'ORCA.109',
         Title = 'Senders are not being allow listed in an unsafe manner.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

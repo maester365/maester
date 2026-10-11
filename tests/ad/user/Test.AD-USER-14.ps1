@@ -22,7 +22,11 @@
         Id = 'AD-USER-14',
         Title = 'User SPN count should be retrievable',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

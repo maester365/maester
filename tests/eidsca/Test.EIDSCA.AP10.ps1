@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP10 {
         Id = 'EIDSCA.AP10',
         Title = 'Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1098.001', 'T1528'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

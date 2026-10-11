@@ -18,7 +18,13 @@
         Id = 'MT.1091',
         Title = 'Registering user should not be added as local administrator on the device during Microsoft Entra join',
         Product = 'entra',
+        Feature = 'devices',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'nicolonsky'
     )]

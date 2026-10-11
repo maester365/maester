@@ -27,7 +27,11 @@
         Id = 'AD-DCOMP-09',
         Title = 'Computer DNS zone details should be investigated',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

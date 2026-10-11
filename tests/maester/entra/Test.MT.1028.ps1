@@ -10,7 +10,13 @@
         Id = 'MT.1028',
         Title = 'No user with mailbox and permanent role assignment on Control Plane.',
         Product = 'entra',
+        Feature = 'roles',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1566'),
         Service = 'Graph',
         Author = 'Cloud-Architekt',
         Contributor = ('f-bader', 'thomas-s-schmidt', 'nathanmcnulty')

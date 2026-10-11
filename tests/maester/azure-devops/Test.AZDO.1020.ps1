@@ -10,7 +10,13 @@
         Id = 'AZDO.1020',
         Title = 'Creation of classic build pipelines.',
         Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/'

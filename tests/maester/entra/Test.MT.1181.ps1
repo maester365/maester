@@ -19,7 +19,13 @@
         Id = 'MT.1181',
         Title = 'Conditional Access policy is present that blocks high agent risk sign-ins.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'ai',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'ExeqZ'
     )]

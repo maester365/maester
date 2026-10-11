@@ -22,7 +22,11 @@
         Id = 'AD-DNS-19',
         Title = 'Reverse zone network details should be retrievable',
         Product = 'ad',
+        Feature = 'dns',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

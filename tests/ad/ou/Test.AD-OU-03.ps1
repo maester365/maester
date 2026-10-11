@@ -22,7 +22,11 @@
         Id = 'AD-OU-03',
         Title = 'OU stale count should be retrievable',
         Product = 'ad',
+        Feature = 'organizational-units',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

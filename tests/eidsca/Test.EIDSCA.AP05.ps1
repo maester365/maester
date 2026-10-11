@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP05 {
         Id = 'EIDSCA.AP05',
         Title = 'Default Authorization Settings - Sign-up for email based subscription.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

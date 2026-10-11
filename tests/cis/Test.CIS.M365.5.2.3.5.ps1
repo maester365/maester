@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.2.3.5',
         Title = 'Ensure weak authentication methods are disabled',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566.002', 'T1621', 'T1111'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

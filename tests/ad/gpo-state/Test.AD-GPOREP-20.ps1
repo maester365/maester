@@ -22,7 +22,13 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
         Id = 'AD-GPOREP-20',
         Title = 'No GPOs should contain a default password',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'authentication',
+        ResourceType = 'GroupPolicy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1552.001', 'T1552.006'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,12 @@ function Test-ORCA143 {
         Id = 'ORCA.143',
         Title = 'Safety Tips are enabled.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Info',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

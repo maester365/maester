@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAM04 {
         Id = 'EIDSCA.AM04',
         Title = 'Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1621',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

@@ -25,7 +25,11 @@
         Id = 'AD-TRUST-03',
         Title = 'Trust quarantined count should be investigated',
         Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'Info',
+        Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

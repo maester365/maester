@@ -22,7 +22,11 @@
         Id = 'AD-DNS-09',
         Title = 'Zone delegation details should be retrievable',
         Product = 'ad',
+        Feature = 'dns',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

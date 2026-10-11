@@ -20,7 +20,14 @@
         Id = 'MT.1055',
         Title = 'Microsoft 365 Group (and Team) creation should be restricted to approved users.',
         Product = 'entra',
+        RelatedProduct = 'teams',
+        Feature = 'groups',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'merill'
     )]

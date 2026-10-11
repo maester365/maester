@@ -15,7 +15,14 @@ function Test-ORCA120_phish {
         Id = 'ORCA.120.1',
         Title = 'Zero Hour Autopurge Enabled for Phish.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'zero-hour-auto-purge',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

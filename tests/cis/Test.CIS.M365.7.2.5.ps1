@@ -19,7 +19,13 @@
         Id = 'CIS.M365.7.2.5',
         Title = 'Ensure that SharePoint guest users cannot share items they don''t own',
         Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1213.002', 'T1530'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

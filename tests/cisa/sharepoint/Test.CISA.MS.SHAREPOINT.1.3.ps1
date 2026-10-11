@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.1.3',
         Title = 'External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.',
         Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1048', 'T1213.002', 'T1530'),
         Service = 'SharePointOnline',
         Author = 'soulemike',
         Contributor = 'SamErde'

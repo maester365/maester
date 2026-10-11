@@ -21,7 +21,13 @@
         Id = 'AD-DOM-02',
         Title = 'Machine account quota should be retrievable',
         Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1136.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

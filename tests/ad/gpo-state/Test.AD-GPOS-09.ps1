@@ -22,7 +22,11 @@ function Test-MtAdGpoOwnerDetails {
         Id = 'AD-GPOS-09',
         Title = 'GPO owner details should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

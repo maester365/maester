@@ -23,7 +23,13 @@ function Test-AzdoOrganizationOwner {
         Id = 'AZDO.1013',
         Title = 'Organization Owner should not be an individual.',
         Product = 'azure-devops',
+        Feature = 'users-and-access',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops'

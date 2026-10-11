@@ -19,7 +19,13 @@
         Id = 'CIS.M365.7.2.11',
         Title = 'Ensure the SharePoint default sharing link permission is set',
         Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1565.001'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

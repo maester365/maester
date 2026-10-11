@@ -21,7 +21,11 @@
         Id = 'AD-DACL-15',
         Title = 'Unresolved SID count should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

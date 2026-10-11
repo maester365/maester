@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP09 {
         Id = 'EIDSCA.AP09',
         Title = 'Default Authorization Settings - Allow user consent on risk-based apps.',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

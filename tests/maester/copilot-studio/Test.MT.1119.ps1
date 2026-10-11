@@ -25,7 +25,13 @@ function Test-MtAIAgentHardCodedCredentials {
         Id = 'MT.1119',
         Title = 'AI agents should not have hard-coded credentials in topics.',
         Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1552',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

@@ -21,7 +21,11 @@
         Id = 'AD-SUB-09',
         Title = 'Distinct first two octets (/16 networks) count should be retrievable',
         Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

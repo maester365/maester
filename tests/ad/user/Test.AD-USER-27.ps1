@@ -19,7 +19,11 @@
         Id = 'AD-USER-27',
         Title = 'Honey pot user details should be investigated',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'logging-and-detection',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

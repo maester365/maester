@@ -10,7 +10,13 @@
         Id = 'AZDO.1038',
         Title = '(Organization) Disallow extensions from accessing resources on the local network.',
         Product = 'azure-devops',
+        Feature = 'security-policies',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1190',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops'

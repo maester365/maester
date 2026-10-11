@@ -18,7 +18,13 @@
         Id = 'AD-USER-02',
         Title = 'Dormant enabled user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

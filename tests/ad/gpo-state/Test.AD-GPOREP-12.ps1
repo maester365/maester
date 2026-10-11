@@ -10,7 +10,11 @@
         Id = 'AD-GPOREP-12',
         Title = 'GPO disabled link count should be retrievable',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

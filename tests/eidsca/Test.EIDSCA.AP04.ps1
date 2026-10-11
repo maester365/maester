@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP04 {
         Id = 'EIDSCA.AP04',
         Title = 'Default Authorization Settings - Guest invite restrictions.',
         Product = 'entra',
+        Feature = 'external-identities',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'T1136.003',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

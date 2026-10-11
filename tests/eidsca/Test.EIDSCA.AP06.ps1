@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAP06 {
         Id = 'EIDSCA.AP06',
         Title = 'Default Authorization Settings - User can join the tenant by email validation.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1136.003',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

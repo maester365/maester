@@ -19,7 +19,11 @@
         Id = 'AD-CFG-09',
         Title = 'AD activation objects count should be retrievable',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

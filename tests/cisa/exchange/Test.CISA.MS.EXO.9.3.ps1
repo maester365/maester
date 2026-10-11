@@ -10,7 +10,14 @@
         Id = 'CISA.MS.EXO.9.3',
         Title = 'Disallowed file types SHALL be determined and enforced.',
         Product = 'exchange',
+        RelatedProduct = 'defender',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1204.002', 'T1566.001'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]

@@ -24,7 +24,13 @@ function Test-MtAIAgentOrphaned {
         Id = 'MT.1122',
         Title = 'AI agents should not have orphaned ownership.',
         Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

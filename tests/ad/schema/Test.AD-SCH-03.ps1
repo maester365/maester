@@ -22,7 +22,11 @@
         Id = 'AD-SCH-03',
         Title = 'Schema version entry count should be retrievable',
         Product = 'ad',
+        Feature = 'schema',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

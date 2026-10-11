@@ -20,7 +20,13 @@
         Id = 'AD-DC-04',
         Title = 'SMB signing should be enabled on all domain controllers',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1557',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

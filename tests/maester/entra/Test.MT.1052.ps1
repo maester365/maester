@@ -21,7 +21,13 @@
         Id = 'MT.1052',
         Title = 'At least one Conditional Access policy is targeting the Device Code authentication flow.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1528', 'T1566'),
         Service = 'Graph',
         Author = 'BakkerJan',
         Contributor = ('merill', 'thomas-s-schmidt')

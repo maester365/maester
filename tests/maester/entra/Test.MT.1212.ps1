@@ -18,7 +18,13 @@
         Id = 'MT.1212',
         Title = 'Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview).',
         Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Lifecycle = 'Preview',
         Author = 'agnivesh'

@@ -22,7 +22,11 @@
         Id = 'AD-USER-15',
         Title = 'User manager count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

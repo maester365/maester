@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAT02 {
         Id = 'EIDSCA.AT02',
         Title = 'Authentication Method - Temporary Access Pass - One-time.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

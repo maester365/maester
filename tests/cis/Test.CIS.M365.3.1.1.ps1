@@ -19,7 +19,13 @@
         Id = 'CIS.M365.3.1.1',
         Title = 'Ensure Microsoft 365 audit log search is Enabled',
         Product = 'purview',
+        Feature = 'audit',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = 'thomas-s-schmidt'

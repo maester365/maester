@@ -26,7 +26,11 @@
         Id = 'AD-DCOMP-08',
         Title = 'Computer DNS zone count should be investigated',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

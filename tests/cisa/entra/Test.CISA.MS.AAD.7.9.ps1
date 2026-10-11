@@ -10,7 +10,13 @@
         Id = 'CISA.MS.AAD.7.9',
         Title = 'User activation of other highly privileged roles SHOULD trigger an alert.',
         Product = 'entra',
+        Feature = 'privileged-identity-management',
+        Area = 'privileged-access',
+        ResourceType = 'DirectoryRole',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1098.003', 'T1136.003', 'T1548.005'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('michaelmsonne', 'JeanPhilippeGeorge')

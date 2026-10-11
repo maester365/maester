@@ -15,7 +15,13 @@
         Id = 'MT.1068',
         Title = 'Restrict non-admin users from creating tenants.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

@@ -22,7 +22,13 @@
         Id = 'CIS.M365.6.5.3',
         Title = 'Ensure additional storage providers are restricted in Outlook on the web',
         Product = 'exchange',
+        Feature = 'outlook',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1567.002', 'T1204.002'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = ('bastienperez', 'Mynster9361')

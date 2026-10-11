@@ -19,7 +19,13 @@
         Id = 'MT.1080',
         Title = 'Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints.',
         Product = 'defender',
+        Feature = 'exposure-management',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1539', 'T1528'),
         Service = 'Graph',
         LongRunning,
         Author = 'Cloud-Architekt'

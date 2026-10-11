@@ -21,7 +21,11 @@
         Id = 'AD-DNS-03',
         Title = 'Root servers with incorrect IPs should be retrievable',
         Product = 'ad',
+        Feature = 'dns',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

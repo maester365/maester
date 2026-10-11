@@ -15,7 +15,14 @@ function Test-ORCA235 {
         Id = 'ORCA.235',
         Title = 'SPF records is set up for all your custom domains.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

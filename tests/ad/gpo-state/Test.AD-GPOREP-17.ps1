@@ -21,7 +21,13 @@ function Test-MtAdGpoCpasswordFoundCount {
         Id = 'AD-GPOREP-17',
         Title = 'No GPOs should contain a cpassword',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'authentication',
+        ResourceType = 'GroupPolicy',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1552.006',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

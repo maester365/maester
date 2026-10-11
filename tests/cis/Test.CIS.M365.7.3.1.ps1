@@ -19,7 +19,14 @@
         Id = 'CIS.M365.7.3.1',
         Title = 'Ensure Office 365 SharePoint infected files are disallowed for download',
         Product = 'sharepoint',
+        RelatedProduct = 'defender',
+        Feature = 'access-control',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1204.002'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

@@ -27,7 +27,13 @@
         Id = 'MT.1174',
         Title = 'Insider Risk Management policy for Risky AI usage is enabled.',
         Product = 'purview',
+        Feature = 'insider-risk-management',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1213',
         Service = ('Graph', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

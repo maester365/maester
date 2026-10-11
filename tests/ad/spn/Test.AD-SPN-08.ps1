@@ -21,7 +21,11 @@
         Id = 'AD-SPN-08',
         Title = 'User SPN service class usage should be investigated',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

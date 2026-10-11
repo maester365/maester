@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.2.1',
         Title = 'File and folder default sharing scope SHALL be set to Specific People.',
         Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1048', 'T1213.002'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

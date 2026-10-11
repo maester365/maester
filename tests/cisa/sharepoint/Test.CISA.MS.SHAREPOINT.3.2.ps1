@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.3.2',
         Title = 'Allowable file and folder permissions for Anyone links SHALL be set to View only.',
         Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1565.001'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

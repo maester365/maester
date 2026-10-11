@@ -26,7 +26,11 @@
         Id = 'AD-COMP-04',
         Title = 'Computer non-standard primary group count should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

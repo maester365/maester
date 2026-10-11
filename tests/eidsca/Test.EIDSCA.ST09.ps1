@@ -15,7 +15,13 @@ function Test-MtCheckEidscaST09 {
         Id = 'EIDSCA.ST09',
         Title = 'Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content.',
         Product = 'entra',
+        Feature = 'groups',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

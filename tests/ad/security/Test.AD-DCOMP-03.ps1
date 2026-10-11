@@ -27,7 +27,11 @@
         Id = 'AD-DCOMP-03',
         Title = 'Non-DC computers with constrained delegation count should be investigated',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

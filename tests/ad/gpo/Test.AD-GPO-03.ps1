@@ -23,7 +23,11 @@
         Id = 'AD-GPO-03',
         Title = 'GPO stale-before-2020 count should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -21,7 +21,11 @@
         Id = 'AD-SUB-06',
         Title = 'Non-RFC1918 (public IP) subnets count should be retrievable',
         Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -19,7 +19,11 @@
         Id = 'AD-USER-01',
         Title = 'Disabled user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

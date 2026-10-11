@@ -22,7 +22,11 @@
         Id = 'AD-SPN-09',
         Title = 'User SPN unknown service class count should be investigated',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

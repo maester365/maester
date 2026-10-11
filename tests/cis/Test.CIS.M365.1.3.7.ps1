@@ -19,7 +19,13 @@
         Id = 'CIS.M365.1.3.7',
         Title = 'Ensure ''third-party storage services'' are restricted in ''Microsoft 365 on the web''',
         Product = 'microsoft-365',
+        Feature = 'organization-settings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1567.002',
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

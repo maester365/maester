@@ -10,7 +10,13 @@
         Id = 'MT.1045',
         Title = 'Only invited users should be automatically admitted to Teams meetings',
         Product = 'teams',
+        Feature = 'meetings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

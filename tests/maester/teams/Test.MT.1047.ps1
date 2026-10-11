@@ -10,7 +10,13 @@
         Id = 'MT.1047',
         Title = 'Restrict anonymous users from starting Teams meetings',
         Product = 'teams',
+        Feature = 'meetings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

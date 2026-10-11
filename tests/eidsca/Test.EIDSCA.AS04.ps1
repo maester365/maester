@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAS04 {
         Id = 'EIDSCA.AS04',
         Title = 'Authentication Method - SMS - Use for sign-in.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1111', 'T1566.002'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

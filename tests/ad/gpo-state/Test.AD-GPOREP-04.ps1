@@ -20,7 +20,13 @@
         Id = 'AD-GPOREP-04',
         Title = 'GPOs without authenticated users details should be retrievable',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

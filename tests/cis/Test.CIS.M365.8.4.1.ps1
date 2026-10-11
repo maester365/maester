@@ -20,7 +20,13 @@
         Id = 'CIS.M365.8.4.1',
         Title = 'Ensure app permission policies are configured',
         Product = 'teams',
+        Feature = 'apps',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1195', 'T1671'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'MarcoJanse', 'Mynster9361')

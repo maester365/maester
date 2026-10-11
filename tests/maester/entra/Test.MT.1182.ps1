@@ -29,7 +29,14 @@
         Id = 'MT.1182',
         Title = 'Mature DMARC policy SHALL be published for every Entra managed and verified domain.',
         Product = 'entra',
+        RelatedProduct = 'exchange',
+        Feature = 'user-settings',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'High',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'Graph',
         Author = 'blindzero'
     )]

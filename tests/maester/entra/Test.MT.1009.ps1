@@ -20,7 +20,13 @@
         Id = 'MT.1009',
         Title = 'At least one Conditional Access policy is configured to block other legacy authentication.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1110'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader'

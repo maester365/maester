@@ -20,7 +20,11 @@
         Id = 'AD-DC-05',
         Title = 'DCs with all FSMO roles count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

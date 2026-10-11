@@ -30,7 +30,13 @@
         Id = 'AD-KRBTGT-03',
         Title = 'KRBTGT should have standard UAC settings (disabled account)',
         Product = 'ad',
+        Feature = 'account-security',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1098',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

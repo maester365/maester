@@ -20,7 +20,11 @@
         Id = 'AD-CFG-21',
         Title = 'NTAuth certificates count should be retrievable',
         Product = 'ad',
+        Feature = 'certificate-services',
+        Area = 'infrastructure',
+        ResourceType = 'CertificateAuthority',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

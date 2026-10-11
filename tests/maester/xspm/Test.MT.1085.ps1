@@ -19,7 +19,13 @@
         Id = 'MT.1085',
         Title = 'Pending approvals for Critical Asset Management should not be present.',
         Product = 'defender',
+        Feature = 'exposure-management',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

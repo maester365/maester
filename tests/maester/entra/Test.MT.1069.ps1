@@ -15,7 +15,13 @@
         Id = 'MT.1069',
         Title = 'Restrict non-admin users from creating security groups.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

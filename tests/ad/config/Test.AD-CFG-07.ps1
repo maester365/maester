@@ -19,7 +19,11 @@
         Id = 'AD-CFG-07',
         Title = 'Default query policy should be retrievable',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

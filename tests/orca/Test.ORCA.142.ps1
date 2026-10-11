@@ -15,7 +15,14 @@ function Test-ORCA142 {
         Id = 'ORCA.142',
         Title = 'Phish action set to Quarantine message.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

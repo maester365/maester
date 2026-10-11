@@ -21,7 +21,11 @@
         Id = 'AD-GMC-07',
         Title = 'Foreign SID details by domain should be investigated',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'external-access',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

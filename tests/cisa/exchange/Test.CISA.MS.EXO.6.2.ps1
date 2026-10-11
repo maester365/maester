@@ -18,7 +18,13 @@
         Id = 'CISA.MS.EXO.6.2',
         Title = 'Calendar details SHALL NOT be shared with all domains.',
         Product = 'exchange',
+        Feature = 'sharing',
+        Area = 'external-access',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1048', 'T1567', 'T1591'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = ('NZLostboy', 'merill')

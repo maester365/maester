@@ -26,7 +26,11 @@
         Id = 'AD-DCOMP-01',
         Title = 'Computers with unconstrained delegation count should be investigated',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

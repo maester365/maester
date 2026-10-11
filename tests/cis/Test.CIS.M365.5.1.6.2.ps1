@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.1.6.2',
         Title = 'Ensure that guest user access is restricted',
         Product = 'entra',
+        Feature = 'external-identities',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1087.004', 'T1069.003'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

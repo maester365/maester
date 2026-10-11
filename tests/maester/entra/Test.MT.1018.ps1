@@ -19,7 +19,13 @@
         Id = 'MT.1018',
         Title = 'At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1539', 'T1550.004'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader'

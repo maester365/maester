@@ -15,7 +15,14 @@ function Test-ORCA140 {
         Id = 'ORCA.140',
         Title = 'High Confidence Spam action set to Quarantine message.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

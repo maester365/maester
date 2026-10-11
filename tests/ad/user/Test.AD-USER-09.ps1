@@ -18,7 +18,11 @@
         Id = 'AD-USER-09',
         Title = 'Password-not-required user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

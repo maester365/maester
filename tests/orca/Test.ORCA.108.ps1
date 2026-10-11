@@ -15,7 +15,14 @@ function Test-ORCA108 {
         Id = 'ORCA.108',
         Title = 'DKIM signing is set up for all your custom domains.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

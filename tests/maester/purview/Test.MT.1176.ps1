@@ -31,7 +31,13 @@
         Id = 'MT.1176',
         Title = 'Retention policy is configured for the Microsoft Copilot location.',
         Product = 'purview',
+        Feature = 'data-lifecycle-management',
+        Area = 'data-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

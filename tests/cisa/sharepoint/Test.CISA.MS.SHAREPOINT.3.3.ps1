@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.3.3',
         Title = 'Reauthentication days for people who use a verification code SHALL be set to 30 days or less.',
         Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1213.002', 'T1530'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

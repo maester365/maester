@@ -23,7 +23,11 @@
         Id = 'AD-GRP-03',
         Title = 'Stale groups count should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

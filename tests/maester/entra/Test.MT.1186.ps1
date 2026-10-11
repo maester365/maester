@@ -25,7 +25,13 @@
         Id = 'MT.1186',
         Title = 'Require explicit assignment of high-privilege first-party Entra Apps.',
         Product = 'entra',
+        Feature = 'applications',
+        Area = 'applications',
+        ResourceType = 'ServicePrincipal',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1059.009', 'T1087.004', 'T1526'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

@@ -19,7 +19,13 @@
         Id = 'MT.1013',
         Title = 'At least one Conditional Access policy is configured to require new password when user risk is high.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'f-bader'

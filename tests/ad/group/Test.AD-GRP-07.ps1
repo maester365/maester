@@ -23,7 +23,11 @@
         Id = 'AD-GRP-07',
         Title = 'Security group count should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'infrastructure',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

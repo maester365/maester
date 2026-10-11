@@ -22,7 +22,11 @@
         Id = 'AD-FORS-03',
         Title = 'SPN suffixes count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

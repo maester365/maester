@@ -26,7 +26,13 @@
         Id = 'AD-DCOMP-06',
         Title = 'No enabled computers should be stale for 180 days or more',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Computer',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

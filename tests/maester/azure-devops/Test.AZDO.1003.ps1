@@ -10,7 +10,13 @@
         Id = 'AZDO.1003',
         Title = 'Restrict public projects.',
         Product = 'azure-devops',
+        Feature = 'security-policies',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1213.003', 'T1593.003'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/vsts-anon-access'

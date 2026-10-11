@@ -21,7 +21,11 @@
         Id = 'AD-GPOL-06',
         Title = 'GPO linked OU count should be retrievable',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA100 {
         Id = 'ORCA.100',
         Title = 'Bulk Complaint Level threshold is between 4 and 6.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

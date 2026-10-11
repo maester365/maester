@@ -19,7 +19,13 @@
         Id = 'MT.1074',
         Title = 'Ensure no more than 100 outbound mails per day are sent using the .onmicrosoft.com domain',
         Product = 'exchange',
+        Feature = 'mailboxes',
+        Area = 'email-protection',
+        ResourceType = 'User',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'HenrikPiecha',
         Contributor = 'JeanPhilippeGeorge'

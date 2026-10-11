@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.7.2',
         Title = 'Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.',
         Product = 'entra',
+        Feature = 'roles',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1098.003', 'T1136.003', 'T1651'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'mrdos010')

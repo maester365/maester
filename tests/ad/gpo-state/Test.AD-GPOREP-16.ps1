@@ -22,7 +22,13 @@ function Test-MtAdGpoVersionMismatchDetails {
         Id = 'AD-GPOREP-16',
         Title = 'No GPOs should have version mismatches',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

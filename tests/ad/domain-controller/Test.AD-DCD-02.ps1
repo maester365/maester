@@ -21,7 +21,11 @@
         Id = 'AD-DCD-02',
         Title = 'DC non-standard LDAPS port count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

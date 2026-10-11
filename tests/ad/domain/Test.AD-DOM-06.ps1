@@ -22,7 +22,11 @@
         Id = 'AD-DOM-06',
         Title = 'Domain name non-standard details should be retrievable',
         Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -20,7 +20,13 @@
         Id = 'AD-DC-07',
         Title = 'DC operating system count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'High',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

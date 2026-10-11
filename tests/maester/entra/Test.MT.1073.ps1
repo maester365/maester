@@ -19,7 +19,13 @@
         Id = 'MT.1073',
         Title = 'Soft- and hard-matching of synchronized objects should be blocked.',
         Product = 'entra',
+        Feature = 'hybrid-identity',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1098'),
         Service = 'Graph',
         Author = 'HenrikPiecha'
     )]

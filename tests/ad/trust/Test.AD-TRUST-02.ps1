@@ -21,7 +21,11 @@
         Id = 'AD-TRUST-02',
         Title = 'Trust inter-forest count should be investigated',
         Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

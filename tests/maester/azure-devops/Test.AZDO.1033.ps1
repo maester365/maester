@@ -26,7 +26,13 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
         Id = 'AZDO.1033',
         Title = '(Tenant) Enable automatic revocation of leaked Personal Access Tokens.',
         Product = 'azure-devops',
+        Feature = 'security-policies',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1552.001', 'T1593.003', 'T1550.001'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens'

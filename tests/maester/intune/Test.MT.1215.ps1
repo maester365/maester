@@ -37,7 +37,13 @@
         Id = 'MT.1215',
         Title = 'Ensure Gatekeeper restricts macOS app download locations.',
         Product = 'intune',
+        Feature = 'device-compliance',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1553.001', 'T1204.002'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

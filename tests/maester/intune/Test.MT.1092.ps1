@@ -17,7 +17,13 @@
         Id = 'MT.1092',
         Title = 'Intune APNS certificate should be valid for more than 30 days',
         Product = 'intune',
+        Feature = 'tenant-administration',
+        Area = 'devices',
+        ResourceType = 'Connector',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

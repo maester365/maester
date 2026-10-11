@@ -10,7 +10,13 @@
         Id = 'AZDO.1007',
         Title = 'Team and project administrator are allowed to invite new users.',
         Product = 'azure-devops',
+        Feature = 'users-and-access',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1136.003',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/azure-devops-invitations-policy'

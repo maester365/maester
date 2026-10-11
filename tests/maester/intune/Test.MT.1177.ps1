@@ -32,7 +32,13 @@
         Id = 'MT.1177',
         Title = 'Ensure LAPS Configuration Policy is properly set.',
         Product = 'intune',
+        Feature = 'endpoint-security',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.003', 'T1021'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

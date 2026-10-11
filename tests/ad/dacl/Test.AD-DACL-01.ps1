@@ -21,7 +21,11 @@
         Id = 'AD-DACL-01',
         Title = 'Distinct DACL object count should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -21,7 +21,13 @@
         Id = 'AD-DC-08',
         Title = 'DC operating system details should be retrievable',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'High',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

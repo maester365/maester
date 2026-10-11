@@ -20,7 +20,13 @@
         Id = 'MT.1043',
         Title = 'Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains',
         Product = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'MailFlowRule',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

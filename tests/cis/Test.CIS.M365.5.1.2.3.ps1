@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.1.2.3',
         Title = 'Ensure ''Restrict non-admin users from creating tenants'' is set to ''Yes''',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

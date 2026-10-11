@@ -22,7 +22,11 @@ function Test-MtAdGpoWmiFilterDetails {
         Id = 'AD-GPOS-03',
         Title = 'WMI filter details should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

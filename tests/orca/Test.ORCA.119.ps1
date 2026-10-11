@@ -15,7 +15,12 @@ function Test-ORCA119 {
         Id = 'ORCA.119',
         Title = 'Similar Domains Safety Tips is enabled.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-phishing',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Info',
+        Mitre = ('T1566', 'T1684.001'),
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

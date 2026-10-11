@@ -21,7 +21,11 @@
         Id = 'AD-COMP-03',
         Title = 'Computer CreatorSid count should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'access-control',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

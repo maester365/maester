@@ -22,7 +22,11 @@
         Id = 'AD-USER-18',
         Title = 'User script path count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1037.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

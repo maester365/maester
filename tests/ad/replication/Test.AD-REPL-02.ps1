@@ -28,7 +28,11 @@
         Id = 'AD-REPL-02',
         Title = 'Non-auto replication connection count should be investigated',
         Product = 'ad',
+        Feature = 'replication',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA118_2 {
         Id = 'ORCA.118.2',
         Title = 'Domains are not being allow listed in an unsafe manner in Transport Rules.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'MailFlowRule',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

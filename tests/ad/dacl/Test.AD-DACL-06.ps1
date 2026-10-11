@@ -21,7 +21,11 @@
         Id = 'AD-DACL-06',
         Title = 'Deny ACE details should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -17,7 +17,11 @@
         Id = 'AD-CFG-11',
         Title = 'Registered DHCP servers count should be retrievable',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

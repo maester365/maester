@@ -18,7 +18,13 @@
       Id = 'MT.1038',
       Title = 'Conditional Access policies should not include or exclude deleted groups.',
       Product = 'entra',
+      Feature = 'conditional-access',
+      Area = 'access-control',
+      ResourceType = 'ConditionalAccessPolicy',
       Severity = 'Medium',
+      UserImpact = 'Low',
+      ImplementationCost = 'Low',
+      Mitre = 'T1078.004',
       Service = 'Graph',
       Author = 'Cloud-Architekt',
       Contributor = ('merill', 'thomas-s-schmidt')

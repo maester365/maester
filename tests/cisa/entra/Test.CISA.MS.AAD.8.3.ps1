@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.8.3',
         Title = 'Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes.',
         Product = 'entra',
+        Feature = 'external-identities',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Author = 'soulemike'
     )]

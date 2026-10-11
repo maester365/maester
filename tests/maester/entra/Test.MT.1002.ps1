@@ -16,7 +16,13 @@
       Id = 'MT.1002',
       Title = 'App management restrictions on applications and service principals is configured and enabled.',
       Product = 'entra',
+      Feature = 'applications',
+      Area = 'applications',
+      ResourceType = 'Tenant',
       Severity = 'High',
+      UserImpact = 'Low',
+      ImplementationCost = 'Medium',
+      Mitre = ('T1078.004', 'T1098.001', 'T1552'),
       Service = 'Graph',
       Author = 'f-bader',
       Contributor = ('merill', 'BakkerJan')

@@ -25,7 +25,11 @@
         Id = 'AD-FEAT-01',
         Title = 'Optional feature count should be investigated',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA118_3 {
         Id = 'ORCA.118.3',
         Title = 'Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

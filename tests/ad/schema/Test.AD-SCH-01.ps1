@@ -22,7 +22,11 @@
         Id = 'AD-SCH-01',
         Title = 'Schema modification year count should be retrievable',
         Product = 'ad',
+        Feature = 'schema',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -22,7 +22,11 @@
         Id = 'AD-DNS-02',
         Title = 'Zones with only SOA/NS records should be retrievable',
         Product = 'ad',
+        Feature = 'dns',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

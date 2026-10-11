@@ -20,7 +20,11 @@
         Id = 'AD-USER-21',
         Title = 'Known service account details should be investigated',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'applications',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

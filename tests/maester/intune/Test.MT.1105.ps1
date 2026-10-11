@@ -17,7 +17,13 @@
         Id = 'MT.1105',
         Title = 'Ensure MDM Authority is set to Intune',
         Product = 'intune',
+        Feature = 'tenant-administration',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

@@ -18,7 +18,13 @@
         Id = 'AD-USER-06',
         Title = 'DES-only Kerberos user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1558',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

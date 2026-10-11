@@ -24,7 +24,13 @@ function Test-MtAIAgentMcpTools {
         Id = 'MT.1120',
         Title = 'AI agents should not use MCP server tools without review.',
         Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1195', 'T1199'),
         Service = 'Graph',
         Author = 'lnfernux'
     )]

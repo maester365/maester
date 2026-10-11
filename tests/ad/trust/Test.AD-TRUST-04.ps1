@@ -26,7 +26,13 @@
         Id = 'AD-TRUST-04',
         Title = 'No trusts should lack SID filtering (quarantine)',
         Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

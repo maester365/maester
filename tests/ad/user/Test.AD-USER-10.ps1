@@ -18,7 +18,11 @@
         Id = 'AD-USER-10',
         Title = 'Workstation-restricted user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'access-control',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

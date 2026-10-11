@@ -22,7 +22,11 @@
         Id = 'AD-PWDPOL-02',
         Title = 'Password maximum age should be retrievable',
         Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = ('T1110.002', 'T1078.002'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

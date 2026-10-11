@@ -33,7 +33,13 @@
         Id = 'MT.1214',
         Title = 'Ensure macOS compliance policy requires System Integrity Protection.',
         Product = 'intune',
+        Feature = 'device-compliance',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1553.006', 'T1547.006', 'T1685'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

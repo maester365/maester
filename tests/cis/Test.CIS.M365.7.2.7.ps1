@@ -19,7 +19,13 @@
         Id = 'CIS.M365.7.2.7',
         Title = 'Ensure link sharing is restricted in SharePoint and OneDrive',
         Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1213.002',
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA139 {
         Id = 'ORCA.139',
         Title = 'Spam action set to move message to junk mail folder or quarantine.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

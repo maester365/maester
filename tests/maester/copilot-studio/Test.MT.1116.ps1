@@ -25,7 +25,13 @@ function Test-MtAIAgentEmailExfiltration {
         Id = 'MT.1116',
         Title = 'AI agents should not send email with AI-controlled inputs.',
         Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1048',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

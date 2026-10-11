@@ -22,7 +22,13 @@ function Test-AzdoProjectCollectionAdministrator {
         Id = 'AZDO.1030',
         Title = 'Project Collection Administrators.',
         Product = 'azure-devops',
+        Feature = 'users-and-access',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1098.003'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions'

@@ -25,7 +25,13 @@
         Id = 'AD-KRBTGT-01',
         Title = 'KRBTGT password age should not exceed 180 days',
         Product = 'ad',
+        Feature = 'account-security',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1558.001',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

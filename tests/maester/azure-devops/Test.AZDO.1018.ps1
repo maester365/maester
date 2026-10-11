@@ -23,7 +23,13 @@ function Test-AzdoOrganizationProtectAccessToRepository {
         Id = 'AZDO.1018',
         Title = 'Protect access to repositories in YAML pipelines.',
         Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1550.001', 'T1213.003'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access'

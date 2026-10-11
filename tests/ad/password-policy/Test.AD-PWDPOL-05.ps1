@@ -22,7 +22,11 @@
         Id = 'AD-PWDPOL-05',
         Title = 'Password reversible encryption status should be retrievable',
         Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'T1556.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

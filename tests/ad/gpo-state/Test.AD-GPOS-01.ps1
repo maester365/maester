@@ -21,7 +21,11 @@ function Test-MtAdGpoStateTotalCount {
         Id = 'AD-GPOS-01',
         Title = 'GPO state total count should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

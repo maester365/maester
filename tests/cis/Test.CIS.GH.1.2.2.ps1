@@ -22,7 +22,13 @@
         Id = 'CIS.GH.1.2.2',
         Title = 'Ensure repository creation is limited to specific members',
         Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'T1567.001',
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

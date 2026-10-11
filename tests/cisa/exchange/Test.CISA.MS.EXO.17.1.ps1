@@ -18,7 +18,14 @@
         Id = 'CISA.MS.EXO.17.1',
         Title = 'Microsoft Purview Audit (Standard) logging SHALL be enabled.',
         Product = 'exchange',
+        RelatedProduct = 'purview',
+        Feature = 'audit-logging',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]

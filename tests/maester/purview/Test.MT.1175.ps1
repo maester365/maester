@@ -29,7 +29,13 @@
         Id = 'MT.1175',
         Title = 'DLP policy is configured for the Microsoft 365 Copilot location.',
         Product = 'purview',
+        Feature = 'data-loss-prevention',
+        Area = 'data-protection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1213.002', 'T1530'),
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'OfirGavish'

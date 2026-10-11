@@ -23,7 +23,11 @@
         Id = 'AD-FORS-04',
         Title = 'Cross-forest references count should be retrievable',
         Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

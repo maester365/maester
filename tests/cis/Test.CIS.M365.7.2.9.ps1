@@ -19,7 +19,13 @@
         Id = 'CIS.M365.7.2.9',
         Title = 'Ensure guest access to a site or OneDrive will expire automatically',
         Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1213.002', 'T1530'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

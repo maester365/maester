@@ -19,7 +19,13 @@
         Id = 'MT.1039',
         Title = 'Ensure MailTips are enabled for end users',
         Product = 'exchange',
+        Feature = 'outlook',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

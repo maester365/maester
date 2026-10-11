@@ -17,7 +17,13 @@
         Id = 'MT.1101',
         Title = 'Default Branding Profile should be customized',
         Product = 'intune',
+        Feature = 'tenant-administration',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

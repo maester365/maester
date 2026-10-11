@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.7.1',
         Title = 'A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.',
         Product = 'entra',
+        Feature = 'roles',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1098.003', 'T1078.004'),
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'michaelmsonne', 'oed-metzb')

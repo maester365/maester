@@ -24,7 +24,11 @@
         Id = 'AD-GMC-05',
         Title = 'Trust members details by group should be investigated',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'external-access',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

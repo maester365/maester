@@ -22,7 +22,11 @@
         Id = 'AD-USER-17',
         Title = 'User profile path count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

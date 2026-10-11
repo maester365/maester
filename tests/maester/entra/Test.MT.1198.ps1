@@ -30,7 +30,13 @@
         Id = 'MT.1198',
         Title = 'App registration certificates should not have excessive validity periods.',
         Product = 'entra',
+        Feature = 'applications',
+        Area = 'applications',
+        ResourceType = 'Application',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1649',
         Service = 'Graph',
         LongRunning,
         Author = 'simon-vedder'

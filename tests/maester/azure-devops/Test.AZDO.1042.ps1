@@ -33,7 +33,13 @@ function Test-AzdoOrganizationAutomaticEnrollmentCodeSecurityNewRepository {
         Id = 'AZDO.1042',
         Title = '(Organization) Code Security: new repositories enrolled automatically.',
         Product = 'azure-devops',
+        Feature = 'repositories',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1195.001', 'T1190'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding'

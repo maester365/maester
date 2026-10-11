@@ -23,7 +23,13 @@ function Test-AzdoOrganizationTaskRestrictionsDisableNode6Task {
         Id = 'AZDO.1024',
         Title = 'Disable Node 6 tasks.',
         Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents'

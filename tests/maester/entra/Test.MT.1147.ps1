@@ -18,7 +18,14 @@
         Id = 'MT.1147',
         Title = 'Do not sync krbtgt_AzureAD to Entra ID.',
         Product = 'entra',
+        RelatedProduct = 'ad',
+        Feature = 'hybrid-identity',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1558',
         Service = 'Graph',
         Author = 'f-bader'
     )]

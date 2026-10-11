@@ -18,7 +18,11 @@
         Id = 'AD-USER-28',
         Title = 'User delegation configured count should be investigated',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

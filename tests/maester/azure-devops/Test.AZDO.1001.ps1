@@ -23,7 +23,13 @@ function Test-AzdoSSHAuthentication {
         Id = 'AZDO.1001',
         Title = 'Identities can connect to your organization''s Git repos through SSH.',
         Product = 'azure-devops',
+        Feature = 'security-policies',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1552.004', 'T1098.001'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/vstspolicyssh'

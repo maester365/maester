@@ -78,7 +78,7 @@
         }
         Feature            = @{
             Type        = 'string'
-            Required    = 'No' # REQUIRED-LATER: BuiltIn
+            Required    = 'BuiltIn'
             ValuesFrom  = 'Taxonomy.Features'
             Pattern     = '^[^\r\n]+$'
             MaxLength   = 60
@@ -86,7 +86,7 @@
         }
         Area               = @{
             Type        = 'string'
-            Required    = 'No' # REQUIRED-LATER: BuiltIn
+            Required    = 'BuiltIn'
             ValuesFrom  = 'Taxonomy.Areas'
             Pattern     = '^[^\r\n]+$'
             MaxLength   = 60
@@ -94,7 +94,7 @@
         }
         ResourceType       = @{
             Type        = 'string'
-            Required    = 'No' # REQUIRED-LATER: BuiltIn
+            Required    = 'BuiltIn'
             ValuesFrom  = 'Taxonomy.ResourceTypes'
             Pattern     = '^[A-Za-z][A-Za-z0-9]*$'
             Description = 'What a failing result points at, for example Tenant or User.'
@@ -107,21 +107,21 @@
         }
         UserImpact         = @{
             Type            = 'string'
-            Required        = 'No' # REQUIRED-LATER: BuiltIn
+            Required        = 'BuiltIn'
             NotRequiredWhen = @{ Severity = 'Info' }
             AllowedValues   = @('Low', 'Medium', 'High')
             Description     = 'How much the recommended fix disrupts end users. Omitted when Severity is Info.'
         }
         ImplementationCost = @{
             Type            = 'string'
-            Required        = 'No' # REQUIRED-LATER: BuiltIn
+            Required        = 'BuiltIn'
             NotRequiredWhen = @{ Severity = 'Info' }
             AllowedValues   = @('Low', 'Medium', 'High')
             Description     = 'How much administrator work the recommended fix takes. Omitted when Severity is Info.'
         }
         Mitre              = @{
             Type        = 'string[]'
-            Required    = 'No' # REQUIRED-LATER: BuiltIn
+            Required    = 'BuiltIn'
             Pattern     = '^(T[0-9]{4}(\.[0-9]{3})?|None)$'
             Description = 'MITRE ATT&CK technique IDs the checked control prevents or detects (T1110, T1110.003), or the single value None.'
         }

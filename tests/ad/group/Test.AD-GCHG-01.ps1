@@ -26,7 +26,11 @@
         Id = 'AD-GCHG-01',
         Title = 'Average group membership changes per year should be investigated',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

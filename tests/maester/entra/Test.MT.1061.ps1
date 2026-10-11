@@ -18,7 +18,13 @@
         Id = 'MT.1061',
         Title = 'Device registration MFA control conflicts with Conditional Access policies.',
         Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'ConditionalAccessPolicy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1098.005',
         Service = 'Graph',
         Author = 'RobbeVandenDaele',
         Contributor = 'thomas-s-schmidt'

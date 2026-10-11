@@ -29,7 +29,13 @@
         Id = 'MT.1172',
         Title = 'Unified audit log ingestion is enabled.',
         Product = 'purview',
+        Feature = 'audit',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
         Service = 'ExchangeOnline',
         Author = 'OfirGavish'
     )]

@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.1.1',
         Title = 'External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.',
         Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'High',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1048', 'T1213.002'),
         Service = 'SharePointOnline',
         Author = 'soulemike',
         Contributor = ('SamErde', 'merill')

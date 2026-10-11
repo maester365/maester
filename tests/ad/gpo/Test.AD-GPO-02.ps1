@@ -24,7 +24,11 @@
         Id = 'AD-GPO-02',
         Title = 'GPO created before 2020 count should be retrievable',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

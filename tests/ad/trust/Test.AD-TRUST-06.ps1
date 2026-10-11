@@ -23,7 +23,11 @@
         Id = 'AD-TRUST-06',
         Title = 'Trust stale count should be investigated',
         Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

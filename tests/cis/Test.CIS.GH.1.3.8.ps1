@@ -20,7 +20,13 @@
         Id = 'CIS.GH.1.3.8',
         Title = 'Ensure strict base permissions are set for repositories',
         Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1677', 'T1195.002'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

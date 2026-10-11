@@ -41,7 +41,13 @@
         Id = 'MT.1180',
         Title = 'Ensure Managed Installer Rules are configured correctly.',
         Product = 'intune',
+        Feature = 'endpoint-security',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

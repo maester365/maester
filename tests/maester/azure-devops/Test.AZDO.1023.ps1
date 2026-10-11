@@ -22,7 +22,13 @@ function Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask {
         Id = 'AZDO.1023',
         Title = 'Disable Marketplace tasks.',
         Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'High',
+        Mitre = 'T1195.001',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution'

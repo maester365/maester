@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.3.1',
         Title = 'Expiration days for Anyone links SHALL be set to 30 days or less.',
         Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1048', 'T1213.002', 'T1530'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

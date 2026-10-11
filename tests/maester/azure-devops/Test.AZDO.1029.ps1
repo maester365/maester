@@ -26,7 +26,13 @@ function Test-AzdoOrganizationStorageUsage {
         Id = 'AZDO.1029',
         Title = 'Storage Usage Limit.',
         Product = 'azure-devops',
+        Feature = 'resource-usage',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops'

@@ -18,7 +18,13 @@
         Id = 'CISA.MS.SHAREPOINT.2.2',
         Title = 'File and folder default sharing permissions SHALL be set to View only.',
         Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1565.001'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

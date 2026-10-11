@@ -15,7 +15,14 @@ function Test-ORCA233 {
         Id = 'ORCA.233',
         Title = 'Domains are pointed directly at EOP or enhanced filtering is used.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

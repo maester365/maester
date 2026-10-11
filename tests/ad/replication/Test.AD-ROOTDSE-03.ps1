@@ -30,7 +30,13 @@
         Id = 'AD-ROOTDSE-03',
         Title = 'Root DSE should be synchronized',
         Product = 'ad',
+        Feature = 'replication',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -27,7 +27,11 @@
         Id = 'AD-DCOMP-05',
         Title = 'Computer operating system details should be investigated',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'devices',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

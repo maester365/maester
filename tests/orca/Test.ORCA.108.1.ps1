@@ -15,7 +15,14 @@ function Test-ORCA108_1 {
         Id = 'ORCA.108.1',
         Title = 'DNS Records have been set up to support DKIM.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

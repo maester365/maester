@@ -18,7 +18,13 @@
         Id = 'MT.1075',
         Title = 'Require explicit assignment of Third Party Entra Apps.',
         Product = 'entra',
+        Feature = 'applications',
+        Area = 'applications',
+        ResourceType = 'ServicePrincipal',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'High',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         LongRunning,
         Author = 'jflieben'

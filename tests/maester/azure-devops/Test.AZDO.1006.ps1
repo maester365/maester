@@ -22,7 +22,13 @@ function Test-AzdoExternalGuestAccess {
         Id = 'AZDO.1006',
         Title = 'External Users access.',
         Product = 'azure-devops',
+        Feature = 'users-and-access',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access'

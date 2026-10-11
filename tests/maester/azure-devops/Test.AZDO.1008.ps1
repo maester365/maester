@@ -10,7 +10,13 @@
         Id = 'AZDO.1008',
         Title = 'Request access to Azure DevOps by e-mail notifications to administrators.',
         Product = 'azure-devops',
+        Feature = 'users-and-access',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://go.microsoft.com/fwlink/?linkid=2113172'

@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.1.5.1',
         Title = 'Ensure user consent to apps accessing company data on their behalf is not allowed',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

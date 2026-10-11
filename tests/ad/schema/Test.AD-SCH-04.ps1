@@ -23,7 +23,11 @@
         Id = 'AD-SCH-04',
         Title = 'Schema version details should be retrievable',
         Product = 'ad',
+        Feature = 'schema',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

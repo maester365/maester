@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAM09 {
         Id = 'EIDSCA.AM09',
         Title = 'Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1621',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

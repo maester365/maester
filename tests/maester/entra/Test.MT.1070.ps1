@@ -15,7 +15,13 @@
         Id = 'MT.1070',
         Title = 'Restrict device join to selected users/groups or none.',
         Product = 'entra',
+        Feature = 'devices',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1098.005',
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

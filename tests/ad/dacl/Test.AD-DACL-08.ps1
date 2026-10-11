@@ -20,7 +20,11 @@
         Id = 'AD-DACL-08',
         Title = 'DACL ACE distribution per identity should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

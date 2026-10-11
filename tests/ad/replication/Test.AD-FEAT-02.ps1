@@ -26,7 +26,11 @@
         Id = 'AD-FEAT-02',
         Title = 'Optional feature enabled details should be investigated',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

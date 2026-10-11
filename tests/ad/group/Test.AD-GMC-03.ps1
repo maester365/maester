@@ -24,7 +24,11 @@
         Id = 'AD-GMC-03',
         Title = 'Member account types breakdown should be retrievable',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

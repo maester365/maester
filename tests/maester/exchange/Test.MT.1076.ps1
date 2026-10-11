@@ -19,7 +19,13 @@ function Test-MtExoMoeraMailActivity {
         Id = 'MT.1076',
         Title = 'MOERA SHOULD NOT be used for sent mail',
         Product = 'exchange',
+        Feature = 'mailboxes',
+        Area = 'email-protection',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('kij', 'SamErde')

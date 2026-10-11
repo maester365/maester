@@ -15,7 +15,14 @@ function Test-ORCA107 {
         Id = 'ORCA.107',
         Title = 'End-user spam notification is enabled.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'quarantine',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

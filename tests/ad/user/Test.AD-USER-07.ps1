@@ -18,7 +18,13 @@
         Id = 'AD-USER-07',
         Title = 'No pre-authentication user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1558.004',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA233_1 {
         Id = 'ORCA.233.1',
         Title = 'Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'Connector',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

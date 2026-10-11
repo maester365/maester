@@ -24,7 +24,11 @@
         Id = 'AD-TRUST-05',
         Title = 'Trust configuration details should be investigated',
         Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

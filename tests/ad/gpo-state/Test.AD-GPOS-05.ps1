@@ -28,7 +28,11 @@ function Test-MtAdGpoComputerSettingsDisabledDetails {
         Id = 'AD-GPOS-05',
         Title = 'Computer disabled GPO settings details should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

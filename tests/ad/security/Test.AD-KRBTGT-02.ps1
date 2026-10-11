@@ -25,7 +25,11 @@
         Id = 'AD-KRBTGT-02',
         Title = 'KRBTGT last logon should be investigated',
         Product = 'ad',
+        Feature = 'account-security',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

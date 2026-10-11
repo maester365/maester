@@ -19,7 +19,14 @@
         Id = 'CIS.M365.7.2.2',
         Title = 'Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled',
         Product = 'sharepoint',
+        RelatedProduct = 'entra',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1213.002'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

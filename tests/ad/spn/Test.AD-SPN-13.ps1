@@ -22,7 +22,13 @@
         Id = 'AD-SPN-13',
         Title = 'No domain admin accounts should have SPNs configured',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

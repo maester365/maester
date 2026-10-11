@@ -19,7 +19,13 @@
         Id = 'MT.1064',
         Title = 'Ensure that write permissions are required to create new management groups',
         Product = 'azure',
+        Feature = 'management-groups',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1666',
         Service = 'Azure',
         Author = 'brianveldman',
         Contributor = 'l-gosling'

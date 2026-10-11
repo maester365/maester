@@ -23,7 +23,11 @@
         Id = 'AD-GMC-04',
         Title = 'Trust members count should be investigated',
         Product = 'ad',
+        Feature = 'groups',
+        Area = 'external-access',
+        ResourceType = 'Group',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

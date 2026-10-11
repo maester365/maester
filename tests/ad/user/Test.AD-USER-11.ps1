@@ -22,7 +22,11 @@
         Id = 'AD-USER-11',
         Title = 'User AdminCount count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

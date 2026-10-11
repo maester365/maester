@@ -28,7 +28,11 @@ function Test-MtAdGpoAllSettingsDisabledDetails {
         Id = 'AD-GPOS-07',
         Title = 'All disabled GPO settings details should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

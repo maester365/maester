@@ -27,7 +27,11 @@ function Test-MtAdGpoSettingsDisabledCount {
         Id = 'AD-GPOS-04',
         Title = 'Disabled GPO settings count should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

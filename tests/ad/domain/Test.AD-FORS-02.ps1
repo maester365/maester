@@ -23,7 +23,11 @@
         Id = 'AD-FORS-02',
         Title = 'UPN suffixes details should be retrievable',
         Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

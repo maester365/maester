@@ -18,7 +18,13 @@
         Id = 'CISA.MS.AAD.3.4',
         Title = 'The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike'

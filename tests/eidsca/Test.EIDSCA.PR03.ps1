@@ -15,7 +15,13 @@ function Test-MtCheckEidscaPR03 {
         Id = 'EIDSCA.PR03',
         Title = 'Default Settings - Password Rule Settings - Enforce custom list.',
         Product = 'entra',
+        Feature = 'password-protection',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

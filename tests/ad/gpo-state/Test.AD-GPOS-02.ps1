@@ -21,7 +21,11 @@ function Test-MtAdGpoWmiFilterCount {
         Id = 'AD-GPOS-02',
         Title = 'WMI filter count should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

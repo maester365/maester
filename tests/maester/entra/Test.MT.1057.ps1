@@ -18,7 +18,13 @@
         Id = 'MT.1057',
         Title = 'App registrations should no longer use secrets.',
         Product = 'entra',
+        Feature = 'applications',
+        Area = 'applications',
+        ResourceType = 'Application',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'High',
+        Mitre = ('T1078.004', 'T1552'),
         Service = 'Graph',
         LongRunning,
         Author = 'svrooij'

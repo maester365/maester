@@ -24,7 +24,13 @@
         Id = 'MT.1185',
         Title = 'Block legacy MSOnline (MSOL) PowerShell module.',
         Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1059.009', 'T1078.004'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

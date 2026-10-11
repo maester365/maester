@@ -18,7 +18,13 @@
         Id = 'CISA.MS.EXO.1.1',
         Title = 'Automatic forwarding to external domains SHALL be disabled.',
         Product = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1114.003', 'T1048', 'T1567'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

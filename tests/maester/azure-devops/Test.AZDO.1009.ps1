@@ -24,7 +24,11 @@ function Test-AzdoFeedbackCollection {
         Id = 'AZDO.1009',
         Title = 'Feedback Collection.',
         Product = 'azure-devops',
+        Feature = 'organization-policies',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/ADOPrivacyPolicy'

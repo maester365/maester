@@ -22,7 +22,11 @@
         Id = 'AD-SPN-05',
         Title = 'Computer SPN non-FQDN hosts should be investigated',
         Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

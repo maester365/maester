@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAV01 {
         Id = 'EIDSCA.AV01',
         Title = 'Authentication Method - Voice call - State.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1621',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

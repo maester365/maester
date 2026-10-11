@@ -23,7 +23,11 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
         Id = 'AD-GPOREP-11',
         Title = 'GPO no-apply Group Policy ACE details should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -30,7 +30,11 @@
         Id = 'AD-ROOTDSE-01',
         Title = 'Supported SASL mechanism count should be investigated',
         Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

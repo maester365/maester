@@ -15,7 +15,13 @@ function Test-MtCheckEidscaCP01 {
         Id = 'EIDSCA.CP01',
         Title = 'Default Settings - Consent Policy Settings - Group owner consent for apps accessing data.',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

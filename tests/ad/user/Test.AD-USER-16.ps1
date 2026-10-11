@@ -22,7 +22,11 @@
         Id = 'AD-USER-16',
         Title = 'User home directory count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

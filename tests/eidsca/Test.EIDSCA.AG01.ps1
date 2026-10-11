@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAG01 {
         Id = 'EIDSCA.AG01',
         Title = 'Authentication Method - General Settings - Manage migration.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

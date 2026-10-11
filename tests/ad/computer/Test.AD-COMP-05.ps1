@@ -24,7 +24,13 @@
         Id = 'AD-COMP-05',
         Title = 'Computer SID History count should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Computer',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

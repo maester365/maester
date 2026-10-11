@@ -20,7 +20,13 @@
         Id = 'AD-DC-02',
         Title = 'SMBv1 should be disabled on all domain controllers',
         Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Critical',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1210',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

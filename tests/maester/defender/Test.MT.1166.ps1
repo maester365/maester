@@ -31,7 +31,14 @@
         Id = 'MT.1166',
         Title = 'Local Admin Merge should be disabled.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1685', 'T1564.012'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA114 {
         Id = 'ORCA.114',
         Title = 'No IP Allow Lists have been configured.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

@@ -15,7 +15,14 @@ function Test-ORCA232 {
         Id = 'ORCA.232',
         Title = 'Each domain has a malware filter policy applied to it, or the default policy is being used.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

@@ -21,7 +21,11 @@
         Id = 'AD-DOM-05',
         Title = 'Domain name standard compliance should be retrievable',
         Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

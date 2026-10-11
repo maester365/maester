@@ -15,7 +15,14 @@ function Test-ORCA120_malware {
         Id = 'ORCA.120.2',
         Title = 'Zero Hour Autopurge Enabled for Malware.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'zero-hour-auto-purge',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566.001',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

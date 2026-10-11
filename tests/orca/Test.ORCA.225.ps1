@@ -15,7 +15,13 @@ function Test-ORCA225 {
         Id = 'ORCA.225',
         Title = 'Safe Documents is enabled for Office clients.',
         Product = 'defender',
+        Feature = 'safe-attachments',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

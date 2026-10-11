@@ -15,7 +15,14 @@ function Test-ORCA205 {
         Id = 'ORCA.205',
         Title = 'Common attachment type filter is enabled.',
         Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566.001', 'T1204.002'),
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

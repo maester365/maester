@@ -14,7 +14,13 @@
         Id = 'MT.1197',
         Title = 'Remove memberOf rules.',
         Product = 'entra',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'agnivesh'
     )]

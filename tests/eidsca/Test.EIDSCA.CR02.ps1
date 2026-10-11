@@ -15,7 +15,13 @@ function Test-MtCheckEidscaCR02 {
         Id = 'EIDSCA.CR02',
         Title = 'Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests.',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

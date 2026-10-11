@@ -31,7 +31,14 @@
         Id = 'MT.1165',
         Title = 'Network Protection should be enabled.',
         Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1204.001', 'T1189', 'T1071'),
         Service = 'Graph',
         Author = 'bdrogja'
     )]

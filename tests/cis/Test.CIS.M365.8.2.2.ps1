@@ -19,7 +19,13 @@
         Id = 'CIS.M365.8.2.2',
         Title = 'Ensure communication with unmanaged Teams users is disabled',
         Product = 'teams',
+        Feature = 'external-access',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566', 'T1204.001', 'T1204.002'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'Mynster9361')

@@ -15,7 +15,13 @@ function Test-MtCheckEidscaPR06 {
         Id = 'EIDSCA.PR06',
         Title = 'Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold.',
         Product = 'entra',
+        Feature = 'password-protection',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

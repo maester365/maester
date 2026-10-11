@@ -18,7 +18,13 @@
         Id = 'CISA.MS.EXO.7.1',
         Title = 'External sender warnings SHALL be implemented.',
         Product = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = ('merill', 'f-bader')

@@ -23,7 +23,13 @@ function Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation {
         Id = 'AZDO.1025',
         Title = 'Enable shell tasks arguments validation.',
         Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1059', 'T1677'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation'

@@ -16,7 +16,13 @@
         Id = 'MT.1201',
         Title = 'Agent Users should have an existing parent Agent Identity (Preview).',
         Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
         Lifecycle = 'Preview',
         Author = 'agnivesh'

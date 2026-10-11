@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.1.4.6',
         Title = 'Ensure users are restricted from recovering BitLocker keys',
         Product = 'entra',
+        Feature = 'devices',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1552',
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

@@ -20,7 +20,13 @@
         Id = 'MT.1083',
         Title = 'Ensure Delicensing Resiliency is enabled',
         Product = 'exchange',
+        Feature = 'mailboxes',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'l-gosling'
     )]

@@ -19,7 +19,13 @@
         Id = 'CIS.M365.5.1.5.2',
         Title = 'Ensure the admin consent workflow is enabled',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1528',
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

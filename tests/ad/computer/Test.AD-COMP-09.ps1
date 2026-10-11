@@ -24,7 +24,11 @@
         Id = 'AD-COMP-09',
         Title = 'Computer delegation count should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

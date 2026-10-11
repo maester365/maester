@@ -23,7 +23,11 @@
         Id = 'AD-OU-05',
         Title = 'OU empty details should be retrievable',
         Product = 'ad',
+        Feature = 'organizational-units',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

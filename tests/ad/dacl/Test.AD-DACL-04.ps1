@@ -22,7 +22,11 @@
         Id = 'AD-DACL-04',
         Title = 'Conflict object details should be investigated',
         Product = 'ad',
+        Feature = 'permissions',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

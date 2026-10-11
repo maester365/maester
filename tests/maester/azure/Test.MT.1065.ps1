@@ -20,7 +20,13 @@
         Id = 'MT.1065',
         Title = 'Ensure all Recovery Services Vaults have soft delete enabled',
         Product = 'azure',
+        Feature = 'backup',
+        Area = 'data-protection',
+        ResourceType = 'AzureResource',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1490', 'T1485'),
         Service = 'Azure',
         Author = 'brianveldman',
         Contributor = 'l-gosling'

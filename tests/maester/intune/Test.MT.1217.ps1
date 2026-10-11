@@ -41,7 +41,13 @@
         Id = 'MT.1217',
         Title = 'Ensure macOS LAPS is configured on Automated Device Enrollment profiles.',
         Product = 'intune',
+        Feature = 'device-enrollment',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.003', 'T1021', 'T1552.001'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'DanielLystad'

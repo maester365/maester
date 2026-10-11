@@ -21,7 +21,11 @@
         Id = 'AD-OU-01',
         Title = 'OU overlapping name count should be retrievable',
         Product = 'ad',
+        Feature = 'organizational-units',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -10,7 +10,13 @@
         Id = 'MT.1037',
         Title = 'Only users with Presenter role are allowed to present in Teams meetings',
         Product = 'teams',
+        Feature = 'meetings',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = 'merill'

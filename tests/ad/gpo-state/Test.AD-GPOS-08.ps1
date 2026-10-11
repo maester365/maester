@@ -21,7 +21,11 @@ function Test-MtAdGpoOwnerDistinctCount {
         Id = 'AD-GPOS-08',
         Title = 'GPO owner distinct count should be investigated',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

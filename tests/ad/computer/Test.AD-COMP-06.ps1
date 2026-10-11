@@ -25,7 +25,11 @@
         Id = 'AD-COMP-06',
         Title = 'Computer default container count should be retrievable',
         Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

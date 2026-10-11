@@ -15,7 +15,13 @@ function Test-MtCheckEidscaCR03 {
         Id = 'EIDSCA.CR03',
         Title = 'Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire.',
         Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

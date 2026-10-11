@@ -37,7 +37,13 @@
         Id = 'MT.1179',
         Title = 'Ensure App Control for Business is enabled.',
         Product = 'intune',
+        Feature = 'endpoint-security',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'High',
+        ImplementationCost = 'High',
+        Mitre = 'T1204.002',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

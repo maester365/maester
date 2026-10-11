@@ -19,7 +19,13 @@
         Id = 'AD-GPOREP-05',
         Title = 'GPOs without enterprise domain controllers count should be retrievable',
         Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -31,7 +31,13 @@
         Id = 'AD-DFSR-01',
         Title = 'All domain controllers should have DFS-R subscriptions',
         Product = 'ad',
+        Feature = 'replication',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

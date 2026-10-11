@@ -19,7 +19,13 @@
         Id = 'AD-USER-04',
         Title = 'Reversible encryption user count should be retrievable',
         Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1556.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -15,7 +15,13 @@ function Test-MtCheckEidscaAF04 {
         Id = 'EIDSCA.AF04',
         Title = 'Authentication Method - FIDO2 security key - Enforce key restrictions.',
         Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1098.005',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

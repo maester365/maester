@@ -22,7 +22,11 @@
         Id = 'AD-SUB-07',
         Title = 'Non-RFC1918 (public IP) subnets details should be retrievable',
         Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]
