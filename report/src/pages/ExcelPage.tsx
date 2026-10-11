@@ -3,10 +3,17 @@ import { Button } from "@/components/Button"
 import { Dialog, DialogPanel } from "@/components/ui/report"
 import { RiClipboardLine, RiCheckLine } from "@remixicon/react"
 import { useTenant } from "@/context/TenantContext"
+import { getTestAttributeExportValues, hasTestAttributes, testAttributeExportHeaders } from "@/lib/testAttributes"
 
 export default function ExcelPage() {
   const { selectedTenant: testResults } = useTenant()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  // Columns for the typed attributes of Maester 3.0, after the existing ones so their positions do not
+  // change. A result without attributes (Maester 2.x) exports the same columns as before.
+  const attributeHeaders = testResults.Tests.some(hasTestAttributes) ? testAttributeExportHeaders : []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getAttributeValues = (test: any) =>
+    attributeHeaders.length > 0 ? getTestAttributeExportValues(testResults.Taxonomy, test) : []
 
   const copyToClipboard = () => {
     const headers = [
@@ -20,6 +27,7 @@ export default function ExcelPage() {
       "Result",
       "Tags",
       "Notes",
+      ...attributeHeaders,
     ]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rows = testResults.Tests.map((test: any) => {
@@ -34,6 +42,7 @@ export default function ExcelPage() {
         test.ResultDetail?.TestResult,
         test.Tag?.join(", "),
         test.ResultDetail?.SkippedReason,
+        ...getAttributeValues(test),
       ]
         .map((field) => {
           if (field == null) return ""
@@ -105,6 +114,9 @@ export default function ExcelPage() {
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Result</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Tags</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Notes</th>
+              {attributeHeaders.map((header) => (
+                <th key={header} className="border-b border-gray-200 p-2 dark:border-gray-700">{header}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -134,6 +146,11 @@ export default function ExcelPage() {
                 <td className="max-w-xs truncate p-2">
                   {test.ResultDetail?.SkippedReason}
                 </td>
+                {getAttributeValues(test).map((value, valueIndex) => (
+                  <td key={attributeHeaders[valueIndex]} className="max-w-xs truncate p-2" title={value}>
+                    {value}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
