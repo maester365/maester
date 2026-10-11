@@ -265,8 +265,9 @@ function catalogArgument() {
   return process.env.MAESTER_TEST_CATALOG ?? "";
 }
 
-// Returns the export: { Taxonomy, Tests }. Taxonomy holds the display names of the product, feature and
-// area keys and of the ATT&CK techniques that the tests use.
+// Returns the export: { Taxonomy, Frameworks, Tests }. Taxonomy holds the display names of the product,
+// feature and area keys and of the ATT&CK techniques that the tests use. Frameworks holds the name of each
+// benchmark a suite implements, by the key a test's Benchmark uses.
 function loadCatalog() {
   const explicit = catalogArgument();
   if (explicit) {
@@ -329,16 +330,43 @@ function mitreLabelFor(id) {
   return name ? `${id} ${name}` : id;
 }
 
-// CIS benchmark levels (L1/L2) are not an attribute. Until the suites have framework files they are read
-// from the tags the test carried in Maester 2.x ("L1"/"L2" or "CIS E3 Level 1"). Prefix the level so
+// A test of a suite that implements a published benchmark has Benchmark in the export, from the framework file
+// of its suite (tests/<suite>/frameworks/<key>.json): Framework (a key), Version, Requirement and the
+// requirement's own facts, such as Level and Profile for CIS or Criticality and Upstream for CISA.
+let frameworkNames = new Map();
+function loadFrameworkNames(frameworks) {
+  frameworkNames = new Map((frameworks ?? []).map((framework) => [framework.Key, framework.Name || framework.Key]));
+}
+
+// The CIS benchmark level (L1/L2) is a fact of the requirement, not an attribute of the test. Prefix it so
 // generated titles stay consistent, e.g. "(L1) Ensure ...".
-function titleFor(test, legacyTags) {
+function titleFor(test) {
   const title = String(test.Title ?? "").trim();
-  if (!test.Id.startsWith("CIS.") || /^\(L\d\)\s*/i.test(title)) return title;
-  const levelTag = legacyTags.find((tag) => /^L[12]$/i.test(tag));
-  const levelFromSuite = legacyTags.map((tag) => tag.match(/level\s*([12])\b/i)?.[1]).find(Boolean);
-  const level = levelTag ? levelTag.toUpperCase() : levelFromSuite ? `L${levelFromSuite}` : null;
-  return level ? `(${level}) ${title}` : title;
+  const level = String(test.Benchmark?.Level ?? "").toUpperCase();
+  if (!/^L\d$/.test(level) || /^\(L\d\)\s*/i.test(title)) return title;
+  return `(${level}) ${title}`;
+}
+
+// "CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.2.2.3". A test supports a
+// requirement; the page never says that passing it makes a tenant compliant with the benchmark.
+function benchmarkLabelFor(benchmark) {
+  const name = frameworkNames.get(benchmark.Framework) ?? benchmark.Framework;
+  const version = benchmark.Version ? ` (version ${benchmark.Version})` : "";
+  return `${name}${version}, requirement ${benchmark.Requirement}`;
+}
+
+// Where the requirement stands in the upstream baseline today, when the framework file records it.
+function upstreamLabelFor(upstream) {
+  switch (upstream?.Status) {
+    case "Current":
+      return upstream.Id ?? "";
+    case "Moved":
+      return `Moved to ${upstream.Id}${upstream.From ? ` (was ${upstream.From})` : ""}`;
+    case "Removed":
+      return `Removed${upstream.From ? ` (was ${upstream.From})` : ""}`;
+    default:
+      return "";
+  }
 }
 
 let sourceFileIndex;
@@ -407,7 +435,7 @@ function buildInventory(catalog) {
     // Maester 2.x, which -Tag still matches; they are listed on the tags page and used as search keywords.
     const tags = unique(test.Tag ?? []).sort((a, b) => a.localeCompare(b));
     const legacyTags = unique(test.LegacyTag ?? []).sort((a, b) => a.localeCompare(b));
-    const title = titleFor(test, legacyTags);
+    const title = titleFor(test);
     const description = markdown ? trimDescription(markdown) : trimDescription(helpDescription || help.synopsis || title);
     const defaultHelpUrl = `https://maester.dev/docs/tests/${test.Id}`;
     testsById.set(key, {
@@ -424,6 +452,7 @@ function buildInventory(catalog) {
       userImpact: test.UserImpact ?? "",
       implementationCost: test.ImplementationCost ?? "",
       mitre: (test.Mitre ?? []).map(mitreLabelFor),
+      benchmark: test.Benchmark ?? null,
       controls: test.Control ?? [],
       tags,
       legacyTags,
@@ -475,7 +504,16 @@ function renderTestPage(test, contributorData) {
   if (test.userImpact) body.push(`| User impact | ${escapeTable(test.userImpact)} |`);
   if (test.implementationCost) body.push(`| Implementation cost | ${escapeTable(test.implementationCost)} |`);
   if (test.mitre.length > 0) body.push(`| MITRE ATT&CK | ${escapeTable(test.mitre.join(", "))} |`);
-  if (test.controls.length > 0) body.push(`| Controls | ${escapeTable(test.controls.join(", "))} |`);
+  if (test.benchmark) {
+    const profiles = [test.benchmark.Profile ?? []].flat();
+    const upstream = upstreamLabelFor(test.benchmark.Upstream);
+    body.push(`| Supports benchmark | ${escapeTable(benchmarkLabelFor(test.benchmark))} |`);
+    if (test.benchmark.Level) body.push(`| Benchmark level | ${escapeTable(test.benchmark.Level)} |`);
+    if (profiles.length > 0) body.push(`| Benchmark profiles | ${escapeTable(profiles.join(", "))} |`);
+    if (test.benchmark.Criticality) body.push(`| Criticality | ${escapeTable(test.benchmark.Criticality)} |`);
+    if (upstream) body.push(`| Upstream requirement | ${escapeTable(upstream)} |`);
+  }
+  if (test.controls.length > 0) body.push(`| Supports controls | ${escapeTable(test.controls.join(", "))} |`);
   if (test.functionName) {
     const commandReference = test.commandLink ? `[${test.functionName}](${test.commandLink})` : `\`${test.functionName}\``;
     body.push(`| PowerShell test | ${commandReference} |`);
@@ -683,6 +721,7 @@ function main() {
   const catalog = loadCatalog();
   catalogTests = catalog?.Tests ?? null;
   loadTaxonomyNames(catalog?.Taxonomy);
+  loadFrameworkNames(catalog?.Frameworks);
   if (!catalogTests) {
     if (checkMode) {
       console.error("Cannot check the generated test docs without the test catalog.");

@@ -596,3 +596,44 @@ Describe 'Catalog build' {
         @($objects | Where-Object { $_.Id -eq 'CONTOSO.CLOUD.NET-7' -and $_.Benchmark.Upstream.Id -eq 'NET-9v2' -and (@($_.Control) -join ',') -eq 'nist-800-53-r5:SC-7,nist-800-53-r5:AC-4' }) | Should -HaveCount 2
     }
 }
+
+Describe 'Docs export' {
+    BeforeAll {
+        # The exporter imports the module, so it runs in a child process.
+        $script:exportFile = Join-Path $TestDrive 'test-catalog.json'
+        $null = & $script:pwsh -NoProfile -NonInteractive -File (Join-Path $script:repoRoot 'build/docs/Export-MtTestCatalogForDocs.ps1') -OutputPath $script:exportFile 2>&1
+        $script:export = Get-Content -LiteralPath $script:exportFile -Raw | ConvertFrom-Json
+        $script:exported = @{}
+        foreach ($t in $script:export.Tests) { $script:exported[$t.Id] = $t }
+    }
+
+    It 'Names every framework the tests use, with its version' {
+        @($script:export.Frameworks.Key) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba')
+        ($script:export.Frameworks | Where-Object Key -EQ 'cis-m365').Name | Should -Be 'CIS Microsoft 365 Foundations Benchmark'
+        ($script:export.Frameworks | Where-Object Key -EQ 'cis-m365').Version | Should -BeExactly '7.0.0'
+        @($script:export.Tests | Where-Object { $_.Benchmark -and $_.Benchmark.Framework -cnotin $script:export.Frameworks.Key } | ForEach-Object Id) | Should -BeNullOrEmpty
+    }
+
+    It 'Carries Benchmark and Control for each test' {
+        $cis = $script:exported['CIS.M365.1.1.1']
+        $cis.Benchmark.Requirement | Should -BeExactly '1.1.1'
+        $cis.Benchmark.Level | Should -Be 'L1'
+        $cis.Benchmark.Profile | Should -Be @('E3 Level 1')
+        $cisa = $script:exported['CISA.MS.EXO.8.1']
+        $cisa.Benchmark.Criticality | Should -Be 'SHALL'
+        $cisa.Benchmark.Upstream.Id | Should -Be 'MS.SECURITYSUITE.3.1v1'
+        $cisa.Control | Should -Be @('nist-800-53-r5:SC-7(10)')
+        $script:exported['MT.1001'].PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
+        $script:exported['MT.1001'].Benchmark | Should -BeNullOrEmpty
+        @($script:exported['MT.1001'].Control).Count | Should -Be 0
+    }
+
+    It 'Gives the level of every CIS test, which the generated title shows as (L1) or (L2)' {
+        $cis = @($script:export.Tests | Where-Object { $_.Id -like 'CIS.*' })
+        $cis.Count | Should -Be 49
+        @($cis | Where-Object { $_.Benchmark.Level -cnotmatch '^L[12]$' } | ForEach-Object Id) | Should -BeNullOrEmpty
+        $generator = Get-Content -LiteralPath (Join-Path $script:repoRoot 'website/scripts/generate-test-docs.mjs') -Raw
+        $generator | Should -Match 'test\.Benchmark\?\.Level' -Because 'the title prefix comes from Benchmark'
+        $generator | Should -Not -Match 'titleFor\(test, legacyTags\)' -Because 'the title no longer reads the Maester 2.x tags'
+    }
+}

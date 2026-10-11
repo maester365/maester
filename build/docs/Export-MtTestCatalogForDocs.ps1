@@ -11,6 +11,12 @@
     the derived Block, Suite and Source, and LegacyTag: the tags it carried in Maester 2.x, which -Tag still
     matches. Taxonomy at the top level gives the display names of the keys and ATT&CK techniques the tests use.
 
+    A test of a suite that implements a published benchmark also has Benchmark, from the framework file of its
+    suite (tests/<suite>/frameworks/<key>.json): Framework, Version, Requirement and the requirement's own
+    facts, such as the CIS level and profiles. Its Control lists the controls of other frameworks that the
+    requirement relates to. Benchmark is null for every other test. Frameworks at the top level gives the Name,
+    Version and Url of each framework by Key.
+
     No tenant connection is needed and no test code is run. Importing the module requires
     Microsoft.Graph.Authentication to be installed (it is a RequiredModule of Maester).
 
@@ -77,6 +83,7 @@ $catalog = foreach ($t in $sorted) {
         ImplementationCost = if ($t.ImplementationCost) { "$($t.ImplementationCost)" } else { '' }
         Mitre              = ConvertTo-StringArray $t.Mitre
         Control            = ConvertTo-StringArray $t.Control
+        Benchmark          = $t.Benchmark
         Service            = ConvertTo-StringArray $t.Service
         License            = ConvertTo-StringArray $t.License
         Permission         = ConvertTo-StringArray $t.Permission
@@ -96,7 +103,19 @@ $catalog = foreach ($t in $sorted) {
 }
 $taxonomy = & $module { param($tests) Get-MtResultTaxonomy -InputObject $tests } $sorted
 
-$json = ConvertTo-Json -InputObject ([ordered]@{ Taxonomy = $taxonomy; Tests = @($catalog) }) -Depth 6
+# The frameworks the built-in suites declare, for the names of the keys in Benchmark. Sorted by key (ordinal).
+$declared = @(& $module {
+        $root = Get-MtMaesterTestFolderPath
+        $cache = @{}
+        foreach ($manifest in (Get-ChildItem -LiteralPath $root -Filter 'suite.json' -Recurse -File)) {
+            Get-MtLoadedFramework -Suite (Get-MtSuiteManifest -File $manifest.FullName -Root $root -Cache $cache)
+        }
+    } | Where-Object { $_.IsValid })
+$frameworks = @([System.Linq.Enumerable]::OrderBy([object[]]$declared, [Func[object, string]] { param($f) $f.Key }, [System.StringComparer]::Ordinal) | ForEach-Object {
+        [ordered]@{ Key = $_.Key; Name = $_.Name; Version = $_.Version; Url = $_.Url }
+    })
+
+$json = ConvertTo-Json -InputObject ([ordered]@{ Taxonomy = $taxonomy; Frameworks = $frameworks; Tests = @($catalog) }) -Depth 6
 $json = $json.Replace("`r`n", "`n") + "`n"
 $outDir = Split-Path $OutputPath -Parent
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }
