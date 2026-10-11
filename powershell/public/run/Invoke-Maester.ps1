@@ -593,17 +593,17 @@
             $renderer.StartPhase('Prepare')
         }
         # While the full-screen dashboard owns the screen, a warning or error this command writes is drawn over
-        # and lost when the screen is restored. Collect them (as -WarningVariable and -ErrorVariable do, for every
-        # command called from here) and let Stop-MtConsoleOutput write them once the screen is back.
-        $mtDashboardWarnings = $null
-        $mtDashboardErrors = $null
+        # and lost when the screen is restored. Collect what Write-Warning and Write-Error write where it would
+        # be shown (see Get-MtDashboardMessageDefault) and let Stop-MtConsoleOutput write it once the screen is back.
+        # The lists exist before the first message: a list that -WarningVariable creates belongs to the scope of
+        # the helper that wrote the message, and is lost with it.
+        $mtDashboardWarnings = [System.Collections.ArrayList]::new()
+        $mtDashboardErrors = [System.Collections.ArrayList]::new()
         $collectDashboardMessages = [bool]($script:__MtConsoleRenderer -and $script:__MtConsoleRenderer.IsFullScreen)
         $defaultParameterValues = $PSDefaultParameterValues
         $collectingDefaults = $null
         if ($collectDashboardMessages) {
-            $collectingDefaults = @{} + $PSDefaultParameterValues
-            $collectingDefaults['*:WarningVariable'] = '+mtDashboardWarnings'
-            $collectingDefaults['*:ErrorVariable'] = '+mtDashboardErrors'
+            $collectingDefaults = Get-MtDashboardMessageDefault -Default $PSDefaultParameterValues
             $PSDefaultParameterValues = $collectingDefaults
         }
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
@@ -824,8 +824,7 @@
             if ($nativePlan.Count -gt 0) {
                 Set-MtConsolePhase 'Run tests'
                 Write-MtProgress -Activity 'Running tests' -Status "$(@($nativePlan | Where-Object Disposition -EQ 'Run').Count) native test(s)" -Force
-                # Not while the tests run: what a test writes is kept with its result, and the collection would
-                # add work to every command of every test.
+                # Not while the tests run: what a test writes is kept with its result.
                 if ($collectDashboardMessages) { $PSDefaultParameterValues = $defaultParameterValues }
                 $nativeRows = @(Invoke-MtNativePlan -Plan $nativePlan -RunConfig $runConfig -Selection $selection -Verbosity $Verbosity)
                 if ($collectDashboardMessages) { $PSDefaultParameterValues = $collectingDefaults }

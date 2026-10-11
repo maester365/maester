@@ -369,6 +369,37 @@ Describe 'Deferred console output' {
         }
         $out | Should -BeNullOrEmpty
     }
+
+    It 'Collects for the dashboard only the warnings and errors that would have been shown' {
+        $out = InModuleScope Maester {
+            function Write-TestMessage { [CmdletBinding()] param() Write-Warning 'from a helper'; Write-Error 'failed in a helper' }
+            function Invoke-TestHelper { [CmdletBinding()] param() Write-TestMessage }
+            $mtDashboardWarnings = [System.Collections.ArrayList]::new()
+            $mtDashboardErrors = [System.Collections.ArrayList]::new()
+            $PSDefaultParameterValues = Get-MtDashboardMessageDefault -Default $PSDefaultParameterValues
+            & {
+                $WarningPreference = 'Continue'; $ErrorActionPreference = 'Continue'
+                # Shown: two levels down, and here.
+                Invoke-TestHelper
+                Write-Warning 'written here'
+                # Kept quiet by the caller, by a preference, and by the command itself: the check for a next
+                # page of every Graph request, and the JSON export of the results.
+                Invoke-TestHelper -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+                & { $WarningPreference = 'SilentlyContinue'; $ErrorActionPreference = 'SilentlyContinue'; Write-TestMessage }
+                $null = Get-ObjectProperty ([pscustomobject]@{ value = 1 }) '@odata.nextLink'
+                $null = @{ a = @{ b = @{ c = 1 } } } | ConvertTo-Json -Depth 1 -WarningAction SilentlyContinue
+            } 2>$null 3>$null
+            [pscustomobject]@{ Warnings = @($mtDashboardWarnings | ForEach-Object { $_.Message }); Errors = @($mtDashboardErrors | ForEach-Object { "$_" }) }
+        }
+        $out.Warnings | Should -Be @('from a helper', 'written here')
+        $out.Errors | Should -Be @('failed in a helper')
+    }
+
+    It 'Keeps the defaults that were set and adds them for Write-Warning and Write-Error only' {
+        $defaults = InModuleScope Maester { Get-MtDashboardMessageDefault -Default @{ 'Get-Thing:Name' = 'kept' } }
+        $defaults['Get-Thing:Name'] | Should -Be 'kept'
+        @($defaults.Keys | Sort-Object) | Should -Be @('Get-Thing:Name', 'Write-Error:ErrorVariable', 'Write-Warning:WarningVariable')
+    }
 }
 
 Describe 'Show-MtLogo' {
