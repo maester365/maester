@@ -585,8 +585,71 @@ A `suite.json` in a test folder sets what is true for every test in it (and its 
 | `HelpUrlTemplate` | The `HelpUrl` of tests that do not set one; `{Id}` is replaced. |
 | `RequiresMaester` | Tests in the folder need at least this Maester version. On an older version each one is an `Error` row with reason `RequiresNewerMaester`. |
 | `NoResultReason` | The skip text shown when a test returns `$null` without calling `Add-MtTestResultDetail`. Defaults to "The test returned no result." |
+| `Frameworks` | The benchmarks the tests in the folder implement. See [Benchmarks and framework files](#benchmarks-and-framework-files). |
 
-A single file can state the same with `#Requires -Modules @{ ModuleName = 'Maester'; ModuleVersion = '3.1' }`.
+A single file can state the same as `RequiresMaester` with
+`#Requires -Modules @{ ModuleName = 'Maester'; ModuleVersion = '3.1' }`.
+
+### Benchmarks and framework files
+
+A suite that implements a published benchmark, or a baseline of your own, says so once in its `suite.json`:
+
+```json
+{
+  "Id": "Contoso",
+  "Name": "Contoso security baseline",
+  "Frameworks": [
+    { "Key": "contoso-baseline", "Version": "2.1", "IdPrefix": "CONTOSO.BL." }
+  ]
+}
+```
+
+| Key | Content |
+| --- | --- |
+| `Key` | The key of the framework: lowercase letters, digits, dots and hyphens. It names the framework file and is written to the result. |
+| `Version` | The version of the benchmark the tests implement. When omitted, the `Version` of the framework file is used. |
+| `IdPrefix` | A test whose ID starts with this prefix implements a requirement of the framework. A suite can declare several frameworks, each with its own prefix; when two prefixes match an ID, the longer one applies. |
+
+The facts about each requirement are in a framework file beside the `suite.json`, `frameworks/<Key>.json`:
+
+```json
+{
+  "Framework": "contoso-baseline",
+  "Name": "Contoso Security Baseline",
+  "Version": "2.1",
+  "Requirements": [
+    { "Id": "1.1", "Level": "L1", "Related": ["nist-800-53-r5:IA-2(1)"], "Tests": ["CONTOSO.BL.1.1"] },
+    { "Id": "1.2", "Level": "L2", "Tests": ["CONTOSO.BL.1.2"] }
+  ]
+}
+```
+
+- `Framework` is the `Key` from the `suite.json`, and `Name` is the name of the benchmark. A `Version` here must
+  be the one the `suite.json` declares.
+- A requirement has an `Id`, written as a string, and `Tests`: the IDs of the tests that implement it. Name a test
+  after its requirement, the prefix followed by the requirement's `Id`, as in the example. Every test whose ID
+  has the prefix is listed once.
+- `Related` lists controls of other frameworks that the requirement relates to, written
+  `<framework-key>:<control-id>` with a lowercase key, like the `Control` attribute.
+- Any other key is a fact about the requirement, such as `Level`, `Profile` or `Criticality`. Keep to identifiers
+  and facts. Do not copy the text of a benchmark into the file: it is often licensed, and the test's own title
+  already says what is checked.
+
+The result row of a listed test then has `Benchmark`: the `Framework`, its `Version`, the `Requirement` and the
+requirement's own facts. The row's `Control` holds the test's own `Control` values followed by the `Related`
+references of its requirement. `Get-MtTest` shows both. A test whose ID has the prefix of no framework has no
+`Benchmark` (`null` in the result). See [the result schema](../result-schema.md#benchmark).
+
+A problem with a framework never stops a run. Maester writes a warning that names the file and what is wrong,
+and the tests of that framework get no `Benchmark` and no `Related` controls. This happens when the file is
+missing or is not valid JSON, when its `Framework` or `Version` differs from the `suite.json`, when a `Related`
+reference is not written `<framework-key>:<control-id>`, and when a test is listed more than once. A test that
+has the prefix but is not in the file gets a warning as well, and no `Benchmark`; the other tests keep theirs.
+
+The CIS and CISA suites that ship with Maester use the same files. Their rows carry the CIS level and profiles,
+or the CISA criticality (SHALL or SHOULD) and the NIST SP 800-53 controls that CISA maps each policy to. A
+`Benchmark` or a `Control` says that a test supports a requirement. It does not say that a tenant complies with
+the framework.
 
 ## Running and inspecting tests
 

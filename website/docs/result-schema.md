@@ -147,12 +147,13 @@ Added in 2.1:
 | `UserImpact` | string | `Low`, `Medium` or `High`: how much the recommended fix disrupts end users. |
 | `ImplementationCost` | string | `Low`, `Medium` or `High`: how much administrator work the recommended fix takes. |
 | `Mitre` | array of strings | MITRE ATT&CK technique IDs the checked control prevents or detects, or the single value `None`. `Taxonomy.Attack` gives the names and tactics. |
-| `Control` | array of strings | Framework controls the test supports, written `<framework-key>:<control-id>`. |
+| `Control` | array of strings | Framework controls the test supports, written `<framework-key>:<control-id>`: the test's own `Control` values, then the controls related to its benchmark requirement. See [Benchmark](#benchmark). |
 | `Lifecycle` | string | `Preview`, `Stable` or `Deprecated`. `Stable` when the test does not say. |
 | `ReplacedBy` | string | For a `Deprecated` test, the ID of the test that took its place. |
 | `Service` | array of strings | The services the test needs, by their names in the service registry. |
 | `License` | array of strings | The service plans the test needs; the tenant needs any one. |
 | `Permission` | array of strings | The permissions the test declares. Recorded; not enforced. |
+| `Benchmark` | object | The requirement of a published benchmark that the test implements, for a test of a suite that declares one. `null` for every other test. See [Benchmark](#benchmark). |
 | `Format` | string | `Native` or `Pester`. |
 | `ReasonCode` | string | Why the test did not run or did not produce a verdict. Empty for `Passed`, `Failed` and `Investigate`. See [Applicability and reason codes](./configuration/applicability.md#reason-codes). |
 | `ReasonDetail` | string | The reason in words. For `TestError`, the first line of the error. |
@@ -168,6 +169,37 @@ all `null`.
 
 A consumer that tracks results over time should key family rows on `ParentId` when it is present: a family that
 did not run is one row on the parent ID, which 2.x never produced.
+
+### Benchmark
+
+A suite that implements a published benchmark declares it in its `suite.json`, and a framework file beside the
+`suite.json` holds the facts about each requirement (see
+[Benchmarks and framework files](./writing-tests/index.mdx#benchmarks-and-framework-files)). The row of a test
+that implements a requirement says which one:
+
+```json
+"Benchmark": { "Framework": "cis-m365", "Version": "7.0.0", "Requirement": "1.1.1",
+               "Level": "L1", "Profile": ["E3 Level 1"] }
+```
+
+| Field | Content |
+| --- | --- |
+| `Framework` | The key of the framework. The suites that ship with Maester use `cis-m365`, `cis-github` and `cisa-scuba`; a custom suite declares its own. |
+| `Version` | The version of the benchmark that the suite implements. |
+| `Requirement` | The ID of the requirement, for example `1.1.1` or `MS.AAD.3.5`. For a test that ships with Maester it is the rest of the test ID after the prefix of the framework (`CIS.M365.`, `CIS.GH.` or `CISA.`). |
+| `Level`, `Profile` | CIS: the level of the recommendation (`L1` or `L2`) and the profiles it belongs to, such as `E3 Level 1`. |
+| `Criticality`, `Upstream` | CISA: `SHALL` or `SHOULD`, and where the policy stands in CISA ScubaGear today. `Upstream.Status` is `Current` (`Id` is the policy with its revision, such as `MS.AAD.3.2v2`), `Moved` (`Id` is the policy that took its place and `From` the one it was), `Removed` (with `From` and `Reason`) or `NotFound`. |
+
+The fields after `Requirement` are the facts the framework file gives for that requirement, so a custom suite may
+have others. `Benchmark` is `null` on a native row whose test implements no requirement and on every
+Pester-format row. In 2.x this was in tags such as `CIS M365 v7.0.0`, `L1` and `CIS E3 Level 1`.
+
+`Control` lists the values of the test's own `Control` attribute, followed by the references the framework file
+gives as `Related` for the requirement, each once. For the CISA tests these are the NIST SP 800-53 controls that
+CISA maps each policy to, written `nist-800-53-r5:<control>`, for example `nist-800-53-r5:IA-2(1)`.
+
+`Benchmark` and `Control` say what a test supports. A passed test does not show that the tenant complies with the
+benchmark or the control.
 
 `Blocks` has one entry per `Block`, with the same counters as 2.x. For native tests that is one entry per
 product.
