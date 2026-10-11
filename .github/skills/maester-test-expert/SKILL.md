@@ -71,6 +71,7 @@ background to avoid user confusion.
 | `Test.<ID>.ps1` | `tests/<suite>/[<service>/]` | One function with a `[MaesterTest(...)]` attribute. Reads the tenant, decides, calls `Add-MtTestResultDetail`, returns `$true`/`$false`. |
 | `Test.<ID>.md` | Same folder, same base name | Description, `#### Remediation action`, optional `#### Related links`, then `<!--- Results --->` and `%TestResult%`. Shown in the report. |
 | `suite.json` | Each suite folder (already exists) | The suite's ID, name, `Source` and help URL template. Do not edit for a single check. |
+| `frameworks/<key>.json` | Beside the `suite.json` of the CIS and CISA suites | The benchmark the suite implements: one entry per requirement with its level, profiles or criticality and the tests that implement it. Add a new CIS or CISA check to it in the same pull request; the build fails otherwise. |
 
 Suite folders: `tests/maester/<service>/` (`MT.xxxx`; services such as `entra`, `exchange`, `teams`, `defender`,
 `azure`, `intune`, and `xspm` for exposure management, which has its own `suite.json`), `tests/cisa/<service>/`

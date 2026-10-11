@@ -39,6 +39,15 @@ maester.dev), `report/` (React app that builds the HTML report template).
   automation regenerate. `powershell/assets/ConsoleContributors.json` (the dashboard's
   Featured contributor list) is written by `./build/Update-ConsoleContributors.ps1` from
   the website's contributor data.
+- A suite that implements a published benchmark declares it in its `suite.json` (`Frameworks`: `Key`,
+  `Version`, `IdPrefix`) and lists every test with that ID prefix exactly once in
+  `tests/<suite>/frameworks/<key>.json` (`tests/cis/frameworks/cis-m365.json`,
+  `tests/cis/frameworks/cis-github.json`, `tests/cisa/frameworks/cisa-scuba.json`). When you add, rename or
+  remove a CIS or CISA test, change its framework file in the same commit, or
+  `./build/Build-MaesterModule.ps1` and the unit tests fail. A framework file holds identifiers and facts (CIS
+  `Level` and `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references), never the text of a
+  benchmark. The engine derives `Benchmark` and the related `Control` values from it; do not set `Control` or
+  benchmark tags on a built-in test.
 
 ## Repository layout — where files go
 
@@ -54,7 +63,9 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   Folders name the product whose settings a check reads, never a theme: an AI check goes in
   the folder of its product (an Entra agent identity check in `entra/`) and declares
   `Area = 'ai'`. A new service must be added to the guide and the test.
-- `tests/<suite>/` holds only `Test.<ID>.ps1`, `Test.<ID>.md`, `suite.json` and `README.md`.
+- `tests/<suite>/` holds only `Test.<ID>.ps1`, `Test.<ID>.md`, `suite.json` and `README.md`, plus the suite's
+  framework files, `frameworks/<key>.json` beside its `suite.json` (lowercase key; nothing else goes in a
+  `frameworks/` folder).
   Suites: `maester/<service>/` (plus `drift/`; `maester/xspm/` has its own suite.json),
   `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
   (reserved for users; never commit tests there).
