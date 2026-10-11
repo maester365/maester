@@ -313,16 +313,6 @@ textarea.input {
   margin-top: 0.4rem;
 }
 
-.token {
-  font-family: var(--ifm-font-family-monospace);
-  font-size: 0.72rem;
-  color: var(--ifm-font-color-base);
-  background: var(--ifm-color-emphasis-100);
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 999px;
-  padding: 0.1rem 0.55rem;
-  cursor: pointer;
-}
 
 .output {
   min-width: 0;
@@ -397,19 +387,6 @@ textarea.input {
   border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.copy {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  font: inherit;
-  font-size: 0.75rem;
-  color: var(--ifm-font-color-base);
-  background: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-400);
-  border-radius: 6px;
-  padding: 0.15rem 0.55rem;
-  cursor: pointer;
-}
 
 .changes,
 .next {
@@ -436,3 +413,11 @@ textarea.input {
     max-height: none;
   }
 }
+
+/* Layout around the shadcn-style controls in ui.js. */
+.need { margin-left: auto; text-transform: uppercase; letter-spacing: 0.04em; }
+.stack { display: flex; flex-direction: column; gap: 0.5rem; }
+.picked li { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.token { font-family: var(--ifm-font-family-monospace); border-radius: 999px; }
+.copy { position: absolute; top: 0.4rem; right: 0.4rem; padding: 0 0.5rem; }
+.checks { gap: 0 1rem; }

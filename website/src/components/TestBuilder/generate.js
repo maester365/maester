@@ -9,6 +9,7 @@ const HANDLE = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
 export const emptyState = {
   mode: "builtin",
   suite: "Maester",
+  customPrefix: "CT",
   id: "",
   title: "",
   functionName: "",
@@ -103,15 +104,21 @@ export function validate(state, data) {
   if (!id) add("id", "error", "Give the test an ID.");
   else {
     if (!idPattern.test(id) || id.length > data.idMaxLength)
-      add("id", "error", "Use letters and digits separated by dots or dashes, starting with a letter, for example CONTOSO.1001. At most " + data.idMaxLength + " characters.");
+      add("id", "error", "Use letters and digits separated by dots or dashes, starting with a letter, for example CT.1001. At most " + data.idMaxLength + " characters.");
     const reserved = data.reservedPrefixes.find((p) => id.toLowerCase().startsWith(p.toLowerCase()));
     if (builtin) {
       const suite = data.suites.find((s) => s.id === state.suite);
       if (suite && !new RegExp(suite.idPattern).test(id))
         add("id", "error", "An ID in the " + suite.name + " suite must match " + suite.idPattern + ".");
     } else if (reserved) {
-      add("id", "error", "The prefix " + reserved + " belongs to the tests shipped with Maester. Use your own, for example CONTOSO.");
+      add("id", "error", "The prefix " + reserved + " belongs to the tests shipped with Maester. Use your own, for example CT.");
     }
+  }
+  if (!builtin) {
+    const prefix = state.customPrefix.trim();
+    if (!/^[A-Za-z][A-Za-z0-9]*$/.test(prefix)) add("prefix", "error", "A prefix is letters and digits, starting with a letter, for example CT or CONTOSO.");
+    else if (data.reservedPrefixes.some((p) => (prefix + ".").toLowerCase().startsWith(p.toLowerCase()) || (prefix + "-").toLowerCase().startsWith(p.toLowerCase())))
+      add("prefix", "error", prefix + " belongs to the tests shipped with Maester. Choose your own prefix.");
   }
 
   // Title
@@ -224,7 +231,7 @@ export function attributeEntries(state) {
   const str = (name, value) => value && put(name, quote(value));
   const arr = (name, values) => values.length && put(name, list(values));
 
-  put("Id", quote(state.id.trim() || "CONTOSO.1001"));
+  put("Id", quote(state.id.trim() || "CT.1001"));
   put("Title", quote(state.title.trim() || "Describe the requirement in one line."));
   str("Product", effective(state, "product"));
   arr("RelatedProduct", state.relatedProducts);
@@ -317,7 +324,7 @@ export function folderFor(state, data) {
 
 // New-MtTest writes both files. It takes a subset of the attributes; the rest are added by hand.
 export function buildCommand(state, data) {
-  const parts = ["New-MtTest -Id " + (state.id.trim() || "CONTOSO.1001"), "-Title " + quote(state.title.trim() || "Describe the requirement in one line.")];
+  const parts = ["New-MtTest -Id " + (state.id.trim() || "CT.1001"), "-Title " + quote(state.title.trim() || "Describe the requirement in one line.")];
   const psList = (values) => values.join(", ");
   if (state.severity) parts.push("-Severity " + state.severity);
   parts.push("-Service " + (state.serviceNone || state.services.length === 0 ? "None" : psList(state.services)));
@@ -390,4 +397,10 @@ export function registryChanges(state, data) {
     });
   }
   return changes;
+}
+
+// The ID with another prefix: MT.1234 becomes CT.1234. An empty ID gets the first number.
+export function withPrefix(id, prefix) {
+  const tail = String(id || "").trim().replace(/^[A-Za-z][A-Za-z0-9]*[.\-]?/, "");
+  return prefix + "." + (tail || "1001");
 }

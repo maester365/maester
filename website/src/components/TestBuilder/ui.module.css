@@ -1,0 +1,123 @@
+/* shadcn/ui default look, on the site's Infima variables so light and dark mode follow the site. */
+.icon { width: 1rem; height: 1rem; flex: none; opacity: 0.7; }
+
+.input,
+.selectTrigger {
+  display: flex;
+  width: 100%;
+  min-height: 2.25rem;
+  align-items: center;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.selectTrigger { justify-content: space-between; gap: 0.5rem; cursor: pointer; text-align: left; }
+.selectTrigger > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.input::placeholder, .placeholder, .selectTrigger[data-placeholder] { color: var(--ifm-color-emphasis-600); }
+.input:focus-visible, .selectTrigger:focus-visible, .button:focus-visible, .checkbox:focus-visible, .radio:focus-visible, .tabsTrigger:focus-visible {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ifm-color-primary) 25%, transparent);
+}
+.textarea { min-height: 3.5rem; resize: vertical; font-family: var(--ifm-font-family-monospace); font-size: 0.82rem; }
+
+.popover {
+  z-index: 300;
+  min-width: var(--radix-select-trigger-width, 12rem);
+  max-height: min(22rem, var(--radix-select-content-available-height, 22rem));
+  overflow: hidden;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+}
+.selectViewport { padding: 0.25rem; }
+.comboContent { width: min(34rem, calc(100vw - 2rem)); min-width: var(--radix-popover-trigger-width); }
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  padding: 0.4rem 2rem 0.4rem 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+.item[data-highlighted], .item[data-selected="true"] { background: var(--ifm-color-emphasis-200); }
+.item[data-disabled], .item[data-disabled="true"] { opacity: 0.55; cursor: default; }
+.itemMain { display: flex; flex-direction: column; min-width: 0; }
+.itemHint { font-size: 0.76rem; color: var(--ifm-color-emphasis-700); }
+.itemCheck { position: absolute; right: 0.6rem; display: inline-flex; }
+.separator { height: 1px; margin: 0.25rem -0.25rem; background: var(--ifm-color-emphasis-300); }
+
+.commandInput {
+  width: 100%;
+  font: inherit;
+  font-size: 0.875rem;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  padding: 0.6rem 0.75rem;
+  outline: none;
+}
+.commandList { max-height: 18rem; overflow-y: auto; padding: 0.25rem; }
+.commandEmpty { padding: 0.9rem 0.75rem; font-size: 0.85rem; color: var(--ifm-color-emphasis-700); }
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.button-sm { font-size: 0.8rem; height: 2rem; padding: 0 0.75rem; }
+.button-xs { font-size: 0.72rem; height: 1.6rem; padding: 0 0.5rem; }
+.button-outline { color: var(--ifm-font-color-base); background: var(--ifm-background-color); border-color: var(--ifm-color-emphasis-300); box-shadow: 0 1px 2px rgb(0 0 0 / 5%); }
+.button-outline:hover { background: var(--ifm-color-emphasis-100); }
+.button-ghost { color: var(--ifm-color-emphasis-700); background: none; }
+.button-ghost:hover { background: var(--ifm-color-emphasis-200); }
+
+.badge { display: inline-flex; align-items: center; font-size: 0.7rem; font-weight: 600; line-height: 1; border-radius: 999px; padding: 0.2rem 0.5rem; border: 1px solid transparent; white-space: nowrap; }
+.badge-secondary { color: var(--ifm-color-emphasis-800); background: var(--ifm-color-emphasis-200); }
+.badge-outline { color: var(--ifm-color-emphasis-700); border-color: var(--ifm-color-emphasis-300); font-family: var(--ifm-font-family-monospace); font-weight: 500; }
+.badge-primary { color: var(--ifm-color-primary); border-color: var(--ifm-color-primary); }
+
+.radioGroup { display: grid; gap: 0.5rem; }
+.radioColumns { grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+.radioCard { display: flex; gap: 0.65rem; align-items: flex-start; padding: 0.65rem 0.8rem; border: 1px solid var(--ifm-color-emphasis-300); border-radius: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.radioCard:hover { background: var(--ifm-color-emphasis-100); }
+.radioCardOn { border-color: var(--ifm-color-primary); background: color-mix(in srgb, var(--ifm-color-primary) 6%, transparent); }
+.radio { flex: none; width: 1rem; height: 1rem; margin-top: 0.2rem; padding: 0; border-radius: 999px; border: 1px solid var(--ifm-color-emphasis-500); background: var(--ifm-background-color); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.radio[data-state="checked"] { border-color: var(--ifm-color-primary); }
+.radioDot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--ifm-color-primary); }
+.radioBody { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.radioLabel { font-weight: 600; font-size: 0.9rem; }
+.radioText { font-size: 0.83rem; color: var(--ifm-color-emphasis-700); }
+
+.checkRow { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.875rem; margin: 0.2rem 0; cursor: pointer; }
+.checkbox { flex: none; width: 1rem; height: 1rem; margin-top: 0.2rem; padding: 0; border-radius: 4px; border: 1px solid var(--ifm-color-emphasis-500); background: var(--ifm-background-color); color: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.checkbox[data-state="checked"] { background: var(--ifm-color-primary); border-color: var(--ifm-color-primary); }
+[data-theme="dark"] .checkbox[data-state="checked"] { color: #1b1b1d; }
+.checkbox .icon { width: 0.75rem; height: 0.75rem; opacity: 1; }
+
+.tabsList { display: inline-flex; flex-wrap: wrap; gap: 0.15rem; padding: 0.2rem; border-radius: 8px; background: var(--ifm-color-emphasis-200); }
+.tabsTrigger { font: inherit; font-size: 0.8rem; font-family: var(--ifm-font-family-monospace); color: var(--ifm-color-emphasis-700); background: none; border: 1px solid transparent; border-radius: 6px; padding: 0.3rem 0.65rem; cursor: pointer; overflow-wrap: anywhere; }
+.tabsTrigger[data-state="active"] { color: var(--ifm-font-color-base); background: var(--ifm-background-color); box-shadow: 0 1px 2px rgb(0 0 0 / 12%); }
+.tabsContent { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; outline: none; }
