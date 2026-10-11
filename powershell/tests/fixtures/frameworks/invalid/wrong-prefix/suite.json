@@ -1,0 +1,8 @@
+{
+  "Id": "FxWrongPrefix",
+  "Name": "A listed test without the prefix",
+  "Source": "Custom",
+  "Frameworks": [
+    { "Key": "fx-prefix", "Version": "1.0", "IdPrefix": "FXP." }
+  ]
+}

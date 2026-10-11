@@ -682,6 +682,10 @@ foreach ($MarkdownFile in $MarkdownFiles) {
 # .md file, an unknown licence token, or a Mitre technique that the pinned ATT&CK release does not know
 # or has retired. The catalog also carries the full Taxonomy (the names of every product, feature, area,
 # resource type and ATT&CK technique), so that a consumer can render them without the module.
+# The build also fails on a framework file (tests/<suite>/frameworks/<key>.json, test attribute design,
+# section 6) that does not match its suite.json, names a test that does not exist, does not list every
+# test with the framework's ID prefix exactly once, or has a Related reference that is not written
+# <framework-key>:<control-id>. Each test's Benchmark and Control in the catalog come from those files.
 # The source module is imported in a separate runspace, so the caller's session (which may itself have
 # Maester loaded, as in the module's own tests) is not changed.
 $CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @(); Taxonomy = $null }
@@ -704,6 +708,7 @@ if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); t
                     }
                     foreach ($message in @(Get-MtAttackTechniqueProblem -Mitre $t.Mitre)) { "$($t.File): $message" }
                 }
+                $problems = @($problems) + @(Get-MtFrameworkProblem -Test $tests -Root $TestsRoot)
                 $suites = @{}
                 foreach ($manifest in Get-ChildItem -Path $TestsRoot -Filter 'suite.json' -Recurse -File) {
                     $suite = Get-Content -LiteralPath $manifest.FullName -Raw | ConvertFrom-Json

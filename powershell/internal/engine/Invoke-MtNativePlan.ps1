@@ -364,6 +364,10 @@ function ConvertTo-MtNativeRow {
     key), RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control,
     Lifecycle, ReplacedBy, Service, License and Permission. An attribute the test does not declare is null
     or an empty list, never left out. Tag holds the tags the author wrote, plus the instance's own.
+
+    Benchmark is the requirement of a published benchmark that the test implements, from the framework file
+    of its suite (test attribute design, section 6), or null. Control then also holds the Related references
+    of that requirement, after the test's own.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -508,8 +512,9 @@ function Get-MtRowAttribute {
 
     .DESCRIPTION
     RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control, Lifecycle,
-    ReplacedBy, Service, License and Permission, in that order. Without -Test every field is null, which is
-    what a Pester-format row carries.
+    ReplacedBy, Service, License and Permission, in that order, then Benchmark (test attribute design,
+    section 6), which is null unless the test's suite declares a framework for its ID. Without -Test every
+    field is null, which is what a Pester-format row carries.
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Specialized.OrderedDictionary])]
@@ -525,6 +530,8 @@ function Get-MtRowAttribute {
             , [string[]]@($(if ($property) { $property.Value }) | Where-Object { $_ })
         } elseif ($property -and $property.Value) { [string]$property.Value } else { $null }
     }
+    $benchmark = if ($Test) { $Test.PSObject.Properties['Benchmark'] }
+    $fields['Benchmark'] = if ($benchmark -and $benchmark.Value) { $benchmark.Value } else { $null }
     $fields
 }
 

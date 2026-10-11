@@ -1,0 +1,9 @@
+{
+  "Framework": "fx-unknown",
+  "Name": "Fixture",
+  "Version": "1.0",
+  "Requirements": [
+    { "Id": "R1", "Level": "L1", "Tests": ["FXU.1"] },
+    { "Id": "R2", "Tests": ["FXU.404"] }
+  ]
+}

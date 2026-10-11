@@ -151,6 +151,22 @@ $invalid = @($catalogRows | Where-Object { $_.Errors.Count -gt 0 })
 if ($invalid.Count -gt 0) { throw "Invalid native tests in the catalog: $(($invalid | Select-Object -First 5 | ForEach-Object Id) -join ', ')" }
 Write-Host "   Verified: native test catalog loads $($catalogRows.Count) tests with clean applicability gates"
 
+# A framework file ships beside the suite.json that declares it, and the catalog carries what it says about each
+# test (test attribute design, section 6).
+$frameworkCount = 0
+foreach ($suiteFile in Get-ChildItem -LiteralPath (Join-Path $ModulePath 'builtin-pester') -Filter 'suite.json' -Recurse -File) {
+    $suite = Get-Content -LiteralPath $suiteFile.FullName -Raw | ConvertFrom-Json
+    if (-not $suite.PSObject.Properties['Frameworks']) { continue }
+    foreach ($framework in @($suite.Frameworks)) {
+        $frameworkFile = Join-Path $suiteFile.DirectoryName "frameworks/$($framework.Key).json"
+        if (-not (Test-Path -LiteralPath $frameworkFile)) { throw "Build output is missing the framework file of '$($framework.Key)': $frameworkFile" }
+        $withBenchmark = @($catalogRows | Where-Object { $_.PSObject.Properties['Benchmark'] -and $_.Benchmark -and $_.Benchmark.Framework -eq $framework.Key })
+        if ($withBenchmark.Count -eq 0) { throw "No test in the catalog carries a Benchmark of the framework '$($framework.Key)'." }
+        $frameworkCount++
+    }
+}
+Write-Host "   Verified: $frameworkCount framework files ship beside their suite.json and their tests carry a Benchmark"
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Check 4b — ORCA classes resolve inside the module
 # ──────────────────────────────────────────────────────────────────────────────

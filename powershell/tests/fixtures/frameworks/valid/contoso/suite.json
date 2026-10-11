@@ -1,0 +1,9 @@
+{
+  "Id": "Contoso",
+  "Name": "Contoso baseline",
+  "Source": "Custom",
+  "Frameworks": [
+    { "Key": "contoso-baseline", "Version": "2.1", "IdPrefix": "CONTOSO.BL." },
+    { "Key": "contoso-cloud", "IdPrefix": "CONTOSO.CLOUD." }
+  ]
+}

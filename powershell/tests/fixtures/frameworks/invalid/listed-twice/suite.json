@@ -1,0 +1,8 @@
+{
+  "Id": "FxListedTwice",
+  "Name": "A test listed twice",
+  "Source": "Custom",
+  "Frameworks": [
+    { "Key": "fx-twice", "Version": "1.0", "IdPrefix": "FXT." }
+  ]
+}

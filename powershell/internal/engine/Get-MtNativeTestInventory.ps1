@@ -9,6 +9,11 @@ function Get-MtNativeTestInventory {
     section 3.6). Adds the derived values (test attribute design, section 2.3): Block and the resolved help
     URL. Tests that share an ID or a function name get a DuplicateId error. A built-in root skips its
     Custom folder.
+
+    A suite.json can declare the frameworks its tests implement (test attribute design, section 6). A test
+    whose ID has the prefix of one gets Benchmark, and the Related references of its requirement are added to
+    its Control. Each suite.json and framework file is read once. A framework with a problem is a warning and
+    its tests have no Benchmark; so is a test that has the prefix but is not listed in the framework file.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject], [object[]])]
@@ -48,6 +53,14 @@ function Get-MtNativeTestInventory {
     }
     $tests = @($tests)
 
+    # Tests that have the prefix of a framework but are not in its file: one warning for each framework.
+    foreach ($suite in $suiteCache.Values) {
+        foreach ($framework in @(Get-MtLoadedFramework -Suite $suite)) {
+            if ($framework.Unlisted.Count -eq 0) { continue }
+            Write-Warning "These tests have the IdPrefix '$($framework.IdPrefix)' of the framework '$($framework.Key)' but '$($framework.File)' does not list them, so they have no Benchmark: $($framework.Unlisted -join ', ')."
+        }
+    }
+
     # Duplicate IDs and function names. Neither runs.
     foreach ($group in ($tests | Where-Object Id | Group-Object { $_.Id.ToLowerInvariant() } | Where-Object Count -GT 1)) {
         foreach ($t in $group.Group) {
@@ -66,7 +79,7 @@ function Get-MtNativeTestInventory {
 function Complete-MtNativeTest {
     <#
     .SYNOPSIS
-    Adds Source, Suite, Block, the suite's tags and the help URL to a test read by Read-MtNativeTest.
+    Adds Source, Suite, Block, the suite's tags, the help URL and the Benchmark to a test read by Read-MtNativeTest.
 
     .DESCRIPTION
     Block is kept on the result row for 2.x consumers and for XML test-case names. It is the display name of
@@ -76,6 +89,11 @@ function Complete-MtNativeTest {
     SuiteTag holds the Tags of the suite.json. Like the test's own Tag they are matched by -Tag and
     -ExcludeTag (Get-MtSelectionTag), but they are not written to a result row: a row's Tag holds the tags
     the test's author wrote.
+
+    Benchmark names the requirement the test implements when its suite declares a framework for its ID prefix
+    (test attribute design, section 6): Framework, Version, Requirement and the requirement's own facts. It
+    is $null for every other test. Control becomes the test's own values followed by the Related references
+    of that requirement, each once.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -110,6 +128,16 @@ function Complete-MtNativeTest {
         }
     }
 
+    $benchmark = $null
+    $frameworks = @(Get-MtLoadedFramework -Suite $Suite)
+    if ($Test.Id -and $frameworks.Count -gt 0) {
+        $resolved = Resolve-MtTestBenchmark -Id $Test.Id -Framework $frameworks
+        if ($resolved) {
+            $benchmark = $resolved.Benchmark
+            $Test.Control = @(@($Test.Control) + @($resolved.Related) | Where-Object { $_ } | Select-Object -Unique)
+        }
+    }
+
     $Test | Add-Member -NotePropertyMembers ([ordered]@{
             Source       = $source
             Suite        = $suiteId
@@ -117,6 +145,7 @@ function Complete-MtNativeTest {
             SuiteTag     = $suiteTags
             HelpUrl      = $helpUrl
             Format       = 'Native'
+            Benchmark    = $benchmark
         }) -Force
     # The skip text for a test that returns $null without saying why, when the suite has its own wording.
     if ($Suite -and $Suite.PSObject.Properties['NoResultReason'] -and $Suite.NoResultReason) {
@@ -194,6 +223,11 @@ function Get-MtSuiteManifest {
     <#
     .SYNOPSIS
     Returns the nearest suite.json between a file and a root folder, or $null.
+
+    .DESCRIPTION
+    The frameworks the suite.json declares are read with it, once (Get-MtSuiteFramework), and kept on the
+    returned object as LoadedFrameworks. A framework with a problem is a warning that names the file; its
+    tests get no Benchmark (Resolve-MtTestBenchmark).
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -212,6 +246,14 @@ function Get-MtSuiteManifest {
                 try { Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json -ErrorAction Stop }
                 catch { Write-Warning "Ignoring '$manifest': it is not valid JSON."; $null }
             } else { $null }
+            if ($Cache[$folder] -is [pscustomobject]) {
+                $frameworks = @(Get-MtSuiteFramework -Suite $Cache[$folder] -Folder $folder)
+                $Cache[$folder] | Add-Member -NotePropertyName LoadedFrameworks -NotePropertyValue $frameworks -Force
+                foreach ($framework in ($frameworks | Where-Object { -not $_.IsValid })) {
+                    $more = if ($framework.Problems.Count -gt 3) { " (and $($framework.Problems.Count - 3) more)" } else { '' }
+                    Write-Warning "Ignoring the framework '$($framework.Key)' of '$manifest', so its tests have no Benchmark. $(@($framework.Problems | Select-Object -First 3) -join ' ')$more"
+                }
+            }
         }
         if ($Cache[$folder]) { return $Cache[$folder] }
         $parent = Split-Path -Path $folder -Parent
@@ -227,8 +269,8 @@ function Get-MtTestCatalog {
     Returns the built-in native tests: the shipped Maester.TestCatalog.json, or a scan of tests/ in a source checkout.
 
     .DESCRIPTION
-    Each row has the attribute properties plus Source, Suite, Block, SuiteTag, HelpUrl, FunctionName,
-    File, Parameters and MarkdownPath (design appendix A.4). Cached for the session.
+    Each row has the attribute properties plus Source, Suite, Block, SuiteTag, HelpUrl, Benchmark,
+    FunctionName, File, Parameters and MarkdownPath (design appendix A.4). Cached for the session.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject], [object[]])]
