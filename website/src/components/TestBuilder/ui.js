@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Select as SelectPrimitive, RadioGroup as RadioGroupPrimitive, Checkbox as CheckboxPrimitive, Tabs as TabsPrimitive, Popover as PopoverPrimitive } from "radix-ui";
+import { Select as SelectPrimitive, RadioGroup as RadioGroupPrimitive, Checkbox as CheckboxPrimitive, Tabs as TabsPrimitive, Popover as PopoverPrimitive, Dialog as DialogPrimitive } from "radix-ui";
 import { Command as CommandPrimitive } from "cmdk";
 import clsx from "clsx";
 import ui from "./ui.module.css";
@@ -132,7 +132,9 @@ export function Combobox({ id, value, onSelect, items, placeholder, searchPlaceh
   // Items whose own name matches come before items that match only through a keyword.
   const own = (i) => (i.primary || (i.value + " " + i.label).toLowerCase()).includes(q);
   const found = q ? items.filter((i) => (i.search || (i.value + " " + i.label + " " + (i.hint || "")).toLowerCase()).includes(q)) : items;
-  const matches = (q ? found.filter(own).concat(found.filter((i) => !own(i))) : found).slice(0, limit);
+  // Among those, an item with a higher `weight` (a plan in more products) comes first.
+  const byWeight = (a, b) => (b.weight || 0) - (a.weight || 0);
+  const matches = (q ? found.filter(own).sort(byWeight).concat(found.filter((i) => !own(i))) : found).slice(0, limit);
   const current = items.find((i) => i.value === value);
   const choose = (v) => {
     onSelect(v);
@@ -174,5 +176,27 @@ export function Combobox({ id, value, onSelect, items, placeholder, searchPlaceh
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>
     </PopoverPrimitive.Root>
+  );
+}
+
+export function Dialog({ open, onOpenChange, title, description, children }) {
+  return (
+    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className={ui.overlay} />
+        <DialogPrimitive.Content className={ui.dialog}>
+          <div className={ui.dialogHead}>
+            <div>
+              <DialogPrimitive.Title className={ui.dialogTitle}>{title}</DialogPrimitive.Title>
+              {description && <DialogPrimitive.Description className={ui.dialogDescription}>{description}</DialogPrimitive.Description>}
+            </div>
+            <DialogPrimitive.Close asChild>
+              <Button variant="outline">Done</Button>
+            </DialogPrimitive.Close>
+          </div>
+          {children}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }

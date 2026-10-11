@@ -121,3 +121,13 @@
 .tabsTrigger { font: inherit; font-size: 0.8rem; font-family: var(--ifm-font-family-monospace); color: var(--ifm-color-emphasis-700); background: none; border: 1px solid transparent; border-radius: 6px; padding: 0.3rem 0.65rem; cursor: pointer; overflow-wrap: anywhere; }
 .tabsTrigger[data-state="active"] { color: var(--ifm-font-color-base); background: var(--ifm-background-color); box-shadow: 0 1px 2px rgb(0 0 0 / 12%); }
 .tabsContent { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; outline: none; }
+
+.overlay { position: fixed; inset: 0; z-index: 400; background: rgb(0 0 0 / 55%); }
+.dialog { position: fixed; z-index: 401; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(72rem, calc(100vw - 2rem)); height: min(46rem, calc(100vh - 2rem)); display: flex; flex-direction: column; gap: 0.9rem; padding: 1.25rem; color: var(--ifm-font-color-base); background: var(--ifm-background-surface-color); border: 1px solid var(--ifm-color-emphasis-300); border-radius: 12px; box-shadow: 0 24px 64px rgb(0 0 0 / 35%); }
+.dialogHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.dialogTitle { font-size: 1.15rem; margin: 0; }
+.dialogDescription { font-size: 0.86rem; color: var(--ifm-color-emphasis-700); margin: 0.2rem 0 0; }
+.button:disabled { opacity: 0.5; cursor: default; }
+.button-primary { color: #fff; background: var(--ifm-color-primary); }
+[data-theme="dark"] .button-primary { color: #1b1b1d; }
+.button-primary:hover:not(:disabled) { filter: brightness(1.08); }

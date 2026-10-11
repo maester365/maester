@@ -17,6 +17,7 @@ import {
   withPrefix,
 } from "./generate";
 import { Badge, Button, Checkbox, Combobox, Input, RadioCards, Select, Tabs, TabsContent, Textarea } from "./ui";
+import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
 import styles from "./styles.module.css";
 
 const REPO = "https://github.com/maester365/maester/blob/main/";
@@ -143,47 +144,50 @@ function MitrePicker({ selected, none, onChange, onNone }) {
   );
 }
 
+const productSummary = (products) => {
+  const names = products.slice(0, 3).map((p) => p.name);
+  return "In " + names.join(", ") + (products.length > 3 ? " and " + (products.length - 3) + " more" : "");
+};
+
 function LicenseBuilder({ groups, onChange }) {
   const [catalog, setCatalog] = useState(null);
+  const [exploring, setExploring] = useState(null);
   useEffect(() => {
     let live = true;
-    import("@site/src/data/license-service-plans.json").then((m) => live && setCatalog(m.default || m));
+    import("@site/src/data/license-service-plans.json").then((m) => live && setCatalog(indexCatalog(m.default || m)));
     return () => {
       live = false;
     };
   }, []);
   const items = useMemo(() => {
     if (!catalog) return [];
-    return catalog.plans.map(([name, friendly, guids, productIndexes]) => {
-      const products = productIndexes.map((i) => catalog.products[i]);
-      return {
-        value: name,
-        label: name,
-        friendly,
-        products,
-        hint: [friendly, "in " + products.length + (products.length === 1 ? " product" : " products")].filter(Boolean).join(" · "),
-        primary: (name + " " + friendly + " " + guids.join(" ")).toLowerCase(),
-        search: [name, friendly, guids.join(" "), products.map((p) => p.join(" ")).join(" ")].join(" ").toLowerCase(),
-      };
-    });
+    return catalog.plans.map((plan) => ({
+      value: plan.name,
+      label: planLabel(plan),
+      plan,
+      hint: productSummary(plan.products),
+      primary: plan.search,
+      weight: plan.products.length,
+      search: plan.search + " " + plan.products.map((p) => p.search).join(" "),
+    }));
   }, [catalog]);
-  const byName = useMemo(() => Object.fromEntries(items.map((i) => [i.value, i])), [items]);
-  // When the search text matched a product, not the plan itself, say which product.
+  // When the search text matched a product, not the plan itself, name that product first.
   const hintFor = (item, q) => {
-    if (!q || (item.value + " " + item.friendly).toLowerCase().includes(q)) return item.hint;
-    const product = item.products.find((p) => p.join(" ").toLowerCase().includes(q));
-    return product ? item.friendly + " · included in " + product[0] + " (" + product[1] + ")" : item.hint;
+    if (!q || item.primary.includes(q)) return item.hint;
+    const product = item.plan.products.find((p) => p.search.includes(q));
+    return product ? "In " + product.name + " (" + product.stringId + ")" + (item.plan.products.length > 1 ? " and " + (item.plan.products.length - 1) + " more" : "") : item.hint;
   };
   const shown = groups.length ? groups : [[]];
   const update = (index, plans) => onChange(shown.map((g, i) => (i === index ? plans : g)));
-  const friendly = (name) => (byName[name] && byName[name].friendly) || name;
+  const known = (name) => catalog && catalog.planByName[name];
+  const label = (name) => (known(name) ? planLabel(known(name)) : name);
   const filled = shown.filter((g) => g.length);
 
   return (
     <div className={styles.stack}>
       <div className={styles.explain}>
         <p>
-          Plans inside one box are joined with <strong>and</strong>: the tenant needs all of them. Boxes are joined with <strong>or</strong>: any one box is enough. Search by plan name, friendly name, product name, string ID or GUID. The value written to the test is always the service plan name.
+          A test requires <strong>service plans</strong>, the building blocks inside a product such as Microsoft 365 E5. Plans inside one box are joined with <strong>and</strong>: the tenant needs all of them. Boxes are joined with <strong>or</strong>: any one box is enough.
         </p>
         <p>
           In the attribute each box is one element and <code>&amp;</code> joins the plans in it, so “Entra ID P1 and Intune, or Entra ID P2” is <code>License = ('AAD_PREMIUM&amp;INTUNE_A', 'AAD_PREMIUM_P2')</code>.
@@ -199,7 +203,9 @@ function LicenseBuilder({ groups, onChange }) {
                   <li key={name}>
                     <span>
                       {n > 0 && <span className={styles.and}>and </span>}
-                      <code>{name}</code> {byName[name] ? byName[name].friendly : <span className={styles.tactics}>not on Microsoft's list; matched as written</span>}
+                      {label(name)}
+                      {catalog && !known(name) && <span className={styles.tactics}> · not on Microsoft's list; matched as written</span>}
+                      {known(name) && <span className={styles.tactics}> · {productSummary(known(name).products)}</span>}
                       {knownLicenses.has(name) && <span className={styles.tactics}> · Maester also counts its government and education variants</span>}
                     </span>
                     <Button variant="ghost" size="xs" aria-label={"Remove " + name} onClick={() => update(index, group.filter((x) => x !== name))}>
@@ -215,8 +221,8 @@ function LicenseBuilder({ groups, onChange }) {
                 value=""
                 items={items}
                 hintFor={hintFor}
-                placeholder={!catalog ? "Loading the licence list" : group.length ? "And also require" : "Look up a licence"}
-                searchPlaceholder="Search: P1, Intune, Microsoft 365 E5, SPE_E5 or a GUID"
+                placeholder={!catalog ? "Loading the licence list" : group.length ? "And also require" : "Look up a service plan"}
+                searchPlaceholder="Search: Entra ID P1, Intune, Microsoft 365 E5, SPE_E5 or a GUID"
                 empty="No service plan matches. Type the plan name to use it as written."
                 creatable
                 createPattern={/^[A-Za-z0-9_-]+$/}
@@ -224,6 +230,9 @@ function LicenseBuilder({ groups, onChange }) {
                 disabledValues={group}
                 onSelect={(v) => !group.includes(v) && update(index, [...group, v])}
               />
+              <Button onClick={() => setExploring(index)} disabled={!catalog}>
+                Licence explorer
+              </Button>
               {shown.length > 1 && (
                 <Button variant="ghost" onClick={() => onChange(shown.filter((_, i) => i !== index))}>
                   Remove alternative
@@ -244,12 +253,22 @@ function LicenseBuilder({ groups, onChange }) {
             <span key={i}>
               {i > 0 && <strong> or </strong>}
               {filled.length > 1 && g.length > 1 && "("}
-              {g.map(friendly).join(" and ")}
+              {g.map((name) => (known(name) && known(name).friendly) || name).join(" and ")}
               {filled.length > 1 && g.length > 1 && ")"}
             </span>
           ))}
           . Otherwise it is skipped.
         </p>
+      )}
+      {catalog && exploring !== null && shown[exploring] && (
+        <LicenseExplorer
+          open
+          onOpenChange={(open) => !open && setExploring(null)}
+          index={catalog}
+          selected={shown[exploring]}
+          onAdd={(name) => update(exploring, [...shown[exploring], name])}
+          onRemove={(name) => update(exploring, shown[exploring].filter((x) => x !== name))}
+        />
       )}
     </div>
   );

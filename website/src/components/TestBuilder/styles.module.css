@@ -427,7 +427,26 @@ textarea.input {
 .explain p { margin: 0 0 0.4rem; }
 .group { border: 1px solid var(--ifm-color-emphasis-300); border-radius: 8px; padding: 0.6rem 0.75rem 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
 .group .picked { margin: 0; }
-.groupRow { display: flex; gap: 0.5rem; align-items: center; }
-.groupRow > :first-child { flex: 1; min-width: 0; }
+.groupRow { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.groupRow > :first-child { flex: 1 1 14rem; min-width: 0; }
 .or { align-self: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ifm-color-primary); }
 .and { font-weight: 600; color: var(--ifm-color-primary); }
+
+/* Licence explorer dialog */
+.explorerBar { display: flex; flex-direction: column; gap: 0.6rem; }
+.explorer { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 1rem; }
+.explorerList { list-style: none; margin: 0; padding: 0.25rem; overflow-y: auto; border: 1px solid var(--ifm-color-emphasis-300); border-radius: 8px; }
+.explorerItem, .explorerItemOn { display: flex; flex-direction: column; width: 100%; text-align: left; font: inherit; font-size: 0.875rem; color: inherit; background: none; border: 0; border-radius: 6px; padding: 0.4rem 0.6rem; cursor: pointer; }
+.explorerItem:hover { background: var(--ifm-color-emphasis-100); }
+.explorerItemOn { background: var(--ifm-color-emphasis-200); }
+.explorerItem:focus-visible, .explorerItemOn:focus-visible, .linkButton:focus-visible { outline: 2px solid var(--ifm-color-primary); outline-offset: -2px; }
+.explorerEmpty { padding: 0.75rem; font-size: 0.86rem; color: var(--ifm-color-emphasis-700); }
+.explorerDetail { min-width: 0; overflow-y: auto; border: 1px solid var(--ifm-color-emphasis-300); border-radius: 8px; padding: 0.9rem 1rem; }
+.explorerDetail h3 { font-size: 1.05rem; margin: 0 0 0.3rem; }
+.explorerPlanHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; }
+.tree { list-style: none; margin: 0.5rem 0 0; padding: 0 0 0 0.9rem; border-left: 2px solid var(--ifm-color-emphasis-300); }
+.tree li { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.35rem 0; font-size: 0.875rem; border-bottom: 1px solid var(--ifm-color-emphasis-200); }
+.treeText { display: flex; flex-direction: column; min-width: 0; }
+.linkButton { font: inherit; font-size: 0.78rem; color: var(--ifm-color-primary); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; white-space: nowrap; }
+.linkButton:hover { text-decoration: underline; }
+@media (max-width: 768px) { .explorer { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); } }
