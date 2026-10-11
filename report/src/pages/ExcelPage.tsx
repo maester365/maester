@@ -147,7 +147,7 @@ export default function ExcelPage() {
                   {test.ResultDetail?.SkippedReason}
                 </td>
                 {getAttributeValues(test).map((value, valueIndex) => (
-                  <td key={attributeHeaders[valueIndex]} className="max-w-xs truncate p-2" title={value}>
+                  <td key={`attribute-${valueIndex}`} className="max-w-xs truncate p-2" title={value}>
                     {value}
                   </td>
                 ))}

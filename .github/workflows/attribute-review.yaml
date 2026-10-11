@@ -7,7 +7,7 @@
 #
 # SECURITY. This workflow uses pull_request_target so that pull requests from forks can be reviewed with the API
 # key. Two rules follow and must hold for every future edit of this file:
-#   1. Only code from the base branch runs. The checkout pins the base commit. Nothing from the pull request is
+#   1. Only code from the base branch runs. The checkout takes the default ref, which is the base branch. Nothing from the pull request is
 #      checked out, installed, imported, dot-sourced or executed.
 #   2. The pull request's test files are downloaded through the API into a temp folder and handled as data.
 #      build/review/Invoke-MtAttributeReview.ps1 parses them without running them and sends them to the model
@@ -49,8 +49,8 @@ jobs:
       - name: Check out the base branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Never the pull request's head. See the security note at the top of this file.
-          ref: ${{ github.event.pull_request.base.sha }}
+          # No ref on purpose: for pull_request_target the default is the base branch, never the pull request's
+          # head. See the security note at the top of this file.
           persist-credentials: false
 
       - name: Download the changed test files as data
