@@ -68,10 +68,12 @@ The severity levels are `Critical`, `High`, `Medium`, `Low` and `Info`. See the
 ## Contributing a test
 
 New checks are native tests in the right suite folder. Scaffold one with `New-MtTest`, validate it with
-`Get-MtTest -Path <file>`, run it with `Invoke-MtTest -Path <file>`, and follow
-[Writing native tests](https://maester.dev/docs/next/writing-tests) and the
-[contribution guide](https://maester.dev/docs/next/contributing). Built-in tests must not check their own connection
-or licence, or wrap their body in a `try`/`catch` that only reports `-SkippedBecause Error`: they declare `Service`
-and `License`, and the engine does the rest. The unit tests in `powershell/tests` enforce this.
+`Get-MtTest <ID>` (`Get-MtTest -Path <file>` applies the rules of a custom test), run it with
+`Invoke-MtTest -Path <file>`, and follow [Writing native tests](https://maester.dev/docs/next/writing-tests) and the
+[contribution guide](https://maester.dev/docs/next/contributing). Choose the values of its attributes with the
+[attribute rubric](../website/docs/writing-tests/attribute-rubric.md); a pull request is checked against it.
+Built-in tests must not check their own connection or licence, or wrap their body in a `try`/`catch` that only
+reports `-SkippedBecause Error`: they declare `Service` and `License`, and the engine does the rest. The unit tests
+in `powershell/tests` enforce this.
 
 Pages under `website/docs/tests/` are generated from these files; do not edit them by hand.
