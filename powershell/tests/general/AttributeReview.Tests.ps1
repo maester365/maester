@@ -122,7 +122,7 @@ function Test-MtReviewSample {
         It 'Ignores paths that are not test files and paths that climb out of the tree' {
             $root = New-ReviewTree 'paths-root'
             $head = New-ReviewTree 'paths-head'
-            @(Get-MtReviewTarget -Root $root -HeadRoot $head -File 'README.md', 'tests/../secret/Test.X.ps1', 'powershell/public/Test.MT.1.ps1').Count | Should -Be 0
+            @(Get-MtReviewTarget -Root $root -HeadRoot $head -File 'README.md', 'tests/../secret/Test.X.ps1', 'src/Test.MT.1.ps1').Count | Should -Be 0
         }
 
         It 'Does not treat list order as a change' {
