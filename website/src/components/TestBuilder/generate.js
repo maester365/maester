@@ -191,7 +191,14 @@ export function validate(state, data) {
 
   // Control
   const controlPattern = new RegExp(data.properties.Control.pattern);
-  state.controls.filter((c) => !controlPattern.test(c)).forEach((c) => add("control", "error", c + " is not written <framework-key>:<control-id>, for example nist-800-53-r5:IA-2(1)."));
+  state.controls.filter((c) => !controlPattern.test(c)).forEach((c) => add("control", "error", c + " is not written <framework-key>:<requirement-id>, for example cisa-scuba:MS.AAD.3.1."));
+  const own = ownBenchmark(state, data);
+  state.controls.forEach((c) => {
+    const [key, ...rest] = c.split(":");
+    const framework = data.frameworks.find((f) => f.key === key);
+    if (own && c === own.control) add("control", "error", c + " is the requirement this test is named after. It is its Benchmark already and is not repeated in Control.");
+    else if (framework && !framework.requirements.some((r) => r.id === rest.join(":"))) add("control", builtin ? "error" : "warn", rest.join(":") + " is not a requirement in " + framework.file + ".");
+  });
 
   // Requirements
   if (builtin && !state.serviceNone && state.services.length === 0) add("services", "error", "Choose the services the test needs, or None.");
@@ -245,7 +252,7 @@ export function attributeEntries(state) {
   }
   if (state.mitreNone) put("Mitre", quote("None"));
   else arr("Mitre", state.mitre);
-  if (state.mode !== "builtin") arr("Control", state.controls);
+  arr("Control", state.controls);
   if (state.serviceNone) put("Service", quote("None"));
   else arr("Service", state.services);
   arr("License", licenseElements(state));
@@ -350,6 +357,16 @@ export function addByHand(state) {
     .filter((name) => !GENERATED_BY_NEW_MTTEST.includes(name));
 }
 
+// The benchmark requirement a built-in test is named after: its ID starts with the prefix of a framework of its suite.
+export function ownBenchmark(state, data) {
+  if (state.mode !== "builtin") return null;
+  const id = state.id.trim();
+  const framework = data.frameworks
+    .filter((f) => f.suite === state.suite && f.idPrefix && id.toLowerCase().startsWith(f.idPrefix.toLowerCase()) && id.length > f.idPrefix.length)
+    .sort((a, b) => b.idPrefix.length - a.idPrefix.length)[0];
+  return framework ? { framework, id, requirement: id.slice(framework.idPrefix.length), control: framework.key + ":" + id.slice(framework.idPrefix.length) } : null;
+}
+
 // What a pull request must contain besides the two test files, for values that are new to the registries.
 export function registryChanges(state, data) {
   const changes = [];
@@ -389,24 +406,17 @@ export function registryChanges(state, data) {
       snippet: `        @{ Key = ${quote(state.newResourceType.key)}; Description = ${quote(state.newResourceType.description)} }`,
     });
   }
-  // A built-in test is mapped to a benchmark requirement in the framework file, not in the attribute.
-  const id = state.id.trim() || "MT.1234";
-  state.controls.forEach((control) => {
-    const [key, ...rest] = control.split(":");
-    const requirementId = rest.join(":");
-    const framework = data.frameworks.find((f) => f.key === key);
-    if (!framework) return;
-    const requirement = framework.requirements.find((r) => r.id === requirementId);
+  // A test named after a benchmark requirement is listed in the framework file of its suite.
+  const own = ownBenchmark(state, data);
+  const listedAlready = own && own.framework.requirements.some((r) => r.tests.includes(own.id));
+  if (own && !listedAlready) {
+    const listed = own.framework.requirements.find((r) => r.id === own.requirement);
     changes.push({
-      file: framework.file,
-      what: requirement
-        ? "Add the test to the Tests of requirement " + requirementId + " (" + framework.name + ")."
-        : "Add requirement " + requirementId + " to Requirements (" + framework.name + ").",
-      snippet: requirement
-        ? `{ "Id": "${requirementId}", ..., "Tests": [${requirement.tests.concat(id).map((x) => `"${x}"`).join(", ")}] }`
-        : `{ "Id": "${requirementId}", "Tests": ["${id}"] }`,
+      file: own.framework.file,
+      what: listed ? "Add the test to the Tests of requirement " + own.requirement + "." : "Add the requirement, with its level or criticality, and list the test. The build fails when a test with this prefix is missing from the file.",
+      snippet: listed ? `{ "Id": "${own.requirement}", ..., "Tests": [${listed.tests.concat(own.id).map((x) => `"${x}"`).join(", ")}] }` : `{ "Id": "${own.requirement}", "Tests": ["${own.id}"] }`,
     });
-  });
+  }
   if (changes.length) {
     changes.push({
       file: "website/src/data/test-builder.json",

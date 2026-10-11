@@ -13,6 +13,7 @@ import {
   buildCommand,
   folderFor,
   addByHand,
+  ownBenchmark,
   registryChanges,
   withPrefix,
 } from "./generate";
@@ -314,6 +315,7 @@ export default function TestBuilder() {
   const folder = folderFor(state, data);
   const changes = registryChanges(state, data);
   const byHand = addByHand(state);
+  const own = ownBenchmark(state, data);
   const need = (name) => builtin && P[name].required !== "No";
 
   // The prefix of custom tests is remembered in this browser.
@@ -553,39 +555,41 @@ export default function TestBuilder() {
           </Field>
           <Field
             id="control"
-            name={builtin ? undefined : "Control"}
-            label={builtin ? "Benchmark requirements" : "Framework controls"}
-            hint={
-              builtin
-                ? "The benchmark requirements this test implements. Look one up from the framework files in the repository. A built-in test is mapped in that file, not in the attribute, so the change is listed with the code."
-                : P.Control.description + " Look up a known control or type your own."
-            }
+            name="Control"
+            label="Framework requirements"
+            hint="Requirements of CIS, CISA or any other framework that this test supports. Look one up from the frameworks shipped with Maester, or type your own as framework-key:requirement-id."
             rubric={R.Control}
             problems={problems}
             notInList={
               <>
                 <p>
-                  The list comes from the framework files: {data.frameworks.map((f, i) => (
+                  The lookup lists the frameworks Maester ships a file for: {data.frameworks.map((f, i) => (
                     <span key={f.key}>
                       {i > 0 && ", "}
                       <RepoFile path={f.file} />
                     </span>
                   ))}
-                  .
+                  . For any other framework, type the reference yourself with a lowercase key, for example <code>nist-800-53-r5:IA-2(1)</code> or <code>iso-27001-2022:A.5.17</code>, and use the same key every time.
                 </p>
                 <p>
-                  A requirement that is missing is added to <code>Requirements</code> in that file with the test in its <code>Tests</code>. A whole new framework is a new file, <code>tests/&lt;suite&gt;/frameworks/&lt;key&gt;.json</code>, declared under <code>Frameworks</code> in the suite's <code>suite.json</code>.
+                  A benchmark has a file of its own because it is re-versioned on its own schedule, each requirement has facts that are not about one test (level, profile, whether it was withdrawn), and a requirement with no test yet still has a row. A test is listed in that file only when it is named after the requirement, like <code>CISA.MS.AAD.3.1</code>. Every other test says what it supports here, in <code>Control</code>.
                 </p>
               </>
             }
           >
+            {own && (
+              <p className={styles.note}>
+                From its ID this test implements <code>{own.control}</code>. That is its Benchmark, so it is not listed again here. The framework file change is shown with the code.
+              </p>
+            )}
             <Combobox
               id="input-control"
               value=""
-              items={builtin ? requirementItems : controlItems}
-              placeholder={builtin ? "Look up a requirement" : "Look up a control"}
+              items={controlItems}
+              placeholder="Look up a requirement"
               searchPlaceholder="Search by framework, requirement ID or test ID: MS.AAD.3, 5.1.5, nist"
-              creatable={!builtin}
+              creatable
+              createPattern={/^[a-z0-9][a-z0-9.-]*:[^\s,]+$/}
               keepOpen
               disabledValues={state.controls}
               onSelect={(v) => !state.controls.includes(v) && set({ controls: [...state.controls, v] })}
