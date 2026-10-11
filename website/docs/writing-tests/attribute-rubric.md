@@ -11,6 +11,9 @@ it addresses. This page is the rule book for those values. Unit tests check what
 a review step checks the judgement calls against this page. A custom test may use the same attributes; the rules
 apply to it only if you want them to.
 
+The [test builder](pathname:///test-builder) lets you pick the values with this guidance beside each field and
+shows the code as you go.
+
 | Question | Attributes | Required for built-in tests |
 | --- | --- | --- |
 | What is it about? | `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType` | All except `RelatedProduct` |
