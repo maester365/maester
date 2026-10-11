@@ -460,15 +460,19 @@ instance rows, the result has one row on the parent ID instead:
 | --- | --- |
 | The family was not selected, was disabled, or a gate failed | The usual `NotRun` or `Skipped` reason |
 | The instance source returned nothing | `Skipped` with `NoInstances` |
-| The instance source threw | `Error` with `InstanceSourceFailed` |
+| The instance source threw, did not finish within the family's timeout, or ended with `exit` | `Error` with `InstanceSourceFailed` |
 | An instance `Id` is missing, invalid or repeated | `Error` with `InvalidInstanceId` |
+
+The instance source runs under the same timeout as the test (the family's `TimeoutSeconds`, or the run's
+`Execution` timeout). The source gets that long to return, and then each instance gets that long to run.
 
 Selection and configuration understand families:
 
 - `-TestId CONTOSO.2001` or `-TestId 'CONTOSO.2001.*'` selects the whole family.
 - `-TestId CONTOSO.2001.abc` runs only that instance; the others get `NotRun` rows with reason `NotSelected`.
 - `-ExcludeTestId` and `"Enabled": false` on an instance ID drop that instance after the source has run.
-- A `TestSettings` row on an instance ID wins over a row on the parent ID.
+- A `TestSettings` row on an instance ID wins over a row on the parent ID. Its `Parameters` and
+  `TimeoutSeconds` apply to that instance only; a parameter it does not name keeps the value of the family's row.
 - IDs under a family's parent are never reported as unknown, even if that instance does not exist in this run.
 
 ## Settings shared by many tests

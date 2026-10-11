@@ -389,10 +389,13 @@
         # Where the tests come from: the built-in suites from the module, and custom tests under -Path.
         $testSource = Resolve-MtTestSource -Path $Path -SkipBuiltIn:$SkipBuiltIn
 
-        # Stage 1 (first pass): resolve the run config without the tenant-specific file, so that its
-        # Selection section takes part in the tag rules below. The second pass runs once connected.
+        # Stage 1: resolve the run config, with every layer including maester-config.<tenantId>.json. It is
+        # resolved once, here, because everything below is derived from it: the selection, the tag rules,
+        # whether the built-in tests run, and the console mode. Invoke-Maester does not connect to Graph
+        # itself, so the tenant of the connection is already known.
+        $configTenantId = Get-MtConfigTenantId
         try {
-            $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -Config $Config -WarningAction SilentlyContinue
+            $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -Config $Config -TenantId $configTenantId
         } catch {
             Write-Error -Message $_.Exception.Message
             return
@@ -568,14 +571,7 @@
 
         $maesterResults = $null
 
-        $configTenantId = $null
-        if (Test-MtConnection Graph) {
-            $configTenantId = (Get-MgContext).TenantId
-        }
-        if ($null -eq $Config -and [string]::IsNullOrWhiteSpace($env:MAESTER_CONFIG)) {
-            # Second pass: the discovered files, now including maester-config.<tenantId>.json.
-            $runConfig = Resolve-MtRunConfig -Path $testSource.ConfigSearchPath -TenantId $configTenantId
-        }
+        # Initialize-MtSession above started a new session: give it the run config.
         $__MtSession.MaesterConfig = $runConfig
 
         Set-MtProgressView
@@ -618,7 +614,9 @@
         $originCache = @{}
         $fileOrigin = @{}
         foreach ($f in $testSource.BuiltInFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $testSource.BuiltInRoot -BuiltIn -Cache $originCache }
-        foreach ($f in $testSource.CustomFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $testSource.CustomRoot -Cache $originCache }
+        # -Path can be one test file: the suite.json files are looked for from its folder, not from the file.
+        $customSuiteRoot = if ($testSource.CustomRoot -and (Test-Path -LiteralPath $testSource.CustomRoot -PathType Leaf)) { Split-Path -Path $testSource.CustomRoot -Parent } else { $testSource.CustomRoot }
+        foreach ($f in $testSource.CustomFiles) { $fileOrigin[$f] = Get-MtTestFileOrigin -File $f -Root $customSuiteRoot -Cache $originCache }
 
         # Native tests: the built-in catalog, and custom Test.<ID>.ps1 files under the custom root.
         Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering native tests...' -Force
@@ -632,7 +630,7 @@
                     ForEach-Object { $_.FullName } |
                     Where-Object { -not $_.StartsWith($resolvedBuiltInRoot, [System.StringComparison]::OrdinalIgnoreCase) -or $_ -like '*[\/]Custom[\/]*' })
             if ($customNativeFiles.Count -gt 0) {
-                $nativeCustom = @(Get-MtNativeTestInventory -Path $customNativeFiles -Root $testSource.CustomRoot)
+                $nativeCustom = @(Get-MtNativeTestInventory -Path $customNativeFiles -Root $customSuiteRoot)
                 # A custom native test with a built-in ID is not loaded; the built-in runs (design section 8).
                 $shadowing = @($nativeCustom | Where-Object { $_.Id -and $catalogIds.Contains($_.Id) })
                 if ($shadowing.Count -gt 0) {

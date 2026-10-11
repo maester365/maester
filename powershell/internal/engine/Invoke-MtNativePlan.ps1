@@ -59,9 +59,12 @@
             $instanceId = "$($p.Test.Id).$($instance.Id)"
             $__MtSession.NativeTestInfo[$instanceId] = @{ FunctionName = $p.Test.FunctionName; Markdown = $markdown }
             Clear-MtNativeTestState -Id $instanceId
-            $parameters = @{} + $p.Parameters
+            # The plan row of this instance: the family's, or its own when a config row for the instance
+            # sets parameters or a timeout.
+            $instanceRow = if ($expansion.PlanRows.ContainsKey([string]$instance.Id)) { $expansion.PlanRows[[string]$instance.Id] } else { $p }
+            $parameters = @{} + $instanceRow.Parameters
             $parameters['Instance'] = $instance
-            $workItems.Add((New-MtNativeWorkItem -PlanRow $p -Id $instanceId -Module $module -Parameters $parameters -Instance $instance))
+            $workItems.Add((New-MtNativeWorkItem -PlanRow $instanceRow -Id $instanceId -Module $module -Parameters $parameters -Instance $instance))
         }
     }
 
@@ -268,22 +271,32 @@ function Expand-MtTestFamily {
         ConvertTo-MtNativeRow -PlanRow $copy
     }
 
-    # The source runs as the parent test, so Add-MtTestResultDetail -SkippedBecause in it skips the family
-    # (for example when the feature the family enumerates is not enabled in the tenant).
-    try {
-        $previousTest = [Maester.Engine.MtSession]::EnterTest($test.Id)
-        $raw = if ($Module) { & $Module { param($fn) & $fn } $test.InstanceSource } else { & $test.InstanceSource }
-        $instances = @($raw | Where-Object { $null -ne $_ })
-    } catch {
-        if ($_.FullyQualifiedErrorId -like "$([Maester.Engine.MtSession]::SkipErrorId)*") {
-            return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Skipped' 'TestSkipped' $_.Exception.Message) }
+    # The source runs through the engine, like a test: under a timeout, with a stop request honoured, and
+    # with exit or a stray break contained. It runs as the parent test, so Add-MtTestResultDetail
+    # -SkippedBecause in it skips the family (for example when the feature the family enumerates is not
+    # enabled in the tenant). Its timeout is the family's own: the source gets that long, and then each
+    # instance gets that long again.
+    $sourceItem = [Maester.Engine.MtWorkItem]::new()
+    $sourceItem.Id = $test.Id
+    $sourceItem.Command = $test.InstanceSource
+    $sourceItem.Title = [string]$test.Title
+    $sourceItem.Module = $Module
+    $sourceItem.Lane = 'Main'
+    if ($PlanRow.TimeoutSeconds -gt 0) { $sourceItem.TimeoutSeconds = $PlanRow.TimeoutSeconds }
+    $source = @(Invoke-MtEngineRun -WorkItem $sourceItem -Module $ExecutionContext.SessionState.Module) | Select-Object -First 1
+    $empty = @{ Instances = @(); PlanRows = @{} }
+    switch ([string]$source.Status) {
+        'Completed' { $instances = @($source.Output | Where-Object { $null -ne $_ }) }
+        'Skipped' { return [pscustomobject]($empty + @{ Rows = @(& $parentRow 'Skipped' 'TestSkipped' $source.Reason) }) }
+        'Timeout' {
+            return [pscustomobject]($empty + @{ Rows = @(& $parentRow 'Error' 'InstanceSourceFailed' "The instance source $($test.InstanceSource) did not finish within $($PlanRow.TimeoutSeconds) seconds.") })
         }
-        return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Error' 'InstanceSourceFailed' "The instance source $($test.InstanceSource) failed: $($_.Exception.Message)") }
-    } finally {
-        [Maester.Engine.MtSession]::ExitTest($previousTest)
+        default {
+            return [pscustomobject]($empty + @{ Rows = @(& $parentRow 'Error' 'InstanceSourceFailed' "The instance source $($test.InstanceSource) failed: $($source.Reason)") })
+        }
     }
     if ($instances.Count -eq 0) {
-        return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Skipped' 'NoInstances' 'There is nothing in this tenant for this test to check.') }
+        return [pscustomobject]($empty + @{ Rows = @(& $parentRow 'Skipped' 'NoInstances' 'There is nothing in this tenant for this test to check.') })
     }
 
     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -291,12 +304,18 @@ function Expand-MtTestFamily {
         $suffix = [string]$i.Id
         # \z, not $: $ also matches before a final newline.
         if ($suffix -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}\z' -or -not $seen.Add($suffix)) {
-            return [pscustomobject]@{ Instances = @(); Rows = @(& $parentRow 'Error' 'InvalidInstanceId' "The instance source returned an invalid or repeated instance ID '$suffix'.") }
+            return [pscustomobject]($empty + @{ Rows = @(& $parentRow 'Error' 'InvalidInstanceId' "The instance source returned an invalid or repeated instance ID '$suffix'.") })
         }
     }
 
     $run = [System.Collections.Generic.List[object]]::new()
     $rows = [System.Collections.Generic.List[object]]::new()
+    $planRows = @{}
+    $copyRow = {
+        $copy = [pscustomobject]@{}
+        foreach ($prop in $PlanRow.PSObject.Properties) { $copy | Add-Member -NotePropertyName $prop.Name -NotePropertyValue $prop.Value }
+        $copy
+    }
     foreach ($i in $instances) {
         $instanceId = "$($test.Id).$($i.Id)"
         $reason = $null
@@ -315,10 +334,39 @@ function Expand-MtTestFamily {
             $copy.Disposition = 'NotRun'; $copy.ReasonCode = $reason[0]; $copy.ReasonDetail = $reason[1]
             $rows.Add((ConvertTo-MtNativeRow -PlanRow $copy -Instance $i))
         } else {
+            # A config row for this instance can set its own parameters and timeout. They apply over the
+            # family's: a parameter the instance row does not name keeps the family's value.
+            $own = if ($RunConfig.TestSettingsHash -and $RunConfig.TestSettingsHash.ContainsKey($instanceId)) { $RunConfig.TestSettingsHash[$instanceId] } else { $null }
+            $ownParameters = if ($own -and $own.PSObject.Properties['Parameters']) { $own.Parameters } else { $null }
+            $hasTimeout = $own -and $own.PSObject.Properties['TimeoutSeconds'] -and $null -ne $own.TimeoutSeconds
+            if ($null -ne $ownParameters -or $hasTimeout) {
+                $instanceRow = & $copyRow
+                if ($null -ne $ownParameters) {
+                    $configValues = @{}
+                    $overrideValues = @{}
+                    foreach ($e in @($PlanRow.EffectiveParameters)) {
+                        if ($e.Source -eq 'Config') { $configValues[$e.Name] = $e.Value }
+                        elseif ($e.Source -eq 'Parameter') { $overrideValues[$e.Name] = $e.Value }
+                    }
+                    if ($ownParameters -is [System.Collections.IDictionary]) { foreach ($k in $ownParameters.Keys) { $configValues[[string]$k] = $ownParameters[$k] } }
+                    else { foreach ($prop in $ownParameters.PSObject.Properties) { $configValues[$prop.Name] = $prop.Value } }
+                    $binding = ConvertTo-MtTestParameter -Test $test -ConfigValue $configValues -Override $overrideValues
+                    $instanceRow.EffectiveParameters = $binding.Effective
+                    if ($binding.Error) {
+                        $instanceRow.Disposition = 'Error'; $instanceRow.ReasonCode = 'InvalidConfiguration'; $instanceRow.ReasonDetail = $binding.Error
+                        $rows.Add((ConvertTo-MtNativeRow -PlanRow $instanceRow -Instance $i))
+                        continue
+                    }
+                    $instanceRow.Parameters = $binding.Bound
+                }
+                # 0 turns the timeout off for this instance.
+                if ($hasTimeout) { $instanceRow.TimeoutSeconds = [int]$own.TimeoutSeconds }
+                $planRows[[string]$i.Id] = $instanceRow
+            }
             $run.Add($i)
         }
     }
-    [pscustomobject]@{ Instances = $run.ToArray(); Rows = $rows.ToArray() }
+    [pscustomobject]@{ Instances = $run.ToArray(); Rows = $rows.ToArray(); PlanRows = $planRows }
 }
 
 function Get-MtNativeTestMarkdown {

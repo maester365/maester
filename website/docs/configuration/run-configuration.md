@@ -34,7 +34,7 @@ Maester uses exactly **one** source, in this order:
    | --- | --- |
    | `maester-config.json` | `-Path`, then `-Path/tests`, then up to five parent folders. The first match wins. |
    | `custom/maester-config.json` | The `custom` folder next to that root file, or under `-Path` or `-Path/tests` when there is no root file. |
-   | `maester-config.<tenantId>.json` | Searched like the root file, once Maester knows the tenant ID from the Graph connection. |
+   | `maester-config.<tenantId>.json` | Searched like the root file, using the tenant ID of the Graph connection. Every section applies, including `Selection`. Without a Graph connection the file is not looked for. |
 
 Under every source sits a small defaults layer (the default values of the global settings). Command-line
 parameters sit on top of every source.
@@ -185,7 +185,9 @@ One row per test you want to change, built-in or custom, native or Pester-format
 | `TimeoutSeconds` | int | A timeout for this test, overriding `Execution`. Native tests only. |
 
 For a family, a row on an instance ID wins over a row on the parent ID. `"Enabled": false` on the parent ID turns off the whole family; on an instance ID it
-turns off only that instance, and the others still run.
+turns off only that instance, and the others still run. `Parameters` and `TimeoutSeconds` on an instance ID apply to
+that instance only: a parameter the instance row does not name keeps the value of the family's row, and
+`"TimeoutSeconds": 0` turns the timeout off for that instance.
 
 Parameter values are checked against the test's `param()` block before it runs. Use `Get-MtTest <ID>` to see a
 test's parameters, their types, defaults, allowed values and descriptions.

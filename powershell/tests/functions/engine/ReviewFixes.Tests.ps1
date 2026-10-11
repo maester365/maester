@@ -275,3 +275,219 @@ function Test-ContosoBadRange {
         }
     }
 }
+
+Describe 'Maintainer review fixes' {
+    BeforeAll {
+        function New-ReviewTest {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param([string] $Folder, [string] $Id, [string] $Extra = '', [string] $Body = '$true')
+            New-TestFile -Folder $Folder -Id $Id -Body $Body -Extra ", Service = 'None'$Extra" | Out-Null
+        }
+
+        function Invoke-ReviewRun {
+            param([string] $Path, [hashtable] $Config, [switch] $WithBuiltIn)
+            $arguments = @{
+                Path = $Path; SkipGraphConnect = $true; NonInteractive = $true; DisableTelemetry = $true; SkipVersionCheck = $true
+                OutputFolder = (Join-Path $TestDrive "out-$([guid]::NewGuid().ToString('N'))"); PassThru = $true
+            }
+            if (-not $WithBuiltIn) { $arguments.SkipBuiltIn = $true }
+            if ($Config) { $arguments.Config = $Config }
+            Invoke-Maester @arguments 6>$null
+        }
+
+        function New-FamilyTest {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param([string] $Folder, [string] $Id, [string] $Source, [string] $Param = '', [string] $Body = '$true')
+            $null = New-Item -ItemType Directory -Path $Folder -Force
+            $name = $Id -replace '[^A-Za-z0-9]', ''
+            @"
+function Get-Instance$name {
+    [CmdletBinding()]
+    param()
+    $Source
+}
+
+function Test-Family$name {
+    [MaesterTest(Id = '$Id', Title = 'Family', Severity = 'Low', Service = 'None', InstanceSource = 'Get-Instance$name')]
+    [CmdletBinding()]
+    param(
+        # The instance, supplied by the engine.
+        `$Instance$Param
+    )
+    $Body
+}
+"@ | Set-Content (Join-Path $Folder "Test.$Id.ps1")
+            "Description of $Id.`n`n<!--- Results --->`n%TestResult%" | Set-Content (Join-Path $Folder "Test.$Id.md")
+        }
+    }
+
+    Context 'The tenant config file decides the selection' {
+        BeforeAll {
+            $script:tenantId = '11111111-2222-3333-4444-555555555555'
+            Mock -ModuleName Maester Get-MtConfigTenantId { '11111111-2222-3333-4444-555555555555' }
+
+            function New-TenantFolder {
+                [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+                param([string] $Name, [hashtable] $TenantConfig)
+                $folder = Join-Path $TestDrive $Name
+                New-ReviewTest -Folder $folder -Id 'REVIEW.1'
+                New-ReviewTest -Folder $folder -Id 'REVIEW.2'
+                New-ReviewTest -Folder $folder -Id 'REVIEW.3' -Extra ', Preview'
+                '{}' | Set-Content (Join-Path $folder 'maester-config.json')
+                $TenantConfig | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $folder "maester-config.$script:tenantId.json")
+                $folder
+            }
+        }
+
+        It 'Applies an allow list from the tenant file to native tests' {
+            $folder = New-TenantFolder -Name 'tenant-allow' -TenantConfig @{
+                Selection    = @{ DefaultAction = 'Skip'; TestId = @('REVIEW.1') }
+                TestSettings = @(@{ Id = 'REVIEW.1'; Enabled = $true })
+            }
+            $r = Invoke-ReviewRun -Path $folder
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.1').Result | Should -Be 'Passed'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.2').Result | Should -Be 'NotRun'
+            $r.MaesterConfig.Selection.DefaultAction | Should -Be 'Skip'
+        }
+
+        It 'Applies ExcludeTestId, a disabled row and IncludePreview from the tenant file' {
+            $folder = New-TenantFolder -Name 'tenant-exclude' -TenantConfig @{
+                Selection    = @{ ExcludeTestId = @('REVIEW.1'); IncludePreview = $true }
+                TestSettings = @(@{ Id = 'REVIEW.2'; Enabled = $false; Reason = 'Not for this tenant' })
+            }
+            $r = Invoke-ReviewRun -Path $folder
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.1').ReasonCode | Should -Be 'ExcludedById'
+            $disabled = $r.Tests | Where-Object Id -EQ 'REVIEW.2'
+            $disabled.ReasonCode | Should -Be 'DisabledByConfig'
+            $disabled.ReasonDetail | Should -Be 'Not for this tenant'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.3').Result | Should -Be 'Passed' -Because 'the tenant file includes Preview tests'
+        }
+
+        It 'Leaves Preview tests out when the tenant file does not include them' {
+            $folder = New-TenantFolder -Name 'tenant-nopreview' -TenantConfig @{ Selection = @{ ExcludeTestId = @('REVIEW.1') } }
+            $r = Invoke-ReviewRun -Path $folder
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.3').Result | Should -Be 'NotRun'
+        }
+
+        It 'Leaves the built-in tests out when the tenant file sets Selection.BuiltIn to None' {
+            $folder = New-TenantFolder -Name 'tenant-builtin' -TenantConfig @{ Selection = @{ BuiltIn = 'None' } }
+            $r = Invoke-ReviewRun -Path $folder -WithBuiltIn
+            $r.Selection.BuiltIn | Should -Be 'None'
+            @($r.Tests).Count | Should -Be 3
+        }
+
+        It 'Stops the run for an unknown ID when the tenant file sets OnUnknownId to Error' {
+            $folder = New-TenantFolder -Name 'tenant-unknown' -TenantConfig @{ Selection = @{ TestId = @('REVIEW.1', 'NOPE.1'); OnUnknownId = 'Error' } }
+            $failures = $null
+            $r = Invoke-Maester -Path $folder -SkipBuiltIn -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck `
+                -OutputFolder (Join-Path $TestDrive 'out-unknown') -PassThru -ErrorVariable failures -ErrorAction SilentlyContinue 6>$null
+            $r | Should -BeNullOrEmpty
+            ($failures | ForEach-Object { "$_" }) -join ' ' | Should -Match 'NOPE\.1'
+        }
+
+        It 'Is not read when -Config is given' {
+            $folder = New-TenantFolder -Name 'tenant-hermetic' -TenantConfig @{ Selection = @{ ExcludeTestId = @('REVIEW.1') } }
+            $r = Invoke-ReviewRun -Path $folder -Config @{}
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.1').Result | Should -Be 'Passed'
+        }
+    }
+
+    Context 'A single test file and the suite.json beside it' {
+        It 'Applies the suite tags and the required Maester version when -Path is the file' {
+            $folder = Join-Path $TestDrive 'suite-onefile'
+            New-ReviewTest -Folder $folder -Id 'REVIEW.10'
+            @{ Id = 'CONTOSO'; Source = 'Contoso'; Tags = @('ContosoSuite') } | ConvertTo-Json | Set-Content (Join-Path $folder 'suite.json')
+            $file = Join-Path $folder 'Test.REVIEW.10.ps1'
+            $row = (Invoke-ReviewRun -Path $file).Tests[0]
+            $row.Result | Should -Be 'Passed'
+            $row.Suite | Should -Be 'CONTOSO'
+            $row.Tag | Should -Contain 'ContosoSuite'
+
+            @{ Id = 'CONTOSO'; Source = 'Contoso'; RequiresMaester = '99.0' } | ConvertTo-Json | Set-Content (Join-Path $folder 'suite.json')
+            $byFile = (Invoke-ReviewRun -Path $file).Tests[0]
+            $byFolder = (Invoke-ReviewRun -Path $folder).Tests[0]
+            $byFile.Result | Should -Be 'Error'
+            $byFile.ReasonCode | Should -Be 'RequiresNewerMaester'
+            $byFile.ReasonCode | Should -Be $byFolder.ReasonCode
+        }
+    }
+
+    Context 'Config rows for one instance of a family' {
+        BeforeAll {
+            $script:familyFolder = Join-Path $TestDrive 'family-parameters'
+            New-FamilyTest -Folder $script:familyFolder -Id 'REVIEW.FAMILY' -Source "[pscustomobject]@{ Id = 'a' }, [pscustomobject]@{ Id = 'b' }" `
+                -Param ",`n        # What the test compares with.`n        [int] `$Threshold = 1,`n        # Text.`n        [string] `$Label = 'none'" `
+                -Body 'Add-MtTestResultDetail -Result "Threshold $Threshold, label $Label"; $Threshold -eq 2'
+        }
+
+        It 'Binds the parameters of an instance row for that instance only' {
+            $r = Invoke-ReviewRun -Path $script:familyFolder -Config @{ TestSettings = @(@{ Id = 'REVIEW.FAMILY.a'; Parameters = @{ Threshold = 2 } }) }
+            $a = $r.Tests | Where-Object Id -EQ 'REVIEW.FAMILY.a'
+            $b = $r.Tests | Where-Object Id -EQ 'REVIEW.FAMILY.b'
+            $a.Result | Should -Be 'Passed'
+            $b.Result | Should -Be 'Failed'
+            ($a.Parameters | Where-Object Name -EQ 'Threshold').Value | Should -Be 2
+            ($a.Parameters | Where-Object Name -EQ 'Threshold').Source | Should -Be 'Config'
+            ($b.Parameters | Where-Object Name -EQ 'Threshold').Source | Should -Be 'Default'
+        }
+
+        It 'Keeps the parameters of the family row that the instance row does not name' {
+            $r = Invoke-ReviewRun -Path $script:familyFolder -Config @{ TestSettings = @(
+                    @{ Id = 'REVIEW.FAMILY'; Parameters = @{ Label = 'family'; Threshold = 2 } }
+                    @{ Id = 'REVIEW.FAMILY.a'; Parameters = @{ Threshold = 5 } }) }
+            $a = $r.Tests | Where-Object Id -EQ 'REVIEW.FAMILY.a'
+            $b = $r.Tests | Where-Object Id -EQ 'REVIEW.FAMILY.b'
+            ($a.Parameters | Where-Object Name -EQ 'Threshold').Value | Should -Be 5
+            ($a.Parameters | Where-Object Name -EQ 'Label').Value | Should -Be 'family'
+            $a.Result | Should -Be 'Failed'
+            $b.Result | Should -Be 'Passed'
+        }
+
+        It 'Reports an invalid parameter of an instance row on that instance and still runs the others' {
+            $r = Invoke-ReviewRun -Path $script:familyFolder -Config @{ TestSettings = @(@{ Id = 'REVIEW.FAMILY.a'; Parameters = @{ Threshold = 'many' } }) }
+            $a = $r.Tests | Where-Object Id -EQ 'REVIEW.FAMILY.a'
+            $a.Result | Should -Be 'Error'
+            $a.ReasonCode | Should -Be 'InvalidConfiguration'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.FAMILY.b').Result | Should -Be 'Failed'
+        }
+
+        It 'Uses the timeout of an instance row, and 0 turns the timeout off for that instance' {
+            $folder = Join-Path $TestDrive 'family-timeout'
+            New-FamilyTest -Folder $folder -Id 'REVIEW.SLOW' -Source "[pscustomobject]@{ Id = 'a' }, [pscustomobject]@{ Id = 'b' }" `
+                -Body 'if ($Instance.Id -eq ''a'') { Start-Sleep -Seconds 3 }; $true'
+            # Instance a has its own one-second timeout; b has none.
+            $r = Invoke-ReviewRun -Path $folder -Config @{ TestSettings = @(@{ Id = 'REVIEW.SLOW.a'; TimeoutSeconds = 1 }) }
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.SLOW.a').ReasonCode | Should -Be 'Timeout'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.SLOW.b').Result | Should -Be 'Passed'
+            # The run has a one-second timeout; instance a turns it off for itself.
+            $r = Invoke-ReviewRun -Path $folder -Config @{ Execution = @{ TestTimeoutSeconds = 1 }; TestSettings = @(@{ Id = 'REVIEW.SLOW.a'; TimeoutSeconds = 0 }) }
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.SLOW.a').Result | Should -Be 'Passed'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.SLOW.b').Result | Should -Be 'Passed'
+        }
+    }
+
+    Context 'The instance source of a family' {
+        It 'Is stopped at the timeout, reported on the family, and later tests still run' {
+            $folder = Join-Path $TestDrive 'family-source-timeout'
+            New-FamilyTest -Folder $folder -Id 'REVIEW.HANG' -Source "Start-Sleep -Seconds 20; [pscustomobject]@{ Id = 'a' }"
+            New-ReviewTest -Folder $folder -Id 'REVIEW.LATER'
+            $clock = [System.Diagnostics.Stopwatch]::StartNew()
+            $r = Invoke-ReviewRun -Path $folder -Config @{ Execution = @{ TestTimeoutSeconds = 1 } }
+            $clock.Elapsed.TotalSeconds | Should -BeLessThan 15
+            $family = $r.Tests | Where-Object Id -EQ 'REVIEW.HANG'
+            $family.Result | Should -Be 'Error'
+            $family.ReasonCode | Should -Be 'InstanceSourceFailed'
+            $family.ReasonDetail | Should -Match 'did not finish within 1 seconds'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.LATER').Result | Should -Be 'Passed'
+        }
+
+        It 'Contains exit in a source instead of ending the session' {
+            $folder = Join-Path $TestDrive 'family-source-exit'
+            New-FamilyTest -Folder $folder -Id 'REVIEW.EXIT' -Source 'exit 3'
+            New-ReviewTest -Folder $folder -Id 'REVIEW.AFTER'
+            $r = Invoke-ReviewRun -Path $folder
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.EXIT').ReasonCode | Should -Be 'InstanceSourceFailed'
+            ($r.Tests | Where-Object Id -EQ 'REVIEW.AFTER').Result | Should -Be 'Passed'
+        }
+    }
+}
