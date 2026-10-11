@@ -67,7 +67,7 @@ Types stay within what the AST reader accepts: `string`, `string[]` and `bool`.
 | `UserImpact` | string | `Low`, `Medium`, `High` | required unless `Severity` is `Info` | Normalised to this spelling. |
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | required unless `Severity` is `Info` | Normalised to this spelling. |
 | `Mitre` | string[] | `T####`, `T####.###`, or the single value `None` | required | `None` cannot be combined with an ID. IDs are validated against the pinned ATT&CK release by the build and the unit tests, not at run time. |
-| `Control` | string[] | `<framework-key>:<control-id>` | not used | Pattern `^[a-z0-9][a-z0-9.\-]*:[^\s,]+$`. For custom tests and packs. |
+| `Control` | string[] | `<framework-key>:<requirement-id>` | optional | Pattern `^[a-z0-9][a-z0-9.\-]*:[^\s,]+$`. Requirements of frameworks the test supports beside the benchmark it is named after. Any test may use it. For a framework shipped with Maester the requirement must exist in its file. |
 | `Service` | string[] | unchanged | required | |
 | `License` | string[] | unchanged | optional | |
 | `Permission` | string[] | one permission per element, no commas | optional | Replaces the reserved name `GraphScope`. Recorded; not enforced in 3.0. |

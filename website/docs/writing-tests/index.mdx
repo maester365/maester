@@ -193,7 +193,7 @@ that ships with Maester must also answer the others marked "Built-in tests". The
 | `UserImpact` | string | `Low`, `Medium`, `High` | Built-in tests, unless `Severity` is `Info` | Empty | How much the recommended fix disrupts end users. |
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | Built-in tests, unless `Severity` is `Info` | Empty | How much administrator work the recommended fix takes. |
 | `Mitre` | string[] | MITRE ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Built-in tests | None | The techniques the checked control prevents or detects. `None` cannot be combined with an ID. |
-| `Control` | string[] | `<framework-key>:<control-id>`, for example `nist-800-53-r5:IA-2(1)` | No | None | Framework controls the test supports. For custom tests; built-in tests do not use it. |
+| `Control` | string[] | `<framework-key>:<control-id>`, for example `nist-800-53-r5:IA-2(1)` | No | None | Requirements of frameworks the test supports, beside the benchmark it is named after. See [Mapping a test to a framework](#mapping-a-test-to-a-framework). |
 | `Service` | string[] | A name from the service registry (below), or `None` | Built-in tests | No requirement | Services that must **all** be connected. |
 | `License` | string[] | Service plan names; `&` joins plans | No | No requirement | The tenant needs **any one** element. |
 | `Permission` | string[] | One permission per element, no commas | No | None | The permissions the test needs, for example `Policy.Read.All`. Recorded on the result row; not enforced in 3.0. |
@@ -648,6 +648,26 @@ and the tests of that framework get no `Benchmark` and no `Related` controls. Th
 missing or is not valid JSON, when its `Framework` or `Version` differs from the `suite.json`, when a `Related`
 reference is not written `<framework-key>:<control-id>`, and when a test is listed more than once. A test that
 has the prefix but is not in the file gets a warning as well, and no `Benchmark`; the other tests keep theirs.
+
+#### Mapping a test to a framework
+
+There are two ways, and a result can carry both:
+
+| The test | How it is mapped | Where it shows |
+| --- | --- | --- |
+| Is named after a requirement of a benchmark its suite implements (`CIS.M365.5.1.5.1`, `CONTOSO.BL.1.1`) | The framework file lists it under that requirement. | `Benchmark` |
+| Supports a requirement of any other framework | `Control = 'cisa-scuba:MS.AAD.3.1'` in the test's attribute. | `Control` |
+
+So a Maester test that checks what a CISA policy asks for carries `Control = 'cisa-scuba:MS.AAD.3.1'`, and your
+own `CONTOSO.1001` can do the same to map itself to CISA, CIS or NIST without any other file. Use the key and
+requirement IDs of the framework files shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`) so your
+results line up with the built-in ones; for a framework Maester has no file for, choose a lowercase key such as
+`nist-800-53-r5` or `iso-27001-2022` and keep to it.
+
+Why a benchmark has a file of its own: a benchmark is re-versioned and renumbered on its own schedule, each
+requirement has facts that are not about any one test (its level, its profile, whether it was withdrawn), and a
+requirement with no test yet still has a row, so the gaps are visible. A test's `Control` is for the opposite
+case, where the test exists for its own reasons and also happens to support a requirement.
 
 The CIS and CISA suites that ship with Maester use the same files. Their rows carry the CIS level and profiles,
 or the CISA criticality (SHALL or SHOULD) and the NIST SP 800-53 controls that CISA maps each policy to. A

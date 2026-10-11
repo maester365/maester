@@ -177,7 +177,7 @@ in [Choosing the attribute values](#choosing-the-attribute-values).
 | `UserImpact` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
 | `Mitre` | string[] | ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Yes | At most five. Never a technique beside one of its own sub-techniques. |
-| `Control` | string[] | `<framework-key>:<control-id>` | Not used | For custom tests. The unit tests reject it on a built-in check. |
+| `Control` | string[] | `<framework-key>:<requirement-id>` | No | Requirements of other frameworks the check supports, for example `cisa-scuba:MS.AAD.3.1`. Not the requirement the check is named after: that is its `Benchmark`. For a shipped framework the requirement must exist in its file. |
 | `Service` | string[] | `Graph`, `Azure`, `ExchangeOnline`, `SecurityCompliance`, `SharePointOnline`, `Teams`, `Dataverse`, `AzureDevOps`, `GitHub`, `ActiveDirectory`, or `None` | Yes | All listed must be connected. Registry: `powershell/assets/MaesterServiceRegistry.psd1`. |
 | `License` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
 | `Permission` | string[] | One permission per element, no commas | No | The permissions the check needs, for example `Policy.Read.All`. Recorded; not enforced in 3.0. |

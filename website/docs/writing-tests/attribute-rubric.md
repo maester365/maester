@@ -218,11 +218,20 @@ The MITRE ATT&CK techniques that the checked control prevents or detects. A list
 
 ## Control
 
-References to framework controls the test supports, written `<framework-key>:<control-id>`, for example
-`nist-800-53-r5:IA-2(1)`. Built-in tests do not use `Control`: the benchmark a suite implements is declared in
-its `suite.json`, and other mappings live in framework files. Use `Control` in a custom test or a pack.
+Requirements of frameworks the test supports, written `<framework-key>:<requirement-id>`, for example
+`cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`. Optional list. Any test can use it: one shipped with Maester
+or one of your own.
 
-A reference says the test supports the control. It never says the organization complies with it.
+- A test that is named after a benchmark requirement, such as `CIS.M365.5.1.5.1` or `CISA.MS.AAD.3.1`, does not
+  list that requirement here. It gets it as its `Benchmark`, from its ID and the framework file of its suite.
+- Use `Control` for every other requirement the test supports: a Maester test that checks the setting a CISA
+  policy asks for, or a CIS test that also supports a NIST control.
+- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`), the requirement must
+  exist in that framework's file. The unit tests check this.
+- List a requirement only when a passing result is evidence for it. A test that checks one part of a requirement
+  may list it; a test that is merely on the same topic may not.
+
+A reference says the test supports the requirement. It never says the organization complies with it.
 
 ## Lifecycle and ReplacedBy
 

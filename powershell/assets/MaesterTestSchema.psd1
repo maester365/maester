@@ -129,7 +129,7 @@
             Type        = 'string[]'
             Required    = 'No'
             Pattern     = '^[a-z0-9][a-z0-9.\-]*:[^\s,]+$'
-            Description = 'Framework controls the test supports, written <framework-key>:<control-id>. For custom tests and packs.'
+            Description = 'Requirements of frameworks the test supports, written <framework-key>:<requirement-id>, beside the benchmark it is named after.'
         }
         Service            = @{
             Type        = 'string[]'

@@ -124,9 +124,30 @@ Describe 'Attributes of the built-in tests' {
             $offenders | Should -BeNullOrEmpty
         }
 
-        It 'Does not use Control on a built-in test' {
-            $offenders = Get-Offender { @($_.Control | Where-Object { $_ }).Count -gt 0 }
-            $offenders | Should -BeNullOrEmpty -Because 'a built-in test gets its controls from its suite and the framework files'
+        It 'Names an existing requirement when a Control refers to a framework shipped with Maester' {
+            # <framework-key> -> the requirement IDs of its framework file, and the ID prefix of its tests.
+            $requirementsOf = @{}
+            $prefixOf = @{}
+            foreach ($manifest in (Get-ChildItem -Path (Join-Path $script:repoRoot 'tests') -Recurse -File -Filter 'suite.json')) {
+                $suite = Get-Content $manifest.FullName -Raw | ConvertFrom-Json
+                foreach ($declared in @($suite.PSObject.Properties['Frameworks'].Value)) {
+                    if (-not $declared) { continue }
+                    $file = Join-Path $manifest.Directory.FullName "frameworks/$($declared.Key).json"
+                    $requirementsOf[$declared.Key] = @((Get-Content $file -Raw | ConvertFrom-Json).Requirements.Id)
+                    $prefixOf[$declared.Key] = $declared.IdPrefix
+                }
+            }
+            $requirementsOf.Count | Should -BeGreaterThan 0
+
+            $offenders = foreach ($test in $script:tests) {
+                foreach ($control in @($test.Control | Where-Object { $_ })) {
+                    $key, $requirement = $control -split ':', 2
+                    if (-not $requirementsOf.ContainsKey($key)) { continue }
+                    if ($requirement -cnotin $requirementsOf[$key]) { "$($test.Id): $control is not a requirement of $key" }
+                    elseif ($test.Id -eq "$($prefixOf[$key])$requirement") { "$($test.Id): $control is the test's own Benchmark and is not repeated in Control" }
+                }
+            }
+            $offenders | Should -BeNullOrEmpty
         }
     }
 

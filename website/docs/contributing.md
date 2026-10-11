@@ -215,6 +215,10 @@ requirement in `frameworks/<key>.json` beside the `suite.json`: the CIS level an
 and the CISA criticality, upstream status and NIST SP 800-53 references in `tests/cisa/frameworks/cisa-scuba.json`.
 See [Benchmarks and framework files](./writing-tests/index.mdx#benchmarks-and-framework-files).
 
+Any other test can be mapped to a framework too. A Maester test that checks what a CISA policy or a CIS
+recommendation asks for says so in its attribute, `Control = 'cisa-scuba:MS.AAD.3.1'`, and the unit tests check
+that the requirement exists. See [Mapping a test to a framework](./writing-tests/index.mdx#mapping-a-test-to-a-framework).
+
 ### Checklist for writing good tests
 
 When contributing tests, please ensure the following:
