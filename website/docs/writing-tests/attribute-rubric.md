@@ -126,14 +126,15 @@ Decide in this order:
 1. **Reach.** Privileged identities or the whole tenant move the value up. A single workload or a few objects
    move it down.
 2. **Directness.** Usable from the internet or by any signed-in user moves it up. Needing an earlier compromise
-   moves it down.
+   moves it down. A password taken by phishing, spray or stuffing is not an earlier compromise: those are the
+   common techniques `High` already assumes.
 3. **Role of the control.** The main control for a threat rates higher than a second layer behind another control.
 
 `Critical` is rare. If the description cannot say in one sentence how an attacker gets from the failing state to
 admin rights or exposed secrets, the value is `High` or lower. A benchmark's own wording does not set the value:
 a SHALL policy can be `Medium`.
 
-Four cases come up often:
+Five cases come up often:
 
 - **A test that passes whenever its data can be read** is `Info`, whatever the data is about. If the fact
   deserves a severity, the test should fail on it.
@@ -142,6 +143,9 @@ Four cases come up often:
   rated as the loss of that control.
 - **Alerts and notifications** are a second layer behind the control they watch, so they are `Medium` at most.
 - **The same check in two suites** gets the same value in both.
+- **The main control against an attack that starts from a stolen password** is `High`. A second layer behind
+  that control is `Medium`. Number matching against MFA fatigue is `High`; showing the app name and location in
+  the prompt is `Medium`.
 
 Anchors from existing tests:
 
@@ -150,9 +154,15 @@ Anchors from existing tests:
 | No Group Policy object contains a `cpassword` | `Critical` | Any domain user can read and decrypt the stored password. |
 | No domain admin account has a service principal name | `Critical` | Any domain user can request a ticket and crack an admin password offline. |
 | Legacy authentication is blocked | `High` | Password spray bypasses MFA for every user. |
+| Number matching is required for Authenticator push notifications | `High` | MFA fatigue works against any user once a password is phished. |
+| Authenticator shows the app name and location | `Medium` | A second layer behind number matching. |
 | Users cannot register applications | `Medium` | Needs a signed-in user and a further step to cause harm. |
 | MailTips are enabled for end users | `Low` | A small aid against mis-sent mail. |
 | Disabled user count should be retrievable | `Info` | Inventory for review. |
+
+Microsoft's [Zero Trust Assessment](https://github.com/microsoft/zerotrustassessment) rates many of the same
+Microsoft Entra and Intune settings. Where it has a test for the same setting, compare your value with its risk
+level and give the reason in the pull request if the two differ.
 
 ## UserImpact
 
