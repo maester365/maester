@@ -25,6 +25,13 @@ function $name {
         Join-Path $Folder "Test.$Id.ps1"
     }
 
+    # The errors of a test other than "property X is required": a fixture sets only the attributes its case is
+    # about, and which attributes a test shipped with Maester must have is checked on its own.
+    function Get-OtherError {
+        param([object] $Test)
+        @($Test.Errors | Where-Object { $_.Message -notlike "*property '*' is required." })
+    }
+
     # Reads one test with the given attribute text, as a custom test or as a test shipped with Maester.
     function Read-Attribute {
         param([string] $Attribute, [switch] $BuiltIn)
@@ -97,7 +104,7 @@ Describe 'Reader: classification attributes' {
     ) {
         (Read-Attribute "Product = '$Alias'").Product | Should -BeExactly $Key
         $builtIn = Read-Attribute "Product = '$Alias'" -BuiltIn
-        $builtIn.Errors | Should -HaveCount 0
+        Get-OtherError $builtIn | Should -HaveCount 0
         $builtIn.Product | Should -BeExactly $Key
     }
 
@@ -141,7 +148,7 @@ Describe 'Reader: classification attributes' {
     }
 
     It 'Accepts a feature that belongs to the product of a test shipped with Maester' {
-        (Read-Attribute "Product = 'exchange', Feature = 'mail-flow', Area = 'email-protection', ResourceType = 'Policy'" -BuiltIn).Errors | Should -HaveCount 0
+        Get-OtherError (Read-Attribute "Product = 'exchange', Feature = 'mail-flow', Area = 'email-protection', ResourceType = 'Policy'" -BuiltIn) | Should -HaveCount 0
     }
 
     It 'Keeps the free values of a custom test as written' {
@@ -247,7 +254,7 @@ Describe 'Reader: Mitre, Control and Permission' {
     It 'Does not check a technique against the ATT&CK release at run time' {
         # T9999 has the right form. The build and the unit tests reject it for a built-in test.
         (Read-Attribute "Mitre = 'T9999'").Errors | Should -HaveCount 0
-        (Read-Attribute "Product = 'entra', Mitre = 'T9999'" -BuiltIn).Errors | Should -HaveCount 0
+        Get-OtherError (Read-Attribute "Product = 'entra', Mitre = 'T9999'" -BuiltIn) | Should -HaveCount 0
     }
 
     It 'Reports a retired or unknown technique for the build' {
@@ -318,7 +325,7 @@ Describe 'Required attributes' {
         }
         $result.High | Should -Contain "[MaesterTest] property 'UserImpact' is required."
         $result.High | Should -Contain "[MaesterTest] property 'ImplementationCost' is required."
-        $result.Info | Should -BeNullOrEmpty
+        @($result.Info | Where-Object { $_ -like "*'UserImpact'*" -or $_ -like "*'ImplementationCost'*" }) | Should -HaveCount 0
         $result.Custom | Should -BeNullOrEmpty
     }
 }
@@ -648,7 +655,7 @@ Describe 'Rows, Taxonomy and warnings of a run' {
         # built-in test shares a scope chain with Invoke-Maester (a custom test has its own module), so the probe
         # is defined in the module and added to the catalog of the child process, after the other runs.
         $script:probeFolder = Join-Path $TestDrive 'probe'
-        $probeFile = New-AttributeTestFile -Folder $script:probeFolder -Id 'PROBE.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', Severity = 'High', Author = 'someone'" `
+        $probeFile = New-AttributeTestFile -Folder $script:probeFolder -Id 'PROBE.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Low', ImplementationCost = 'Low', Mitre = 'None', Author = 'someone'" `
             -Body 'return ($null -eq $Product -and $null -eq $Feature -and $null -eq $Area -and $null -eq $Severity -and $null -eq $Suite)'
 
         $lines = [System.Collections.Generic.List[string]]::new()
@@ -1041,7 +1048,7 @@ function Test-Mig3 {
     It 'Reads the converted tests as valid tests shipped with Maester' {
         foreach ($name in $script:before.Keys) {
             $file = Join-Path $script:migrationTests "maester/entra/$name"
-            $errors = @((InModuleScope Maester -Parameters @{ F = $file } { Read-MtNativeTest -Path $F -BuiltIn }).Errors | Where-Object { $_.Message -notlike '*Markdown*' })
+            $errors = @(Get-OtherError (InModuleScope Maester -Parameters @{ F = $file } { Read-MtNativeTest -Path $F -BuiltIn }))
             $errors | Should -HaveCount 0 -Because "$name $($errors.Message -join '; ')"
         }
     }
