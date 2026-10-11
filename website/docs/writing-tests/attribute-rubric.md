@@ -44,6 +44,7 @@ Other products the test also checks or depends on. Optional list, never the same
 
 - Add one when an admin of that product would expect to find the test under it. An Exchange Online test about an
   anti-phishing policy that is managed in the Defender portal has `RelatedProduct = 'defender'`.
+- Add one when the fix is made in that product's portal although the test lives in another product's folder.
 - Do not add a product only because its API is called.
 
 ## Feature
@@ -53,6 +54,7 @@ The part of the product the test is about. One key from the product's `Features`
 - Choose the feature whose settings page or object type the remediation sends the admin to.
 - When a test spans two features, choose the one that fails most directly. A Conditional Access policy that
   requires a compliant device is `conditional-access`, not `devices`.
+- Tests that check the same thing get the same feature, whatever folder or suite they are in.
 - A feature that would hold one test only is usually too narrow. Prefer an existing feature.
 
 ## Area
@@ -87,16 +89,25 @@ When more than one area fits, choose by what the control is for, in this order:
 A product never decides the area on its own. An Azure DevOps test about who is a Project Collection Administrator
 is `privileged-access`, not `engineering-systems`.
 
+Inventory and health tests with no security theme of their own are `infrastructure`. When no area fits, choose
+the closest and say so in the pull request, so the list can be reviewed.
+
 ## ResourceType
 
 What a failing result points at. One key.
 
-- `Tenant` when the test evaluates one tenant-, organization-, forest- or domain-wide setting, or checks that at
-  least one policy of a kind exists. The result is about the environment.
-- Otherwise the kind of object the result lists or counts: `User`, `Application`, `Device`,
-  `ConditionalAccessPolicy`, `GroupPolicy` and so on.
-- A test that passes objects to `Add-MtTestResultDetail -GraphObjects` uses the type of those objects.
-- A test that counts objects for review (an inventory test) uses the type it counts.
+- `Tenant` when the test evaluates one tenant-, organization-, forest- or domain-wide setting. The result is
+  about the environment.
+- `Tenant` when the test checks that at least one policy of a kind exists, even when it lists the policies that
+  satisfy it. A failing result has nothing to list.
+- `Tenant` when the test evaluates the single default or global policy of a kind, because there is one of it and
+  it applies to everyone.
+- Otherwise the kind of object a failing result lists or counts: `User`, `Application`, `Device`,
+  `ConditionalAccessPolicy`, `GroupPolicy` and so on. A test that evaluates every policy and lists the ones that
+  fail uses the policy type.
+- A test that counts objects for review (an inventory test) uses the type it counts. When no key names that kind
+  of object and it is a one-off, use `Tenant`.
+- A family test, which yields one result per instance, uses the type of the instance.
 
 ## Severity
 
@@ -122,6 +133,16 @@ Decide in this order:
 admin rights or exposed secrets, the value is `High` or lower. A benchmark's own wording does not set the value:
 a SHALL policy can be `Medium`.
 
+Four cases come up often:
+
+- **A test that passes whenever its data can be read** is `Info`, whatever the data is about. If the fact
+  deserves a severity, the test should fail on it.
+- **A failure that is only an outage or untidiness**, such as replication health, an expiring token or an unused
+  object, is `Low`. It is `Medium` or higher only when the outage switches off a security control, and then it is
+  rated as the loss of that control.
+- **Alerts and notifications** are a second layer behind the control they watch, so they are `Medium` at most.
+- **The same check in two suites** gets the same value in both.
+
 Anchors from existing tests:
 
 | Test | Value | Why |
@@ -135,7 +156,8 @@ Anchors from existing tests:
 
 ## UserImpact
 
-How much the recommended fix disrupts end users. Administrators are not end users here.
+How much the recommended fix disrupts end users. Administrators and the owners of applications are not end
+users here. Developers are the end users of Azure DevOps and GitHub.
 
 | Value | Applying the fix |
 | --- | --- |
@@ -155,6 +177,10 @@ How much administrator work the recommended fix takes.
 | `Medium` | Several steps: a policy that needs exclusions and a pilot, clean-up of a handful of objects, coordination with one other team. Hours to a few days. |
 | `High` | A project: new licences, infrastructure or process, a migration of users or apps, or clean-up across many objects. Weeks or more. |
 
+Clean-up that one administrator can finish alone in a sitting is `Low`. Clean-up that needs the owner of each
+object is `Medium`. Turning on a plan that is billed by use is `Medium`: the click is easy, the budget approval is
+not. Count the work of the fix, including exclusions and rollout, but not the time to decide.
+
 Omit `ImplementationCost` when `Severity` is `Info`.
 
 ## Mitre
@@ -168,8 +194,13 @@ The MITRE ATT&CK techniques that the checked control prevents or detects. A list
   sub-techniques.
 - List a technique only if the test's description explains, or plainly implies, how the control stops or reveals
   it. At most five.
-- A test that implements a benchmark which publishes a mapping, such as CISA SCuBA, starts from that mapping.
+- A test that implements a benchmark which publishes a mapping, such as CISA SCuBA, starts from that mapping and
+  then applies these rules. An ID the pinned release has retired is replaced by its successor in that release,
+  found by name.
+- The description means the comment-based help and the Markdown file together.
 - Use `None` for a test with no attacker behaviour behind it, such as replication health or an inventory count.
+  An inventory test lists a technique only when the fact it reports is itself the precondition of that technique,
+  such as accounts that do not require Kerberos pre-authentication.
 - A retired or unknown ID fails the unit tests.
 
 ## Control
@@ -198,8 +229,7 @@ A reference says the test supports the control. It never says the organization c
 
 1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1`) fail when a built-in test misses a
    required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a
-   retired ATT&CK technique, declares `ResourceType = 'Tenant'` while passing objects to
-   `Add-MtTestResultDetail`, or carries a taxonomy tag.
+   retired ATT&CK technique or carries a taxonomy tag.
 2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A
    reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit
    the rubric, with the value it expected and the reason. A maintainer can overrule it.

@@ -62,6 +62,7 @@
                 @{ Key = 'alerts'; Name = 'Alert policies' }
                 @{ Key = 'audit-logging'; Name = 'Audit logging' }
                 @{ Key = 'outlook'; Name = 'Outlook' }
+                @{ Key = 'mailboxes'; Name = 'Mailboxes' }
             )
         }
         @{
@@ -92,7 +93,6 @@
                 @{ Key = 'device-compliance'; Name = 'Device compliance' }
                 @{ Key = 'device-enrollment'; Name = 'Device enrollment' }
                 @{ Key = 'device-configuration'; Name = 'Device configuration' }
-                @{ Key = 'app-protection'; Name = 'App protection' }
                 @{ Key = 'endpoint-security'; Name = 'Endpoint security' }
                 @{ Key = 'tenant-administration'; Name = 'Tenant administration' }
             )
@@ -105,6 +105,8 @@
                 @{ Key = 'audit'; Name = 'Audit' }
                 @{ Key = 'information-protection'; Name = 'Information protection' }
                 @{ Key = 'data-loss-prevention'; Name = 'Data loss prevention' }
+                @{ Key = 'data-lifecycle-management'; Name = 'Data lifecycle management' }
+                @{ Key = 'insider-risk-management'; Name = 'Insider risk management' }
             )
         }
         @{
@@ -136,6 +138,7 @@
             Features = @(
                 @{ Key = 'administrative-accounts'; Name = 'Administrative accounts' }
                 @{ Key = 'organization-settings'; Name = 'Organization settings' }
+                @{ Key = 'teams-and-groups'; Name = 'Teams and groups' }
                 @{ Key = 'configuration-drift'; Name = 'Configuration drift' }
             )
         }
@@ -159,6 +162,8 @@
                 @{ Key = 'pipelines'; Name = 'Pipelines' }
                 @{ Key = 'repositories'; Name = 'Repositories' }
                 @{ Key = 'users-and-access'; Name = 'Users and access' }
+                @{ Key = 'auditing'; Name = 'Auditing' }
+                @{ Key = 'resource-usage'; Name = 'Resource usage and limits' }
             )
         }
         @{
@@ -167,7 +172,6 @@
             Aliases  = @('GitHub')
             Features = @(
                 @{ Key = 'organization-settings'; Name = 'Organization settings' }
-                @{ Key = 'repositories'; Name = 'Repositories' }
             )
         }
         @{
@@ -192,6 +196,7 @@
                 @{ Key = 'replication'; Name = 'Replication' }
                 @{ Key = 'trusts'; Name = 'Trusts' }
                 @{ Key = 'schema'; Name = 'Schema' }
+                @{ Key = 'certificate-services'; Name = 'Certificate Services' }
                 @{ Key = 'printers'; Name = 'Printers' }
             )
         }
@@ -232,14 +237,14 @@
         @{ Key = 'DirectoryRole'; Description = 'Directory roles and role assignments.' }
         @{ Key = 'ConditionalAccessPolicy'; Description = 'Conditional Access policies.' }
         @{ Key = 'Policy'; Description = 'Any other policy object, such as an anti-phishing, compliance, DLP or meeting policy.' }
+        @{ Key = 'MailFlowRule'; Description = 'Exchange mail flow (transport) rules.' }
+        @{ Key = 'Connector'; Description = 'Connectors, tokens and certificates that link the tenant to another service, and mail flow connectors.' }
+        @{ Key = 'AccessPackage'; Description = 'Entitlement management access packages, catalogs and assignment policies.' }
         @{ Key = 'Mailbox'; Description = 'Mailboxes.' }
         @{ Key = 'Domain'; Description = 'Email and DNS domains registered in the tenant.' }
-        @{ Key = 'Site'; Description = 'SharePoint sites and OneDrive libraries.' }
-        @{ Key = 'Team'; Description = 'Teams and channels.' }
-        @{ Key = 'Subscription'; Description = 'Azure subscriptions and management groups.' }
+        @{ Key = 'AzureResource'; Description = 'Azure resources such as vaults, storage accounts and virtual machines.' }
         @{ Key = 'Project'; Description = 'Azure DevOps projects.' }
         @{ Key = 'Repository'; Description = 'Source repositories.' }
-        @{ Key = 'Pipeline'; Description = 'Build and release pipelines.' }
         @{ Key = 'Computer'; Description = 'Active Directory computer accounts other than domain controllers.' }
         @{ Key = 'DomainController'; Description = 'Active Directory domain controllers.' }
         @{ Key = 'GroupPolicy'; Description = 'Group Policy objects and links.' }
@@ -247,6 +252,8 @@
         @{ Key = 'DnsZone'; Description = 'DNS zones and records.' }
         @{ Key = 'AdSite'; Description = 'Active Directory sites, subnets and site links.' }
         @{ Key = 'Trust'; Description = 'Active Directory domain and forest trusts.' }
+        @{ Key = 'Permission'; Description = 'Access control entries and delegations on directory objects.' }
+        @{ Key = 'CertificateAuthority'; Description = 'Certification authorities, certificate templates and published CA certificates.' }
     )
 
     # MITRE ATT&CK release the Mitre attribute is validated against (powershell/assets/MaesterAttackTechniques.json).

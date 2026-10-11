@@ -194,9 +194,10 @@ Built-in tests ship without taxonomy tags. `Tag` remains for labels a test owner
 - `powershell/assets/Maester.LegacyTags.json` maps each 2.x tag to the IDs of the built-in tests that carried it.
   It is generated once from the frozen 2.x snapshot (`powershell/tests/fixtures/golden/tags-and-blocks.json`) and
   from the tags that 3.0 previews carried, and is not edited by hand afterwards. Tests added after 3.0 are not in it.
-- When resolving `-Tag` and `-ExcludeTag`, a built-in test's selection tags are its authored `Tag` values, its
-  legacy tags from that file, and its own ID. Legacy tags and the ID are used for selection only and are never
-  written to a result row.
+- When resolving `-Tag` and `-ExcludeTag`, a built-in test's selection tags are its authored `Tag` values, the
+  `Tags` of its suite, its legacy tags from that file, and its own ID. Suite tags, legacy tags and the ID are used
+  for selection only and are never written to a result row.
+- A custom native test matches on its authored tags and its suite's tags. Its ID is selected with `-TestId`.
 - The first time a run selects through a legacy tag, Maester writes one warning that names the tag and, where
   the file gives one, the typed selector that replaces it, for example `-Tag CA` → `-Feature conditional-access`.
 - A unit test asserts that every tag in the 2.x snapshot still selects exactly the set of test IDs it selected in 2.x.
@@ -258,10 +259,13 @@ each policy's revision, SHALL or SHOULD, and the NIST SP 800-53 mapping that Scu
    - `UserImpact` and `ImplementationCost` are absent when `Severity` is `Info` and present otherwise;
    - `Mitre` is a valid list for the pinned release, with no technique listed beside one of its own
      sub-techniques, and at most five entries;
-   - a test that passes `-GraphObjects` to `Add-MtTestResultDetail` does not declare `ResourceType = 'Tenant'`;
    - no built-in test carries a tag that is a product, feature, area, suite or severity name, a benchmark label
      or a test ID;
-   - the taxonomy has no unused or duplicate key, and the folder of a test agrees with its `Product`.
+   - the taxonomy has no unused or duplicate key, the folder of a test agrees with its `Product`, and the
+     rubric's area table lists exactly the areas of the registry.
+
+   Whether `ResourceType` should be `Tenant` cannot be decided mechanically (a test that checks that one policy
+   exists may still list the policies that satisfy it), so that rule is left to the attribute review.
 3. **Attribute review.** A pull request that adds a test or changes a rubric attribute is checked by a reviewer
    model against the rubric page. The check fails when a value does not fit, and reports the expected value and
    the reason. The workflow runs trusted code from the base branch only and treats the pull request's files as data.
@@ -270,8 +274,9 @@ each policy's revision, SHALL or SHOULD, and the NIST SP 800-53 mapping that Scu
 
 - One script, `build/migration/Convert-MtTestAttributes.ps1`, rewrites the attribute of every built-in test:
   it drops `Category`, turns `Preview` into `Lifecycle`, writes `Product` as a key, removes the 2.x tags and
-  merges the values in `build/migration/attributes/*.json`. It is idempotent. EIDSCA and ORCA take their values
-  from their generator metadata files and are regenerated, never edited.
+  merges the values in `build/migration/attributes/*.json` when that folder exists. It is idempotent. EIDSCA and
+  ORCA take their values from their generator metadata files and are regenerated, never edited. The values files
+  were removed after the migration ran; the values now live in the tests and in the generator metadata.
 - The golden test stops comparing `Block` and tags with the 2.x snapshot and asserts section 5.1 instead.
 - `Get-MtTestInventory`, kept for one major version, reports `Feature` where it reported the `Describe` name.
 
