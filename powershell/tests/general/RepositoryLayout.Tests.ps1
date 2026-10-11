@@ -45,6 +45,24 @@ BeforeAll {
                 ForEach-Object { $_.Substring($prefix.Length) } | Where-Object { $_.Contains('/') } |
                 ForEach-Object { $_.Split('/')[0] } | Sort-Object -Unique)
     }
+
+    # The paths under tests/ that the layout does not allow. A suite folder holds Test.<ID>.ps1, Test.<ID>.md,
+    # suite.json and README.md. The framework files of a suite are frameworks/<key>.json beside its suite.json,
+    # with a lowercase key; a frameworks folder holds nothing else, and no folder of its own.
+    function Get-TestsFolderOffender {
+        param([string[]] $File)
+        foreach ($path in $File) {
+            if ($path -eq 'tests/maester-config.json') { continue }
+            $index = $path.LastIndexOf('/frameworks/', [System.StringComparison]::Ordinal)
+            if ($index -ge 0) {
+                $suiteFolder = $path.Substring(0, $index)
+                $name = $path.Substring($index + '/frameworks/'.Length)
+                if ($name -cnotmatch '^[a-z0-9][a-z0-9.-]*\.json$' -or $name -ceq 'suite.json' -or "$suiteFolder/suite.json" -cnotin $File) { $path }
+                continue
+            }
+            if ($path.Split('/')[-1] -cnotmatch '^(Test\.[A-Za-z0-9.-]+\.(ps1|md)|suite\.json|README\.md)$') { $path }
+        }
+    }
 }
 
 Describe 'Repository layout' -Skip:(-not $script:HasGit) {
@@ -65,11 +83,36 @@ Describe 'Repository layout' -Skip:(-not $script:HasGit) {
     }
 
     Context 'tests/ (the security checks)' {
-        It 'holds only native tests, suite manifests and READMEs' {
-            $offenders = $script:TrackedFiles | Where-Object { $_ -like 'tests/*' } |
-                Where-Object { $_ -ne 'tests/maester-config.json' } |
-                Where-Object { $_.Split('/')[-1] -cnotmatch '^(Test\.[A-Za-z0-9.-]+\.(ps1|md)|suite\.json|README\.md)$' }
-            $offenders | Should -BeNullOrEmpty -Because 'a check is Test.<ID>.ps1 plus Test.<ID>.md; shared code belongs in powershell/internal'
+        It 'holds only native tests, suite manifests, framework files and READMEs' {
+            $offenders = Get-TestsFolderOffender -File @($script:TrackedFiles | Where-Object { $_ -like 'tests/*' })
+            $offenders | Should -BeNullOrEmpty -Because 'a check is Test.<ID>.ps1 plus Test.<ID>.md, and a framework file is frameworks/<key>.json beside its suite.json; shared code belongs in powershell/internal'
+        }
+
+        It 'allows frameworks/<key>.json beside a suite.json and nothing else in that folder' {
+            $allowed = @(
+                'tests/contoso/suite.json'
+                'tests/contoso/README.md'
+                'tests/contoso/Test.CONTOSO.1.ps1'
+                'tests/contoso/Test.CONTOSO.1.md'
+                'tests/contoso/frameworks/contoso-baseline.json'
+                'tests/contoso/frameworks/nist-800-53-r5.json'
+                'tests/contoso/area/suite.json'
+                'tests/contoso/area/frameworks/area1.json'
+            )
+            Get-TestsFolderOffender -File $allowed | Should -BeNullOrEmpty
+
+            $offenders = @(
+                'tests/contoso/frameworks/README.md'
+                'tests/contoso/frameworks/Test.CONTOSO.2.ps1'
+                'tests/contoso/frameworks/suite.json'
+                'tests/contoso/frameworks/Contoso-Baseline.json'
+                'tests/contoso/frameworks/contoso baseline.json'
+                'tests/contoso/frameworks/contoso-baseline.yaml'
+                'tests/contoso/frameworks/nested/contoso-baseline.json'
+                'tests/contoso/service/frameworks/contoso-baseline.json'
+                'tests/contoso/contoso-baseline.json'
+            )
+            Get-TestsFolderOffender -File ($allowed + $offenders) | Should -Be $offenders
         }
 
         It 'uses only the known suite folders at the top level' {
@@ -85,12 +128,12 @@ Describe 'Repository layout' -Skip:(-not $script:HasGit) {
 
         It 'names the service folders of the maester and cisa suites with the shared service names' {
             $offenders = @(
-                Get-ChildFolderName -Parent 'tests/maester' | Where-Object { $_ -notin ($script:ServiceNames + $script:MaesterAreas) } |
+                Get-ChildFolderName -Parent 'tests/maester' | Where-Object { $_ -notin ($script:ServiceNames + $script:MaesterAreas + 'frameworks') } |
                     ForEach-Object { "tests/maester/$_" }
-                Get-ChildFolderName -Parent 'tests/cisa' | Where-Object { $_ -notin $script:ServiceNames } |
+                Get-ChildFolderName -Parent 'tests/cisa' | Where-Object { $_ -notin ($script:ServiceNames + 'frameworks') } |
                     ForEach-Object { "tests/cisa/$_" }
             )
-            $offenders | Should -BeNullOrEmpty -Because "service folders are named one of: $($script:ServiceNames -join ', ')"
+            $offenders | Should -BeNullOrEmpty -Because "service folders are named one of: $($script:ServiceNames -join ', '); frameworks holds the framework files of the suite"
         }
     }
 
