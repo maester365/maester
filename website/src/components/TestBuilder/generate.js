@@ -27,10 +27,10 @@ export const emptyState = {
   implementationCost: "",
   mitreNone: false,
   mitre: [],
-  control: "",
+  controls: [],
   services: [],
   serviceNone: false,
-  license: "",
+  license: [],
   permission: "",
   tenantType: [],
   cloud: [],
@@ -57,7 +57,7 @@ export const exampleState = {
   implementationCost: "Low",
   mitre: ["T1078.004", "T1528", "T1566"],
   services: ["Graph"],
-  license: "AAD_PREMIUM",
+  license: [["AAD_PREMIUM"]],
   author: "your-github-handle",
 };
 
@@ -190,21 +190,16 @@ export function validate(state, data) {
   }
 
   // Control
-  const controls = splitList(state.control);
   const controlPattern = new RegExp(data.properties.Control.pattern);
-  controls.filter((c) => !controlPattern.test(c)).forEach((c) => add("control", "error", c + " is not written <framework-key>:<control-id>, for example nist-800-53-r5:IA-2(1)."));
-  if (builtin && controls.length) add("control", "warn", "Built-in tests do not use Control. The benchmark a suite implements is declared in its suite.json and framework files.");
+  state.controls.filter((c) => !controlPattern.test(c)).forEach((c) => add("control", "error", c + " is not written <framework-key>:<control-id>, for example nist-800-53-r5:IA-2(1)."));
 
   // Requirements
   if (builtin && !state.serviceNone && state.services.length === 0) add("services", "error", "Choose the services the test needs, or None.");
-  const licensePattern = new RegExp(data.properties.License.pattern);
-  splitList(state.license)
+  const licensePattern = /^[A-Za-z0-9_-]+$/;
+  state.license
+    .flat()
     .filter((l) => !licensePattern.test(l))
-    .forEach((l) => add("license", "error", l + " is not a service plan name. Use letters, digits, _ and -, and & to require several."));
-  splitList(state.license)
-    .flatMap((l) => l.split("&"))
-    .filter((l) => licensePattern.test(l) && !data.licenses.includes(l))
-    .forEach((l) => add("license", "warn", l + " is not in the licence table, so it is matched literally against the tenant's service plan names."));
+    .forEach((l) => add("license", "error", l + " is not a service plan name. Use letters, digits, _ and -."));
 
   // Lifecycle
   if (state.replacedBy.trim()) {
@@ -223,6 +218,11 @@ export function validate(state, data) {
 
 const quote = (v) => "'" + String(v).replace(/'/g, "''") + "'";
 const list = (values) => (values.length === 1 ? quote(values[0]) : "(" + values.map(quote).join(", ") + ")");
+
+// License: the tenant needs any one element; plans joined with & inside an element are all needed.
+export function licenseElements(state) {
+  return state.license.filter((group) => group.length).map((group) => group.join("&"));
+}
 
 // The named arguments of [MaesterTest], in the order of the design.
 export function attributeEntries(state) {
@@ -245,10 +245,10 @@ export function attributeEntries(state) {
   }
   if (state.mitreNone) put("Mitre", quote("None"));
   else arr("Mitre", state.mitre);
-  arr("Control", splitList(state.control));
+  if (state.mode !== "builtin") arr("Control", state.controls);
   if (state.serviceNone) put("Service", quote("None"));
   else arr("Service", state.services);
-  arr("License", splitList(state.license));
+  arr("License", licenseElements(state));
   arr("Permission", splitList(state.permission));
   arr("TenantType", state.tenantType);
   arr("Cloud", state.cloud);
@@ -389,6 +389,24 @@ export function registryChanges(state, data) {
       snippet: `        @{ Key = ${quote(state.newResourceType.key)}; Description = ${quote(state.newResourceType.description)} }`,
     });
   }
+  // A built-in test is mapped to a benchmark requirement in the framework file, not in the attribute.
+  const id = state.id.trim() || "MT.1234";
+  state.controls.forEach((control) => {
+    const [key, ...rest] = control.split(":");
+    const requirementId = rest.join(":");
+    const framework = data.frameworks.find((f) => f.key === key);
+    if (!framework) return;
+    const requirement = framework.requirements.find((r) => r.id === requirementId);
+    changes.push({
+      file: framework.file,
+      what: requirement
+        ? "Add the test to the Tests of requirement " + requirementId + " (" + framework.name + ")."
+        : "Add requirement " + requirementId + " to Requirements (" + framework.name + ").",
+      snippet: requirement
+        ? `{ "Id": "${requirementId}", ..., "Tests": [${requirement.tests.concat(id).map((x) => `"${x}"`).join(", ")}] }`
+        : `{ "Id": "${requirementId}", "Tests": ["${id}"] }`,
+    });
+  });
   if (changes.length) {
     changes.push({
       file: "website/src/data/test-builder.json",

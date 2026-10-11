@@ -23,6 +23,17 @@ const REPO = "https://github.com/maester365/maester/blob/main/";
 const tacticName = Object.fromEntries(data.attack.tactics.map((t) => [t.id, t.name]));
 const techniqueById = Object.fromEntries(data.attack.techniques.map((t) => [t.id, t]));
 const PREFIX_KEY = "maester.testBuilder.customPrefix";
+// Requirements of the frameworks in the repository, and the controls they relate to.
+const requirementItems = data.frameworks.flatMap((f) =>
+  f.requirements.map((r) => {
+    const detail = [f.name, r.level, r.criticality, r.tests.length ? "implemented by " + r.tests.join(", ") : "no test yet"].filter(Boolean).join(" · ");
+    return { value: f.key + ":" + r.id, label: f.key + ":" + r.id, hint: detail, search: (f.key + ":" + r.id + " " + detail).toLowerCase() };
+  })
+);
+const relatedItems = [...new Set(data.frameworks.flatMap((f) => f.requirements.flatMap((r) => r.related || [])))].sort().map((c) => ({ value: c, label: c, hint: "Related to requirements in the repository" }));
+const controlItems = requirementItems.concat(relatedItems);
+const knownLicenses = new Set(data.licenses);
+
 const attackUrl = (id) => "https://attack.mitre.org/techniques/" + id.replace(".", "/") + "/";
 
 function RepoFile({ path }) {
@@ -127,6 +138,118 @@ function MitrePicker({ selected, none, onChange, onNone }) {
             </ul>
           )}
         </>
+      )}
+    </div>
+  );
+}
+
+function LicenseBuilder({ groups, onChange }) {
+  const [catalog, setCatalog] = useState(null);
+  useEffect(() => {
+    let live = true;
+    import("@site/src/data/license-service-plans.json").then((m) => live && setCatalog(m.default || m));
+    return () => {
+      live = false;
+    };
+  }, []);
+  const items = useMemo(() => {
+    if (!catalog) return [];
+    return catalog.plans.map(([name, friendly, guids, productIndexes]) => {
+      const products = productIndexes.map((i) => catalog.products[i]);
+      return {
+        value: name,
+        label: name,
+        friendly,
+        products,
+        hint: [friendly, "in " + products.length + (products.length === 1 ? " product" : " products")].filter(Boolean).join(" · "),
+        primary: (name + " " + friendly + " " + guids.join(" ")).toLowerCase(),
+        search: [name, friendly, guids.join(" "), products.map((p) => p.join(" ")).join(" ")].join(" ").toLowerCase(),
+      };
+    });
+  }, [catalog]);
+  const byName = useMemo(() => Object.fromEntries(items.map((i) => [i.value, i])), [items]);
+  // When the search text matched a product, not the plan itself, say which product.
+  const hintFor = (item, q) => {
+    if (!q || (item.value + " " + item.friendly).toLowerCase().includes(q)) return item.hint;
+    const product = item.products.find((p) => p.join(" ").toLowerCase().includes(q));
+    return product ? item.friendly + " · included in " + product[0] + " (" + product[1] + ")" : item.hint;
+  };
+  const shown = groups.length ? groups : [[]];
+  const update = (index, plans) => onChange(shown.map((g, i) => (i === index ? plans : g)));
+  const friendly = (name) => (byName[name] && byName[name].friendly) || name;
+  const filled = shown.filter((g) => g.length);
+
+  return (
+    <div className={styles.stack}>
+      <div className={styles.explain}>
+        <p>
+          Plans inside one box are joined with <strong>and</strong>: the tenant needs all of them. Boxes are joined with <strong>or</strong>: any one box is enough. Search by plan name, friendly name, product name, string ID or GUID. The value written to the test is always the service plan name.
+        </p>
+        <p>
+          In the attribute each box is one element and <code>&amp;</code> joins the plans in it, so “Entra ID P1 and Intune, or Entra ID P2” is <code>License = ('AAD_PREMIUM&amp;INTUNE_A', 'AAD_PREMIUM_P2')</code>.
+        </p>
+      </div>
+      {shown.map((group, index) => (
+        <React.Fragment key={index}>
+          {index > 0 && <div className={styles.or}>or</div>}
+          <div className={styles.group}>
+            {group.length > 0 && (
+              <ul className={styles.picked}>
+                {group.map((name, n) => (
+                  <li key={name}>
+                    <span>
+                      {n > 0 && <span className={styles.and}>and </span>}
+                      <code>{name}</code> {byName[name] ? byName[name].friendly : <span className={styles.tactics}>not on Microsoft's list; matched as written</span>}
+                      {knownLicenses.has(name) && <span className={styles.tactics}> · Maester also counts its government and education variants</span>}
+                    </span>
+                    <Button variant="ghost" size="xs" aria-label={"Remove " + name} onClick={() => update(index, group.filter((x) => x !== name))}>
+                      Remove
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className={styles.groupRow}>
+              <Combobox
+                id={index === 0 ? "input-license" : undefined}
+                value=""
+                items={items}
+                hintFor={hintFor}
+                placeholder={!catalog ? "Loading the licence list" : group.length ? "And also require" : "Look up a licence"}
+                searchPlaceholder="Search: P1, Intune, Microsoft 365 E5, SPE_E5 or a GUID"
+                empty="No service plan matches. Type the plan name to use it as written."
+                creatable
+                createPattern={/^[A-Za-z0-9_-]+$/}
+                keepOpen
+                disabledValues={group}
+                onSelect={(v) => !group.includes(v) && update(index, [...group, v])}
+              />
+              {shown.length > 1 && (
+                <Button variant="ghost" onClick={() => onChange(shown.filter((_, i) => i !== index))}>
+                  Remove alternative
+                </Button>
+              )}
+            </div>
+          </div>
+        </React.Fragment>
+      ))}
+      <div>
+        <Button onClick={() => onChange([...shown, []])} disabled={shown[shown.length - 1].length === 0}>
+          Add an alternative (or)
+        </Button>
+      </div>
+      {filled.length > 0 && (
+        <p className={styles.note}>
+          The test runs when the tenant has {filled.map((g, i) => (
+            <span key={i}>
+              {i > 0 && <strong> or </strong>}
+              {filled.length > 1 && g.length > 1 && "("}
+              {g.map(friendly).join(" and ")}
+              {filled.length > 1 && g.length > 1 && ")"}
+            </span>
+          ))}
+          . Otherwise it is skipped.
+        </p>
       )}
     </div>
   );
@@ -411,18 +534,61 @@ export default function TestBuilder() {
           </Field>
           <Field
             id="control"
-            name="Control"
-            label="Framework controls"
-            hint={P.Control.description + " One per line."}
+            name={builtin ? undefined : "Control"}
+            label={builtin ? "Benchmark requirements" : "Framework controls"}
+            hint={
+              builtin
+                ? "The benchmark requirements this test implements. Look one up from the framework files in the repository. A built-in test is mapped in that file, not in the attribute, so the change is listed with the code."
+                : P.Control.description + " Look up a known control or type your own."
+            }
             rubric={R.Control}
             problems={problems}
             notInList={
-              <p>
-                A built-in test is mapped to a benchmark in files, not in the attribute. Add the test to the requirement in <code>tests/&lt;suite&gt;/frameworks/&lt;framework&gt;.json</code>, and declare a new framework in the suite's <code>suite.json</code>.
-              </p>
+              <>
+                <p>
+                  The list comes from the framework files: {data.frameworks.map((f, i) => (
+                    <span key={f.key}>
+                      {i > 0 && ", "}
+                      <RepoFile path={f.file} />
+                    </span>
+                  ))}
+                  .
+                </p>
+                <p>
+                  A requirement that is missing is added to <code>Requirements</code> in that file with the test in its <code>Tests</code>. A whole new framework is a new file, <code>tests/&lt;suite&gt;/frameworks/&lt;key&gt;.json</code>, declared under <code>Frameworks</code> in the suite's <code>suite.json</code>.
+                </p>
+              </>
             }
           >
-            <Textarea id="input-control" rows={2} value={state.control} placeholder="nist-800-53-r5:IA-2(1)" onChange={(e) => set({ control: e.target.value })} />
+            <Combobox
+              id="input-control"
+              value=""
+              items={builtin ? requirementItems : controlItems}
+              placeholder={builtin ? "Look up a requirement" : "Look up a control"}
+              searchPlaceholder="Search by framework, requirement ID or test ID: MS.AAD.3, 5.1.5, nist"
+              creatable={!builtin}
+              keepOpen
+              disabledValues={state.controls}
+              onSelect={(v) => !state.controls.includes(v) && set({ controls: [...state.controls, v] })}
+            />
+            {state.controls.length > 0 && (
+              <ul className={styles.picked}>
+                {state.controls.map((c) => {
+                  const item = controlItems.find((i) => i.value === c);
+                  return (
+                    <li key={c}>
+                      <span>
+                        <code>{c}</code>
+                        {item && item.hint && <span className={styles.tactics}> · {item.hint}</span>}
+                      </span>
+                      <Button variant="ghost" size="xs" aria-label={"Remove " + c} onClick={() => set({ controls: state.controls.filter((x) => x !== c) })}>
+                        Remove
+                      </Button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </Field>
         </section>
 
@@ -450,22 +616,20 @@ export default function TestBuilder() {
             id="license"
             name="License"
             label="Licences"
-            hint={P.License.description + " One element per line. The test is skipped, not failed, in a tenant without the licence."}
+            hint="The service plans the tenant must have. In a tenant without them the test is skipped, not failed."
             problems={problems}
             notInList={
-              <p>
-                Known tokens are in <RepoFile path="powershell/assets/MaesterLicenseTable.psd1" />, which also covers government and education variants. A token that is not listed still works: it is matched literally against the tenant's service plan names. Add it to the table when variants need to count as the same licence.
-              </p>
+              <>
+                <p>
+                  The list is Microsoft's <a href="https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference" target="_blank" rel="noreferrer">product names and service plan identifiers</a> page, refreshed every day. You can also type a name that is not listed yet: it is matched as written against the tenant's service plan names.
+                </p>
+                <p>
+                  For the plans in <RepoFile path="powershell/assets/MaesterLicenseTable.psd1" /> Maester also counts government, education and volume variants as the same licence. Add a plan there when its variants should count too.
+                </p>
+              </>
             }
           >
-            <Textarea id="input-license" rows={2} value={state.license} placeholder="AAD_PREMIUM" onChange={(e) => set({ license: e.target.value })} />
-            <div className={styles.tokens}>
-              {data.licenses.map((l) => (
-                <Button key={l} size="xs" className={styles.token} onClick={() => set({ license: (state.license.trim() ? state.license.trim() + "\n" : "") + l })}>
-                  {l}
-                </Button>
-              ))}
-            </div>
+            <LicenseBuilder groups={state.license} onChange={(v) => set({ license: v })} />
           </Field>
           <Field id="permission" name="Permission" label="Permissions" hint={P.Permission.description + " One per line, for example Policy.Read.All."} problems={problems}>
             <Textarea id="input-permission" rows={2} value={state.permission} placeholder="Policy.Read.All" onChange={(e) => set({ permission: e.target.value })} />

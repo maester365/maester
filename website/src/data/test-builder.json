@@ -1063,6 +1063,1180 @@
       "productFolders": []
     }
   ],
+  "frameworks": [
+    {
+      "key": "cis-github",
+      "name": "CIS GitHub Benchmark",
+      "version": "1.2.0",
+      "url": "https://www.cisecurity.org/benchmark/github",
+      "suite": "CIS",
+      "idPrefix": "CIS.GH.",
+      "file": "tests/cis/frameworks/cis-github.json",
+      "requirements": [
+        {
+          "id": "1.2.2",
+          "tests": [
+            "CIS.GH.1.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.2.3",
+          "tests": [
+            "CIS.GH.1.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.2.4",
+          "tests": [
+            "CIS.GH.1.2.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.3.2",
+          "tests": [
+            "CIS.GH.1.3.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.3.8",
+          "tests": [
+            "CIS.GH.1.3.8"
+          ],
+          "level": "L1"
+        }
+      ]
+    },
+    {
+      "key": "cis-m365",
+      "name": "CIS Microsoft 365 Foundations Benchmark",
+      "version": "7.0.0",
+      "url": "https://www.cisecurity.org/benchmark/microsoft_365",
+      "suite": "CIS",
+      "idPrefix": "CIS.M365.",
+      "file": "tests/cis/frameworks/cis-m365.json",
+      "requirements": [
+        {
+          "id": "1.1.1",
+          "tests": [
+            "CIS.M365.1.1.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.1.3",
+          "tests": [
+            "CIS.M365.1.1.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.2.1",
+          "tests": [
+            "CIS.M365.1.2.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "1.2.2",
+          "tests": [
+            "CIS.M365.1.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.3.1",
+          "tests": [
+            "CIS.M365.1.3.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.3.3",
+          "tests": [
+            "CIS.M365.1.3.3"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "1.3.4",
+          "tests": [
+            "CIS.M365.1.3.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.3.5",
+          "tests": [
+            "CIS.M365.1.3.5"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "1.3.6",
+          "tests": [
+            "CIS.M365.1.3.6"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "1.3.7",
+          "tests": [
+            "CIS.M365.1.3.7"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "2.1.1",
+          "tests": [
+            "CIS.M365.2.1.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "2.1.2",
+          "tests": [
+            "CIS.M365.2.1.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.3",
+          "tests": [
+            "CIS.M365.2.1.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.4",
+          "tests": [
+            "CIS.M365.2.1.4"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "2.1.5",
+          "tests": [
+            "CIS.M365.2.1.5"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "2.1.6",
+          "tests": [
+            "CIS.M365.2.1.6"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.7",
+          "tests": [
+            "CIS.M365.2.1.7"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.9",
+          "tests": [
+            "CIS.M365.2.1.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.11",
+          "tests": [
+            "CIS.M365.2.1.11"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "2.1.12",
+          "tests": [
+            "CIS.M365.2.1.12"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.13",
+          "tests": [
+            "CIS.M365.2.1.13"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.4.4",
+          "tests": [
+            "CIS.M365.2.4.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "3.1.1",
+          "tests": [
+            "CIS.M365.3.1.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "4.1",
+          "tests": [
+            "CIS.M365.4.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.2.2",
+          "tests": [
+            "CIS.M365.5.1.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.2.3",
+          "tests": [
+            "CIS.M365.5.1.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.4.6",
+          "tests": [
+            "CIS.M365.5.1.4.6"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.1.5.1",
+          "tests": [
+            "CIS.M365.5.1.5.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.1.5.2",
+          "tests": [
+            "CIS.M365.5.1.5.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.6.2",
+          "tests": [
+            "CIS.M365.5.1.6.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.5",
+          "tests": [
+            "CIS.M365.5.2.3.5"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.5.3",
+          "tests": [
+            "CIS.M365.6.5.3"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "7.2.2",
+          "tests": [
+            "CIS.M365.7.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "7.2.5",
+          "tests": [
+            "CIS.M365.7.2.5"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "7.2.7",
+          "tests": [
+            "CIS.M365.7.2.7"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "7.2.9",
+          "tests": [
+            "CIS.M365.7.2.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "7.2.11",
+          "tests": [
+            "CIS.M365.7.2.11"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "7.3.1",
+          "tests": [
+            "CIS.M365.7.3.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "8.1.1",
+          "tests": [
+            "CIS.M365.8.1.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "8.2.2",
+          "tests": [
+            "CIS.M365.8.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.2.3",
+          "tests": [
+            "CIS.M365.8.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.4.1",
+          "tests": [
+            "CIS.M365.8.4.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.5.3",
+          "tests": [
+            "CIS.M365.8.5.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.6.1",
+          "tests": [
+            "CIS.M365.8.6.1"
+          ],
+          "level": "L1"
+        }
+      ]
+    },
+    {
+      "key": "cisa-scuba",
+      "name": "CISA SCuBA Secure Configuration Baselines for Microsoft 365",
+      "version": "ScubaGear main, 2026-10-11",
+      "url": "https://github.com/cisagov/ScubaGear",
+      "suite": "CISA",
+      "idPrefix": "CISA.",
+      "file": "tests/cisa/frameworks/cisa-scuba.json",
+      "requirements": [
+        {
+          "id": "MS.AAD.1.1",
+          "tests": [
+            "CISA.MS.AAD.1.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:CM-7"
+          ]
+        },
+        {
+          "id": "MS.AAD.2.1",
+          "tests": [
+            "CISA.MS.AAD.2.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2(12)",
+            "nist-800-53-r5:AC-2(13)"
+          ]
+        },
+        {
+          "id": "MS.AAD.2.2",
+          "tests": [
+            "CISA.MS.AAD.2.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-2(12)"
+          ]
+        },
+        {
+          "id": "MS.AAD.2.3",
+          "tests": [
+            "CISA.MS.AAD.2.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2(12)",
+            "nist-800-53-r5:AC-2(13)"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.1",
+          "tests": [
+            "CISA.MS.AAD.3.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:IA-2(1)",
+            "nist-800-53-r5:IA-2(2)",
+            "nist-800-53-r5:IA-5c",
+            "nist-800-53-r5:IA-5g",
+            "nist-800-53-r5:IA-2(8)"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.2",
+          "tests": [
+            "CISA.MS.AAD.3.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:IA-2(1)",
+            "nist-800-53-r5:IA-2(2)"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.3",
+          "tests": [
+            "CISA.MS.AAD.3.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:IA-2(1)",
+            "nist-800-53-r5:IA-2(2)",
+            "nist-800-53-r5:IA-5c",
+            "nist-800-53-r5:IA-5g",
+            "nist-800-53-r5:IA-2(8)",
+            "nist-800-53-r5:IA-2(13)"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.4",
+          "tests": [
+            "CISA.MS.AAD.3.4"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:CM-7"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.5",
+          "tests": [
+            "CISA.MS.AAD.3.5"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:CM-7b",
+            "nist-800-53-r5:IA-5c"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.6",
+          "tests": [
+            "CISA.MS.AAD.3.6"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:IA-2(1)",
+            "nist-800-53-r5:IA-5c",
+            "nist-800-53-r5:IA-5g",
+            "nist-800-53-r5:IA-2(8)"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.7",
+          "tests": [
+            "CISA.MS.AAD.3.7"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-20b",
+            "nist-800-53-r5:IA-3"
+          ]
+        },
+        {
+          "id": "MS.AAD.3.8",
+          "tests": [
+            "CISA.MS.AAD.3.8"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-20b",
+            "nist-800-53-r5:IA-3"
+          ]
+        },
+        {
+          "id": "MS.AAD.4.1",
+          "tests": [
+            "CISA.MS.AAD.4.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AU-4"
+          ]
+        },
+        {
+          "id": "MS.AAD.5.1",
+          "tests": [
+            "CISA.MS.AAD.5.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6(10)",
+            "nist-800-53-r5:CM-5"
+          ]
+        },
+        {
+          "id": "MS.AAD.5.2",
+          "tests": [
+            "CISA.MS.AAD.5.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6(10)",
+            "nist-800-53-r5:CM-5"
+          ]
+        },
+        {
+          "id": "MS.AAD.5.3",
+          "tests": [
+            "CISA.MS.AAD.5.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:CM-4"
+          ]
+        },
+        {
+          "id": "MS.AAD.5.4",
+          "tests": [
+            "CISA.MS.AAD.5.4"
+          ],
+          "criticality": "SHALL"
+        },
+        {
+          "id": "MS.AAD.6.1",
+          "tests": [
+            "CISA.MS.AAD.6.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:IA-5(1)"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.1",
+          "tests": [
+            "CISA.MS.AAD.7.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6(5)"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.2",
+          "tests": [
+            "CISA.MS.AAD.7.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-5"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.3",
+          "tests": [
+            "CISA.MS.AAD.7.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6(5)"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.4",
+          "tests": [
+            "CISA.MS.AAD.7.4"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.5",
+          "tests": [
+            "CISA.MS.AAD.7.5"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.6",
+          "tests": [
+            "CISA.MS.AAD.7.6"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6(1)"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.7",
+          "tests": [
+            "CISA.MS.AAD.7.7"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2(1)"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.8",
+          "tests": [
+            "CISA.MS.AAD.7.8"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6(9)"
+          ]
+        },
+        {
+          "id": "MS.AAD.7.9",
+          "tests": [
+            "CISA.MS.AAD.7.9"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-6(9)"
+          ]
+        },
+        {
+          "id": "MS.AAD.8.1",
+          "tests": [
+            "CISA.MS.AAD.8.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-6"
+          ]
+        },
+        {
+          "id": "MS.AAD.8.2",
+          "tests": [
+            "CISA.MS.AAD.8.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-6(10)"
+          ]
+        },
+        {
+          "id": "MS.AAD.8.3",
+          "tests": [
+            "CISA.MS.AAD.8.3"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.1.1",
+          "tests": [
+            "CISA.MS.EXO.1.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-4"
+          ]
+        },
+        {
+          "id": "MS.EXO.2.1",
+          "tests": [
+            "CISA.MS.EXO.2.1"
+          ],
+          "criticality": "SHALL"
+        },
+        {
+          "id": "MS.EXO.2.2",
+          "tests": [
+            "CISA.MS.EXO.2.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2d"
+          ]
+        },
+        {
+          "id": "MS.EXO.3.1",
+          "tests": [
+            "CISA.MS.EXO.3.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SC-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.4.1",
+          "tests": [
+            "CISA.MS.EXO.4.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.4.2",
+          "tests": [
+            "CISA.MS.EXO.4.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.4.3",
+          "tests": [
+            "CISA.MS.EXO.4.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-4(5)"
+          ]
+        },
+        {
+          "id": "MS.EXO.5.1",
+          "tests": [
+            "CISA.MS.EXO.5.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:CM-7"
+          ]
+        },
+        {
+          "id": "MS.EXO.6.1",
+          "tests": [
+            "CISA.MS.EXO.6.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-3",
+            "nist-800-53-r5:SC-7(10)(a)"
+          ]
+        },
+        {
+          "id": "MS.EXO.6.2",
+          "tests": [
+            "CISA.MS.EXO.6.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-3",
+            "nist-800-53-r5:SC-7(10)(a)"
+          ]
+        },
+        {
+          "id": "MS.EXO.7.1",
+          "tests": [
+            "CISA.MS.EXO.7.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.8.1",
+          "tests": [
+            "CISA.MS.EXO.8.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SC-7(10)"
+          ]
+        },
+        {
+          "id": "MS.EXO.8.2",
+          "tests": [
+            "CISA.MS.EXO.8.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SC-7(10)"
+          ]
+        },
+        {
+          "id": "MS.EXO.8.3",
+          "tests": [
+            "CISA.MS.EXO.8.3"
+          ],
+          "criticality": "SHOULD"
+        },
+        {
+          "id": "MS.EXO.8.4",
+          "tests": [
+            "CISA.MS.EXO.8.4"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SC-7(10)"
+          ]
+        },
+        {
+          "id": "MS.EXO.9.1",
+          "tests": [
+            "CISA.MS.EXO.9.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.9.2",
+          "tests": [
+            "CISA.MS.EXO.9.2"
+          ],
+          "criticality": "SHOULD"
+        },
+        {
+          "id": "MS.EXO.9.3",
+          "tests": [
+            "CISA.MS.EXO.9.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.9.4",
+          "tests": [
+            "CISA.MS.EXO.9.4"
+          ],
+          "criticality": "SHOULD"
+        },
+        {
+          "id": "MS.EXO.9.5",
+          "tests": [
+            "CISA.MS.EXO.9.5"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.10.1",
+          "tests": [
+            "CISA.MS.EXO.10.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.10.2",
+          "tests": [
+            "CISA.MS.EXO.10.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.10.3",
+          "tests": [
+            "CISA.MS.EXO.10.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.11.1",
+          "tests": [
+            "CISA.MS.EXO.11.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.11.2",
+          "tests": [
+            "CISA.MS.EXO.11.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AT-2b",
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.11.3",
+          "tests": [
+            "CISA.MS.EXO.11.3"
+          ],
+          "criticality": "SHOULD"
+        },
+        {
+          "id": "MS.EXO.12.1",
+          "tests": [
+            "CISA.MS.EXO.12.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-4"
+          ]
+        },
+        {
+          "id": "MS.EXO.12.2",
+          "tests": [
+            "CISA.MS.EXO.12.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-4"
+          ]
+        },
+        {
+          "id": "MS.EXO.13.1",
+          "tests": [
+            "CISA.MS.EXO.13.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AU-12c"
+          ]
+        },
+        {
+          "id": "MS.EXO.14.1",
+          "tests": [
+            "CISA.MS.EXO.14.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.14.2",
+          "tests": [
+            "CISA.MS.EXO.14.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.14.3",
+          "tests": [
+            "CISA.MS.EXO.14.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.EXO.14.4",
+          "tests": [
+            "CISA.MS.EXO.14.4"
+          ],
+          "criticality": "SHOULD"
+        },
+        {
+          "id": "MS.EXO.15.1",
+          "tests": [
+            "CISA.MS.EXO.15.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.15.2",
+          "tests": [
+            "CISA.MS.EXO.15.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SI-3"
+          ]
+        },
+        {
+          "id": "MS.EXO.15.3",
+          "tests": [
+            "CISA.MS.EXO.15.3"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SI-3",
+            "nist-800-53-r5:AU-12c"
+          ]
+        },
+        {
+          "id": "MS.EXO.16.1",
+          "tests": [
+            "CISA.MS.EXO.16.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-4(5)"
+          ]
+        },
+        {
+          "id": "MS.EXO.16.2",
+          "tests": [
+            "CISA.MS.EXO.16.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SI-4(5)"
+          ]
+        },
+        {
+          "id": "MS.EXO.17.1",
+          "tests": [
+            "CISA.MS.EXO.17.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AU-12"
+          ]
+        },
+        {
+          "id": "MS.EXO.17.2",
+          "tests": [
+            "CISA.MS.EXO.17.2"
+          ],
+          "criticality": "SHALL"
+        },
+        {
+          "id": "MS.EXO.17.3",
+          "tests": [
+            "CISA.MS.EXO.17.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AU-11"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.1.1",
+          "tests": [
+            "CISA.MS.SHAREPOINT.1.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2",
+            "nist-800-53-r5:AC-3",
+            "nist-800-53-r5:IA-8"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.1.2",
+          "tests": [
+            "CISA.MS.SHAREPOINT.1.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-2",
+            "nist-800-53-r5:AC-3",
+            "nist-800-53-r5:IA-8"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.1.3",
+          "tests": [
+            "CISA.MS.SHAREPOINT.1.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-3",
+            "nist-800-53-r5:AC-6(10)"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.2.1",
+          "tests": [
+            "CISA.MS.SHAREPOINT.2.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.2.2",
+          "tests": [
+            "CISA.MS.SHAREPOINT.2.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.3.1",
+          "tests": [
+            "CISA.MS.SHAREPOINT.3.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-3",
+            "nist-800-53-r5:AC-21b"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.3.2",
+          "tests": [
+            "CISA.MS.SHAREPOINT.3.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-6"
+          ]
+        },
+        {
+          "id": "MS.SHAREPOINT.3.3",
+          "tests": [
+            "CISA.MS.SHAREPOINT.3.3"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:IA-11"
+          ]
+        }
+      ]
+    }
+  ],
   "attack": {
     "version": "19.2",
     "tactics": [

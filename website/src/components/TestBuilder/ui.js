@@ -124,17 +124,21 @@ export const TabsContent = (props) => <TabsPrimitive.Content className={ui.tabsC
 
 // A searchable list in a popover (shadcn's Combobox). items: [{ value, label, hint?, keywords? }].
 // With `creatable`, the typed text can be used as a value of its own.
-export function Combobox({ id, value, onSelect, items, placeholder, searchPlaceholder, empty, creatable, keepOpen, disabledValues = [], limit = 50 }) {
+export function Combobox({ id, value, onSelect, items, placeholder, searchPlaceholder, empty, creatable, keepOpen, hintFor, createPattern, disabledValues = [], limit = 50 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
-  const matches = (q ? items.filter((i) => (i.value + " " + i.label + " " + (i.hint || "") + " " + (i.keywords || "")).toLowerCase().includes(q)) : items).slice(0, limit);
+  // An item may bring its own lowercase `search` text, for long lists with many keywords.
+  // Items whose own name matches come before items that match only through a keyword.
+  const own = (i) => (i.primary || (i.value + " " + i.label).toLowerCase()).includes(q);
+  const found = q ? items.filter((i) => (i.search || (i.value + " " + i.label + " " + (i.hint || "")).toLowerCase()).includes(q)) : items;
+  const matches = (q ? found.filter(own).concat(found.filter((i) => !own(i))) : found).slice(0, limit);
   const current = items.find((i) => i.value === value);
   const choose = (v) => {
     onSelect(v);
     if (!keepOpen) setOpen(false);
   };
-  const canCreate = creatable && query.trim() && !items.some((i) => i.value === query.trim());
+  const canCreate = creatable && query.trim() && (!createPattern || createPattern.test(query.trim())) && !items.some((i) => i.value === query.trim());
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
       <PopoverPrimitive.Trigger id={id} className={ui.selectTrigger} role="combobox" aria-expanded={open}>
@@ -151,7 +155,7 @@ export function Combobox({ id, value, onSelect, items, placeholder, searchPlaceh
                 <CommandPrimitive.Item key={i.value} value={i.value} disabled={disabledValues.includes(i.value)} onSelect={() => choose(i.value)} className={ui.item}>
                   <span className={ui.itemMain}>
                     <span>{i.label}</span>
-                    {i.hint && <span className={ui.itemHint}>{i.hint}</span>}
+                    {(hintFor ? hintFor(i, q) : i.hint) && <span className={ui.itemHint}>{hintFor ? hintFor(i, q) : i.hint}</span>}
                   </span>
                   {(i.value === value || disabledValues.includes(i.value)) && (
                     <span className={ui.itemCheck}>

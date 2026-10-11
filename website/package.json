@@ -6,6 +6,7 @@
     "docusaurus": "docusaurus",
     "generate-test-docs": "node scripts/generate-test-docs.mjs",
     "check-test-docs": "node scripts/generate-test-docs.mjs --check",
+    "update-license-plans": "node scripts/update-license-service-plans.mjs",
     "prebuild": "npm run generate-test-docs",
     "prestart": "npm run generate-test-docs",
     "start": "docusaurus start",
