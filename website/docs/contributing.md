@@ -221,7 +221,7 @@ When contributing tests, please ensure the following:
 #### Writing the test
 
 - [x] Scaffold the files in the right suite folder, for example `New-MtTest -Id MT.1234 -Title '...' -Service Graph -Product entra -Feature conditional-access -Area authentication -Path ./tests/maester/entra`, then follow [Writing native tests](./writing-tests/index.mdx).
-- [x] Built-in tests must set `Product`, `Severity`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, and describe every parameter. Choose `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost` and `Mitre` with the [attribute rubric](./writing-tests/attribute-rubric.md), using keys from `powershell/assets/MaesterTaxonomy.psd1`.
+- [x] Built-in tests must set `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `Mitre`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, plus `UserImpact` and `ImplementationCost` unless `Severity` is `Info`, and describe every parameter. Choose the values with the [attribute rubric](./writing-tests/attribute-rubric.md), using keys from `powershell/assets/MaesterTaxonomy.psd1`. They are checked on the pull request; see [Attribute checks](#attribute-checks).
 - [x] Do not add a `Tag` for the product, feature, area, suite, benchmark, licence or severity of a test, or for its ID: each of those has an attribute or is derived.
 - [x] Do not check connections or licences in the test and do not wrap it in a `try`/`catch` that only reports `-SkippedBecause Error`: declare `Service` and `License` and let the engine handle it. The unit tests enforce this.
 - [x] Tunable values (thresholds, objects to exclude) are parameters of the test function, not hard-coded.
@@ -230,7 +230,7 @@ When contributing tests, please ensure the following:
   - [x] A `#### Remediation action` section, and `<!--- Results --->` followed by `%TestResult%` at the end
   - [x] If there are multiple objects (e.g. list of CA policies, Users, etc) then use the `GraphObjects` and `GraphObjectType` parameters in [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1). These include deep links to the admin portal. If the object type you wish is not available you can add it to [Get-GraphObjectMarkdown.ps1](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1). Feel free to ask on Discord if you need help with this.
 - [x] The test's page under `website/docs/tests/` is generated from the test files; do not write it by hand.
-- [x] Check the test with `Get-MtTest -Path <file>` and run it with `Invoke-MtTest -Path <file>` against a tenant.
+- [x] Check the test with `Get-MtTest <ID>` after `Import-Module ./powershell/Maester.psd1 -Force`, and run it with `Invoke-MtTest -Path <file>` against a tenant. `Get-MtTest -Path <file>` applies the rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
 
 When in doubt always check the existing tests for the conventions used, feel free to discuss on [Discord](https://discord.entra.news) or [GitHub Issues](https://github.com/maester365/maester/issues).
 
@@ -243,6 +243,15 @@ When in doubt always check the existing tests for the conventions used, feel fre
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
+
+### Attribute checks
+
+A pull request that adds a test, or changes `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost` or `Mitre` on an existing test, has those values checked against the [attribute rubric](./writing-tests/attribute-rubric.md) in two ways:
+
+- The unit tests in [`NativeTestAttributes.Tests.ps1`](https://github.com/maester365/maester/blob/main/powershell/tests/general/NativeTestAttributes.Tests.ps1) fail when a built-in test misses a required attribute, uses a key that is not in the [taxonomy](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterTaxonomy.psd1), lists a retired or unknown ATT&CK technique, or carries a tag for something an attribute already says.
+- The [attribute-review](https://github.com/maester365/maester/blob/main/.github/workflows/attribute-review.yaml) check has a reviewer model read the test, its Markdown file and the rubric. It fails when a value does not fit the rubric, and comments on the pull request with the value it expected and the reason. Change the value, or explain in the pull request why the declared value fits the rubric. A maintainer can overrule the check.
+
+The maintainer or agent who reviews the pull request applies the same rubric; [AGENTS.md](https://github.com/maester365/maester/blob/main/AGENTS.md) describes that step.
 
 ### Updating EIDSCA tests and documentation
 
