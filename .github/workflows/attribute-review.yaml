@@ -1,0 +1,152 @@
+# Reviews the rubric attributes of new and changed tests with a reviewer model.
+#
+# A pull request that adds a test, or changes Product, RelatedProduct, Feature, Area, ResourceType, Severity,
+# UserImpact, ImplementationCost or Mitre on an existing test, is checked against
+# website/docs/writing-tests/attribute-rubric.md. The check fails when a value does not fit the rubric and says
+# which value it expected and why. A maintainer can overrule it with the attribute-review-override label.
+#
+# SECURITY. This workflow uses pull_request_target so that pull requests from forks can be reviewed with the API
+# key. Two rules follow and must hold for every future edit of this file:
+#   1. Only code from the base branch runs. The checkout pins the base commit. Nothing from the pull request is
+#      checked out, installed, imported, dot-sourced or executed.
+#   2. The pull request's test files are downloaded through the API into a temp folder and handled as data.
+#      build/review/Invoke-MtAttributeReview.ps1 parses them without running them and sends them to the model
+#      inside delimited blocks, with the rubric and the prompt taken from the base branch.
+# The reviewer model reads untrusted text, so its verdict is a rubric check, not a security control. Maintainers
+# still review every pull request.
+#
+# Setup: add the repository secret ANTHROPIC_API_KEY. Without it the job reports that the review was skipped.
+name: attribute-review
+
+on:
+  pull_request_target:
+    branches: ["main"]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  attribute-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Label events rerun the job only for the override label, and the label itself turns the job off.
+    if: >-
+      ${{
+        !contains(github.event.pull_request.labels.*.name, 'attribute-review-override') &&
+        ((github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+         github.event.label.name == 'attribute-review-override')
+      }}
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Check out the base branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Never the pull request's head. See the security note at the top of this file.
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Download the changed test files as data
+        id: download
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Test-Path ./build/review/Invoke-MtAttributeReview.ps1)) {
+            Write-Host '::notice::The base branch has no attribute review script yet. Nothing to do.'
+            'count=0' >> $env:GITHUB_OUTPUT
+            exit 0
+          }
+
+          $changed = gh api "repos/$env:REPO/pulls/$env:PR_NUMBER/files" --paginate --jq '.[] | select(.status != "removed") | .filename'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not list the files of the pull request.' }
+
+          # Test files only, with plain path characters, so a file name cannot point outside the temp folder.
+          $tests = @($changed | Where-Object { $_ -match '^tests/[A-Za-z0-9._/-]+/Test\.[A-Za-z0-9._-]+\.(ps1|md)$' -and $_ -notmatch '\.\.' })
+          if ($tests.Count -gt 400) { throw "The pull request changes $($tests.Count) test files, more than this job downloads. Ask a maintainer to review the attributes." }
+
+          $head = Join-Path $env:RUNNER_TEMP 'pr-head'
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github.raw'; 'X-GitHub-Api-Version' = '2022-11-28' }
+          foreach ($path in $tests) {
+            $target = Join-Path $head $path
+            $null = New-Item -ItemType Directory -Path (Split-Path $target) -Force
+            $encoded = ($path -split '/' | ForEach-Object { [uri]::EscapeDataString($_) }) -join '/'
+            # The head commit is reachable through the base repository's pull request ref.
+            Invoke-WebRequest -Uri "https://api.github.com/repos/$env:REPO/contents/$($encoded)?ref=$env:HEAD_SHA" -Headers $headers -OutFile $target
+            if ((Get-Item -LiteralPath $target).Length -gt 512KB) { throw "$path is larger than 512 KB." }
+          }
+
+          $tests | Set-Content (Join-Path $env:RUNNER_TEMP 'pr-files.txt')
+          "count=$($tests.Count)" >> $env:GITHUB_OUTPUT
+          Write-Host "Downloaded $($tests.Count) test file(s)."
+
+      - name: Review the attributes against the rubric
+        id: review
+        if: steps.download.outputs.count != '0'
+        shell: pwsh
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MAESTER_REVIEW_MODEL: ${{ vars.MAESTER_REVIEW_MODEL }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not $env:ANTHROPIC_API_KEY) { Write-Host '::warning::ANTHROPIC_API_KEY is not set. The attribute review was skipped.' }
+          $out = Join-Path $env:RUNNER_TEMP 'attribute-review'
+          $files = @(Get-Content (Join-Path $env:RUNNER_TEMP 'pr-files.txt'))
+          & ./build/review/Invoke-MtAttributeReview.ps1 -Root $env:GITHUB_WORKSPACE -HeadRoot (Join-Path $env:RUNNER_TEMP 'pr-head') -File $files -OutputPath $out -SkipWhenNoKey
+          $code = $LASTEXITCODE
+          Get-Content (Join-Path $out 'attribute-review.md') -Raw >> $env:GITHUB_STEP_SUMMARY
+          "exit=$code" >> $env:GITHUB_OUTPUT
+          exit 0
+
+      - name: Comment on the pull request
+        if: steps.review.outputs.exit != ''
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEW_EXIT: ${{ steps.review.outputs.exit }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $marker = '<!-- maester-attribute-review -->'
+          $existing = gh api "repos/$env:REPO/issues/$env:PR_NUMBER/comments" --paginate --jq '.[] | {id: .id, login: .user.login, head: .body[0:40]} | @json' |
+            ForEach-Object { $_ | ConvertFrom-Json } |
+            Where-Object { $_.login -eq 'github-actions[bot]' -and $_.head.StartsWith($marker) } |
+            Select-Object -First 1
+
+          # Stay quiet on a clean pass unless an earlier comment needs to be brought up to date.
+          if ($env:REVIEW_EXIT -eq '0' -and -not $existing) { exit 0 }
+
+          $report = Get-Content (Join-Path $env:RUNNER_TEMP 'attribute-review/attribute-review.md') -Raw
+          $payload = Join-Path $env:RUNNER_TEMP 'attribute-review-comment.json'
+          @{ body = "$marker`n$report" } | ConvertTo-Json | Set-Content $payload
+          if ($existing) {
+            gh api --method PATCH "repos/$env:REPO/issues/comments/$($existing.id)" --input $payload --silent
+          } else {
+            gh api --method POST "repos/$env:REPO/issues/$env:PR_NUMBER/comments" --input $payload --silent
+          }
+          if ($LASTEXITCODE -ne 0) { Write-Host '::warning::Could not write the review comment.' }
+
+      - name: Fail when an attribute does not fit the rubric
+        if: steps.review.outputs.exit != '' && steps.review.outputs.exit != '0'
+        shell: pwsh
+        env:
+          REVIEW_EXIT: ${{ steps.review.outputs.exit }}
+        run: |
+          if ($env:REVIEW_EXIT -eq '1') {
+            Write-Host '::error::At least one attribute does not fit the rubric. See the job summary and the comment on the pull request.'
+          } else {
+            Write-Host '::error::The attribute review could not be completed. See the job summary.'
+          }
+          exit 1
