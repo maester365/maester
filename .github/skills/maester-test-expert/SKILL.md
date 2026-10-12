@@ -6,7 +6,7 @@ description: >-
   Test.<ID>.ps1 with a [MaesterTest] attribute plus Test.<ID>.md), its attributes, or a
   user's custom test, including converting Pester-format tests. Covers the [MaesterTest]
   attribute, choosing Product, Feature, Area, ResourceType, Severity, UserImpact,
-  ImplementationCost and Mitre with the attribute rubric and the taxonomy, Service/License
+  ImplementationCost, Mitre and Control (CIS, CISA and NIST SP 800-53 mappings) with the attribute rubric and the taxonomy, Service/License
   gates, test parameters, families, Graph API data retrieval, Add-MtTestResultDetail
   formatting, the MT, CIS, CISA, EIDSCA and ORCA suites, remediation guidance, Entra ID,
   Exchange, SharePoint, Teams, Defender, Conditional Access, and the validation checklist
@@ -121,6 +121,7 @@ function Test-MtCaBlockDeviceCodeFlow {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = ('T1078.004', 'T1528', 'T1566'),
+        Control            = ('cisa-scuba:MS.AAD.3.1', 'nist-800-53-r5:IA-2'),
         Service            = 'Graph',
         License            = 'AAD_PREMIUM',
         Author             = 'your-github-handle'
@@ -370,10 +371,32 @@ values of a neighbouring check without checking them against it.
 | `UserImpact` | How much does the recommended fix disrupt end users? |
 | `ImplementationCost` | How much administrator work does the recommended fix take? |
 | `Mitre` | Which MITRE ATT&CK techniques does the checked control prevent or detect? |
+| `Control` | Which requirements of CIS, CISA SCuBA or NIST SP 800-53 does a passing result support? |
 
 The rubric rates a check by the fix its own `.md` recommends, so write the `.md` before you choose the values.
 The values of the generated EIDSCA and ORCA checks are in `build/eidsca/eidsca-test-metadata.json` and
 `build/orca/orca-test-metadata.json`: change a value there and regenerate.
+
+### Framework requirements and NIST controls (`Control`)
+
+Fill in `Control` on every new check. Do not leave it out because it is optional: decide, and leave it empty
+only when nothing applies. It is the only way a check is mapped to a framework. Work through these in order:
+
+1. **The requirement the check is written for.** A CIS check lists `cis-m365:<id>` or `cis-github:<id>` and a
+   CISA check lists `cisa-scuba:<id>`, first. If the requirement is not in the suite's framework file yet, add it
+   there with its facts (level and profiles, or criticality) in the same pull request.
+2. **A CIS or CISA requirement that asks for the same setting.** A Maester check that verifies what
+   `cisa-scuba:MS.AAD.3.1` asks for lists it. Look the requirement up in `tests/cis/frameworks/*.json` and
+   `tests/cisa/frameworks/cisa-scuba.json`, or in the lookup of the [test builder](https://maester.dev/test-builder).
+   `Get-MtTest -Suite CISA | Format-Table Id, Title, Control` shows what the existing checks map to.
+3. **NIST SP 800-53 Rev. 5 controls**, written `nist-800-53-r5:<control>`, chosen with the NIST part of the
+   rubric's [Control section](../../../website/docs/writing-tests/attribute-rubric.md#control) from the pinned list
+   `powershell/assets/MaesterNistControls.json`. At most three, best fit first, and only when a passing result is
+   direct evidence for the control. Skip this step when step 1 or 2 gave a `cisa-scuba` reference: CISA publishes
+   the NIST mapping of its policies and the result gets it from the framework file.
+
+The first value that names a requirement in a framework file becomes the `Benchmark` of the result, so the order
+matters. An inventory count, or a health, licensing or tidiness check, usually lists nothing.
 
 ### Where the keys come from
 
@@ -384,6 +407,8 @@ The values of the generated EIDSCA and ORCA checks are in `build/eidsca/eidsca-t
 - `Mitre` takes technique IDs from the pinned ATT&CK release, `powershell/assets/MaesterAttackTechniques.json`.
   An ID that the release retired or does not know fails the unit tests. Tactics are looked up from the ID and
   never typed.
+- `Control` takes requirement IDs from the framework files (`tests/<suite>/frameworks/<key>.json`) and NIST
+  control IDs from `powershell/assets/MaesterNistControls.json`. The unit tests fail on an ID that is in neither.
 - `Get-MtTest -Product entra -Feature conditional-access | Format-Table Id, Title, Severity, Area, ResourceType`
   lists the existing checks of a feature, to compare your values with.
 - **A new key is added to the taxonomy in the same pull request as the first test that uses it.** Prefer an
@@ -425,10 +450,16 @@ the rubric. When you review a check yourself, follow "Reviewing a test's attribu
 3. **Fill in the attribute**: `License`, `Author`, flags as needed.
 4. **Write the function**: read with `Invoke-MtGraphRequest` or the helpers, decide, `Add-MtTestResultDetail`,
    return a boolean. Add parameters for tunable values.
-5. **Write the `.md`**: summary, rationale, remediation with portal links, related links, results footer.
+5. **Write the guide, the `.md`**, in full: a one-line summary, why the setting matters, numbered remediation
+   steps with a direct link to the admin portal page, related links (Microsoft Learn, and the benchmark when the
+   check maps to one), and the results footer. Replace every placeholder that `New-MtTest` wrote; a check with
+   scaffold text in its guide is not finished. Verify product facts and links with Microsoft Learn.
 6. **Choose the attribute values** with the rubric: `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`,
-   `ImplementationCost`, `Mitre`, and `RelatedProduct` when one applies. See
-   [Choosing the attribute values](#choosing-the-attribute-values).
+   `ImplementationCost`, `Mitre`, `Control`, and `RelatedProduct` when one applies. See
+   [Choosing the attribute values](#choosing-the-attribute-values) and
+   [Framework requirements and NIST controls](#framework-requirements-and-nist-controls-control). The
+   [test builder](https://maester.dev/test-builder) shows the allowed values and the rubric for each attribute
+   and writes the attribute; use it to check a value you are unsure of.
 7. **Validate offline**: `Import-Module ./powershell/Maester.psd1 -Force; Get-MtTest <ID>` must show
    `IsValid = True` and no `Errors`. Name the ID and leave out `-Path`: `Get-MtTest -Path <file>` applies the
    rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
@@ -485,12 +516,16 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
 - [ ] No `Category` or `Preview`; no `Tag` for product, feature, area, suite, benchmark, licence,
       severity or the ID. `Lifecycle = 'Preview'` and the `LongRunning` flag where they apply.
 - [ ] A CIS or CISA check sets `Control` to its requirement (`cis-m365:<id>`, `cis-github:<id>` or
-      `cisa-scuba:<id>`), and the requirement is in the suite's framework file.
+      `cisa-scuba:<id>`), first, and the requirement is in the suite's framework file.
+- [ ] `Control` was considered for every check: a CIS or CISA requirement that asks for the same setting, and
+      NIST SP 800-53 controls from `powershell/assets/MaesterNistControls.json` (none when a `cisa-scuba`
+      reference already brings them). Left empty only when nothing applies.
 - [ ] `[CmdletBinding()]` and `[OutputType([bool])]`; comment-based help inside the function.
 - [ ] `Get-MtTest <ID>` (without `-Path`) reports no errors.
 
 ### Documentation
 - [ ] `.md` has summary, rationale, `#### Remediation action` with portal links, and ends with `<!--- Results --->` + `%TestResult%`.
+- [ ] No scaffold placeholder is left in the `.md` ("Describe what this test checks", "Explain how to fix"), and its links open the page they name.
 - [ ] Pass message starts with "Well done."; fail message is actionable.
 
 ### Code style

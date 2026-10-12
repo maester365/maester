@@ -27,7 +27,7 @@ You are a planning agent for Maester test work.
 1. Analyze requirements and identify affected files (test, helper, companion `.md`, website doc, module manifest, and `powershell/assets/MaesterTaxonomy.psd1` when a new key is needed).
 2. Produce a sequenced implementation plan with validation steps.
 3. Reference official Microsoft guidance via Microsoft Learn MCP tools when relevant.
-4. Surface the attribute decisions before code is written: `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost` and `Mitre`, each chosen with `website/docs/writing-tests/attribute-rubric.md` and, for the first four, a key from `powershell/assets/MaesterTaxonomy.psd1`. Say so when no existing key fits. Built-in checks are not tagged for any of these.
+4. Surface the attribute decisions before code is written: `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost`, `Mitre` and `Control` (the CIS, CISA and NIST SP 800-53 requirements the check supports), each chosen with `website/docs/writing-tests/attribute-rubric.md` and, for the first four, a key from `powershell/assets/MaesterTaxonomy.psd1`. Say so when no existing key fits. Built-in checks are not tagged for any of these.
 
 ## Constraints
 

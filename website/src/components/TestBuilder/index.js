@@ -579,6 +579,17 @@ export default function TestBuilder() {
               </>
             }
           >
+            <ol className={styles.steps}>
+              <li>
+                <strong>The requirement the test is written for.</strong> A CIS or CISA test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code>.
+              </li>
+              <li>
+                <strong>A CIS or CISA requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
+              </li>
+              <li>
+                <strong>NIST SP 800-53 controls</strong>, at most three, when a passing result is direct evidence for them. Skip this when you already listed a <code>cisa-scuba</code> requirement: CISA publishes its NIST mapping and the result gets it from there.
+              </li>
+            </ol>
             {firstFramework && (
               <p className={styles.note}>
                 <code>{firstFramework}</code> is the first reference to a framework Maester has a file for, so it becomes the Benchmark of the result.
@@ -740,7 +751,7 @@ export default function TestBuilder() {
           </TabsContent>
           <TabsContent value="md">
             <p className={styles.where}>
-              Save as <code>{folder + "/Test." + id + ".md"}</code>. The report shows this text, and reviewers read it to check your ratings.
+              Save as <code>{folder + "/Test." + id + ".md"}</code>. The report shows this text, and reviewers read it to check your ratings. Replace every placeholder: say what is checked and why it matters, give numbered steps with a direct link to the admin portal page, and link the Microsoft Learn article.
             </p>
             <CopyBlock text={buildMd()} language="markdown" />
           </TabsContent>

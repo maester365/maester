@@ -450,3 +450,6 @@ textarea.input {
 .linkButton { font: inherit; font-size: 0.78rem; color: var(--ifm-color-primary); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; white-space: nowrap; }
 .linkButton:hover { text-decoration: underline; }
 @media (max-width: 768px) { .explorer { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); } }
+
+.steps { font-size: 0.86rem; color: var(--ifm-color-emphasis-800); margin: 0 0 0.6rem; padding-left: 1.2rem; }
+.steps li { margin-bottom: 0.25rem; }
