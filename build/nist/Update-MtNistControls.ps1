@@ -10,6 +10,7 @@
 .EXAMPLE
     ./build/nist/Update-MtNistControls.ps1
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Build script output for the console')]
 [CmdletBinding()]
 param(
     [string] $CatalogUrl = 'https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog-min.json',

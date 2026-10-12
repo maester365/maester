@@ -11,6 +11,7 @@ Describe 'Attribute review script' {
         . (Join-Path $script:repoRoot 'build/review/Invoke-MtAttributeReview.ps1')
 
         function New-TestFileText {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
             param([string] $Severity = 'High', [string] $Area = 'authentication', [string] $Body = '$true')
             @"
 function Test-MtReviewSample {
@@ -36,6 +37,7 @@ function Test-MtReviewSample {
         }
 
         function New-ReviewTree {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
             param([string] $Name)
             $root = Join-Path $TestDrive $Name
             $null = New-Item -ItemType Directory -Path (Join-Path $root 'tests/maester/entra') -Force
@@ -43,6 +45,7 @@ function Test-MtReviewSample {
         }
 
         function New-ApiResponse {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
             param([string] $Json, [string] $StopReason = 'end_turn')
             [pscustomobject]@{
                 StatusCode = 200

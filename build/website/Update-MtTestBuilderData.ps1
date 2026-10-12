@@ -24,6 +24,7 @@
 .EXAMPLE
     ./build/website/Update-MtTestBuilderData.ps1
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Build script output for the console')]
 [CmdletBinding()]
 param(
     # Where the data file is written.
@@ -103,7 +104,6 @@ $frameworks = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter
     $framework = Get-Content $file.FullName -Raw | ConvertFrom-Json
     $suiteFolder = $file.Directory.Parent
     $suiteJson = Get-Content (Join-Path $suiteFolder.FullName 'suite.json') -Raw | ConvertFrom-Json
-    $declared = @($suiteJson.Frameworks | Where-Object { $_.Key -eq $framework.Framework })[0]
     [ordered]@{
         key          = $framework.Framework
         name         = $framework.Name
