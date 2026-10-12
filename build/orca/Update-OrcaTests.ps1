@@ -63,6 +63,8 @@ function Write-OrcaGeneratedContent {
     }
     $cleanValue = $Value -replace '(?m)[ \t]+(?=\r?$)', ''
     $cleanValue = $cleanValue -replace '(\r?\n)+$', ''
+    # A CRLF checkout gives the templates CRLF while the generated lines are joined with LF: write one kind.
+    if ($newLine -eq "`r`n") { $cleanValue = $cleanValue -replace '(?<!\r)\n', "`r`n" }
     [System.IO.File]::WriteAllText($Path, "$cleanValue$newLine", [System.Text.UTF8Encoding]::new($false))
 }
 
