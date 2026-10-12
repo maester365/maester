@@ -6,6 +6,11 @@ description: Write a Maester check as a native test, the default format from Mae
 
 # Writing native tests
 
+:::tip New to writing tests?
+Start with [Your first custom test](./first-custom-test.md), a short walk-through for checking one rule of your
+own. This page is the full reference.
+:::
+
 From Maester 3.0 a test is two files: `Test.<ID>.ps1`, which holds one PowerShell function with a
 `[MaesterTest(...)]` attribute, and `Test.<ID>.md`, which holds the description and remediation shown in the
 report. Every test that ships with Maester is written this way, and your own tests use the same format.
