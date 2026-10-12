@@ -1,4 +1,4 @@
-Framework fixture FXL.1: the framework file lists it.
+Framework fixture FXU.1: see the synopsis of the test.
 
 #### Remediation action
 

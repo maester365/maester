@@ -665,7 +665,7 @@
                     ForEach-Object { $_.FullName } |
                     Where-Object { -not $_.StartsWith($resolvedBuiltInRoot, [System.StringComparison]::OrdinalIgnoreCase) -or $_ -like '*[\/]Custom[\/]*' })
             if ($customNativeFiles.Count -gt 0) {
-                $nativeCustom = @(Get-MtNativeTestInventory -Path $customNativeFiles -Root $testSource.CustomRoot)
+                $nativeCustom = @(Get-MtNativeTestInventory -Path $customNativeFiles -Root $testSource.CustomRoot -FrameworkPath $testSource.CustomRoot)
                 # A custom native test with a built-in ID is not loaded; the built-in runs (design section 8).
                 $shadowing = @($nativeCustom | Where-Object { $_.Id -and $catalogIds.Contains($_.Id) })
                 if ($shadowing.Count -gt 0) {

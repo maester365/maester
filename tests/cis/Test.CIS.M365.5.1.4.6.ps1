@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1552',
+        Control = 'cis-m365:5.1.4.6',
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

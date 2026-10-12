@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1213.002'),
+        Control = 'cis-m365:7.2.2',
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

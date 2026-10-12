@@ -29,6 +29,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
+        Control = 'cis-m365:2.1.9',
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech')

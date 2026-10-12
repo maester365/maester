@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1070',
+        Control = 'cisa-scuba:MS.EXO.17.3',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'M365_ADVANCED_AUDITING',
         Author = 'soulemike',

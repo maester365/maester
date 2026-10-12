@@ -4,8 +4,8 @@
   "Version": "2.1",
   "Url": "https://example.com/contoso-baseline",
   "Requirements": [
-    { "Id": "1.1", "Level": "L1", "Profile": ["Standard"], "Related": ["nist-800-53-r5:IA-5", "nist-800-53-r5:IA-2(1)", "iso-27001:A.5.17"], "Tests": ["CONTOSO.BL.1.1"] },
-    { "Id": "1.10", "Level": "L2", "Profile": ["Standard", "Strict"], "Tests": ["CONTOSO.BL.1.10", "CONTOSO.BL.1.10.EXT"] },
+    { "Id": "1.1", "Level": "L1", "Profile": ["Standard"], "Related": ["nist-800-53-r5:IA-5", "nist-800-53-r5:IA-2(1)", "iso-27001:A.5.17"] },
+    { "Id": "1.10", "Level": "L2", "Profile": ["Standard", "Strict"] },
     { "Id": "9.9", "Level": "L2", "Profile": ["Strict"] }
   ]
 }

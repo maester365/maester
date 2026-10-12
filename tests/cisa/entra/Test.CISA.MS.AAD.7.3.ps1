@@ -25,6 +25,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1556.007', 'T1078.002', 'T1078.004'),
+        Control = 'cisa-scuba:MS.AAD.7.3',
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'merill', 'mrdos010')

@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1204.001', 'T1566.002'),
+        Control = 'cisa-scuba:MS.EXO.15.2',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',

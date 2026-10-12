@@ -27,6 +27,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1566.001', 'T1204.002'),
+        Control = 'cis-m365:2.1.11',
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = 'Mynster9361'

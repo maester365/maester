@@ -25,6 +25,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1098.003',
+        Control = 'cisa-scuba:MS.AAD.7.7',
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',

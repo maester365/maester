@@ -25,6 +25,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
+        Control = 'cisa-scuba:MS.AAD.2.3',
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'soulemike',

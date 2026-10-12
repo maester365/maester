@@ -3,6 +3,6 @@
   "Name": "Fixture",
   "Version": "1.0",
   "Requirements": [
-    { "Id": "R1", "Related": ["nist-800-53-r5:IA-2", "NIST-800-53-R5:IA-3", "IA-4"], "Tests": ["FXR.1"] }
+    { "Id": "R1", "Related": ["nist-800-53-r5:IA-2", "NIST-800-53-R5:IA-3", "IA-4"] }
   ]
 }

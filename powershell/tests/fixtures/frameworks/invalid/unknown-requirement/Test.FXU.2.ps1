@@ -1,11 +1,11 @@
-function Test-MtFixtureFrameworkFxt1 {
+function Test-MtFixtureFrameworkFxu2 {
     <#
     .SYNOPSIS
-    Framework fixture: two requirements of the framework file list it.
+    Framework fixture: its Control names requirement R9 of fx-unknown, which the framework file does not have.
     #>
     [MaesterTest(
-        Id                 = 'FXT.1',
-        Title              = 'Framework fixture FXT.1',
+        Id                 = 'FXU.2',
+        Title              = 'Framework fixture FXU.2',
         Product            = 'entra',
         Feature            = 'conditional-access',
         Area               = 'authentication',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkFxt1 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'fx-unknown:R9',
         Service            = 'None',
         Author             = 'maester'
     )]

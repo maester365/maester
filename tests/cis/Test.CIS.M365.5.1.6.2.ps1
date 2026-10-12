@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1087.004', 'T1069.003'),
+        Control = 'cis-m365:5.1.6.2',
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

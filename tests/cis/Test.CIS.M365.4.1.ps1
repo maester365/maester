@@ -26,6 +26,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
+        Control = 'cis-m365:4.1',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'oed-metzb',

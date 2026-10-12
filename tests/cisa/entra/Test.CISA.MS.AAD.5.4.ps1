@@ -25,6 +25,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1528', 'T1566.002'),
+        Control = 'cisa-scuba:MS.AAD.5.4',
         Service = 'Graph',
         Lifecycle = 'Deprecated',
         Author = 'soulemike',

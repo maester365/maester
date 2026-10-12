@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566.001', 'T1204.002'),
+        Control = 'cis-m365:2.1.4',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'NZLostboy',

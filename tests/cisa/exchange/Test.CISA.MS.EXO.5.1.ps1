@@ -25,6 +25,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
+        Control = 'cisa-scuba:MS.EXO.5.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

@@ -1,4 +1,4 @@
-Framework fixture FXT.1: two requirements of the framework file list it.
+Framework fixture FXU.2: see the synopsis of the test.
 
 #### Remediation action
 

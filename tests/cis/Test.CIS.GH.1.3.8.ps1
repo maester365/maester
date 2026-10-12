@@ -27,6 +27,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1677', 'T1195.002'),
+        Control = 'cis-github:1.3.8',
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

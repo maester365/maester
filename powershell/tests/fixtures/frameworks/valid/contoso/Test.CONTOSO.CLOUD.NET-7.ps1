@@ -1,7 +1,7 @@
 function Test-MtFixtureFrameworkContosoCloudNet7 {
     <#
     .SYNOPSIS
-    Framework fixture: requirement NET-7 of contoso-cloud, the second framework of the suite, lists it.
+    Framework fixture: its Control names requirement NET-7 of contoso-cloud, the second framework of the suite.
     #>
     [MaesterTest(
         Id                 = 'CONTOSO.CLOUD.NET-7',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkContosoCloudNet7 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'contoso-cloud:NET-7',
         Service            = 'None',
         Author             = 'maester'
     )]

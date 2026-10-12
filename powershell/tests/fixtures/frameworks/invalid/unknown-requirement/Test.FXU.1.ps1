@@ -1,11 +1,11 @@
-function Test-MtFixtureFrameworkFxq1 {
+function Test-MtFixtureFrameworkFxu1 {
     <#
     .SYNOPSIS
-    Framework fixture: the framework file lists it, but its ID does not have the prefix of the framework.
+    Framework fixture: its Control names requirement R1 of fx-unknown.
     #>
     [MaesterTest(
-        Id                 = 'FXQ.1',
-        Title              = 'Framework fixture FXQ.1',
+        Id                 = 'FXU.1',
+        Title              = 'Framework fixture FXU.1',
         Product            = 'entra',
         Feature            = 'conditional-access',
         Area               = 'authentication',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkFxq1 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'fx-unknown:R1',
         Service            = 'None',
         Author             = 'maester'
     )]

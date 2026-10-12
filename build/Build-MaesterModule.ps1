@@ -683,9 +683,10 @@ foreach ($MarkdownFile in $MarkdownFiles) {
 # or has retired. The catalog also carries the full Taxonomy (the names of every product, feature, area,
 # resource type and ATT&CK technique), so that a consumer can render them without the module.
 # The build also fails on a framework file (tests/<suite>/frameworks/<key>.json, test attribute design,
-# section 6) that does not match its suite.json, names a test that does not exist, does not list every
-# test with the framework's ID prefix exactly once, or has a Related reference that is not written
-# <framework-key>:<control-id>. Each test's Benchmark and Control in the catalog come from those files.
+# section 6) that does not match its suite.json or has a Related reference that is not written
+# <framework-key>:<control-id>, on a framework key that two suites declare, and on a test whose Control
+# names one of these frameworks and a requirement its file does not have. A test's Benchmark in the
+# catalog is the requirement its Control names, with the facts the framework file holds about it.
 # The source module is imported in a separate runspace, so the caller's session (which may itself have
 # Maester loaded, as in the module's own tests) is not changed.
 $CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @(); Taxonomy = $null }

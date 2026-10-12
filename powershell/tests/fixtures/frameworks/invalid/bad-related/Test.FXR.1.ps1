@@ -1,7 +1,7 @@
 function Test-MtFixtureFrameworkFxr1 {
     <#
     .SYNOPSIS
-    Framework fixture: its requirement has Related references that are not written <framework-key>:<control-id>.
+    Framework fixture: its Control names requirement R1 of fx-related, whose file has Related references that are not controls.
     #>
     [MaesterTest(
         Id                 = 'FXR.1',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkFxr1 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'fx-related:R1',
         Service            = 'None',
         Author             = 'maester'
     )]

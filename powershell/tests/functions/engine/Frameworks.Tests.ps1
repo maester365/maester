@@ -1,9 +1,10 @@
 # Benchmarks and framework files (docs/proposals/maester-3.0-test-attributes.md, section 6): the Frameworks a
-# suite.json declares, the framework files beside it, Benchmark and Control on a test, on its rows and in the
-# catalog, what the catalog build rejects, and what a run does with a custom suite whose framework file is wrong.
+# suite.json declares, the framework files beside it, the Control that maps a test to a requirement, Benchmark and
+# Control on a test, on its rows and in the catalog, what the catalog build rejects, and what a run does with a
+# custom suite whose framework file is wrong.
 #
 # The fixtures are in powershell/tests/fixtures/frameworks. valid/contoso is one suite with two frameworks and a
-# test that has the prefix of neither. invalid/ has one suite for each thing that can be wrong with a framework.
+# test that maps to neither. invalid/ has one suite for each thing that can be wrong with a framework.
 # Every fixture test has the attributes of a test shipped with Maester, so the same files serve as a custom suite
 # (a run) and as built-in tests (the catalog build).
 BeforeAll {
@@ -34,6 +35,16 @@ BeforeAll {
         $folder
     }
 
+    # A native test in a folder, with the given Control values.
+    function New-TestFile {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+        param([string] $Folder, [string] $Id, [string[]] $Control)
+        $list = @($Control | ForEach-Object { "'$_'" }) -join ', '
+        $null = New-Item -ItemType Directory -Path $Folder -Force
+        "function Test-$($Id -replace '\W', '') {`n    [MaesterTest(Id = '$Id', Title = 'Title of $Id', Control = ($list), Service = 'None')]`n    [CmdletBinding()]`n    param()`n    `$true`n}" | Set-Content (Join-Path $Folder "Test.$Id.ps1")
+        'Description.' | Set-Content (Join-Path $Folder "Test.$Id.md")
+    }
+
     # The tests of a folder by ID, with the warnings reading them wrote.
     function Read-Suite {
         param([string] $Path)
@@ -45,19 +56,19 @@ BeforeAll {
 }
 
 Describe 'Frameworks of a suite' {
-    It 'Reads the frameworks a suite.json declares, each with the requirements of its file by test ID' {
+    It 'Reads the frameworks a suite.json declares, each with the requirements of its file by Id' {
         $frameworks = @(Get-Framework (Join-Path $script:valid 'contoso'))
         $frameworks | Should -HaveCount 2
         $frameworks.Key | Should -Be @('contoso-baseline', 'contoso-cloud')
-        $frameworks.IdPrefix | Should -Be @('CONTOSO.BL.', 'CONTOSO.CLOUD.')
         $frameworks.IsValid | Should -Be @($true, $true)
         $frameworks[0].Name | Should -Be 'Contoso Security Baseline'
         $frameworks[0].Url | Should -Be 'https://example.com/contoso-baseline'
         Split-Path $frameworks[0].File -Leaf | Should -Be 'contoso-baseline.json'
         @($frameworks[0].Requirements).Count | Should -Be 3 -Because 'a requirement no test implements is still a requirement of the file'
-        @($frameworks[0].ByTest.Keys | Sort-Object) | Should -Be @('CONTOSO.BL.1.1', 'CONTOSO.BL.1.10', 'CONTOSO.BL.1.10.EXT')
-        $frameworks[0].ByTest.ContainsKey('contoso.bl.1.1') | Should -BeTrue -Because 'test IDs are matched whatever their case'
-        $frameworks[1].ByTest['CONTOSO.CLOUD.NET-7'].Related | Should -Be @('nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-4')
+        @($frameworks[0].ById.Keys | Sort-Object) | Should -Be @('1.1', '1.10', '9.9')
+        $frameworks[0].ById['1.10'].Requirement.Level | Should -Be 'L2'
+        $frameworks[1].ById.ContainsKey('net-7') | Should -BeFalse -Because 'a requirement Id is matched as it is written'
+        $frameworks[1].ById['NET-7'].Related | Should -Be @('nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-4')
     }
 
     It 'Takes the version of the suite.json, and the version of the file when the suite.json gives none' {
@@ -72,9 +83,9 @@ Describe 'Frameworks of a suite' {
     }
 
     It 'Reports <Case> and reads no file for it' -ForEach @(
-        @{ Case = 'a key with capital letters'; Declaration = @{ Key = 'Contoso'; IdPrefix = 'CONTOSO.' }; Message = "*suite.json: a Frameworks entry has the Key 'Contoso'*" }
-        @{ Case = 'a key that is a path'; Declaration = @{ Key = '../contoso'; IdPrefix = 'CONTOSO.' }; Message = "*a Frameworks entry has the Key '../contoso'*" }
-        @{ Case = 'an entry without a key'; Declaration = @{ IdPrefix = 'CONTOSO.' }; Message = "*a Frameworks entry has the Key ''*" }
+        @{ Case = 'a key with capital letters'; Declaration = @{ Key = 'Contoso' }; Message = "*suite.json: a Frameworks entry has the Key 'Contoso'*" }
+        @{ Case = 'a key that is a path'; Declaration = @{ Key = '../contoso' }; Message = "*a Frameworks entry has the Key '../contoso'*" }
+        @{ Case = 'an entry without a key'; Declaration = @{ Version = '1.0' }; Message = "*a Frameworks entry has the Key ''*" }
         @{ Case = 'an entry that is not an object'; Declaration = 'contoso'; Message = "*a Frameworks entry has the Key ''*" }
     ) {
         # The file exists, so only the key keeps it from being read.
@@ -87,58 +98,79 @@ Describe 'Frameworks of a suite' {
         $framework[0].Problems[0] | Should -BeLike $Message
     }
 
-    It 'Reports a framework without an IdPrefix' {
-        $folder = New-SuiteFolder -Declaration @{ Key = 'contoso'; Version = '1.0' } -File @{ contoso = '{ "Framework": "contoso", "Requirements": [] }' }
+    It 'Ignores an IdPrefix in the declaration and a Tests list on a requirement' {
+        # Both mapped a test to a requirement before Control did. A file that still has them is read as if it had not.
+        $cloud = @(Get-Framework (Join-Path $script:valid 'contoso'))[1]
+        (Get-Content (Join-Path $script:valid 'contoso/suite.json') -Raw) | Should -Match '"IdPrefix"'
+        $cloud.ById['NET-7'].Requirement.Tests | Should -Be @('CONTOSO.OTHER.1', 'CONTOSO.NONE.404')
+        $cloud.IsValid | Should -BeTrue
+        $cloud.PSObject.Properties['IdPrefix'] | Should -BeNullOrEmpty
+
+        $folder = New-SuiteFolder -Declaration @{ Key = 'contoso'; IdPrefix = 7 } -File @{ contoso = '{ "Framework": "contoso", "Requirements": [ { "Id": "R1", "Tests": [7, null] }, { "Id": "R2", "Tests": "R1" } ] }' }
         $framework = @(Get-Framework $folder)
-        $framework[0].IsValid | Should -BeFalse
-        $framework[0].Problems | Should -HaveCount 1
-        $framework[0].Problems[0] | Should -BeLike "*suite.json: the framework 'contoso' has no IdPrefix."
+        $framework[0].Problems | Should -HaveCount 0
+        @($framework[0].ById.Keys) | Should -Be @('R1', 'R2')
     }
 
-    It 'Reports a key or a prefix that two frameworks of a suite share' {
+    It 'Reports a key that a suite declares twice' {
         $file = '{ "Framework": "contoso", "Requirements": [] }'
-        $sameKey = @(Get-Framework (New-SuiteFolder -Declaration @{ Key = 'contoso'; IdPrefix = 'A.' }, @{ Key = 'contoso'; IdPrefix = 'B.' } -File @{ contoso = $file }))
+        $sameKey = @(Get-Framework (New-SuiteFolder -Declaration @{ Key = 'contoso' }, @{ Key = 'contoso' } -File @{ contoso = $file }))
         $sameKey[0].IsValid | Should -BeTrue
         $sameKey[1].Problems | Should -HaveCount 1
         $sameKey[1].Problems[0] | Should -BeLike "*the framework 'contoso' is declared more than once."
-
-        $samePrefix = @(Get-Framework (New-SuiteFolder -Declaration @{ Key = 'contoso'; IdPrefix = 'A.' }, @{ Key = 'fabrikam'; IdPrefix = 'a.' } -File @{ contoso = $file; fabrikam = $file.Replace('contoso', 'fabrikam') }))
-        $samePrefix[1].Problems | Should -HaveCount 1
-        $samePrefix[1].Problems[0] | Should -BeLike "*the IdPrefix 'a.' of the framework 'fabrikam' is used by another framework of the suite."
     }
 
     It 'Reports <Case> in a framework file' -ForEach @(
         @{ Case = 'text that is not JSON'; Content = '{ "Framework": "contoso", '; Message = '*contoso.json: it is not valid JSON.' }
         @{ Case = 'a list'; Content = '[1, 2]'; Message = '*contoso.json: it must hold one JSON object.' }
         @{ Case = 'nothing'; Content = ''; Message = '*contoso.json: it must hold one JSON object.' }
-        @{ Case = 'a requirement whose Id is a number'; Content = '{ "Framework": "contoso", "Requirements": [ { "Id": 1.10, "Tests": ["CONTOSO.1"] } ] }'; Message = '*contoso.json: every requirement needs an Id written as a string.' }
-        @{ Case = 'a requirement without an Id'; Content = '{ "Framework": "contoso", "Requirements": [ { "Tests": ["CONTOSO.1"] } ] }'; Message = '*contoso.json: every requirement needs an Id written as a string.' }
+        @{ Case = 'a requirement whose Id is a number'; Content = '{ "Framework": "contoso", "Requirements": [ { "Id": 1.10 } ] }'; Message = '*contoso.json: every requirement needs an Id written as a string.' }
+        @{ Case = 'a requirement without an Id'; Content = '{ "Framework": "contoso", "Requirements": [ { "Level": "L1" } ] }'; Message = '*contoso.json: every requirement needs an Id written as a string.' }
         @{ Case = 'a requirement listed twice'; Content = '{ "Framework": "contoso", "Requirements": [ { "Id": "R1" }, { "Id": "r1" } ] }'; Message = '*contoso.json: the requirement r1 is listed more than once.' }
-        @{ Case = 'a Tests entry that is not a test ID'; Content = '{ "Framework": "contoso", "Requirements": [ { "Id": "R1", "Tests": [7] } ] }'; Message = '*contoso.json: the requirement R1 has a Tests entry that is not a test ID.' }
         @{ Case = 'a missing Framework key'; Content = '{ "Requirements": [] }'; Message = "*contoso.json: Framework is ''; the suite.json declares the key 'contoso'." }
     ) {
-        $folder = New-SuiteFolder -Declaration @{ Key = 'contoso'; Version = '1.0'; IdPrefix = 'CONTOSO.' } -File @{ contoso = $Content }
+        $folder = New-SuiteFolder -Declaration @{ Key = 'contoso'; Version = '1.0' } -File @{ contoso = $Content }
         $framework = @(Get-Framework $folder)
         $framework[0].IsValid | Should -BeFalse
         $framework[0].Problems | Should -HaveCount 1
         $framework[0].Problems[0] | Should -BeLike $Message
     }
 
-    It 'Takes the framework with the longest prefix when the prefixes of two match' {
-        InModuleScope Maester {
-            $general = [pscustomobject]@{ Key = 'general'; IdPrefix = 'FX.' }
-            $specific = [pscustomobject]@{ Key = 'specific'; IdPrefix = 'FX.A.' }
-            (Select-MtTestFramework -Id 'FX.A.1' -Framework $general, $specific).Key | Should -Be 'specific'
-            (Select-MtTestFramework -Id 'FX.A.1' -Framework $specific, $general).Key | Should -Be 'specific'
-            (Select-MtTestFramework -Id 'fx.b.1' -Framework $general, $specific).Key | Should -Be 'general' -Because 'a prefix matches whatever its case'
-            Select-MtTestFramework -Id 'OTHER.1' -Framework $general, $specific | Should -BeNullOrEmpty
-            Select-MtTestFramework -Id 'FX.A.1' -Framework @() | Should -BeNullOrEmpty
+    It 'Finds a framework by its key, whatever suite declares it' {
+        $keys = InModuleScope Maester -Parameters @{ R = $script:valid } {
+            [pscustomobject]@{
+                Own    = @((Get-MtFrameworkIndex -Root $R -BuiltIn).ByKey.Keys | Sort-Object)
+                Custom = @((Get-MtFrameworkIndex -Root $R).ByKey.Keys | Sort-Object)
+                None   = @((Get-MtFrameworkIndex).ByKey.Keys | Sort-Object)
+            }
         }
+        $keys.Own | Should -Be @('contoso-baseline', 'contoso-cloud') -Because 'the tests shipped with Maester refer to nothing outside their own folder'
+        $keys.Custom | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'contoso-baseline', 'contoso-cloud') -Because 'a custom test can also refer to a framework shipped with Maester'
+        $keys.None | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba')
+    }
+
+    It 'Reports a key that two suites declare, names both files and keeps the first' {
+        $index = InModuleScope Maester -Parameters @{ R = (Join-Path $script:invalid 'same-key') } { Get-MtFrameworkIndex -Root $R -BuiltIn }
+        $index.Problems | Should -HaveCount 1
+        $index.Problems[0] | Should -BeLike "*same-key?b?suite.json: the framework 'fx-same' is also declared by '*same-key?a?suite.json'. A framework key is declared by one suite*"
+        $index.All | Should -HaveCount 2
+        $index.ByKey['fx-same'].ById['R1'].Requirement.Level | Should -Be 'L1' -Because 'the suite in folder a comes first'
+    }
+
+    It 'Lets a framework shipped with Maester keep its key when a custom suite declares it too' {
+        $folder = New-SuiteFolder -Declaration @{ Key = 'cis-m365'; Version = '0.1' } -File @{ 'cis-m365' = '{ "Framework": "cis-m365", "Requirements": [ { "Id": "1.1.1", "Level": "L9" } ] }' }
+        New-TestFile -Folder $folder -Id 'CONTOSO.CIS.1' -Control 'cis-m365:1.1.1'
+        $read = Read-Suite $folder
+        $read.Warnings | Should -HaveCount 1
+        $read.Warnings[0] | Should -BeLike "*suite.json: the framework 'cis-m365' is also declared by '*cis?suite.json'*"
+        $read.Tests['CONTOSO.CIS.1'].Benchmark.Version | Should -BeExactly '7.0.0'
+        $read.Tests['CONTOSO.CIS.1'].Benchmark.Level | Should -Be 'L1'
     }
 
     It 'Reads the suite.json and its framework files once for the tests of a folder' {
         Mock -ModuleName Maester Get-MtSuiteFramework { }
-        $tests = @(InModuleScope Maester -Parameters @{ F = $script:valid } { Get-MtNativeTestInventory -Path $F -Root $F })
+        # -BuiltIn, so that the frameworks shipped with Maester are not read as well.
+        $tests = @(InModuleScope Maester -Parameters @{ F = $script:valid } { Get-MtNativeTestInventory -Path $F -Root $F -BuiltIn })
         $tests | Should -HaveCount 5
         Should -Invoke Get-MtSuiteFramework -ModuleName Maester -Times 1 -Exactly
     }
@@ -168,7 +200,7 @@ Describe 'Benchmark and Control of a test' {
         @($benchmark.PSObject.Properties.Name)[0..2] | Should -Be @('Framework', 'Version', 'Requirement')
     }
 
-    It 'Gives the two tests of one requirement the same requirement' {
+    It 'Gives two tests that name one requirement the same requirement' {
         $script:tests['CONTOSO.BL.1.10.EXT'].Benchmark.Requirement | Should -BeExactly '1.10'
         $script:tests['CONTOSO.BL.1.10.EXT'].Benchmark.Framework | Should -Be 'contoso-baseline'
     }
@@ -187,40 +219,86 @@ Describe 'Benchmark and Control of a test' {
         @($cloud.PSObject.Properties.Name) | Should -Be @('Framework', 'Version', 'Requirement', 'Criticality', 'Upstream')
     }
 
-    It 'Carries Benchmark as null on a test whose ID has the prefix of no framework of its suite' {
+    It 'Carries Benchmark as null on a test whose Control names no requirement of a framework' {
         $other = $script:tests['CONTOSO.OTHER.1']
         $other.PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty -Because 'the property is never left out'
         $other.Benchmark | Should -BeNullOrEmpty
     }
 
-    It 'Lists the Control values of the test first, then the Related references of its requirement, each once' {
-        # The test declares contoso-policy:P-12 and IA-2(1); the requirement relates to IA-5, IA-2(1) and A.5.17.
-        $script:tests['CONTOSO.BL.1.1'].Control | Should -BeExactly @('contoso-policy:P-12', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
+    It 'Does not map a test that only a Tests list of a framework file names' {
+        # Requirement NET-7 of contoso-cloud still lists CONTOSO.OTHER.1.
+        $script:tests['CONTOSO.OTHER.1'].Benchmark | Should -BeNullOrEmpty
+        $script:tests['CONTOSO.OTHER.1'].Control | Should -BeExactly @('contoso-policy:P-1')
     }
 
-    It 'Gives a test without Control of its own the Related references of its requirement, in the order of the file' {
-        $script:tests['CONTOSO.CLOUD.NET-7'].Control | Should -BeExactly @('nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-4')
+    It 'Lists the Control values of the test first, then the Related references of its requirement, each once' {
+        # The test declares contoso-policy:P-12, the requirement and IA-2(1); the requirement relates to IA-5, IA-2(1) and A.5.17.
+        $script:tests['CONTOSO.BL.1.1'].Control | Should -BeExactly @('contoso-policy:P-12', 'contoso-baseline:1.1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
+        $script:tests['CONTOSO.BL.1.1'].Benchmark.Requirement | Should -BeExactly '1.1' -Because 'the reference need not be the first Control'
+    }
+
+    It 'Adds the Related references in the order of the file' {
+        $script:tests['CONTOSO.CLOUD.NET-7'].Control | Should -BeExactly @('contoso-cloud:NET-7', 'nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-4')
     }
 
     It 'Leaves Control as the test wrote it when there is nothing to add' {
         $script:tests['CONTOSO.OTHER.1'].Control | Should -BeExactly @('contoso-policy:P-1')
-        @($script:tests['CONTOSO.BL.1.10'].Control).Count | Should -Be 0 -Because 'its requirement has no Related references'
+        $script:tests['CONTOSO.BL.1.10'].Control | Should -BeExactly @('contoso-baseline:1.10') -Because 'its requirement has no Related references'
     }
 
-    It 'Takes the more specific of two frameworks whose prefixes both match a test' {
-        $folder = New-SuiteFolder -Declaration @{ Key = 'general'; Version = '1'; IdPrefix = 'FX.' }, @{ Key = 'specific'; Version = '2'; IdPrefix = 'FX.A.' } -File @{
-            general  = '{ "Framework": "general", "Requirements": [ { "Id": "B-1", "Tests": ["FX.B.1"] } ] }'
-            specific = '{ "Framework": "specific", "Requirements": [ { "Id": "A-1", "Tests": ["FX.A.1"] } ] }'
+    It 'Takes the Benchmark from the first Control that names a requirement, and the Related references of every one' {
+        $folder = New-SuiteFolder -Declaration @{ Key = 'alpha'; Version = '1' }, @{ Key = 'beta'; Version = '2' } -File @{
+            alpha = '{ "Framework": "alpha", "Requirements": [ { "Id": "A-1", "Level": "L1", "Related": ["nist-800-53-r5:AC-2", "nist-800-53-r5:AC-1"] } ] }'
+            beta  = '{ "Framework": "beta", "Requirements": [ { "Id": "B-1", "Level": "L2", "Related": ["nist-800-53-r5:AC-1", "alpha:A-1"] } ] }'
         }
-        foreach ($id in 'FX.A.1', 'FX.B.1') {
-            "function Test-$($id -replace '\.', '') {`n    [MaesterTest(Id = '$id', Title = 'Title of $id', Service = 'None')]`n    [CmdletBinding()]`n    param()`n    `$true`n}" | Set-Content (Join-Path $folder "Test.$id.ps1")
-            'Description.' | Set-Content (Join-Path $folder "Test.$id.md")
-        }
+        New-TestFile -Folder $folder -Id 'FX.BOTH.1' -Control 'other:X-1', 'beta:B-1', 'alpha:A-1'
+        New-TestFile -Folder $folder -Id 'FX.CASE.1' -Control 'ALPHA:A-1'
         $read = Read-Suite $folder
         $read.Warnings | Should -HaveCount 0
-        $read.Tests['FX.A.1'].Benchmark.Framework | Should -Be 'specific'
-        $read.Tests['FX.A.1'].Benchmark.Requirement | Should -Be 'A-1'
-        $read.Tests['FX.B.1'].Benchmark.Framework | Should -Be 'general'
+        $both = $read.Tests['FX.BOTH.1']
+        $both.Benchmark.Framework | Should -Be 'beta'
+        $both.Benchmark.Version | Should -BeExactly '2'
+        $both.Benchmark.Requirement | Should -Be 'B-1'
+        $both.Benchmark.Level | Should -Be 'L2'
+        $both.Control | Should -BeExactly @('other:X-1', 'beta:B-1', 'alpha:A-1', 'nist-800-53-r5:AC-1', 'nist-800-53-r5:AC-2')
+        $read.Tests['FX.CASE.1'].Benchmark.Framework | Should -BeExactly 'alpha' -Because 'the framework key of a Control is read in lowercase'
+    }
+
+    It 'Skips a Control that names a requirement the file does not have, warns, and takes the next one' {
+        $folder = New-SuiteFolder -Declaration @{ Key = 'alpha'; Version = '1' }, @{ Key = 'beta'; Version = '2' } -File @{
+            alpha = '{ "Framework": "alpha", "Requirements": [ { "Id": "A-1" } ] }'
+            beta  = '{ "Framework": "beta", "Requirements": [ { "Id": "B-1" } ] }'
+        }
+        New-TestFile -Folder $folder -Id 'FX.NEXT.1' -Control 'alpha:a-1', 'beta:B-1'
+        $read = Read-Suite $folder
+        $read.Warnings | Should -HaveCount 1
+        $read.Warnings[0] | Should -BeLike "These tests have a Control that names the framework 'alpha' and a requirement that '*alpha.json' does not have, so it gives them no Benchmark: FX.NEXT.1 (alpha:a-1)."
+        $read.Tests['FX.NEXT.1'].Benchmark.Framework | Should -Be 'beta'
+        $read.Tests['FX.NEXT.1'].Control | Should -BeExactly @('alpha:a-1', 'beta:B-1')
+    }
+
+    It 'Maps a custom test to a framework of another custom suite and to one shipped with Maester' {
+        $root = Join-Path $TestDrive ('root' + [guid]::NewGuid().ToString('n'))
+        $null = New-Item -ItemType Directory -Path (Join-Path $root 'one/frameworks') -Force
+        '{ "Id": "One", "Frameworks": [ { "Key": "alpha", "Version": "1" } ] }' | Set-Content (Join-Path $root 'one/suite.json')
+        '{ "Framework": "alpha", "Requirements": [ { "Id": "A-1", "Level": "L1" } ] }' | Set-Content (Join-Path $root 'one/frameworks/alpha.json')
+        New-TestFile -Folder (Join-Path $root 'two') -Id 'FX.TWO.1' -Control 'alpha:A-1'
+        New-TestFile -Folder (Join-Path $root 'two') -Id 'FX.TWO.2' -Control 'cisa-scuba:MS.AAD.3.1', 'alpha:A-1'
+        '{ "Id": "Two" }' | Set-Content (Join-Path $root 'two/suite.json')
+
+        $read = Read-Suite $root
+        $read.Warnings | Should -HaveCount 0
+        $read.Tests['FX.TWO.1'].Suite | Should -Be 'Two'
+        $read.Tests['FX.TWO.1'].Benchmark.Framework | Should -Be 'alpha' -Because 'the suite One, which has no test, declares it'
+        $shipped = $read.Tests['FX.TWO.2']
+        $shipped.Benchmark.Framework | Should -Be 'cisa-scuba'
+        $shipped.Benchmark.Requirement | Should -Be 'MS.AAD.3.1'
+        $shipped.Benchmark.Criticality | Should -Be 'SHALL'
+        $shipped.Control | Should -BeExactly @('cisa-scuba:MS.AAD.3.1', 'alpha:A-1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-2(2)', 'nist-800-53-r5:IA-5c', 'nist-800-53-r5:IA-5g', 'nist-800-53-r5:IA-2(8)')
+
+        # A file on its own: the frameworks shipped with Maester, and nothing the folder beside it declares.
+        $single = @(Get-MtTest -Path (Join-Path $root 'two/Test.FX.TWO.2.ps1') -WarningAction SilentlyContinue)
+        $single[0].Benchmark.Framework | Should -Be 'cisa-scuba'
     }
 }
 
@@ -234,11 +312,11 @@ Describe 'Benchmark of the tests shipped with Maester' {
 
     It 'Declares the benchmarks of the CIS and CISA suites in their suite.json' {
         $cis = Get-Content (Join-Path $script:repoRoot 'tests/cis/suite.json') -Raw | ConvertFrom-Json
-        @($cis.Frameworks | ForEach-Object { "$($_.Key) $($_.Version) $($_.IdPrefix)" }) | Should -Be @('cis-m365 7.0.0 CIS.M365.', 'cis-github 1.2.0 CIS.GH.')
+        @($cis.Frameworks | ForEach-Object { "$($_.Key) $($_.Version)" }) | Should -Be @('cis-m365 7.0.0', 'cis-github 1.2.0')
         $cisa = Get-Content (Join-Path $script:repoRoot 'tests/cisa/suite.json') -Raw | ConvertFrom-Json
         @($cisa.Frameworks).Count | Should -Be 1
         $cisa.Frameworks[0].Key | Should -Be 'cisa-scuba'
-        $cisa.Frameworks[0].IdPrefix | Should -Be 'CISA.'
+        @(@($cis.Frameworks) + @($cisa.Frameworks) | Where-Object { $_.PSObject.Properties['IdPrefix'] }) | Should -HaveCount 0 -Because 'a test is mapped by its Control, not by the prefix of its ID'
         $cisa.Frameworks[0].Version | Should -Not -BeNullOrEmpty
     }
 
@@ -248,7 +326,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $problems | Should -BeNullOrEmpty
     }
 
-    It 'Gives every test with the prefix <Prefix> a Benchmark of <Framework>' -ForEach @(
+    It 'Gives every <Prefix> test a Benchmark of <Framework>, from the first Control of the test' -ForEach @(
         @{ Prefix = 'CIS.M365.'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 44 }
         @{ Prefix = 'CIS.GH.'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
         @{ Prefix = 'CISA.'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
@@ -260,6 +338,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
         @($tests | Where-Object { -not $_.Benchmark.Version } | ForEach-Object Id) | Should -BeNullOrEmpty
         # The requirement a built-in test implements is the rest of its ID after the prefix.
         @($tests | Where-Object { "$Prefix$($_.Benchmark.Requirement)" -cne $_.Id } | ForEach-Object Id) | Should -BeNullOrEmpty
+        @($tests | Where-Object { @($_.Control)[0] -cne "${Framework}:$($_.Benchmark.Requirement)" } | ForEach-Object Id) | Should -BeNullOrEmpty
     }
 
     It 'Carries Benchmark as null on every other test' {
@@ -285,14 +364,14 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $test.Benchmark.Criticality | Should -Be 'SHALL'
         $test.Benchmark.Upstream.Status | Should -Be 'Current'
         $test.Benchmark.Upstream.Id | Should -Be 'MS.AAD.1.1v1'
-        $test.Control | Should -Be @('nist-800-53-r5:CM-7')
+        $test.Control | Should -Be @('cisa-scuba:MS.AAD.1.1', 'nist-800-53-r5:CM-7')
         $script:byId['CISA.MS.EXO.8.1'].Benchmark.Upstream.Status | Should -Be 'Moved'
         $script:byId['CISA.MS.EXO.8.3'].Benchmark.Upstream.Status | Should -Be 'Removed'
 
         $cisa = @($script:builtIn | Where-Object { $_.Id -like 'CISA.*' })
         @($cisa | Where-Object { $_.Benchmark.Criticality -cnotin 'SHALL', 'SHOULD' -or $_.Benchmark.Upstream.Status -cnotin 'Current', 'Moved', 'Removed', 'NotFound' } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($cisa | Where-Object { @($_.Control).Count -gt 0 }).Count | Should -Be 71
-        @($cisa | ForEach-Object { $_.Control } | Where-Object { $_ -cnotlike 'nist-800-53-r5:*' }) | Should -BeNullOrEmpty
+        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($cisa | ForEach-Object { $_.Control } | Where-Object { $_ -cnotlike 'nist-800-53-r5:*' -and $_ -cnotlike 'cisa-scuba:*' }) | Should -BeNullOrEmpty
     }
 
     It 'Keeps what the Maester 2.x benchmark tags said about each CIS test' {
@@ -311,16 +390,16 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $offenders | Should -BeNullOrEmpty
     }
 
-    It 'Holds identifiers and facts in the framework files, not the text of a requirement' {
+    It 'Holds identifiers and facts in the framework files, not the text of a requirement or a list of tests' {
         $offenders = foreach ($file in $script:frameworkFiles) {
             $content = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json
             foreach ($requirement in $content.Requirements) {
                 foreach ($name in $requirement.PSObject.Properties.Name) {
-                    if ($name -cnotin 'Id', 'Tests', 'Related', 'Level', 'Profile', 'Criticality', 'Upstream') { "$($file.Name): requirement $($requirement.Id) has $name" }
+                    if ($name -cnotin 'Id', 'Related', 'Level', 'Profile', 'Criticality', 'Upstream') { "$($file.Name): requirement $($requirement.Id) has $name" }
                 }
             }
         }
-        $offenders | Should -BeNullOrEmpty -Because 'benchmark text is licensed; a requirement is named by its ID, and its title is the title of the test'
+        $offenders | Should -BeNullOrEmpty -Because 'benchmark text is licensed; a requirement is named by its ID, and a test names its requirement in Control'
     }
 }
 
@@ -357,7 +436,7 @@ Describe 'Benchmark and Control on result rows' {
         @($rows.Values | Where-Object Result -NE 'Passed') | Should -HaveCount 0
         $rows['CONTOSO.BL.1.1'].Benchmark.Requirement | Should -BeExactly '1.1'
         $rows['CONTOSO.BL.1.1'].Benchmark.Level | Should -Be 'L1'
-        $rows['CONTOSO.BL.1.1'].Control | Should -BeExactly @('contoso-policy:P-12', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
+        $rows['CONTOSO.BL.1.1'].Control | Should -BeExactly @('contoso-policy:P-12', 'contoso-baseline:1.1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
         $rows['CONTOSO.OTHER.1'].PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
         $rows['CONTOSO.OTHER.1'].Benchmark | Should -BeNullOrEmpty
         $rows['CONTOSO.OTHER.1'].Control | Should -BeExactly @('contoso-policy:P-1')
@@ -373,12 +452,12 @@ Describe 'Benchmark and Control on result rows' {
         $row.Benchmark.Criticality | Should -Be 'SHALL'
         $row.Benchmark.Upstream.Status | Should -Be 'Moved' -Because 'the nested object is written whole, not as a type name'
         $row.Benchmark.Upstream.From | Should -Be 'NET-7v1'
-        $row.Control | Should -Be @('nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-4')
+        $row.Control | Should -Be @('contoso-cloud:NET-7', 'nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-4')
 
         $baseline = $rows | Where-Object Id -EQ 'CONTOSO.BL.1.10'
         $baseline.Benchmark.Requirement | Should -BeExactly '1.10'
         $baseline.Benchmark.Profile | Should -Be @('Standard', 'Strict')
-        ($rows | Where-Object Id -EQ 'CONTOSO.BL.1.1').Control | Should -Be @('contoso-policy:P-12', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
+        ($rows | Where-Object Id -EQ 'CONTOSO.BL.1.1').Control | Should -Be @('contoso-policy:P-12', 'contoso-baseline:1.1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
     }
 
     It 'Writes Benchmark as null on a native row without a requirement and on a Pester-format row' {
@@ -411,11 +490,11 @@ Describe 'Benchmark and Control on result rows' {
         $rows = @($run.Tests | Where-Object Suite -EQ 'CISA')
         $rows.Count | Should -Be 79
         @($rows | Where-Object { $_.Benchmark.Framework -cne 'cisa-scuba' -or -not $_.Benchmark.Criticality } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($rows | Where-Object { @($_.Control).Count -gt 0 }).Count | Should -Be 71
+        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
         $row = $rows | Where-Object Id -EQ 'CISA.MS.AAD.3.1'
         $row.Benchmark.Requirement | Should -BeExactly 'MS.AAD.3.1'
         $row.Benchmark.Upstream.Id | Should -Be 'MS.AAD.3.1v1'
-        $row.Control | Should -Be @('nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-2(2)', 'nist-800-53-r5:IA-5c', 'nist-800-53-r5:IA-5g', 'nist-800-53-r5:IA-2(8)')
+        $row.Control | Should -Be @('cisa-scuba:MS.AAD.3.1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-2(2)', 'nist-800-53-r5:IA-5c', 'nist-800-53-r5:IA-5g', 'nist-800-53-r5:IA-2(8)')
         # A test of another suite is in the result too, not selected, and has no Benchmark.
         $other = $run.Tests | Where-Object Id -EQ 'MT.1001'
         $other.ReasonCode | Should -Be 'NotSelected'
@@ -425,11 +504,10 @@ Describe 'Benchmark and Control on result rows' {
 }
 
 Describe 'A custom suite with a framework problem' {
-    It 'Warns about <Case> and leaves the tests of the framework without a Benchmark' -ForEach @(
-        @{ Case = 'a framework without a file'; Folder = 'missing-file'; Id = 'FXM.1'; Message = "Ignoring the framework 'fx-missing' of *suite.json*, so its tests have no Benchmark. *fx-missing.json: the file does not exist.*" }
-        @{ Case = 'a file that names another key'; Folder = 'wrong-key'; Id = 'FXK.1'; Message = "Ignoring the framework 'fx-key' of *fx-key.json: Framework is 'fx-other'; the suite.json declares the key 'fx-key'.*" }
-        @{ Case = 'a Related reference that is not a control'; Folder = 'bad-related'; Id = 'FXR.1'; Message = "Ignoring the framework 'fx-related' of *fx-related.json: the requirement R1 has the Related reference 'NIST-800-53-R5:IA-3', which is not written <framework-key>:<control-id>*" }
-        @{ Case = 'a test listed twice'; Folder = 'listed-twice'; Id = 'FXT.1'; Message = "Ignoring the framework 'fx-twice' of *fx-twice.json: the test FXT.1 is listed 2 times (requirements R1, R2).*" }
+    It 'Warns about <Case> and takes no Benchmark from the framework' -ForEach @(
+        @{ Case = 'a framework without a file'; Folder = 'missing-file'; Id = 'FXM.1'; Control = 'fx-missing:R1'; Message = "Ignoring the framework 'fx-missing' of *suite.json*, so no test gets a Benchmark from it. *fx-missing.json: the file does not exist.*" }
+        @{ Case = 'a file that names another key'; Folder = 'wrong-key'; Id = 'FXK.1'; Control = 'fx-key:R1'; Message = "Ignoring the framework 'fx-key' of *fx-key.json: Framework is 'fx-other'; the suite.json declares the key 'fx-key'.*" }
+        @{ Case = 'a Related reference that is not a control'; Folder = 'bad-related'; Id = 'FXR.1'; Control = 'fx-related:R1'; Message = "Ignoring the framework 'fx-related' of *fx-related.json: the requirement R1 has the Related reference 'NIST-800-53-R5:IA-3', which is not written <framework-key>:<control-id>*" }
     ) {
         $read = Read-Suite (Join-Path $script:invalid $Folder)
         $read.Warnings | Should -HaveCount 1
@@ -437,7 +515,7 @@ Describe 'A custom suite with a framework problem' {
         $read.Tests[$Id].IsValid | Should -BeTrue -Because 'the test itself is fine'
         $read.Tests[$Id].PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
         $read.Tests[$Id].Benchmark | Should -BeNullOrEmpty
-        @($read.Tests[$Id].Control).Count | Should -Be 0
+        $read.Tests[$Id].Control | Should -BeExactly @($Control) -Because 'the Control of the test is kept, and nothing is added to it'
     }
 
     It 'Says in the warning that the file and the suite.json disagree about the version' {
@@ -446,41 +524,41 @@ Describe 'A custom suite with a framework problem' {
 
     It 'Warns once about a file that is not valid JSON, whatever the number of tests' {
         $folder = Join-Path $TestDrive 'bad-json'
-        Copy-Item -LiteralPath (Join-Path $script:invalid 'unlisted-test') -Destination $folder -Recurse
-        '{ "Framework": "fx-unlisted", ' | Set-Content (Join-Path $folder 'frameworks/fx-unlisted.json')
+        Copy-Item -LiteralPath (Join-Path $script:invalid 'unknown-requirement') -Destination $folder -Recurse
+        '{ "Framework": "fx-unknown", ' | Set-Content (Join-Path $folder 'frameworks/fx-unknown.json')
         $read = Read-Suite $folder
         $read.Tests.Count | Should -Be 2
         $read.Warnings | Should -HaveCount 1
-        $read.Warnings[0] | Should -BeLike "Ignoring the framework 'fx-unlisted' of *fx-unlisted.json: it is not valid JSON."
+        $read.Warnings[0] | Should -BeLike "Ignoring the framework 'fx-unknown' of *fx-unknown.json: it is not valid JSON."
         @($read.Tests.Values | Where-Object { $null -ne $_.Benchmark }) | Should -HaveCount 0
     }
 
-    It 'Warns about a test that has the prefix and is not in the file, and keeps the Benchmark of the tests that are' {
-        $read = Read-Suite (Join-Path $script:invalid 'unlisted-test')
+    It 'Warns about a Control that names a requirement the file does not have, and keeps the Benchmark of the other tests' {
+        $read = Read-Suite (Join-Path $script:invalid 'unknown-requirement')
         $read.Warnings | Should -HaveCount 1
-        $read.Warnings[0] | Should -BeLike "These tests have the IdPrefix 'FXL.' of the framework 'fx-unlisted' but *fx-unlisted.json' does not list them, so they have no Benchmark: FXL.2."
-        $read.Tests['FXL.1'].Benchmark.Requirement | Should -Be 'R1'
-        $read.Tests['FXL.2'].Benchmark | Should -BeNullOrEmpty
+        $read.Warnings[0] | Should -BeLike "These tests have a Control that names the framework 'fx-unknown' and a requirement that '*fx-unknown.json' does not have, so it gives them no Benchmark: FXU.2 (fx-unknown:R9)."
+        $read.Tests['FXU.1'].Benchmark.Requirement | Should -Be 'R1'
+        $read.Tests['FXU.2'].IsValid | Should -BeTrue
+        $read.Tests['FXU.2'].Benchmark | Should -BeNullOrEmpty
+        $read.Tests['FXU.2'].Control | Should -BeExactly @('fx-unknown:R9')
     }
 
-    It 'Does not warn about <Case>, which only the catalog build can know' -ForEach @(
-        @{ Case = 'a file that names a test the folder does not have'; Folder = 'unknown-test'; With = 'FXU.1'; Without = $null }
-        @{ Case = 'a listed test whose ID does not have the prefix'; Folder = 'wrong-prefix'; With = 'FXP.1'; Without = 'FXQ.1' }
-    ) {
-        $read = Read-Suite (Join-Path $script:invalid $Folder)
-        $read.Warnings | Should -HaveCount 0
-        $read.Tests[$With].Benchmark.Requirement | Should -Be 'R1'
-        if ($Without) { $read.Tests[$Without].Benchmark | Should -BeNullOrEmpty }
+    It 'Warns about a key that two suites declare and uses the framework of the first' {
+        $read = Read-Suite (Join-Path $script:invalid 'same-key')
+        $read.Warnings | Should -HaveCount 1
+        $read.Warnings[0] | Should -BeLike "*same-key?b?suite.json: the framework 'fx-same' is also declared by '*same-key?a?suite.json'*"
+        $read.Tests['FXS.1'].Benchmark.Level | Should -Be 'L1'
     }
 
     It 'Never stops a run: every test still runs, with or without a Benchmark' {
         $warnings = $null
         $rows = @(Invoke-MtTest -Path $script:invalid -WarningVariable warnings -WarningAction SilentlyContinue 6>$null)
-        $rows.Count | Should -Be 9
+        $rows.Count | Should -Be 6
         @($rows | Where-Object Result -NE 'Passed' | ForEach-Object { "$($_.Id): $($_.Result) $($_.ReasonDetail)" }) | Should -BeNullOrEmpty
-        @($rows | Where-Object { $_.Benchmark } | ForEach-Object Id | Sort-Object) | Should -Be @('FXL.1', 'FXP.1', 'FXU.1')
-        @($warnings | Where-Object { $_.Message -like 'Ignoring the framework*' }).Count | Should -Be 4
-        @($warnings | Where-Object { $_.Message -like 'These tests have the IdPrefix*' }).Count | Should -Be 1
+        @($rows | Where-Object { $_.Benchmark } | ForEach-Object Id | Sort-Object) | Should -Be @('FXS.1', 'FXU.1')
+        @($warnings | Where-Object { $_.Message -like 'Ignoring the framework*' }).Count | Should -Be 3
+        @($warnings | Where-Object { $_.Message -like 'These tests have a Control*' }).Count | Should -Be 1
+        @($warnings | Where-Object { $_.Message -like '*is also declared by*' }).Count | Should -Be 1
     }
 }
 
@@ -503,13 +581,11 @@ Describe 'Catalog build' {
         $script:expectedProblems = @(
             "bad-related/frameworks/fx-related.json: the requirement R1 has the Related reference 'NIST-800-53-R5:IA-3', which is not written <framework-key>:<control-id> with a lowercase key, for example nist-800-53-r5:IA-2(1)."
             "bad-related/frameworks/fx-related.json: the requirement R1 has the Related reference 'IA-4', which is not written <framework-key>:<control-id> with a lowercase key, for example nist-800-53-r5:IA-2(1)."
-            'listed-twice/frameworks/fx-twice.json: the test FXT.1 is listed 2 times (requirements R1, R2). A test is listed once.'
             "missing-file/frameworks/fx-missing.json: the file does not exist. The suite.json declares the framework 'fx-missing'."
-            'unknown-test/frameworks/fx-unknown.json: the requirement R2 names the test FXU.404, which is not a test of the suite.'
-            "unlisted-test/frameworks/fx-unlisted.json: the test FXL.2 has the IdPrefix 'FXL.' and is not listed in a requirement. Every test with the prefix is listed once."
+            "same-key/b/suite.json: the framework 'fx-same' is also declared by '/same-key/a/suite.json'. A framework key is declared by one suite; the first one is used."
+            "unknown-requirement/Test.FXU.2.ps1: the test FXU.2 has the Control 'fx-unknown:R9', and '/unknown-requirement/frameworks/fx-unknown.json' has no requirement with that Id."
             "wrong-key/frameworks/fx-key.json: Framework is 'fx-other'; the suite.json declares the key 'fx-key'."
             "wrong-key/frameworks/fx-key.json: Version is '2.0'; the suite.json declares the version '1.0'."
-            "wrong-prefix/frameworks/fx-prefix.json: the requirement R2 names the test FXQ.1, whose ID does not start with the IdPrefix 'FXP.'."
         )
         [array]::Sort($script:expectedProblems, [System.StringComparer]::Ordinal)
         # The messages with the path relative to the fixture folder and forward slashes, in a fixed order.
@@ -524,7 +600,7 @@ Describe 'Catalog build' {
         if (Test-Path -LiteralPath $script:buildOutput) { Remove-Item -LiteralPath $script:buildOutput -Recurse -Force }
     }
 
-    It 'Finds every problem of the framework files, and names the file and the ID in each message' {
+    It 'Finds every problem of the framework files and of the Control that names them, and names the file in each message' {
         $problems = @(InModuleScope Maester -Parameters @{ R = $script:invalid } {
                 $tests = @(Get-MtNativeTestInventory -Path $R -Root $R -BuiltIn -WarningAction SilentlyContinue)
                 Get-MtFrameworkProblem -Test $tests -Root $R
@@ -541,15 +617,26 @@ Describe 'Catalog build' {
     }
 
     It 'Checks the framework files of a suite that has no test' {
-        $folder = New-SuiteFolder -Declaration @{ Key = 'contoso'; Version = '1.0'; IdPrefix = 'CONTOSO.' } -File @{ contoso = '{ "Framework": "contoso", "Requirements": [ { "Id": "R1", "Tests": ["CONTOSO.1"] } ] }' }
-        $problems = @(InModuleScope Maester -Parameters @{ R = (Split-Path $folder -Parent) } { Get-MtFrameworkProblem -Test @() -Root $R })
-        @($problems | Where-Object { $_ -like '*contoso.json: the requirement R1 names the test CONTOSO.1, which is not a test of the suite.' }) | Should -HaveCount 1
+        $folder = New-SuiteFolder -Declaration @{ Key = 'contoso'; Version = '1.0' } -File @{ contoso = '{ "Framework": "other", "Requirements": [ { "Id": "R1" } ] }' }
+        $problems = @(InModuleScope Maester -Parameters @{ R = $folder } { Get-MtFrameworkProblem -Test @() -Root $R })
+        $problems | Should -HaveCount 1
+        $problems[0] | Should -BeLike "*contoso.json: Framework is 'other'; the suite.json declares the key 'contoso'."
+    }
+
+    It 'Does not check a Control that names a framework no suite under the folder declares' {
+        $tests = @(
+            [pscustomobject]@{ Id = 'FX.1'; File = 'Test.FX.1.ps1'; Control = @('nist-800-53-r5:AC-404', 'cis-m365:404', 'contoso-baseline:1.1') }
+            [pscustomobject]@{ Id = 'FX.2'; File = 'Test.FX.2.ps1'; Control = @('contoso-baseline:404') }
+        )
+        $problems = @(InModuleScope Maester -Parameters @{ R = $script:valid; T = $tests } { Get-MtFrameworkProblem -Test $T -Root $R })
+        $problems | Should -HaveCount 1
+        $problems[0] | Should -BeLike "Test.FX.2.ps1: the test FX.2 has the Control 'contoso-baseline:404', and '*contoso-baseline.json' has no requirement with that Id."
     }
 
     It 'Stops the build with those messages' {
         $build = Invoke-Build -TestsRoot $script:invalid -Name 'invalid'
         $build.ExitCode | Should -Be 1
-        $build.Lines[0] | Should -Be 'Built-in native tests have 9 problem(s):' -Because 'the framework files are all that is wrong with the fixture tests'
+        $build.Lines[0] | Should -Be 'Built-in native tests have 7 problem(s):' -Because 'the framework files are all that is wrong with the fixture tests'
         ConvertTo-RelativeProblem ($build.Lines | Select-Object -Skip 1) | Should -Be $script:expectedProblems
         Join-Path $build.Output 'Maester.TestCatalog.json' | Should -Not -Exist
     }
@@ -564,13 +651,14 @@ Describe 'Catalog build' {
 
         $catalog = Get-Content -LiteralPath (Join-Path $build.Output 'Maester.TestCatalog.json') -Raw | ConvertFrom-Json
         @($catalog.Suites.Contoso.Frameworks.Key) | Should -Be @('contoso-baseline', 'contoso-cloud')
+        ($catalog.Tests | Where-Object Id -EQ 'CONTOSO.BL.1.10').Control | Should -Be @('contoso-baseline:1.10')
         @($catalog.Tests).Count | Should -Be 5
         $test = $catalog.Tests | Where-Object Id -EQ 'CONTOSO.BL.1.1'
         $test.Benchmark.Framework | Should -BeExactly 'contoso-baseline'
         $test.Benchmark.Version | Should -BeExactly '2.1'
         $test.Benchmark.Requirement | Should -BeExactly '1.1'
         $test.Benchmark.Profile | Should -Be @('Standard')
-        $test.Control | Should -Be @('contoso-policy:P-12', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
+        $test.Control | Should -Be @('contoso-policy:P-12', 'contoso-baseline:1.1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
         ($catalog.Tests | Where-Object Id -EQ 'CONTOSO.CLOUD.NET-7').Benchmark.Upstream.Status | Should -Be 'Moved'
         $other = $catalog.Tests | Where-Object Id -EQ 'CONTOSO.OTHER.1'
         $other.PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
@@ -589,11 +677,11 @@ Describe 'Catalog build' {
         foreach ($object in ($objects | Where-Object Id -EQ 'CONTOSO.BL.1.1')) {
             $object.Benchmark.Requirement | Should -BeExactly '1.1'
             $object.Benchmark.Level | Should -Be 'L1'
-            $object.Control | Should -Be @('contoso-policy:P-12', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
+            $object.Control | Should -Be @('contoso-policy:P-12', 'contoso-baseline:1.1', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-5', 'iso-27001:A.5.17')
         }
         @($objects | Where-Object { $_.Result -and $_.Result -ne 'Passed' }) | Should -HaveCount 0
         @($objects | Where-Object { $_.Id -eq 'CONTOSO.OTHER.1' -and $null -ne $_.Benchmark }) | Should -HaveCount 0
-        @($objects | Where-Object { $_.Id -eq 'CONTOSO.CLOUD.NET-7' -and $_.Benchmark.Upstream.Id -eq 'NET-9v2' -and (@($_.Control) -join ',') -eq 'nist-800-53-r5:SC-7,nist-800-53-r5:AC-4' }) | Should -HaveCount 2
+        @($objects | Where-Object { $_.Id -eq 'CONTOSO.CLOUD.NET-7' -and $_.Benchmark.Upstream.Id -eq 'NET-9v2' -and (@($_.Control) -join ',') -eq 'contoso-cloud:NET-7,nist-800-53-r5:SC-7,nist-800-53-r5:AC-4' }) | Should -HaveCount 2
     }
 }
 
@@ -622,7 +710,7 @@ Describe 'Docs export' {
         $cisa = $script:exported['CISA.MS.EXO.8.1']
         $cisa.Benchmark.Criticality | Should -Be 'SHALL'
         $cisa.Benchmark.Upstream.Id | Should -Be 'MS.SECURITYSUITE.3.1v1'
-        $cisa.Control | Should -Be @('nist-800-53-r5:SC-7(10)')
+        $cisa.Control | Should -Be @('cisa-scuba:MS.EXO.8.1', 'nist-800-53-r5:SC-7(10)')
         $script:exported['MT.1001'].PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
         $script:exported['MT.1001'].Benchmark | Should -BeNullOrEmpty
         @($script:exported['MT.1001'].Control).Count | Should -Be 0

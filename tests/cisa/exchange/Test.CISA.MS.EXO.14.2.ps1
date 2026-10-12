@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566',
+        Control = 'cisa-scuba:MS.EXO.14.2',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'

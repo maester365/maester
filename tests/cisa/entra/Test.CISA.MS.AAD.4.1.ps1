@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1685.002',
+        Control = 'cisa-scuba:MS.AAD.4.1',
         Service = ('Graph', 'Azure'),
         License = 'AAD_PREMIUM',
         Author = 'soulemike'

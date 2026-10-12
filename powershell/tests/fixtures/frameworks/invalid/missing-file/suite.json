@@ -3,6 +3,6 @@
   "Name": "No framework file",
   "Source": "Custom",
   "Frameworks": [
-    { "Key": "fx-missing", "Version": "1.0", "IdPrefix": "FXM." }
+    { "Key": "fx-missing", "Version": "1.0" }
   ]
 }

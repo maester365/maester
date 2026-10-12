@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1199',
+        Control = 'cis-m365:1.3.6',
         Service = 'ExchangeOnline',
         License = 'LOCKBOX_ENTERPRISE',
         Author = 'NZLostboy',

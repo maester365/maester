@@ -25,6 +25,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1048', 'T1213.002'),
+        Control = 'cisa-scuba:MS.SHAREPOINT.2.1',
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

@@ -1,8 +1,0 @@
-{
-  "Id": "FxUnknownTest",
-  "Name": "A test that does not exist",
-  "Source": "Custom",
-  "Frameworks": [
-    { "Key": "fx-unknown", "Version": "1.0", "IdPrefix": "FXU." }
-  ]
-}

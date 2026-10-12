@@ -9,7 +9,7 @@
     "Url": "https://www.cisecurity.org/benchmark/microsoft_365"
   },
   "Frameworks": [
-    { "Key": "cis-m365", "Version": "7.0.0", "IdPrefix": "CIS.M365." },
-    { "Key": "cis-github", "Version": "1.2.0", "IdPrefix": "CIS.GH." }
+    { "Key": "cis-m365", "Version": "7.0.0" },
+    { "Key": "cis-github", "Version": "1.2.0" }
   ]
 }

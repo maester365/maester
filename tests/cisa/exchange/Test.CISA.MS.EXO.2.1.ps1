@@ -25,6 +25,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1684.002',
+        Control = 'cisa-scuba:MS.EXO.2.1',
         Service = 'Graph',
         Lifecycle = 'Deprecated',
         Author = 'soulemike',

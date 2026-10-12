@@ -1,7 +1,7 @@
 function Test-MtFixtureFrameworkContosoBl110 {
     <#
     .SYNOPSIS
-    Framework fixture: requirement 1.10 of contoso-baseline lists it, with CONTOSO.BL.1.10.EXT.
+    Framework fixture: its Control names requirement 1.10 of contoso-baseline, as CONTOSO.BL.1.10.EXT does.
     #>
     [MaesterTest(
         Id                 = 'CONTOSO.BL.1.10',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkContosoBl110 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'contoso-baseline:1.10',
         Service            = 'None',
         Author             = 'maester'
     )]

@@ -1,8 +1,0 @@
-{
-  "Id": "FxUnlistedTest",
-  "Name": "A test the file does not list",
-  "Source": "Custom",
-  "Frameworks": [
-    { "Key": "fx-unlisted", "Version": "1.0", "IdPrefix": "FXL." }
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "Framework": "fx-twice",
-  "Name": "Fixture",
-  "Version": "1.0",
-  "Requirements": [
-    { "Id": "R1", "Tests": ["FXT.1"] },
-    { "Id": "R2", "Tests": ["FXT.1"] }
-  ]
-}

@@ -10,10 +10,13 @@ function Get-MtNativeTestInventory {
     URL. Tests that share an ID or a function name get a DuplicateId error. A built-in root skips its
     Custom folder.
 
-    A suite.json can declare the frameworks its tests implement (test attribute design, section 6). A test
-    whose ID has the prefix of one gets Benchmark, and the Related references of its requirement are added to
-    its Control. Each suite.json and framework file is read once. A framework with a problem is a warning and
-    its tests have no Benchmark; so is a test that has the prefix but is not listed in the framework file.
+    A test maps itself to a requirement of a framework with Control = '<framework-key>:<id>' (test attribute
+    design, section 6). The frameworks are those the suite.json files declare: the ones shipped with Maester,
+    the ones of the suites the tests belong to, and the ones under the folders in -Path and -FrameworkPath
+    (Get-MtFrameworkIndex). The first Control that names a requirement gives the test its Benchmark, and the
+    Related references of the requirements are added to its Control. Each suite.json and framework file is
+    read once. A framework with a problem is a warning and gives no Benchmark; so is a Control that names a
+    framework and a requirement its file does not have.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject], [object[]])]
@@ -29,7 +32,13 @@ function Get-MtNativeTestInventory {
 
         # The tests ship with Maester.
         [Parameter()]
-        [switch] $BuiltIn
+        [switch] $BuiltIn,
+
+        # More folders whose suites declare frameworks a Control can refer to. The folders in -Path are searched
+        # already; a caller that passes files gives their folder here.
+        [Parameter()]
+        [AllowEmptyCollection()]
+        [string[]] $FrameworkPath = @()
     )
 
     $files = foreach ($p in $Path) {
@@ -46,19 +55,25 @@ function Get-MtNativeTestInventory {
     if (-not $Root) { $Root = if ($Path.Count -gt 0 -and (Test-Path -LiteralPath $Path[0] -PathType Container)) { (Resolve-Path -LiteralPath $Path[0]).Path } else { $null } }
 
     $suiteCache = @{}
-    $tests = foreach ($file in $files) {
-        $test = Read-MtNativeTest -Path $file -BuiltIn:$BuiltIn
-        $suite = if ($Root) { Get-MtSuiteManifest -File $file -Root $Root -Cache $suiteCache } else { $null }
-        Complete-MtNativeTest -Test $test -Suite $suite -BuiltIn:$BuiltIn
-    }
-    $tests = @($tests)
-
-    # Tests that have the prefix of a framework but are not in its file: one warning for each framework.
-    foreach ($suite in $suiteCache.Values) {
-        foreach ($framework in @(Get-MtLoadedFramework -Suite $suite)) {
-            if ($framework.Unlisted.Count -eq 0) { continue }
-            Write-Warning "These tests have the IdPrefix '$($framework.IdPrefix)' of the framework '$($framework.Key)' but '$($framework.File)' does not list them, so they have no Benchmark: $($framework.Unlisted -join ', ')."
+    $read = foreach ($file in $files) {
+        [pscustomobject]@{
+            Test  = Read-MtNativeTest -Path $file -BuiltIn:$BuiltIn
+            Suite = if ($Root) { Get-MtSuiteManifest -File $file -Root $Root -Cache $suiteCache } else { $null }
         }
+    }
+
+    # The frameworks a Control can name: every suite is read before the first test is resolved.
+    $frameworkRoots = @($Path | Where-Object { Test-Path -LiteralPath $_ -PathType Container }) + @($FrameworkPath | Where-Object { $_ })
+    $loaded = @($read | ForEach-Object { Get-MtLoadedFramework -Suite $_.Suite })
+    $index = Get-MtFrameworkIndex -Root $frameworkRoots -Framework $loaded -Cache $suiteCache -BuiltIn:$BuiltIn
+    foreach ($problem in $index.Problems) { Write-Warning $problem }
+
+    $tests = @(foreach ($entry in $read) { Complete-MtNativeTest -Test $entry.Test -Suite $entry.Suite -Framework $index -BuiltIn:$BuiltIn })
+
+    # A Control that names a framework and a requirement its file does not have: one warning for each framework.
+    foreach ($group in ($index.Unresolved | Group-Object { $_.Framework.Key })) {
+        $references = @($group.Group | ForEach-Object { "$($_.Id) ($($_.Reference))" }) -join ', '
+        Write-Warning "These tests have a Control that names the framework '$($group.Name)' and a requirement that '$($group.Group[0].Framework.File)' does not have, so it gives them no Benchmark: $references."
     }
 
     # Duplicate IDs and function names. Neither runs.
@@ -90,16 +105,20 @@ function Complete-MtNativeTest {
     -ExcludeTag (Get-MtSelectionTag), but they are not written to a result row: a row's Tag holds the tags
     the test's author wrote.
 
-    Benchmark names the requirement the test implements when its suite declares a framework for its ID prefix
-    (test attribute design, section 6): Framework, Version, Requirement and the requirement's own facts. It
-    is $null for every other test. Control becomes the test's own values followed by the Related references
-    of that requirement, each once.
+    Benchmark names the requirement the test implements (test attribute design, section 6): Framework,
+    Version, Requirement and the requirement's own facts. It comes from the first Control of the test that
+    names a requirement of a framework in -Framework (Resolve-MtTestBenchmark), and is $null when none does.
+    Control becomes the test's own values followed by the Related references of the requirements they name,
+    each once.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(
         [Parameter(Mandatory)] [object] $Test,
         [Parameter()] [AllowNull()] [object] $Suite,
+
+        # The frameworks a Control can refer to (Get-MtFrameworkIndex). Without it the test has no Benchmark.
+        [Parameter()] [AllowNull()] [object] $Framework,
         [Parameter()] [switch] $BuiltIn
     )
 
@@ -129,13 +148,11 @@ function Complete-MtNativeTest {
     }
 
     $benchmark = $null
-    $frameworks = @(Get-MtLoadedFramework -Suite $Suite)
-    if ($Test.Id -and $frameworks.Count -gt 0) {
-        $resolved = Resolve-MtTestBenchmark -Id $Test.Id -Framework $frameworks
-        if ($resolved) {
-            $benchmark = $resolved.Benchmark
-            $Test.Control = @(@($Test.Control) + @($resolved.Related) | Where-Object { $_ } | Select-Object -Unique)
-        }
+    if ($Framework -and @($Test.Control).Count -gt 0) {
+        $resolved = Resolve-MtTestBenchmark -Control $Test.Control -Index $Framework
+        $benchmark = $resolved.Benchmark
+        if ($resolved.Related.Count -gt 0) { $Test.Control = @(@($Test.Control) + @($resolved.Related) | Where-Object { $_ } | Select-Object -Unique) }
+        foreach ($miss in $resolved.Unresolved) { $Framework.Unresolved.Add([pscustomobject]@{ Id = $Test.Id; Reference = $miss.Reference; Framework = $miss.Framework }) }
     }
 
     $Test | Add-Member -NotePropertyMembers ([ordered]@{
@@ -226,8 +243,8 @@ function Get-MtSuiteManifest {
 
     .DESCRIPTION
     The frameworks the suite.json declares are read with it, once (Get-MtSuiteFramework), and kept on the
-    returned object as LoadedFrameworks. A framework with a problem is a warning that names the file; its
-    tests get no Benchmark (Resolve-MtTestBenchmark).
+    returned object as LoadedFrameworks. A framework with a problem is a warning that names the file; no
+    test gets a Benchmark from it (Resolve-MtTestBenchmark).
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -251,7 +268,7 @@ function Get-MtSuiteManifest {
                 $Cache[$folder] | Add-Member -NotePropertyName LoadedFrameworks -NotePropertyValue $frameworks -Force
                 foreach ($framework in ($frameworks | Where-Object { -not $_.IsValid })) {
                     $more = if ($framework.Problems.Count -gt 3) { " (and $($framework.Problems.Count - 3) more)" } else { '' }
-                    Write-Warning "Ignoring the framework '$($framework.Key)' of '$manifest', so its tests have no Benchmark. $(@($framework.Problems | Select-Object -First 3) -join ' ')$more"
+                    Write-Warning "Ignoring the framework '$($framework.Key)' of '$manifest', so no test gets a Benchmark from it. $(@($framework.Problems | Select-Object -First 3) -join ' ')$more"
                 }
             }
         }
@@ -281,6 +298,7 @@ function Get-MtTestCatalog {
     )
 
     if ($null -ne $script:__MtTestCatalog -and -not $Refresh) { return $script:__MtTestCatalog }
+    if ($Refresh) { $script:__MtBuiltInFramework = $null }
     $moduleBase = $ExecutionContext.SessionState.Module.ModuleBase
     $catalogFile = Join-Path $moduleBase 'Maester.TestCatalog.json'
     $rows = if (Test-Path -LiteralPath $catalogFile) {

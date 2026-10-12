@@ -3,6 +3,6 @@
   "Name": "Fixture",
   "Version": "2.0",
   "Requirements": [
-    { "Id": "R1", "Tests": ["FXK.1"] }
+    { "Id": "R1" }
   ]
 }

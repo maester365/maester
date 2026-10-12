@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566',
+        Control = 'cis-m365:2.4.4',
         Service = 'Teams',
         License = 'THREAT_INTELLIGENCE',
         Author = 'NZLostboy',

@@ -1,7 +1,7 @@
 function Test-MtFixtureFrameworkFxk1 {
     <#
     .SYNOPSIS
-    Framework fixture: the framework file names another key and another version than the suite.json.
+    Framework fixture: its Control names requirement R1 of fx-key, whose file says it is another framework.
     #>
     [MaesterTest(
         Id                 = 'FXK.1',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkFxk1 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'fx-key:R1',
         Service            = 'None',
         Author             = 'maester'
     )]

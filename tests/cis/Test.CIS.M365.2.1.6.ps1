@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
+        Control = 'cis-m365:2.1.6',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'NZLostboy',
         Contributor = 'thomas-s-schmidt'

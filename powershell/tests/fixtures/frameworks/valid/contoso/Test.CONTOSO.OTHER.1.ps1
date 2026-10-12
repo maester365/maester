@@ -1,7 +1,7 @@
 function Test-MtFixtureFrameworkContosoOther1 {
     <#
     .SYNOPSIS
-    Framework fixture: its ID has the prefix of no framework of the suite.
+    Framework fixture: its Control names no framework of a suite.
     #>
     [MaesterTest(
         Id                 = 'CONTOSO.OTHER.1',
@@ -14,7 +14,7 @@ function Test-MtFixtureFrameworkContosoOther1 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
-        Control            = ('contoso-policy:P-1'),
+        Control            = 'contoso-policy:P-1',
         Service            = 'None',
         Author             = 'maester'
     )]

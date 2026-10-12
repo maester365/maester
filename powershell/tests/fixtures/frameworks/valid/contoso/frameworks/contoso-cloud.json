@@ -3,6 +3,6 @@
   "Name": "Contoso Cloud Policy",
   "Version": "2025-03",
   "Requirements": [
-    { "Id": "NET-7", "Criticality": "SHALL", "Upstream": { "Status": "Moved", "Id": "NET-9v2", "From": "NET-7v1" }, "Related": ["nist-800-53-r5:SC-7", "nist-800-53-r5:AC-4"], "Tests": ["CONTOSO.CLOUD.NET-7"] }
+    { "Id": "NET-7", "Criticality": "SHALL", "Upstream": { "Status": "Moved", "Id": "NET-9v2", "From": "NET-7v1" }, "Related": ["nist-800-53-r5:SC-7", "nist-800-53-r5:AC-4"], "Tests": ["CONTOSO.OTHER.1", "CONTOSO.NONE.404"] }
   ]
 }

@@ -26,6 +26,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1204.001', 'T1204.002'),
+        Control = 'cis-m365:8.2.2',
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = ('merill', 'Mynster9361')

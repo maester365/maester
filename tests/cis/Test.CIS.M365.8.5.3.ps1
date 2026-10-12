@@ -26,6 +26,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Control = 'cis-m365:8.5.3',
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = 'merill'

@@ -18,6 +18,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566.001', 'T1204.002'),
+        Control = 'cisa-scuba:MS.EXO.10.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

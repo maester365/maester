@@ -9,6 +9,6 @@
     "Url": "https://github.com/cisagov/ScubaGear"
   },
   "Frameworks": [
-    { "Key": "cisa-scuba", "Version": "ScubaGear main, 2026-10-11", "IdPrefix": "CISA." }
+    { "Key": "cisa-scuba", "Version": "ScubaGear main, 2026-10-11" }
   ]
 }

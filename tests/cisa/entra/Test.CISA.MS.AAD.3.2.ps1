@@ -25,6 +25,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1110', 'T1078.004'),
+        Control = 'cisa-scuba:MS.AAD.3.2',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike'

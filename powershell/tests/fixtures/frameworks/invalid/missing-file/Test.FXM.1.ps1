@@ -1,7 +1,7 @@
 function Test-MtFixtureFrameworkFxm1 {
     <#
     .SYNOPSIS
-    Framework fixture: its suite declares the framework fx-missing, which has no file.
+    Framework fixture: its Control names a requirement of fx-missing, which has no framework file.
     #>
     [MaesterTest(
         Id                 = 'FXM.1',
@@ -14,6 +14,7 @@ function Test-MtFixtureFrameworkFxm1 {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
+        Control            = 'fx-missing:R1',
         Service            = 'None',
         Author             = 'maester'
     )]

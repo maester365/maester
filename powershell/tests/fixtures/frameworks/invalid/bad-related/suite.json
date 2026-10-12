@@ -3,6 +3,6 @@
   "Name": "Related references that are not controls",
   "Source": "Custom",
   "Frameworks": [
-    { "Key": "fx-related", "Version": "1.0", "IdPrefix": "FXR." }
+    { "Key": "fx-related", "Version": "1.0" }
   ]
 }
