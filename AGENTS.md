@@ -39,15 +39,18 @@ maester.dev), `report/` (React app that builds the HTML report template).
   automation regenerate. `powershell/assets/ConsoleContributors.json` (the dashboard's
   Featured contributor list) is written by `./build/Update-ConsoleContributors.ps1` from
   the website's contributor data.
-- A suite that implements a published benchmark declares it in its `suite.json` (`Frameworks`: `Key`,
-  `Version`, `IdPrefix`) and lists every test with that ID prefix exactly once in
-  `tests/<suite>/frameworks/<key>.json` (`tests/cis/frameworks/cis-m365.json`,
-  `tests/cis/frameworks/cis-github.json`, `tests/cisa/frameworks/cisa-scuba.json`). When you add, rename or
-  remove a CIS or CISA test, change its framework file in the same commit, or
-  `./build/Build-MaesterModule.ps1` and the unit tests fail. A framework file holds identifiers and facts (CIS
-  `Level` and `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references), never the text of a
-  benchmark. The engine derives `Benchmark` and the related `Control` values from it; do not set `Control` or
-  benchmark tags on a built-in test.
+- A test is mapped to a framework in one place: the `Control` attribute, `<framework-key>:<requirement-id>`. A
+  CIS test carries `Control = 'cis-m365:5.1.5.1'`, a CISA test `Control = 'cisa-scuba:MS.AAD.3.1'`, and any other
+  test may name the same requirements. Every test in `tests/cis` and `tests/cisa` must name a requirement of its
+  suite's framework. The engine builds `Benchmark` from the first `Control` that a framework file knows and adds
+  that requirement's `Related` references to `Control`; do not repeat those, and do not add benchmark tags.
+- A framework file is a catalogue, not a list of tests: `tests/<suite>/frameworks/<key>.json`
+  (`tests/cis/frameworks/cis-m365.json`, `tests/cis/frameworks/cis-github.json`,
+  `tests/cisa/frameworks/cisa-scuba.json`), declared in the suite's `suite.json` (`Frameworks`: `Key`,
+  `Version`). It holds the framework's name and version and each requirement's `Id` and facts (CIS `Level` and
+  `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references), never the text of a benchmark and
+  never a `Tests` list. When a new test implements a requirement the file does not have, add the requirement in
+  the same commit, or `./build/Build-MaesterModule.ps1` and the unit tests fail.
 
 ## Repository layout — where files go
 

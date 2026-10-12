@@ -71,7 +71,7 @@ background to avoid user confusion.
 | `Test.<ID>.ps1` | `tests/<suite>/[<service>/]` | One function with a `[MaesterTest(...)]` attribute. Reads the tenant, decides, calls `Add-MtTestResultDetail`, returns `$true`/`$false`. |
 | `Test.<ID>.md` | Same folder, same base name | Description, `#### Remediation action`, optional `#### Related links`, then `<!--- Results --->` and `%TestResult%`. Shown in the report. |
 | `suite.json` | Each suite folder (already exists) | The suite's ID, name, `Source` and help URL template. Do not edit for a single check. |
-| `frameworks/<key>.json` | Beside the `suite.json` of the CIS and CISA suites | The benchmark the suite implements: one entry per requirement with its level, profiles or criticality and the tests that implement it. Add a new CIS or CISA check to it in the same pull request; the build fails otherwise. |
+| `frameworks/<key>.json` | Beside the `suite.json` of the CIS and CISA suites | The catalogue of the benchmark: its name and version, and one entry per requirement with its level, profiles or criticality. It does not list tests. A CIS or CISA check names its requirement in `Control`; add the requirement here in the same pull request if it is new, or the build fails. |
 
 Suite folders: `tests/maester/<service>/` (`MT.xxxx`; services such as `entra`, `exchange`, `teams`, `defender`,
 `azure`, `intune`, and `xspm` for exposure management, which has its own `suite.json`), `tests/cisa/<service>/`
@@ -177,7 +177,7 @@ in [Choosing the attribute values](#choosing-the-attribute-values).
 | `UserImpact` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
 | `Mitre` | string[] | ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Yes | At most five. Never a technique beside one of its own sub-techniques. |
-| `Control` | string[] | `<framework-key>:<requirement-id>` | No | Requirements of other frameworks the check supports, for example `cisa-scuba:MS.AAD.3.1`. Not the requirement the check is named after: that is its `Benchmark`. For a shipped framework the requirement must exist in its file. |
+| `Control` | string[] | `<framework-key>:<requirement-id>` | CIS and CISA checks | The requirements the check implements or supports. A CIS check sets `Control = 'cis-m365:5.1.5.1'`, a CISA check `Control = 'cisa-scuba:MS.AAD.3.1'`; any other check may name the same requirements. The first one that a framework file knows becomes the `Benchmark` of the result. For a shipped framework the requirement must exist in its file. |
 | `Service` | string[] | `Graph`, `Azure`, `ExchangeOnline`, `SecurityCompliance`, `SharePointOnline`, `Teams`, `Dataverse`, `AzureDevOps`, `GitHub`, `ActiveDirectory`, or `None` | Yes | All listed must be connected. Registry: `powershell/assets/MaesterServiceRegistry.psd1`. |
 | `License` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
 | `Permission` | string[] | One permission per element, no commas | No | The permissions the check needs, for example `Policy.Read.All`. Recorded; not enforced in 3.0. |
@@ -482,8 +482,10 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
 - [ ] Each of those values, and `RelatedProduct` if set, checked against its section of the
       [attribute rubric](../../../website/docs/writing-tests/attribute-rubric.md), with the reason visible in
       the description or the remediation text.
-- [ ] No `Category`, `Preview` or `Control`; no `Tag` for product, feature, area, suite, benchmark, licence,
+- [ ] No `Category` or `Preview`; no `Tag` for product, feature, area, suite, benchmark, licence,
       severity or the ID. `Lifecycle = 'Preview'` and the `LongRunning` flag where they apply.
+- [ ] A CIS or CISA check sets `Control` to its requirement (`cis-m365:<id>`, `cis-github:<id>` or
+      `cisa-scuba:<id>`), and the requirement is in the suite's framework file.
 - [ ] `[CmdletBinding()]` and `[OutputType([bool])]`; comment-based help inside the function.
 - [ ] `Get-MtTest <ID>` (without `-Path`) reports no errors.
 

@@ -218,16 +218,22 @@ The MITRE ATT&CK techniques that the checked control prevents or detects. A list
 
 ## Control
 
-Requirements of frameworks the test supports, written `<framework-key>:<requirement-id>`, for example
-`cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`. Optional list. Any test can use it: one shipped with Maester
-or one of your own.
+Requirements of frameworks the test implements or supports, written `<framework-key>:<requirement-id>`, for
+example `cis-m365:5.1.5.1`, `cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`. Optional list. Any test can use
+it: one shipped with Maester or one of your own.
 
-- A test that is named after a benchmark requirement, such as `CIS.M365.5.1.5.1` or `CISA.MS.AAD.3.1`, does not
-  list that requirement here. It gets it as its `Benchmark`, from its ID and the framework file of its suite.
-- Use `Control` for every other requirement the test supports: a Maester test that checks the setting a CISA
-  policy asks for, or a CIS test that also supports a NIST control.
+- `Control` is the only way a test is mapped to a framework. A CIS test carries `Control = 'cis-m365:5.1.5.1'` and
+  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'`. Every test in `tests/cis` and `tests/cisa` must name a
+  requirement of its suite's framework. The unit tests check this.
+- The first value that names a requirement in a framework file becomes the `Benchmark` of the result. Put the
+  requirement the test is written for first, and any other requirement it supports after it.
+- Use the same attribute for a test that exists for its own reasons and also supports a requirement: a Maester
+  test that checks the setting a CISA policy asks for, or a CIS test that also supports a NIST control.
 - When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`), the requirement must
-  exist in that framework's file. The unit tests check this.
+  exist in that framework's file. If it is new, add it to the file with its facts. The module build and the unit
+  tests fail otherwise.
+- Do not repeat the `Related` controls of a requirement. The framework file lists them and Maester adds them to
+  the result.
 - List a requirement only when a passing result is evidence for it. A test that checks one part of a requirement
   may list it; a test that is merely on the same topic may not.
 
@@ -251,7 +257,8 @@ A reference says the test supports the requirement. It never says the organizati
 
 1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1`) fail when a built-in test misses a
    required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a
-   retired ATT&CK technique or carries a taxonomy tag.
+   retired ATT&CK technique, carries a taxonomy tag, names a requirement that a shipped framework file does not
+   have, or is a CIS or CISA test without a `Control` for its own framework.
 2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A
    reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit
    the rubric, with the value it expected and the reason. A maintainer can overrule it.

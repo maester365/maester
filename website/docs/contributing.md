@@ -36,7 +36,7 @@ carries the same rules for AI coding and review agents.
 
 ```text
 tests/                              The security checks: Test.<ID>.ps1 + Test.<ID>.md, plus suite.json, README.md and framework files
-  <suite>/frameworks/<key>.json     The benchmark a suite implements, one entry per requirement (cis/ and cisa/)
+  <suite>/frameworks/<key>.json     The catalogue of a benchmark, one entry per requirement (cis/ and cisa/)
   maester/<service>/                MT.xxxx checks, one folder per service (plus drift/)
   maester/xspm/                     Exposure management; has its own suite.json (the nearest one applies)
   cis/                              CIS benchmark checks
@@ -210,14 +210,18 @@ Every built-in check is a [native test](./writing-tests/index.mdx): `Test.<ID>.p
 Each suite folder has a `suite.json` with the suite's ID, name and source. Folder names follow the
 [repository layout](#repository-layout).
 
-A suite that implements a published benchmark also declares it there (`Frameworks`) and keeps the facts about each
-requirement in `frameworks/<key>.json` beside the `suite.json`: the CIS level and profiles in `tests/cis/frameworks/`,
-and the CISA criticality, upstream status and NIST SP 800-53 references in `tests/cisa/frameworks/cisa-scuba.json`.
-See [Benchmarks and framework files](./writing-tests/index.mdx#benchmarks-and-framework-files).
+A test says which requirement of a framework it implements in its attribute, `Control = 'cis-m365:5.1.5.1'` or
+`Control = 'cisa-scuba:MS.AAD.3.1'`. This is the same for a CIS or CISA test and for a Maester test that checks
+what one of their requirements asks for.
 
-Any other test can be mapped to a framework too. A Maester test that checks what a CISA policy or a CIS
-recommendation asks for says so in its attribute, `Control = 'cisa-scuba:MS.AAD.3.1'`, and the unit tests check
-that the requirement exists. See [Mapping a test to a framework](./writing-tests/index.mdx#mapping-a-test-to-a-framework).
+The catalogue of each framework is a file beside the `suite.json` that declares it (`Frameworks`),
+`frameworks/<key>.json`. It holds the name and version of the framework and every requirement with its facts: the
+CIS level and profiles in `tests/cis/frameworks/`, and the CISA criticality, upstream status and NIST SP 800-53
+references in `tests/cisa/frameworks/cisa-scuba.json`. It does not list tests. The module build and the unit tests
+fail when a `Control` names one of these frameworks and a requirement its file does not have, and when a test in
+`tests/cis` or `tests/cisa` has no `Control` for its suite's framework.
+See [Benchmarks and framework files](./writing-tests/index.mdx#benchmarks-and-framework-files) and
+[Mapping a test to a framework](./writing-tests/index.mdx#mapping-a-test-to-a-framework).
 
 ### Checklist for writing good tests
 
@@ -234,7 +238,7 @@ When contributing tests, please ensure the following:
 - [x] Built-in tests must set `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `Mitre`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, plus `UserImpact` and `ImplementationCost` unless `Severity` is `Info`, and describe every parameter. Choose the values with the [attribute rubric](./writing-tests/attribute-rubric.md), using keys from `powershell/assets/MaesterTaxonomy.psd1`. They are checked on the pull request; see [Attribute checks](#attribute-checks).
 - [x] Do not add a `Tag` for the product, feature, area, suite, benchmark, licence or severity of a test, or for its ID: each of those has an attribute or is derived.
 - [x] Do not check connections or licences in the test and do not wrap it in a `try`/`catch` that only reports `-SkippedBecause Error`: declare `Service` and `License` and let the engine handle it. The unit tests enforce this.
-- [x] For a CIS or CISA test, add the test to its suite's framework file (`tests/cis/frameworks/cis-m365.json`, `tests/cis/frameworks/cis-github.json` or `tests/cisa/frameworks/cisa-scuba.json`) in the same pull request: the requirement's `Id` (the test ID without the `CIS.M365.`, `CIS.GH.` or `CISA.` prefix), its level and profiles or its criticality, and the test ID under `Tests`. The module build fails when a test with the prefix is missing from the file or listed twice. Do not copy the benchmark's text into the file.
+- [x] For a CIS or CISA test, set `Control` to the requirement it implements (`Control = 'cis-m365:5.1.5.1'`, `'cis-github:1.2.2'` or `'cisa-scuba:MS.AAD.3.1'`), and add the requirement to the framework file if it is new (`tests/cis/frameworks/cis-m365.json`, `tests/cis/frameworks/cis-github.json` or `tests/cisa/frameworks/cisa-scuba.json`): its `Id`, and its level and profiles or its criticality. Do not copy the benchmark's text into the file.
 - [x] Tunable values (thresholds, objects to exclude) are parameters of the test function, not hard-coded.
 - [x] The test's `.md` file explains the test in detail and provides all the context required for the user to resolve the issue, including deep links to the admin portal page to resolve the issue. This will be shown to the user when they view the test report. The file should include:
   - [x] Link to the admin portal blade where the setting can be configured

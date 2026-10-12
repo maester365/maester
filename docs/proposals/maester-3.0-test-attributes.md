@@ -67,7 +67,7 @@ Types stay within what the AST reader accepts: `string`, `string[]` and `bool`.
 | `UserImpact` | string | `Low`, `Medium`, `High` | required unless `Severity` is `Info` | Normalised to this spelling. |
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | required unless `Severity` is `Info` | Normalised to this spelling. |
 | `Mitre` | string[] | `T####`, `T####.###`, or the single value `None` | required | `None` cannot be combined with an ID. IDs are validated against the pinned ATT&CK release by the build and the unit tests, not at run time. |
-| `Control` | string[] | `<framework-key>:<requirement-id>` | optional | Pattern `^[a-z0-9][a-z0-9.\-]*:[^\s,]+$`. Requirements of frameworks the test supports beside the benchmark it is named after. Any test may use it. For a framework shipped with Maester the requirement must exist in its file. |
+| `Control` | string[] | `<framework-key>:<requirement-id>` | optional; required for a test of a suite that declares `Frameworks` | Pattern `^[a-z0-9][a-z0-9.\-]*:[^\s,]+$`. The requirements of frameworks the test implements or supports. It is the only way a test is mapped to a framework (section 6). Any test may use it. For a framework shipped with Maester the requirement must exist in its file. |
 | `Service` | string[] | unchanged | required | |
 | `License` | string[] | unchanged | optional | |
 | `Permission` | string[] | one permission per element, no commas | optional | Replaces the reserved name `GraphScope`. Recorded; not enforced in 3.0. |
@@ -209,7 +209,7 @@ Built-in tests ship without taxonomy tags. `Tag` remains for labels a test owner
 | Suite | `CISA`, `Maester` | `-Suite cisa`; `Suite` on the row |
 | Product or service | `EXO`, `Entra` | `-Product exchange`; `Product` on the row |
 | Topic or theme | `CA`, `AD.User`, `Privileged` | `-Feature conditional-access`, `-Area privileged-access` |
-| Benchmark control ID | `MS.AAD.3.5` | `-TestId CISA.MS.AAD.3.5` |
+| Benchmark control ID | `MS.AAD.3.5` | `-TestId CISA.MS.AAD.3.5`; `Control = 'cisa-scuba:MS.AAD.3.5'` on the test |
 | Benchmark version, level, profile | `CIS M365 v7.0.0`, `L1`, `CIS E3 Level 1` | The suite's framework file (section 6) |
 | Licence | `Entra ID P1` | `License` on the row |
 | Severity | `Severity:High` | `-Severity High` |
@@ -217,34 +217,52 @@ Built-in tests ship without taxonomy tags. `Tag` remains for labels a test owner
 
 ## 6. Benchmarks and framework files
 
-A suite that implements a published benchmark says so once, in its `suite.json`:
+A test is mapped to a framework in one place, its `Control` attribute:
+
+```powershell
+Control = 'cis-m365:5.2.2.3'
+```
+
+This is the same for a CIS or CISA test, for a Maester test that supports one of their requirements, and for a
+custom test. There is no second mechanism: a framework file does not list tests, and a test's ID prefix means
+nothing to the engine.
+
+A framework file is the catalogue of a framework. A suite that holds one declares it in its `suite.json`:
 
 ```json
 "Frameworks": [
-  { "Key": "cis-m365", "Version": "7.0.0", "IdPrefix": "CIS.M365." }
+  { "Key": "cis-m365", "Version": "7.0.0" }
 ]
 ```
 
-The requirement a test implements is the rest of its ID after the prefix, so `CIS.M365.5.2.2.3` implements
-requirement `5.2.2.3`. Facts about a requirement that used to be tags live in a framework file beside the suite,
-`frameworks/<key>.json`:
+The file is `frameworks/<key>.json` beside the `suite.json`:
 
 ```json
 {
   "Framework": "cis-m365",
   "Name": "CIS Microsoft 365 Foundations Benchmark",
   "Version": "7.0.0",
+  "Url": "https://www.cisecurity.org/benchmark/microsoft_365",
   "Requirements": [
-    { "Id": "5.2.2.3", "Level": "L1", "Profile": ["E3 Level 1"], "Tests": ["CIS.M365.5.2.2.3"] }
+    { "Id": "5.2.2.3", "Level": "L1", "Profile": ["E3 Level 1"] }
   ]
 }
 ```
 
-- The catalog build validates that every test ID a framework file names exists and that every test of the suite
-  with the prefix is listed once.
-- A row of such a test gains `Benchmark`: `{ "Framework": "cis-m365", "Version": "7.0.0", "Requirement": "5.2.2.3" }`
-  plus the requirement's own facts.
-- A row's `Control` list is the test's `Control` values followed by the `Related` references of its requirement.
+It holds what a `key:id` string cannot: the name and version of the framework, the facts about each requirement
+that used to be tags (level, profile, criticality, upstream status), the `Related` controls of other frameworks,
+and the full list of requirements, so that a gap or a mistyped ID is found. A `Tests` key on a requirement and an
+`IdPrefix` key in the declaration are ignored.
+
+- Frameworks are looked up by key across every suite: the suites shipped with Maester and the suites under the
+  user's test folder. A key that two suites declare is a problem that names both `suite.json` files.
+- A row's `Benchmark` is built from the first `Control` value, in the order of the attribute, that names a
+  requirement of a valid framework file: `{ "Framework": "cis-m365", "Version": "7.0.0", "Requirement": "5.2.2.3" }`
+  plus the requirement's own facts. It is `null` when no value does.
+- A row's `Control` list is the test's `Control` values followed by the `Related` references of every requirement
+  they name, each once.
+- The catalog build fails on a problem with a declaration or a file, on a key declared twice, and on a built-in
+  test whose `Control` names a loaded framework and a requirement its file does not have. A run only warns.
 - Reports say a test supports a control. They do not state compliance with a framework.
 
 Framework files for CIS Microsoft 365, CIS GitHub and CISA SCuBA ship with their suites. The CISA file carries
@@ -261,6 +279,8 @@ each policy's revision, SHALL or SHOULD, and the NIST SP 800-53 mapping that Scu
      sub-techniques, and at most five entries;
    - no built-in test carries a tag that is a product, feature, area, suite or severity name, a benchmark label
      or a test ID;
+   - a `Control` that names a framework shipped with Maester names a requirement of its file, and every test of a
+     suite that declares `Frameworks` has a `Control` for a requirement of one of them;
    - the taxonomy has no unused or duplicate key, the folder of a test agrees with its `Product`, and the
      rubric's area table lists exactly the areas of the registry.
 
