@@ -192,13 +192,19 @@ export function validate(state, data) {
   // Control
   const controlPattern = new RegExp(data.properties.Control.pattern);
   state.controls.filter((c) => !controlPattern.test(c)).forEach((c) => add("control", "error", c + " is not written <framework-key>:<requirement-id>, for example cisa-scuba:MS.AAD.3.1."));
-  const own = ownBenchmark(state, data);
+  const nistIds = new Set(data.nist.controls.map((c) => c.id));
+  const suite = data.suites.find((s) => s.id === state.suite);
+  const suiteFrameworks = builtin ? data.frameworks.filter((f) => suite && f.suite === suite.id) : [];
   state.controls.forEach((c) => {
     const [key, ...rest] = c.split(":");
+    const id = rest.join(":");
     const framework = data.frameworks.find((f) => f.key === key);
-    if (own && c === own.control) add("control", "error", c + " is the requirement this test is named after. It is its Benchmark already and is not repeated in Control.");
-    else if (framework && !framework.requirements.some((r) => r.id === rest.join(":"))) add("control", builtin ? "error" : "warn", rest.join(":") + " is not a requirement in " + framework.file + ".");
+    if (framework && !framework.requirements.some((r) => r.id === id)) add("control", "warn", id + " is not in " + framework.file + " yet. Add it there in the same pull request.");
+    if (key === data.nist.key && !nistIds.has(id)) add("control", builtin ? "error" : "warn", id + " is not a control of " + data.nist.name + ". Use an ID such as IA-2(1).");
   });
+  if (suiteFrameworks.length && !state.controls.some((c) => suiteFrameworks.some((f) => c.startsWith(f.key + ":")))) {
+    add("control", "error", "A test in the " + suite.name + " suite names the requirement it implements, for example " + suiteFrameworks[0].key + ":" + suiteFrameworks[0].requirements[0].id + ". Put it first.");
+  }
 
   // Requirements
   if (builtin && !state.serviceNone && state.services.length === 0) add("services", "error", "Choose the services the test needs, or None.");
@@ -357,16 +363,6 @@ export function addByHand(state) {
     .filter((name) => !GENERATED_BY_NEW_MTTEST.includes(name));
 }
 
-// The benchmark requirement a built-in test is named after: its ID starts with the prefix of a framework of its suite.
-export function ownBenchmark(state, data) {
-  if (state.mode !== "builtin") return null;
-  const id = state.id.trim();
-  const framework = data.frameworks
-    .filter((f) => f.suite === state.suite && f.idPrefix && id.toLowerCase().startsWith(f.idPrefix.toLowerCase()) && id.length > f.idPrefix.length)
-    .sort((a, b) => b.idPrefix.length - a.idPrefix.length)[0];
-  return framework ? { framework, id, requirement: id.slice(framework.idPrefix.length), control: framework.key + ":" + id.slice(framework.idPrefix.length) } : null;
-}
-
 // What a pull request must contain besides the two test files, for values that are new to the registries.
 export function registryChanges(state, data) {
   const changes = [];
@@ -406,17 +402,14 @@ export function registryChanges(state, data) {
       snippet: `        @{ Key = ${quote(state.newResourceType.key)}; Description = ${quote(state.newResourceType.description)} }`,
     });
   }
-  // A test named after a benchmark requirement is listed in the framework file of its suite.
-  const own = ownBenchmark(state, data);
-  const listedAlready = own && own.framework.requirements.some((r) => r.tests.includes(own.id));
-  if (own && !listedAlready) {
-    const listed = own.framework.requirements.find((r) => r.id === own.requirement);
-    changes.push({
-      file: own.framework.file,
-      what: listed ? "Add the test to the Tests of requirement " + own.requirement + "." : "Add the requirement, with its level or criticality, and list the test. The build fails when a test with this prefix is missing from the file.",
-      snippet: listed ? `{ "Id": "${own.requirement}", ..., "Tests": [${listed.tests.concat(own.id).map((x) => `"${x}"`).join(", ")}] }` : `{ "Id": "${own.requirement}", "Tests": ["${own.id}"] }`,
-    });
-  }
+  // A requirement that is not in a shipped framework's file yet is added to it.
+  state.controls.forEach((control) => {
+    const [key, ...rest] = control.split(":");
+    const framework = data.frameworks.find((f) => f.key === key);
+    if (framework && !framework.requirements.some((r) => r.id === rest.join(":"))) {
+      changes.push({ file: framework.file, what: "Add the requirement to Requirements, with its level or criticality.", snippet: `{ "Id": "${rest.join(":")}" }` });
+    }
+  });
   if (changes.length) {
     changes.push({
       file: "website/src/data/test-builder.json",

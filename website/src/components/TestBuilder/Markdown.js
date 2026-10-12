@@ -55,6 +55,12 @@ export function parseBlocks(markdown) {
       flush();
       continue;
     }
+    const heading = /^#{3,4}\s+(.*)$/.exec(line);
+    if (heading) {
+      flush();
+      blocks.push({ type: "h", text: heading[1] });
+      continue;
+    }
     const bullet = /^\s*-\s+(.*)$/.exec(line);
     const numbered = /^\s*\d+\.\s+(.*)$/.exec(line);
     if (line.trim().startsWith("|")) {
@@ -94,6 +100,7 @@ export default function Markdown({ text }) {
   return (
     <>
       {parseBlocks(text).map((block, i) => {
+        if (block.type === "h") return <h4 key={i}>{inline(block.text, "h" + i)}</h4>;
         if (block.type === "p") return <p key={i}>{inline(block.text, "p" + i)}</p>;
         if (block.type === "ul") return <ul key={i}>{block.items.map((item, j) => <li key={j}>{inline(item, "u" + i + j)}</li>)}</ul>;
         if (block.type === "ol") return <ol key={i}>{block.items.map((item, j) => <li key={j}>{inline(item, "o" + i + j)}</li>)}</ol>;

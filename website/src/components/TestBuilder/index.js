@@ -13,7 +13,6 @@ import {
   buildCommand,
   folderFor,
   addByHand,
-  ownBenchmark,
   registryChanges,
   withPrefix,
 } from "./generate";
@@ -33,7 +32,9 @@ const requirementItems = data.frameworks.flatMap((f) =>
   })
 );
 const relatedItems = [...new Set(data.frameworks.flatMap((f) => f.requirements.flatMap((r) => r.related || [])))].sort().map((c) => ({ value: c, label: c, hint: "Related to requirements in the repository" }));
-const controlItems = requirementItems.concat(relatedItems);
+const nistItems = data.nist.controls.map((c) => ({ value: data.nist.key + ":" + c.id, label: data.nist.key + ":" + c.id, hint: c.title, search: (data.nist.key + ":" + c.id + " " + c.title).toLowerCase() }));
+const nistValues = new Set(nistItems.map((i) => i.value));
+const controlItems = requirementItems.concat(nistItems, relatedItems.filter((i) => !nistValues.has(i.value)));
 const knownLicenses = new Set(data.licenses);
 
 const attackUrl = (id) => "https://attack.mitre.org/techniques/" + id.replace(".", "/") + "/";
@@ -315,7 +316,8 @@ export default function TestBuilder() {
   const folder = folderFor(state, data);
   const changes = registryChanges(state, data);
   const byHand = addByHand(state);
-  const own = ownBenchmark(state, data);
+  const firstFramework = state.controls.find((c) => data.frameworks.some((f) => c.startsWith(f.key + ":") && f.requirements.some((r) => f.key + ":" + r.id === c)));
+
   const need = (name) => builtin && P[name].required !== "No";
 
   // The prefix of custom tests is remembered in this browser.
@@ -557,7 +559,7 @@ export default function TestBuilder() {
             id="control"
             name="Control"
             label="Framework requirements"
-            hint="Requirements of CIS, CISA or any other framework that this test supports. Look one up from the frameworks shipped with Maester, or type your own as framework-key:requirement-id."
+            hint="Requirements of CIS, CISA, NIST SP 800-53 or any other framework that this test implements or supports. Look one up, or type your own as framework-key:requirement-id. This is the only place a test is mapped to a framework."
             rubric={R.Control}
             problems={problems}
             notInList={
@@ -572,14 +574,14 @@ export default function TestBuilder() {
                   . For any other framework, type the reference yourself with a lowercase key, for example <code>nist-800-53-r5:IA-2(1)</code> or <code>iso-27001-2022:A.5.17</code>, and use the same key every time.
                 </p>
                 <p>
-                  A benchmark has a file of its own because it is re-versioned on its own schedule, each requirement has facts that are not about one test (level, profile, whether it was withdrawn), and a requirement with no test yet still has a row. A test is listed in that file only when it is named after the requirement, like <code>CISA.MS.AAD.3.1</code>. Every other test says what it supports here, in <code>Control</code>.
+                  The framework file is a catalogue. It holds what a <code>key:id</code> reference cannot: each requirement's level, profile or criticality, the controls it relates to, and the full list of requirements, so typos and gaps are found. A new CIS or CISA requirement is added to that file; the mapping itself is always this attribute.
                 </p>
               </>
             }
           >
-            {own && (
+            {firstFramework && (
               <p className={styles.note}>
-                From its ID this test implements <code>{own.control}</code>. That is its Benchmark, so it is not listed again here. The framework file change is shown with the code.
+                <code>{firstFramework}</code> is the first reference to a framework Maester has a file for, so it becomes the Benchmark of the result.
               </p>
             )}
             <Combobox
@@ -587,7 +589,7 @@ export default function TestBuilder() {
               value=""
               items={controlItems}
               placeholder="Look up a requirement"
-              searchPlaceholder="Search by framework, requirement ID or test ID: MS.AAD.3, 5.1.5, nist"
+              searchPlaceholder="Search by framework, ID, control name or test ID: MS.AAD.3, 5.1.5, least privilege"
               creatable
               createPattern={/^[a-z0-9][a-z0-9.-]*:[^\s,]+$/}
               keepOpen

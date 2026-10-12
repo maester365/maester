@@ -13,7 +13,9 @@
       powershell/assets/MaesterServiceRegistry.psd1   services
       powershell/assets/MaesterLicenseTable.psd1      licence tokens
       tests/*/suite.json                              suites and their ID patterns
-      tests/*/frameworks/*.json                       frameworks, their requirements and mapped tests
+      tests/*/frameworks/*.json                       frameworks and their requirements
+      tests/**/Test.*.ps1                             which tests name each requirement in Control
+      powershell/assets/MaesterNistControls.json      the pinned NIST SP 800-53 control list
       website/docs/writing-tests/attribute-rubric.md  the rubric, one section per attribute
 
     Run it after changing any of those files and commit the result. A unit test
@@ -79,7 +81,21 @@ $suites = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter sui
     [ordered]@{ id = $suite.Id; name = $suite.Name; idPattern = $suite.IdPattern; folder = $folder; productFolders = $productFolders }
 }
 
-# Frameworks a suite implements, with their requirements and the tests mapped to each one.
+# Which tests name each framework requirement in their Control attribute.
+$testsByControl = @{}
+foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter 'Test.*.ps1' -Recurse | Sort-Object FullName)) {
+    $text = Get-Content $file.FullName -Raw
+    $id = [regex]::Match($text, "(?m)^\s*Id\s*=\s*'([^']+)'").Groups[1].Value
+    $line = [regex]::Match($text, "(?m)^\s*Control\s*=\s*(.+?),?\s*$").Groups[1].Value
+    foreach ($reference in [regex]::Matches($line, "'([^']+)'")) {
+        $key = $reference.Groups[1].Value
+        if (-not $testsByControl.ContainsKey($key)) { $testsByControl[$key] = [System.Collections.Generic.List[string]]::new() }
+        $testsByControl[$key].Add($id)
+    }
+}
+$nist = Get-Content (Join-Path $assets 'MaesterNistControls.json') -Raw | ConvertFrom-Json
+
+# Frameworks a suite declares, with their requirements and the tests mapped to each one.
 $frameworks = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter '*.json' -Recurse -Depth 2 | Where-Object { $_.Directory.Name -eq 'frameworks' } | Sort-Object FullName)) {
     $framework = Get-Content $file.FullName -Raw | ConvertFrom-Json
     $suiteFolder = $file.Directory.Parent
@@ -91,10 +107,9 @@ $frameworks = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter
         version      = $framework.Version
         url          = $framework.Url
         suite        = $suiteJson.Id
-        idPrefix     = $declared.IdPrefix
         file         = [System.IO.Path]::GetRelativePath($root, $file.FullName).Replace('\', '/')
         requirements = @($framework.Requirements | ForEach-Object {
-                $r = [ordered]@{ id = $_.Id; tests = @($_.Tests) }
+                $r = [ordered]@{ id = $_.Id; tests = @($testsByControl["$($framework.Framework):$($_.Id)"] | Where-Object { $_ }) }
                 if ($_.Level) { $r.level = $_.Level }
                 if ($_.Criticality) { $r.criticality = $_.Criticality }
                 if ($_.Related) { $r.related = @($_.Related) }
@@ -118,6 +133,7 @@ $data = [ordered]@{
     licenses         = @($licenses.Tokens.Keys | Sort-Object)
     suites           = @($suites)
     frameworks       = @($frameworks)
+    nist             = [ordered]@{ key = $nist.Framework; name = $nist.Name; version = $nist.Version; controls = @($nist.Controls | ForEach-Object { [ordered]@{ id = $_.Id; title = $_.Title } }) }
     attack           = [ordered]@{
         version    = $taxonomy.Attack.Version
         tactics    = @($attack.Tactics | ForEach-Object { [ordered]@{ id = $_.Id; name = $_.Name } })
