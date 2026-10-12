@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.2.2',
         Title = 'File and folder default sharing permissions SHALL be set to View only.',
+        Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.2.2'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1565.001'),
+        Control = 'cisa-scuba:MS.SHAREPOINT.2.2',
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

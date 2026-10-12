@@ -40,10 +40,15 @@
     [MaesterTest(
         Id = 'MT.1180',
         Title = 'Ensure Managed Installer Rules are configured correctly.',
+        Product = 'intune',
+        Feature = 'endpoint-security',
+        Area = 'devices',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:CM-7(5)',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

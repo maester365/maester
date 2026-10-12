@@ -22,10 +22,12 @@
     [MaesterTest(
         Id = 'AD-SCH-04',
         Title = 'Schema version details should be retrievable',
+        Product = 'ad',
+        Feature = 'schema',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Schema',
-        Product = 'Active Directory',
-        Tag = 'AD.Schema',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

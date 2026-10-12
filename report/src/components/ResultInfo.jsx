@@ -1,15 +1,72 @@
 import React, { useCallback } from "react";
-import { Card, Button, Title, Text, Flex, Divider } from "@/components/ui/report";
+import { Card, Button, Title, Text, Flex, Divider, Grid } from "@/components/ui/report";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import StatusLabel from "./StatusLabel";
 import StatusLabelSm from "./StatusLabelSm";
 import SeverityBadge from "./SeverityBadge";
 import { Markdown } from '@/components/Markdown'
+import { useTenant } from "@/context/TenantContext";
+import { attackTechniquesLabel, benchmarkLabel, controlsLabel, getAttackTechniques, getBenchmarkText, getControls, getTestAttributeFields, hasTestAttributes } from "@/lib/testAttributes";
 
 export default function ResultInfo({ Item, isPrintView }) {
+  const { selectedTenant } = useTenant();
   const openInNewTab = useCallback((url) => {
     window.open(url, "_blank", "noreferrer");
   }, []);
+
+  // Typed attributes of Maester 3.0, with their display names from the result's Taxonomy. Each card
+  // renders only when the row has the field, so results from Maester 2.x and Pester-format tests look as before.
+  const taxonomy = selectedTenant.Taxonomy;
+  const attributeFields = getTestAttributeFields(taxonomy, Item);
+  const attackTechniques = getAttackTechniques(taxonomy, Item);
+  const benchmark = getBenchmarkText(Item);
+  const controls = getControls(Item);
+  const hasAttributes = hasTestAttributes(Item);
+  // The tests that ship with Maester no longer carry tags, so a test with attributes shows Tags only when it has some.
+  const showTags = !hasAttributes || (Item.Tag && Item.Tag.length > 0);
+  // In the result sheet the single values sit two to a row and the lists take a whole row.
+  const listCardClassName = isPrintView ? undefined : "sm:col-span-2";
+
+  const attributeCards = (
+    <>
+      {attributeFields.map(({ label, value }) => (
+        <Card key={label}>
+          <Title>{label}</Title>
+          <Text>{value}</Text>
+        </Card>
+      ))}
+      {attackTechniques.length > 0 && (
+        <Card className={listCardClassName}>
+          <Title>{attackTechniquesLabel}</Title>
+          <Flex justifyContent="start" className="flex-wrap">
+            {attackTechniques.map((technique) => (
+              <Text key={technique.id} className="mr-3">
+                <a href={technique.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 hover:underline dark:hover:text-blue-400">
+                  {technique.id} {technique.name}
+                </a>
+              </Text>
+            ))}
+          </Flex>
+        </Card>
+      )}
+      {benchmark && (
+        <Card className={listCardClassName}>
+          <Title>{benchmarkLabel}</Title>
+          <Text>{benchmark}</Text>
+        </Card>
+      )}
+      {controls.length > 0 && (
+        <Card className={listCardClassName}>
+          <Title>{controlsLabel}</Title>
+          <Flex justifyContent="start" className="flex-wrap">
+            {controls.map((control) => (
+              <Text key={control} className="mr-3">{control}</Text>
+            ))}
+          </Flex>
+        </Card>
+      )}
+    </>
+  );
 
   function getTestResult() {
     if (Item.ResultDetail) {
@@ -102,14 +159,17 @@ export default function ResultInfo({ Item, isPrintView }) {
             <Title>Category</Title>
             <Text>{Item.Block}</Text>
           </Card>
-          <Card>
-            <Title>Tags</Title>
-            <Flex justifyContent="start" className="flex-wrap">
-              {Item.Tag && Item.Tag.map((item) => (
-                <Text key={item} className="mr-3">{item}</Text>
-              ))}
-            </Flex>
-          </Card>
+          {attributeCards}
+          {showTags && (
+            <Card>
+              <Title>Tags</Title>
+              <Flex justifyContent="start" className="flex-wrap">
+                {Item.Tag && Item.Tag.map((item) => (
+                  <Text key={item} className="mr-3">{item}</Text>
+                ))}
+              </Flex>
+            </Card>
+          )}
         </div>
       ) : (
         <>
@@ -117,14 +177,21 @@ export default function ResultInfo({ Item, isPrintView }) {
             <Title>Category</Title>
             <Text>{Item.Block}</Text>
           </Card>
-          <Card className="mt-4">
-            <Title>Tags</Title>
-            <Flex justifyContent="start">
-              {Item.Tag && Item.Tag.map((item) => (
-                <Text key={item} className="mr-3">{item}</Text>
-              ))}
-            </Flex>
-          </Card>
+          {hasAttributes && (
+            <Grid numItemsSm={2} className="mt-4 gap-4">
+              {attributeCards}
+            </Grid>
+          )}
+          {showTags && (
+            <Card className="mt-4">
+              <Title>Tags</Title>
+              <Flex justifyContent="start">
+                {Item.Tag && Item.Tag.map((item) => (
+                  <Text key={item} className="mr-3">{item}</Text>
+                ))}
+              </Flex>
+            </Card>
+          )}
           <Card className="mt-4">
             <Title>Source</Title>
             <Text>{Item.ScriptBlockFile}</Text>

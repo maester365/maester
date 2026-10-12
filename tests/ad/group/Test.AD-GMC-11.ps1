@@ -29,10 +29,12 @@
     [MaesterTest(
         Id = 'AD-GMC-11',
         Title = 'Privileged groups with members details should be investigated',
+        Product = 'ad',
+        Feature = 'groups',
+        Area = 'privileged-access',
+        ResourceType = 'Group',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = ('AD.GMC', 'AD.Group'),
+        Mitre = ('T1098.007', 'T1078.002'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

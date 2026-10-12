@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DOM-03',
         Title = 'Domain controller count should be retrievable',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -14,10 +14,16 @@ function Test-ORCA232 {
     [MaesterTest(
         Id = 'ORCA.232',
         Title = 'Each domain has a malware filter policy applied to it, or the default policy is being used.',
-        Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

@@ -9,10 +9,12 @@
     [MaesterTest(
         Id = 'AD-GPOL-02',
         Title = 'Disabled GPO link count should be retrievable',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - Group Policy Links',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

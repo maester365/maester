@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DACL-13',
         Title = 'Privileged extended right identities should be investigated',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'privileged-access',
+        ResourceType = 'Permission',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
+        Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

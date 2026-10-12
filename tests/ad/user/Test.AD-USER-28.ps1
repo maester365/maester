@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-USER-28',
         Title = 'User delegation configured count should be investigated',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

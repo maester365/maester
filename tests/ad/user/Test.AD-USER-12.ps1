@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-12',
         Title = 'User non-standard primary group count should be retrievable',
-        Severity = 'Medium',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

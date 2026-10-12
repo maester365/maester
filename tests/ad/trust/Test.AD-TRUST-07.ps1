@@ -22,10 +22,12 @@
     [MaesterTest(
         Id = 'AD-TRUST-07',
         Title = 'Trust stale details should be investigated',
+        Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'Info',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0011',
         Title    = '-SkippedBecause Error with the caught record',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'MT.1181',
         Title = 'Conditional Access policy is present that blocks high agent risk sign-ins.',
+        Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'ai',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-2(12)', 'nist-800-53-r5:AC-2(13)'),
         Service = 'Graph',
         Author = 'ExeqZ'
     )]

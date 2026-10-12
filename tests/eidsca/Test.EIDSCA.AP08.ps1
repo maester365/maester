@@ -14,9 +14,15 @@ function Test-MtCheckEidscaAP08 {
     [MaesterTest(
         Id = 'EIDSCA.AP08',
         Title = 'Default Authorization Settings - User consent policy assigned for applications.',
-        Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
+        Control = ('nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:CM-5'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

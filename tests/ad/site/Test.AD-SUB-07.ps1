@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-SUB-07',
         Title = 'Non-RFC1918 (public IP) subnets details should be retrievable',
+        Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

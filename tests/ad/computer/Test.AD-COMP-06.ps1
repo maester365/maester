@@ -24,10 +24,12 @@
     [MaesterTest(
         Id = 'AD-COMP-06',
         Title = 'Computer default container count should be retrievable',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

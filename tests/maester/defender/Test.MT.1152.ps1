@@ -29,10 +29,16 @@
     [MaesterTest(
         Id = 'MT.1152',
         Title = 'Script Scanning should be enabled.',
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1059',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

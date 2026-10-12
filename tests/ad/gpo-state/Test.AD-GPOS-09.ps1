@@ -21,10 +21,12 @@ function Test-MtAdGpoOwnerDetails {
     [MaesterTest(
         Id = 'AD-GPOS-09',
         Title = 'GPO owner details should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

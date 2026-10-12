@@ -54,6 +54,14 @@ data. Replace the `testResults` object in `/report/src/lib/testResults.ts`; the
 development server loads this fixture directly. Production HTML reads injected JSON
 from its dedicated data element, so generated HTML is not the source fixture.
 
+The sample has the shape of a Maester 3.0 result: each test that ships with Maester has
+typed attributes (`Product`, `Feature`, `Area` and so on) and no tags, and the top-level
+`Taxonomy` gives their display names. `/report/src/lib/testResultsLegacy.ts` keeps a
+Maester 2.x result, which has free-text categories and tags and none of the attributes.
+The report has to render both, and a 2.x result has to look as it did before, so check a
+change against each. To load the 2.x sample, add `?sample=2x` to the address of the
+development server, for example `http://localhost:5173/?sample=2x`.
+
 ### Submitting a Pull-Request
 
 When submitting a PR for changes in `/report/src` you can skip updating the `/powershell/assets/ReportTemplate.html` artifact. The [build-maester-report-template](https://github.com/maester365/maester/blob/main/.github/workflows/build-maester-report-template.yaml) workflow automatically builds and includes an updated ReportTemplate as part of the module publish pipeline.

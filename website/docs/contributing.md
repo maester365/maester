@@ -35,7 +35,8 @@ carries the same rules for AI coding and review agents.
 4. **Generated code lives in `generated/` folders**, so it is obvious from the path that it must not be edited by hand.
 
 ```text
-tests/                              The security checks: Test.<ID>.ps1 + Test.<ID>.md, nothing else
+tests/                              The security checks: Test.<ID>.ps1 + Test.<ID>.md, plus suite.json, README.md and framework files
+  <suite>/frameworks/<key>.json     The catalogue of a benchmark, one entry per requirement (cis/ and cisa/)
   maester/<service>/                MT.xxxx checks, one folder per service (plus drift/)
   maester/xspm/                     Exposure management; has its own suite.json (the nearest one applies)
   cis/                              CIS benchmark checks
@@ -73,7 +74,7 @@ powershell/
   (`/docs/tests/cis/...`) and the rest of the module (`public`, `internal`, `assets`). Prowler, the closest open
   source project to Maester, uses the same convention.
 - **Suites are found by `suite.json`, not by folder name**, so a folder name can follow the convention without
-  changing a suite's ID, tags or documentation URLs. That is what lets `XSPM` live in `maester/xspm`.
+  changing a suite's ID or documentation URLs. That is what lets `XSPM` live in `maester/xspm`.
 - **Grouping by job, then by service, gives every file one obvious home.** Before 3.0, Exchange code could be in four
   places (a suite folder under `public/`, a suite folder under `internal/checks/`, a loose file, or a service
   folder). Well-run projects separate the layers the same way: ScubaGear splits connection, per-product data
@@ -81,12 +82,13 @@ powershell/
   code in `lib/`; PSFramework and dbatools split exported and internal functions, then group by feature.
 - **`public/` is grouped by what the user is doing**, so the folder tells you which commands belong together in the
   [command reference](./commands/readme.md).
-- **Folders name products, tags name themes.** A check goes in the folder of the product whose settings it reads,
+- **Folders name products, areas name themes.** A check goes in the folder of the product whose settings it reads,
   because that is what an author knows when adding a check and what an admin knows when looking for one. Themes
-  that cut across products, such as AI, are tags: Copilot Studio agent checks live in `maester/copilot-studio/`,
-  an Entra agent identity check lives in `maester/entra/`, and both carry the `AI` tag, so `Invoke-Maester -Tag AI`
-  runs them together. A theme folder such as `ai/` would end up holding checks for Copilot, Copilot Studio,
-  Foundry, Entra Agent ID and Purview, each with its own API, portal and permissions.
+  that cut across products, such as AI, are the `Area` attribute of a test: Copilot Studio agent checks live in
+  `maester/copilot-studio/`, an Entra agent identity check lives in `maester/entra/`, and both declare
+  `Area = 'ai'`, so `Invoke-Maester -Area ai` runs them together. A theme folder such as `ai/` would end up
+  holding checks for Copilot, Copilot Studio, Foundry, Entra Agent ID and Purview, each with its own API, portal
+  and permissions.
 - **Data access is shared, check logic is not.** Code that reads a service (`services/`) is reused by many checks and
   by custom tests. Code that only one suite's checks need stays in `checks/<suite>/`.
 
@@ -205,8 +207,21 @@ Every built-in check is a [native test](./writing-tests/index.mdx): `Test.<ID>.p
 - `/ad` - Active Directory tests
 - `/custom` - Folder for users to add tests (do not add any tests to this folder).
 
-Each suite folder has a `suite.json` with the suite's tags, default category and source. Folder names follow the
+Each suite folder has a `suite.json` with the suite's ID, name and source. Folder names follow the
 [repository layout](#repository-layout).
+
+A test says which requirement of a framework it implements in its attribute, `Control = 'cis-m365:5.1.5.1'` or
+`Control = 'cisa-scuba:MS.AAD.3.1'`. This is the same for a CIS or CISA test and for a Maester test that checks
+what one of their requirements asks for.
+
+The catalogue of each framework is a file beside the `suite.json` that declares it (`Frameworks`),
+`frameworks/<key>.json`. It holds the name and version of the framework and every requirement with its facts: the
+CIS level and profiles in `tests/cis/frameworks/`, and the CISA criticality, upstream status and NIST SP 800-53
+references in `tests/cisa/frameworks/cisa-scuba.json`. It does not list tests. The module build and the unit tests
+fail when a `Control` names one of these frameworks and a requirement its file does not have, and when a test in
+`tests/cis` or `tests/cisa` has no `Control` for its suite's framework.
+See [Benchmarks and framework files](./writing-tests/index.mdx#benchmarks-and-framework-files) and
+[Mapping a test to a framework](./writing-tests/index.mdx#mapping-a-test-to-a-framework).
 
 ### Checklist for writing good tests
 
@@ -219,16 +234,18 @@ When contributing tests, please ensure the following:
 
 #### Writing the test
 
-- [x] Scaffold the files in the right suite folder, for example `New-MtTest -Id MT.1234 -Title '...' -Service Graph -Category 'Maester/Entra' -Path ./tests/maester/entra`, then follow [Writing native tests](./writing-tests/index.mdx).
-- [x] Built-in tests must set `Severity`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, and describe every parameter.
+- [x] Scaffold the files in the right suite folder, for example `New-MtTest -Id MT.1234 -Title '...' -Service Graph -Product entra -Feature conditional-access -Area authentication -Path ./tests/maester/entra`, then follow [Writing native tests](./writing-tests/index.mdx).
+- [x] Built-in tests must set `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `Mitre`, `Service` (or `None`) and `Author` (your GitHub handle) in the `[MaesterTest]` attribute, plus `UserImpact` and `ImplementationCost` unless `Severity` is `Info`, and describe every parameter. Choose the values with the [attribute rubric](./writing-tests/attribute-rubric.md), using keys from `powershell/assets/MaesterTaxonomy.psd1`. They are checked on the pull request; see [Attribute checks](#attribute-checks).
+- [x] Do not add a `Tag` for the product, feature, area, suite, benchmark, licence or severity of a test, or for its ID: each of those has an attribute or is derived.
 - [x] Do not check connections or licences in the test and do not wrap it in a `try`/`catch` that only reports `-SkippedBecause Error`: declare `Service` and `License` and let the engine handle it. The unit tests enforce this.
+- [x] For a CIS or CISA test, set `Control` to the requirement it implements (`Control = 'cis-m365:5.1.5.1'`, `'cis-github:1.2.2'` or `'cisa-scuba:MS.AAD.3.1'`), and add the requirement to the framework file if it is new (`tests/cis/frameworks/cis-m365.json`, `tests/cis/frameworks/cis-github.json` or `tests/cisa/frameworks/cisa-scuba.json`): its `Id`, and its level and profiles or its criticality. Do not copy the benchmark's text into the file.
 - [x] Tunable values (thresholds, objects to exclude) are parameters of the test function, not hard-coded.
 - [x] The test's `.md` file explains the test in detail and provides all the context required for the user to resolve the issue, including deep links to the admin portal page to resolve the issue. This will be shown to the user when they view the test report. The file should include:
   - [x] Link to the admin portal blade where the setting can be configured
   - [x] A `#### Remediation action` section, and `<!--- Results --->` followed by `%TestResult%` at the end
   - [x] If there are multiple objects (e.g. list of CA policies, Users, etc) then use the `GraphObjects` and `GraphObjectType` parameters in [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1). These include deep links to the admin portal. If the object type you wish is not available you can add it to [Get-GraphObjectMarkdown.ps1](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1). Feel free to ask on Discord if you need help with this.
 - [x] The test's page under `website/docs/tests/` is generated from the test files; do not write it by hand.
-- [x] Check the test with `Get-MtTest -Path <file>` and run it with `Invoke-MtTest -Path <file>` against a tenant.
+- [x] Check the test with `Get-MtTest <ID>` after `Import-Module ./powershell/Maester.psd1 -Force`, and run it with `Invoke-MtTest -Path <file>` against a tenant. `Get-MtTest -Path <file>` applies the rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
 
 When in doubt always check the existing tests for the conventions used, feel free to discuss on [Discord](https://discord.entra.news) or [GitHub Issues](https://github.com/maester365/maester/issues).
 
@@ -241,6 +258,15 @@ When in doubt always check the existing tests for the conventions used, feel fre
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
+
+### Attribute checks
+
+A pull request that adds a test, or changes `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost` or `Mitre` on an existing test, has those values checked against the [attribute rubric](./writing-tests/attribute-rubric.md) in two ways:
+
+- The unit tests in [`NativeTestAttributes.Tests.ps1`](https://github.com/maester365/maester/blob/main/powershell/tests/general/NativeTestAttributes.Tests.ps1) fail when a built-in test misses a required attribute, uses a key that is not in the [taxonomy](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterTaxonomy.psd1), lists a retired or unknown ATT&CK technique, or carries a tag for something an attribute already says.
+- The [attribute-review](https://github.com/maester365/maester/blob/main/.github/workflows/attribute-review.yaml) check has a reviewer model read the test, its Markdown file and the rubric. It fails when a value does not fit the rubric, and comments on the pull request with the value it expected and the reason. Change the value, or explain in the pull request why the declared value fits the rubric. A maintainer can overrule the check.
+
+The maintainer or agent who reviews the pull request applies the same rubric; [AGENTS.md](https://github.com/maester365/maester/blob/main/AGENTS.md) describes that step.
 
 ### Updating EIDSCA tests and documentation
 
@@ -322,6 +348,23 @@ There are two versions of the Maester website:
 | Preview | [https://preview.maester.dev](https://preview.maester.dev) | main | Every commit to the main branch |
 
 When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
+
+#### Version numbers
+
+A preview is a prerelease of the release it leads to, and the docs show that release's number.
+
+| | Module on the PowerShell Gallery | Shown on the preview site |
+| --- | --- | --- |
+| Previews of 3.0 | `3.0.0-preview1`, `3.0.0-preview2`, ... | `3.0.0-preview` |
+| The release | `3.0.0` | `3.0.0` |
+| Previews after it | `3.1.0-preview1`, ... | `3.1.0-preview` |
+
+- A preview never uses up a release number, and every preview sorts below its release, so people on a preview are
+  offered the release.
+- The numbers are worked out by `.github/workflows/Get-NextModuleVersion.ps1` from what is on the gallery. To start
+  a new major version, raise `$major` in `.github/workflows/minor-version-update.ps1`.
+- PowerShell installs `3.0.0-preview2` and `3.0.0` into the same folder. Someone who has a preview moves to the
+  release with `Install-Module Maester -Force`; Maester tells them so when it starts.
 
 #### Urgent changes to blog posts and documentation
 

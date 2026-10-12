@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0007',
         Title    = 'Throws a terminating error',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Error-path fixture.')][CmdletBinding()]

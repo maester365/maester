@@ -17,12 +17,17 @@
     [MaesterTest(
         Id = 'MT.1057',
         Title = 'App registrations should no longer use secrets.',
+        Product = 'entra',
+        Feature = 'applications',
+        Area = 'applications',
+        ResourceType = 'Application',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'High',
+        Mitre = ('T1078.004', 'T1552'),
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'Graph',
+        LongRunning,
         Author = 'svrooij'
     )]
     [CmdletBinding()]

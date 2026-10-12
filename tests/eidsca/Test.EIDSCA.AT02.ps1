@@ -14,9 +14,15 @@ function Test-MtCheckEidscaAT02 {
     [MaesterTest(
         Id = 'EIDSCA.AT02',
         Title = 'Authentication Method - Temporary Access Pass - One-time.',
-        Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

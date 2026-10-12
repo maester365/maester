@@ -18,10 +18,16 @@
     [MaesterTest(
         Id = 'CIS.M365.7.3.1',
         Title = 'Ensure Office 365 SharePoint infected files are disallowed for download',
+        Product = 'sharepoint',
+        RelatedProduct = 'defender',
+        Feature = 'access-control',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'SharePoint',
-        Tag = ('CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'SharePoint Online'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1204.002'),
+        Control = ('cis-m365:7.3.1', 'nist-800-53-r5:SI-3'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

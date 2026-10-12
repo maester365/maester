@@ -14,10 +14,15 @@ function Test-ORCA107 {
     [MaesterTest(
         Id = 'ORCA.107',
         Title = 'End-user spam notification is enabled.',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'quarantine',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Low',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

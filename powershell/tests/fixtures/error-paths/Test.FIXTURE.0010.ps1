@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0010',
         Title    = '-SkippedBecause NotApplicable with no return after it',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

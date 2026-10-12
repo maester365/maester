@@ -17,10 +17,16 @@
     [MaesterTest(
         Id = 'MT.1147',
         Title = 'Do not sync krbtgt_AzureAD to Entra ID.',
+        Product = 'entra',
+        RelatedProduct = 'ad',
+        Feature = 'hybrid-identity',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1558',
+        Control = ('nist-800-53-r5:IA-5', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         Author = 'f-bader'
     )]

@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.4.1',
         Title = 'Security logs SHALL be sent to the agency''s security operations center for monitoring.',
+        Product = 'entra',
+        Feature = 'monitoring',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.4.1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1685.002',
+        Control = 'cisa-scuba:MS.AAD.4.1',
         Service = ('Graph', 'Azure'),
         License = 'AAD_PREMIUM',
         Author = 'soulemike'

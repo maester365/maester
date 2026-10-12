@@ -19,13 +19,18 @@
     [MaesterTest(
         Id = 'MT.1206',
         Title = 'Enabled Agent Identities should have active sign-in activity within the last 180 days (Preview).',
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
-        Preview,
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
+        Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.8.5.3',
         Title = 'Ensure only people in my org can bypass the lobby',
+        Product = 'teams',
+        Feature = 'meetings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Teams',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = ('cis-m365:8.5.3', 'nist-800-53-r5:AC-3'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = 'merill'

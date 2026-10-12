@@ -6,6 +6,11 @@ description: Write a Maester check as a native test, the default format from Mae
 
 # Writing native tests
 
+:::tip New to writing tests?
+Start with [Your first custom test](./first-custom-test.md), a short walk-through for checking one rule of your
+own. This page is the full reference.
+:::
+
 From Maester 3.0 a test is two files: `Test.<ID>.ps1`, which holds one PowerShell function with a
 `[MaesterTest(...)]` attribute, and `Test.<ID>.md`, which holds the description and remediation shown in the
 report. Every test that ships with Maester is written this way, and your own tests use the same format.
@@ -19,9 +24,13 @@ Tests written for Maester 2.x with Pester (`*.Tests.ps1`) still run. See
 
 ## Quick start
 
+Prefer to click through the choices? The [test builder](pathname:///test-builder) explains every attribute and
+writes the code for you.
+
 ```powershell
 # 1. Create custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md
-New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High `
+    -Product entra -Feature external-identities -Area external-access
 
 # 2. Edit the two files, then check them. No tenant connection is needed for this step.
 Get-MtTest -Path ./custom
@@ -35,7 +44,8 @@ Invoke-Maester -Path .
 ```
 
 `New-MtTest` writes to `./custom` unless you pass `-Path`. It supports `-WhatIf` and refuses to overwrite
-existing files unless you pass `-Force`.
+existing files unless you pass `-Force`. Only `-Id` and `-Title` are required; `-Product`, `-Feature`, `-Area`,
+`-ResourceType`, `-UserImpact`, `-ImplementationCost` and `-Mitre` fill in the attributes of the same name.
 
 ## Files and layout
 
@@ -47,7 +57,7 @@ maester-tests/
   custom/
     Test.CONTOSO.1001.ps1
     Test.CONTOSO.1001.md
-    suite.json               (optional: tags, category and source for every test in the folder)
+    suite.json               (optional: name, tags and source for every test in the folder)
     maester-config.json      (optional: an overlay on the root config)
 ```
 
@@ -95,14 +105,16 @@ runs and the Pester test does not; it is listed under `Selection.Superseded` in 
 ```powershell
 function Test-ContosoDisabledCaPolicyReason {
     [MaesterTest(
-        Id       = 'CONTOSO.1002',
-        Title    = 'Disabled Conditional Access policies state why they are disabled.',
-        Severity = 'Medium',
-        Category = 'Contoso/Entra',
-        Product  = 'Entra ID',
-        Tag      = ('CA', 'Contoso'),
-        Service  = 'Graph',
-        License = 'AAD_PREMIUM'
+        Id           = 'CONTOSO.1002',
+        Title        = 'Disabled Conditional Access policies state why they are disabled.',
+        Product      = 'entra',
+        Feature      = 'conditional-access',
+        Area         = 'access-control',
+        ResourceType = 'ConditionalAccessPolicy',
+        Severity     = 'Medium',
+        Service      = 'Graph',
+        License      = 'AAD_PREMIUM',
+        Tag          = 'Contoso'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -150,7 +162,7 @@ There is no connection check, no licence check and no `try`/`catch` in the funct
 The attribute is read from the file's syntax tree, so its arguments must be constants:
 
 - Named arguments only: `Id = 'CONTOSO.1001'`, never a positional value.
-- Values are quoted strings, `$true`, `$false`, or a list in parentheses such as `('CA', 'Contoso')`.
+- Values are quoted strings, `$true`, `$false`, or a list in parentheses such as `('T1078.004', 'T1110')`.
 - A single string is accepted for a list property: `Service = 'Graph'`.
 - A `bool` property can be written as a bare flag: `LongRunning` means `LongRunning = $true`.
 - No variables, expressions, `@()` arrays or hashtables.
@@ -160,32 +172,83 @@ A value that breaks these rules, an unknown property, or a value outside the all
 message says a property or value "may come from a newer version of Maester", the test was written for a later
 release than the one you run.
 
+The attribute answers six questions about a test. Only `Id` and `Title` are required in a custom test; a test
+that ships with Maester must also answer the others marked "Built-in tests". The
+[attribute rubric](./attribute-rubric.md) says how to choose each value.
+
+| Question | Properties |
+| --- | --- |
+| Which test is this? | `Id`, `Title` |
+| What is it about? | `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType` |
+| What do I fix first? | `Severity`, `UserImpact`, `ImplementationCost` |
+| What does it map to? | `Mitre`, `Control` |
+| Can it run here? | `Service`, `License`, `Permission`, `TenantType`, `Cloud`, `Platform` |
+| Is it current? | `Lifecycle`, `ReplacedBy` |
+
 | Property | Type | Allowed values | Required | When omitted | What it does |
 | --- | --- | --- | --- | --- | --- |
-| `Id` | string | ID rules above | Always | | Stable identifier. The file is `Test.<Id>.ps1`. Also an implicit tag, so `-Tag CONTOSO.1001` selects it. |
+| `Id` | string | ID rules above | Always | | Stable identifier. The file is `Test.<Id>.ps1`. Select the test with `-TestId`. |
 | `Title` | string | One line | Always | | The title shown in the report. The result row's `Name` is `<Id>: <Title>`. |
+| `Product` | string | A product key from the taxonomy (below), or an alias of one. A custom test may use any one line of up to 40 characters | Built-in tests | Empty | The product where the fix is made. Stored and written to the result as the key. The console progress and the run summary group tests by it; tests without one are shown under Other. |
+| `RelatedProduct` | string[] | Product keys or aliases; a custom test may use other names | No | None | Other products the test also checks or depends on. Must not repeat `Product`. `-Product` matches them too. |
+| `Feature` | string | A feature key of the test's product. A custom test may use any one line of up to 60 characters | Built-in tests | Empty | The part of the product the test is about, for example `conditional-access`. |
+| `Area` | string | An area key. A custom test may use any one line of up to 60 characters | Built-in tests | Empty | The security theme, whatever the product, for example `authentication`. |
+| `ResourceType` | string | A resource type key such as `Tenant` or `User`. A custom test may use another word of letters and digits | Built-in tests | Empty | What a failing result points at. |
 | `Severity` | string | `Critical`, `High`, `Medium`, `Low`, `Info` | Built-in tests | Empty | Default severity. A `TestSettings` row in the config overrides it. |
-| `Category` | string | Free text | No | The suite's `DefaultCategory`, else `Custom` | Report grouping. Written to the result as `Block`. |
-| `Product` | string | One line, up to 40 characters. Built-in tests use one of: `Entra ID`, `Exchange Online`, `Defender`, `Intune`, `Purview`, `SharePoint`, `Teams`, `Microsoft 365`, `Azure`, `Azure DevOps`, `GitHub`, `Active Directory`, `Copilot Studio` | Built-in tests | Empty | The product the test checks. The console progress and the run summary group tests by it; tests without one are shown under Other. Written to the result as `Product`. |
-| `Tag` | string[] | Non-empty, no commas (spaces allowed) | No | None | Tags for `-Tag` and `-ExcludeTag`. |
-| `Preview` | bool | | No | `$false` | Not run unless `-IncludePreview`, any `-Tag`, or its exact ID in `-TestId`. |
-| `LongRunning` | bool | | No | `$false` | Not run unless `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, or its exact ID in `-TestId`. |
+| `UserImpact` | string | `Low`, `Medium`, `High` | Built-in tests, unless `Severity` is `Info` | Empty | How much the recommended fix disrupts end users. |
+| `ImplementationCost` | string | `Low`, `Medium`, `High` | Built-in tests, unless `Severity` is `Info` | Empty | How much administrator work the recommended fix takes. |
+| `Mitre` | string[] | MITRE ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Built-in tests | None | The techniques the checked control prevents or detects. `None` cannot be combined with an ID. |
+| `Control` | string[] | `<framework-key>:<requirement-id>`, for example `cis-m365:5.1.5.1` or `nist-800-53-r5:IA-2(1)` | No | None | The requirements of frameworks the test implements or supports. The first one that a framework file knows becomes the `Benchmark` of the result. See [Mapping a test to a framework](#mapping-a-test-to-a-framework). |
 | `Service` | string[] | A name from the service registry (below), or `None` | Built-in tests | No requirement | Services that must **all** be connected. |
-| `License` | string[] | Service plan names; `&` joins plans | No | No requirement | The tenant needs **any one** element. |
+| `License` | string[] | Service plan names, not product names; `&` joins plans | No | No requirement | The tenant needs **any one** element. See [License](#license). |
+| `Permission` | string[] | One permission per element, no commas | No | None | The permissions the test needs, for example `Policy.Read.All`. Recorded on the result row; not enforced in 3.0. |
 | `TenantType` | string[] | `Workforce`, `External` | No | `Workforce` | Tenant types the test applies to. Recorded; enforced only when you turn it on. |
 | `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | All clouds | Clouds the test applies to. Recorded; enforced only when you turn it on. |
 | `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | All platforms | Operating systems the test can run on. |
-| `InstanceSource` | string | Name of a function in the same file | No | One result | Makes the test a family with one result per instance. |
+| `Lifecycle` | string | `Preview`, `Stable`, `Deprecated` | No | `Stable` | A `Preview` test is not run unless `-IncludePreview`, any `-Tag`, or its exact ID in `-TestId`. A `Deprecated` test still runs; the result row says so. |
+| `ReplacedBy` | string | A test ID | No | Empty | The test that took the place of a `Deprecated` test. |
+| `LongRunning` | bool | | No | `$false` | Not run unless `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, or its exact ID in `-TestId`. |
 | `Exclusive` | bool | | No | `$false` | The test must not run at the same time as another test. Recorded for a future parallel scheduler; no effect in 3.0. |
+| `InstanceSource` | string | Name of a function in the same file | No | One result | Makes the test a family with one result per instance. |
+| `Tag` | string[] | Non-empty, no commas (spaces allowed) | No | None | Labels of your own for `-Tag` and `-ExcludeTag`. See [Tags](#tags). |
 | `Author` | string[] | GitHub handles | Built-in tests | None | Initial authors, credited on maester.dev. |
 | `Contributor` | string[] | GitHub handles | No | None | Further contributors, in order of first contribution. |
 | `HelpUrl` | string | An `https://` URL | No | The suite's `HelpUrlTemplate` with `{Id}` replaced; none for a custom test without one | The "learn more" link on the result row. |
 
-The names `GraphScope`, `OptionalService`, `TimeoutSeconds` and `Deprecated` are reserved for
+`Category` and `Preview` were removed in Maester 3.0. A test that still has one is an `Error` row with reason
+`InvalidMetadata` and a message that names the replacement: `Product` and `Feature` instead of `Category`, and
+`Lifecycle = 'Preview'` instead of `Preview`. The names `OptionalService` and `TimeoutSeconds` are reserved for
 later versions and are rejected today.
 
-The effective tag set of a test, used by `-Tag` and `-ExcludeTag` and written to the result row, is: the
-suite's `Tags`, the `Id`, the `Tag` values, and `Preview` and `LongRunning` when those are set.
+### Product, feature, area and resource type
+
+The keys come from one registry,
+[`powershell/assets/MaesterTaxonomy.psd1`](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterTaxonomy.psd1):
+the products with their features, the areas and the resource types. Product, feature and area keys are lowercase
+kebab-case (`entra`, `conditional-access`, `privileged-access`); resource types are PascalCase (`Tenant`,
+`ConditionalAccessPolicy`). The display names live in the registry only.
+
+- A key is matched without regard to case and stored in the registry's spelling. A product can also be named by
+  an alias: `Product = 'Entra ID'` loads and is stored as `entra`.
+- A test that ships with Maester must use keys from the registry, and a `Feature` that belongs to its
+  `Product`. Anything else is `InvalidMetadata`.
+- A custom test may use any value. A value that matches the registry is stored as the key; any other value is
+  kept as you wrote it.
+
+The result row's `Block`, which 2.x readers and the XML test-case names use, is derived: the display name of
+`Product` when the registry knows it, else `Product` as written, else `Feature`, else the `Name` of the folder's
+`suite.json`, else `Custom`.
+
+### Tags
+
+`Tag` holds labels that you find useful for your own tests. `-Tag` and `-ExcludeTag` match them, together with
+the `Tags` of the folder's `suite.json`. The result row's `Tag` lists the `Tag` values of the test and nothing
+else.
+
+Tags are not how Maester classifies a test. Product, feature, area, suite and severity are attributes, and
+`Invoke-Maester` selects by them with `-Product`, `-Feature`, `-Area`, `-Suite` and `-Severity`. The tests that
+ship with Maester carry no tags for those things. The tags they had in Maester 2.x, such as `CA` or `CIS`, still
+select the same tests; see [Selection](../configuration/run-configuration.md#selection).
 
 ## The Markdown file
 
@@ -287,8 +350,16 @@ A custom test that names a service the registry does not know is `Skipped` with 
 
 ### License
 
-`License` lists Microsoft service plan names (the `servicePlanName` values of the tenant's
-`subscribedSkus`). The tenant needs any one element; inside an element, `&` means all of the joined plans.
+`License` lists Microsoft **service plan** names: the `servicePlanName` values of the tenant's `subscribedSkus`.
+The tenant needs any one element; inside an element, `&` means all of the joined plans.
+
+Use the service plan, not the product. Microsoft lists both in
+[Product names and service plan identifiers for licensing](https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference):
+take the name from the **Service plans included** column, such as `AAD_PREMIUM_P2`. The **Product name** and
+**String ID** columns, such as Microsoft 365 E5 and `SPE_E5`, are products. A product is a bundle that Microsoft
+re-packages over time, and the same feature ships in many of them, so a test that named a product would be
+skipped in tenants that have the feature through another one. The [test builder](pathname:///test-builder) has a
+licence explorer that finds the service plan from a product name, a friendly name or a GUID.
 
 ```powershell
 License = 'AAD_PREMIUM_P2'                        # Entra ID P2
@@ -315,8 +386,17 @@ government, education and suite variants match too:
 | `LOCKBOX_ENTERPRISE` | Customer Lockbox |
 | `INTUNE_A` | Microsoft Intune |
 
+`EXCHANGE_DLP` and `DEFENDER_XDR` are Maester's own tokens for a group of plans; every other token in the table
+is the service plan's own name.
+
 Any other token is compared literally with the tenant's service plan names, so a custom test can use any plan
-name. Only enabled subscriptions count. When the licences cannot be read (no Graph connection, or no
+name.
+
+For the tests shipped with Maester this is checked. The unit test "Names a service plan in License, not a
+product" in `powershell/tests/general/NativeTestAttributes.Tests.ps1` fails when a `License` value is neither a
+name from Microsoft's Service plans included column nor a token of `powershell/assets/MaesterLicenseTable.psd1`.
+The list of Microsoft's names is `website/src/data/license-service-plans.json`, which a scheduled workflow
+refreshes from the Microsoft page every day. Only enabled subscriptions count. When the licences cannot be read (no Graph connection, or no
 permission), the licence check is not applied and the test runs.
 
 ### TenantType and Cloud
@@ -450,7 +530,7 @@ The instance object has:
 | `Id` | Yes | The suffix. The row's ID is `<parent ID>.<Id>`, for example `CONTOSO.2001.4f6c...`. It must match `^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$` and be unique within the family. |
 | `Title` | No | The instance's title. Defaults to `-TestTitle` from the helper, then the attribute's title. |
 | `Severity` | No | The instance's severity, used when the config sets none. |
-| `Tag` | No | Extra tags for the instance's row. |
+| `Tag` | No | Extra tags written to the instance's row. |
 | `Data` | No | Anything the test needs. |
 
 Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce
@@ -520,7 +600,6 @@ A `suite.json` in a test folder sets what is true for every test in it (and its 
   "Name": "Contoso security baseline",
   "Source": "Custom",
   "Tags": ["Contoso"],
-  "DefaultCategory": "Contoso",
   "HelpUrlTemplate": "https://wiki.contoso.com/maester/{Id}",
   "RequiresMaester": "3.0"
 }
@@ -528,15 +607,151 @@ A `suite.json` in a test folder sets what is true for every test in it (and its 
 
 | Key | Effect |
 | --- | --- |
-| `Id` | Written to each result row as `Suite`. Defaults to `Custom`. |
+| `Id` | Written to each result row as `Suite`, which `-Suite` selects by. Defaults to `Custom`. |
+| `Name` | The `Block` of the result rows of tests that have neither `Product` nor `Feature`. |
 | `Source` | Written to each result row as `Source`. Defaults to `Custom`. |
-| `Tags` | Added to every test's tags. |
-| `DefaultCategory` | The `Category` of tests that do not set one. |
+| `Tags` | Matched by `-Tag` and `-ExcludeTag` for every test in the folder. Not written to the result rows. |
 | `HelpUrlTemplate` | The `HelpUrl` of tests that do not set one; `{Id}` is replaced. |
 | `RequiresMaester` | Tests in the folder need at least this Maester version. On an older version each one is an `Error` row with reason `RequiresNewerMaester`. |
 | `NoResultReason` | The skip text shown when a test returns `$null` without calling `Add-MtTestResultDetail`. Defaults to "The test returned no result." |
+| `Frameworks` | The frameworks whose catalogue is in the folder. See [Benchmarks and framework files](#benchmarks-and-framework-files). |
 
-A single file can state the same with `#Requires -Modules @{ ModuleName = 'Maester'; ModuleVersion = '3.1' }`.
+A single file can state the same as `RequiresMaester` with
+`#Requires -Modules @{ ModuleName = 'Maester'; ModuleVersion = '3.1' }`.
+
+### Benchmarks and framework files
+
+A test says which requirement of a framework it implements in its own attribute, with `Control`:
+
+```powershell
+[MaesterTest(
+    Id      = 'CONTOSO.BL.1.1',
+    Title   = 'Admins sign in with phishing-resistant MFA',
+    Control = 'contoso-baseline:1.1'
+)]
+```
+
+A `Control` value is `<framework-key>:<requirement-id>`. This is the only way a test is mapped to a framework. It
+is the same for the CIS and CISA tests that ship with Maester (`Control = 'cis-m365:5.1.5.1'`,
+`Control = 'cisa-scuba:MS.AAD.3.1'`) and for a test of your own.
+
+The frameworks that ship with Maester, with the key to use in `Control`:
+
+| Key | Framework | Framework file | Declared in |
+| --- | --- | --- | --- |
+| `cis-m365` | CIS Microsoft 365 Foundations Benchmark | [tests/cis/frameworks/cis-m365.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-m365.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
+| `cis-github` | CIS GitHub Benchmark | [tests/cis/frameworks/cis-github.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-github.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
+| `cisa-scuba` | CISA SCuBA Secure Configuration Baselines for Microsoft 365 | [tests/cisa/frameworks/cisa-scuba.json](https://github.com/maester365/maester/blob/main/tests/cisa/frameworks/cisa-scuba.json) | [tests/cisa/suite.json](https://github.com/maester365/maester/blob/main/tests/cisa/suite.json) |
+
+Open a file to see the requirement IDs you can reference and the version Maester implements. NIST SP 800-53 has
+no framework file; its control IDs are in
+[powershell/assets/MaesterNistControls.json](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterNistControls.json)
+and are written `nist-800-53-r5:<control>`. The [test builder](pathname:///test-builder) looks all of them up.
+
+A framework file is the catalogue of one framework: its name, its version and every requirement, with the facts
+about each. A suite that holds a framework file declares it in its `suite.json`:
+
+```json
+{
+  "Id": "Contoso",
+  "Name": "Contoso security baseline",
+  "Frameworks": [
+    { "Key": "contoso-baseline", "Version": "2.1" }
+  ]
+}
+```
+
+| Key | Content |
+| --- | --- |
+| `Key` | The key of the framework: lowercase letters, digits, dots and hyphens. It names the framework file, it is the first part of a `Control` value, and it is written to the result. |
+| `Version` | The version of the framework. When omitted, the `Version` of the framework file is used. |
+
+The file is `frameworks/<Key>.json`, beside the `suite.json`:
+
+```json
+{
+  "Framework": "contoso-baseline",
+  "Name": "Contoso Security Baseline",
+  "Version": "2.1",
+  "Url": "https://wiki.contoso.com/baseline",
+  "Requirements": [
+    { "Id": "1.1", "Level": "L1", "Related": ["nist-800-53-r5:IA-2(1)"] },
+    { "Id": "1.2", "Level": "L2" }
+  ]
+}
+```
+
+- `Framework` is the `Key` from the `suite.json`. `Name` is the name of the framework and `Url` is where it is
+  published. A `Version` here must be the one the `suite.json` declares.
+- A requirement has an `Id`, written as a string. It is the second part of a `Control` value, and it is matched
+  exactly, including upper and lower case.
+- `Related` lists controls of other frameworks that the requirement relates to, written
+  `<framework-key>:<control-id>` with a lowercase key, like a `Control` value.
+- Any other key is a fact about the requirement, such as `Level`, `Profile` or `Criticality`. Keep to identifiers
+  and facts. Do not copy the text of a benchmark into the file: it is often licensed, and the test's own title
+  already says what is checked.
+- The file does not list tests. A `Tests` key on a requirement and an `IdPrefix` key in the `suite.json` are
+  ignored.
+
+#### What the result gets
+
+Maester looks up each `Control` value of a test, in the order they are written. A value resolves when its key is
+a framework that has a file and its ID is a requirement in that file.
+
+- `Benchmark` is built from the first value that resolves: the `Framework`, its `Version`, the `Requirement` and
+  the requirement's own facts. When no value resolves, `Benchmark` is `null`.
+- `Control` holds the values the test wrote, followed by the `Related` references of every requirement that
+  resolved, each once.
+
+`Get-MtTest` shows both. See [the result schema](../result-schema.md#benchmark).
+
+A framework is found by its key, whatever suite declares it. A custom test can name a framework that ships with
+Maester (`cis-m365`, `cis-github`, `cisa-scuba`) or one that a suite in your own test folder declares. Two suites
+must not declare the same key: Maester warns, names both `suite.json` files and uses the first, and a framework
+that ships with Maester comes before one of yours.
+
+A `Control` value whose key no framework file has, such as `nist-800-53-r5:IA-2(1)` or `iso-27001-2022:A.5.17`,
+is written to the result as it is. It needs no file.
+
+A problem with a framework never stops a run. Maester writes a warning that names the file and what is wrong:
+
+- The file is missing or is not valid JSON, its `Framework` or `Version` differs from the `suite.json`, a
+  requirement has no `Id` or an `Id` that is listed twice, or a `Related` reference is not written
+  `<framework-key>:<control-id>`. No test gets a `Benchmark` or `Related` controls from that framework.
+- A `Control` names a framework that has a file and a requirement that is not in it, usually a typing error. That
+  value gives no `Benchmark`; the other tests keep theirs.
+
+#### Mapping a test to a framework
+
+| The test | What to write | What the result gets |
+| --- | --- | --- |
+| Implements a requirement of a benchmark that has a framework file (`CIS.M365.5.1.5.1`, `CONTOSO.BL.1.1`) | `Control = 'cis-m365:5.1.5.1'`. If the requirement is new, add it to the framework file. | `Benchmark`, and the reference in `Control` |
+| Exists for its own reasons and also supports such a requirement (a Maester test that checks what a CISA policy asks for) | `Control = 'cisa-scuba:MS.AAD.3.1'` | The same |
+| Supports a control of a framework that has no file | `Control = 'nist-800-53-r5:IA-2(1)'` | The reference in `Control` |
+
+A test can list several values. Put the requirement the test is written for first: the first value that resolves
+becomes the `Benchmark`. Use the keys and requirement IDs of the framework files that ship with Maester so your
+results line up with the built-in ones. For a framework that has no file, choose a lowercase key such as
+`nist-800-53-r5` or `iso-27001-2022` and keep to it.
+
+#### Why the framework file still exists
+
+A `key:id` string names a requirement. It cannot hold what is true of the requirement whatever test implements
+it. The framework file holds that:
+
+- the name and the version of the framework, in one place, so a new version of a benchmark is one edit;
+- the facts about each requirement: the CIS level and profiles, the CISA criticality (SHALL or SHOULD), and where
+  the policy stands upstream (current, moved or removed);
+- the `Related` controls, such as the NIST SP 800-53 controls CISA maps each policy to, so that every test of the
+  requirement carries them without repeating them;
+- the full list of requirements. A requirement that no test names is a gap you can see, and a `Control` that
+  names a requirement the list does not have is a typing error that Maester reports.
+
+For the tests that ship with Maester the module build fails on such an error, and the unit tests check that every
+CIS and CISA test names a requirement of its own suite's framework.
+
+A `Benchmark` or a `Control` says that a test supports a requirement. It does not say that a tenant complies with
+the framework.
 
 ## Running and inspecting tests
 
@@ -545,7 +760,8 @@ A single file can state the same with `#Requires -Modules @{ ModuleName = 'Maest
 `Get-MtTest` lists tests and their metadata without connecting to a tenant and without running any test code.
 
 ```powershell
-Get-MtTest -Tag CA | Format-Table Id, Title, Severity            # built-in tests
+Get-MtTest -Product entra -Feature conditional-access |
+    Format-Table Id, Title, Severity                             # built-in tests
 Get-MtTest MT.1198 | Select-Object -ExpandProperty Parameters    # a test's parameters
 Get-MtTest -Path ./custom | Where-Object { -not $_.IsValid } |
     Select-Object Id, File, Errors                               # validate your own tests
@@ -553,7 +769,8 @@ Get-MtTest -Path ./custom | Where-Object { -not $_.IsValid } |
 
 Without `-Path` it returns the tests that ship with Maester. With `-Path` (a file or a folder) it reads and
 validates those files; `IsValid` is `$false` and `Errors` lists every problem with its line number. `-Id`
-accepts exact IDs and `*` wildcards; `-Tag` matches any of the given tags.
+accepts exact IDs and `*` wildcards. `-Product`, `-Feature`, `-Area`, `-Severity` and `-Suite` select by
+attribute, as they do on `Invoke-Maester`, and `-Tag` matches what a run with that tag would select.
 
 ### Invoke-MtTest
 
@@ -574,8 +791,8 @@ Invoke-MtTest -Path ./custom -Id CONTOSO.2001.abc  # one instance of a family
 - `-Config` takes a path, an object or a list of them, as for `Invoke-Maester`. Without it, a test that calls
   `Invoke-MtTest` during an `Invoke-Maester` run uses the run's configuration; otherwise Maester reads the config
   files found from `-Path` (or the current folder).
-- Tests you name run even if they are Preview or long-running, and `Selection.DefaultAction` is ignored. A
-  test disabled in the config is still `NotRun`.
+- Tests you name run even if they are preview or long-running tests, and `Selection.DefaultAction` is
+  ignored. A test disabled in the config is still `NotRun`.
 
 Dot-sourcing a test file at the prompt defines the function but gives it no engine: no service checks, no
 error handling and no `.md`. Use `Invoke-MtTest` while you write a test.

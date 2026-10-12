@@ -18,10 +18,12 @@
     [MaesterTest(
         Id = 'AD-USER-27',
         Title = 'Honey pot user details should be investigated',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'logging-and-detection',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

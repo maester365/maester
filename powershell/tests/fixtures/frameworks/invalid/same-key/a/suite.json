@@ -1,0 +1,8 @@
+{
+  "Id": "FxSameKeyA",
+  "Name": "The first of two suites that declare the same framework key",
+  "Source": "Custom",
+  "Frameworks": [
+    { "Key": "fx-same", "Version": "1.0" }
+  ]
+}

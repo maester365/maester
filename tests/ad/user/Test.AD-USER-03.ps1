@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-USER-03',
         Title = 'Non-expiring password user count should be retrievable',
-        Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

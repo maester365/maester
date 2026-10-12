@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-FOR-03',
         Title = 'Tombstone lifetime should be retrievable',
+        Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Forest',
-        Product = 'Active Directory',
-        Tag = 'AD.Forest',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

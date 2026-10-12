@@ -21,10 +21,14 @@ function Test-AzdoOrganizationTriggerPullRequestGitHubRepository {
     [MaesterTest(
         Id = 'AZDO.1022',
         Title = 'Limit building pull requests from forked GitHub repositories.',
+        Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1677',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks'

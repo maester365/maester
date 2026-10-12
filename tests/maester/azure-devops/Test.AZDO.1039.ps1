@@ -32,10 +32,15 @@ function Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository {
     [MaesterTest(
         Id = 'AZDO.1039',
         Title = '(Organization) Secret Protection: new repositories enrolled automatically.',
+        Product = 'azure-devops',
+        Feature = 'repositories',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1552.001',
+        Control = 'nist-800-53-r5:IA-5(7)',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding'

@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.5.1.6.2',
         Title = 'Ensure that guest user access is restricted',
+        Product = 'entra',
+        Feature = 'external-identities',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Entra ID',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1087.004', 'T1069.003'),
+        Control = ('cis-m365:5.1.6.2', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

@@ -20,13 +20,18 @@
     [MaesterTest(
         Id = 'MT.1111',
         Title = 'High privileged user should be linked to an identity.',
+        Product = 'defender',
+        Feature = 'exposure-management',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Low',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        Preview,
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-2',
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

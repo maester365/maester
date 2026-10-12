@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.7.2',
         Title = 'Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.',
+        Product = 'entra',
+        Feature = 'roles',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.7.2'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1098.003', 'T1136.003', 'T1651'),
+        Control = 'cisa-scuba:MS.AAD.7.2',
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'mrdos010')

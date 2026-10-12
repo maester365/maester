@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-15',
         Title = 'User manager count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

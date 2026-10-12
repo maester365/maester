@@ -22,10 +22,15 @@
     [MaesterTest(
         Id = 'AD-SCH-05',
         Title = 'LAPS should be installed in Active Directory',
+        Product = 'ad',
+        Feature = 'schema',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Active Directory - Schema',
-        Product = 'Active Directory',
-        Tag = 'AD.Schema',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.003', 'T1550.002'),
+        Control = ('nist-800-53-r5:IA-5', 'nist-800-53-r5:AC-6(2)'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

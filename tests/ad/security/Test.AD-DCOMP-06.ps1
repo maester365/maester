@@ -25,10 +25,15 @@
     [MaesterTest(
         Id = 'AD-DCOMP-06',
         Title = 'No enabled computers should be stale for 180 days or more',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Computer',
         Severity = 'Medium',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

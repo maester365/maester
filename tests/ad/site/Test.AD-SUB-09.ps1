@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-SUB-09',
         Title = 'Distinct first two octets (/16 networks) count should be retrievable',
+        Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

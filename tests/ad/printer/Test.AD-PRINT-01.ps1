@@ -22,10 +22,12 @@
     [MaesterTest(
         Id = 'AD-PRINT-01',
         Title = 'Printer total count should be retrievable',
+        Product = 'ad',
+        Feature = 'printers',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Printer',
-        Product = 'Active Directory',
-        Tag = 'AD.Printer',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

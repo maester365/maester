@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.13.1',
         Title = 'Mailbox auditing SHALL be enabled.',
+        Product = 'exchange',
+        Feature = 'mailbox-auditing',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.13.1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1070.008', 'T1098.002', 'T1564.008', 'T1586.002', 'T1685.002'),
+        Control = 'cisa-scuba:MS.EXO.13.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

@@ -20,10 +20,14 @@ function Test-MtAdGpoVersionMismatchCount {
     [MaesterTest(
         Id = 'AD-GPOREP-15',
         Title = 'No GPOs should have version mismatches',
-        Severity = 'High',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

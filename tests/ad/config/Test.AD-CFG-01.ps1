@@ -18,10 +18,12 @@
     [MaesterTest(
         Id = 'AD-CFG-01',
         Title = 'Tombstone lifetime configuration should be retrievable',
+        Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

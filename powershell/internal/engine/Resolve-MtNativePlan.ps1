@@ -5,8 +5,13 @@ function Resolve-MtNativePlan {
 
     .DESCRIPTION
     Gates apply in this order, and the first failing gate gives the reason (design section 6):
-    invalid metadata; disabled by config; selection (IDs, tags, Preview, long-running, opt-in service);
-    platform; tenant type; cloud; service; licence; parameter binding.
+    invalid metadata; disabled by config; selection (IDs, typed selectors, tags, opt-in service, Preview,
+    long-running); platform; tenant type; cloud; service; licence; parameter binding.
+
+    The default exclusions are decided by attribute, not by tag (test attribute design, section 4): a test
+    with Lifecycle = 'Preview' or LongRunning is left out when the run excludes them by default
+    (-AutoExcludedTag) and the test is not named by its exact ID, and a test whose service is opt-in, such
+    as Active Directory, when that service is not connected.
 
     Each plan row has: Test, Disposition (Run, NotRun, Skipped or Error), ReasonCode, ReasonDetail,
     LegacySkipCode, Parameters (the bound hashtable), EffectiveParameters, TimeoutSeconds, Setting (the
@@ -19,7 +24,8 @@ function Resolve-MtNativePlan {
         [Parameter(Mandatory)] [pscustomobject] $Selection,
         [Parameter(Mandatory)] [pscustomobject] $RunConfig,
         [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
-        # The include and exclude tags of the run, and which exclusions the engine added by default.
+        # The include and exclude tags of the run, and which exclusions the engine added by default
+        # (Preview, LongRunning, AD). The defaults are applied to native tests by attribute.
         [Parameter()] [string[]] $IncludeTag = @(),
         [Parameter()] [string[]] $ExcludeTag = @(),
         [Parameter()] [string[]] $AutoExcludedTag = @(),
@@ -43,6 +49,16 @@ function Resolve-MtNativePlan {
             if ($ts -and $ts.Id -and $ts.PSObject.Properties['Enabled'] -and $ts.Enabled -eq $true) { $null = $allowListIds.Add([string]$ts.Id) }
         }
     }
+
+    $selectorInUse = Test-MtSelectorInUse -Selection $Selection
+    $userExcludeTag = @($ExcludeTag | Where-Object { $_ -and $_ -notin $AutoExcludedTag })
+    # How a tag pattern matches a test: by one of its own tags, else by a Maester 2.x tag, else not at all.
+    $matchTag = {
+        param($tags, $pattern)
+        foreach ($tag in $tags.Own) { if ($tag -like $pattern) { return 'Own' } }
+        foreach ($tag in $tags.Legacy) { if ($tag -like $pattern) { return 'Legacy' } }
+    }
+    $legacyTagUsed = [ordered]@{}
 
     foreach ($t in $Test) {
         $row = [ordered]@{
@@ -105,31 +121,61 @@ function Resolve-MtNativePlan {
             $row.ExactlyNamed = [bool]($includedBy | Where-Object { -not $_.Contains('*') })
         }
 
-        # Selection by tag.
-        $tags = @($t.EffectiveTag)
+        # Typed selectors: Product (or RelatedProduct), Feature, Area, the effective severity and Suite.
+        if ($selectorInUse) {
+            $severity = if ($setting -and $setting.PSObject.Properties['Severity'] -and $setting.Severity) { [string]$setting.Severity } else { [string]$t.Severity }
+            $miss = Test-MtSelectorMatch -Selection $Selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $severity -Suite $t.Suite
+            if ($miss) {
+                & $set 'NotRun' 'NotSelected' "Not selected by -$($miss.Selector) ($($miss.Value -join ', '))."
+                [pscustomobject]$row; continue
+            }
+        }
+
+        # Selection by tag: the tags of the test and its suite and, for a built-in test, its ID and its
+        # Maester 2.x tags (section 5.1). A pattern that only a 2.x tag answers is noted for the warning below.
+        $tags = if ($IncludeTag.Count -gt 0 -or $userExcludeTag.Count -gt 0) { Get-MtSelectionTag -Test $t } else { $null }
         $included = $IncludeTag.Count -eq 0
         if (-not $included) {
-            foreach ($tag in $tags) { foreach ($pattern in $IncludeTag) { if ($tag -like $pattern) { $included = $true; break } }; if ($included) { break } }
+            foreach ($pattern in $IncludeTag) {
+                $via = & $matchTag $tags $pattern
+                if (-not $via) { continue }
+                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = $true }
+                $included = $true
+                break
+            }
         }
         if (-not $included) {
             & $set 'NotRun' 'NotSelected' "Matched none of the tags $($IncludeTag -join ', ')."
             [pscustomobject]$row; continue
         }
-        $hits = @(foreach ($pattern in $ExcludeTag) { foreach ($tag in $tags) { if ($tag -like $pattern) { $pattern; break } } })
-        if ($row.ExactlyNamed) {
-            # A test named by its exact ID runs even if it is a preview or long-running test.
-            $hits = @($hits | Where-Object { -not ($_ -in 'Preview', 'LongRunning' -and $AutoExcludedTag -contains $_) })
-        }
+
+        # Default exclusions, by attribute. An opt-in service that is not connected comes first.
         $optIn = @($t.Service | Where-Object { $registry.Services[$_].OptIn })
         $optInDisconnected = @($optIn | Where-Object { $TenantContext -and $TenantContext.Services.PSObject.Properties[$_] -and -not $TenantContext.Services.$_ })
-        if ($optInDisconnected -or ($hits -contains 'AD' -and $AutoExcludedTag -contains 'AD')) {
+        if ($optInDisconnected) {
             & $set 'NotRun' 'OptInServiceNotConnected' 'Active Directory tests run only after Connect-Maester -Service ActiveDirectory.'
             [pscustomobject]$row; continue
         }
+        # A test named by its exact ID runs even if it is a preview or long-running test.
+        if (-not $row.ExactlyNamed) {
+            if ($t.Lifecycle -eq 'Preview' -and $AutoExcludedTag -contains 'Preview') {
+                & $set 'NotRun' 'Preview' 'Preview test. Use -IncludePreview to run it.'
+                [pscustomobject]$row; continue
+            }
+            if ($t.LongRunning -and $AutoExcludedTag -contains 'LongRunning') {
+                & $set 'NotRun' 'LongRunning' 'Long-running test. Use -IncludeLongRunning to run it.'
+                [pscustomobject]$row; continue
+            }
+        }
+        # The tags the caller excludes. The tags the engine adds for Pester-format tests are not among them.
+        $hits = @(foreach ($pattern in $userExcludeTag) {
+                $via = & $matchTag $tags $pattern
+                if (-not $via) { continue }
+                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = $true }
+                $pattern
+            })
         if ($hits) {
-            if ($hits -contains 'Preview' -and $AutoExcludedTag -contains 'Preview') { & $set 'NotRun' 'Preview' 'Preview test. Use -IncludePreview to run it.' }
-            elseif ($hits -contains 'LongRunning' -and $AutoExcludedTag -contains 'LongRunning') { & $set 'NotRun' 'LongRunning' 'Long-running test. Use -IncludeLongRunning to run it.' }
-            else { & $set 'NotRun' 'ExcludedByTag' "Excluded by tag ($(@($hits | Select-Object -Unique) -join ', '))." }
+            & $set 'NotRun' 'ExcludedByTag' "Excluded by tag ($(@($hits | Select-Object -Unique) -join ', '))."
             [pscustomobject]$row; continue
         }
 
@@ -161,6 +207,37 @@ function Resolve-MtNativePlan {
 
         if ($DryRun) { & $set 'NotRun' 'DryRun' 'Dry run: this test would have run.' }
         [pscustomobject]$row
+    }
+
+    # One warning per run when a tag of Maester 2.x did the selecting, with the typed selector that replaces it.
+    if ($legacyTagUsed.Count -gt 0) { Write-Warning (Get-MtLegacyTagWarning -Tag @($legacyTagUsed.Keys)) }
+}
+
+function Get-MtLegacyTagWarning {
+    <#
+    .SYNOPSIS
+    Returns the text of the warning for a run that selected tests through Maester 2.x tags.
+
+    .DESCRIPTION
+    Names each tag and, where assets/Maester.LegacyTags.json gives one, the typed selector that replaces
+    it, for example -Tag CA and -Feature conditional-access (test attribute design, section 5.1).
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        # The -Tag and -ExcludeTag values that matched a test only through a 2.x tag.
+        [Parameter(Mandatory)] [string[]] $Tag
+    )
+
+    $table = Get-MtLegacyTagTable
+    $named = foreach ($t in $Tag) {
+        $replacement = $null
+        if ($table.Replacement.TryGetValue($t, [ref] $replacement)) { "'$t' (now $replacement)" } else { "'$t'" }
+    }
+    if (@($named).Count -eq 1) {
+        "The tag $named is a Maester 2.x tag. It still selects the same built-in tests, but tests added after Maester 3.0 do not carry it."
+    } else {
+        "These tags are Maester 2.x tags: $($named -join ', '). They still select the same built-in tests, but tests added after Maester 3.0 do not carry them."
     }
 }
 

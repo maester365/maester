@@ -20,10 +20,15 @@
     [MaesterTest(
         Id = 'AD-SPN-12',
         Title = 'No domain admin accounts should have SPNs configured',
+        Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Critical',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1558.003',
+        Control = ('nist-800-53-r5:AC-6(5)', 'nist-800-53-r5:IA-5'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

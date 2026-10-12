@@ -19,10 +19,12 @@
     [MaesterTest(
         Id = 'AD-DACL-09',
         Title = 'Privileged allow ACE count should be investigated',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'privileged-access',
+        ResourceType = 'Permission',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
+        Mitre = ('T1098', 'T1222.001'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

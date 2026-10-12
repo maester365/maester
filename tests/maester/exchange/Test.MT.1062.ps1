@@ -19,10 +19,15 @@
     [MaesterTest(
         Id = 'MT.1062',
         Title = 'Ensure Direct Send is set to be rejected',
+        Product = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:CM-7',
         Service = 'ExchangeOnline',
         Author = 'bastienperez'
     )]

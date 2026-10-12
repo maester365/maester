@@ -30,10 +30,15 @@
     [MaesterTest(
         Id = 'MT.1168',
         Title = 'Cleaned Malware should be retained for at least 30 days.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

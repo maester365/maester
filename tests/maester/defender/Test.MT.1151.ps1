@@ -29,10 +29,16 @@
     [MaesterTest(
         Id = 'MT.1151',
         Title = 'Email Scanning should be enabled.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566.001',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

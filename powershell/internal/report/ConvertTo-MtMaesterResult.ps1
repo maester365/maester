@@ -299,6 +299,7 @@
         foreach ($item in $RunContext.Superseded.Items) { $supersededKeys["$($item.File):$($item.Line)"] = $true }
     }
 
+    $pesterRowAttributes = Get-MtRowAttribute
     foreach ($test in $sortedTests) {
         if ($supersededKeys.Count -gt 0 -and $test.ScriptBlock.File -and $supersededKeys.ContainsKey("$($test.ScriptBlock.File):$($test.StartLine)")) { continue }
         $testIndex++
@@ -398,7 +399,7 @@
         # Individual tests usually complete in well under a second, so keep milliseconds
         # here. The run-level totals below stay on the coarser format.
         $testTimeSpanFormat = 'hh\:mm\:ss\.fff'
-        $mtTestInfo = [PSCustomObject]@{
+        $mtTestInfo = [ordered]@{
             Index           = $testIndex
             Id              = $testId
             Title           = $testTitle
@@ -411,6 +412,7 @@
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.ExpandedName
+            Product         = $null
             Duration        = $test.Duration.ToString($testTimeSpanFormat)
             ResultDetail    = $testResultDetail
             # Additive in result schema 2.1.
@@ -424,7 +426,9 @@
             Parameters      = $null
             Diagnostics     = @()
         }
-        $mtTests += $mtTestInfo
+        # A Pester-format row carries the attribute fields of a native row as null.
+        foreach ($field in $pesterRowAttributes.Keys) { $mtTestInfo[$field] = $pesterRowAttributes[$field] }
+        $mtTests += [PSCustomObject]$mtTestInfo
     }
 
     # Native rows join the Pester rows, sorted the way 2.x sorts: Passed and Failed first, then the rest, each by name.
@@ -481,8 +485,8 @@
             }
         }
     }
-    # Native tests: one block per category. The rows are indexed by block once (a row whose Block is a list
-    # counts in each of its blocks), instead of filtering every row for every category.
+    # Native tests: one block per Block value (the product's name). The rows are indexed by block once (a row
+    # whose Block is a list counts in each of its blocks), instead of filtering every row for every block.
     $rowsByBlock = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.List[object]]]::new([System.StringComparer]::OrdinalIgnoreCase)
     foreach ($row in $mtTests) {
         foreach ($blockName in @($row.Block | Where-Object { $_ } | Select-Object -Unique)) {
@@ -596,6 +600,9 @@
         # A string: CurrentVersion keeps its 2.x shape ([version] serialised as an object).
         CatalogVersion    = [string]$currentVersion
         TenantContext     = if ($RunContext -and $RunContext.TenantContext) { $RunContext.TenantContext } else { $null }
+        # Names for the keys the rows use (products, features, areas, resource types, ATT&CK techniques), so
+        # that a consumer can render them without the module.
+        Taxonomy          = Get-MtResultTaxonomy -InputObject $mtTests
         RunMetadata       = if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Metadata']) { $__MtSession.MaesterConfig.Metadata } else { $null }
         Selection         = [PSCustomObject]@{
             BuiltIn    = if ($RunContext -and $RunContext.Selection) { $RunContext.Selection.BuiltIn } else { 'All' }

@@ -13,10 +13,14 @@
     [MaesterTest(
         Id = 'MT.1197',
         Title = 'Remove memberOf rules.',
-        Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
+        Product = 'entra',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'agnivesh'
     )]

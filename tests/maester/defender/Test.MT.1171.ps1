@@ -30,10 +30,15 @@
     [MaesterTest(
         Id = 'MT.1171',
         Title = 'Sample Submission should send safe samples automatically.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

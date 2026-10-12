@@ -21,10 +21,12 @@ function Test-AzdoResourceUsageProject {
     [MaesterTest(
         Id = 'AZDO.1011',
         Title = 'Project Resource Limits.',
+        Product = 'azure-devops',
+        Feature = 'resource-usage',
+        Area = 'engineering-systems',
+        ResourceType = 'Project',
         Severity = 'Info',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops'

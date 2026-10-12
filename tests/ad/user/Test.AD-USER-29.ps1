@@ -19,10 +19,15 @@
     [MaesterTest(
         Id = 'AD-USER-29',
         Title = 'No users should be configured for unconstrained delegation',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1558', 'T1550.003'),
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

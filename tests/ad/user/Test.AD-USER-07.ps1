@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-USER-07',
         Title = 'No pre-authentication user count should be retrievable',
-        Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'T1558.004',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

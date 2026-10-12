@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-USER-05',
         Title = 'Delegation-enabled user count should be retrievable',
-        Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

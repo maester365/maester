@@ -19,10 +19,12 @@
     [MaesterTest(
         Id = 'AD-DC-07',
         Title = 'DC operating system count should be retrievable',
-        Severity = 'High',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

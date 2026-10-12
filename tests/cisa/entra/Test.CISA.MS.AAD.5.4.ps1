@@ -17,11 +17,17 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.5.4',
         Title = 'Group owners SHALL NOT be allowed to consent to applications.',
+        Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Deprecated', 'Entra ID Free', 'MS.AAD', 'MS.AAD.5.4'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
+        Control = 'cisa-scuba:MS.AAD.5.4',
         Service = 'Graph',
+        Lifecycle = 'Deprecated',
         Author = 'soulemike',
         Contributor = ('michaelmsonne', 'weyCC81', 'SamErde')
     )]

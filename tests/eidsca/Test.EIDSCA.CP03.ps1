@@ -14,9 +14,15 @@ function Test-MtCheckEidscaCP03 {
     [MaesterTest(
         Id = 'EIDSCA.CP03',
         Title = 'Default Settings - Consent Policy Settings - Block user consent for risky apps.',
+        Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
+        Control = ('nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:CM-5'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

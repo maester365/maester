@@ -30,10 +30,15 @@
     [MaesterTest(
         Id = 'MT.1162',
         Title = 'Cloud Extended Timeout should be 30-50 seconds.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

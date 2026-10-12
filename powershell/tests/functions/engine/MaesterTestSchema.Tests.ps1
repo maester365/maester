@@ -12,12 +12,23 @@ Describe 'MaesterTest schema table' {
     }
 
     It 'Declares the same type as the attribute for <_>' -ForEach @(
-        'Id', 'Title', 'Severity', 'Category', 'Tag', 'Preview', 'LongRunning', 'Service', 'License',
-        'TenantType', 'Cloud', 'Platform', 'InstanceSource', 'Exclusive', 'Author', 'Contributor', 'HelpUrl'
+        'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
+        'ImplementationCost', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
+        'Lifecycle', 'ReplacedBy', 'LongRunning', 'Exclusive', 'InstanceSource', 'Tag', 'Author', 'Contributor', 'HelpUrl'
     ) {
         $map = @{ 'System.String' = 'string'; 'System.String[]' = 'string[]'; 'System.Boolean' = 'bool' }
         $clrType = [MaesterTestAttribute].GetProperty($_).PropertyType.FullName
         $script:schema.Properties[$_].Type | Should -Be $map[$clrType]
+    }
+
+    It 'Checks the type of every property' {
+        # The list above is written out because -ForEach is read at discovery; this keeps it complete.
+        $checked = @(
+            'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
+            'ImplementationCost', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
+            'Lifecycle', 'ReplacedBy', 'LongRunning', 'Exclusive', 'InstanceSource', 'Tag', 'Author', 'Contributor', 'HelpUrl'
+        )
+        @($script:schema.Properties.Keys | Where-Object { $_ -notin $checked }) | Should -BeNullOrEmpty
     }
 
     It 'Gives every property a type, a required level and a description' {
@@ -43,6 +54,35 @@ Describe 'MaesterTest schema table' {
     It 'Does not reuse a reserved name as a property' {
         foreach ($name in $script:schema.ReservedNames) {
             $script:schema.Properties.Contains($name) | Should -BeFalse -Because $name
+        }
+    }
+
+    It 'Reserves only OptionalService and TimeoutSeconds' {
+        @($script:schema.ReservedNames | Sort-Object) | Should -Be @('OptionalService', 'TimeoutSeconds')
+    }
+
+    It 'Removed Category and Preview and gives a message with the replacement for each' {
+        foreach ($name in 'Category', 'Preview') {
+            $script:schema.Properties.Contains($name) | Should -BeFalse -Because $name
+            [MaesterTestAttribute].GetProperty($name) | Should -BeNullOrEmpty -Because $name
+        }
+        $script:schema.RemovedProperties.Category | Should -Be '`Category` was removed in Maester 3.0. Use `Product` and `Feature`; the result''s `Block` is derived from them.'
+        $script:schema.RemovedProperties.Preview | Should -Be '`Preview` was removed in Maester 3.0. Use `Lifecycle = ''Preview''`.'
+    }
+
+    It 'Has no product list of its own: products come from the taxonomy registry' {
+        $script:schema.Contains('Products') | Should -BeFalse
+        foreach ($name in 'Product', 'RelatedProduct') { $script:schema.Properties[$name].ValuesFrom | Should -Be 'Taxonomy.Products' }
+        $script:schema.Properties.Feature.ValuesFrom | Should -Be 'Taxonomy.Features'
+        $script:schema.Properties.Area.ValuesFrom | Should -Be 'Taxonomy.Areas'
+        $script:schema.Properties.ResourceType.ValuesFrom | Should -Be 'Taxonomy.ResourceTypes'
+    }
+
+    It 'Waives a requirement only on a property that exists' {
+        foreach ($name in $script:schema.Properties.Keys) {
+            $waiver = $script:schema.Properties[$name].NotRequiredWhen
+            if (-not $waiver) { continue }
+            foreach ($other in $waiver.Keys) { $script:schema.Properties.Contains($other) | Should -BeTrue -Because "$name.NotRequiredWhen names $other" }
         }
     }
 }

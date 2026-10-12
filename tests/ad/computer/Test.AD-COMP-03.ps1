@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-COMP-03',
         Title = 'Computer CreatorSid count should be retrievable',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'access-control',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

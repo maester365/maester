@@ -79,7 +79,7 @@ Here's a custom test that checks if there are any users without a manager assign
 ### Step 1: Create the test
 
 ```powershell
-New-MtTest -Id CONTOSO.1101 -Title 'All users should have a manager attribute set' -Service Graph -Category Contoso
+New-MtTest -Id CONTOSO.1101 -Title 'All users should have a manager attribute set' -Service Graph -Product entra -Area identity-lifecycle -ResourceType User -Severity Low
 ```
 
 ### Step 2: Write the test function
@@ -89,12 +89,13 @@ New-MtTest -Id CONTOSO.1101 -Title 'All users should have a manager attribute se
 ```powershell
 function Test-ContosoUsersMissingManagers {
     [MaesterTest(
-        Id       = 'CONTOSO.1101',
-        Title    = 'All users should have a manager attribute set',
-        Severity = 'Low',
-        Category = 'Contoso',
-        Tag      = ('Entra', 'Users'),
-        Service  = 'Graph'
+        Id           = 'CONTOSO.1101',
+        Title        = 'All users should have a manager attribute set',
+        Product      = 'entra',
+        Area         = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity     = 'Low',
+        Service      = 'Graph'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

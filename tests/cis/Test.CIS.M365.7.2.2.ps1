@@ -18,10 +18,16 @@
     [MaesterTest(
         Id = 'CIS.M365.7.2.2',
         Title = 'Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled',
+        Product = 'sharepoint',
+        RelatedProduct = 'entra',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'SharePoint',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'OneDrive', 'SharePoint Online'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1213.002'),
+        Control = 'cis-m365:7.2.2',
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-USER-10',
         Title = 'Workstation-restricted user count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'access-control',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

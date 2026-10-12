@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-GMC-01',
         Title = 'Distinct groups with members count should be retrievable',
+        Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

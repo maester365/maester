@@ -27,10 +27,12 @@
     [MaesterTest(
         Id = 'AD-MSA-01',
         Title = 'Managed service account count should be investigated',
+        Product = 'ad',
+        Feature = 'account-security',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

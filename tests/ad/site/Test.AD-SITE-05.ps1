@@ -22,10 +22,12 @@
     [MaesterTest(
         Id = 'AD-SITE-05',
         Title = 'Sites without subnet associations details should be retrievable',
+        Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -17,12 +17,17 @@
     [MaesterTest(
         Id = 'MT.1212',
         Title = 'Agent Identity Blueprint Principals should require assignment for the application roles they expose (Preview).',
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
-        Preview,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
+        Lifecycle = 'Preview',
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

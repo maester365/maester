@@ -28,10 +28,15 @@
     [MaesterTest(
         Id = 'MT.1175',
         Title = 'DLP policy is configured for the Microsoft 365 Copilot location.',
+        Product = 'purview',
+        Feature = 'data-loss-prevention',
+        Area = 'data-protection',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1213.002', 'T1530'),
+        Control = 'nist-800-53-r5:SC-7(10)',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'OfirGavish'

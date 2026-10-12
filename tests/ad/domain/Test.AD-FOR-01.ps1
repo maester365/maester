@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-FOR-01',
         Title = 'Forest functional level should be retrievable',
-        Severity = 'Medium',
-        Category = 'Active Directory - Forest',
-        Product = 'Active Directory',
-        Tag = 'AD.Forest',
+        Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

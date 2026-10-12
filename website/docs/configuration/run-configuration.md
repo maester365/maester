@@ -84,6 +84,11 @@ Keys Maester does not know are kept and passed through, so they do no harm. The 
   "Selection": {
     "BuiltIn": "All",
     "DefaultAction": "Run",
+    "Product": [],
+    "Feature": [],
+    "Area": [],
+    "Severity": [],
+    "Suite": [],
     "Tag": [],
     "ExcludeTag": [],
     "TestId": [],
@@ -143,8 +148,13 @@ Which tests run. Every key has a command-line equivalent.
 | --- | --- | --- | --- |
 | `BuiltIn` | `All`, `None` | `All` | `None` runs only your custom tests, like `-SkipBuiltIn`. |
 | `DefaultAction` | `Run`, `Skip` | `Run` | `Skip` is allow-list mode: a test runs only if a `TestSettings` row for its ID sets `"Enabled": true`. Others are `NotRun` with reason `NotListed`. |
-| `Tag` | array | `[]` | Run only tests with any of these tags (like `-Tag`). |
-| `ExcludeTag` | array | `[]` | Do not run tests with any of these tags (like `-ExcludeTag`). |
+| `Product` | array | `[]` | Run only tests of these products (like `-Product`): keys such as `entra` or `exchange`, or an alias such as `Entra ID`. Matches a test's `Product` or any of its `RelatedProduct` values. |
+| `Feature` | array | `[]` | Run only tests about these features (like `-Feature`), for example `conditional-access`. |
+| `Area` | array | `[]` | Run only tests of these security areas (like `-Area`), for example `authentication`. |
+| `Severity` | array | `[]` | Run only tests with these severities (like `-Severity`). The severity a `TestSettings` row sets is the one that counts. |
+| `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `EIDSCA`, `ORCA` or `AD`. |
+| `Tag` | array | `[]` | Run only tests that any of these tags selects (like `-Tag`). |
+| `ExcludeTag` | array | `[]` | Do not run tests that any of these tags selects (like `-ExcludeTag`). |
 | `TestId` | array | `[]` | Run only these IDs (like `-TestId`). |
 | `ExcludeTestId` | array | `[]` | Do not run these IDs (like `-ExcludeTestId`). Wins over `TestId`. |
 | `IncludePreview` | bool | `false` | Run preview tests (like `-IncludePreview`). |
@@ -153,20 +163,55 @@ Which tests run. Every key has a command-line equivalent.
 
 Rules:
 
+- `Product`, `Feature`, `Area`, `Severity` and `Suite` select by the attributes of a test. The values of one
+  selector are alternatives, and different selectors must all match: `-Product entra, exchange -Severity High`
+  runs the high-severity tests of either product. They combine the same way with `Tag` and `TestId`. Values are
+  compared case-insensitively and `*` wildcards are allowed. The keys are listed in
+  [`MaesterTaxonomy.psd1`](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterTaxonomy.psd1),
+  and each result names the ones it uses under `Taxonomy`.
+- A Pester-format test has no product, feature or area, so a run that selects by one of them leaves it out. Its
+  suite is that of its folder, and its severity counts only when a `TestSettings` row sets it.
+- A command-line value replaces the list of the same name in the config.
 - Tags and IDs are compared case-insensitively. Tag lists match any tag; `*` wildcards are allowed.
 - Test IDs are exact or use `*` wildcards (`CISA.MS.AAD.3.*`). An ID named exactly runs even if the test is
   preview or long-running; a wildcard match does not lift those exclusions.
-- Every test's ID is also one of its tags, so `-Tag MT.1068` keeps working.
-- Preview tests are left out unless `IncludePreview` is set or any `Tag` is given. Long-running tests are left out
-  unless `IncludeLongRunning` is set or `Tag` contains `LongRunning` or `CAWhatIf`.
+- Preview tests (`Lifecycle = 'Preview'`) are left out unless `IncludePreview` is set or any `Tag` is given.
+  Long-running tests are left out unless `IncludeLongRunning` is set or `Tag` contains `LongRunning` or
+  `CAWhatIf`. Selecting by product, feature, area, severity or suite does not lift either exclusion.
 - The tags `All` and `Full` were removed in 3.0 (in 2.x they were deprecated and selected nothing). Using
   them stops the run; use `IncludePreview` and `IncludeLongRunning` instead.
-- Active Directory tests run only after `Connect-Maester -Service ActiveDirectory`, whatever the selection says.
+- Tests that need Active Directory run only after `Connect-Maester -Service ActiveDirectory`, whatever the
+  selection says.
 - In `DefaultAction: Skip` mode, a row with only `Severity` or `Parameters` does not admit a test, and admission
-  is only the first gate: tag, preview and long-running rules still apply. A row on a family's parent ID or on
-  any of its instance IDs admits the family. With no `"Enabled": true` rows at all, nothing runs.
+  is only the first gate: the selectors, tags and the preview and long-running rules still apply. A row on a
+  family's parent ID or on any of its instance IDs admits the family. With no `"Enabled": true` rows at all,
+  nothing runs.
 - Unknown IDs are listed in the result under `Selection.UnknownIds`. An ID under a declared family's parent ID is
   never unknown, so you can keep a row for an instance that does not exist in this run.
+
+### Tags
+
+A tag selects a test that carries it in the `Tag` of its `[MaesterTest]` attribute, or whose folder's
+`suite.json` lists it under `Tags`. Tags are for your own tests. The tests that ship with Maester no longer
+carry tags for their suite, product, topic or severity, because each of those is an attribute.
+
+The tags of Maester 2.x keep working. `-Tag CA`, `-Tag CIS`, `-ExcludeTag MS.AAD.3.5` and every other 2.x tag
+select the built-in tests that carried the tag in 2.x, and the ID of a built-in test is still one of its tags,
+so `-Tag MT.1068` selects it. A run that selects through a 2.x tag writes one warning that names the tag and,
+where there is one, the selector that replaces it. Tests added after Maester 3.0 do not carry 2.x tags, so move
+to the selectors when you can:
+
+| 2.x tag | Example | Now |
+| --- | --- | --- |
+| Suite | `CISA`, `Maester` | `-Suite cisa` |
+| Product or service | `EXO`, `Entra` | `-Product exchange` |
+| Topic | `CA`, `Privileged` | `-Feature conditional-access`, `-Area privileged-access` |
+| Benchmark control ID | `MS.AAD.3.5` | `-TestId CISA.MS.AAD.3.5` |
+| Severity | `Severity:High` | `-Severity High` |
+| A test's ID | `MT.1068` | `-TestId MT.1068` |
+
+The 2.x tags and the test ID are used for selection only. A result row's `Tag` lists the tags written in the
+test, and its `Product`, `Feature`, `Area`, `Suite` and `Severity` fields say the rest.
 
 Deselected and disabled tests still appear in the result as `NotRun` rows with a reason code. See
 [Applicability and reason codes](./applicability.md).

@@ -9,10 +9,15 @@
     [MaesterTest(
         Id = 'MT.1027',
         Title = 'No Service Principal with Client Secret and permanent role assignment on Control Plane.',
+        Product = 'entra',
+        Feature = 'roles',
+        Area = 'privileged-access',
+        ResourceType = 'ServicePrincipal',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Maester', 'Privileged'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1552'),
+        Control = ('nist-800-53-r5:AC-6(5)', 'nist-800-53-r5:IA-5'),
         Service = 'Graph',
         Author = 'Cloud-Architekt',
         Contributor = ('f-bader', 'thomas-s-schmidt', 'nathanmcnulty')

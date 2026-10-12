@@ -14,10 +14,15 @@
     [MaesterTest(
         Id = 'MT.1069',
         Title = 'Restrict non-admin users from creating security groups.',
+        Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Low',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Group', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

@@ -9,10 +9,15 @@
     [MaesterTest(
         Id = 'MT.1047',
         Title = 'Restrict anonymous users from starting Teams meetings',
+        Product = 'teams',
+        Feature = 'meetings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-3',
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

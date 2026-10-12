@@ -19,10 +19,15 @@
     [MaesterTest(
         Id = 'CIS.GH.1.3.8',
         Title = 'Ensure strict base permissions are set for repositories',
+        Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CIS',
-        Product = 'GitHub',
-        Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1677', 'T1195.002'),
+        Control = ('cis-github:1.3.8', 'nist-800-53-r5:AC-6', 'nist-800-53-r5:AC-3'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

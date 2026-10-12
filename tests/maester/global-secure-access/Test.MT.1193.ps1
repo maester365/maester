@@ -32,13 +32,18 @@
     [MaesterTest(
         Id = 'MT.1193',
         Title = 'Entra Private Access application segments should avoid broad or risky destinations.',
+        Product = 'entra',
+        Feature = 'global-secure-access',
+        Area = 'access-control',
+        ResourceType = 'ServicePrincipal',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1021', 'T1046'),
+        Control = ('nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-17'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

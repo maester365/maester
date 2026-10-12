@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-FOR-02',
         Title = 'Forest domain count should be retrievable',
+        Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Forest',
-        Product = 'Active Directory',
-        Tag = 'AD.Forest',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

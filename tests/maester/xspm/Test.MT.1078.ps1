@@ -18,12 +18,18 @@
     [MaesterTest(
         Id = 'MT.1078',
         Title = 'App registrations with highly privileged directory roles should not have owners.',
+        Product = 'defender',
+        RelatedProduct = 'entra',
+        Feature = 'exposure-management',
+        Area = 'applications',
+        ResourceType = 'Application',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1098.001',
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Graph',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

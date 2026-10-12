@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.3.2',
         Title = 'If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users.',
+        Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID P1', 'MS.AAD', 'MS.AAD.3.2'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1110', 'T1078.004'),
+        Control = 'cisa-scuba:MS.AAD.3.2',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike'

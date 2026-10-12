@@ -20,10 +20,12 @@ function Test-MtAdGpoWmiFilterCount {
     [MaesterTest(
         Id = 'AD-GPOS-02',
         Title = 'WMI filter count should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

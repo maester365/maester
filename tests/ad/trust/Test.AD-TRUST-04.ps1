@@ -25,10 +25,15 @@
     [MaesterTest(
         Id = 'AD-TRUST-04',
         Title = 'No trusts should lack SID filtering (quarantine)',
+        Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'High',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1134.005',
+        Control = ('nist-800-53-r5:AC-4', 'nist-800-53-r5:SC-7'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

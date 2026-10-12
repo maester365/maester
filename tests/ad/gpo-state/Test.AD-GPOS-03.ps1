@@ -21,10 +21,12 @@ function Test-MtAdGpoWmiFilterDetails {
     [MaesterTest(
         Id = 'AD-GPOS-03',
         Title = 'WMI filter details should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

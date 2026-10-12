@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.5.1',
         Title = 'SMTP AUTH SHALL be disabled.',
+        Product = 'exchange',
+        Feature = 'client-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.5.1'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
+        Control = 'cisa-scuba:MS.EXO.5.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'

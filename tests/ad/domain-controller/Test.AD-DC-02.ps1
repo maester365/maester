@@ -19,10 +19,15 @@
     [MaesterTest(
         Id = 'AD-DC-02',
         Title = 'SMBv1 should be disabled on all domain controllers',
-        Severity = 'Critical',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1210',
+        Control = 'nist-800-53-r5:CM-7',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-SPN-01',
         Title = 'Computer SPN service class count should be retrievable',
+        Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -18,6 +18,10 @@
           - ResultTags: the Tag array ConvertTo-MtMaesterResult writes today,
             @($test.Block.Tag + $test.Tag | Select-Object -Unique). Only the immediate parent block's
             tags are included, so tests nested in a Context lose their Describe tags.
+        A native test (every built-in test in 3.0) has one entry from the catalog: SelectionTags are the
+        tags -Tag matches (the tags it carries, its ID and its 2.x tags from Maester.LegacyTags.json),
+        ResultTags the tags its author wrote, and Block the name of its product. The committed file is
+        the frozen 2.x snapshot; the golden test checks that every tag in it still selects the same tests.
         Its whose name is built at run time (an expandable string or a '<template>') are families
         (MT.1024, MT.1033, MT.1034, MT.1059, MT1060). They are recorded once, by literal ID prefix,
         with "Family": true, from the AST. Discovery-time tenant calls are neutralised by a stub
@@ -387,17 +391,18 @@ if ($tagMismatches.Count -gt 0) {
 }
 
 # Native tests (Maester 3.0): a migrated check is no longer a Pester It, so its entry comes from the
-# catalog: Block is the attribute's Category and the tags are the effective tag set (suite tags + Id +
-# Tag + Preview/LongRunning), which is what both selection and the result use.
+# catalog. SelectionTags are the tags -Tag and -ExcludeTag match: the tags the test carries, its ID and the
+# tags it carried in 2.x (powershell/assets/Maester.LegacyTags.json). ResultTags are the tags a result row
+# carries, which are the tags the test's author wrote. Block is derived from the test's Product.
 $nativeCatalog = @(& $maesterModule { Get-MtTestCatalog -Refresh })
 foreach ($t in $nativeCatalog) {
-    $tags = @(Get-UniqueTagSet @($t.EffectiveTag))
+    $selection = & $maesterModule { param($test) Get-MtSelectionTag -Test $test } $t
     $entries.Add([ordered]@{
             Id            = $t.Id
             Name          = "$($t.Id): $($t.Title)"
-            Block         = $t.Category
-            SelectionTags = $tags
-            ResultTags    = @($t.EffectiveTag)
+            Block         = $t.Block
+            SelectionTags = @(Get-UniqueTagSet (@($selection.Own) + @($selection.Legacy)))
+            ResultTags    = @($t.Tag | Where-Object { $_ } | ForEach-Object { [string]$_ })
             File          = Get-RepoRelativePath $t.File
             Line          = [int]$t.Line
             Family        = [bool]$t.InstanceSource

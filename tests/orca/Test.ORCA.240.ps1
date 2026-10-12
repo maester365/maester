@@ -14,10 +14,16 @@ function Test-ORCA240 {
     [MaesterTest(
         Id = 'ORCA.240',
         Title = 'Outlook is configured to display external tags for external emails.',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'tenant-settings',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

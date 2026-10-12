@@ -16,13 +16,18 @@
     [MaesterTest(
         Id = 'MT.1205',
         Title = 'Agent Identity Blueprints and Blueprint Principals should have assigned sponsors (Preview).',
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
-        Preview,
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-2',
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

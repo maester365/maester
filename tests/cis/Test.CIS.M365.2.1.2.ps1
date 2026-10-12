@@ -18,10 +18,16 @@
     [MaesterTest(
         Id = 'CIS.M365.2.1.2',
         Title = 'Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Defender',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566.001', 'T1204.002'),
+        Control = ('cis-m365:2.1.2', 'nist-800-53-r5:SI-3'),
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'NZLostboy'
     )]

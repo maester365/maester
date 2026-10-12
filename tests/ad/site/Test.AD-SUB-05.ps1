@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-SUB-05',
         Title = 'IPv6 catch-all subnets count should be retrievable',
+        Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

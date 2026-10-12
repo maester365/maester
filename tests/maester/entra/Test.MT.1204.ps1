@@ -16,13 +16,18 @@
     [MaesterTest(
         Id = 'MT.1204',
         Title = 'Agent Identities, Blueprint Principals, and Blueprints should have active, enabled owners (Preview).',
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
-        Preview,
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-2',
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

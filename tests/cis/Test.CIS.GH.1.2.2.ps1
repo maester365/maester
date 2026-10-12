@@ -21,10 +21,15 @@
     [MaesterTest(
         Id = 'CIS.GH.1.2.2',
         Title = 'Ensure repository creation is limited to specific members',
+        Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'GitHub',
-        Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'T1567.001',
+        Control = ('cis-github:1.2.2', 'nist-800-53-r5:AC-6'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

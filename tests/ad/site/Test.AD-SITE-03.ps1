@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-SITE-03',
         Title = 'Sites without domain controllers details should be retrievable',
+        Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
         Severity = 'Info',
-        Category = 'Active Directory - Sites and Subnets',
-        Product = 'Active Directory',
-        Tag = 'AD.Site',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -14,9 +14,15 @@ function Test-MtCheckEidscaAF06 {
     [MaesterTest(
         Id = 'EIDSCA.AF06',
         Title = 'Authentication Method - FIDO2 security key - Restrict specific keys.',
+        Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1098.005',
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

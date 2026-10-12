@@ -19,10 +19,14 @@
     [MaesterTest(
         Id = 'AD-GPO-04',
         Title = 'Unlinked GPO count should be compliant',
-        Severity = 'Medium',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

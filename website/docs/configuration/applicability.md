@@ -30,7 +30,7 @@ row has exactly one reason.
 | 2 | The test is not disabled in `TestSettings` | `NotRun` |
 | 3 | `Selection.DefaultAction = Skip` and no `TestSettings` row enables it | `NotRun` |
 | 4 | Selection by ID: `-ExcludeTestId`, then `-TestId` | `NotRun` |
-| 5 | Selection by tag: `-Tag`, then the Active Directory opt-in, then `-ExcludeTag`, Preview and long-running | `NotRun` |
+| 5 | Selection by attribute and tag: `-Product`, `-Feature`, `-Area`, `-Severity` and `-Suite`, then `-Tag`, then the Active Directory opt-in, preview and long-running tests, then `-ExcludeTag` | `NotRun` |
 | 6 | Platform: the operating system Maester runs on | `Skipped` |
 | 7 | Tenant type (only when enforced) | `Skipped` |
 | 8 | Cloud (only when enforced) | `Skipped` |
@@ -93,11 +93,11 @@ The test was not run because of what you asked for.
 | `DisabledByConfig` | A `TestSettings` row sets `"Enabled": false`. `ReasonDetail` is the row's `Reason`, if any. | Remove the row or set `Enabled` to `true`. |
 | `NotListed` | `Selection.DefaultAction` is `Skip` and no `TestSettings` row sets `"Enabled": true` for this test (or, for a family, for its parent or any instance). | Add `{ "Id": "<ID>", "Enabled": true }`, or use `DefaultAction: Run`. |
 | `ExcludedById` | The ID matches `-ExcludeTestId` or `Selection.ExcludeTestId`. | Remove the pattern. |
-| `NotSelected` | `-TestId` (or `Selection.TestId`) was given and does not match this test, or `-Tag` was given and the test has none of the tags. For a family, an instance that a `-TestId` naming other instances did not cover. | Add the ID or tag, or drop the filter. |
-| `ExcludedByTag` | The test has a tag in `-ExcludeTag`, `Selection.ExcludeTag` or `PesterConfiguration.Filter.ExcludeTag`. | Remove the tag from the exclusions. |
-| `Preview` | A preview test, excluded by default. | `-IncludePreview`, any `-Tag`, `Selection.IncludePreview`, or name its exact ID in `-TestId`. |
-| `LongRunning` | A long-running test, excluded by default. | `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, `Selection.IncludeLongRunning`, or name its exact ID in `-TestId`. |
-| `OptInServiceNotConnected` | An Active Directory test, and Active Directory is not connected. These tests are opt-in. | `Connect-Maester -Service ActiveDirectory`. |
+| `NotSelected` | `-TestId` (or `Selection.TestId`) was given and does not match this test, or `-Tag` was given and none of the tags selects the test, or the test does not match one of `-Product`, `-Feature`, `-Area`, `-Severity` and `-Suite`; `ReasonDetail` names that selector. For a family, an instance that a `-TestId` naming other instances did not cover. A Pester-format test is `NotSelected` whenever the run selects by product, feature or area, because it has none. | Add the ID, value or tag, or drop the filter. |
+| `ExcludedByTag` | A tag in `-ExcludeTag`, `Selection.ExcludeTag` or `PesterConfiguration.Filter.ExcludeTag` selects the test. | Remove the tag from the exclusions. |
+| `Preview` | A test with `Lifecycle = 'Preview'` (in a Pester-format test, the `Preview` tag), excluded by default. | `-IncludePreview`, any `-Tag`, `Selection.IncludePreview`, or name its exact ID in `-TestId`. |
+| `LongRunning` | A test with `LongRunning` (in a Pester-format test, the `LongRunning` tag), excluded by default. | `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, `Selection.IncludeLongRunning`, or name its exact ID in `-TestId`. |
+| `OptInServiceNotConnected` | A test that needs Active Directory, and Active Directory is not connected. These tests are opt-in. | `Connect-Maester -Service ActiveDirectory`. |
 | `DryRun` | `-DryRun`: the test would have run. | Run without `-DryRun`. |
 | `DeselectedAtRuntime` | Pester-format tests only: an instance of a test whose name is built at run time ran although the run selected other instances or excluded this one. Its result is not reported. | Nothing; select the instances you want by ID. |
 

@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.AAD.5.3',
         Title = 'An admin consent workflow SHALL be configured for applications.',
+        Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Entra ID',
-        Tag = ('Entra ID Free', 'MS.AAD', 'MS.AAD.5.3'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1098.001', 'T1098.003', 'T1528'),
+        Control = 'cisa-scuba:MS.AAD.5.3',
         Service = 'Graph',
         Author = 'soulemike'
     )]

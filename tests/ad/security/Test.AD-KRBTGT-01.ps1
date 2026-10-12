@@ -24,10 +24,15 @@
     [MaesterTest(
         Id = 'AD-KRBTGT-01',
         Title = 'KRBTGT password age should not exceed 180 days',
-        Severity = 'High',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
+        Product = 'ad',
+        Feature = 'account-security',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1558.001',
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

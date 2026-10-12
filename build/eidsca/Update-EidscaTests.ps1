@@ -13,8 +13,9 @@
   The generator reads a local copy of the EIDSCA config (build/eidsca/EidscaConfig.json) and a cache of page
   titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
   files exactly. CI reruns it and fails on drift (powershell/tests/general/EidscaGenerator.Tests.ps1).
-  Severity comes from eidsca-test-metadata.json and Author/Contributor from the authorship seed (design section 11),
-  so regeneration keeps them.
+  Severity and the classification attributes (RelatedProduct, Feature, Area, ResourceType, UserImpact,
+  ImplementationCost, Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed
+  (design section 11), so regeneration keeps them. Edit the metadata file, never the generated tests.
 
   .EXAMPLE
     ./build/eidsca/Update-EidscaTests.ps1
@@ -47,7 +48,8 @@ param (
     # Cache of the web page titles used in the generated Markdown links. -Download adds missing titles.
     [string] $PageTitleCachePath = "$PSScriptRoot/PageTitles.json",
 
-    # Severity of each check (same shape as a Maester config: TestSettings with Id and Severity). Read only.
+    # Maester metadata of each check that the EIDSCA config does not carry: TestSettings rows with Id, Severity
+    # and the optional RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost and Mitre. Read only.
     [string] $MaesterConfigPath = "$PSScriptRoot/eidsca-test-metadata.json",
 
     # Authorship seed with the author and contributors of each check (design section 11).
@@ -546,15 +548,23 @@ function FormatAttributeList([string[]] $Values) {
     '(' + (($Values | ForEach-Object { FormatAttributeString $_ }) -join ', ') + ')'
 }
 
-# The [MaesterTest(...)] attribute of a native test (design section 4). Category and tags reproduce what
-# Pester selected on in 2.x: the Describe 'EIDSCA' block and its tags (the suite tag and the ID).
+# The [MaesterTest(...)] attribute of a native test (test attribute design, section 2). Every EIDSCA control is
+# an Entra ID setting; the other classification values come from eidsca-test-metadata.json.
 function GetMaesterTestAttribute($meta) {
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add("        Id = $(FormatAttributeString $meta.Id)")
     $lines.Add("        Title = $(FormatAttributeString $meta.Title)")
-    if ($meta.Severity) { $lines.Add("        Severity = $(FormatAttributeString $meta.Severity)") }
-    $lines.Add("        Category = $(FormatAttributeString $meta.Category)")
     $lines.Add("        Product = $(FormatAttributeString $meta.Product)")
+    if ($meta.RelatedProduct.Count -gt 0) { $lines.Add("        RelatedProduct = $(FormatAttributeList $meta.RelatedProduct)") }
+    foreach ($name in 'Feature', 'Area', 'ResourceType') {
+        if ($meta[$name]) { $lines.Add("        $name = $(FormatAttributeString $meta[$name])") }
+    }
+    if ($meta.Severity) { $lines.Add("        Severity = $(FormatAttributeString $meta.Severity)") }
+    foreach ($name in 'UserImpact', 'ImplementationCost') {
+        if ($meta[$name]) { $lines.Add("        $name = $(FormatAttributeString $meta[$name])") }
+    }
+    if ($meta.Mitre.Count -gt 0) { $lines.Add("        Mitre = $(FormatAttributeList $meta.Mitre)") }
+    if ($meta.Control.Count -gt 0) { $lines.Add("        Control = $(FormatAttributeList $meta.Control)") }
     $lines.Add("        Service = $(FormatAttributeList $meta.Service)")
     if ($meta.License.Count -gt 0) { $lines.Add("        License = $(FormatAttributeList $meta.License)") }
     if ($meta.Author.Count -gt 0) { $lines.Add("        Author = $(FormatAttributeList $meta.Author)") }
@@ -622,11 +632,11 @@ if (Test-Path -LiteralPath $PageTitleCachePath) {
     }
 }
 
-# Severity (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
-$severityById = @{}
+# Severity and classification (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
+$metadataById = @{}
 if (Test-Path -LiteralPath $MaesterConfigPath) {
     foreach ($row in (Get-Content -LiteralPath $MaesterConfigPath -Raw | ConvertFrom-Json).TestSettings) {
-        if ($row.Id -and $row.Severity) { $severityById[[string]$row.Id] = [string]$row.Severity }
+        if ($row.Id) { $metadataById[[string]$row.Id] = $row }
     }
 }
 $authorshipById = @{}
@@ -677,21 +687,30 @@ foreach ($control in $aadsc) {
 
         # The native test: attribute, skip check and the comparison the 2.x Pester It made.
         $skipCheck = GetSkipCheck -controlItem $controlItem -discoveryLines $Discovery -controlLookup $controlLookup
-        $severity = $severityById[$controlItem.CheckId]
+        $metadata = $metadataById[$controlItem.CheckId]
+        $metadataValue = { param($name) if ($metadata -and $metadata.PSObject.Properties[$name]) { $metadata.$name } }
+        $severity = & $metadataValue 'Severity'
         if (-not $severity) { $severity = $controlItem.Severity }
         $authorship = $authorshipById[$controlItem.CheckId]
         $authors = @(if ($authorship -and $authorship.author) { $authorship.author -split ';' } else { $DefaultAuthor }) | Where-Object { $_ }
         $contributors = @(if ($authorship) { $authorship.contributors_recommended -split ';' }) | Where-Object { $_ -and $_ -notin $authors }
         $attribute = GetMaesterTestAttribute @{
-            Id                = $controlItem.CheckId
-            Title             = "$($control.ControlName) - $($controlItem.DisplayName)."
-            Severity          = $severity
-            Category          = 'EIDSCA'
-            Product           = 'Entra ID'
-            Service           = @('Graph')
-            License = @($skipCheck.License)
-            Author            = $authors
-            Contributor       = $contributors
+            Id                 = $controlItem.CheckId
+            Title              = "$($control.ControlName) - $($controlItem.DisplayName)."
+            Product            = 'entra'
+            RelatedProduct     = @(& $metadataValue 'RelatedProduct' | Where-Object { $_ })
+            Feature            = & $metadataValue 'Feature'
+            Area               = & $metadataValue 'Area'
+            ResourceType       = & $metadataValue 'ResourceType'
+            Severity           = $severity
+            UserImpact         = & $metadataValue 'UserImpact'
+            ImplementationCost = & $metadataValue 'ImplementationCost'
+            Mitre              = @(& $metadataValue 'Mitre' | Where-Object { $_ })
+            Control            = @(& $metadataValue 'Control' | Where-Object { $_ })
+            Service            = @('Graph')
+            License            = @($skipCheck.License)
+            Author             = $authors
+            Contributor        = $contributors
         }
         $nativeOutput = $nativeOutput.Replace('%NativeFunctionName%', (GetEidscaNativeFunctionName -checkId $controlItem.CheckId))
         $nativeOutput = $nativeOutput.Replace('%MaesterTestAttribute%', $attribute)

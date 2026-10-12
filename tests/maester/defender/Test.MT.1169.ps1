@@ -29,10 +29,15 @@
     [MaesterTest(
         Id = 'MT.1169',
         Title = 'Catch-up Full Scan should be disabled.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

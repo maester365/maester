@@ -27,10 +27,12 @@ function Test-MtAdGpoComputerSettingsDisabledDetails {
     [MaesterTest(
         Id = 'AD-GPOS-05',
         Title = 'Computer disabled GPO settings details should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

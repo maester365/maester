@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.2.2',
         Title = 'An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.',
+        Product = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.2.2'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
+        Control = 'cisa-scuba:MS.EXO.2.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'moorereason'

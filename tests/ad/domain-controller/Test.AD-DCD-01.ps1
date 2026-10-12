@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DCD-01',
         Title = 'DC non-standard LDAP port count should be retrievable',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -30,10 +30,16 @@
     [MaesterTest(
         Id = 'MT.1165',
         Title = 'Network Protection should be enabled.',
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1204.001', 'T1189', 'T1071'),
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

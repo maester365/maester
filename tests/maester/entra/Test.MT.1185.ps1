@@ -23,10 +23,15 @@
     [MaesterTest(
         Id = 'MT.1185',
         Title = 'Block legacy MSOnline (MSOL) PowerShell module.',
-        Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
+        Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1059.009', 'T1078.004'),
+        Control = 'nist-800-53-r5:CM-7',
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

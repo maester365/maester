@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-14',
         Title = 'User SPN count should be retrievable',
+        Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

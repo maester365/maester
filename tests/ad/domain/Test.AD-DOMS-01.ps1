@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-DOMS-01',
         Title = 'Allowed DNS suffixes count should be retrievable',
+        Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

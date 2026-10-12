@@ -9,10 +9,15 @@
     [MaesterTest(
         Id = 'MT.1042',
         Title = 'Restrict dial-in users from bypassing a meeting lobby',
+        Product = 'teams',
+        Feature = 'meetings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Teams',
-        Product = 'Teams',
-        Tag = ('Maester', 'Teams'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-3',
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

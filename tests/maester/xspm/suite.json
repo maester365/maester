@@ -2,9 +2,6 @@
   "Id": "XSPM",
   "Name": "Exposure management (XSPM)",
   "Source": "Maester",
-  "Tags": [
-    "XSPM"
-  ],
   "IdPattern": "^MT\\.",
   "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}"
 }

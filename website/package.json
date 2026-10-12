@@ -6,6 +6,7 @@
     "docusaurus": "docusaurus",
     "generate-test-docs": "node scripts/generate-test-docs.mjs",
     "check-test-docs": "node scripts/generate-test-docs.mjs --check",
+    "update-license-plans": "node scripts/update-license-service-plans.mjs",
     "prebuild": "npm run generate-test-docs",
     "prestart": "npm run generate-test-docs",
     "start": "docusaurus start",
@@ -32,8 +33,10 @@
     "@mdx-js/react": "^3.1.1",
     "@mermaid-js/layout-elk": "^0.1.9",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "posthog-docusaurus": "^2.0.5",
     "prism-react-renderer": "^2.1.0",
+    "radix-ui": "^1.7.0",
     "react": "^19.2.5",
     "react-dom": "^19.3.0"
   },

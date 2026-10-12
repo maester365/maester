@@ -4,405 +4,1352 @@
   },
   "Tests": {
     "ORCA.100": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.101": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.102": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.103": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1078.004",
+        "T1534"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.104": {
       "Severity": "High",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.105": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.106": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
       ]
     },
     "ORCA.107": {
       "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "quarantine",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
       ]
     },
     "ORCA.108": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "email-authentication",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SC-8"
       ]
     },
     "ORCA.108.1": {
       "Severity": "Medium",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "email-authentication",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SC-8"
       ]
     },
     "ORCA.109": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.110": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-malware",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
       ]
     },
     "ORCA.111": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.112": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.113": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002",
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.114": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-4"
       ]
     },
     "ORCA.115": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.116": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.1": {
       "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.2": {
       "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "mail-flow",
+      "Area": "email-protection",
+      "ResourceType": "MailFlowRule",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.3": {
-      "Severity": "Medium",
+      "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.4": {
-      "Severity": "Medium",
+      "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "mail-flow",
+      "Area": "email-protection",
+      "ResourceType": "MailFlowRule",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.119": {
       "Severity": "Info",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.120.1": {
       "Severity": "Medium",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "zero-hour-auto-purge",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.120.2": {
       "Severity": "Medium",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "zero-hour-auto-purge",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.120.3": {
       "Severity": "Medium",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "zero-hour-auto-purge",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.121": {
-      "Severity": "Low",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "zero-hour-auto-purge",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
       ]
     },
     "ORCA.123": {
       "Severity": "Info",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.124": {
       "Severity": "High",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-attachments",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.001",
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.139": {
       "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.140": {
-      "Severity": "High",
-      "Author": [
-        "soulemike"
-      ]
-    },
-    "ORCA.141": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
+      ]
+    },
+    "ORCA.141": {
+      "Severity": "Low",
+      "Author": [
+        "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.142": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.143": {
       "Severity": "Info",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.156": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002",
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3",
+        "nist-800-53-r5:AU-12"
       ]
     },
     "ORCA.158": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "sharepoint",
+        "teams"
+      ],
+      "Feature": "safe-attachments",
+      "Area": "email-protection",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1080",
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.179": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1534",
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.180": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.189": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "mail-flow",
+      "Area": "email-protection",
+      "ResourceType": "MailFlowRule",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566.001",
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.189.2": {
       "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "mail-flow",
+      "Area": "email-protection",
+      "ResourceType": "MailFlowRule",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566.002",
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.205": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-malware",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.001",
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.220": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.221": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.222": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.223": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.224": {
       "Severity": "Info",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.225": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "Feature": "safe-attachments",
+      "Area": "email-protection",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.226": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002",
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.227": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-attachments",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.001",
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.228": {
-      "Severity": "High",
+      "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.229": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.230": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.231": {
-      "Severity": "Medium",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.232": {
-      "Severity": "High",
+      "Severity": "Low",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-malware",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.233": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "mail-flow",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566"
       ]
     },
     "ORCA.233.1": {
       "Severity": "Medium",
       "Author": [
         "thomas-s-schmidt"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "mail-flow",
+      "Area": "email-protection",
+      "ResourceType": "Connector",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566"
       ]
     },
     "ORCA.234": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "Feature": "safe-attachments",
+      "Area": "email-protection",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.235": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "email-authentication",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.236": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002",
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.237": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange",
+        "teams"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.238": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.239": {
       "Severity": "High",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.001",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.240": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "tenant-settings",
+      "Area": "email-protection",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.241": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.242": {
       "Severity": "High",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-4(5)"
       ]
     },
     "ORCA.243": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "email-authentication",
+      "Area": "email-protection",
+      "ResourceType": "Domain",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SC-8"
       ]
     },
     "ORCA.244": {
       "Severity": "Medium",
       "Author": [
         "soulemike"
+      ],
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "ResourceType": "Policy",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     }
   }

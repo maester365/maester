@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.7.2.7',
         Title = 'Ensure link sharing is restricted in SharePoint and OneDrive',
+        Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'SharePoint',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'OneDrive', 'SharePoint Online'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1213.002',
+        Control = ('cis-m365:7.2.7', 'nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-6'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

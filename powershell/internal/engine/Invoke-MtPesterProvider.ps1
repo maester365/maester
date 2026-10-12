@@ -140,7 +140,7 @@ function New-MtPesterUnavailableRow {
     if ($start -gt 0) { $name = $name.Substring(0, $start).Trim() }
     $title = if ($name.IndexOf(':') -gt 0) { $name.Substring($name.IndexOf(':') + 1).Trim() } else { $name }
     $message = 'This is a Pester-format test and Pester 5.7.1 or later is not installed. Install it with: Install-Module Pester -MinimumVersion 5.7.1 -Scope CurrentUser'
-    [pscustomobject][ordered]@{
+    $row = [ordered]@{
         Index           = 0
         Id              = $id
         Title           = $title
@@ -153,6 +153,7 @@ function New-MtPesterUnavailableRow {
         ScriptBlockFile = $InventoryRow.File
         ErrorRecord     = @()
         Block           = $InventoryRow.Block
+        Product         = $null
         Duration        = '00:00:00.000'
         ResultDetail    = [pscustomobject]@{ TestTitle = $null; TestDescription = $message; TestResult = "Error. $message"; TestSkipped = $null; SkippedReason = $message; TestInvestigate = $false; Severity = $null; Service = $null }
         Source          = if ($Origin) { $Origin.Source } else { $null }
@@ -165,4 +166,8 @@ function New-MtPesterUnavailableRow {
         Parameters      = @()
         Diagnostics     = @()
     }
+    # A Pester-format row carries the attribute fields of a native row as null.
+    $attributes = Get-MtRowAttribute
+    foreach ($field in $attributes.Keys) { $row[$field] = $attributes[$field] }
+    [pscustomobject]$row
 }

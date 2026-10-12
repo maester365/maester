@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.1.3',
         Title = 'External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.',
+        Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.1.3'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1048', 'T1213.002', 'T1530'),
+        Control = 'cisa-scuba:MS.SHAREPOINT.1.3',
         Service = 'SharePointOnline',
         Author = 'soulemike',
         Contributor = 'SamErde'

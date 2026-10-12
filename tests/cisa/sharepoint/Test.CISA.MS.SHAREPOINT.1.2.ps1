@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.SHAREPOINT.1.2',
         Title = 'External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization.',
+        Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'SharePoint',
-        Tag = ('MS.SHAREPOINT', 'MS.SHAREPOINT.1.2'),
+        UserImpact = 'High',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1048', 'T1213.002', 'T1530'),
+        Control = 'cisa-scuba:MS.SHAREPOINT.1.2',
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

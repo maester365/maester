@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-GPOL-06',
         Title = 'GPO linked OU count should be retrievable',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
-        Category = 'Active Directory - Group Policy Links',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

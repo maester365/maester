@@ -24,10 +24,14 @@ function Test-MtAIAgentMissingInstructions {
     [MaesterTest(
         Id = 'MT.1121',
         Title = 'AI agents with generative orchestration should have custom instructions.',
+        Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

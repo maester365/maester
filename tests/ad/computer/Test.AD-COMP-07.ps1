@@ -22,10 +22,12 @@
     [MaesterTest(
         Id = 'AD-COMP-07',
         Title = 'Computer OU count should be retrievable',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

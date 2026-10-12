@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-COMP-02',
         Title = 'Computer dormant count should be retrievable',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

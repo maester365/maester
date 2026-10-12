@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.3.1.1',
         Title = 'Ensure Microsoft 365 audit log search is Enabled',
+        Product = 'purview',
+        Feature = 'audit',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CIS',
-        Product = 'Purview',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS M365 v7.0.0', 'L1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
+        Control = ('cis-m365:3.1.1', 'nist-800-53-r5:AU-12'),
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = 'thomas-s-schmidt'

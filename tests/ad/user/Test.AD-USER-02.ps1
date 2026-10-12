@@ -17,10 +17,13 @@
     [MaesterTest(
         Id = 'AD-USER-02',
         Title = 'Dormant enabled user count should be retrievable',
-        Severity = 'High',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

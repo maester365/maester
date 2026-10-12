@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.1.3.5',
         Title = 'Ensure internal phishing protection for Forms is enabled',
+        Product = 'microsoft-365',
+        Feature = 'organization-settings',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Microsoft 365',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1534', 'T1598'),
+        Control = ('cis-m365:1.3.5', 'nist-800-53-r5:SI-8'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

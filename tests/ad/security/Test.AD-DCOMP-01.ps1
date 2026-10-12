@@ -25,10 +25,12 @@
     [MaesterTest(
         Id = 'AD-DCOMP-01',
         Title = 'Computers with unconstrained delegation count should be investigated',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

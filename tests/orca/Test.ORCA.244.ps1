@@ -14,10 +14,16 @@ function Test-ORCA244 {
     [MaesterTest(
         Id = 'ORCA.244',
         Title = 'Policies are configured to honor sending domains DMARC.',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-phishing',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

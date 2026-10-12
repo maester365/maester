@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-11',
         Title = 'User AdminCount count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

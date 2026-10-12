@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.5.1.2.2',
         Title = 'Ensure users cannot register applications',
+        Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Entra ID',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1098.001', 'T1528'),
+        Control = ('cis-m365:5.1.2.2', 'nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:CM-5'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

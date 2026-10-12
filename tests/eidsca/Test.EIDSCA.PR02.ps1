@@ -14,9 +14,16 @@ function Test-MtCheckEidscaPR02 {
     [MaesterTest(
         Id = 'EIDSCA.PR02',
         Title = 'Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory.',
+        Product = 'entra',
+        RelatedProduct = 'ad',
+        Feature = 'password-protection',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
+        Control = 'nist-800-53-r5:IA-5(1)',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

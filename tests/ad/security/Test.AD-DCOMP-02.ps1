@@ -26,10 +26,15 @@
     [MaesterTest(
         Id = 'AD-DCOMP-02',
         Title = 'Non-DC computers should not have unconstrained delegation',
-        Severity = 'Critical',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1558', 'T1550.003'),
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

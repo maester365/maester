@@ -23,10 +23,12 @@
     [MaesterTest(
         Id = 'AD-GRP-05',
         Title = 'Group SID History count should be retrievable',
-        Severity = 'Medium',
-        Category = 'Active Directory - Groups',
-        Product = 'Active Directory',
-        Tag = 'AD.Group',
+        Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
+        Severity = 'Info',
+        Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

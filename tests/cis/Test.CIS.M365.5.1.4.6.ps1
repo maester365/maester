@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.5.1.4.6',
         Title = 'Ensure users are restricted from recovering BitLocker keys',
+        Product = 'entra',
+        Feature = 'devices',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Entra ID',
-        Tag = ('CIS E3', 'CIS E3 Level 2', 'CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'Security'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1552',
+        Control = ('cis-m365:5.1.4.6', 'nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:SC-28(3)'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

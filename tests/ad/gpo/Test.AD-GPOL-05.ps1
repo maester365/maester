@@ -26,10 +26,14 @@
     [MaesterTest(
         Id = 'AD-GPOL-05',
         Title = 'GPO blocked inheritance count should be compliant',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Medium',
-        Category = 'Active Directory - Group Policy',
-        Product = 'Active Directory',
-        Tag = 'AD.GPO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

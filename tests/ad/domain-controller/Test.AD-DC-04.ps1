@@ -19,10 +19,15 @@
     [MaesterTest(
         Id = 'AD-DC-04',
         Title = 'SMB signing should be enabled on all domain controllers',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'High',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1557',
+        Control = 'nist-800-53-r5:SC-8',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

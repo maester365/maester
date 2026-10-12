@@ -25,10 +25,12 @@
     [MaesterTest(
         Id = 'AD-GCHG-01',
         Title = 'Average group membership changes per year should be investigated',
+        Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
-        Category = 'Active Directory - Group Changes',
-        Product = 'Active Directory',
-        Tag = ('AD.GCHG', 'AD.Group'),
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

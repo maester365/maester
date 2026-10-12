@@ -18,10 +18,12 @@
     [MaesterTest(
         Id = 'AD-CFG-08',
         Title = 'AuthN policy container count should be retrievable',
+        Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'authentication',
+        ResourceType = 'Policy',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

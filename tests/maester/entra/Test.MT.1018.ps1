@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'MT.1018',
         Title = 'At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices.',
+        Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1539', 'T1550.004'),
+        Control = ('nist-800-53-r5:IA-11', 'nist-800-53-r5:AC-12'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader'

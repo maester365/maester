@@ -33,25 +33,42 @@ public sealed class MaesterTestAttribute : Attribute
     /// <summary>One-line title shown in the report.</summary>
     public string Title { get; set; }
 
+    // Classification: what the test is about. Keys come from the taxonomy registry
+    // (powershell/assets/MaesterTaxonomy.psd1); a custom test may use any value.
+
+    /// <summary>Key of the product where the fix is made, for example entra. Written to the result as Product.</summary>
+    public string Product { get; set; }
+
+    /// <summary>Keys of other products the test also checks or depends on. Never the same key as Product.</summary>
+    public string[] RelatedProduct { get; set; }
+
+    /// <summary>Key of the part of the product the test is about, for example conditional-access.</summary>
+    public string Feature { get; set; }
+
+    /// <summary>Key of the security theme, whatever the product, for example authentication.</summary>
+    public string Area { get; set; }
+
+    /// <summary>What a failing result points at, for example Tenant or User.</summary>
+    public string ResourceType { get; set; }
+
+    // Priority: what to fix first.
+
     /// <summary>Critical, High, Medium, Low or Info. The run config may override it.</summary>
     public string Severity { get; set; }
 
-    // Classification
+    /// <summary>Low, Medium or High: how much the recommended fix disrupts end users.</summary>
+    public string UserImpact { get; set; }
 
-    /// <summary>Report grouping, written to the result as Block.</summary>
-    public string Category { get; set; }
+    /// <summary>Low, Medium or High: how much administrator work the recommended fix takes.</summary>
+    public string ImplementationCost { get; set; }
 
-    /// <summary>The product the test checks, for example Entra ID. Groups progress and the run summary.</summary>
-    public string Product { get; set; }
+    // Mappings
 
-    /// <summary>Free tags used by -Tag and -ExcludeTag.</summary>
-    public string[] Tag { get; set; }
+    /// <summary>MITRE ATT&amp;CK technique IDs the checked control prevents or detects (T1110, T1110.003), or None.</summary>
+    public string[] Mitre { get; set; }
 
-    /// <summary>Not run unless -IncludePreview or any -Tag is given.</summary>
-    public bool Preview { get; set; }
-
-    /// <summary>Not run unless long-running tests are included.</summary>
-    public bool LongRunning { get; set; }
+    /// <summary>Framework controls the test supports, written &lt;framework-key&gt;:&lt;control-id&gt;.</summary>
+    public string[] Control { get; set; }
 
     // Applicability
 
@@ -60,6 +77,9 @@ public sealed class MaesterTestAttribute : Attribute
 
     /// <summary>Service plan names; the tenant needs any one element. 'A&amp;B' inside an element means all of them.</summary>
     public string[] License { get; set; }
+
+    /// <summary>Permissions the test needs, one per element. Recorded; not enforced.</summary>
+    public string[] Permission { get; set; }
 
     /// <summary>Workforce or External.</summary>
     public string[] TenantType { get; set; }
@@ -70,13 +90,27 @@ public sealed class MaesterTestAttribute : Attribute
     /// <summary>Windows, Linux or MacOS.</summary>
     public string[] Platform { get; set; }
 
+    // Lifecycle
+
+    /// <summary>Preview, Stable or Deprecated. A Preview test is not run unless previews are included.</summary>
+    public string Lifecycle { get; set; }
+
+    /// <summary>ID of the test that took the place of a Deprecated test.</summary>
+    public string ReplacedBy { get; set; }
+
     // Execution
+
+    /// <summary>Not run unless long-running tests are included.</summary>
+    public bool LongRunning { get; set; }
+
+    /// <summary>The test must not run concurrently with another test.</summary>
+    public bool Exclusive { get; set; }
 
     /// <summary>Name of a function in the same file that returns the instances of a family.</summary>
     public string InstanceSource { get; set; }
 
-    /// <summary>The test must not run concurrently with another test.</summary>
-    public bool Exclusive { get; set; }
+    /// <summary>Free labels of the owner of the test folder, used by -Tag and -ExcludeTag.</summary>
+    public string[] Tag { get; set; }
 
     // Credits and docs
 

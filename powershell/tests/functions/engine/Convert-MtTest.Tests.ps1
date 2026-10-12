@@ -57,7 +57,9 @@ Describe "Contoso" -Tag "Contoso", "Severity:High" {
         $t.FunctionName | Should -Be 'Test-ContosoBreakGlass'
         $t.Title | Should -Be 'Break-glass accounts exist'
         $t.Severity | Should -Be 'High'
-        $t.Category | Should -Be 'Contoso'
+        # The Describe name is written to Feature, so the Block of the rows stays the Describe name.
+        $t.Feature | Should -Be 'Contoso'
+        (Get-MtTest -Path (Join-Path $script:folder 'Test.CONTOSO.1001.ps1')).Block | Should -Be 'Contoso'
         $t.Service | Should -Be @('Graph')
         $t.Tag | Should -Contain 'BreakGlass'
         $code = Get-Content (Join-Path $script:folder 'Test.CONTOSO.1001.ps1') -Raw

@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DC-08',
         Title = 'DC operating system details should be retrievable',
-        Severity = 'High',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -9,10 +9,14 @@
     [MaesterTest(
         Id = 'AZDO.1007',
         Title = 'Team and project administrator are allowed to invite new users.',
-        Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        Product = 'azure-devops',
+        Feature = 'users-and-access',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1136.003',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://aka.ms/azure-devops-invitations-policy'

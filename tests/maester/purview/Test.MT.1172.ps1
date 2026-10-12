@@ -28,10 +28,15 @@
     [MaesterTest(
         Id = 'MT.1172',
         Title = 'Unified audit log ingestion is enabled.',
+        Product = 'purview',
+        Feature = 'audit',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
+        Control = 'nist-800-53-r5:AU-12',
         Service = 'ExchangeOnline',
         Author = 'OfirGavish'
     )]

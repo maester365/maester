@@ -19,10 +19,16 @@
     [MaesterTest(
         Id = 'MT.1055',
         Title = 'Microsoft 365 Group (and Team) creation should be restricted to approved users.',
+        Product = 'entra',
+        RelatedProduct = 'teams',
+        Feature = 'groups',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Group', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:CM-7'),
         Service = 'Graph',
         Author = 'merill'
     )]

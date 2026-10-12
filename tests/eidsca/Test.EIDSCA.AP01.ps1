@@ -14,9 +14,15 @@ function Test-MtCheckEidscaAP01 {
     [MaesterTest(
         Id = 'EIDSCA.AP01',
         Title = 'Default Authorization Settings - Enabled Self service password reset for administrators.',
+        Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'privileged-access',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1098',
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

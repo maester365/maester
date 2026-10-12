@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-DACL-04',
         Title = 'Conflict object details should be investigated',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

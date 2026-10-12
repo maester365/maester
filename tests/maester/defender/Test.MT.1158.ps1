@@ -30,10 +30,16 @@
     [MaesterTest(
         Id = 'MT.1158',
         Title = 'Scan should be scheduled.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

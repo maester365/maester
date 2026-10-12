@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-20',
         Title = 'Known service account count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'applications',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

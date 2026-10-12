@@ -24,10 +24,15 @@
     [MaesterTest(
         Id = 'MT.1186',
         Title = 'Require explicit assignment of high-privilege first-party Entra Apps.',
-        Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('App', 'Entra', 'Graph', 'Maester'),
+        Product = 'entra',
+        Feature = 'applications',
+        Area = 'applications',
+        ResourceType = 'ServicePrincipal',
+        Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1059.009', 'T1087.004', 'T1526'),
+        Control = ('nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

@@ -109,7 +109,7 @@ Describe 'EIDSCA generator' {
         $seedPath = Join-Path $TestDrive 'seed.csv'
         "test_id,author,contributors_recommended`nEIDSCA.ZZ99,fixture-author,fixture-contributor;fixture-author" | Set-Content -Path $seedPath
         $maesterConfigPath = Join-Path $TestDrive 'maester-config.json'
-        '{ "TestSettings": [ { "Id": "EIDSCA.ZZ99", "Severity": "Critical" } ] }' | Set-Content -Path $maesterConfigPath
+        '{ "TestSettings": [ { "Id": "EIDSCA.ZZ99", "Severity": "Critical", "RelatedProduct": ["exchange"], "Feature": "authentication-methods", "Area": "authentication", "ResourceType": "Tenant", "UserImpact": "Medium", "ImplementationCost": "Low", "Mitre": ["T1110", "T1078.004"] } ] }' | Set-Content -Path $maesterConfigPath
         Mock Invoke-WebRequest { throw 'The generator must not use the network without -Download.' }
 
         & $script:EidscaBuildScript @paths `
@@ -144,8 +144,20 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $native | Should -Match "Id = 'EIDSCA.ZZ99'"
         $native | Should -Match "Title = 'Fixture control - Fixture setting.'"
         $native | Should -Match "Severity = 'Critical'"
-        $native | Should -Match "Category = 'EIDSCA'"
+        $native | Should -Match "Product = 'entra'"
+        $native | Should -Not -Match '(?m)^\s+(Category|Tag|Preview) = '
         $native | Should -Match "Service = 'Graph'"
+        # The classification values of the metadata row, in the order of the attribute.
+        $attribute = [System.Management.Automation.Language.Parser]::ParseInput($native, [ref] $null, [ref] $null).Find({
+                param($n) $n -is [System.Management.Automation.Language.AttributeAst] -and $n.TypeName.Name -eq 'MaesterTest' }, $true)
+        ($attribute.NamedArguments.ArgumentName -join ',') | Should -Be 'Id,Title,Product,RelatedProduct,Feature,Area,ResourceType,Severity,UserImpact,ImplementationCost,Mitre,Service,Author,Contributor'
+        $native | Should -Match "RelatedProduct = 'exchange'"
+        $native | Should -Match "Feature = 'authentication-methods'"
+        $native | Should -Match "Area = 'authentication'"
+        $native | Should -Match "ResourceType = 'Tenant'"
+        $native | Should -Match "UserImpact = 'Medium'"
+        $native | Should -Match "ImplementationCost = 'Low'"
+        $native | Should -Match "Mitre = \('T1110', 'T1078\.004'\)"
         $native | Should -Match "Author = 'fixture-author'"
         $native | Should -Match "Contributor = 'fixture-contributor'"
         $native | Should -Not -Match 'HelpUrl'
@@ -155,6 +167,8 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $licensed = Get-Content -Path (Join-Path $paths.TestPath 'Test.EIDSCA.ZZ98.ps1') -Raw
         $licensed | Should -Match "License = 'AAD_PREMIUM'"
         $licensed | Should -Match "Severity = 'Medium'"
+        # A control without a metadata row gets no classification value beyond the product.
+        $licensed | Should -Not -Match '(?m)^\s+(RelatedProduct|Feature|Area|ResourceType|UserImpact|ImplementationCost|Mitre) = '
         $licensed | Should -Match "Author = 'Cloud-Architekt'"
         $licensed | Should -Not -Match 'EntraIDPlan'
         $licensed | Should -Match 'return \(\$tenantValue -ge 30\)'
@@ -213,10 +227,11 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
             ($problems -join '; '))
     }
 
-    It 'reproduces the 2.x Block, selection tags and title of every EIDSCA check' {
+    It 'keeps the 2.x title and selection tags of every EIDSCA check, as an Entra ID test without tags' {
         $module = Import-Module (Join-Path $script:RepoRoot 'powershell/Maester.psd1') -Force -PassThru -WarningAction SilentlyContinue |
             Where-Object Name -EQ 'Maester' | Select-Object -First 1
-        $tests = @(& $module { param($p) Get-MtTest -Path $p } (Join-Path $script:RepoRoot 'tests/eidsca'))
+        # The catalog, so that the tests are read as built-in tests (a custom test has no 2.x tags).
+        $tests = @(& $module { Get-MtTestCatalog -Refresh | Where-Object Suite -EQ 'EIDSCA' })
         $golden = @((Get-Content -Path (Join-Path $script:RepoRoot 'powershell/tests/fixtures/golden/tags-and-blocks.json') -Raw |
                     ConvertFrom-Json).Entries | Where-Object { $_.Id -like 'EIDSCA.*' })
         $golden.Count | Should -BeGreaterThan 0
@@ -225,12 +240,16 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $problems = foreach ($entry in $golden) {
             $test = $tests | Where-Object Id -EQ $entry.Id
             if (-not $test) { "$($entry.Id): missing"; continue }
-            if (-not $test.IsValid) { "$($entry.Id): invalid ($($test.Errors -join '; '))" }
+            if ($test.Errors.Count -gt 0) { "$($entry.Id): invalid ($($test.Errors.Message -join '; '))" }
             if ($test.Format -ne 'Native') { "$($entry.Id): not native" }
-            if ($test.Category -ne $entry.Block) { "$($entry.Id): Category '$($test.Category)' is not the 2.x Block '$($entry.Block)'" }
+            if ($test.Product -cne 'entra') { "$($entry.Id): Product '$($test.Product)' is not entra" }
+            if ($test.Block -ne 'Entra ID') { "$($entry.Id): Block '$($test.Block)' is not the product name" }
+            if (@($test.Tag).Count -gt 0) { "$($entry.Id): carries the tags $($test.Tag -join ', ')" }
+            # Every 2.x tag still selects the test: its ID, and EIDSCA through the legacy tag table.
+            $selection = & $module { param($t) Get-MtSelectionTag -Test $t } $test
             $was = @($entry.SelectionTags | Sort-Object -Unique) -join ','
-            $is = @($test.EffectiveTag | Sort-Object -Unique) -join ','
-            if ($was -ne $is) { "$($entry.Id): tags '$is' are not the 2.x selection tags '$was'" }
+            $is = @(@($selection.Own) + @($selection.Legacy) | Sort-Object -Unique) -join ','
+            if ($was -ne $is) { "$($entry.Id): the selection tags '$is' are not the 2.x selection tags '$was'" }
             $title = (($entry.Name -split ': ', 2)[1]) -replace ' See https://\S+$', ''
             if ($test.Title -ne $title) { "$($entry.Id): title '$($test.Title)' is not '$title'" }
             if (-not $test.Author) { "$($entry.Id): no Author" }

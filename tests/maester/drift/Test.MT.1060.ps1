@@ -120,10 +120,14 @@ function Test-MtDriftFolder {
     [MaesterTest(
         Id = 'MT.1060',
         Title = 'Drift folders should match their baseline.',
+        Product = 'microsoft-365',
+        Feature = 'configuration-drift',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Drift',
-        Product = 'Microsoft 365',
-        Tag = ('Maester', 'MT1060'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'None',
         InstanceSource = 'Get-MtDriftFolderInstance',
         Author = 'svrooij'

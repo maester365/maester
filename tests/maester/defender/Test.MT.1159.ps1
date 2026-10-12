@@ -30,10 +30,13 @@
     [MaesterTest(
         Id = 'MT.1159',
         Title = 'Quick Scan Time configuration is not required.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

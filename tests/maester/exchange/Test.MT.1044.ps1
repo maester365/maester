@@ -19,10 +19,14 @@
     [MaesterTest(
         Id = 'MT.1044',
         Title = 'Ensure modern authentication for Exchange Online is enabled',
+        Product = 'exchange',
+        Feature = 'client-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

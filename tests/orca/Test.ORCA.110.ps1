@@ -14,10 +14,15 @@ function Test-ORCA110 {
     [MaesterTest(
         Id = 'ORCA.110',
         Title = 'Internal Sender notifications are disabled.',
-        Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-malware',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

@@ -14,10 +14,15 @@ function Test-ORCA121 {
     [MaesterTest(
         Id = 'ORCA.121',
         Title = 'Supported filter policy action used.',
-        Severity = 'Low',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'zero-hour-auto-purge',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

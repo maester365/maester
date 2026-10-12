@@ -14,9 +14,15 @@ function Test-MtCheckEidscaAP07 {
     [MaesterTest(
         Id = 'EIDSCA.AP07',
         Title = 'Default Authorization Settings - Guest user access.',
-        Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        Product = 'entra',
+        Feature = 'external-identities',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1087.004', 'T1069.003'),
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

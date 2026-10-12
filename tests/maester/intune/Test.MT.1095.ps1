@@ -16,10 +16,14 @@
     [MaesterTest(
         Id = 'MT.1095',
         Title = 'Android Enterprise account connection should be healthy',
+        Product = 'intune',
+        Feature = 'tenant-administration',
+        Area = 'devices',
+        ResourceType = 'Connector',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

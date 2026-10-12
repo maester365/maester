@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-USER-09',
         Title = 'Password-not-required user count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

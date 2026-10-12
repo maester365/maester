@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0018',
         Title    = 'Writes warning, verbose, debug and information records, then returns $true',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Error-path fixture.')][Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Error-path fixture.')][CmdletBinding()]

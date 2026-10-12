@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-GMC-09',
         Title = 'Empty non-privileged group details should be investigated',
+        Product = 'ad',
+        Feature = 'groups',
+        Area = 'identity-lifecycle',
+        ResourceType = 'Group',
         Severity = 'Info',
-        Category = 'Active Directory - Group Members',
-        Product = 'Active Directory',
-        Tag = ('AD.GMC', 'AD.Group'),
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

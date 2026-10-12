@@ -17,10 +17,12 @@
     [MaesterTest(
         Id = 'AD-CFG-10',
         Title = 'Well-known security principals count should be retrievable',
+        Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

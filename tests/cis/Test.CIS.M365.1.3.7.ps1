@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.1.3.7',
         Title = 'Ensure ''third-party storage services'' are restricted in ''Microsoft 365 on the web''',
+        Product = 'microsoft-365',
+        Feature = 'organization-settings',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Microsoft 365',
-        Tag = ('CIS E3', 'CIS E3 Level 2', 'CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'Security'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1567.002',
+        Control = ('cis-m365:1.3.7', 'nist-800-53-r5:AC-20', 'nist-800-53-r5:CM-7'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

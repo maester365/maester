@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DOM-01',
         Title = 'Domain functional level should be retrievable',
-        Severity = 'Medium',
-        Category = 'Active Directory - Domain',
-        Product = 'Active Directory',
-        Tag = 'AD.Domain',
+        Product = 'ad',
+        Feature = 'domain-and-forest',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

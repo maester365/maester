@@ -7,6 +7,10 @@ function New-MtTest {
     Writes a test function with its [MaesterTest] attribute and a Markdown file with the description,
     remediation and result sections. Run it with Invoke-MtTest -Path, and validate it with Get-MtTest -Path.
 
+    A custom test needs only an ID and a title. -Product, -Feature, -Area, -ResourceType, -UserImpact,
+    -ImplementationCost and -Mitre fill in the attributes that say what the test is about, what to fix first
+    and which attack techniques it addresses; add or change them in the file later as you like.
+
     .PARAMETER Id
     The test ID. Use your own prefix, for example CONTOSO.1001.
 
@@ -19,11 +23,28 @@ function New-MtTest {
     .PARAMETER Service
     The services the test needs, for example Graph or ExchangeOnline.
 
-    .PARAMETER Category
-    The report grouping. Defaults to Custom.
-
     .PARAMETER Product
-    The product the test checks, for example Entra ID. Groups the console progress and the run summary.
+    The product where the fix is made: a key of the Maester taxonomy such as entra or exchange (an alias such as
+    'Entra ID' is written as the key), or any name of your own. Groups the console progress and the run summary.
+
+    .PARAMETER Feature
+    The part of the product the test is about, for example conditional-access. With a Maester product, one of
+    its feature keys; otherwise any text.
+
+    .PARAMETER Area
+    The security theme, for example authentication or privileged-access.
+
+    .PARAMETER ResourceType
+    What a failing result points at, for example Tenant or User.
+
+    .PARAMETER UserImpact
+    How much the recommended fix disrupts end users: Low, Medium or High.
+
+    .PARAMETER ImplementationCost
+    How much administrator work the recommended fix takes: Low, Medium or High.
+
+    .PARAMETER Mitre
+    The MITRE ATT&CK technique IDs the checked control prevents or detects, for example T1110.003, or None.
 
     .PARAMETER Path
     The folder to create the files in. Defaults to ./custom (an existing ./Custom folder is reused).
@@ -35,6 +56,12 @@ function New-MtTest {
     New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
 
     Creates custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md.
+
+    .EXAMPLE
+    New-MtTest -Id CONTOSO.1002 -Title 'Legacy authentication is blocked' -Product entra -Feature conditional-access -Area authentication -ResourceType Tenant -Severity High -UserImpact Medium -ImplementationCost Low -Mitre T1110.003
+
+    Creates a test with the classification, priority and ATT&CK attributes filled in. The attribute rubric at
+    https://maester.dev/docs/writing-tests/attribute-rubric explains how to choose each value.
 
     .LINK
     https://maester.dev/docs/commands/New-MtTest
@@ -56,10 +83,29 @@ function New-MtTest {
         [string[]] $Service = @('Graph'),
 
         [Parameter()]
-        [string] $Category = 'Custom',
+        [string] $Product,
 
         [Parameter()]
-        [string] $Product,
+        [string] $Feature,
+
+        [Parameter()]
+        [string] $Area,
+
+        [Parameter()]
+        [ValidatePattern('^[A-Za-z][A-Za-z0-9]*$')]
+        [string] $ResourceType,
+
+        [Parameter()]
+        [ValidateSet('Low', 'Medium', 'High')]
+        [string] $UserImpact,
+
+        [Parameter()]
+        [ValidateSet('Low', 'Medium', 'High')]
+        [string] $ImplementationCost,
+
+        [Parameter()]
+        [ValidatePattern('^(T[0-9]{4}(\.[0-9]{3})?|None)$')]
+        [string[]] $Mitre,
 
         [Parameter()]
         [string] $Path = './custom',
@@ -81,6 +127,18 @@ function New-MtTest {
         return
     }
     if ($Title -match '[\r\n]') { Write-Error 'The title must be one line.'; return }
+    foreach ($text in @(@{ Name = 'Product'; Value = $Product; Max = 40 }, @{ Name = 'Feature'; Value = $Feature; Max = 60 }, @{ Name = 'Area'; Value = $Area; Max = 60 })) {
+        if ($text.Value -match '[\r\n]' -or "$($text.Value)".Length -gt $text.Max) { Write-Error "-$($text.Name) must be one line of at most $($text.Max) characters."; return }
+    }
+    if ($Mitre -contains 'None' -and @($Mitre).Count -gt 1) { Write-Error '-Mitre is either a list of technique IDs or None.'; return }
+    # A value the taxonomy registry knows is written as its key.
+    $taxonomy = Get-MtTaxonomy
+    $productKey = if ($Product) { Resolve-MtProductKey -Name $Product -Taxonomy $taxonomy }
+    if ($productKey) { $Product = $productKey }
+    $entry = $null
+    if ($productKey -and $Feature -and $taxonomy.Lookup.Feature[$productKey].TryGetValue($Feature, [ref] $entry)) { $Feature = $entry.Key }
+    if ($Area -and $taxonomy.Lookup.Area.TryGetValue($Area, [ref] $entry)) { $Area = $entry.Key }
+    if ($ResourceType -and $taxonomy.Lookup.ResourceType.TryGetValue($ResourceType, [ref] $entry)) { $ResourceType = $entry.Key }
     foreach ($s in $Service) {
         if ($s -ne 'None' -and -not (Resolve-MtServiceName -Name $s)) { Write-Warning "Service '$s' is not in the service registry; the test will be skipped as ServiceNotRegistered." }
     }
@@ -89,8 +147,21 @@ function New-MtTest {
     }
 
     $functionName = 'Test-' + (($Id -split '[.\-_]' | Where-Object { $_ } | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join '')
-    $escape = { param($v) $v.Replace("'", "''") }
-    $serviceList = if ($Service.Count -eq 1) { "'$(& $escape $Service[0])'" } else { "(" + (($Service | ForEach-Object { "'$(& $escape $_)'" }) -join ', ') + ")" }
+    # The attribute, in the order of the design: identity, classification, priority, mappings, applicability.
+    $quote = { param($v) "'" + ([string]$v).Replace("'", "''") + "'" }
+    $list = { param($values) if (@($values).Count -eq 1) { & $quote @($values)[0] } else { '(' + ((@($values) | ForEach-Object { & $quote $_ }) -join ', ') + ')' } }
+    $properties = [ordered]@{ Id = & $quote $Id; Title = & $quote $Title }
+    if ($Product) { $properties.Product = & $quote $Product }
+    if ($Feature) { $properties.Feature = & $quote $Feature }
+    if ($Area) { $properties.Area = & $quote $Area }
+    if ($ResourceType) { $properties.ResourceType = & $quote $ResourceType }
+    $properties.Severity = & $quote $Severity
+    if ($UserImpact) { $properties.UserImpact = & $quote $UserImpact }
+    if ($ImplementationCost) { $properties.ImplementationCost = & $quote $ImplementationCost }
+    if ($Mitre) { $properties.Mitre = & $list $Mitre }
+    $properties.Service = & $list $Service
+    $width = ($properties.Keys | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum
+    $attributeLines = ($properties.GetEnumerator() | ForEach-Object { "        $($_.Key.PadRight($width)) = $($_.Value)" }) -join ",`n"
 
     $ps1 = @"
 function $functionName {
@@ -99,11 +170,7 @@ function $functionName {
     $Title
     #>
     [MaesterTest(
-        Id       = '$(& $escape $Id)',
-        Title    = '$(& $escape $Title)',
-        Severity = '$Severity',
-        Category = '$(& $escape $Category)',$(if ($Product) { "`n        Product  = '$(& $escape $Product)'," })
-        Service  = $serviceList
+$attributeLines
     )]
     [CmdletBinding()]
     [OutputType([bool])]

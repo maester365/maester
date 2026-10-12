@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-DCD-03',
         Title = 'Read-only domain controller count should be retrievable',
+        Product = 'ad',
+        Feature = 'domain-controllers',
+        Area = 'infrastructure',
+        ResourceType = 'DomainController',
         Severity = 'Info',
-        Category = 'Active Directory - Domain Controllers',
-        Product = 'Active Directory',
-        Tag = 'AD.DomainController',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

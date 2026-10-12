@@ -21,13 +21,17 @@
     [MaesterTest(
         Id = 'MT.1190',
         Title = 'Entra Private Access applications should not use the Default connector group.',
-        Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
+        Product = 'entra',
+        Feature = 'global-secure-access',
+        Area = 'infrastructure',
+        ResourceType = 'ServicePrincipal',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-19',
         Title = 'User in container count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

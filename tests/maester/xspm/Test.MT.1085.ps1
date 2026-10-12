@@ -18,10 +18,14 @@
     [MaesterTest(
         Id = 'MT.1085',
         Title = 'Pending approvals for Critical Asset Management should not be present.',
-        Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'Graph'),
+        Product = 'defender',
+        Feature = 'exposure-management',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

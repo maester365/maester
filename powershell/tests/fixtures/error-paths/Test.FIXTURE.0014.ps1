@@ -7,7 +7,7 @@
         Id       = 'FIXTURE.0014',
         Title    = 'Skip raised inside the test''s own try/catch',
         Severity = 'Info',
-        Category = 'Fixture/ErrorPath',
+        Feature = 'Fixture/ErrorPath',
         Tag      = ('Fixture', 'ErrorPath')
     )]
     [CmdletBinding()]

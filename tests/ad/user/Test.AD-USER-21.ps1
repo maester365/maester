@@ -19,10 +19,12 @@
     [MaesterTest(
         Id = 'AD-USER-21',
         Title = 'Known service account details should be investigated',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'applications',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -23,10 +23,15 @@ function Test-MtAIAgentRiskyHttpConfig {
     [MaesterTest(
         Id = 'MT.1115',
         Title = 'AI agents should not have risky HTTP configurations.',
+        Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1571', 'T1048', 'T1071.001'),
+        Control = 'nist-800-53-r5:SC-7',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

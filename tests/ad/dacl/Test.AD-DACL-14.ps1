@@ -19,10 +19,12 @@
     [MaesterTest(
         Id = 'AD-DACL-14',
         Title = 'Non-inherited ACE count should be investigated',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'MT.1073',
         Title = 'Soft- and hard-matching of synchronized objects should be blocked.',
+        Product = 'entra',
+        Feature = 'hybrid-identity',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Hybrid', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1078.004', 'T1098'),
+        Control = ('nist-800-53-r5:IA-4', 'nist-800-53-r5:CM-6'),
         Service = 'Graph',
         Author = 'HenrikPiecha'
     )]

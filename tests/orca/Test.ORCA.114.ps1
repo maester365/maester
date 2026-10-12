@@ -14,10 +14,16 @@ function Test-ORCA114 {
     [MaesterTest(
         Id = 'ORCA.114',
         Title = 'No IP Allow Lists have been configured.',
-        Severity = 'High',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-spam',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:AC-4',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

@@ -24,13 +24,17 @@
     [MaesterTest(
         Id = 'MT.1192',
         Title = 'Groups assigned to Entra Private Access applications should not be nested.',
-        Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
+        Product = 'entra',
+        Feature = 'global-secure-access',
+        Area = 'access-control',
+        ResourceType = 'Group',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

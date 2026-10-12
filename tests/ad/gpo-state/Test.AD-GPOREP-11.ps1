@@ -22,10 +22,12 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     [MaesterTest(
         Id = 'AD-GPOREP-11',
         Title = 'GPO no-apply Group Policy ACE details should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -18,13 +18,18 @@
     [MaesterTest(
         Id = 'MT.1207',
         Title = 'Foreign or multi-tenant Agent Blueprint Principals and Agent Identities should not hold privileged directory roles (Preview).',
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'privileged-access',
+        ResourceType = 'Agent',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1199'),
+        Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:AC-20'),
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

@@ -18,12 +18,16 @@
     [MaesterTest(
         Id = 'MT.1080',
         Title = 'Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints.',
+        Product = 'defender',
+        Feature = 'exposure-management',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1539', 'T1528'),
         Service = 'Graph',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

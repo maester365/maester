@@ -30,10 +30,16 @@
     [MaesterTest(
         Id = 'MT.1163',
         Title = 'Signature Update Interval should be 1-4 hours.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

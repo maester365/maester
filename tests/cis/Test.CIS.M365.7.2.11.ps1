@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.7.2.11',
         Title = 'Ensure the SharePoint default sharing link permission is set',
+        Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'SharePoint',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'OneDrive', 'SharePoint Online'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1080', 'T1565.001'),
+        Control = ('cis-m365:7.2.11', 'nist-800-53-r5:AC-6'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

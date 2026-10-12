@@ -20,13 +20,18 @@
     [MaesterTest(
         Id = 'MT.1208',
         Title = 'Agent Identity Blueprints should not have expired, excessive, or long-lived client credentials (Preview).',
-        Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:High'),
-        Preview,
-        LongRunning,
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1098.001', 'T1552'),
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'Graph',
+        Lifecycle = 'Preview',
+        LongRunning,
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

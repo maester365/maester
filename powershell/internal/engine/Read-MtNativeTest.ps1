@@ -13,6 +13,11 @@ function Read-MtNativeTest {
     at the top level only function definitions; the file name is Test.<Id>.ps1; parameters are int,
     bool, switch, string or string[] with constant defaults and none mandatory; [CmdletBinding()] is
     required.
+
+    Product, RelatedProduct, Feature, Area and ResourceType are resolved through the taxonomy registry
+    (test attribute design, section 2.2): a registry value is stored as its key, whatever its case, and a
+    product alias as the product's key. A test shipped with Maester must use registry values, and a Feature
+    of its Product; a custom test keeps any other value as written.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -31,33 +36,42 @@ function Read-MtNativeTest {
     $errors = [System.Collections.Generic.List[pscustomobject]]::new()
     $file = (Resolve-Path -LiteralPath $Path).Path
     $test = [ordered]@{
-        File              = $file
-        FunctionName      = $null
-        Line              = 1
-        Id                = $null
-        Title             = $null
-        Severity          = $null
-        Category          = $null
-        Product           = $null
-        Tag               = @()
-        Preview           = $false
-        LongRunning       = $false
-        Service           = @()
-        License = @()
-        TenantType        = @()
-        Cloud             = @()
-        Platform          = @()
-        InstanceSource    = $null
-        Exclusive         = $false
-        Author            = @()
-        Contributor       = @()
-        HelpUrl           = $null
-        Parameters        = @()
+        File                 = $file
+        FunctionName         = $null
+        Line                 = 1
+        Id                   = $null
+        Title                = $null
+        Product              = $null
+        RelatedProduct       = @()
+        Feature              = $null
+        Area                 = $null
+        ResourceType         = $null
+        Severity             = $null
+        UserImpact           = $null
+        ImplementationCost   = $null
+        Mitre                = @()
+        Control              = @()
+        Service              = @()
+        License              = @()
+        Permission           = @()
+        TenantType           = @()
+        Cloud                = @()
+        Platform             = @()
+        Lifecycle            = 'Stable'
+        ReplacedBy           = $null
+        LongRunning          = $false
+        Exclusive            = $false
+        InstanceSource       = $null
+        Tag                  = @()
+        Author               = @()
+        Contributor          = @()
+        HelpUrl              = $null
+        Parameters           = @()
         UnregisteredServices = @()
-        MarkdownPath      = $null
-        RequiresMaester   = $null
-        BuiltIn           = $BuiltIn.IsPresent
-        Errors            = $errors
+        MarkdownPath         = $null
+        RequiresMaester      = $null
+        BuiltIn              = $BuiltIn.IsPresent
+        Errors               = $errors
     }
     $addError = { param($code, $message, $line) $errors.Add([pscustomobject]@{ Code = $code; Message = $message; Line = $line }) }
 
@@ -121,6 +135,9 @@ function Read-MtNativeTest {
         $definition = $null
         foreach ($key in $schema.Properties.Keys) { if ($key -eq $name) { $definition = $schema.Properties[$key]; $name = $key } }
         if (-not $definition) {
+            # A property that 3.0 removed fails with its replacement in the message.
+            $removed = $schema.RemovedProperties.Keys | Where-Object { $_ -eq $name } | Select-Object -First 1
+            if ($removed) { & $addError 'InvalidMetadata' $schema.RemovedProperties[$removed] $line; continue }
             $hint = if ($name -in $schema.ReservedNames) { ' It is reserved for a later Maester version.' } else { ' It may come from a newer version of Maester.' }
             & $addError 'InvalidMetadata' "Unknown [MaesterTest] property '$($named.ArgumentName)'.$hint" $line
             continue
@@ -160,14 +177,17 @@ function Read-MtNativeTest {
     }
 
     # Normalise allowed values to their canonical spelling, and services to registry names.
-    foreach ($name in 'Severity', 'TenantType', 'Cloud', 'Platform') {
+    foreach ($name in [string[]]@($schema.Properties.Keys)) {
         $allowed = $schema.Properties[$name].AllowedValues
-        $test[$name] = if ($schema.Properties[$name].Type -eq 'string') {
-            if ($test[$name]) { $allowed | Where-Object { $_ -eq $test[$name] } | Select-Object -First 1 } else { $null }
+        if (-not $allowed) { continue }
+        if ($schema.Properties[$name].Type -eq 'string') {
+            $test[$name] = if ($test[$name]) { [string]($allowed | Where-Object { $_ -eq $test[$name] } | Select-Object -First 1) } else { $null }
         } else {
-            @($test[$name] | ForEach-Object { $v = $_; $allowed | Where-Object { $_ -eq $v } | Select-Object -First 1 } | Where-Object { $_ })
+            # Assigned as a typed array: an if-expression would turn an empty list into $null.
+            $test[$name] = [string[]]@($test[$name] | ForEach-Object { $v = $_; $allowed | Where-Object { $_ -eq $v } | Select-Object -First 1 } | Where-Object { $_ })
         }
     }
+    if (-not $test.Lifecycle) { $test.Lifecycle = 'Stable' }
     $services = [System.Collections.Generic.List[string]]::new()
     $unregistered = [System.Collections.Generic.List[string]]::new()
     foreach ($s in @($test.Service)) {
@@ -180,16 +200,63 @@ function Read-MtNativeTest {
     $test.Service = @($services | Select-Object -Unique)
     $test.UnregisteredServices = $unregistered.ToArray()
 
-    # Exact spelling and case: the product groups the console progress and the run summary.
-    if ($BuiltIn -and $test.Product -and $test.Product -cnotin $schema.Products) {
-        & $addError 'InvalidMetadata' "Product '$($test.Product)' is not one of the products of the tests shipped with Maester ($($schema.Products -join ', '))." $attribute.Extent.StartLineNumber
+    # Classification: a registry value is stored as its key. A built-in test must use registry values; a
+    # custom test keeps any other value as written.
+    $taxonomy = Get-MtTaxonomy
+    $attributeLine = $attribute.Extent.StartLineNumber
+    $productKey = $null
+    if ($test.Product) {
+        $productKey = Resolve-MtProductKey -Name $test.Product -Taxonomy $taxonomy
+        if ($productKey) { $test.Product = $productKey }
+        elseif ($BuiltIn) { & $addError 'InvalidMetadata' "Product '$($test.Product)' is not a product of the taxonomy registry ($(@($taxonomy.Products.Key) -join ', '))." $attributeLine }
+    }
+    $related = [System.Collections.Generic.List[string]]::new()
+    foreach ($p in @($test.RelatedProduct)) {
+        $key = Resolve-MtProductKey -Name $p -Taxonomy $taxonomy
+        if ($key) { $p = $key }
+        elseif ($BuiltIn) { & $addError 'InvalidMetadata' "RelatedProduct '$p' is not a product of the taxonomy registry ($(@($taxonomy.Products.Key) -join ', '))." $attributeLine; continue }
+        if ($p -eq $test.Product) { & $addError 'InvalidMetadata' "RelatedProduct must not repeat Product ('$p')." $attributeLine; continue }
+        if (-not ($related | Where-Object { $_ -eq $p })) { $related.Add($p) }
+    }
+    $test.RelatedProduct = $related.ToArray()
+    if ($test.Feature) {
+        $entry = $null
+        if ($productKey -and $taxonomy.Lookup.Feature[$productKey].TryGetValue($test.Feature, [ref] $entry)) { $test.Feature = $entry.Key }
+        elseif ($BuiltIn -and $productKey) {
+            & $addError 'InvalidMetadata' "Feature '$($test.Feature)' is not a feature of the product '$productKey' in the taxonomy registry ($(@($taxonomy.Lookup.Feature[$productKey].Values.Key) -join ', '))." $attributeLine
+        }
+    }
+    if ($test.Area) {
+        $entry = $null
+        if ($taxonomy.Lookup.Area.TryGetValue($test.Area, [ref] $entry)) { $test.Area = $entry.Key }
+        elseif ($BuiltIn) { & $addError 'InvalidMetadata' "Area '$($test.Area)' is not an area of the taxonomy registry ($(@($taxonomy.Areas.Key) -join ', '))." $attributeLine }
+    }
+    if ($test.ResourceType) {
+        $entry = $null
+        if ($taxonomy.Lookup.ResourceType.TryGetValue($test.ResourceType, [ref] $entry)) { $test.ResourceType = $entry.Key }
+        elseif ($BuiltIn) { & $addError 'InvalidMetadata' "ResourceType '$($test.ResourceType)' is not a resource type of the taxonomy registry ($(@($taxonomy.ResourceTypes.Key) -join ', '))." $attributeLine }
     }
 
+    # Mitre: technique IDs, or None alone. The IDs are checked against the pinned ATT&CK release by the
+    # build and the unit tests, not here.
+    if (@($test.Mitre).Count -gt 0) {
+        $test.Mitre = @($test.Mitre | ForEach-Object { if ($_ -eq 'None') { 'None' } else { $_.ToUpperInvariant() } } | Select-Object -Unique)
+        if ($test.Mitre -contains 'None' -and $test.Mitre.Count -gt 1) {
+            & $addError 'InvalidMetadata' "Property 'Mitre' is either a list of technique IDs or the single value 'None'." $attributeLine
+        }
+    }
+    # Control: the framework key is lowercase.
+    $test.Control = @($test.Control | ForEach-Object { $parts = $_ -split ':', 2; if ($parts.Count -eq 2) { "$($parts[0].ToLowerInvariant()):$($parts[1])" } else { $_ } })
+
     foreach ($name in $schema.Properties.Keys) {
-        $required = $schema.Properties[$name].Required
-        if ($required -eq 'Always' -or ($required -eq 'BuiltIn' -and $BuiltIn)) {
-            $present = $seen.Contains($name)
-            if (-not $present) { & $addError 'InvalidMetadata' "[MaesterTest] property '$name' is required." $attribute.Extent.StartLineNumber }
+        $definition = $schema.Properties[$name]
+        if ($definition.Required -eq 'Always' -or ($definition.Required -eq 'BuiltIn' -and $BuiltIn)) {
+            if ($seen.Contains($name)) { continue }
+            $waived = $false
+            if ($definition.NotRequiredWhen) {
+                foreach ($other in $definition.NotRequiredWhen.Keys) { if ($test[$other] -eq $definition.NotRequiredWhen[$other]) { $waived = $true } }
+            }
+            if (-not $waived) { & $addError 'InvalidMetadata' "[MaesterTest] property '$name' is required." $attribute.Extent.StartLineNumber }
         }
     }
 

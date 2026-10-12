@@ -19,10 +19,15 @@
     [MaesterTest(
         Id = 'MT.1043',
         Title = 'Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains',
+        Product = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'MailFlowRule',
         Severity = 'Medium',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1566',
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

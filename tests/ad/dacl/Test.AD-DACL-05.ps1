@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DACL-05',
         Title = 'Deny ACE count should be investigated',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'Permission',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

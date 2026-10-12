@@ -18,10 +18,12 @@
     [MaesterTest(
         Id = 'AD-USER-01',
         Title = 'Disabled user count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

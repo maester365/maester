@@ -24,13 +24,17 @@
     [MaesterTest(
         Id = 'MT.1189',
         Title = 'Groups assigned to Global Secure Access traffic forwarding profiles should not be nested.',
+        Product = 'entra',
+        Feature = 'global-secure-access',
+        Area = 'access-control',
+        ResourceType = 'Group',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
-        Preview,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

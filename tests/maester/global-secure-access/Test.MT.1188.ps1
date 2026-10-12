@@ -24,13 +24,18 @@
     [MaesterTest(
         Id = 'MT.1188',
         Title = 'Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device.',
+        Product = 'entra',
+        Feature = 'global-secure-access',
+        Area = 'access-control',
+        ResourceType = 'ServicePrincipal',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Entra', 'Maester'),
-        Preview,
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1133'),
+        Control = ('nist-800-53-r5:AC-17', 'nist-800-53-r5:IA-3'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
+        Lifecycle = 'Preview',
         Author = 'crmhh'
     )]
     [CmdletBinding()]

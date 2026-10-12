@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-DACL-02',
         Title = 'OU DACL entry count should be investigated',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'access-control',
+        ResourceType = 'OrganizationalUnit',
         Severity = 'Info',
-        Category = 'Active Directory - DACL',
-        Product = 'Active Directory',
-        Tag = 'AD.DACL',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -5,8 +5,8 @@ function Merge-MtPartitionResult {
 
     .DESCRIPTION
     Used by Merge-MtMaesterResult -SameRun. Rows are united by ID; a row that ran replaces a NotRun row
-    for the same ID. Rows without an ID are kept as they are. Counts, blocks and the run result are
-    recomputed, and each partial result's tenant, timing and command are kept under Partitions.
+    for the same ID. Rows without an ID are kept as they are. Counts, blocks, the taxonomy names and the run
+    result are recomputed, and each partial result's tenant, timing and command are kept under Partitions.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates an in-memory object only.')]
     [CmdletBinding()]
@@ -97,6 +97,8 @@ function Merge-MtPartitionResult {
         ExcludeTag = @($selections | ForEach-Object { if ($_.PSObject.Properties['ExcludeTag']) { $_.ExcludeTag } } | Where-Object { $_ } | Select-Object -Unique)
         DryRun     = [bool]($selections | Where-Object { $_.PSObject.Properties['DryRun'] -and $_.DryRun })
     }
+    # Each part lists the taxonomy names its own rows use; the merged result lists those of all rows.
+    if ($merged.Contains('Taxonomy')) { $merged.Taxonomy = Get-MtResultTaxonomy -InputObject $rows }
     $merged.Partitions = @($partitions)
     $merged.Tests = $rows
     $merged.Blocks = @($blocks)

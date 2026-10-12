@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-DNS-02',
         Title = 'Zones with only SOA/NS records should be retrievable',
+        Product = 'ad',
+        Feature = 'dns',
+        Area = 'infrastructure',
+        ResourceType = 'DnsZone',
         Severity = 'Info',
-        Category = 'Active Directory - DNS Infrastructure',
-        Product = 'Active Directory',
-        Tag = 'AD.DNS',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

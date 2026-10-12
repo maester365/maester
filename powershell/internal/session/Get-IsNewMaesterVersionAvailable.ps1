@@ -57,10 +57,16 @@
             return $false
         }
 
-        if ($null -ne $latestVersion -and $currentVersion -lt $latestVersion) {
+        # A preview is a prerelease of the release it leads to (3.0.0-preview2, then 3.0.0), so a preview with the
+        # same number as the latest release is older than it. Both install into the same version folder, which
+        # is why the release needs -Force over a preview.
+        $onPreviewOfLatest = $null -ne $latestVersion -and $currentVersion -eq $latestVersion -and (Test-MtPrereleaseModule)
+        if ($null -ne $latestVersion -and ($currentVersion -lt $latestVersion -or $onPreviewOfLatest)) {
+            $updateCommand = if ($onPreviewOfLatest) { 'Install-Module Maester -Force' } else { 'Update-Module Maester' }
+            $installed = if ($onPreviewOfLatest) { "$currentVersion (preview)" } else { $currentVersion }
             Write-Host '🔥 FYI: A newer version of Maester is available! Run the commands below to update to the latest version.'
-            Write-Host "💥 Installed version: $currentVersion → Latest version: $latestVersion" -ForegroundColor DarkGray
-            Write-Host '✨ Update-Module Maester' -NoNewline -ForegroundColor Green
+            Write-Host "💥 Installed version: $installed → Latest version: $latestVersion" -ForegroundColor DarkGray
+            Write-Host "✨ $updateCommand" -NoNewline -ForegroundColor Green
             Write-Host ' → Install the latest version of Maester.' -ForegroundColor Yellow
             Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
             Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow

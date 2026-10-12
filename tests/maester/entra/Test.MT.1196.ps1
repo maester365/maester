@@ -22,10 +22,14 @@
     [MaesterTest(
         Id = 'MT.1196',
         Title = 'Review who can change attributes used by dynamic group rules.',
+        Product = 'entra',
+        Feature = 'groups',
+        Area = 'access-control',
+        ResourceType = 'Group',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1098',
         Service = 'Graph',
         Author = 'agnivesh'
     )]

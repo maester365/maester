@@ -339,7 +339,7 @@ jobs:
 :::tip
 - If your custom tests include [Pester-format tests](../writing-tests/pester-format-tests.md) (`*.Tests.ps1`), add `Install-Module Pester -MinimumVersion 5.7.1 -Force` before `Invoke-Maester`. Pester is not needed for the built-in tests.
 - To publish NUnit XML test results (for example with a test reporter action), add `-PesterConfiguration @{ TestResult = @{ Enabled = $true; OutputPath = 'test-results/test-results.xml'; OutputFormat = 'NUnitXml' } }` to `Invoke-Maester`, or set `Output.TestResult` in `maester-config.json`. Maester writes the file itself; Pester is not required.
-- Use `-IncludePreview`, `-IncludeLongRunning`, `-Tag`, `-TestId` or `-ExcludeTestId` to choose which tests run, and `-DryRun` to see what would run.
+- Use `-Product`, `-Feature`, `-Area`, `-Severity`, `-Suite`, `-TestId`, `-ExcludeTestId`, `-IncludePreview` or `-IncludeLongRunning` to choose which tests run, and `-DryRun` to see what would run.
 :::
 
 ### Step-by-step video tutorial

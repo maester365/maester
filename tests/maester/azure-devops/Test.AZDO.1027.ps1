@@ -9,10 +9,14 @@
     [MaesterTest(
         Id = 'AZDO.1027',
         Title = 'Disable showing Gravatar images for users outside of your enterprise.',
-        Severity = 'Medium',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        Product = 'azure-devops',
+        Feature = 'repositories',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1589.002',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images'

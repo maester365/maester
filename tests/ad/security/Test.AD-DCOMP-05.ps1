@@ -26,10 +26,13 @@
     [MaesterTest(
         Id = 'AD-DCOMP-05',
         Title = 'Computer operating system details should be investigated',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'devices',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - Security Accounts',
-        Product = 'Active Directory',
-        Tag = 'AD.Security',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:CM-8',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

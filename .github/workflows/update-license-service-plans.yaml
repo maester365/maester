@@ -1,0 +1,61 @@
+name: update-license-service-plans
+
+# Keeps the licence lookup of the test builder (maester.dev/test-builder) in step with Microsoft's
+# "Product names and service plan identifiers for licensing" page.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 5 * * *'
+
+permissions: {}
+
+concurrency:
+  group: update-license-service-plans
+  cancel-in-progress: false
+
+jobs:
+  update-license-service-plans:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download and parse the licensing reference
+        working-directory: website
+        run: node scripts/update-license-service-plans.mjs
+
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          add-paths: website/src/data/license-service-plans.json
+          commit-message: 'chore: update licence service plans'
+          branch: 'automation/update-license-service-plans'
+          delete-branch: true
+          title: 'chore: update licence service plans'
+          body: |
+            Refreshes `website/src/data/license-service-plans.json` from Microsoft's licensing reference:
+            https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference
+
+            The file is parsed from the page's Markdown in `MicrosoftDocs/entra-docs` by `website/scripts/update-license-service-plans.mjs`.
+
+            Why this matters in Maester:
+            - The test builder at maester.dev/test-builder uses this list to look up the service plan names for `[MaesterTest(License = ...)]`.
+            - Nothing in the module reads this file. A test's licence check matches the plan name against the tenant at run time.
+
+            Reviewer note:
+            - A diff that removes many plans at once probably means the page layout changed. The script refuses to write when it parses fewer than 100 products or plans.

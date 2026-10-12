@@ -18,12 +18,18 @@
     [MaesterTest(
         Id = 'MT.1081',
         Title = 'Hybrid users should not be assigned Entra ID role assignments.',
+        Product = 'defender',
+        RelatedProduct = 'entra',
+        Feature = 'exposure-management',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Medium',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = ('Entra', 'EntraOps', 'Graph', 'Privileged'),
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.002', 'T1078.004', 'T1556.007'),
+        Control = 'nist-800-53-r5:AC-6(5)',
         Service = 'Graph',
+        LongRunning,
         Author = 'Cloud-Architekt'
     )]
     [CmdletBinding()]

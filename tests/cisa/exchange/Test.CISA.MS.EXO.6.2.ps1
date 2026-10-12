@@ -17,10 +17,15 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.6.2',
         Title = 'Calendar details SHALL NOT be shared with all domains.',
+        Product = 'exchange',
+        Feature = 'sharing',
+        Area = 'external-access',
+        ResourceType = 'Policy',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.6.2'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1048', 'T1567', 'T1591'),
+        Control = 'cisa-scuba:MS.EXO.6.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = ('NZLostboy', 'merill')

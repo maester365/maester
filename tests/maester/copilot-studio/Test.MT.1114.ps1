@@ -23,10 +23,15 @@ function Test-MtAIAgentNoAuthentication {
     [MaesterTest(
         Id = 'MT.1114',
         Title = 'AI agents should require user authentication.',
+        Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'High',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1213',
+        Control = 'nist-800-53-r5:IA-2',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

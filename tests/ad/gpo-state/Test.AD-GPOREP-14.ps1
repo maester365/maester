@@ -20,10 +20,12 @@ function Test-MtAdGpoEnforcementCount {
     [MaesterTest(
         Id = 'AD-GPOREP-14',
         Title = 'GPO enforcement count should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

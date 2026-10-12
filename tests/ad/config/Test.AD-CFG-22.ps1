@@ -19,10 +19,12 @@
     [MaesterTest(
         Id = 'AD-CFG-22',
         Title = 'KDS root keys count should be retrievable',
+        Product = 'ad',
+        Feature = 'directory-configuration',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Configuration',
-        Product = 'Active Directory',
-        Tag = 'AD.Config',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

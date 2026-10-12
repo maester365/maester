@@ -30,10 +30,15 @@
     [MaesterTest(
         Id = 'MT.1176',
         Title = 'Retention policy is configured for the Microsoft Copilot location.',
+        Product = 'purview',
+        Feature = 'data-lifecycle-management',
+        Area = 'data-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Purview',
-        Product = 'Purview',
-        Tag = ('Maester', 'Purview'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:SI-12',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

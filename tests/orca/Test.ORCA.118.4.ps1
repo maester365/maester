@@ -14,10 +14,16 @@ function Test-ORCA118_4 {
     [MaesterTest(
         Id = 'ORCA.118.4',
         Title = 'Your own domains are not being allow listed in an unsafe manner in Transport Rules.',
-        Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'mail-flow',
+        Area = 'email-protection',
+        ResourceType = 'MailFlowRule',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

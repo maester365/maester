@@ -16,10 +16,15 @@
     [MaesterTest(
         Id = 'MT.1102',
         Title = 'Windows Feature Update Policy Settings should not reference end of support builds',
+        Product = 'intune',
+        Feature = 'device-configuration',
+        Area = 'devices',
+        ResourceType = 'Policy',
         Severity = 'High',
-        Category = 'Maester/Intune',
-        Product = 'Intune',
-        Tag = ('Intune', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:SI-2',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

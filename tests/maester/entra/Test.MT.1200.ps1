@@ -16,12 +16,16 @@
     [MaesterTest(
         Id = 'MT.1200',
         Title = 'Agent Identities should have an active Agent Identity Blueprint Principal (Preview).',
+        Product = 'entra',
+        Feature = 'agent-identities',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Graph', 'Maester', 'Severity:Medium'),
-        Preview,
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1078.004',
         Service = 'Graph',
+        Lifecycle = 'Preview',
         Author = 'agnivesh'
     )]
     [CmdletBinding()]

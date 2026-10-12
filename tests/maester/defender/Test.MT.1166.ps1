@@ -30,10 +30,16 @@
     [MaesterTest(
         Id = 'MT.1166',
         Title = 'Local Admin Merge should be disabled.',
-        Severity = 'High',
-        Category = 'Maester/Defender',
-        Product = 'Defender',
-        Tag = ('Defender', 'Maester'),
+        Product = 'defender',
+        RelatedProduct = 'intune',
+        Feature = 'endpoint-antivirus',
+        Area = 'devices',
+        ResourceType = 'Policy',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1685', 'T1564.012'),
+        Control = 'nist-800-53-r5:CM-6',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

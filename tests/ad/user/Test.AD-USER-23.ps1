@@ -18,10 +18,12 @@
     [MaesterTest(
         Id = 'AD-USER-23',
         Title = 'Enabled built-in administrator details should be investigated',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

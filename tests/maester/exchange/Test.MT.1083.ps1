@@ -19,10 +19,14 @@
     [MaesterTest(
         Id = 'MT.1083',
         Title = 'Ensure Delicensing Resiliency is enabled',
+        Product = 'exchange',
+        Feature = 'mailboxes',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Low',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = ('ExchangeOnline', 'Graph'),
         Author = 'l-gosling'
     )]

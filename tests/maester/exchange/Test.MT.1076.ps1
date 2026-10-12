@@ -18,10 +18,14 @@ function Test-MtExoMoeraMailActivity {
     [MaesterTest(
         Id = 'MT.1076',
         Title = 'MOERA SHOULD NOT be used for sent mail',
-        Severity = 'High',
-        Category = 'Maester/Exchange',
-        Product = 'Exchange Online',
-        Tag = ('Exchange', 'Maester'),
+        Product = 'exchange',
+        Feature = 'mailboxes',
+        Area = 'email-protection',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
         Service = 'Graph',
         Author = 'soulemike',
         Contributor = ('kij', 'SamErde')

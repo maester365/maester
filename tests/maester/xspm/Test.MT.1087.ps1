@@ -24,12 +24,16 @@
     [MaesterTest(
         Id = 'MT.1087',
         Title = 'Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE''s.',
+        Product = 'defender',
+        Feature = 'exposure-management',
+        Area = 'devices',
+        ResourceType = 'Device',
         Severity = 'High',
-        Category = 'Exposure Management',
-        Product = 'Defender',
-        Tag = 'Device',
-        LongRunning,
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1190',
         Service = 'Graph',
+        LongRunning,
         Author = 'RobbeVandenDaele',
         Contributor = 'SamErde'
     )]

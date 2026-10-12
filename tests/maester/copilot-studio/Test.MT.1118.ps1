@@ -28,10 +28,15 @@ function Test-MtAIAgentAuthorAuthentication {
     [MaesterTest(
         Id = 'MT.1118',
         Title = 'AI agents should not use author (maker) authentication for connections.',
+        Product = 'copilot-studio',
+        Feature = 'agents',
+        Area = 'ai',
+        ResourceType = 'Agent',
         Severity = 'Medium',
-        Category = 'Copilot Studio Agent Security',
-        Product = 'Copilot Studio',
-        Tag = ('AI', 'AIAgent', 'CopilotStudio', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1550.001', 'T1213'),
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

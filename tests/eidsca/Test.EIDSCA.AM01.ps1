@@ -14,9 +14,15 @@ function Test-MtCheckEidscaAM01 {
     [MaesterTest(
         Id = 'EIDSCA.AM01',
         Title = 'Authentication Method - Microsoft Authenticator - State.',
+        Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'EIDSCA',
-        Product = 'Entra ID',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
+        Control = ('nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-2(2)'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

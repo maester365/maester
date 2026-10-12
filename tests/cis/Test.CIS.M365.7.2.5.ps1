@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.7.2.5',
         Title = 'Ensure that SharePoint guest users cannot share items they don''t own',
+        Product = 'sharepoint',
+        Feature = 'external-sharing',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'SharePoint',
-        Tag = ('CIS E3', 'CIS E3 Level 2', 'CIS E5', 'CIS E5 Level 2', 'CIS M365 v7.0.0', 'L2', 'OneDrive', 'SharePoint Online'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1213.002', 'T1530'),
+        Control = ('cis-m365:7.2.5', 'nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-21'),
         Service = 'SharePointOnline',
         Author = 'Mynster9361'
     )]

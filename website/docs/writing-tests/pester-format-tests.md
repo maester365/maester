@@ -40,10 +40,17 @@ The Pester 3.4 that ships with Windows is never used.
   Maester reads the files statically and excludes the deselected `It` blocks by line; they appear as `NotRun`
   rows with a reason code. A test whose name is built at run time (for example with `<_>` or `$_` from
   `-ForEach`) can be selected only as a whole, through the literal start of its name.
+- `-Tag` and `-ExcludeTag` select Pester tests by their Pester tags, as in 2.x, and the `Preview` and
+  `LongRunning` tags keep their default exclusions.
+- A Pester test has no `Product`, `Feature` or `Area`, so a run that selects with `-Product`, `-Feature` or
+  `-Area` leaves it out (`NotRun`, reason `NotSelected`). `-Suite` matches the suite of its folder (`Custom`
+  unless a `suite.json` says otherwise), and `-Severity` matches only a severity set in `TestSettings`. Convert
+  the test to the native format to give it these attributes.
 - `Severity` comes from a `TestSettings` row in the config, else, when the test calls
   `Add-MtTestResultDetail`, from its `-Severity` or a `Severity:<level>` tag, as in 2.x.
 - Rows from Pester tests have `Format = Pester` in the result. They keep the 2.x result rules; for example a
-  failed `Should` is `Failed`.
+  failed `Should` is `Failed`. `Block` is the `Describe` or `Context` name and `Tag` the Pester tags, as in
+  2.x. The attribute fields of a native row (`Product`, `Feature`, `Area` and the others) are present and null.
 
 ### Copies of built-in tests are not run
 
@@ -128,9 +135,15 @@ What it handles:
 - **Inline tests**: the `It` body becomes the function body, with a trailing `<value> | Should -Be $true`
   rewritten to `return (<value>)`. Other assertions and `Set-ItResult` are kept with a `TODO` comment, and the
   row is `NeedsReview`.
-- The `It` name gives the ID and title, the `Describe` name the category, and the `Describe`, `Context` and `It`
-  tags become `Tag` (`Preview` and `LongRunning` become the flags). A `Severity:<level>` tag sets `Severity`,
-  else `Medium`. A `See https://...` suffix that does not point to maester.dev becomes `HelpUrl`.
+- The `It` name gives the ID and title. The `Describe` name becomes `Feature`, so the `Block` of the test's
+  result rows, and with it the name of its test case in CI, stays what it was. A `Describe` name that is not one
+  line of at most 60 characters is not written, and the report says so.
+- The `Describe`, `Context` and `It` tags become `Tag`. A `Preview` tag becomes `Lifecycle = 'Preview'` and a
+  `LongRunning` tag the `LongRunning` flag. A `Severity:<level>` tag sets `Severity`, else `Medium`. A
+  `See https://...` suffix that does not point to maester.dev becomes `HelpUrl`.
+- `Product`, `Area` and the other classification attributes are not guessed. Add them by hand if you want the
+  test to be selected with `-Product` or `-Area`; see the [attribute rubric](./attribute-rubric.md). Once the
+  test has a `Product`, its `Block` is the product's name.
 - The Markdown comes from the function's `.md` file, else from `-Description` in the code, else the title; a
   generated `.md` is noted in the report so you can add remediation steps. The `<!--- Results --->` footer is
   added when missing.

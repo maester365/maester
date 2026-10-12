@@ -21,10 +21,15 @@ function Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline {
     [MaesterTest(
         Id = 'AZDO.1016',
         Title = 'Limit job authorization scope to current project for non-release pipelines.',
+        Product = 'azure-devops',
+        Feature = 'pipelines',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1550.001', 'T1213.003'),
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope'

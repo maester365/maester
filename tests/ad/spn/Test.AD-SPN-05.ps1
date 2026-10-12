@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-SPN-05',
         Title = 'Computer SPN non-FQDN hosts should be investigated',
+        Product = 'ad',
+        Feature = 'service-principal-names',
+        Area = 'infrastructure',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - SPN Analysis',
-        Product = 'Active Directory',
-        Tag = 'AD.SPN',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

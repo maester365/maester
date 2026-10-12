@@ -14,10 +14,15 @@
     [MaesterTest(
         Id = 'MT.1068',
         Title = 'Restrict non-admin users from creating tenants.',
+        Product = 'entra',
+        Feature = 'user-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
+        Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:CM-7'),
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

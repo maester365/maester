@@ -14,10 +14,15 @@ function Test-ORCA225 {
     [MaesterTest(
         Id = 'ORCA.225',
         Title = 'Safe Documents is enabled for Office clients.',
+        Product = 'defender',
+        Feature = 'safe-attachments',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

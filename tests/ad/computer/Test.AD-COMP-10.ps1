@@ -26,10 +26,12 @@
     [MaesterTest(
         Id = 'AD-COMP-10',
         Title = 'Computer delegation details should be retrievable',
+        Product = 'ad',
+        Feature = 'computers',
+        Area = 'authentication',
+        ResourceType = 'Computer',
         Severity = 'Info',
-        Category = 'Active Directory - Computer Objects',
-        Product = 'Active Directory',
-        Tag = 'AD.Computer',
+        Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

@@ -80,11 +80,12 @@
             if (-not $renderer) { $renderer = New-MtConsoleRenderer -Console $console; $ownRenderer = $true }
         }
 
-        # One lane per product, in the order of the schema's product list, then the others. A product whose
-        # tests are all skipped gets a lane too, so the dashboard shows why nothing runs for it.
-        $laneOf = { param($test) if ($test.Product) { [string]$test.Product } else { 'Other' } }
+        # One lane per product. Title and order come from the taxonomy registry, then the others by name
+        # (a product the registry does not know, and Other for tests without one). A product whose tests are
+        # all skipped gets a lane too, so the dashboard shows why nothing runs for it.
+        $laneOf = { param($test) Get-MtProductLane -Product $test.Product }
         $laneTotals = [ordered]@{}
-        $productOrder = @((Get-MtTestSchema).Products)
+        $productOrder = [System.Collections.Generic.List[string]]@((Get-MtTaxonomy).Products.Name)
         foreach ($item in ($workItems | Sort-Object { $i = $productOrder.IndexOf($_.Group); if ($i -lt 0) { 999 } else { $i } }, Group)) { $laneTotals[$item.Group] = 1 + [int]$laneTotals[$item.Group] }
         $laneNotes = @{}
         foreach ($group in ($Plan | Where-Object { $_.Disposition -eq 'Skipped' } | Group-Object { & $laneOf $_.Test })) {
@@ -207,7 +208,7 @@ function New-MtNativeWorkItem {
     $item = [Maester.Engine.MtWorkItem]::new()
     $item.Id = $Id
     $item.Command = $PlanRow.Test.FunctionName
-    $item.Group = if ($PlanRow.Test.Product) { [string]$PlanRow.Test.Product } else { 'Other' }
+    $item.Group = Get-MtProductLane -Product $PlanRow.Test.Product
     $instanceTitle = Get-MtInstanceValue -Instance $Instance -Name 'Title'
     $item.Title = if ($instanceTitle) { [string]$instanceTitle } else { [string]$PlanRow.Test.Title }
     $item.Parameters = $Parameters
@@ -406,8 +407,15 @@ function ConvertTo-MtNativeRow {
     .DESCRIPTION
     Applies the test contract (design section 5.2), in this order: -SkippedBecause Error; -Investigate;
     any other skip; an uncaught error; the returned value. The row has every 2.x field (Index is set
-    later) and the 3.0 fields Source, Suite, Format, ReasonCode, ReasonDetail, ParentId, InstanceId,
-    Parameters and Diagnostics.
+    later), the 3.0 fields Source, Suite, Format, ReasonCode, ReasonDetail, ParentId, InstanceId,
+    Parameters and Diagnostics, and the test's attributes (test attribute design, section 3): Product (the
+    key), RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control,
+    Lifecycle, ReplacedBy, Service, License and Permission. An attribute the test does not declare is null
+    or an empty list, never left out. Tag holds the tags the author wrote, plus the instance's own.
+
+    Benchmark is the requirement of a published benchmark that the test implements: the first Control of the
+    test that names a requirement of a framework file (test attribute design, section 6), or null. Control
+    then also holds the Related references of the requirements it names, after the test's own.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -440,7 +448,8 @@ function ConvertTo-MtNativeRow {
     elseif ($detail -and $detail.Severity) { [string]$detail.Severity }
     else { '' }
 
-    $tags = @($test.EffectiveTag)
+    # Authored tags only: no suite tags, no test ID, no flags.
+    $tags = @($test.Tag | Where-Object { $_ })
     $instanceTag = if ($isInstance) { Get-MtInstanceValue -Instance $Instance -Name 'Tag' } else { $null }
     if ($instanceTag) { $tags = @($tags + @($instanceTag) | Select-Object -Unique) }
 
@@ -513,7 +522,7 @@ function ConvertTo-MtNativeRow {
 
     $file = if ($test.BuiltIn -and $test.File) { ConvertTo-MtRepositoryPath -Path $test.File } else { $test.File }
 
-    [pscustomobject][ordered]@{
+    $row = [ordered]@{
         Index           = 0
         Id              = $id
         Title           = $title
@@ -525,7 +534,7 @@ function ConvertTo-MtNativeRow {
         ScriptBlock     = ''
         ScriptBlockFile = $file
         ErrorRecord     = $errorRecords
-        Block           = $test.Category
+        Block           = $test.Block
         Product         = $test.Product
         Duration        = $duration.ToString('hh\:mm\:ss\.fff')
         ResultDetail    = $detail
@@ -539,6 +548,54 @@ function ConvertTo-MtNativeRow {
         Parameters      = @($PlanRow.EffectiveParameters)
         Diagnostics     = $diagnostics
     }
+    $attributes = Get-MtRowAttribute -Test $test
+    foreach ($name in $attributes.Keys) { $row[$name] = $attributes[$name] }
+    [pscustomobject]$row
+}
+
+function Get-MtRowAttribute {
+    <#
+    .SYNOPSIS
+    Returns the attribute fields of a result row (test attribute design, section 3) for a native test.
+
+    .DESCRIPTION
+    RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control, Lifecycle,
+    ReplacedBy, Service, License and Permission, in that order, then Benchmark (test attribute design,
+    section 6), which is null unless a Control of the test names a requirement of a framework. Without -Test
+    every field is null, which is what a Pester-format row carries.
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Collections.Specialized.OrderedDictionary])]
+    param(
+        [Parameter()] [AllowNull()] [object] $Test
+    )
+
+    $fields = [ordered]@{}
+    foreach ($name in 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'UserImpact', 'ImplementationCost', 'Mitre', 'Control', 'Lifecycle', 'ReplacedBy', 'Service', 'License', 'Permission') {
+        if (-not $Test) { $fields[$name] = $null; continue }
+        $property = $Test.PSObject.Properties[$name]
+        $fields[$name] = if ($name -in 'RelatedProduct', 'Mitre', 'Control', 'Service', 'License', 'Permission') {
+            , [string[]]@($(if ($property) { $property.Value }) | Where-Object { $_ })
+        } elseif ($property -and $property.Value) { [string]$property.Value } else { $null }
+    }
+    $benchmark = if ($Test) { $Test.PSObject.Properties['Benchmark'] }
+    $fields['Benchmark'] = if ($benchmark -and $benchmark.Value) { $benchmark.Value } else { $null }
+    $fields
+}
+
+function Get-MtProductLane {
+    <#
+    .SYNOPSIS
+    Returns the console lane of a test: the display name of its Product, the value as written when the
+    taxonomy registry does not know it, or Other.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product
+    )
+    if (-not $Product) { return 'Other' }
+    Get-MtProductName -Product $Product
 }
 
 function ConvertTo-MtRepositoryPath {

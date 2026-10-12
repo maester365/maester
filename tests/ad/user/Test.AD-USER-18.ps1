@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-USER-18',
         Title = 'User script path count should be retrievable',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'infrastructure',
+        ResourceType = 'User',
         Severity = 'Info',
-        Category = 'Active Directory - Users',
-        Product = 'Active Directory',
-        Tag = 'AD.User',
+        Mitre = 'T1037.003',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

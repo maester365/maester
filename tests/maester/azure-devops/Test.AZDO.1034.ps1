@@ -25,10 +25,14 @@ function Test-AzdoOrganizationCreationRestriction {
     [MaesterTest(
         Id = 'AZDO.1034',
         Title = '(Tenant) Restrict creation of new Azure DevOps organizations.',
-        Severity = 'High',
-        Category = 'Azure DevOps',
-        Product = 'Azure DevOps',
-        Tag = 'AZDO',
+        Product = 'azure-devops',
+        Feature = 'organization-policies',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'None',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy'

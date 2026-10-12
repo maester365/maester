@@ -20,10 +20,12 @@
     [MaesterTest(
         Id = 'AD-TRUST-01',
         Title = 'Trust total count should be investigated',
+        Product = 'ad',
+        Feature = 'trusts',
+        Area = 'external-access',
+        ResourceType = 'Trust',
         Severity = 'Info',
-        Category = 'Active Directory - Trusts',
-        Product = 'Active Directory',
-        Tag = 'AD.Trust',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

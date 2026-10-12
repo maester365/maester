@@ -21,10 +21,15 @@
     [MaesterTest(
         Id = 'CIS.GH.1.2.4',
         Title = 'Ensure issue deletion is limited to specific users',
+        Product = 'github',
+        Feature = 'organization-settings',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'GitHub',
-        Tag = ('CIS GH', 'CIS GH Level 1', 'CIS GitHub v1.2.0', 'GitHub', 'L1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1070', 'T1485'),
+        Control = ('cis-github:1.2.4', 'nist-800-53-r5:AC-6'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

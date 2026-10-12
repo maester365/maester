@@ -17,11 +17,17 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.2.1',
         Title = 'A list of approved IP addresses for sending mail SHALL be maintained.',
+        Product = 'exchange',
+        Feature = 'email-authentication',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('Deprecated', 'MS.EXO', 'MS.EXO.2.1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1684.002',
+        Control = 'cisa-scuba:MS.EXO.2.1',
         Service = 'Graph',
+        Lifecycle = 'Deprecated',
         Author = 'soulemike',
         Contributor = ('weyCC81', 'SamErde')
     )]

@@ -14,10 +14,14 @@ function Test-ORCA224 {
     [MaesterTest(
         Id = 'ORCA.224',
         Title = 'Similar Users Safety Tips is enabled.',
+        Product = 'defender',
+        RelatedProduct = 'exchange',
+        Feature = 'anti-phishing',
+        Area = 'email-protection',
+        ResourceType = 'Policy',
         Severity = 'Info',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        Mitre = ('T1566', 'T1684.001'),
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

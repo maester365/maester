@@ -21,10 +21,12 @@
     [MaesterTest(
         Id = 'AD-SCH-01',
         Title = 'Schema modification year count should be retrievable',
+        Product = 'ad',
+        Feature = 'schema',
+        Area = 'infrastructure',
+        ResourceType = 'Tenant',
         Severity = 'Info',
-        Category = 'Active Directory - Schema',
-        Product = 'Active Directory',
-        Tag = 'AD.Schema',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

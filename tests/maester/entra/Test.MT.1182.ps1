@@ -28,10 +28,16 @@
     [MaesterTest(
         Id = 'MT.1182',
         Title = 'Mature DMARC policy SHALL be published for every Entra managed and verified domain.',
+        Product = 'entra',
+        RelatedProduct = 'exchange',
+        Feature = 'user-settings',
+        Area = 'email-protection',
+        ResourceType = 'Domain',
         Severity = 'Medium',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('Entra', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'High',
+        Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'Graph',
         Author = 'blindzero'
     )]

@@ -100,35 +100,37 @@ Describe 'Check helpers' {
     }
 }
 
-# Product names come from one list, Products in powershell/assets/MaesterTestSchema.psd1. A new product is a
-# deliberate addition to that list (and to the folder map below), never a new spelling in one test.
+# Products come from one list, Products in powershell/assets/MaesterTaxonomy.psd1. A test names its product by
+# key. A new product is a deliberate addition to that list (and to the folder map below), never a new
+# spelling in one test.
 Describe 'Product of the built-in tests' {
     BeforeAll {
         $script:repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
-        $script:products = @(InModuleScope Maester { (Get-MtTestSchema).Products })
+        $script:taxonomy = Import-PowerShellDataFile -Path (Join-Path $script:repoRoot 'powershell/assets/MaesterTaxonomy.psd1')
+        $script:products = @($script:taxonomy.Products | ForEach-Object { $_.Key })
         $script:builtIn = @(Get-MtTest | Where-Object BuiltIn)
 
         # The product of every test in a folder that is named after a service or a suite of one product.
         # tests/cis is one folder for many products, so it is only checked against the list.
         $script:folderProduct = [ordered]@{
-            'maester/azure'                = 'Azure'
-            'maester/azure-devops'         = 'Azure DevOps'
-            'maester/copilot-studio'       = 'Copilot Studio'
-            'maester/defender'             = 'Defender'
-            'maester/drift'                = 'Microsoft 365'
-            'maester/entra'                = 'Entra ID'
-            'maester/exchange'             = 'Exchange Online'
-            'maester/global-secure-access' = 'Entra ID'
-            'maester/intune'               = 'Intune'
-            'maester/purview'              = 'Purview'
-            'maester/teams'                = 'Teams'
-            'maester/xspm'                 = 'Defender'
-            'cisa/entra'                   = 'Entra ID'
-            'cisa/exchange'                = 'Exchange Online'
-            'cisa/sharepoint'              = 'SharePoint'
-            'ad'                           = 'Active Directory'
-            'eidsca'                       = 'Entra ID'
-            'orca'                         = 'Defender'
+            'maester/azure'                = 'azure'
+            'maester/azure-devops'         = 'azure-devops'
+            'maester/copilot-studio'       = 'copilot-studio'
+            'maester/defender'             = 'defender'
+            'maester/drift'                = 'microsoft-365'
+            'maester/entra'                = 'entra'
+            'maester/exchange'             = 'exchange'
+            'maester/global-secure-access' = 'entra'
+            'maester/intune'               = 'intune'
+            'maester/purview'              = 'purview'
+            'maester/teams'                = 'teams'
+            'maester/xspm'                 = 'defender'
+            'cisa/entra'                   = 'entra'
+            'cisa/exchange'                = 'exchange'
+            'cisa/sharepoint'              = 'sharepoint'
+            'ad'                           = 'ad'
+            'eidsca'                       = 'entra'
+            'orca'                         = 'defender'
         }
 
         function Get-TestFolder {
@@ -145,20 +147,36 @@ Describe 'Product of the built-in tests' {
         $script:products.Count | Should -BeGreaterThan 5
     }
 
-    It 'Uses only products from the Maester list, with the same spelling and case' {
+    It 'Stores the product of every built-in test as a key of the taxonomy registry' {
         $offenders = $script:builtIn | Where-Object { $_.Product -cnotin $script:products } |
             ForEach-Object { "$($_.Id): '$($_.Product)'" }
         $offenders | Should -BeNullOrEmpty -Because "Product must be one of: $($script:products -join ', ')"
     }
 
-    It 'Keeps the product list clean: no blanks, no duplicates, no unused names' {
-        $script:products | Where-Object { $_ -ne $_.Trim() -or -not $_ } | Should -BeNullOrEmpty -Because 'a name has leading or trailing spaces'
-        ($script:products | Group-Object { $_.ToLowerInvariant() } | Where-Object Count -GT 1).Name | Should -BeNullOrEmpty -Because 'two names differ only in case'
+    It 'Writes the product as its key in the test file, not as an alias' {
+        # An alias such as 'Entra ID' loads, but the built-in tests are the examples that contributors copy.
+        $offenders = foreach ($test in $script:builtIn) {
+            $ast = [System.Management.Automation.Language.Parser]::ParseFile($test.File, [ref] $null, [ref] $null)
+            $attribute = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.AttributeAst] -and $n.TypeName.Name -eq 'MaesterTest' }, $true)
+            $written = ($attribute.NamedArguments | Where-Object ArgumentName -EQ 'Product').Argument.Value
+            if ($written -cnotin $script:products) { "$($test.Id): '$written'" }
+        }
+        $offenders | Should -BeNullOrEmpty -Because 'run ./build/migration/Convert-MtTestAttributes.ps1, or write the key from powershell/assets/MaesterTaxonomy.psd1'
+    }
+
+    It 'Keeps the product list clean: lowercase kebab-case keys, no duplicates, no unused product' {
+        $script:products | Where-Object { $_ -cnotmatch '^[a-z0-9]+(-[a-z0-9]+)*$' } | Should -BeNullOrEmpty -Because 'a product key is lowercase kebab-case'
+        ($script:products | Group-Object | Where-Object Count -GT 1).Name | Should -BeNullOrEmpty -Because 'a key is listed twice'
+        $owners = @{}
+        foreach ($product in $script:taxonomy.Products) {
+            foreach ($name in @($product.Key) + @($product.Aliases)) { $owners[$name.ToLowerInvariant()] = @($owners[$name.ToLowerInvariant()]) + $product.Key | Where-Object { $_ } | Select-Object -Unique }
+        }
+        @($owners.Keys | Where-Object { @($owners[$_]).Count -gt 1 }) | Should -BeNullOrEmpty -Because 'a key or alias must name one product only, whatever its case'
         $used = @($script:builtIn.Product | Select-Object -Unique)
         $script:products | Where-Object { $_ -cnotin $used } | Should -BeNullOrEmpty -Because 'a product no test uses should be removed from the list'
     }
 
-    It 'Lists only products from the Maester list in the folder map' {
+    It 'Lists only products from the taxonomy registry in the folder map' {
         $script:folderProduct.Values | Where-Object { $_ -cnotin $script:products } | Should -BeNullOrEmpty
     }
 

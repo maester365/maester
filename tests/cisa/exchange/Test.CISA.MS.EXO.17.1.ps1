@@ -17,10 +17,16 @@
     [MaesterTest(
         Id = 'CISA.MS.EXO.17.1',
         Title = 'Microsoft Purview Audit (Standard) logging SHALL be enabled.',
+        Product = 'exchange',
+        RelatedProduct = 'purview',
+        Feature = 'audit-logging',
+        Area = 'logging-and-detection',
+        ResourceType = 'Tenant',
         Severity = 'High',
-        Category = 'CISA',
-        Product = 'Exchange Online',
-        Tag = ('MS.EXO', 'MS.EXO.17.1'),
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1685.002',
+        Control = 'cisa-scuba:MS.EXO.17.1',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike'
     )]

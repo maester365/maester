@@ -7,45 +7,32 @@ Param(
     [switch]$preview = $false
 )
 
+. "$PSScriptRoot/Get-NextModuleVersion.ps1"
+
 $ManifestPath = "$($ModuleRoot)/Maester.psd1"
 
 if ( -not (Test-Path $ManifestPath )) {
     Write-Error "Could not find PowerShell module manifest ($ManifestPath)"
     throw
 } else {
-    # Get the current version of the module from the PowerShell gallery
-    $previousVersion = (Find-Module -Name Maester -AllowPrerelease:$preview).Version
-    Write-Host "Previous version: $previousVersion"
-
-    $ver = [version]($previousVersion -replace '-preview')
-
-    # Set new version number. If it is pre-release, increment the build number otherwise increment the minor version.
     $major = 3 # Update this to change the major version number of Maester.
-    if ($major -ne $ver.Major) {
-        $minor = 0 # Reset the minor & build version when incrementing the major version.
-        $build = 0
-    } else {
-        $minor = $ver.Minor
 
-        if ($preview) {
-            $build = $ver.Build + 1
-        } else {
-            $minor = $ver.Minor + 1
-            $build = 0 # Reset the build number when incrementing the minor version.
-        }
-    }
+    # The latest stable release decides the number of the next release. A preview is a prerelease of that
+    # number: 3.0.0-preview1, 3.0.0-preview2, then 3.0.0. See Get-NextModuleVersion.ps1.
+    $stableVersion = [version](Find-Module -Name Maester).Version
+    Write-Host "Latest stable version: $stableVersion"
+    $published = @()
+    if ($preview) { $published = @((Find-Module -Name Maester -AllVersions -AllowPrerelease).Version | ForEach-Object { [string]$_ }) }
 
-    $NewVersion = '{0}.{1}.{2}' -f $major, $minor, $build
+    $next = Get-NextModuleVersion -StableVersion $stableVersion -PublishedVersion $published -Major $major -Preview:$preview
 
     $publicScripts = @( Get-ChildItem -Path "$ModuleRoot/public" -Recurse -Filter "*.ps1" )
     $FunctionNames = @( $publicScripts.BaseName | Sort-Object )
 
-    $previewLabel = if ($preview) { '-preview' } else { '' }
-
-    Update-ModuleManifest -Path $ManifestPath -ModuleVersion $NewVersion -FunctionsToExport $FunctionNames -Prerelease $previewLabel
+    Update-ModuleManifest -Path $ManifestPath -ModuleVersion $next.ModuleVersion -FunctionsToExport $FunctionNames -Prerelease $next.Prerelease
 }
 
-$NewVersion += $previewLabel
+$NewVersion = $next.FullVersion
 Write-Host "New version: $NewVersion"
 Add-Content -Path $env:GITHUB_OUTPUT -Value "newtag=$NewVersion"
 Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$NewVersion"

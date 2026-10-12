@@ -21,10 +21,12 @@ function Test-MtAdGpoDisabledLinkDetails {
     [MaesterTest(
         Id = 'AD-GPOREP-13',
         Title = 'GPO disabled link details should be investigated',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
         Severity = 'Info',
-        Category = 'Active Directory - GPO State',
-        Product = 'Active Directory',
-        Tag = 'AD.GPOState',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

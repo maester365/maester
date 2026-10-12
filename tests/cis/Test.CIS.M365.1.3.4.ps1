@@ -18,10 +18,15 @@
     [MaesterTest(
         Id = 'CIS.M365.1.3.4',
         Title = 'Ensure ''User owned apps and services'' is restricted',
+        Product = 'microsoft-365',
+        Feature = 'organization-settings',
+        Area = 'applications',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'CIS',
-        Product = 'Microsoft 365',
-        Tag = ('CIS E3', 'CIS E3 Level 1', 'CIS E5', 'CIS E5 Level 1', 'CIS M365 v7.0.0', 'L1', 'Security'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = 'T1137.006',
+        Control = ('cis-m365:1.3.4', 'nist-800-53-r5:CM-7', 'nist-800-53-r5:CM-11'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

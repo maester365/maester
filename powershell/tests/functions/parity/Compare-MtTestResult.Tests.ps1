@@ -1,6 +1,6 @@
 ﻿BeforeDiscovery {
     $script:RepoRootForDiscovery = (Resolve-Path "$PSScriptRoot/../../../..").Path
-    $script:HasReportSample = Test-Path -LiteralPath (Join-Path $script:RepoRootForDiscovery 'report/src/lib/testResults.ts')
+    $script:HasReportSample = Test-Path -LiteralPath (Join-Path $script:RepoRootForDiscovery 'report/src/lib/testResultsLegacy.ts')
 }
 
 BeforeAll {
@@ -48,8 +48,8 @@ Describe 'build/parity/Compare-MtTestResult.ps1' {
         }
 
         It 'reports no difference for the report app sample result against itself' -Skip:(-not $script:HasReportSample) {
-            # report/src/lib/testResults.ts embeds a real 2.x result (317 rows) as a JS object literal.
-            $source = Get-Content -LiteralPath (Join-Path $script:RepoRoot 'report/src/lib/testResults.ts') -Raw
+            # report/src/lib/testResultsLegacy.ts embeds a real 2.x result (317 rows) as a JS object literal.
+            $source = Get-Content -LiteralPath (Join-Path $script:RepoRoot 'report/src/lib/testResultsLegacy.ts') -Raw
             $start = $source.IndexOf('{')
             $end = $source.LastIndexOf('}')
             $samplePath = Join-Path $TestDrive 'report-sample.json'

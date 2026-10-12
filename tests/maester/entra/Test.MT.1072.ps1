@@ -20,10 +20,15 @@
     [MaesterTest(
         Id = 'MT.1072',
         Title = 'Conditional Access policies should not use the deprecated Approved Client App grant.',
+        Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'access-control',
+        ResourceType = 'ConditionalAccessPolicy',
         Severity = 'High',
-        Category = 'Maester/Entra',
-        Product = 'Entra ID',
-        Tag = ('CA', 'Maester'),
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-2(11)', 'nist-800-53-r5:IA-3'),
         Service = 'Graph',
         Author = 'HenrikPiecha'
     )]

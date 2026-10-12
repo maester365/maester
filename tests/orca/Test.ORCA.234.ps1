@@ -14,10 +14,15 @@ function Test-ORCA234 {
     [MaesterTest(
         Id = 'ORCA.234',
         Title = 'Click through is disabled for Safe Documents.',
+        Product = 'defender',
+        Feature = 'safe-attachments',
+        Area = 'email-protection',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
-        Category = 'ORCA',
-        Product = 'Defender',
-        Tag = 'EXO',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1204.002',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'
