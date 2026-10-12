@@ -332,7 +332,7 @@ function Test-Family$name {
                 $folder = Join-Path $TestDrive $Name
                 New-ReviewTest -Folder $folder -Id 'REVIEW.1'
                 New-ReviewTest -Folder $folder -Id 'REVIEW.2'
-                New-ReviewTest -Folder $folder -Id 'REVIEW.3' -Extra ', Preview'
+                New-ReviewTest -Folder $folder -Id 'REVIEW.3' -Extra ", Lifecycle = 'Preview'"
                 '{}' | Set-Content (Join-Path $folder 'maester-config.json')
                 $TenantConfig | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $folder "maester-config.$script:tenantId.json")
                 $folder
@@ -401,7 +401,9 @@ function Test-Family$name {
             $row = (Invoke-ReviewRun -Path $file).Tests[0]
             $row.Result | Should -Be 'Passed'
             $row.Suite | Should -Be 'CONTOSO'
-            $row.Tag | Should -Contain 'ContosoSuite'
+            # A row's Tag holds the test's own tags only. The suite's tags are kept beside them for selection.
+            @($row.Tag) | Should -Not -Contain 'ContosoSuite'
+            (Get-MtTest -Path $file).SuiteTag | Should -Contain 'ContosoSuite'
 
             @{ Id = 'CONTOSO'; Source = 'Contoso'; RequiresMaester = '99.0' } | ConvertTo-Json | Set-Content (Join-Path $folder 'suite.json')
             $byFile = (Invoke-ReviewRun -Path $file).Tests[0]
