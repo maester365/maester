@@ -34,9 +34,19 @@ Describe 'Sample' -Tag 'Sample' {
         # These run the built-in tests too (no -SkipBuiltIn).
         WithBuiltIn     = 'BUILTIN -TestId S.1001, MT.1001, MT.1002'
         MissingPath     = 'BUILTIN MISSINGPATH -TestId MT.1001'
+        # The tenant's own config file (maester-config.<tenantId>.json) carries the selection. The tenant ID lookup
+        # is replaced in the module for the rest of the process; no other folder has such a file.
+        TenantFile      = 'TENANTFILE'
         # Pester is not installed: Import-MtPester is replaced in the module for the rest of the process, so this runs last.
         NoPester        = 'NOPESTER'
     }
+    # A copy of the test folder with a root config and a tenant file that excludes one test and disables another.
+    $script:tenantFolder = Join-Path $TestDrive 'tenant'
+    $null = New-Item -ItemType Directory -Path $script:tenantFolder -Force
+    Copy-Item -Path (Join-Path $script:folder 'Sample.Tests.ps1') -Destination $script:tenantFolder
+    '{}' | Set-Content (Join-Path $script:tenantFolder 'maester-config.json')
+    @{ Selection = @{ ExcludeTestId = @('S.1001') }; TestSettings = @(@{ Id = 'S.1002'; Enabled = $false; Reason = 'Tenant rule' }) } |
+        ConvertTo-Json -Depth 5 | Set-Content (Join-Path $script:tenantFolder 'maester-config.11111111-2222-3333-4444-555555555555.json')
     $lines = [System.Collections.Generic.List[string]]::new()
     $lines.Add("`$ErrorActionPreference = 'Continue'")
     $lines.Add("Import-Module '$script:manifest' -WarningAction SilentlyContinue")
@@ -44,8 +54,12 @@ Describe 'Sample' -Tag 'Sample' {
         $out = Join-Path $TestDrive "$name.json"
         $arguments = $script:scenarios[$name]
         $skip = if ($arguments -like 'BUILTIN*') { '' } else { '-SkipBuiltIn' }
-        $path = if ($arguments -like '*MISSINGPATH*') { Join-Path $TestDrive 'does-not-exist' } else { $script:folder }
+        $path = if ($arguments -like '*MISSINGPATH*') { Join-Path $TestDrive 'does-not-exist' } elseif ($arguments -eq 'TENANTFILE') { $script:tenantFolder } else { $script:folder }
         $arguments = $arguments -replace '^BUILTIN ', '' -replace '^MISSINGPATH ', ''
+        if ($arguments -eq 'TENANTFILE') {
+            $arguments = ''
+            $lines.Add("& (Get-Module Maester) { function script:Get-MtConfigTenantId { '11111111-2222-3333-4444-555555555555' } }")
+        }
         if ($arguments -eq 'NOPESTER') {
             $arguments = ''
             $lines.Add("& (Get-Module Maester) { function script:Import-MtPester { `$false } }")
@@ -156,6 +170,19 @@ Describe 'Invoke-Maester selection (Pester provider)' {
             $disabled.ReasonDetail | Should -Be 'Not ours'
             (Get-Row $r 'FAM.1.b').Result | Should -Be 'Passed'
             (Get-Row $r 'FAM.1.c').Result | Should -Be 'Passed'
+        }
+
+        It 'Applies the selection of the tenant config file to Pester-format tests' {
+            $r = Invoke-MaesterRun 'TenantFile'
+            $excluded = Get-Row $r 'S.1001'
+            $excluded.Result | Should -Be 'NotRun'
+            $excluded.ReasonCode | Should -Be 'ExcludedById'
+            $disabled = Get-Row $r 'S.1002'
+            $disabled.ReasonCode | Should -Be 'DisabledByConfig'
+            $disabled.ReasonDetail | Should -Be 'Tenant rule'
+            # The rest of the file still runs.
+            (Get-Row $r 'S.1005').Result | Should -Be 'Skipped'
+            (Get-Row $r 'FAM.1.a').Result | Should -Be 'Passed'
         }
 
         It 'Lists unknown IDs and stops when OnUnknownId is Error' {

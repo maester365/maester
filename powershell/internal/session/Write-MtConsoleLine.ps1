@@ -104,7 +104,7 @@ function Stop-MtConsoleOutput {
         foreach ($record in $item.Information) { $PSCmdlet.WriteInformation($record) }
     }
     if ($wasFullScreen) {
-        # A record written inside a helper is collected by the helper and by its caller: write it once.
+        # Write a record once, however often it was collected.
         $seen = [System.Collections.Generic.HashSet[object]]::new([System.Collections.Generic.ReferenceEqualityComparer]::Instance)
         foreach ($record in @($Message)) {
             if ($null -eq $record -or -not $seen.Add($record)) { continue }
@@ -112,6 +112,37 @@ function Stop-MtConsoleOutput {
             elseif ($record -is [System.Management.Automation.ErrorRecord]) { $PSCmdlet.WriteError($record) }
         }
     }
+}
+
+function Get-MtDashboardMessageDefault {
+    <#
+    .SYNOPSIS
+    The $PSDefaultParameterValues that collect the warnings and errors written while the full-screen dashboard owns the screen.
+
+    .DESCRIPTION
+    Adds a default for the -WarningVariable of Write-Warning and for the -ErrorVariable of Write-Error: the
+    lists $mtDashboardWarnings and $mtDashboardErrors of Invoke-Maester, which must exist before the first
+    message is written.
+
+    Only those two commands, and only where the message would be shown. -WarningVariable and -ErrorVariable
+    also receive what a command was told to keep quiet (-ErrorAction SilentlyContinue, as the check for a
+    next page of every Graph request has), and a record does not say whether it was shown. A default for
+    every command therefore wrote messages after the run that no run had shown. The price: a warning or
+    error that another command writes while the dashboard is up is still drawn over.
+    #>
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param(
+        # The defaults in effect, which are kept.
+        [Parameter()] [AllowNull()] [System.Collections.IDictionary] $Default
+    )
+    $defaults = @{}
+    if ($Default) { foreach ($key in @($Default.Keys)) { $defaults[$key] = $Default[$key] } }
+    # A script block is run for each call, in the scope of the call: it sees the preference in effect there.
+    # No value means no default.
+    $defaults['Write-Warning:WarningVariable'] = { if ("$WarningPreference" -in 'Continue', 'Inquire') { '+mtDashboardWarnings' } }
+    $defaults['Write-Error:ErrorVariable'] = { if ("$ErrorActionPreference" -in 'Continue', 'Inquire') { '+mtDashboardErrors' } }
+    $defaults
 }
 
 function Set-MtConsolePhase {

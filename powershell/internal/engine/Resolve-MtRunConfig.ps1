@@ -282,6 +282,20 @@ function Complete-MtRunConfig {
     $Config
 }
 
+function Get-MtConfigTenantId {
+    <#
+    .SYNOPSIS
+    Returns the tenant ID of the Microsoft Graph connection, which names the tenant's own config file
+    (maester-config.<tenantId>.json), or $null when Graph is not connected.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+
+    if (-not (Test-MtConnection Graph)) { return $null }
+    try { [string](Get-MgContext).TenantId } catch { $null }
+}
+
 function Find-MtConfigFile {
     <#
     .SYNOPSIS
