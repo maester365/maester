@@ -21,6 +21,7 @@ function Test-ORCA224 {
         ResourceType = 'Policy',
         Severity = 'Info',
         Mitre = ('T1566', 'T1684.001'),
+        Control = 'nist-800-53-r5:SI-8',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

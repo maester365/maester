@@ -32,6 +32,7 @@ function Test-MtAIAgentHardCodedCredentials {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1552',
+        Control = 'nist-800-53-r5:IA-5(7)',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

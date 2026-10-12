@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1204.001', 'T1204.002'),
-        Control = 'cis-m365:8.2.3',
+        Control = ('cis-m365:8.2.3', 'nist-800-53-r5:AC-20'),
         Service = 'Teams',
         Author = 'Mynster9361',
         Contributor = 'merill'

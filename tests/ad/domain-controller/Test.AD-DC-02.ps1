@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1210',
+        Control = 'nist-800-53-r5:CM-7',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

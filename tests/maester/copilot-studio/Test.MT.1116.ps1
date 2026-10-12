@@ -32,6 +32,7 @@ function Test-MtAIAgentEmailExfiltration {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1048',
+        Control = 'nist-800-53-r5:AC-4',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

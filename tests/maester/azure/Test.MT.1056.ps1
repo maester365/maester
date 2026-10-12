@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1098.003'),
+        Control = ('nist-800-53-r5:AC-6(5)', 'nist-800-53-r5:AC-2'),
         Service = ('Azure', 'Graph'),
         Author = 'Oppedijk',
         Contributor = 'merill'

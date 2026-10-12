@@ -22,6 +22,7 @@ function Test-MtCheckEidscaAP04 {
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1136.003',
+        Control = 'nist-800-53-r5:AC-6(10)',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

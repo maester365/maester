@@ -51,6 +51,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1003.001', 'T1546.003', 'T1068'),
+        Control = ('nist-800-53-r5:CM-7', 'nist-800-53-r5:SI-3'),
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish',

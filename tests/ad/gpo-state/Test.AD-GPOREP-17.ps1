@@ -28,6 +28,7 @@ function Test-MtAdGpoCpasswordFoundCount {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1552.006',
+        Control = ('nist-800-53-r5:IA-5(1)', 'nist-800-53-r5:SC-28'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

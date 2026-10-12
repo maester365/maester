@@ -38,6 +38,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Control = 'nist-800-53-r5:SI-12',
         Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

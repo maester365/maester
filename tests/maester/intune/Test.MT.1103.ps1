@@ -25,6 +25,7 @@
       UserImpact = 'Low',
       ImplementationCost = 'Medium',
       Mitre = 'T1098.003',
+      Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:AC-3'),
       Service = 'Graph',
       License = ('AAD_PREMIUM', 'INTUNE_A'),
       Author = 'nicolonsky'

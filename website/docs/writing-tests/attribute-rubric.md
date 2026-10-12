@@ -239,6 +239,21 @@ it: one shipped with Maester or one of your own.
 
 A reference says the test supports the requirement. It never says the organization complies with it.
 
+### NIST SP 800-53
+
+A test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `nist-800-53-r5:<control>`.
+
+- Use an ID from the pinned list, [`powershell/assets/MaesterNistControls.json`](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterNistControls.json):
+  a base control (`AC-2`) or an enhancement (`IA-2(1)`). The unit tests reject anything else.
+- List a control only when a passing result is direct evidence that it is implemented for what the test checks.
+- Prefer the enhancement when the test checks exactly what it says: MFA for privileged accounts is `IA-2(1)`.
+  Do not list a base control together with one of its own enhancements.
+- At most three, best fit first. Never the policy-and-procedures controls (`AC-1`, `IA-1` and so on).
+- A test that only reports a count, or checks health, licensing or tidiness, lists none, unless the count is
+  itself what a control asks to be tracked: dormant accounts for `AC-2(3)`.
+- A test that implements a CISA SCuBA policy does not list NIST controls. CISA publishes that mapping, the
+  framework file carries it as `Related`, and the result gets it from there.
+
 ## Lifecycle and ReplacedBy
 
 - `Preview`: new and still changing. Not run unless previews are included.

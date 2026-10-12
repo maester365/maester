@@ -24,6 +24,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1685.002',
+        Control = 'nist-800-53-r5:AU-12',
         Service = 'Azure',
         License = 'INTUNE_A',
         Author = 'nicolonsky',

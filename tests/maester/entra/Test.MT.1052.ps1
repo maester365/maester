@@ -28,6 +28,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1528', 'T1566'),
+        Control = ('nist-800-53-r5:CM-7', 'nist-800-53-r5:IA-2'),
         Service = 'Graph',
         Author = 'BakkerJan',
         Contributor = ('merill', 'thomas-s-schmidt')

@@ -23,6 +23,7 @@ function Test-ORCA114 {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:AC-4',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1114.002',
+        Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:AC-3'),
         Service = ('Graph', 'ExchangeOnline'),
         LongRunning,
         Author = 'l-gosling',

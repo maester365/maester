@@ -29,7 +29,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
-        Control = 'cis-m365:2.1.9',
+        Control = ('cis-m365:2.1.9', 'nist-800-53-r5:SC-8'),
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech')

@@ -39,6 +39,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1685', 'T1564.012'),
+        Control = 'nist-800-53-r5:CM-6',
         Service = 'Graph',
         Author = 'bdrogja'
     )]

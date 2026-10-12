@@ -27,6 +27,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1137.006', 'T1114.002'),
+        Control = ('nist-800-53-r5:CM-7', 'nist-800-53-r5:CM-11'),
         Service = 'ExchangeOnline',
         Author = 'weyCC81',
         Contributor = 'bastienperez'

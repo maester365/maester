@@ -713,7 +713,9 @@ Describe 'Docs export' {
         $cisa.Control | Should -Be @('cisa-scuba:MS.EXO.8.1', 'nist-800-53-r5:SC-7(10)')
         $script:exported['MT.1001'].PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
         $script:exported['MT.1001'].Benchmark | Should -BeNullOrEmpty
-        @($script:exported['MT.1001'].Control).Count | Should -Be 0
+        # A reference to a framework without a file, such as NIST SP 800-53, stays in Control and gives no Benchmark.
+        @($script:exported['MT.1001'].Control | Where-Object { $_ -notlike 'nist-800-53-r5:*' }).Count | Should -Be 0
+        @($script:exported['AD-CFG-02'].Control).Count | Should -Be 0
     }
 
     It 'Gives the level of every CIS test, which the generated title shows as (L1) or (L2)' {

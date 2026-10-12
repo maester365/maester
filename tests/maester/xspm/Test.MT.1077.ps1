@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1098.001',
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Graph',
         LongRunning,
         Author = 'Cloud-Architekt'

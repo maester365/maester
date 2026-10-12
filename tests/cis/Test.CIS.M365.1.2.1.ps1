@@ -28,7 +28,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1213.002',
-        Control = 'cis-m365:1.2.1',
+        Control = ('cis-m365:1.2.1', 'nist-800-53-r5:AC-3'),
         Service = 'Graph',
         Author = 'NZLostboy',
         Contributor = ('thomas-s-schmidt', 'Mynster9361')

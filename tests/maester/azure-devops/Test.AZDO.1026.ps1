@@ -30,6 +30,7 @@ function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1552.001', 'T1195.001', 'T1190'),
+        Control = ('nist-800-53-r5:SA-11', 'nist-800-53-r5:IA-5(7)'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding'

@@ -17,6 +17,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-3',
         Service = 'Teams',
         Author = 'weyCC81',
         Contributor = ('merill', 'svrooij')

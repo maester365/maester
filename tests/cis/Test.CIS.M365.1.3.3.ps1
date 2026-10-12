@@ -27,7 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1591',
-        Control = 'cis-m365:1.3.3',
+        Control = ('cis-m365:1.3.3', 'nist-800-53-r5:AC-3', 'nist-800-53-r5:SC-7(10)'),
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = ('merill', 'NZLostboy')

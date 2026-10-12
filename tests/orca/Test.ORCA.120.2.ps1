@@ -23,6 +23,7 @@ function Test-ORCA120_malware {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566.001',
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

@@ -29,7 +29,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1485', 'T1070'),
-        Control = 'cis-github:1.2.3',
+        Control = ('cis-github:1.2.3', 'nist-800-53-r5:AC-6'),
         Service = 'GitHub',
         Author = 'thetechgy'
     )]

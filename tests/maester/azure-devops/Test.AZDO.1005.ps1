@@ -31,6 +31,7 @@ function Test-AzdoEnforceAADConditionalAccess {
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1550.001'),
+        Control = 'nist-800-53-r5:AC-17',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops'

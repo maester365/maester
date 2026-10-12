@@ -283,6 +283,7 @@ foreach ($check in $checks) {
         if ($meta[$name]) { $attribute.Add("$name = $(Format-OrcaString $meta[$name])") }
     }
     if ($meta.Mitre) { $attribute.Add("Mitre = $(Format-OrcaList @($meta.Mitre))") }
+    if ($meta.Control) { $attribute.Add("Control = $(Format-OrcaList @($meta.Control))") }
     $attribute.Add("Service = $(Format-OrcaList $services)")
     # Defender for Office 365 Plan 1 or 2. ORCA detects MDO itself and reports 'not completed' without it.
     if ($check.Services -eq 'MDO') { $attribute.Add("License = 'ATP_ENTERPRISE'") }

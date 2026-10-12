@@ -32,6 +32,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1059.009', 'T1087.004', 'T1526'),
+        Control = ('nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

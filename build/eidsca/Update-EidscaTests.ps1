@@ -14,7 +14,7 @@
   titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
   files exactly. CI reruns it and fails on drift (powershell/tests/general/EidscaGenerator.Tests.ps1).
   Severity and the classification attributes (RelatedProduct, Feature, Area, ResourceType, UserImpact,
-  ImplementationCost and Mitre) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed
+  ImplementationCost, Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed
   (design section 11), so regeneration keeps them. Edit the metadata file, never the generated tests.
 
   .EXAMPLE
@@ -564,6 +564,7 @@ function GetMaesterTestAttribute($meta) {
         if ($meta[$name]) { $lines.Add("        $name = $(FormatAttributeString $meta[$name])") }
     }
     if ($meta.Mitre.Count -gt 0) { $lines.Add("        Mitre = $(FormatAttributeList $meta.Mitre)") }
+    if ($meta.Control.Count -gt 0) { $lines.Add("        Control = $(FormatAttributeList $meta.Control)") }
     $lines.Add("        Service = $(FormatAttributeList $meta.Service)")
     if ($meta.License.Count -gt 0) { $lines.Add("        License = $(FormatAttributeList $meta.License)") }
     if ($meta.Author.Count -gt 0) { $lines.Add("        Author = $(FormatAttributeList $meta.Author)") }
@@ -705,6 +706,7 @@ foreach ($control in $aadsc) {
             UserImpact         = & $metadataValue 'UserImpact'
             ImplementationCost = & $metadataValue 'ImplementationCost'
             Mitre              = @(& $metadataValue 'Mitre' | Where-Object { $_ })
+            Control            = @(& $metadataValue 'Control' | Where-Object { $_ })
             Service            = @('Graph')
             License            = @($skipCheck.License)
             Author             = $authors

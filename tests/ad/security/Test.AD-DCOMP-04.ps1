@@ -31,6 +31,7 @@
         ResourceType = 'Computer',
         Severity = 'Info',
         Mitre = 'None',
+        Control = 'nist-800-53-r5:CM-8',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

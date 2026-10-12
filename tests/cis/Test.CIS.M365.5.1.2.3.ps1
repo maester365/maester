@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
-        Control = 'cis-m365:5.1.2.3',
+        Control = ('cis-m365:5.1.2.3', 'nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:CM-5'),
         Service = 'Graph',
         Author = 'oed-metzb',
         Contributor = 'Mynster9361'

@@ -33,6 +33,7 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1552.001', 'T1593.003', 'T1550.001'),
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens'

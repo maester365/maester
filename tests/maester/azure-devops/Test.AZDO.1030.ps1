@@ -29,6 +29,7 @@ function Test-AzdoProjectCollectionAdministrator {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1098.003'),
+        Control = 'nist-800-53-r5:AC-6(5)',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions'

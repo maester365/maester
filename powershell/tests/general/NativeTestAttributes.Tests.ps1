@@ -156,6 +156,19 @@ Describe 'Attributes of the built-in tests' {
                 $offenders | Should -BeNullOrEmpty -Because 'add the requirement to the framework file, or correct the Control'
             }
 
+            It 'Names an existing control when a Control refers to NIST SP 800-53' {
+                $nist = Get-Content (Join-Path $script:repoRoot 'powershell/assets/MaesterNistControls.json') -Raw | ConvertFrom-Json
+                $known = [System.Collections.Generic.HashSet[string]]::new([string[]]@($nist.Controls.Id))
+                $known.Count | Should -BeGreaterThan 900
+                $prefix = "$($nist.Framework):"
+                $offenders = foreach ($test in $script:tests) {
+                    foreach ($control in @($test.Control | Where-Object { $_ -and $_.StartsWith($prefix) })) {
+                        if (-not $known.Contains($control.Substring($prefix.Length))) { "$($test.Id): $control is not a control of $($nist.Name)" }
+                    }
+                }
+                $offenders | Should -BeNullOrEmpty -Because 'use an ID from powershell/assets/MaesterNistControls.json, such as IA-2(1)'
+            }
+
             It 'Maps every test of a suite that declares frameworks to a requirement of one of them' {
                 $offenders = foreach ($suite in $script:frameworkSuites) {
                     foreach ($test in ($script:tests | Where-Object { $_.File.StartsWith($suite.Folder, [System.StringComparison]::OrdinalIgnoreCase) })) {

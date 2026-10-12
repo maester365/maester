@@ -32,6 +32,7 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1195.001', 'T1204.005'),
+        Control = 'nist-800-53-r5:SR-3',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/'

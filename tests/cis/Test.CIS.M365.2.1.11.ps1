@@ -27,7 +27,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1566.001', 'T1204.002'),
-        Control = 'cis-m365:2.1.11',
+        Control = ('cis-m365:2.1.11', 'nist-800-53-r5:SI-3'),
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
         Contributor = 'Mynster9361'

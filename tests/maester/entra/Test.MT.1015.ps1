@@ -26,6 +26,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-2(11)', 'nist-800-53-r5:CM-7'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader'

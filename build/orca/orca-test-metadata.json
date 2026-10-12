@@ -18,6 +18,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.101": {
@@ -35,6 +38,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.102": {
@@ -52,6 +58,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.103": {
@@ -70,6 +79,9 @@
       "Mitre": [
         "T1078.004",
         "T1534"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.104": {
@@ -87,6 +99,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.105": {
@@ -104,6 +119,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.106": {
@@ -156,6 +174,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SC-8"
       ]
     },
     "ORCA.108.1": {
@@ -174,6 +195,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SC-8"
       ]
     },
     "ORCA.109": {
@@ -192,6 +216,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.110": {
@@ -227,6 +254,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.112": {
@@ -245,6 +275,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.113": {
@@ -263,6 +296,9 @@
       "Mitre": [
         "T1566.002",
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.114": {
@@ -281,6 +317,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-4"
       ]
     },
     "ORCA.115": {
@@ -299,6 +338,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.116": {
@@ -317,6 +359,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.1": {
@@ -335,6 +380,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.2": {
@@ -353,6 +401,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.3": {
@@ -371,6 +422,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.118.4": {
@@ -389,6 +443,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.119": {
@@ -405,6 +462,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.120.1": {
@@ -422,6 +482,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.120.2": {
@@ -439,6 +502,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.120.3": {
@@ -456,6 +522,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.121": {
@@ -489,6 +558,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.124": {
@@ -507,6 +579,9 @@
       "Mitre": [
         "T1566.001",
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.139": {
@@ -524,6 +599,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.140": {
@@ -541,6 +619,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.141": {
@@ -558,6 +639,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.142": {
@@ -575,6 +659,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.143": {
@@ -590,6 +677,9 @@
       "ResourceType": "Policy",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.156": {
@@ -608,6 +698,10 @@
       "Mitre": [
         "T1566.002",
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3",
+        "nist-800-53-r5:AU-12"
       ]
     },
     "ORCA.158": {
@@ -627,6 +721,9 @@
       "Mitre": [
         "T1080",
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.179": {
@@ -645,6 +742,9 @@
       "Mitre": [
         "T1534",
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.180": {
@@ -663,6 +763,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.189": {
@@ -681,6 +784,9 @@
       "Mitre": [
         "T1566.001",
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.189.2": {
@@ -699,6 +805,9 @@
       "Mitre": [
         "T1566.002",
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.205": {
@@ -717,6 +826,9 @@
       "Mitre": [
         "T1566.001",
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.220": {
@@ -734,6 +846,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.221": {
@@ -752,6 +867,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.222": {
@@ -770,6 +888,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.223": {
@@ -788,6 +909,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.224": {
@@ -804,6 +928,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.225": {
@@ -818,6 +945,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.226": {
@@ -836,6 +966,9 @@
       "Mitre": [
         "T1566.002",
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.227": {
@@ -854,6 +987,9 @@
       "Mitre": [
         "T1566.001",
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.228": {
@@ -872,6 +1008,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.229": {
@@ -890,6 +1029,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.230": {
@@ -907,6 +1049,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.231": {
@@ -924,6 +1069,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.232": {
@@ -941,6 +1089,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.233": {
@@ -989,6 +1140,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1204.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.235": {
@@ -1007,6 +1161,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.236": {
@@ -1025,6 +1182,9 @@
       "Mitre": [
         "T1566.002",
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.237": {
@@ -1043,6 +1203,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.238": {
@@ -1060,6 +1223,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1204.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.239": {
@@ -1078,6 +1244,9 @@
       "Mitre": [
         "T1566.001",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-3"
       ]
     },
     "ORCA.240": {
@@ -1095,6 +1264,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.241": {
@@ -1113,6 +1285,9 @@
       "Mitre": [
         "T1566",
         "T1684.001"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     },
     "ORCA.242": {
@@ -1130,6 +1305,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-4(5)"
       ]
     },
     "ORCA.243": {
@@ -1148,6 +1326,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SC-8"
       ]
     },
     "ORCA.244": {
@@ -1166,6 +1347,9 @@
       "Mitre": [
         "T1566",
         "T1684.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-8"
       ]
     }
   }

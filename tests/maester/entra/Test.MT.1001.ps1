@@ -27,6 +27,7 @@
       UserImpact = 'Medium',
       ImplementationCost = 'Medium',
       Mitre = 'T1078.004',
+      Control = ('nist-800-53-r5:AC-2(11)', 'nist-800-53-r5:IA-3'),
       Service = 'Graph',
       License = 'AAD_PREMIUM',
       Author = 'merill',

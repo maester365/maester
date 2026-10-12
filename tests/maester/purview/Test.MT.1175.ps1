@@ -36,6 +36,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1213.002', 'T1530'),
+        Control = 'nist-800-53-r5:SC-7(10)',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'OfirGavish'

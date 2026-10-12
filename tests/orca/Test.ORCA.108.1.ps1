@@ -23,6 +23,7 @@ function Test-ORCA108_1 {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
+        Control = 'nist-800-53-r5:SC-8',
         Service = 'ExchangeOnline',
         Author = 'thomas-s-schmidt'
     )]

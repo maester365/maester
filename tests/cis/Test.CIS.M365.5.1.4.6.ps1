@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1552',
-        Control = 'cis-m365:5.1.4.6',
+        Control = ('cis-m365:5.1.4.6', 'nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:SC-28(3)'),
         Service = 'Graph',
         Author = 'BakkerJan'
     )]

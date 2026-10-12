@@ -30,6 +30,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.003', 'T1550.002'),
+        Control = ('nist-800-53-r5:IA-5', 'nist-800-53-r5:AC-6(2)'),
         Service = 'ActiveDirectory',
         Author = 'soulemike'
     )]

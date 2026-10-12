@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1098.001', 'T1110.004'),
+        Control = ('nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         LongRunning,
         Author = 'marcel-ngn'

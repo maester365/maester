@@ -31,6 +31,7 @@
       UserImpact = 'Low',
       ImplementationCost = 'Medium',
       Mitre = ('T1098', 'T1556.009'),
+      Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:AC-3'),
       Service = 'Graph',
       License = 'AAD_PREMIUM',
       Author = 'Cloud-Architekt',

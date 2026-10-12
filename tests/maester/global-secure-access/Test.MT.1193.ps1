@@ -40,6 +40,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1021', 'T1046'),
+        Control = ('nist-800-53-r5:SC-7', 'nist-800-53-r5:AC-17'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Lifecycle = 'Preview',

@@ -34,6 +34,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1213',
+        Control = 'nist-800-53-r5:SI-4',
         Service = ('Graph', 'SecurityCompliance'),
         Author = 'OfirGavish'
     )]

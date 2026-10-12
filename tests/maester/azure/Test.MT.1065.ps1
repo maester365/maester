@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1490', 'T1485'),
+        Control = 'nist-800-53-r5:CP-9',
         Service = 'Azure',
         Author = 'brianveldman',
         Contributor = 'l-gosling'

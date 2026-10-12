@@ -33,6 +33,7 @@ function Test-AzdoAuditStream {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1685.002', 'T1070'),
+        Control = ('nist-800-53-r5:AU-6', 'nist-800-53-r5:SI-4'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops'

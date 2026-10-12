@@ -29,6 +29,7 @@ function Test-AzdoExternalGuestAccess {
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-21'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access'

@@ -26,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1666',
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Azure',
         Author = 'brianveldman',
         Contributor = 'l-gosling'

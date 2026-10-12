@@ -28,6 +28,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1098.001', 'T1552'),
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'Graph',
         Lifecycle = 'Preview',
         LongRunning,

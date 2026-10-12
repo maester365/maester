@@ -1,4 +1,4 @@
-function Get-MtCaWhatIfRegularUserInstance {
+﻿function Get-MtCaWhatIfRegularUserInstance {
     <#
     .SYNOPSIS
     Returns one MT.1033 instance per member user to evaluate (up to five, emergency access accounts excluded).
@@ -49,6 +49,7 @@ function Test-MtCaWhatIfLegacyAuthenticationBlocked {
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1110'),
+        Control = 'nist-800-53-r5:CM-7',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         LongRunning,

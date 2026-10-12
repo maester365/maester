@@ -31,6 +31,7 @@ function Test-MtAIAgentNoAuthentication {
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'T1213',
+        Control = 'nist-800-53-r5:IA-2',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

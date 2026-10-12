@@ -10,6 +10,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(1)",
+        "nist-800-53-r5:IA-2(2)"
       ]
     },
     {
@@ -34,6 +38,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -46,6 +53,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -58,6 +68,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -70,6 +83,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -82,6 +98,9 @@
       "ImplementationCost": "Medium",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-7"
       ]
     },
     {
@@ -95,6 +114,9 @@
       "Mitre": [
         "T1621",
         "T1078.004"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-4(5)"
       ]
     },
     {
@@ -120,6 +142,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(1)",
+        "nist-800-53-r5:IA-2(2)"
       ]
     },
     {
@@ -144,6 +170,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(8)",
+        "nist-800-53-r5:IA-2(1)"
       ]
     },
     {
@@ -156,6 +186,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(8)",
+        "nist-800-53-r5:IA-2(1)"
       ]
     },
     {
@@ -168,6 +202,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
       ]
     },
     {
@@ -180,6 +218,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
       ]
     },
     {
@@ -192,6 +234,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
       ]
     },
     {
@@ -204,6 +250,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
       ]
     },
     {
@@ -216,6 +266,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1098"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -228,6 +281,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1136.003"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)"
       ]
     },
     {
@@ -252,6 +308,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1136.003"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-2"
       ]
     },
     {
@@ -265,6 +324,9 @@
       "Mitre": [
         "T1087.004",
         "T1069.003"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6"
       ]
     },
     {
@@ -278,6 +340,10 @@
       "Mitre": [
         "T1528",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
       ]
     },
     {
@@ -291,6 +357,10 @@
       "Mitre": [
         "T1528",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
       ]
     },
     {
@@ -304,6 +374,10 @@
       "Mitre": [
         "T1098.001",
         "T1528"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
       ]
     },
     {
@@ -316,6 +390,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-3"
       ]
     },
     {
@@ -329,6 +406,10 @@
       "Mitre": [
         "T1111",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-7",
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -353,6 +434,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1078.004"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -365,6 +449,10 @@
       "ImplementationCost": "Medium",
       "Mitre": [
         "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-7",
+        "nist-800-53-r5:IA-5"
       ]
     },
     {
@@ -378,6 +466,10 @@
       "Mitre": [
         "T1528",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
       ]
     },
     {
@@ -391,6 +483,10 @@
       "Mitre": [
         "T1528",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
       ]
     },
     {
@@ -404,6 +500,9 @@
       "Mitre": [
         "T1528",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-4"
       ]
     },
     {
@@ -417,6 +516,9 @@
       "Mitre": [
         "T1528",
         "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-4"
       ]
     },
     {
@@ -468,6 +570,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5(1)"
       ]
     },
     {
@@ -483,6 +588,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5(1)"
       ]
     },
     {
@@ -495,6 +603,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5(1)"
       ]
     },
     {
@@ -507,6 +618,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-7"
       ]
     },
     {
@@ -519,6 +633,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-7"
       ]
     },
     {
@@ -531,6 +648,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1098"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6"
       ]
     },
     {
@@ -543,6 +663,10 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6",
+        "nist-800-53-r5:AC-21"
       ]
     }
   ]

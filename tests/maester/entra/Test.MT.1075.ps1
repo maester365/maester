@@ -25,6 +25,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'High',
         Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-3', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         LongRunning,
         Author = 'jflieben'

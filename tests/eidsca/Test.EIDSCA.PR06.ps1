@@ -22,6 +22,7 @@ function Test-MtCheckEidscaPR06 {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1110',
+        Control = 'nist-800-53-r5:AC-7',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'Cloud-Architekt'

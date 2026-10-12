@@ -31,6 +31,7 @@ function Test-AzdoLogAuditEvent {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1685.002',
+        Control = ('nist-800-53-r5:AU-12', 'nist-800-53-r5:AU-2'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing'

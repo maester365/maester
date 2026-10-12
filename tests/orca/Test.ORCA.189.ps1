@@ -23,6 +23,7 @@ function Test-ORCA189 {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566.001', 'T1204.002'),
+        Control = 'nist-800-53-r5:SI-3',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

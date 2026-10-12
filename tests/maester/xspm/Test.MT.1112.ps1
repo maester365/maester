@@ -27,6 +27,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
+        Control = 'nist-800-53-r5:AC-2',
         Service = 'Graph',
         Lifecycle = 'Preview',
         LongRunning,

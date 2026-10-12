@@ -27,6 +27,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1110', 'T1558.002'),
+        Control = ('nist-800-53-r5:CM-7', 'nist-800-53-r5:IA-2'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'RobbeVandenDaele',

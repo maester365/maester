@@ -29,6 +29,7 @@ function Test-AzdoOrganizationLimitVariablesAtQueueTime {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1677',
+        Control = 'nist-800-53-r5:SI-10',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time'

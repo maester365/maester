@@ -33,6 +33,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-16',
         Service = 'SecurityCompliance',
         Author = 'OfirGavish'
     )]

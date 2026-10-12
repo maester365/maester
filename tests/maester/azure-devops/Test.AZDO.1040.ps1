@@ -39,6 +39,7 @@ function Test-AzdoOrganizationSecretProtectionEnrollment {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1552.001',
+        Control = 'nist-800-53-r5:IA-5(7)',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding'

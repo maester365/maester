@@ -24,6 +24,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
+        Control = 'nist-800-53-r5:SI-2',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky'

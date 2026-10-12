@@ -36,6 +36,7 @@ function Test-MtAIAgentAuthorAuthentication {
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1550.001', 'T1213'),
+        Control = 'nist-800-53-r5:AC-6',
         Service = 'Graph',
         Author = 'lnfernux'
     )]

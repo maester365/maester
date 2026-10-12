@@ -22,6 +22,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1098.005',
+        Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:IA-3'),
         Service = 'Graph',
         Author = 'marcel-ngn'
     )]

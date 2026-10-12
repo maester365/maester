@@ -30,6 +30,7 @@ function Test-AzdoValidateSshKeyExpiration {
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1552.004',
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies'

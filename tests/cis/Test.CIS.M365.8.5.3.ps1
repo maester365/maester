@@ -26,7 +26,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'None',
-        Control = 'cis-m365:8.5.3',
+        Control = ('cis-m365:8.5.3', 'nist-800-53-r5:AC-3'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
         Contributor = 'merill'

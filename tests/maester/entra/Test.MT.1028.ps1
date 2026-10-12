@@ -17,6 +17,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1566'),
+        Control = ('nist-800-53-r5:AC-6(5)', 'nist-800-53-r5:AC-6(2)'),
         Service = 'Graph',
         Author = 'Cloud-Architekt',
         Contributor = ('f-bader', 'thomas-s-schmidt', 'nathanmcnulty')

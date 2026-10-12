@@ -39,6 +39,7 @@ function Test-AzdoOrganizationCodeSecurityScanning {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1195.001', 'T1190'),
+        Control = ('nist-800-53-r5:SA-11', 'nist-800-53-r5:SI-2'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-code-scanning'

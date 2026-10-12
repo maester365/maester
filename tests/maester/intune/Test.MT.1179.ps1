@@ -44,6 +44,7 @@
         UserImpact = 'High',
         ImplementationCost = 'High',
         Mitre = 'T1204.002',
+        Control = 'nist-800-53-r5:CM-7(5)',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'OfirGavish'

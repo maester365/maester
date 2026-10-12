@@ -22,6 +22,7 @@ function Test-MtCheckEidscaST09 {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Control = ('nist-800-53-r5:AC-6', 'nist-800-53-r5:AC-21'),
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

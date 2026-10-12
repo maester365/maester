@@ -64,7 +64,7 @@ Describe 'ORCA generator' {
         foreach ($pair in @(
                 @{ Name = 'RelatedProduct'; Value = @('exchange') }, @{ Name = 'Feature'; Value = 'anti-spam' }, @{ Name = 'Area'; Value = 'email-protection' },
                 @{ Name = 'ResourceType'; Value = 'Policy' }, @{ Name = 'UserImpact'; Value = 'Low' }, @{ Name = 'ImplementationCost'; Value = 'Medium' },
-                @{ Name = 'Mitre'; Value = @('T1566', 'T1566.001') })) {
+                @{ Name = 'Mitre'; Value = @('T1566', 'T1566.001') }, @{ Name = 'Control'; Value = @('nist-800-53-r5:SI-8') })) {
             $row | Add-Member -NotePropertyName $pair.Name -NotePropertyValue $pair.Value -Force
         }
         $metadata | ConvertTo-Json -Depth 10 | Set-Content -Path $metadataPath
@@ -80,8 +80,9 @@ Describe 'ORCA generator' {
         $text.RelatedProduct | Should -Be "'exchange'"
         $text.Feature | Should -Be "'anti-spam'"
         $text.Mitre | Should -Be "('T1566', 'T1566.001')"
+        $text.Control | Should -Be "'nist-800-53-r5:SI-8'"
         $names = @($attribute.NamedArguments.ArgumentName)
-        $expected = 'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact', 'ImplementationCost', 'Mitre', 'Service'
+        $expected = 'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact', 'ImplementationCost', 'Mitre', 'Control', 'Service'
         ($names | Select-Object -First $expected.Count) -join ',' | Should -Be ($expected -join ',')
         # A check without values is generated as it is in tests/orca.
         [System.IO.File]::ReadAllText((Join-Path $out 'Test.ORCA.101.ps1')) | Should -Be ([System.IO.File]::ReadAllText((Join-Path $script:CommittedRoot 'Test.ORCA.101.ps1')))

@@ -29,6 +29,7 @@ function Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask {
         UserImpact = 'Medium',
         ImplementationCost = 'High',
         Mitre = 'T1195.001',
+        Control = ('nist-800-53-r5:CM-7', 'nist-800-53-r5:CM-11'),
         Service = 'AzureDevOps',
         Author = 'SebastianClaesson',
         HelpUrl = 'https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution'
