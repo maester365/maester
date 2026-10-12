@@ -7,9 +7,8 @@
 // A scheduled workflow (.github/workflows/update-license-service-plans.yaml) runs this every day and opens a
 // pull request when Microsoft adds or changes a plan.
 //
-//   node scripts/update-license-service-plans.mjs            download and rewrite the data file
-//   node scripts/update-license-service-plans.mjs <file.md>  parse a local copy instead
-import { readFile, writeFile } from "node:fs/promises";
+//   node scripts/update-license-service-plans.mjs   download the page and rewrite the data file
+import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -39,8 +38,10 @@ export function parse(markdown) {
   const products = [];
   const plans = new Map();
   let skipped = 0;
-  for (let i = start + 2; i < lines.length && lines[i].trim().startsWith("|"); i++) {
-    const row = cells(lines[i]);
+  // The table rows follow the header and its separator line, up to the first line that is not a row.
+  for (const line of lines.slice(start + 2)) {
+    if (!line.trim().startsWith("|")) break;
+    const row = cells(line);
     if (row.length < 5) continue;
     const [name, stringId, guid, included, friendly] = row;
     const productIndex = products.length;
@@ -73,8 +74,7 @@ export function parse(markdown) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const local = process.argv[2];
-  const markdown = local ? await readFile(local, "utf8") : await (await fetch(SOURCE_URL)).text();
+  const markdown = await (await fetch(SOURCE_URL)).text();
   const data = parse(markdown);
   const { skipped, ...output } = data;
   const target = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "src", "data", "license-service-plans.json");

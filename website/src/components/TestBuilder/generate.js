@@ -4,6 +4,10 @@
 export const NEW = "__new__";
 
 const KEBAB = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+// The Id and Control patterns of powershell/assets/MaesterTestSchema.psd1, written out so no pattern is built at
+// run time. A unit test (TestBuilderData.Tests.ps1) fails when they differ from the schema.
+const ID_PATTERN = /^(?=.*[0-9.\-])[A-Za-z][A-Za-z0-9]*([.\-][A-Za-z0-9_]+)*$/;
+const CONTROL_PATTERN = /^[a-z0-9][a-z0-9.\-]*:[^\s,]+$/;
 const HANDLE = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
 
 export const emptyState = {
@@ -97,7 +101,7 @@ export function validate(state, data) {
   const out = [];
   const add = (field, level, text) => out.push({ field, level, text });
   const builtin = state.mode === "builtin";
-  const idPattern = new RegExp(data.idPattern);
+  const idPattern = ID_PATTERN;
 
   // Id
   const id = state.id.trim();
@@ -108,8 +112,8 @@ export function validate(state, data) {
     const reserved = data.reservedPrefixes.find((p) => id.toLowerCase().startsWith(p.toLowerCase()));
     if (builtin) {
       const suite = data.suites.find((s) => s.id === state.suite);
-      if (suite && !new RegExp(suite.idPattern).test(id))
-        add("id", "error", "An ID in the " + suite.name + " suite must match " + suite.idPattern + ".");
+      if (suite && !suite.idPrefixes.some((p) => id.toLowerCase().startsWith(p.toLowerCase())))
+        add("id", "error", "An ID in the " + suite.name + " suite starts with " + suite.idPrefixes.join(" or ") + ".");
     } else if (reserved) {
       add("id", "error", "The prefix " + reserved + " belongs to the tests shipped with Maester. Use your own, for example CT.");
     }
@@ -190,7 +194,7 @@ export function validate(state, data) {
   }
 
   // Control
-  const controlPattern = new RegExp(data.properties.Control.pattern);
+  const controlPattern = CONTROL_PATTERN;
   state.controls.filter((c) => !controlPattern.test(c)).forEach((c) => add("control", "error", c + " is not written <framework-key>:<requirement-id>, for example cisa-scuba:MS.AAD.3.1."));
   const nistIds = new Set(data.nist.controls.map((c) => c.id));
   const suite = data.suites.find((s) => s.id === state.suite);

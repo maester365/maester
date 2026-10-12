@@ -1010,6 +1010,9 @@
       "id": "AD",
       "name": "Active Directory",
       "idPattern": "^AD-",
+      "idPrefixes": [
+        "AD-"
+      ],
       "folder": "tests/ad",
       "productFolders": []
     },
@@ -1017,6 +1020,9 @@
       "id": "CIS",
       "name": "CIS Microsoft 365 Foundations Benchmark",
       "idPattern": "^CIS\\.",
+      "idPrefixes": [
+        "CIS."
+      ],
       "folder": "tests/cis",
       "productFolders": []
     },
@@ -1024,6 +1030,9 @@
       "id": "CISA",
       "name": "CISA SCuBA baselines",
       "idPattern": "^CISA\\.",
+      "idPrefixes": [
+        "CISA."
+      ],
       "folder": "tests/cisa",
       "productFolders": [
         "entra",
@@ -1035,6 +1044,9 @@
       "id": "EIDSCA",
       "name": "Entra ID Security Config Analyzer",
       "idPattern": "^EIDSCA\\.",
+      "idPrefixes": [
+        "EIDSCA."
+      ],
       "folder": "tests/eidsca",
       "productFolders": []
     },
@@ -1042,6 +1054,11 @@
       "id": "Maester",
       "name": "Maester",
       "idPattern": "^(MT\\.|MT1060\\.|AZDO\\.)",
+      "idPrefixes": [
+        "MT.",
+        "MT1060.",
+        "AZDO."
+      ],
       "folder": "tests/maester",
       "productFolders": [
         "azure",
@@ -1059,6 +1076,9 @@
       "id": "ORCA",
       "name": "Office 365 Recommended Configuration Analyzer",
       "idPattern": "^ORCA\\.",
+      "idPrefixes": [
+        "ORCA."
+      ],
       "folder": "tests/orca",
       "productFolders": []
     }

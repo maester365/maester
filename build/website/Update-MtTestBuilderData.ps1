@@ -78,7 +78,10 @@ $suites = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter sui
     if (-not $suite.IdPattern) { continue }
     $folder = [System.IO.Path]::GetRelativePath($root, $file.Directory.FullName).Replace('\', '/')
     $productFolders = @(Get-ChildItem $file.Directory.FullName -Directory | Where-Object { $_.Name -in $taxonomy.Products.Key } | Sort-Object Name | ForEach-Object Name)
-    [ordered]@{ id = $suite.Id; name = $suite.Name; idPattern = $suite.IdPattern; folder = $folder; productFolders = $productFolders }
+    # The ID pattern of a suite is a list of prefixes: ^(MT\.|MT1060\.|AZDO\.) or ^AD-.
+    $prefixes = @(($suite.IdPattern -replace '^\^\(?' -replace '\)$') -split '\|' | ForEach-Object { $_ -replace '\\\.', '.' })
+    if ($prefixes | Where-Object { $_ -notmatch '^[A-Za-z0-9.\-]+$' }) { throw "The IdPattern '$($suite.IdPattern)' of $($file.FullName) is not a list of prefixes." }
+    [ordered]@{ id = $suite.Id; name = $suite.Name; idPattern = $suite.IdPattern; idPrefixes = $prefixes; folder = $folder; productFolders = $productFolders }
 }
 
 # Which tests name each framework requirement in their Control attribute.

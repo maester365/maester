@@ -414,7 +414,13 @@ export default function TestBuilder() {
               <Select id="input-suite" value={state.suite} onValueChange={(v) => set({ suite: v })} placeholder="Choose a suite" options={data.suites.map((s) => ({ value: s.id, label: s.name }))} />
               {suite && (
                 <p className={styles.hint}>
-                  IDs match <code>{suite.idPattern}</code>. Files go in <code>{suite.folder}</code>.
+                  IDs start with {suite.idPrefixes.map((p, i) => (
+                    <span key={p}>
+                      {i > 0 && " or "}
+                      <code>{p}</code>
+                    </span>
+                  ))}
+                  . Files go in <code>{suite.folder}</code>.
                 </p>
               )}
             </Field>
