@@ -349,6 +349,23 @@ There are two versions of the Maester website:
 
 When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
 
+#### Version numbers
+
+A preview is a prerelease of the release it leads to, and the docs show that release's number.
+
+| | Module on the PowerShell Gallery | Shown on the preview site |
+| --- | --- | --- |
+| Previews of 3.0 | `3.0.0-preview1`, `3.0.0-preview2`, ... | `3.0.0-preview` |
+| The release | `3.0.0` | `3.0.0` |
+| Previews after it | `3.1.0-preview1`, ... | `3.1.0-preview` |
+
+- A preview never uses up a release number, and every preview sorts below its release, so people on a preview are
+  offered the release.
+- The numbers are worked out by `.github/workflows/Get-NextModuleVersion.ps1` from what is on the gallery. To start
+  a new major version, raise `$major` in `.github/workflows/minor-version-update.ps1`.
+- PowerShell installs `3.0.0-preview2` and `3.0.0` into the same folder. Someone who has a preview moves to the
+  release with `Install-Module Maester -Force`; Maester tells them so when it starts.
+
 #### Urgent changes to blog posts and documentation
 
 If a blog post or doc change is urgent and cannot wait till the next release, create a PR against the `website-prod` branch directly.
