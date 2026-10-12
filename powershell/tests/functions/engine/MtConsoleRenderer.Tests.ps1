@@ -249,7 +249,7 @@ Describe 'MtConsoleRenderer dashboard' {
         @($screen | Where-Object { $_ -match ' (E\.1|E\.2) ' }).Count | Should -Be 2
         # The test that finished is no longer running: it is listed under the running ones, with its result.
         $running = [array]::IndexOf($screen, ($screen | Where-Object { $_ -match '^ Running' }))
-        $screen[$running + 3] | Should -Match '^ ✗ T\.1 +Second +[\d.]+ s$'
+        $screen[$running + 3] | Should -Match '^ ✗ T\.1 +Second +[\d.]+s$'
         $t.Renderer.Failed | Should -Be 1
         $t.Renderer.Close()
     }
@@ -261,12 +261,12 @@ Describe 'MtConsoleRenderer dashboard' {
         $t.Renderer.ShowStatus('Reading the tenant context')
         $before = $t.Renderer.GetPlainScreen(100, 40)
         $before[0..2] | Should -Be @('BANNER 1', 'BANNER 2', 'BANNER 3')
-        ($before -join "`n") | Should -Match '\n ● Prepare [\d.]+ s  ─  ○ Run tests'
+        ($before -join "`n") | Should -Match '\n ● Prepare [\d.]+s  ─  ○ Run tests'
         $t.Renderer.StartPhase('Run tests')
         $t.Renderer.Start(10)
         $after = $t.Renderer.GetPlainScreen(100, 40)
         ($after -join "`n") | Should -Not -Match 'BANNER'
-        $after[0] | Should -Match '^ Maester v3 {2,}✓ Prepare [\d.]+ s  ─  ● Run tests [\d.]+ s  ─  ○ Results  ─  ○ Reports$'
+        $after[0] | Should -Match '^ Maester v3 {2,}✓ Prepare [\d.]+s  ─  ● Run tests [\d.]+s  ─  ○ Results  ─  ○ Reports$'
         $after[0].Length | Should -Be 99
         # It stays one line for the rest of the run.
         1..10 | ForEach-Object { $t.Renderer.ItemFinished('Passed') }
@@ -451,7 +451,7 @@ Describe 'MtConsoleRenderer panels' {
         $screen[2] | Should -Match '^L2 WORDMARK +█▃█ $'
         $screen[3] | Should -Match '^L3  v3\.0\.0 +▃███▁$'
         $screen[0..3] | ForEach-Object { $_.Length | Should -Be 159 }
-        $screen[4] | Should -Match ('^' + 'L4'.PadRight(43) + 'how long each test took, newest on the right +[\d.]+ tests/s · longest 0:34$')
+        $screen[4] | Should -Match ('^' + 'L4'.PadRight(43) + 'how long each test took, newest on the right +[\d.]+ tests/s · longest 34\.0s$')
         $screen[4].Length | Should -Be 159
         # Under the band: the connection line of this dashboard, then the phases and right under them the
         # overall progress.
@@ -776,8 +776,8 @@ Describe 'MtConsoleRenderer panels' {
         ($screen | Where-Object { $_ -match '^ ✗ ' }) | Should -Match '^ ✗ CIS\.M36…5\.1\.2\.2 One character too long '
         ($screen | Where-Object { $_ -match '^ ✓ ' }) | Should -Match '^ ✓ MT\.1066 {9}A short one '
         # The same column in the Slowest panel.
-        ($screen -join "`n") | Should -Match '│ CIS\.M36…5\.1\.2\.2 One character too long +3\.0 s │'
-        ($screen -join "`n") | Should -Match '│ MT\.1066 {9}A short one +2\.0 s │'
+        ($screen -join "`n") | Should -Match '│ CIS\.M36…5\.1\.2\.2 One character too long +3\.0s │'
+        ($screen -join "`n") | Should -Match '│ MT\.1066 {9}A short one +2\.0s │'
         $t.Renderer.Close()
     }
 
@@ -791,7 +791,7 @@ Describe 'MtConsoleRenderer panels' {
         $running = [array]::IndexOf($screen, ($screen | Where-Object { $_ -match '^ Running' }))
         $screen[$running + 1] | Should -Match 'H\.41 +Running now'
         # Newest first, each with the mark of its result. H.39 was skipped, so it is not listed.
-        $screen[$running + 2] | Should -Match '^ ✓ H\.40 +Test 40 +[\d.]+ s$'
+        $screen[$running + 2] | Should -Match '^ ✓ H\.40 +Test 40 +[\d.]+s$'
         $screen[$running + 3] | Should -Match '^ \? H\.38 '
         $screen[$running + 4] | Should -Match '^ ! H\.37 '
         $screen[$running + 5] | Should -Match '^ ✗ H\.36 '
@@ -911,6 +911,26 @@ Describe 'MtConsoleRenderer panels' {
         $other.Renderer.Close()
     }
 
+    It 'Shows a duration in seconds under a minute and in minutes from there, lined up on the decimal point' {
+        $t = New-TestRenderer -Width 100
+        $t.Renderer.Height = 30
+        $t.Renderer.FullScreen = $true
+        $t.Renderer.Open()
+        $t.Renderer.Start(10)
+        $seconds = 0.42, 21.3, 59.94, 59.97, 135.2, 4500
+        for ($i = 0; $i -lt $seconds.Count; $i++) {
+            $t.Renderer.ItemStarting("D.$i", "Test $i", $null)
+            $t.Renderer.ItemFinished("D.$i", 'Passed', 'High', $seconds[$i])
+        }
+        $rows = @($t.Renderer.GetPlainScreen(100, 30) | Where-Object { $_ -match '^ ✓ D\.\d ' })
+        $shown = @($rows | ForEach-Object { ($_ -split ' +')[-1] })
+        # Newest first.
+        $shown | Should -Be @('75.0m', '2.3m', '1.0m', '59.9s', '21.3s', '0.4s')
+        # One decimal and a one-letter unit: every value ends in the same column.
+        @($rows | ForEach-Object { $_.TrimEnd().Length } | Sort-Object -Unique).Count | Should -Be 1
+        $t.Renderer.Close()
+    }
+
     It 'Graphs how long each test took in the main column, newest on the right, on a logarithmic scale' {
         $t = New-TestPanelDashboard -Panels 'Pace', 'Slowest'
         $t.Renderer.TrueColor = $true
@@ -927,7 +947,7 @@ Describe 'MtConsoleRenderer panels' {
         # The main column is the first 98 characters of a row; the panels are to its right.
         $main = @($screen | ForEach-Object { $_.PadRight(98).Substring(0, 98).TrimEnd() })
         $caption = [array]::IndexOf($main, ($main | Where-Object { $_ -match '^ how long each test took' }))
-        $main[$caption] | Should -Match '^ how long each test took, newest on the right +[\d.]+ tests/s · longest 0:34$'
+        $main[$caption] | Should -Match '^ how long each test took, newest on the right +[\d.]+ tests/s · longest 34\.0s$'
         # Five rows, forty steps of height. The 34 seconds fill them; 3 seconds reach the fourth row,
         # 0.4 seconds the second, 50 milliseconds half of the first, and the fastest test still shows.
         # The bars stand against the right edge of the column (97 characters), the newest at the very right.
@@ -939,8 +959,8 @@ Describe 'MtConsoleRenderer panels' {
         # The slowest tests have their panel in the right column.
         $box = @($screen | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
         $box[0] | Should -Match '^╭─ Slowest so far ─+╮$'
-        $box[1] | Should -Match '^│ S\.2 +Test 2 +0:34 │$'
-        $box[2] | Should -Match '^│ S\.4 +Test 4 +3\.0 s │$'
+        $box[1] | Should -Match '^│ S\.2 +Test 2 +34\.0s │$'
+        $box[2] | Should -Match '^│ S\.4 +Test 4 +3\.0s │$'
         ($box -join "`n") | Should -Not -Match 'K\.1'
         # Each row of the graph has its colour: green at the bottom to red at the top.
         $out = $t.Writer.ToString()
@@ -970,11 +990,11 @@ Describe 'MtConsoleRenderer panels' {
         1..6 | ForEach-Object { $t.Renderer.ItemFinished("B.$_", 'Passed', 'Low', 30) }
         1..40 | ForEach-Object { $t.Renderer.ItemFinished("Q.$_", 'Passed', 'Low', 0) }
         $part = $t.Renderer.GetPlainScreen(100, 44) -join "`n"
-        $part | Should -Match ('\n {53}' + ('█' * 6) + ('▁' * 40) + '\n how long each test took, newest on the right +[\d.]+ tests/s · longest 0:30\n')
+        $part | Should -Match ('\n {53}' + ('█' * 6) + ('▁' * 40) + '\n how long each test took, newest on the right +[\d.]+ tests/s · longest 30\.0s\n')
         # Sixty more: the six slow tests of the start have moved out at the left, and the scale is still theirs.
         1..60 | ForEach-Object { $t.Renderer.ItemFinished("R.$_", 'Passed', 'Low', 0) }
         $full = $t.Renderer.GetPlainScreen(100, 44) -join "`n"
-        $full | Should -Match ('\n ' + ('▁' * 98) + '\n how long the last 98 tests took, newest on the right +[\d.]+ tests/s · longest 0:30\n')
+        $full | Should -Match ('\n ' + ('▁' * 98) + '\n how long the last 98 tests took, newest on the right +[\d.]+ tests/s · longest 30\.0s\n')
         # A slow test comes in at the right edge.
         $t.Renderer.ItemFinished('S.1', 'Passed', 'Low', 30)
         ($t.Renderer.GetPlainScreen(100, 44) -join "`n") | Should -Match ('\n ' + ('▁' * 97) + '█\n')

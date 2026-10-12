@@ -1384,10 +1384,17 @@ namespace Maester.Engine
                 : N(t.Minutes) + ":" + t.Seconds.ToString("00", CultureInfo.InvariantCulture);
         }
 
-        /// <summary>0.4 s under ten seconds, then m:ss.</summary>
+        /// <summary>
+        /// How long one test or step took: seconds under a minute (0.4s, 23.0s), minutes from there (2.3m, 75.0m).
+        /// Both have one decimal and a one-letter unit with no space, so a column of them lines up on the decimal
+        /// point whatever the lengths are. A long-running test of an hour and a quarter reads 75.0m.
+        /// </summary>
         private static string Short(TimeSpan t)
         {
-            return t.TotalSeconds < 10 ? t.TotalSeconds.ToString("0.0", CultureInfo.InvariantCulture) + " s" : Time(t);
+            // 59.96 seconds would round to 60.0s, so it is a minute already.
+            return t.TotalSeconds < 59.95
+                ? t.TotalSeconds.ToString("0.0", CultureInfo.InvariantCulture) + "s"
+                : t.TotalMinutes.ToString("0.0", CultureInfo.InvariantCulture) + "m";
         }
     }
 }
