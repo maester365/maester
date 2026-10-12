@@ -124,6 +124,28 @@ Describe 'Attributes of the built-in tests' {
             $offenders | Should -BeNullOrEmpty
         }
 
+        Context 'Licences' {
+            It 'Names a service plan in License, not a product' {
+                # Microsoft's service plan names, refreshed daily from the licensing reference
+                # (website/scripts/update-license-service-plans.mjs), and the tokens Maester defines itself.
+                $reference = Get-Content (Join-Path $script:repoRoot 'website/src/data/license-service-plans.json') -Raw | ConvertFrom-Json
+                $known = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+                foreach ($plan in $reference.plans) { $null = $known.Add([string]$plan[0]) }
+                $known.Count | Should -BeGreaterThan 500
+                $table = Import-PowerShellDataFile (Join-Path $script:repoRoot 'powershell/assets/MaesterLicenseTable.psd1')
+                foreach ($token in $table.Tokens.Keys) { $null = $known.Add([string]$token) }
+
+                $offenders = foreach ($test in $script:tests) {
+                    foreach ($element in @($test.License | Where-Object { $_ })) {
+                        foreach ($plan in ($element -split '&')) {
+                            if (-not $known.Contains($plan)) { "$($test.Id): $plan is not a service plan name" }
+                        }
+                    }
+                }
+                $offenders | Should -BeNullOrEmpty -Because 'License takes a name from the "Service plans included" column of https://learn.microsoft.com/entra/identity/users/licensing-service-plan-reference, or a token of powershell/assets/MaesterLicenseTable.psd1'
+            }
+        }
+
         Context 'Frameworks' {
             BeforeAll {
                 # <framework-key> -> the requirement IDs of its framework file, and the suites that declare frameworks.
