@@ -43,6 +43,15 @@ namespace Maester.Engine
             public int Done { get { return Passed + Failed + Error + Investigate + Skipped + Other; } }
         }
 
+        /// <summary>The tests of a lane when all of them were skipped, or zero for a lane that ran or still runs tests.</summary>
+        private static int SkippedCount(Lane l)
+        {
+            if (l.Total > 0) return l.Skipped == l.Total ? l.Total : 0;
+            if (l.Running > 0 || string.IsNullOrEmpty(l.Note) || !l.Note.EndsWith(" skipped", StringComparison.OrdinalIgnoreCase)) return 0;
+            int count;
+            return int.TryParse(l.Note.Substring(0, l.Note.Length - " skipped".Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out count) ? count : 0;
+        }
+
         private sealed class Worker
         {
             public string Id;
@@ -335,6 +344,7 @@ namespace Maester.Engine
                 }
                 _status = null;
                 ResetPanelState();
+                _insights = _facts != null && _total >= InsightLeastTests;
                 _running = true;
                 Draw();
                 if (!_fullScreen) StartTimer();
@@ -904,7 +914,12 @@ namespace Maester.Engine
             // start the banner makes room for them: the band with the small logo and the Pace graph, or one line
             // with the name, the version and the phases.
             var header = new List<Line>();
-            int lanesWanted = tests ? _lanes.Count : 0;
+            // A lane whose tests were all skipped has nothing to show in a row of its own: those lanes share
+            // one line, by name and number of tests. That is a lane whose tests all finished as skipped, and a
+            // lane that the run gave no tests and the note "n skipped" (its service is not connected).
+            var skippedLanes = new List<Lane>();
+            if (tests) foreach (var l in _lanes) if (SkippedCount(l) > 0) skippedLanes.Add(l);
+            int lanesWanted = tests ? _lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0) : 0;
             int needed = body.Count + tail.Count + 2 + (info ? 1 : 0);
             if (band)
             {
@@ -935,12 +950,44 @@ namespace Maester.Engine
             }
             header.Add(blank());
 
+            // The insight panels keep their place while the tests run: one row of them, and the tests that ran
+            // last, have rows set aside when the screen has them next to the lanes, a row of result blocks and
+            // three running tests. The list of running tests then stops where those rows start, and says how
+            // many more are running.
+            int reserve = 0;
+            int recentKept = RecentLeast;
+            if (_insights && _running && tests)
+            {
+                // Both rows of panels on a screen that has the rows for them, or else one.
+                // A console that is short of rows keeps one row of panels and gives up the finished tests, and
+                // lists one running test at least.
+                for (int tier = 0; tier <= InsightLayout.Length && reserve == 0; tier++)
+                {
+                    bool last = tier == InsightLayout.Length;
+                    int panelRows = last ? 1 : InsightLayout.Length - tier;
+                    int kept = panelRows * (InsightRows + 2) + 1 + (last ? 0 : RecentLeast);
+                    int most = rows - header.Count - body.Count - (lanesWanted > 0 ? lanesWanted + 1 : 0) - 2 - 1 - kept;
+                    if (most < (last ? 2 : 1 + RecentLeast)) continue;
+                    reserve = kept;
+                    if (last) recentKept = 0;
+                    if (tail.Count > most)
+                    {
+                        int more = tail.Count - (most - 1);
+                        tail.RemoveRange(most - 1, more);
+                        tail.Add(new LineBuilder(ansi).Add("   " + Ellipsis() + " and " + N(more) + " more running", "2").Build());
+                    }
+                }
+            }
+
             // Lanes take the rows that are left; when there is not room for all, the ones with work left stay.
             var lanes = new List<Line>();
             int room = rows - header.Count - body.Count - tail.Count - 1;
             if (lanesWanted > 0 && room >= 2)
             {
                 var shown = new List<Lane>(_lanes);
+                shown.RemoveAll(l => skippedLanes.Contains(l));
+                int skippedLine = skippedLanes.Count > 0 ? 1 : 0;
+                room -= skippedLine;
                 int hidden = 0;
                 if (shown.Count > room)
                 {
@@ -980,6 +1027,13 @@ namespace Maester.Engine
                     lanes.Add(Truncate(b.Build(), max, ansi));
                 }
                 if (hidden > 0) lanes.Add(new LineBuilder(ansi).Add(" " + Ellipsis() + " and " + N(hidden) + " more", "2").Build());
+                if (skippedLine > 0)
+                {
+                    var names = new List<string>();
+                    foreach (var l in skippedLanes) names.Add(l.Name + " (" + N(SkippedCount(l)) + ")");
+                    string dot = Unicode ? " · " : ", ";
+                    lanes.Add(Truncate(new LineBuilder(ansi).Add(" " + (Unicode ? "–" : "-") + " Skipped  ", "2").Add(string.Join(dot, names), "2").Build(), max, ansi));
+                }
                 lanes.Add(blank());
             }
 
@@ -995,7 +1049,7 @@ namespace Maester.Engine
             }
 
             // The results chart takes rows that are still free.
-            var chart = tests ? BuildResultsChart(max, free - pace.Count, ansi) : new List<Line>();
+            var chart = tests ? BuildResultsChart(max, free - pace.Count - reserve, ansi) : new List<Line>();
             if (chart.Count > 0) chart.Add(blank());
 
             var screen = new List<Line>();
@@ -1005,8 +1059,20 @@ namespace Maester.Engine
             screen.AddRange(pace);
             screen.AddRange(chart);
             screen.AddRange(tail);
-            // The rows that are left under the running tests list the tests that ran before them.
-            if (tests && screen.Count < rows) screen.AddRange(BuildRecent(max, rows - screen.Count, ansi));
+            // The rows that are left under the running tests list the tests that ran before them. The insight
+            // panels are under that list, at the bottom: they leave it three tests, and the list has the rows
+            // that no panel takes.
+            if (tests && screen.Count < rows)
+            {
+                int left = rows - screen.Count;
+                var insights = BuildInsights(max, left - Math.Min(recentKept, _recent.Count) - 1, ansi);
+                screen.AddRange(BuildRecent(max, insights.Count > 0 ? left - insights.Count - 1 : left, ansi));
+                if (insights.Count > 0)
+                {
+                    while (screen.Count < rows - insights.Count) screen.Add(blank());
+                    screen.AddRange(insights);
+                }
+            }
             if (screen.Count > rows) screen.RemoveRange(rows, screen.Count - rows);
             if (paneWidth > 0)
             {
@@ -1384,10 +1450,17 @@ namespace Maester.Engine
                 : N(t.Minutes) + ":" + t.Seconds.ToString("00", CultureInfo.InvariantCulture);
         }
 
-        /// <summary>0.4 s under ten seconds, then m:ss.</summary>
+        /// <summary>
+        /// How long one test or step took: seconds under a minute (0.4s, 23.0s), minutes from there (2.3m, 75.0m).
+        /// Both have one decimal and a one-letter unit with no space, so a column of them lines up on the decimal
+        /// point whatever the lengths are. A long-running test of an hour and a quarter reads 75.0m.
+        /// </summary>
         private static string Short(TimeSpan t)
         {
-            return t.TotalSeconds < 10 ? t.TotalSeconds.ToString("0.0", CultureInfo.InvariantCulture) + " s" : Time(t);
+            // 59.96 seconds would round to 60.0s, so it is a minute already.
+            return t.TotalSeconds < 59.95
+                ? t.TotalSeconds.ToString("0.0", CultureInfo.InvariantCulture) + "s"
+                : t.TotalMinutes.ToString("0.0", CultureInfo.InvariantCulture) + "m";
         }
     }
 }

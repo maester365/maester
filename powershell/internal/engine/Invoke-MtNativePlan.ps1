@@ -139,6 +139,9 @@
         $engineFailure = $null
         try {
             if ($renderer) {
+                # The attributes of the tests, once: the insight panels of the dashboard count the results by them.
+                try { Set-MtDashboardTestInfo -Renderer $renderer -WorkItem $workItems.ToArray() }
+                catch { Write-Debug "Console renderer test info failed: $_" }
                 try { $renderer.Start($workItems.Count, $laneNames, [int[]]@($laneNames | ForEach-Object { $laneTotals[$_] }), [string[]]@($laneNames | ForEach-Object { $laneNotes[$_] })) }
                 catch { Write-Debug "Console renderer start failed: $_" }
             }

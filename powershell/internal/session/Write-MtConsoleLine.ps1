@@ -163,17 +163,23 @@ function Initialize-MtDashboard {
 
     .DESCRIPTION
     The panels and their order come from Output.DashboardPanels in the run config; the default is all of
-    them. Pace and Results are in the main column (the graph at the top, next to the logo; the blocks
-    under the lanes); the others stack in a column on the
-    right when the console is wide enough (about 140 columns). Every panel is shown when the column has the
-    rows for it; the Slowest panel takes what is left over.
+    them. Pace, Results and the six insight panels are in the main column (the graph at the top, next to the
+    logo; the blocks under the lanes; the insight panels under the list of tests, in rows of three); the
+    others stack in a column on the right when the console is wide enough (about 140 columns). Every panel
+    is shown when the column has the rows for it; the Slowest panel takes what is left over, and Blog, Tips
+    and Contributor are at the bottom of the column.
+
+    The insight panels count the results by the attributes of the tests (Set-MtDashboardTestInfo). A run of
+    fewer than 25 tests has none of them, and a panel with nothing to show is left out. The second row of
+    them needs a console of about 64 rows.
 
       Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
       Totals       the results so far: a bar split by result, and the count of each
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Failed       failed tests by severity
+      Slowest      the tests that took the longest: five, more in the rows that are left over
       Drift        changes against the newest earlier results file in the output folder, for the same tenant
-      Slowest      the tests that took the longest: one at least, more in the rows that are left over
+      FixFirst     failed tests of severity Critical or High whose fix has a low user impact and a low cost
       Blog         the newest post on maester.dev (one web request, cached for a day)
       Version      not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link
                    (one web request)
@@ -184,6 +190,12 @@ function Initialize-MtDashboard {
       Pace         a graph of how long each test took, with the tests per second, at the top of the main
                    column next to the logo
       Results      one block per test, in the main column
+      WeakestAreas   the areas with the lowest share of passed tests (first row of insight panels)
+      AttackTactics  failed tests by MITRE ATT&CK tactic
+      FailedTests    one dot per failed test, by the user impact and the cost of its fix
+      NistFamilies   the NIST 800-53 control families with the lowest share of passed tests (second row)
+      PassRate       the share of passed tests from the first test to now
+      EveryTest      how long each test took, in the order the tests finished
 
     Blog and Version are the only ones that use the network. They run on background threads, only when the
     dashboard is wide enough to show them, and never with -SkipVersionCheck.
@@ -198,7 +210,8 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Drift', 'Slowest', 'Blog', 'Version', 'Tips', 'Contributor', 'Pace', 'Results'
+    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Sponsor', 'Pace', 'Results',
+    'WeakestAreas', 'AttackTactics', 'FailedTests', 'NistFamilies', 'PassRate', 'EveryTest'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
     if ($output -and $output.PSObject.Properties['DashboardPanels']) {
@@ -222,8 +235,8 @@ function Initialize-MtDashboard {
     }
 
     # The status bar on the last row: where to read more about the project, each a hyperlink.
-    # The first four are at the left of the bar and the last four at its right edge.
-    $heart = if ($Console -and $Console.Unicode) { [string][char]0x2665 + ' ' } else { '' }
+    # The first four are at the left of the bar and the last three at its right edge. The sponsor page is
+    # not in the bar: it has the Sponsor panel.
     $bar = [ordered]@{
         'maester.dev'           = 'https://maester.dev'
         'Docs'                  = 'https://maester.dev/docs'
@@ -232,9 +245,9 @@ function Initialize-MtDashboard {
         'Star on GitHub'        = 'https://github.com/maester365/maester'
         'Discord'               = 'https://discord.maester.dev'
         'Issues'                = 'https://github.com/maester365/maester/issues'
-        "${heart}Sponsor"       = 'https://github.com/maester365/maester?sponsor=1'
     }
-    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 4)
+    if ($panels -contains 'Sponsor') { $Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://github.com/maester365/maester?sponsor=1') }
+    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 3)
     # Terminals open a hyperlink on a click with a modifier key: say which.
     $modifier = if (-not $IsMacOS) { 'Ctrl' } elseif ($Console -and $Console.Unicode) { [string][char]0x2318 } else { 'Cmd' }
     $Renderer.SetStatusBarHint("$modifier-click to open")
@@ -273,6 +286,67 @@ function Initialize-MtDashboard {
             $null = [Maester.Engine.MtConsoleFeeds]::StartVersion($Renderer, 'Maester', [string](Get-MtModuleVersion))
         }
     }
+}
+
+function Set-MtDashboardTestInfo {
+    <#
+    .SYNOPSIS
+    Gives the dashboard the attributes of the tests of the run, which its insight panels count the results by.
+
+    .DESCRIPTION
+    Called once, before the tests start: the area, severity, user impact, implementation cost, ATT&CK
+    techniques and control references of each test, with the names the panels show (of the areas, of the
+    tactic of each technique and of the NIST 800-53 control families). Nothing is looked up while tests run.
+
+    A run of fewer than 25 tests has no insight panels, and neither has a console without the dashboard:
+    then nothing is handed over.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
+        [Parameter(Mandatory)] [AllowEmptyCollection()] [Maester.Engine.MtWorkItem[]] $WorkItem
+    )
+    if (-not $Renderer.IsFullScreen -or $WorkItem.Count -lt 25) { return }
+
+    if (-not $script:__MtDashboardNames) {
+        $areas = @{}
+        foreach ($area in (Get-MtTaxonomy).Areas) { $areas[[string]$area.Key] = [string]$area.Name }
+        # A technique that belongs to several tactics counts for the first.
+        $attack = Get-MtAttackData
+        $tactics = @{}
+        foreach ($technique in $attack.TechniqueList) {
+            $tactic = @($technique.Tactics)[0]
+            if ($tactic -and $attack.Tactics.ContainsKey([string]$tactic)) { $tactics[[string]$technique.Id] = [string]$attack.Tactics[[string]$tactic].Name }
+        }
+        # The family of a control is the letters of its ID: AC-2 is in Access Control.
+        $families = @{}
+        $nistFile = Join-Path $PSScriptRoot '../../assets/MaesterNistControls.json'
+        if (Test-Path -LiteralPath $nistFile) {
+            foreach ($control in (Get-Content -LiteralPath $nistFile -Raw | ConvertFrom-Json).Controls) {
+                $code = ([string]$control.Id -split '-')[0]
+                if (-not $families.ContainsKey($code)) { $families[$code] = [string]$control.Family }
+            }
+        }
+        $script:__MtDashboardNames = @{ Areas = $areas; Tactics = $tactics; Families = $families }
+    }
+
+    $info = [Maester.Engine.MtConsoleTestInfo[]]::new($WorkItem.Count)
+    for ($i = 0; $i -lt $WorkItem.Count; $i++) {
+        $test = $WorkItem[$i].Tag.PlanRow.Test
+        $item = [Maester.Engine.MtConsoleTestInfo]::new()
+        $item.Id = $WorkItem[$i].Id
+        $item.Area = [string]$test.Area
+        $item.Severity = [string]$test.Severity
+        $item.UserImpact = [string]$test.UserImpact
+        $item.ImplementationCost = [string]$test.ImplementationCost
+        # No pipeline here: this runs for every test of the run. The renderer skips an empty entry.
+        $item.Mitre = [string[]]@($test.Mitre)
+        $item.Controls = [string[]]@($test.Control)
+        $info[$i] = $item
+    }
+    $names = $script:__MtDashboardNames
+    $Renderer.SetTestInfo($info, $names.Areas, $names.Tactics, $names.Families)
 }
 
 function Set-MtDashboardTenant {
