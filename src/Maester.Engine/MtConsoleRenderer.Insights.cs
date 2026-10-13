@@ -560,7 +560,7 @@ namespace Maester.Engine
                 return string.CompareOrdinal(a.Code ?? a.Name, b.Code ?? b.Name);
             });
             if (shown.Count > InsightRows) shown.RemoveRange(InsightRows, shown.Count - InsightRows);
-            var panel = new PanelContent { Title = title, Badge = "passing" };
+            var panel = new PanelContent { Title = title, Badge = Unicode ? "pass · fail" : "pass, fail" };
 
             // The numbers take ten columns and the bar a quarter of the rest at least; the names get what is
             // left, as far as they need it.
@@ -665,7 +665,7 @@ namespace Maester.Engine
         {
             const int labelWidth = 7;
             int cellWidth = Math.Max(4, (width - labelWidth) / 3);
-            var panel = new PanelContent { Title = "Failed tests", Badge = "one dot each" };
+            var panel = new PanelContent { Title = "Failed tests" };
             panel.Lines.Add(new LineBuilder(ansi).Add(new string(' ', labelWidth) + (width - labelWidth >= 22 ? "user impact of the fix" : "user impact"), "2").Build());
             panel.Lines.Add(new LineBuilder(ansi).Add("effort".PadRight(labelWidth) + LevelLabel[0].PadRight(cellWidth) + LevelLabel[1].PadRight(cellWidth) + LevelLabel[2], "2").Build());
             // The rows that are left are shared by the three levels of effort, the low ones first.
