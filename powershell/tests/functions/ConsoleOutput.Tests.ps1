@@ -252,12 +252,33 @@ Describe 'Write-MtRunSummary' {
         $text | Should -Match 'Report out/report\.html'
     }
 
-    It 'Has one row per product, named and ordered by the taxonomy registry, with tests that have no product under Other' {
+    It 'Has one row per product, named by the taxonomy registry, with tests that have no product under Other' {
         $rows = @($script:summary | Where-Object { $_ -match '^ (Entra ID|Exchange Online|Other) ' })
         $rows.Count | Should -Be 3
         $rows[0] | Should -Match '^ Entra ID'
         $rows[1] | Should -Match '^ Exchange Online'
         $rows[2] | Should -Match '^ Other'
+    }
+
+    It 'Puts the product with the most passed tests first, and the products with only skipped tests last, by name' {
+        $tests = @(
+            # Teams and Azure: nothing but skipped tests. Intune: no test passed, but they ran.
+            'teams', 'teams', 'azure' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Skipped' } }
+            'intune', 'intune' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Failed'; Severity = 'High' } }
+            'exchange', 'exchange', 'exchange' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Passed' } }
+            'entra' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Passed' } }
+            'entra', 'entra', 'entra', 'entra' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Failed'; Severity = 'Low' } }
+            'defender' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Passed' } }
+            'defender' | ForEach-Object { [pscustomobject]@{ Product = $_; Result = 'Skipped' } }
+        )
+        $results = [pscustomobject]@{
+            PassedCount = 5; FailedCount = 6; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 4; NotRunCount = 0; TotalCount = 15; TotalDuration = '00:00:01'
+            Tests = $tests
+        }
+        $lines = @(InModuleScope Maester -Parameters @{ c = $script:plain; r = $results } { param($c, $r) Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } | ForEach-Object { "$_" })
+        $names = @($lines | ForEach-Object { if ($_ -match '^ (Azure|Defender|Entra ID|Exchange Online|Intune|Teams) ') { $Matches[1] } })
+        # Exchange 3 passed; Defender and Entra ID 1 each, by name; Intune none; then the skipped ones by name.
+        $names | Should -Be 'Exchange Online', 'Defender', 'Entra ID', 'Intune', 'Azure', 'Teams'
     }
 
     It 'Takes a product name from the result when it has one, and shows a product it cannot name as written' {

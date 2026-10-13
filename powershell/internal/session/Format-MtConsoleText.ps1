@@ -218,8 +218,9 @@ function Write-MtRunSummary {
     .DESCRIPTION
     The table has one row per product (the Product of each test; tests without one are under Other) with
     the tests that ran or were skipped, and the highest severity among the product's failed tests. A row's
-    Product is a key: the name comes from the result's Taxonomy, else from the taxonomy registry, and the
-    order of the rows from the registry.
+    Product is a key: the name comes from the result's Taxonomy, else from the taxonomy registry. The
+    product with the most passed tests is first and the others follow in descending order of passed tests;
+    the products whose tests were all skipped are last, by name.
     #>
     [CmdletBinding()]
     param(
@@ -237,7 +238,6 @@ function Write-MtRunSummary {
     # Results by product.
     $severityRank = @{ Critical = 4; High = 3; Medium = 2; Low = 1; Info = 0 }
     $severityStyle = @{ Critical = 'Failed'; High = 'Error'; Medium = 'Error'; Low = 'Dim'; Info = 'Dim' }
-    $order = [System.Collections.Generic.List[string]]@((Get-MtTaxonomy).Products.Name)
     # A result read from a file names its products itself, which also covers a product this version does not know.
     $productNames = @{}
     if ($MaesterResults.PSObject.Properties['Taxonomy'] -and $MaesterResults.Taxonomy) {
@@ -249,9 +249,13 @@ function Write-MtRunSummary {
         if ($productNames.ContainsKey([string]$row.Product)) { return $productNames[[string]$row.Product] }
         Get-MtProductName -Product ([string]$row.Product)
     }
+    # The most passed tests first. A product with nothing but skipped tests has no result to rank by: those are
+    # last, by name. Products with the same number of passed tests are by name too.
     $groups = @($MaesterResults.Tests | Where-Object { $_.Result -ne 'NotRun' } |
             Group-Object { & $nameOf $_ } |
-            Sort-Object { $i = $order.IndexOf($_.Name); if ($i -lt 0) { 999 } else { $i } }, Name)
+            Sort-Object @{ Expression = { @($_.Group | Where-Object { $_.Result -ne 'Skipped' }).Count -eq 0 } },
+            @{ Expression = { @($_.Group | Where-Object { $_.Result -eq 'Passed' }).Count }; Descending = $true },
+            @{ Expression = { $_.Name } })
     if ($groups.Count -gt 0) {
         $nameWidth = [math]::Max(12, ($groups | ForEach-Object { $_.Name.Length } | Measure-Object -Maximum).Maximum)
         $cell = { param($value, $width, $style) $value = [int]$value; $text = ([string]$value).PadLeft($width); if ($value -gt 0) { Format-MtConsoleText $text -Style $style -Console $Console } else { Format-MtConsoleText $text -Style Dim -Console $Console } }
