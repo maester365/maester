@@ -108,7 +108,10 @@ namespace Maester.Engine
         private int _infoLength;
 
         /// <summary>Writes to the console.</summary>
-        public MtConsoleRenderer() : this(Console.Out) { }
+        public MtConsoleRenderer() : this(Console.Out)
+        {
+            _console = true;
+        }
 
         /// <summary>Writes to the given writer (tests use a StringWriter).</summary>
         public MtConsoleRenderer(TextWriter writer)
@@ -345,10 +348,11 @@ namespace Maester.Engine
                 }
                 _status = null;
                 ResetPanelState();
+                ResetGame();
                 _insights = _facts != null && _total >= InsightLeastTests;
                 _started = true;
                 _running = true;
-                Draw();
+                DrawNow();
                 if (!_fullScreen) StartTimer();
             }
         }
@@ -516,7 +520,12 @@ namespace Maester.Engine
                 _workers.Clear();
                 foreach (var l in _lanes) l.Running = 0;
                 _status = null;
-                if (_fullScreen) { Draw(); return; }
+                if (_fullScreen)
+                {
+                    EndGameWithRun();
+                    DrawNow();
+                    return;
+                }
 
                 timer = _timer;
                 _timer = null;
@@ -537,12 +546,19 @@ namespace Maester.Engine
             try { Stop(); }
             catch (Exception) { /* A last frame that cannot be drawn must not keep the screen from being restored. */ }
             Timer timer;
+            MtConsoleTicker ticker;
+            GameAudio audio;
             lock (_gate)
             {
                 if (!_open) return;
                 _open = false;
+                _gameShown = false;
                 timer = _timer;
                 _timer = null;
+                ticker = _ticker;
+                _ticker = null;
+                audio = _audio;
+                _audio = null;
                 if (_fullScreen)
                 {
                     AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
@@ -552,6 +568,8 @@ namespace Maester.Engine
                 _clock.Stop();
             }
             if (timer != null) timer.Dispose();
+            if (ticker != null) ticker.Dispose();
+            if (audio != null) audio.Close();
         }
 
         /// <summary>Leaves the alternate screen with the cursor shown, colours reset, auto-wrap on and no taskbar progress.</summary>
@@ -568,7 +586,11 @@ namespace Maester.Engine
         {
             try
             {
+                var audio = _audio;
+                if (audio != null) audio.Release();
                 if (!_open || !_fullScreen) return;
+                // No frame that was worked out before this is written after it.
+                Interlocked.Increment(ref _writeSerial);
                 _writer.Write(RestoreSequence());
                 _writer.Flush();
             }
@@ -606,20 +628,53 @@ namespace Maester.Engine
 
         private void StartTimer()
         {
-            if (RefreshIntervalMs > 0 && _timer == null) _timer = new Timer(_ => OnTimer(), null, RefreshIntervalMs, RefreshIntervalMs);
+            if (RefreshIntervalMs <= 0 || _timer != null || _ticker != null) return;
+            // The dashboard has a thread of its own for its ticks: the thread pool is the run's.
+            if (_fullScreen) _ticker = new MtConsoleTicker(OnTimer, RefreshIntervalMs);
+            else _timer = new Timer(_ => OnTimer(), null, RefreshIntervalMs, RefreshIntervalMs);
         }
 
         private void OnTimer()
         {
+            OnTimer(Stopwatch.GetTimestamp());
+        }
+
+        /// <summary>A tick, which was due at <paramref name="due"/> by the stopwatch.</summary>
+        private void OnTimer(long due)
+        {
             try
             {
+                long began = Stopwatch.GetTimestamp();
+                // Before the lock is taken: a console that holds a read up must not hold the frames up.
+                if (ReadKeys) PollKeys();
+                string frame = null;
+                bool game = false;
+                long serial = 0;
+                long entered = 0;
+                long built = 0;
+                int percent = 0;
                 lock (_gate)
                 {
                     if (!_open || _pauseDepth > 0) return;
                     if (!_fullScreen && !_running) return;
                     _tick++;
-                    Draw();
+                    entered = Stopwatch.GetTimestamp();
+                    if (_fullScreen)
+                    {
+                        // The frame of the dashboard is worked out here and written when the renderer is
+                        // left: the run does not wait for the console to take it.
+                        game = _gameShown;
+                        if (game) StepGameClock();
+                        try { frame = BuildTickFrame(); }
+                        catch (Exception) { frame = null; }
+                        game = game && _gameShown;
+                        serial = Interlocked.Read(ref _writeSerial);
+                        percent = _total > 0 ? (int)Math.Min(100L, 100L * FinishedCount() / _total) : 0;
+                        built = Stopwatch.GetTimestamp();
+                    }
+                    if (frame == null) Draw();
                 }
+                if (frame != null && WriteFrame(frame, serial) && game) NoteFrame(due, began, entered, built, percent, frame.Length);
             }
             catch (Exception)
             {
@@ -631,7 +686,20 @@ namespace Maester.Engine
         private void Redraw()
         {
             if (!_open) return;
+            // The dashboard that has ticks of its own is drawn by them alone, many times a second: a
+            // result does not wait for a frame, and the console is not written to while the run has the renderer.
+            if (_ticker != null) return;
             if (_fullScreen || (_running && _pauseDepth == 0)) Draw();
+        }
+
+        /// <summary>
+        /// Draws now, where the renderer has no ticks of its own. Where it has them the next one draws, a
+        /// moment later: nothing is written to the console while the renderer is held, by the run or by
+        /// a key, so neither waits for a console that is slow to take a frame.
+        /// </summary>
+        private void DrawNow()
+        {
+            if (_ticker == null) Draw();
         }
 
         /// <summary>Draws a frame. A frame that cannot be drawn is skipped: the display must never fail the run.</summary>
@@ -834,11 +902,18 @@ namespace Maester.Engine
         /// </summary>
         private List<Line> BuildScreen(int width, int height, bool ansi)
         {
+            if (_gameShown && _game != null && GameFits(width, height))
+            {
+                try { return BuildGameScreen(width, height, ansi); }
+                catch (Exception) { DropGame(); /* A game that cannot be drawn must not cost the frame: the dashboard is drawn. */ }
+            }
             int rows = Math.Max(8, height - 1);
             var screen = BuildContent(width, rows, ansi);
-            if (_barLabels.Count == 0) return screen;
-            while (screen.Count < rows) screen.Add(new Line { Text = string.Empty, Plain = string.Empty });
-            screen.Add(BuildStatusBar(width, ansi));
+            if (_barLabels.Count > 0)
+            {
+                while (screen.Count < rows) screen.Add(new Line { Text = string.Empty, Plain = string.Empty });
+                screen.Add(BuildStatusBar(width, ansi));
+            }
             return screen;
         }
 
@@ -1435,12 +1510,18 @@ namespace Maester.Engine
         private void Write(string s)
         {
             if (string.IsNullOrEmpty(s)) return;
-            try
+            // What the screen has is no longer the frame of the game that was written last.
+            _shownLines = null;
+            lock (_writeGate)
             {
-                _writer.Write(s);
-                _writer.Flush();
+                Interlocked.Increment(ref _writeSerial);
+                try
+                {
+                    _writer.Write(s);
+                    _writer.Flush();
+                }
+                catch (Exception) { /* A console that cannot be written to (closed, redirected away) must not fail the run. */ }
             }
-            catch (Exception) { /* A console that cannot be written to (closed, redirected away) must not fail the run. */ }
         }
 
         private static string N(int n) { return n.ToString(CultureInfo.InvariantCulture); }

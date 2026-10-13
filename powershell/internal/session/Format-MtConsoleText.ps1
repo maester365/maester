@@ -239,7 +239,9 @@ function Write-MtRunSummary {
     param(
         [Parameter(Mandatory)] [psobject] $MaesterResults,
         [Parameter()] [string] $ReportPath,
-        [Parameter()] [AllowNull()] [pscustomobject] $Console
+        [Parameter()] [AllowNull()] [pscustomobject] $Console,
+        # The console renderer of the run, after it gave the screen back.
+        [Parameter()] [AllowNull()] [Maester.Engine.MtConsoleRenderer] $Renderer
     )
     if (-not $Console) { $Console = Get-MtConsoleMode }
     $duration = $null
@@ -317,6 +319,63 @@ function Write-MtRunSummary {
             $shown = "$esc]8;;$uri$esc\$ReportPath$esc]8;;$esc\"
         }
         Write-MtConsoleLine " $(Format-MtConsoleText 'Report' -Style Bold -Console $Console) $shown"
+    }
+    # A run in which the game of the dashboard was played says how it went, in a frame of its own that
+    # can be shown to others: the score and what made it, and nothing of the tenant. No game, no frame.
+    $game = if ($Renderer) { $Renderer.GameResult } else { $null }
+    if ($game) {
+        # The best score of this user is kept in a file of its own. A score that beats it is written there now.
+        $null = $Renderer.SaveGameBest()
+        $game = $Renderer.GameResult
+        $number = { param($n) ([int]$n).ToString('N0', [cultureinfo]::InvariantCulture) }
+        $many = { param($n, $word) "$(& $number $n) $word$(if ([int]$n -ne 1) { 's' })" }
+        $dot = if ($Console.Unicode) { ' · ' } else { ', ' }
+        $orange = { param($text) if ($Console.Ansi) { "$([char]27)[1;38;5;208m$text$([char]27)[0m" } else { $text } }
+        $best = if ($game.NewBest) { "A new best score for you, on $($game.BestDate)" }
+        elseif ($game.Best -gt 0) { "Your best so far: $(& $number $game.Best), on $($game.BestDate)" }
+        else { '' }
+        # Each row: what is at the left and at the right, as it is measured and as it is written. With
+        # Unicode the name is in two rows of half blocks, as wide as the frame, in the colours of the
+        # wordmark where the console has colours; the site is then at the right of the score.
+        $site = Format-MtConsoleText 'maester.dev' -Style Dim -Console $Console
+        $rows = @()
+        if ($Console.Unicode) {
+            $title = $Renderer.GetGameTitle([bool]$Console.Ansi)
+            $wide = ' ' * $Renderer.GameTitleWidth
+            $rows += @{ Left = $wide; LeftText = $title[0]; Right = ''; RightText = '' }
+            $rows += @{ Left = $wide; LeftText = $title[1]; Right = ''; RightText = '' }
+        } else {
+            $rows += @{ Left = 'MAESTER RUN'; LeftText = (& $orange 'MAESTER RUN'); Right = 'maester.dev'; RightText = $site }
+        }
+        $rows += @(
+            @{ Left = ''; LeftText = ''; Right = ''; RightText = '' }
+            @{ Left = "SCORE  $(& $number $game.Score)  of 10,000"; LeftText = "SCORE  $(& $orange (& $number $game.Score))  $(Format-MtConsoleText 'of 10,000' -Style Dim -Console $Console)"; Right = $(if ($Console.Unicode) { 'maester.dev' } else { '' }); RightText = $(if ($Console.Unicode) { $site } else { '' }) }
+            @{ Left = ((& $many $game.Coins 'coin'), (& $many $game.Stomps 'stomp'), "best streak $(& $number $game.BestStreak)", (& $many $game.Hits 'hit') -join $dot); Right = ''; RightText = '' }
+        )
+        # A game that DC01, the last one in the way, came into says how that ended.
+        if ($game.Boss) {
+            $boss = if ($game.BossDown) { 'DC01 decommissioned' } else { 'DC01 still standing' }
+            $rows += @{ Left = $boss; LeftText = (Format-MtConsoleText $boss -Style $(if ($game.BossDown) { 'Passed' } else { 'Dim' }) -Console $Console); Right = ''; RightText = '' }
+        }
+        if ($best) { $rows += @{ Left = $best; LeftText = (Format-MtConsoleText $best -Style $(if ($game.NewBest) { 'Passed' } else { 'Dim' }) -Console $Console); Right = ''; RightText = '' } }
+        $inner = [math]::Max(44, ($rows | ForEach-Object { $_.Left.Length + $_.Right.Length + 2 } | Measure-Object -Maximum).Maximum)
+        $corner = if ($Console.Unicode) { '╭', '╮', '╰', '╯', '─', '│' } else { '+', '+', '+', '+', '-', '|' }
+        $frame = { param($text) Format-MtConsoleText $text -Style Dim -Console $Console }
+        Write-MtConsoleLine " $(& $frame ($corner[0] + ($corner[4] * ($inner + 4)) + $corner[1]))"
+        foreach ($row in $rows) {
+            $left = if ($row.ContainsKey('LeftText')) { $row.LeftText } else { $row.Left }
+            $pad = ' ' * ($inner - $row.Left.Length - $row.Right.Length)
+            Write-MtConsoleLine " $(& $frame $corner[5])  $left$pad$($row.RightText)  $(& $frame $corner[5])"
+        }
+        Write-MtConsoleLine " $(& $frame ($corner[2] + ($corner[4] * ($inner + 4)) + $corner[3]))"
+        # How the frames of the dashboard went in that time, for a run with -Debug: a screen that stood
+        # still shows here as a long gap, with what the frame before it waited for.
+        $timing = $Renderer.GameFrameTiming
+        if ($timing) {
+            Write-Debug ("Console frames: $(& $number $timing.Frames); longest gap $($timing.LongestGapMs) ms at $($timing.WorstAtPercent)% of the run; " +
+                "$($timing.LongGaps) over 150 ms; a tick was $($timing.LongestLateMs) ms late at most and waited $($timing.LongestWaitMs) ms at most; " +
+                "a frame took $($timing.LongestBuildMs) ms to work out and $($timing.LongestWriteMs) ms to write at most; $(& $number $timing.Characters) characters.")
+        }
     }
     Write-MtConsoleLine ''
 }

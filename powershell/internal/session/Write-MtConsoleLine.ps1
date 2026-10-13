@@ -257,6 +257,14 @@ function Initialize-MtDashboard {
     $Renderer.Open()
     if (-not $Renderer.IsFullScreen) { return }
 
+    # The dashboard owns the screen: it reads the keys as well, when a person is at the keyboard.
+    $Renderer.ReadKeys = try { (Get-MtUserInteractive) -and -not [System.Console]::IsInputRedirected } catch { $false }
+    if ($Renderer.ReadKeys) {
+        # What the keys can start keeps one line for this user, next to the cache of the blog posts.
+        $userData = [System.Environment]::GetFolderPath('LocalApplicationData')
+        if ($userData) { $Renderer.GameBestPath = Join-Path $userData 'Maester/run-best.txt' }
+    }
+
     if ($panels -contains 'Drift' -and $OutputJsonFile) {
         $folder = Split-Path -Path $OutputJsonFile -Parent
         $current = Split-Path -Path $OutputJsonFile -Leaf

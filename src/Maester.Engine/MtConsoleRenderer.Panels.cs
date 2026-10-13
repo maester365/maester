@@ -580,6 +580,7 @@ namespace Maester.Engine
 
         private void RecordFinished(string id, string title, string result, string severity, TimeSpan duration)
         {
+            RecordGameResult(id, title, result, severity);
             _sequence.Add(result);
             _finishSeconds.Add(_runClock.Elapsed.TotalSeconds);
             // The tests that ran, newest first, for the list under the running tests.

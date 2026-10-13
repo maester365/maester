@@ -35,9 +35,15 @@
     <Compile Include="MaesterTestAttribute.cs" />
     <Compile Include="MtConsoleFeeds.cs" />
     <Compile Include="MtConsoleRenderer.cs" />
+    <Compile Include="MtConsoleRenderer.Frames.cs" />
+    <Compile Include="MtConsoleRenderer.Game.cs" />
+    <Compile Include="MtConsoleRenderer.Hud.cs" />
+    <Compile Include="MtConsoleRenderer.Input.cs" />
     <Compile Include="MtConsoleRenderer.Insights.cs" />
     <Compile Include="MtConsoleRenderer.Panels.cs" />
+    <Compile Include="MtConsoleRenderer.Sound.cs" />
     <Compile Include="MtConsoleRenderer.Totals.cs" />
+    <Compile Include="MtConsoleRenderer.Wall.cs" />
     <Compile Include="MtSession.cs" />
     <Compile Include="MtWorkItem.cs" />
   </ItemGroup>

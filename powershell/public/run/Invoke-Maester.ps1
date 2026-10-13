@@ -608,6 +608,7 @@
         $__MtSession.MaesterConfig = $runConfig
 
         Set-MtProgressView
+        $renderer = $null
         if ($console.Mode -eq 'Interactive') {
             # The dashboard takes over the screen. With per-test lines (-Verbosity Normal and above) the
             # compact region is used instead, so the lines can scroll past it.
@@ -1055,7 +1056,7 @@
             # only, and a failure in them must not fail the command or keep -PassThru from returning.
             try {
                 if (-not $NonInteractive.IsPresent) {
-                    Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console
+                    Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console -Renderer $renderer
                 }
 
                 # GitHub Actions and Azure Pipelines annotations for the first Failed and Error rows (Output.CIAnnotations).
