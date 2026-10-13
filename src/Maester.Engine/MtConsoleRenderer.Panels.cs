@@ -401,9 +401,9 @@ namespace Maester.Engine
         private PanelContent BuildSponsorPanel(int width, bool ansi)
         {
             if (string.IsNullOrEmpty(_sponsorText)) return null;
-            // The colour of the heart of the status bar's Sponsor link.
             var panel = new PanelContent { Title = "Sponsor", Colour = "38;5;205" };
-            string heart = Unicode ? "♥ " : string.Empty;
+            // Two spaces: the heart is drawn wider than its cell in most terminals.
+            string heart = Unicode ? "♥  " : string.Empty;
             string text = Fit(_sponsorText, Math.Max(1, width - heart.Length));
             panel.Lines.Add(new LineBuilder(ansi).Add(heart, "38;5;205").AddLink(text, _sponsorUrl, "1").Build());
             return panel;

@@ -107,7 +107,8 @@ The sketch below is the opening screen.
   shows what the phase is doing ("Creating html report…").
 - **Lanes.** One per product, from the `Product` of each test, in the order of the schema's product list. The
   products whose tests were all skipped have no lane of their own: they share one line under the lanes, each by name
-  with its number of tests ("– Skipped  Azure (3) · GitHub (5)"). When there
+  with its number of tests ("– Skipped  Azure (3) · GitHub (5)"). That covers a product whose
+  service is not connected, which has no tests in the run. When there
   are more lanes than rows, the lanes with work left stay and the rest are counted in "… and n more".
 - **Running tests.** One line per running test with its elapsed time. With one worker it is one line; with parallel
   lanes it is one per worker. In a run with insight panels the list stops where the rows of the panels start, and its
@@ -141,8 +142,8 @@ extra width is shared, two parts to the main content (longer bars, more squares 
 result and its duration. The last row of the window is a status bar across the whole width, on the gradient of the wordmark (Maester red to
 amber; one orange without true colour), with a group of links at each edge and, between them, which click opens a link ("⌘-click to open" on macOS, "Ctrl-click to open" elsewhere): maester.dev,
 Docs (maester.dev/docs), Contributors (maester.dev/contributors), Our Manifesto (maester.cloud/manifesto), Star on GitHub (the repository),
-Discord (discord.maester.dev), Issues and Sponsor (the Sponsor dialog of the repository, fed by
-`.github/FUNDING.yml`), each a hyperlink. With the bar on screen the tagline under the logo
+Discord (discord.maester.dev) and Issues, each a hyperlink. The sponsor page (the Sponsor dialog of the repository, fed by
+`.github/FUNDING.yml`) has the Sponsor panel, so it is not in the bar as well. With the bar on screen the tagline under the logo
 has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit).
 
 Every panel of the right column is shown whenever the column has the rows for it. The Blog, Tips, Contributor and Sponsor
@@ -165,7 +166,7 @@ default is all of them, and an empty list turns them off.
 | `FixFirst` | The quick wins: failed tests of severity Critical or High whose fix has a low user impact and a low implementation cost, Critical first, then by ID; six at most, with the number of them in the border. Not in a run of fewer than 25 tests. | The attributes of the tests, handed over once before the tests start | none |
 | `Pace` | At the top of the main column, to the right of the wordmark and in its rows: a graph of how long each test took (six rows), and a line under it with the tests per second and the longest test. On a console that is too small for that band the graph is between the product lanes and the result blocks, two to five rows tall as the console has room. The graph has one bar for each test that ran and moves from right to left, like a ticker: the bar of the test that just finished comes in at the right edge and the others move one place to the left (a quick test is a low green bar), so it fills up from the right and then shows the latest tests. Its height is on a logarithmic scale against the longest test of the whole run, exact to an eighth of a row, and each row has its colour, green at the bottom to red at the top. It is left out on a console that is too short for it. | The time each test took, kept as it finishes | none |
 | `Contributor` | Featured contributor, with an accent border: one of the people who built Maester, a different one every minute, starting with a different one each run. The name and the GitHub handle (in the same colour, both a hyperlink to the person's page on maester.dev/contributors), how many tests they wrote and how many they improved (a count of nothing is left out), and the year of their first contribution. | `assets/ConsoleContributors.json`, which ships with the module. `build/Update-ConsoleContributors.ps1` writes it from the contributor data of the website, and the module build runs it. People who are pinned last on the contributors page are left out. | none |
-| `Sponsor` | The last panel of the column, under the Contributor panel: one line, "Sponsor us to keep building Maester", a hyperlink to the sponsor page (the address of the Sponsor link of the status bar). |
+| `Sponsor` | The last panel of the column, under the Contributor panel: one line, "Sponsor us to keep building Maester", a hyperlink to the sponsor page. The status bar has no Sponsor link of its own. |
 | `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Not a panel: when a newer stable Maester is on the PowerShell Gallery, the tagline under the logo says so ("v3.0.0 · ↑ v3.1.0 available · maester.dev"), in bold amber, as a hyperlink to that version in the gallery. | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds | `assets/ConsoleTips.txt` in the module | none |
@@ -176,7 +177,8 @@ the results by the attributes of the tests ([MaesterTest]: Area, Severity, UserI
 Control), which the run hands to the renderer once, before the tests start (`SetTestInfo`); a result then adds to a few
 counters, and the panels are built again only when a test finishes. While the tests run, a row of panels and three finished tests
 have their rows set aside (both rows of panels on a console with the rows for them): the result squares take fewer
-rows and the list of running tests is cut short, so the panels stay when many tests run at once. The second row needs a console of about 64 rows; on a shorter one it is left
+rows and the list of running tests is cut short, so the panels stay when many tests run at once. A console of about 44 rows keeps one row of panels and
+gives up the finished tests for it. The second row needs a console of about 64 rows; on a shorter one it is left
 out first, then the first row. A console that is too narrow for three panels in a row shows two or one. A panel with
 nothing to show is left out, and a run of fewer than 25 tests has no insight panels and counts nothing for them.
 

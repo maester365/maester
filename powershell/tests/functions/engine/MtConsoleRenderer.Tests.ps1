@@ -244,7 +244,9 @@ Describe 'MtConsoleRenderer dashboard' {
         $screen = $t.Renderer.GetPlainScreen(100, 30)
         ($screen | Where-Object { $_ -match '^ Entra ID' }) | Should -Match '0/6 .* 2 running'
         ($screen | Where-Object { $_ -match '^ Teams' }) | Should -Match '1/4 .*✗ 1'
-        ($screen | Where-Object { $_ -match '^ Azure' }) | Should -Match '3 skipped'
+        # A product with nothing to run is on the line of the skipped ones, not in a lane.
+        @($screen | Where-Object { $_ -match '^ Azure' }).Count | Should -Be 0
+        ($screen | Where-Object { $_ -match '^ – Skipped' }) | Should -Match 'Azure \(3\)'
         ($screen | Where-Object { $_ -match '^ Running' }) | Should -Match '2 tests'
         @($screen | Where-Object { $_ -match ' (E\.1|E\.2) ' }).Count | Should -Be 2
         # The test that finished is no longer running: it is listed under the running ones, with its result.
@@ -1499,6 +1501,11 @@ Describe 'MtConsoleRenderer insight panels' {
         }
         # A taller console has both rows of panels.
         ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Match '╭─ NIST 800-53 families '
+        # A console of 44 rows keeps one row of panels, without the tests that ran last.
+        $short = $t.Renderer.GetPlainScreen(165, 44)
+        ($short -join "`n") | Should -Match '╭─ Weakest areas '
+        @($short | Where-Object { $_ -match '^ \S R\.\d+ ' }).Count | Should -BeGreaterThan 0
+        ($short -join "`n") | Should -Match '… and \d+ more running'
         $t.Renderer.Close()
     }
 
@@ -1509,7 +1516,7 @@ Describe 'MtConsoleRenderer insight panels' {
         $screen = $t.Renderer.GetPlainScreen(165, 40)
         $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
         $titles | Should -Be 'Tenant', 'Featured contributor', 'Tip', 'Sponsor'
-        $screen[37] | Should -Match '│ ♥ Sponsor us to keep building Maester +│$'
+        $screen[37] | Should -Match '│ ♥  Sponsor us to keep building Maester +│$'
         $screen[38] | Should -Match '╰─+╯$'
         $t.Renderer.Close()
 
@@ -1545,6 +1552,18 @@ Describe 'MtConsoleRenderer insight panels' {
         $screen = $r.GetPlainScreen(120, 40)
         @($screen | Where-Object { $_ -match '^ GitHub ' }).Count | Should -Be 0
         @($screen | Where-Object { $_ -match '^ – Skipped  Azure \(3\) · GitHub \(2\)\s*$' }).Count | Should -Be 1
+        $r.Close()
+
+        # A product that is not connected has no tests in the run, and a note with the number skipped.
+        $t = New-TestRenderer -Width 120 -NoColor
+        $r = $t.Renderer
+        $r.Height = 40; $r.FullScreen = $true
+        $r.Open()
+        $r.Start(4, [string[]]@('Entra ID', 'Teams', 'Purview', 'Intune'), [int[]]@(4, 0, 0, 0), [string[]]@('', '12 skipped', '6 skipped', 'not licensed'))
+        $screen = $r.GetPlainScreen(120, 40)
+        @($screen | Where-Object { $_ -match '^ (Teams|Purview) ' }).Count | Should -Be 0
+        @($screen | Where-Object { $_ -match '^ Intune .* not licensed' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ – Skipped  Teams \(12\) · Purview \(6\)\s*$' }).Count | Should -Be 1
         $r.Close()
     }
 
