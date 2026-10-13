@@ -738,7 +738,7 @@ namespace Maester.Engine
                 // One point per column, the newest result in the last one. Two levels in a row.
                 double value = _rate[plotWidth > 1 ? (int)((long)x * (n - 1) / (plotWidth - 1)) : n - 1];
                 int level = (int)Math.Round(Math.Max(0, Math.Min(1, (value - (1 - span)) / span)) * (levels - 1));
-                bool upper = level % 2 == 1;
+                bool upper = (level & 1) != 0;
                 grid[rows - 1 - level / 2][x] = Unicode ? (upper ? '▀' : '▄') : (upper ? '-' : '_');
             }
             for (int r = 0; r < rows; r++)
@@ -787,7 +787,8 @@ namespace Maester.Engine
                 int y = up - 1 - Math.Min(up - 1, (int)(Math.Log(1 + _durations[i] / ScatterFloor) / top * up));
                 int at = Unicode ? y / 4 * plotWidth + x / 2 : y * plotWidth + x;
                 // Unicode: the bit of the dot in its braille cell. Otherwise the number of tests in the cell.
-                if (Unicode) cells[at] |= x % 2 == 0 ? (y % 4 == 3 ? 0x40 : 1 << (y % 4)) : (y % 4 == 3 ? 0x80 : 8 << (y % 4));
+                int dot = y & 3;
+                if (Unicode) cells[at] |= (x & 1) == 0 ? (dot == 3 ? 0x40 : 1 << dot) : (dot == 3 ? 0x80 : 8 << dot);
                 else cells[at]++;
                 if (i < _ranFailed.Count && _ranFailed[i]) red[at] = true;
             }
