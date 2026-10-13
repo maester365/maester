@@ -335,6 +335,7 @@ namespace Maester.Engine
                 }
                 _status = null;
                 ResetPanelState();
+                _insights = _facts != null && _total >= InsightLeastTests;
                 _running = true;
                 Draw();
                 if (!_fullScreen) StartTimer();
@@ -1005,8 +1006,20 @@ namespace Maester.Engine
             screen.AddRange(pace);
             screen.AddRange(chart);
             screen.AddRange(tail);
-            // The rows that are left under the running tests list the tests that ran before them.
-            if (tests && screen.Count < rows) screen.AddRange(BuildRecent(max, rows - screen.Count, ansi));
+            // The rows that are left under the running tests list the tests that ran before them. The insight
+            // panels are under that list, at the bottom: they leave it three tests, and the list has the rows
+            // that no panel takes.
+            if (tests && screen.Count < rows)
+            {
+                int left = rows - screen.Count;
+                var insights = BuildInsights(max, left - Math.Min(RecentLeast, _recent.Count) - 1, ansi);
+                screen.AddRange(BuildRecent(max, insights.Count > 0 ? left - insights.Count - 1 : left, ansi));
+                if (insights.Count > 0)
+                {
+                    while (screen.Count < rows - insights.Count) screen.Add(blank());
+                    screen.AddRange(insights);
+                }
+            }
             if (screen.Count > rows) screen.RemoveRange(rows, screen.Count - rows);
             if (paneWidth > 0)
             {

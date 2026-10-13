@@ -365,13 +365,13 @@ Describe 'MtConsoleRenderer panels' {
     }
 
     It 'Shows only the panels it was given, in their order' {
-        $t = New-TestPanelDashboard -Panels 'Tips', 'Tenant'
-        $t.Renderer.SetTips(@('A tip'))
+        $t = New-TestPanelDashboard -Panels 'Connections', 'Tenant'
+        $t.Renderer.SetConnections(@('Graph'), [bool[]]@($true))
         $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
         $t.Renderer.Start(2)
         $t.Renderer.ItemFinished('Failed')
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen.IndexOf('Tip') | Should -BeLessThan $screen.IndexOf('Tenant')
+        $screen.IndexOf('Connections') | Should -BeLessThan $screen.IndexOf('Tenant')
         $screen | Should -Not -Match 'Failed so far'
         $screen | Should -Not -Match '[■□]'
         $t.Renderer.Close()
@@ -1060,6 +1060,468 @@ Describe 'MtConsoleRenderer panels' {
         & $chart | Should -Be '■■■⠲⠲□□□□□'
         $t.Renderer.ItemFinished('R.1', 'Passed')
         & $chart | Should -Be '■■■■⠲□□□□□'
+        $t.Renderer.Close()
+    }
+}
+
+Describe 'MtConsoleRenderer insight panels' {
+    BeforeAll {
+        $script:insightPanels = 'Tenant', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Tips', 'Contributor', 'Pace', 'Results',
+        'WeakestAreas', 'AttackTactics', 'FailedTests', 'NistFamilies', 'PassRate', 'EveryTest'
+        $script:insightAreas = @{ identity = 'Identity area'; devices = 'Devices and endpoints'; data = 'Data protection'; tiny = 'Tiny area' }
+        # T1078.004 is not listed: a sub-technique has the tactic of its technique.
+        $script:insightTactics = @{ T1078 = 'Initial Access'; T1110 = 'Credential Access' }
+        $script:insightFamilies = @{ AC = 'Access Control'; IA = 'Identification and Authentication'; AU = 'Audit and Accountability'; SC = 'System and Communications Protection' }
+        $script:insightFailed = 'T01', 'T02', 'T03', 'T04', 'T11', 'T12', 'T27', 'T30'
+
+        function New-InsightTestInfo {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param([string] $Id, [string] $Area, [string] $Severity = 'Medium', [string] $UserImpact, [string] $Cost, [string[]] $Mitre = @(), [string[]] $Controls = @())
+            $info = [Maester.Engine.MtConsoleTestInfo]::new()
+            $info.Id = $Id; $info.Area = $Area; $info.Severity = $Severity; $info.UserImpact = $UserImpact; $info.ImplementationCost = $Cost
+            $info.Mitre = $Mitre; $info.Controls = $Controls
+            $info
+        }
+
+        # Thirty tests in four areas. The ones in $insightFailed fail; what each panel then shows is in the tests below.
+        function Get-InsightFixture {
+            $set = @{
+                T01 = @{ Severity = 'Critical'; UserImpact = 'Low'; Cost = 'Low'; Mitre = 'T1078', 'T1078.004'; Controls = 'nist-800-53-r5:AC-2', 'nist-800-53-r5:AC-6(5)', 'cisa-scuba:MS.AAD.3.1' }
+                T02 = @{ Severity = 'High'; UserImpact = 'Low'; Cost = 'Low'; Mitre = 'T1110'; Controls = 'nist-800-53-r5:AC-3' }
+                T03 = @{ Severity = 'Medium'; UserImpact = 'Low'; Cost = 'Low'; Mitre = 'T1078.004', 'T1110'; Controls = 'nist-800-53-r5:AU-6' }
+                T04 = @{ Severity = 'High'; UserImpact = 'Medium'; Cost = 'High' }
+                T05 = @{ Controls = 'nist-800-53-r5:AC-2' }
+                T06 = @{ Controls = 'nist-800-53-r5:AC-17' }
+                T11 = @{ Severity = 'High'; UserImpact = 'High'; Cost = 'Low'; Mitre = 'T1078'; Controls = 'nist-800-53-r5:IA-2' }
+                T12 = @{ Severity = 'Low' }
+                T13 = @{ Controls = 'nist-800-53-r5:IA-5' }
+                T14 = @{ Controls = 'nist-800-53-r5:IA-5' }
+                T15 = @{ Controls = 'nist-800-53-r5:IA-8' }
+                T21 = @{ Controls = 'nist-800-53-r5:AU-2', 'nist-800-53-r5:SC-7' }
+                T22 = @{ Controls = 'nist-800-53-r5:SC-8' }
+                T23 = @{ Controls = 'nist-800-53-r5:SC-13' }
+                T27 = @{ Severity = 'Critical'; UserImpact = 'Low'; Cost = 'Low' }
+                T30 = @{ Severity = 'Critical' }
+            }
+            1..30 | ForEach-Object {
+                $id = 'T{0:00}' -f $_
+                $area = if ($_ -le 10) { 'identity' } elseif ($_ -le 20) { 'devices' } elseif ($_ -le 28) { 'data' } else { 'tiny' }
+                $more = if ($set.ContainsKey($id)) { $set[$id] } else { @{} }
+                New-InsightTestInfo -Id $id -Area $area @more
+            }
+        }
+
+        function New-InsightDashboard {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+            param(
+                [int] $Total = 30, [string[]] $Panels = $script:insightPanels, [object[]] $Tests = @(Get-InsightFixture),
+                [switch] $Ascii, [switch] $NoColor,
+                # The main column of a run of the whole catalog: the logo, thirteen lanes, the squares of 746 tests and three running tests.
+                [switch] $Catalog
+            )
+            $t = New-TestRenderer -Width 165 -Ascii:$Ascii -NoColor:$NoColor
+            $r = $t.Renderer
+            $r.Height = 64; $r.FullScreen = $true
+            $r.SetPanels($Panels)
+            $r.SetPhases(@('Prepare', 'Run tests', 'Results', 'Reports'))
+            $r.SetTenant('Contoso', 'contoso.example', 'admin@contoso.example')
+            $r.SetConnections(@('Graph', 'Exchange'), [bool[]]@($true, $false))
+            $r.SetTips(@('A tip'))
+            $post = [Maester.Engine.MtBlogPost]::new(); $post.Title = 'A post'; $post.Link = 'https://maester.dev/blog/a-post'
+            $r.SetBlogPost($post)
+            $person = [Maester.Engine.MtContributor]::new(); $person.Name = 'Ada'; $person.GitHub = 'ada'; $person.Tests = 3
+            $r.SetContributors([Maester.Engine.MtContributor[]]@($person), 0)
+            $baseline = [System.Collections.Generic.Dictionary[string, string]]::new(); $baseline['T05'] = 'Passed'
+            $r.SetBaseline($baseline, 'earlier')
+            $r.SetStatusBar(@('maester.dev'), @('https://maester.dev'))
+            $r.Open()
+            $r.SetTestInfo([Maester.Engine.MtConsoleTestInfo[]]$Tests, $script:insightAreas, $script:insightTactics, $script:insightFamilies)
+            if ($Catalog) {
+                $r.SetRunLogo([string[]]@(1..7 | ForEach-Object { ' LOGO' }), 61, 6, ' ', 'v3')
+                $r.Start(746, [string[]]@(1..13 | ForEach-Object { "Product $_" }), [int[]]@(1..13 | ForEach-Object { 50 }), $null)
+            } else {
+                $r.Start($Total)
+            }
+            $t
+        }
+
+        # Finishes the tests of the fixture in order; test n takes n tenths of a second.
+        function Complete-InsightTest {
+            param($Renderer, [int] $Count = 30)
+            for ($i = 1; $i -le $Count; $i++) {
+                $id = 'T{0:00}' -f $i
+                $Renderer.ItemStarting($id, "Title of $id", $null)
+                $Renderer.ItemFinished($id, $(if ($id -in $script:insightFailed) { 'Failed' } else { 'Passed' }), 'High', $i / 10)
+            }
+        }
+
+        # The lines of one insight panel, without its border, by its title.
+        function Get-InsightPanel {
+            param([string[]] $Screen, [string] $Title)
+            $top = @($Screen | Where-Object { $_ -match "[╭+][─-] $([regex]::Escape($Title)) " })[0]
+            if (-not $top) { return @() }
+            $row = [array]::IndexOf($Screen, $top)
+            $from = $top.IndexOf($Title) - 3
+            $width = ($top.Substring($from) -replace '(?<=[╮+]).*$').Length
+            if ($top.Substring($from, 1) -eq '+') { $width = $top.IndexOf('+', $from + 1) - $from + 1 }
+            @(1..7 | ForEach-Object { $Screen[$row + $_].Substring($from + 2, $width - 4).TrimEnd() })
+        }
+    }
+
+    It 'Lists the weakest areas: enough tests and a failure, the lowest pass rate first' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $panel = Get-InsightPanel $t.Renderer.GetPlainScreen(165, 64) 'Weakest areas'
+        $panel[0] | Should -Match '^Identity area +[█▏▎▍▌▋▊▉]+░+ +60% ✗  4$'
+        $panel[1] | Should -Match '^Devices and endp\S*… [█▏▎▍▌▋▊▉]+░+ +80% ✗  2$' # a name that is too long for its column is cut
+        $panel[2] | Should -Match '^Data protection +[█▏▎▍▌▋▊▉]+░* +88% ✗  1$'
+        # Two tests are too few to say anything about an area.
+        ($panel -join "`n") | Should -Not -Match 'Tiny'
+        $panel[3] | Should -BeNullOrEmpty
+        $t.Renderer.Close()
+    }
+
+    It 'Colours a pass rate red under 70 percent, yellow under 85 and green from there' {
+        $t = New-InsightDashboard
+        Complete-InsightTest $t.Renderer
+        $frame = $t.Writer.ToString()
+        $frame = $frame.Substring($frame.LastIndexOf("$esc[H"))
+        $frame | Should -Match "$esc\[31m +60%$esc\[0m"
+        $frame | Should -Match "$esc\[33m +80%$esc\[0m"
+        $frame | Should -Match "$esc\[32m +88%$esc\[0m"
+        $t.Renderer.Close()
+    }
+
+    It 'Counts failed tests by ATT&CK tactic, once for a tactic, the most first' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $panel = Get-InsightPanel $t.Renderer.GetPlainScreen(165, 64) 'ATT&CK tactics'
+        # T01 has two techniques of Initial Access and counts once: T01, T03 and T11. Credential Access: T02 and T03.
+        $panel[0] | Should -Match '^ +3 +2$'
+        $panel[6] | Should -Match '^ *Initial +Creds$'
+        # The bar of the first is full height, the other two thirds of it.
+        $panel[1] | Should -Match '^ +█+$'
+        $panel[5] | Should -Match '^ +█+ +█+$'
+        $t.Renderer.Close()
+    }
+
+    It 'Places a dot for each failed test by user impact and effort, the most severe first' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $panel = Get-InsightPanel $t.Renderer.GetPlainScreen(165, 64) 'Failed tests'
+        $panel[0] | Should -Match '^ +user impact'
+        $panel[1] | Should -Match '^effort +Low +Med +High$'
+        # Low effort: T01 and T27 (Critical), T02 (High) and T03 (Medium) with a low impact, T11 with a high one.
+        $panel[2] | Should -Match '^Low +CCHM {8,}H$'
+        $panel[3] | Should -BeNullOrEmpty
+        $panel[4] | Should -Match '^Med$'
+        # High effort, medium impact: T04. T12 and T30 have no ratings and are left out.
+        $panel[6] | Should -Match '^High +H$'
+        # Six dots, and the capitals of Low, Med and High.
+        (($panel[2..6] -join '') -creplace '[^CHML]').Length | Should -Be 9
+        $t.Renderer.Close()
+
+        # In colour every test is a dot in the colour of its severity.
+        $t = New-InsightDashboard
+        Complete-InsightTest $t.Renderer
+        $frame = $t.Writer.ToString()
+        $frame.Substring($frame.LastIndexOf("$esc[H")) | Should -Match "$esc\[31m●●$esc\[0m$esc\[38;5;208m●$esc\[0m$esc\[33m●$esc\[0m"
+        $t.Renderer.Close()
+    }
+
+    It 'Ends a cell that has more failed tests than room with their number' {
+        $tests = 1..40 | ForEach-Object { New-InsightTestInfo -Id ('T{0:00}' -f $_) -Area 'identity' -Severity 'High' -UserImpact 'Low' -Cost 'Low' }
+        $t = New-InsightDashboard -NoColor -Tests $tests -Total 40
+        $script:insightFailed = 1..40 | ForEach-Object { 'T{0:00}' -f $_ }
+        try { Complete-InsightTest $t.Renderer -Count 40 } finally { $script:insightFailed = 'T01', 'T02', 'T03', 'T04', 'T11', 'T12', 'T27', 'T30' }
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        $panel = Get-InsightPanel $screen 'Failed tests'
+        $panel[2] | Should -Match '^Low +H+$'
+        $panel[3] | Should -Match '^ +H+\+\d+$'
+        # The dots that are drawn and the number add up to the forty tests.
+        $drawn = (($panel[2] -replace '^Low') + $panel[3] -replace '[^H]').Length
+        $drawn + [int]($panel[3] -replace '^.*\+') | Should -Be 40
+
+        # Fix first: six of the forty quick wins, and how many more there are.
+        ($screen -join "`n") | Should -Match 'Fix first ─+ 40 quick wins ─'
+        @($screen | Where-Object { $_ -match '│ ✗ T\d\d ' }).Count | Should -Be 6
+        ($screen -join "`n") | Should -Match '│   and 34 more +│'
+        $t.Renderer.Close()
+    }
+
+    It 'Lists the NIST 800-53 families by pass rate: a test counts once for a family' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $panel = Get-InsightPanel $t.Renderer.GetPlainScreen(165, 64) 'NIST 800-53 families'
+        # T01 has two controls of AC and counts once: T01 and T02 failed, T05 and T06 passed.
+        $panel[0] | Should -Match '^AC Access Control +[█▏▎▍▌▋▊▉]+░+ +50% ✗  2$'
+        $panel[1] | Should -Match '^IA Identification.* +[█▏▎▍▌▋▊▉]+░+ +75% ✗  1$'
+        # AU has two tests, which is too few, and SC has no failure. A control of another framework is not counted.
+        $panel[2] | Should -BeNullOrEmpty
+        $t.Renderer.Close()
+    }
+
+    It 'Draws the pass rate from the first test to now, from the lowest rate after twenty tests to 100 percent' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        # 22 of 30 passed.
+        ($screen -join "`n") | Should -Match 'Pass rate so far ─+ 73% ─'
+        $panel = Get-InsightPanel $screen 'Pass rate so far'
+        $panel[0] | Should -Match '^100%'
+        # After 21 tests 15 had passed: 71 percent, the lowest from there on.
+        $panel[5] | Should -Match '^ 71% '
+        $panel[6] | Should -Match '^ +first test +now$'
+        # One point in each column of the chart.
+        (($panel[0..5] -join '') -replace '[^▀▄]').Length | Should -Be ($panel[6].Length - 5)
+        # The first tests failed: the line starts at the bottom of the scale, and ends a level above it.
+        $panel[5] | Should -Match '^ 71% ▄.*▀$'
+        $t.Renderer.Close()
+    }
+
+    It 'Plots every test by the order it finished in and how long it took' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $panel = Get-InsightPanel $t.Renderer.GetPlainScreen(165, 64) 'Every test'
+        $panel[0] | Should -Match '^ 3\.0s '
+        $panel[5] | Should -Match '^ 0\.0s'
+        $panel[6] | Should -Match '^ +first test +now$'
+        # Thirty tests, a braille dot each: the fastest at the bottom left, the slowest at the top right.
+        $dots = 0
+        foreach ($c in ($panel[0..5] -join '').ToCharArray()) {
+            if ($c -ge [char]0x2801 -and $c -le [char]0x28FF) { $bits = [int]$c - 0x2800; while ($bits) { $dots += $bits -band 1; $bits = $bits -shr 1 } }
+        }
+        $dots | Should -Be 30
+        $panel[0] | Should -Match '^ 3\.0s {5,}[⠁-⣿]+$'
+        $panel[4] | Should -Match '^ {6}[⠁-⣿]'
+        $t.Renderer.Close()
+
+        # A cell with a failed test in it is red.
+        $t = New-InsightDashboard
+        Complete-InsightTest $t.Renderer
+        $frame = $t.Writer.ToString()
+        $frame.Substring($frame.LastIndexOf("$esc[H")) | Should -Match "$esc\[31m[⠁-⣿]"
+        $t.Renderer.Close()
+    }
+
+    It 'Lists the quick wins in Fix first: Critical or High with a low user impact and a low cost, Critical first' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        ($screen -join "`n") | Should -Match 'Fix first ─+ 3 quick wins ─'
+        $wins = @($screen | Where-Object { $_ -match '│ ✗ (T\d\d) ' } | ForEach-Object { $Matches[1] })
+        # T03 is Medium, T04 and T11 are not cheap, T30 has no ratings.
+        $wins | Should -Be 'T01', 'T27', 'T02'
+        ($screen -join "`n") | Should -Match '│ High or Critical · low user impact · low cost +│'
+        ($screen -join "`n") | Should -Match '│ ✗ T27 +Title of T27 +│'
+        $t.Renderer.Close()
+    }
+
+    It 'Has no insight panels, and counts nothing, for a run of fewer than 25 tests' {
+        $t = New-InsightDashboard -NoColor -Total 24
+        Complete-InsightTest $t.Renderer -Count 24
+        $screen = $t.Renderer.GetPlainScreen(165, 64) -join "`n"
+        $screen | Should -Not -Match 'Weakest areas|ATT&CK tactics|Failed tests|NIST 800-53|Pass rate so far|Every test|Fix first'
+        # The list of the tests that ran has the rows, as before.
+        @($t.Renderer.GetPlainScreen(165, 64) | Where-Object { $_ -match '^ [✓✗] T\d\d ' }).Count | Should -Be 24
+        $t.Renderer.Close()
+
+        # 25 tests is a run with insight panels.
+        $t = New-InsightDashboard -NoColor -Total 25
+        Complete-InsightTest $t.Renderer -Count 25
+        ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Match 'Weakest areas'
+        $t.Renderer.Close()
+    }
+
+    It 'Has none without the attributes of the tests, and counts a test it does not know for the pass rate only' {
+        $t = New-InsightDashboard -NoColor -Tests @()
+        Complete-InsightTest $t.Renderer
+        ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Not -Match 'Weakest areas|Pass rate so far|Fix first'
+        $t.Renderer.Close()
+
+        # A Pester test has no attributes: it is in the pass rate and the timings, and in no other panel.
+        $t = New-InsightDashboard -NoColor -Tests @(Get-InsightFixture | Where-Object { $_.Id -ne 'T01' })
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        ($screen -join "`n") | Should -Match 'Pass rate so far ─+ 73% ─'
+        (Get-InsightPanel $screen 'Weakest areas')[0] | Should -Match '^Identity area .* 67% ✗  3$'
+        ($screen -join "`n") | Should -Match 'Fix first ─+ 2 quick wins ─'
+        $t.Renderer.Close()
+    }
+
+    It 'Leaves a panel out while it has nothing to show, and updates the panels when a test finishes' {
+        $t = New-InsightDashboard -NoColor
+        # Four failed tests: their area has too few tests to be listed, and so has every control family.
+        Complete-InsightTest $t.Renderer -Count 4
+        $screen = $t.Renderer.GetPlainScreen(165, 64) -join "`n"
+        $screen | Should -Match 'ATT&CK tactics'
+        $screen | Should -Match 'Failed tests'
+        $screen | Should -Match 'Pass rate so far ─+ 0% ─'
+        $screen | Should -Not -Match 'Weakest areas|NIST 800-53 families'
+        # The fifth test of the area: the panels are built again.
+        $t.Renderer.ItemStarting('T05', 'Title of T05', $null); $t.Renderer.ItemFinished('T05', 'Passed', 'High', 1)
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        (Get-InsightPanel $screen 'Weakest areas')[0] | Should -Match '^Identity area .* 20% ✗  4$'
+        ($screen -join "`n") | Should -Match 'Pass rate so far ─+ 20% ─'
+        $t.Renderer.Close()
+
+        # Before any test failed there is only the pass rate and the timings.
+        $t = New-InsightDashboard -NoColor -Tests @(Get-InsightFixture | Where-Object { $_.Id -ge 'T05' })
+        $t.Renderer.ItemStarting('T05', 'Title', $null); $t.Renderer.ItemFinished('T05', 'Passed', 'High', 1)
+        $screen = $t.Renderer.GetPlainScreen(165, 64) -join "`n"
+        $screen | Should -Match 'Pass rate so far ─+ 100% ─'
+        $screen | Should -Match 'Every test'
+        $screen | Should -Not -Match 'Weakest areas|ATT&CK tactics|Failed tests|Fix first'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows one row of panels at 165x52, both at 165x64 and none at 120x32, and leaves the list three tests' {
+        $t = New-InsightDashboard -NoColor -Catalog
+        Complete-InsightTest $t.Renderer
+        31..33 | ForEach-Object { $t.Renderer.ItemStarting("R$_", "Running $_", $null) }
+        $recent = { param($screen) @($screen | Where-Object { $_ -match '^ [✓✗] T\d\d ' }).Count }
+
+        $screen = $t.Renderer.GetPlainScreen(165, 52)
+        $row = @($screen | Where-Object { $_ -match 'Weakest areas' })
+        $row.Count | Should -Be 1
+        # Three panels side by side, in the main column: the right column starts after them.
+        $row[0] | Should -Match '^ ╭─ Weakest areas ─.*╮ ╭─ ATT&CK tactics ─.*╮ ╭─ Failed tests ─+╮ +[│╭╰]'
+        $row[0].IndexOf('╮ ╭─ ATT') | Should -BeGreaterThan 36
+        ($screen -join "`n") | Should -Not -Match 'NIST 800-53 families|Pass rate so far|Every test'
+        & $recent $screen | Should -Be 3
+        # The panels are at the bottom of the main column, above the status bar.
+        $screen[50] | Should -Match '^ ╰─+╯ ╰─+╯ ╰─+╯ '
+        $screen[51] | Should -Match '^ maester\.dev'
+
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        $first = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match 'Weakest areas' })[0])
+        $second = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match 'NIST 800-53 families' })[0])
+        $second | Should -Be ($first + 9)
+        $screen[$second] | Should -Match '^ ╭─ NIST 800-53 families ─.*╮ ╭─ Pass rate so far ─.*╮ ╭─ Every test ─'
+        $screen[62] | Should -Match '^ ╰─+╯ ╰─+╯ ╰─+╯ '
+        # The rows that the two rows of panels leave go to more of the tests that ran.
+        & $recent $screen | Should -BeGreaterThan 3
+
+        # The lanes and the squares use a console of 32 rows: no panels, and the list is as it was.
+        $screen = $t.Renderer.GetPlainScreen(120, 32)
+        ($screen -join "`n") | Should -Not -Match 'Weakest areas|NIST 800-53 families|Fix first'
+        $screen.Count | Should -Be 32
+        $t.Renderer.Close()
+    }
+
+    It 'Shows fewer panels in a row on a console that is too narrow for three' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(80, 64)
+        @($screen | Where-Object { $_ -match '^ ╭─ Weakest areas ─.*╮ ╭─ ATT&CK tactics ─+╮$' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ ╭─ NIST 800-53 families ─.*╮ ╭─ Pass rate so far ─.*╮$' }).Count | Should -Be 1
+        ($screen -join "`n") | Should -Not -Match 'Failed tests|Every test'
+        $screen | ForEach-Object { $_.Length | Should -BeLessThan 80 }
+        # A wider one has all three, each within the main column.
+        $screen = $t.Renderer.GetPlainScreen(100, 64)
+        @($screen | Where-Object { $_ -match 'Weakest areas.*ATT&CK tactics.*Failed tests' }).Count | Should -Be 1
+        $screen | ForEach-Object { $_.Length | Should -BeLessThan 100 }
+        $t.Renderer.Close()
+    }
+
+    It 'Turns a panel off when it is not in the list of panels' {
+        $t = New-InsightDashboard -NoColor -Panels @($script:insightPanels | Where-Object { $_ -notin 'AttackTactics', 'FixFirst', 'EveryTest' })
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        @($screen | Where-Object { $_ -match '^ ╭─ Weakest areas ─.*╮ ╭─ Failed tests ─' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ ╭─ NIST 800-53 families ─.*╮ ╭─ Pass rate so far ─' }).Count | Should -Be 1
+        ($screen -join "`n") | Should -Not -Match 'ATT&CK tactics|Fix first|Every test'
+        $t.Renderer.Close()
+    }
+
+    It 'Orders the right column: Slowest above Drift, Fix first under it, and blog, tip and contributor at the bottom' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
+        $titles | Should -Be 'Tenant', 'Results', 'Connections', 'Failed so far', 'Slowest so far', 'Drift since last run', 'Fix first', 'From the blog', 'Tip', 'Featured contributor'
+        # The last three end on the last row above the status bar, with the spare rows above them.
+        $screen[62] | Should -Match '╰─+╯$'
+        $screen[61] | Should -Match '│ 3 tests +│$'
+        $blog = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ From the blog ' })[0])
+        $screen[$blog - 1].Length | Should -BeLessThan 105
+        # Slowest takes rows that are left over, for more than its five tests.
+        @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count | Should -BeGreaterThan 5
+        $t.Renderer.Close()
+
+        # They are at the bottom wherever they are in the list of panels.
+        $t = New-InsightDashboard -NoColor -Panels 'Tips', 'Contributor', 'Tenant', 'Failed'
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 40)
+        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
+        $titles | Should -Be 'Tenant', 'Failed so far', 'Tip', 'Featured contributor'
+        $screen[38] | Should -Match '╰─+╯$'
+        $t.Renderer.Close()
+    }
+
+    It 'Drops Fix first before anything else in a short column, then shrinks Slowest' {
+        $t = New-InsightDashboard -NoColor
+        Complete-InsightTest $t.Renderer
+        $states = foreach ($height in 64..24) {
+            $screen = $t.Renderer.GetPlainScreen(165, $height)
+            [pscustomobject]@{
+                Height  = $height
+                Fix     = @($screen | Where-Object { $_ -match '│ ✗ T\d\d ' }).Count
+                Slowest = @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count
+                Others  = @($screen | Where-Object { $_ -match '╭─ (Tenant|Results|Connections|Failed so far|Drift since last run|From the blog|Tip|Featured contributor) ' }).Count
+            }
+        }
+        # Fix first has fewer tests, then none, while Slowest still has its five.
+        @($states | Where-Object { $_.Fix -in 1, 2 -and $_.Slowest -eq 5 }).Count | Should -BeGreaterThan 0
+        @($states | Where-Object { $_.Fix -eq 0 -and $_.Slowest -eq 5 }).Count | Should -BeGreaterThan 0
+        @($states | Where-Object { $_.Fix -gt 0 -and $_.Slowest -lt 5 }).Count | Should -Be 0
+        # Slowest then gives its rows, down to one test, before another panel is left out.
+        @($states | Where-Object { $_.Slowest -in 1..4 -and $_.Others -eq 8 }).Count | Should -BeGreaterThan 0
+        @($states | Where-Object { $_.Others -lt 8 -and $_.Slowest -gt 1 }).Count | Should -Be 0
+        # The three of the bottom are the last to go.
+        @($states | Where-Object { $_.Height -ge 30 } | ForEach-Object { @($t.Renderer.GetPlainScreen(165, $_.Height) | Where-Object { $_ -match '╭─ (From the blog|Tip|Featured contributor) ' }).Count } | Select-Object -Unique) | Should -Be 3
+        $t.Renderer.Close()
+    }
+
+    It 'Draws every panel with ASCII when Unicode is off' {
+        $t = New-InsightDashboard -Ascii -NoColor
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 64)
+        $screen | ForEach-Object { $_ | Should -Match '^[\x20-\x7E]*$' }
+        (Get-InsightPanel $screen 'Weakest areas')[0] | Should -Match '^Identity area +#+-+ +60% x  4$'
+        (Get-InsightPanel $screen 'NIST 800-53 families')[0] | Should -Match '^AC Access Control +#+-+ +50% x  2$'
+        $tactics = Get-InsightPanel $screen 'ATT&CK tactics'
+        $tactics[0] | Should -Match '^ +3 +2$'
+        $tactics[5] | Should -Match '^ +#+ +#+$'
+        (Get-InsightPanel $screen 'Failed tests')[2] | Should -Match '^Low +CCHM +H$'
+        ((Get-InsightPanel $screen 'Pass rate so far')[0..5] -join '') | Should -Match '[-_]'
+        # A cell of the timings is one character: an x where a test failed, a dot where one passed.
+        $every = (Get-InsightPanel $screen 'Every test')[0..5] -join ''
+        $every | Should -Match 'x'
+        $every | Should -Match '\.'
+        ($screen -join "`n") | Should -Match '\| x T01 +Title of T01 +\|'
+        ($screen -join "`n") | Should -Match '\| High or Critical, low user impact, low cost +\|'
+        $t.Renderer.Close()
+
+        # With colour and no Unicode a failed test is a star in the colour of its severity.
+        $t = New-InsightDashboard -Ascii
+        Complete-InsightTest $t.Renderer
+        $frame = $t.Writer.ToString()
+        $frame.Substring($frame.LastIndexOf("$esc[H")) | Should -Match "$esc\[31m\*\*$esc\[0m"
+        $t.Renderer.Close()
+    }
+
+    It 'Never throws for attributes it cannot use' {
+        $odd = @(
+            (New-InsightTestInfo -Id 'T01' -Area $null -Severity 'Nonsense' -UserImpact 'Huge' -Cost $null -Mitre @($null, '', 'T9999', 'None') -Controls @($null, 'nist-800-53-r5:', 'nist-800-53-r5:12-3', 'nist-800-53-r5:ACCESS-1', 'AC-2')),
+            $null,
+            (New-InsightTestInfo -Id $null -Area 'identity')
+        )
+        $t = New-InsightDashboard -NoColor -Tests $odd
+        { Complete-InsightTest $t.Renderer } | Should -Not -Throw
+        { $t.Renderer.SetTestInfo($null, $null, $null, $null) } | Should -Not -Throw
+        { $t.Renderer.SetTestInfo([Maester.Engine.MtConsoleTestInfo[]]@(Get-InsightFixture), $null, $null, $null) } | Should -Not -Throw
+        ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Match 'Results'
         $t.Renderer.Close()
     }
 }

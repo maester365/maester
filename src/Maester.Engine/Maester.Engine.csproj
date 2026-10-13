@@ -35,6 +35,7 @@
     <Compile Include="MaesterTestAttribute.cs" />
     <Compile Include="MtConsoleFeeds.cs" />
     <Compile Include="MtConsoleRenderer.cs" />
+    <Compile Include="MtConsoleRenderer.Insights.cs" />
     <Compile Include="MtConsoleRenderer.Panels.cs" />
     <Compile Include="MtConsoleRenderer.Totals.cs" />
     <Compile Include="MtSession.cs" />

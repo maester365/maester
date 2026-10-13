@@ -15,7 +15,8 @@ namespace Maester.Engine
     /// Text panels (Tenant, Blog, Version, or any other name) show the lines the caller gives them. The live
     /// panels are worked out here from the results as they arrive: Failed (by severity), Pace (and the slowest
     /// tests), Drift (against the results of an earlier run), Tips (one at a time) and Results (one square per
-    /// test, in the main column).
+    /// test, in the main column). The insight panels, which count the results by the attributes of the tests,
+    /// are in MtConsoleRenderer.Insights.cs.
     /// </summary>
     public sealed partial class MtConsoleRenderer
     {
@@ -92,7 +93,6 @@ namespace Maester.Engine
         private string _baselineReport;
         private int _fixedCount;
         private int _newTests;
-        private int _paceExtra;
         private bool _tight;
 
         /// <summary>
@@ -111,6 +111,7 @@ namespace Maester.Engine
                         if (!string.IsNullOrWhiteSpace(n) && !_panels.Contains(n)) _panels.Add(n.Trim());
                     }
                 }
+                _insightVersion++;
                 Redraw();
             }
         }
@@ -514,6 +515,7 @@ namespace Maester.Engine
             _recent.Clear();
             _finished.Clear();
             RecountDrift();
+            ResetInsights();
             _runClock.Restart();
         }
 
@@ -524,6 +526,7 @@ namespace Maester.Engine
             // The tests that ran, newest first, for the list under the running tests.
             bool ran = result == "Passed" || result == "Failed" || result == "Error" || result == "Investigate";
             if (ran) _durations.Add(duration.TotalSeconds);
+            if (ran && _insights) _ranFailed.Add(result == "Failed");
             if (ran && !string.IsNullOrEmpty(id))
             {
                 _recent.Insert(0, new Recent { Id = id, Title = title, Result = result, Duration = duration });
@@ -549,6 +552,11 @@ namespace Maester.Engine
                 bool first = !_finished.ContainsKey(id);
                 _finished[id] = result;
                 if (first) CountDrift(id, result);
+            }
+            if (_insights)
+            {
+                try { RecordInsight(id, title, result); }
+                catch (Exception) { _insights = false; /* The counts are for the insight panels only: the run goes on without them. */ }
             }
         }
 
@@ -613,10 +621,19 @@ namespace Maester.Engine
             }
         }
 
-        /// <summary>The panels that are drawn in the main column, not in the right one: the result blocks and the Pace graph.</summary>
+        /// <summary>
+        /// The panels that are drawn in the main column, not in the right one: the result blocks, the Pace graph
+        /// and the insight panels under the list of tests.
+        /// </summary>
         private static bool InMainColumn(string name)
         {
-            return string.Equals(name, ResultsPanel, StringComparison.OrdinalIgnoreCase) || string.Equals(name, PacePanel, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(name, ResultsPanel, StringComparison.OrdinalIgnoreCase) || string.Equals(name, PacePanel, StringComparison.OrdinalIgnoreCase) || IsInsightPanel(name);
+        }
+
+        /// <summary>The panels that stay at the bottom of the right column, whatever is above them.</summary>
+        private static bool AtBottom(string name)
+        {
+            return string.Equals(name, "Blog", StringComparison.OrdinalIgnoreCase) || string.Equals(name, "Tips", StringComparison.OrdinalIgnoreCase) || string.Equals(name, "Contributor", StringComparison.OrdinalIgnoreCase);
         }
 
         private bool PanelShown(string name)
@@ -643,51 +660,85 @@ namespace Maester.Engine
         /// <summary>
         /// The right column: each panel that has something to show, in order, as a box with its title in the top
         /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
+        /// The Blog, Tips and Contributor panels are at the bottom of the column, the others stack from its top.
         ///
         /// Every panel is shown whenever the column has the rows for it. The Slowest panel is the one that
-        /// gives: it starts at one test, and takes the rows that are left over for more. In a column
-        /// that is still too short, the panels that can do with less take less (the Tips panel the height of the
-        /// tip it shows, the Failed panel the severities that have failures, the Blog panel one line). Only then
-        /// is a panel that does not fit left out.
+        /// takes the rows that are left over, for more than its five tests. In a column that is too short the
+        /// Fix first panel gives first (fewer tests, then none), then the Slowest panel, down to one test.
+        /// In a column that is still too short, the panels that can do with less take less (the Tips panel the
+        /// height of the tip it shows, the Failed panel the severities that have failures, the Blog panel one
+        /// line). Only then is a panel that does not fit left out, and the panels of the bottom are the last.
         /// </summary>
         private List<Line> BuildPane(int paneWidth, int rows, bool ansi)
         {
-            _paceExtra = 0;
+            int inner = paneWidth - 4;
             _tight = false;
-            bool all;
-            var pane = StackPanels(paneWidth, rows, ansi, out all);
-            if (!all)
+            _slowRows = SlowestLeast;
+            _fixRows = FixFirstMost;
+            var names = new List<string>();
+            foreach (var name in _panels)
+            {
+                if (!InMainColumn(name)) names.Add(name);
+            }
+            var panels = new PanelContent[names.Count];
+            int slowest = -1;
+            int fixFirst = -1;
+            int total = 0;
+            for (int i = 0; i < names.Count; i++)
+            {
+                panels[i] = BuildPanel(names[i], inner, ansi);
+                total += BoxHeight(panels[i]);
+                if (string.Equals(names[i], "Slowest", StringComparison.OrdinalIgnoreCase)) slowest = i;
+                else if (string.Equals(names[i], FixFirstPanel, StringComparison.OrdinalIgnoreCase)) fixFirst = i;
+            }
+            while (total > rows && fixFirst >= 0 && panels[fixFirst] != null)
+            {
+                _fixRows--;
+                total -= BoxHeight(panels[fixFirst]);
+                panels[fixFirst] = BuildPanel(names[fixFirst], inner, ansi);
+                total += BoxHeight(panels[fixFirst]);
+            }
+            if (total > rows && slowest >= 0 && panels[slowest] != null)
+            {
+                int had = panels[slowest].Lines.Count;
+                _slowRows = Math.Max(1, had - (total - rows));
+                panels[slowest] = BuildPanel(names[slowest], inner, ansi);
+                total += panels[slowest].Lines.Count - had;
+            }
+            if (total > rows)
             {
                 _tight = true;
-                pane = StackPanels(paneWidth, rows, ansi, out all);
+                for (int i = 0; i < names.Count; i++) panels[i] = BuildPanel(names[i], inner, ansi);
             }
-            int spare = rows - pane.Count;
-            if (all && spare > 0 && _slowest.Count > 1 && PanelShown("Slowest"))
+            else if (total < rows && slowest >= 0 && panels[slowest] != null && _slowest.Count > _slowRows)
             {
-                _paceExtra = spare;
-                pane = StackPanels(paneWidth, rows, ansi, out all);
+                _slowRows = Math.Min(SlowestKept, _slowRows + rows - total);
+                panels[slowest] = BuildPanel(names[slowest], inner, ansi);
             }
+
+            // The panels of the bottom have their rows first; the others take what is above them, in order.
+            var bottom = new List<Line>();
+            for (int i = 0; i < names.Count; i++)
+            {
+                if (!AtBottom(names[i]) || BoxHeight(panels[i]) == 0 || bottom.Count + BoxHeight(panels[i]) > rows) continue;
+                bottom.AddRange(Box(panels[i], paneWidth, ansi));
+            }
+            var pane = new List<Line>();
+            for (int i = 0; i < names.Count; i++)
+            {
+                if (AtBottom(names[i]) || BoxHeight(panels[i]) == 0 || pane.Count + BoxHeight(panels[i]) > rows - bottom.Count) continue;
+                pane.AddRange(Box(panels[i], paneWidth, ansi));
+            }
+            if (bottom.Count == 0) return pane;
+            while (pane.Count < rows - bottom.Count) pane.Add(new Line { Text = string.Empty, Plain = string.Empty });
+            pane.AddRange(bottom);
             return pane;
         }
 
-        private List<Line> StackPanels(int paneWidth, int rows, bool ansi, out bool all)
+        /// <summary>The rows a panel takes with its border, or none for a panel with nothing to show.</summary>
+        private static int BoxHeight(PanelContent panel)
         {
-            var pane = new List<Line>();
-            int inner = paneWidth - 4;
-            all = true;
-            foreach (var name in _panels)
-            {
-                if (InMainColumn(name)) continue;
-                var panel = BuildPanel(name, inner, ansi);
-                if (panel == null || panel.Lines.Count == 0) continue;
-                if (pane.Count + panel.Lines.Count + 2 > rows)
-                {
-                    all = false;
-                    continue;
-                }
-                pane.AddRange(Box(panel, paneWidth, ansi));
-            }
-            return pane;
+            return panel == null || panel.Lines.Count == 0 ? 0 : panel.Lines.Count + 2;
         }
 
         /// <summary>Frames a panel: the title and badge in the top border, the lines padded between the sides.</summary>
@@ -736,6 +787,8 @@ namespace Maester.Engine
                     return BuildFailedPanel(width, ansi);
                 case "slowest":
                     return BuildSlowestPanel(width, ansi);
+                case "fixfirst":
+                    return BuildFixFirstPanel(width, ansi);
                 case "drift":
                     return BuildDriftPanel(width, ansi);
                 case "tips":
@@ -928,14 +981,14 @@ namespace Maester.Engine
         }
 
         /// <summary>
-        /// The Slowest panel: the tests that took the longest, one at least. It is the panel of the right column
-        /// that gives: the rows that the column has left over go to more tests (twenty at most).
+        /// The Slowest panel: the tests that took the longest, five of them. The rows that the right column has
+        /// left over go to more tests (twenty at most), and a column that is short of rows gets fewer, one at least.
         /// </summary>
         private PanelContent BuildSlowestPanel(int width, bool ansi)
         {
             if (_slowest.Count == 0) return null;
             var panel = new PanelContent { Title = "Slowest so far" };
-            int shown = Math.Max(1, Math.Min(_slowest.Count, 1 + _paceExtra));
+            int shown = Math.Max(1, Math.Min(_slowest.Count, _slowRows));
             int listed = 0;
             foreach (var s in _slowest)
             {

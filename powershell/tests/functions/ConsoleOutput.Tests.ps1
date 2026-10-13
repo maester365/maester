@@ -503,6 +503,56 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
+    It 'Knows the insight panels, and Fix first, by name' {
+        $renderer = New-PanelRenderer
+        $config = [pscustomobject]@{ Output = [pscustomobject]@{ DashboardPanels = @('FixFirst', 'WeakestAreas', 'AttackTactics', 'FailedTests', 'NistFamilies', 'PassRate', 'EveryTest') } }
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; cfg = $config } {
+            param($r, $c, $cfg)
+            Initialize-MtDashboard -Renderer $r -Console $c -RunConfig $cfg -SkipVersionCheck -WarningVariable w -WarningAction SilentlyContinue
+            $script:__panelWarnings = $w
+        }
+        InModuleScope Maester { $script:__panelWarnings } | Should -BeNullOrEmpty
+        $renderer.Close()
+    }
+
+    It 'Hands the attributes of the tests to the dashboard, for a run of 25 tests or more' {
+        $newItems = {
+            param([int] $count)
+            [Maester.Engine.MtWorkItem[]]@(1..$count | ForEach-Object {
+                    $test = [pscustomobject]@{
+                        Area = 'privileged-access'; Severity = 'High'; UserImpact = 'Low'; ImplementationCost = 'Low'
+                        Mitre = @('T1078.004'); Control = @('nist-800-53-r5:AC-6(5)', 'cisa-scuba:MS.AAD.7.1')
+                    }
+                    $item = [Maester.Engine.MtWorkItem]::new(); $item.Id = "X.$_"; $item.Tag = @{ PlanRow = [pscustomobject]@{ Test = $test }; Instance = $null }
+                    $item
+                })
+        }
+        $run = {
+            param([int] $count)
+            $renderer = New-PanelRenderer
+            $renderer.Height = 60
+            InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; items = (& $newItems $count) } {
+                param($r, $c, $items)
+                Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck
+                Set-MtDashboardTestInfo -Renderer $r -WorkItem $items
+            }
+            $renderer.Start($count)
+            1..$count | ForEach-Object { $renderer.ItemStarting("X.$_", "Test $_", $null); $renderer.ItemFinished("X.$_", $(if ($_ % 2) { 'Failed' } else { 'Passed' }), 'High', 1) }
+            $screen = $renderer.GetPlainScreen(160, 60) -join "`n"
+            $renderer.Close()
+            $screen
+        }
+        $screen = & $run 26
+        # The names come from the taxonomy registry, the pinned ATT&CK release and the NIST control list.
+        $screen | Should -Match 'Weakest areas'
+        $screen | Should -Match '│ Privileged access +\S+ +50% ✗ 13 │'
+        $screen | Should -Match 'ATT&CK tactics'
+        $screen | Should -Match '│ AC Access Control +\S+ +50% ✗ 13 │'
+        $screen | Should -Match 'Fix first ─+ 13 quick wins ─'
+        # A run of a few tests has no insight panels.
+        & $run 24 | Should -Not -Match 'Weakest areas|ATT&CK tactics|NIST 800-53|Fix first|Pass rate so far'
+    }
+
     It 'Puts the links of the project in the status bar' {
         $renderer = New-PanelRenderer
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
