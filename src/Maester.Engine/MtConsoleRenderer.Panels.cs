@@ -662,8 +662,8 @@ namespace Maester.Engine
         /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
         /// The Blog, Tips and Contributor panels are at the bottom of the column, the others stack from its top.
         ///
-        /// Every panel is shown whenever the column has the rows for it. The Slowest panel is the one that
-        /// takes the rows that are left over, for more than its five tests. In a column that is too short the
+        /// Every panel is shown whenever the column has the rows for it. The Slowest panel lists two tests, and
+        /// up to five when rows are left over. In a column that is too short the
         /// Fix first panel gives first (fewer tests, then none), then the Slowest panel, down to one test.
         /// In a column that is still too short, the panels that can do with less take less (the Tips panel the
         /// height of the tip it shows, the Failed panel the severities that have failures, the Blog panel one
@@ -712,7 +712,7 @@ namespace Maester.Engine
             }
             else if (total < rows && slowest >= 0 && panels[slowest] != null && _slowest.Count > _slowRows)
             {
-                _slowRows = Math.Min(SlowestKept, _slowRows + rows - total);
+                _slowRows = Math.Min(SlowestMost, _slowRows + rows - total);
                 panels[slowest] = BuildPanel(names[slowest], inner, ansi);
             }
 
@@ -981,8 +981,8 @@ namespace Maester.Engine
         }
 
         /// <summary>
-        /// The Slowest panel: the tests that took the longest, five of them. The rows that the right column has
-        /// left over go to more tests (twenty at most), and a column that is short of rows gets fewer, one at least.
+        /// The Slowest panel: the tests that took the longest, two of them. The rows that the right column has
+        /// left over go to more tests (five at most), and a column that is short of rows gets one.
         /// </summary>
         private PanelContent BuildSlowestPanel(int width, bool ansi)
         {

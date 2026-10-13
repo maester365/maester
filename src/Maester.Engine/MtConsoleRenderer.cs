@@ -905,7 +905,11 @@ namespace Maester.Engine
             // start the banner makes room for them: the band with the small logo and the Pace graph, or one line
             // with the name, the version and the phases.
             var header = new List<Line>();
-            int lanesWanted = tests ? _lanes.Count : 0;
+            // A lane whose tests were all skipped has nothing to show in a row of its own: those lanes share
+            // one line, by name and number of tests.
+            var skippedLanes = new List<Lane>();
+            if (tests) foreach (var l in _lanes) if (l.Total > 0 && l.Skipped == l.Total) skippedLanes.Add(l);
+            int lanesWanted = tests ? _lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0) : 0;
             int needed = body.Count + tail.Count + 2 + (info ? 1 : 0);
             if (band)
             {
@@ -936,12 +940,38 @@ namespace Maester.Engine
             }
             header.Add(blank());
 
+            // The insight panels keep their place while the tests run: one row of them, and the tests that ran
+            // last, have rows set aside when the screen has them next to the lanes, a row of result blocks and
+            // three running tests. The list of running tests then stops where those rows start, and says how
+            // many more are running.
+            int reserve = 0;
+            if (_insights && _running && tests)
+            {
+                // Both rows of panels on a screen that has the rows for them, or else one.
+                for (int panelRows = InsightLayout.Length; panelRows >= 1 && reserve == 0; panelRows--)
+                {
+                    int kept = panelRows * (InsightRows + 2) + 1 + RecentLeast;
+                    int most = rows - header.Count - body.Count - (lanesWanted > 0 ? lanesWanted + 1 : 0) - 2 - 1 - kept;
+                    if (most < 1 + RecentLeast) continue;
+                    reserve = kept;
+                    if (tail.Count > most)
+                    {
+                        int more = tail.Count - (most - 1);
+                        tail.RemoveRange(most - 1, more);
+                        tail.Add(new LineBuilder(ansi).Add("   " + Ellipsis() + " and " + N(more) + " more running", "2").Build());
+                    }
+                }
+            }
+
             // Lanes take the rows that are left; when there is not room for all, the ones with work left stay.
             var lanes = new List<Line>();
             int room = rows - header.Count - body.Count - tail.Count - 1;
             if (lanesWanted > 0 && room >= 2)
             {
                 var shown = new List<Lane>(_lanes);
+                shown.RemoveAll(l => skippedLanes.Contains(l));
+                int skippedLine = skippedLanes.Count > 0 ? 1 : 0;
+                room -= skippedLine;
                 int hidden = 0;
                 if (shown.Count > room)
                 {
@@ -981,6 +1011,13 @@ namespace Maester.Engine
                     lanes.Add(Truncate(b.Build(), max, ansi));
                 }
                 if (hidden > 0) lanes.Add(new LineBuilder(ansi).Add(" " + Ellipsis() + " and " + N(hidden) + " more", "2").Build());
+                if (skippedLine > 0)
+                {
+                    var names = new List<string>();
+                    foreach (var l in skippedLanes) names.Add(l.Name + " (" + N(l.Total) + ")");
+                    string dot = Unicode ? " · " : ", ";
+                    lanes.Add(Truncate(new LineBuilder(ansi).Add(" " + (Unicode ? "–" : "-") + " Skipped  ", "2").Add(string.Join(dot, names), "2").Build(), max, ansi));
+                }
                 lanes.Add(blank());
             }
 
@@ -996,7 +1033,7 @@ namespace Maester.Engine
             }
 
             // The results chart takes rows that are still free.
-            var chart = tests ? BuildResultsChart(max, free - pace.Count, ansi) : new List<Line>();
+            var chart = tests ? BuildResultsChart(max, free - pace.Count - reserve, ansi) : new List<Line>();
             if (chart.Count > 0) chart.Add(blank());
 
             var screen = new List<Line>();

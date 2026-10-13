@@ -484,8 +484,8 @@ Describe 'MtConsoleRenderer panels' {
         # One square per test: 700 squares over more rows than the standard six would hold.
         (($screen -join '') -replace '[^■□]').Length | Should -Be 700
         ($screen -join "`n") | Should -Not -Match 'each square is'
-        # The Slowest panel fills the rows that are free with more tests (twenty at most).
-        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 20
+        # The Slowest panel lists two tests, and up to five when the column has rows to spare.
+        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 5
         $t.Renderer.Close()
 
         # It gives the rows back when another panel needs them: every panel is still there, and the column is full.
@@ -497,9 +497,8 @@ Describe 'MtConsoleRenderer panels' {
         $short = $t.Renderer.GetPlainScreen(200, 30)
         @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count | Should -Be 4
         $slow = @($short | Where-Object { $_ -match '│ W\.\d+ ' }).Count
-        $slow | Should -BeGreaterThan 3
-        $slow | Should -BeLessThan 20
-        @($short | Where-Object { $_ -match '[│╮╯]$' }).Count | Should -Be 29
+        $slow | Should -BeGreaterThan 1
+        $slow | Should -BeLessThan 6
         $t.Renderer.Close()
     }
 
@@ -1445,8 +1444,8 @@ Describe 'MtConsoleRenderer insight panels' {
         $screen[61] | Should -Match '│ 3 tests +│$'
         $blog = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ From the blog ' })[0])
         $screen[$blog - 1].Length | Should -BeLessThan 105
-        # Slowest takes rows that are left over, for more than its five tests.
-        @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count | Should -BeGreaterThan 5
+        # Slowest takes rows that are left over, up to five tests.
+        @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count | Should -Be 5
         $t.Renderer.Close()
 
         # They are at the bottom wherever they are in the list of panels.
@@ -1471,16 +1470,57 @@ Describe 'MtConsoleRenderer insight panels' {
                 Others  = @($screen | Where-Object { $_ -match '╭─ (Tenant|Results|Connections|Failed so far|Drift since last run|From the blog|Tip|Featured contributor) ' }).Count
             }
         }
-        # Fix first has fewer tests, then none, while Slowest still has its five.
-        @($states | Where-Object { $_.Fix -in 1, 2 -and $_.Slowest -eq 5 }).Count | Should -BeGreaterThan 0
-        @($states | Where-Object { $_.Fix -eq 0 -and $_.Slowest -eq 5 }).Count | Should -BeGreaterThan 0
-        @($states | Where-Object { $_.Fix -gt 0 -and $_.Slowest -lt 5 }).Count | Should -Be 0
-        # Slowest then gives its rows, down to one test, before another panel is left out.
-        @($states | Where-Object { $_.Slowest -in 1..4 -and $_.Others -eq 8 }).Count | Should -BeGreaterThan 0
+        # Fix first has fewer tests, then none, while Slowest still has its two.
+        @($states | Where-Object { $_.Fix -in 1, 2 -and $_.Slowest -eq 2 }).Count | Should -BeGreaterThan 0
+        @($states | Where-Object { $_.Fix -eq 0 -and $_.Slowest -eq 2 }).Count | Should -BeGreaterThan 0
+        @($states | Where-Object { $_.Fix -gt 0 -and $_.Slowest -lt 2 }).Count | Should -Be 0
+        # Slowest then gives a row, down to one test, before another panel is left out.
+        @($states | Where-Object { $_.Slowest -eq 1 -and $_.Others -eq 8 }).Count | Should -BeGreaterThan 0
         @($states | Where-Object { $_.Others -lt 8 -and $_.Slowest -gt 1 }).Count | Should -Be 0
         # The three of the bottom are the last to go.
         @($states | Where-Object { $_.Height -ge 30 } | ForEach-Object { @($t.Renderer.GetPlainScreen(165, $_.Height) | Where-Object { $_ -match '╭─ (From the blog|Tip|Featured contributor) ' }).Count } | Select-Object -Unique) | Should -Be 3
         $t.Renderer.Close()
+    }
+
+    It 'Keeps the insight panels when many tests run at once, and says how many more are running' {
+        $t = New-InsightDashboard -NoColor -Catalog
+        Complete-InsightTest $t.Renderer
+        1..20 | ForEach-Object { $t.Renderer.ItemStarting("R.$_", "Running $_", 'Product 1') }
+        foreach ($height in 52, 64) {
+            $screen = $t.Renderer.GetPlainScreen(165, $height)
+            ($screen -join "`n") | Should -Match '╭─ Weakest areas '
+            ($screen -join "`n") | Should -Match 'Running · 20 tests'
+            $listed = @($screen | Where-Object { $_ -match '^ \S R\.\d+ ' }).Count
+            $listed | Should -BeGreaterThan 2
+            $listed | Should -BeLessThan 20
+            ($screen -join "`n") | Should -Match "… and $(20 - $listed) more running"
+            # The tests that ran last keep their three rows.
+            @($screen | Where-Object { $_ -match '^ [✓✗] T\d\d ' }).Count | Should -BeGreaterThan 2
+        }
+        # A taller console has both rows of panels.
+        ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Match '╭─ NIST 800-53 families '
+        $t.Renderer.Close()
+    }
+
+    It 'Lists the lanes whose tests were all skipped on one line' {
+        $t = New-TestRenderer -Width 120 -NoColor
+        $r = $t.Renderer
+        $r.Height = 40; $r.FullScreen = $true
+        $r.Open()
+        $r.Start(9, [string[]]@('Entra ID', 'Azure', 'GitHub'), [int[]]@(4, 3, 2), $null)
+        1..3 | ForEach-Object { $r.ItemStarting("A.$_", 'An Azure test', 'Azure'); $r.ItemFinished("A.$_", 'Skipped', 'High') }
+        $r.ItemStarting('G.1', 'A GitHub test', 'GitHub'); $r.ItemFinished('G.1', 'Skipped', 'High')
+        $r.ItemStarting('E.1', 'An Entra test', 'Entra ID'); $r.ItemFinished('E.1', 'Skipped', 'High')
+        $screen = $r.GetPlainScreen(120, 40)
+        # Azure is all skipped; GitHub and Entra ID still have tests to run, so they keep their rows.
+        @($screen | Where-Object { $_ -match '^ Azure ' }).Count | Should -Be 0
+        @($screen | Where-Object { $_ -match '^ (Entra ID|GitHub) ' }).Count | Should -Be 2
+        @($screen | Where-Object { $_ -match '^ – Skipped  Azure \(3\)\s*$' }).Count | Should -Be 1
+        $r.ItemStarting('G.2', 'A GitHub test', 'GitHub'); $r.ItemFinished('G.2', 'Skipped', 'High')
+        $screen = $r.GetPlainScreen(120, 40)
+        @($screen | Where-Object { $_ -match '^ GitHub ' }).Count | Should -Be 0
+        @($screen | Where-Object { $_ -match '^ – Skipped  Azure \(3\) · GitHub \(2\)\s*$' }).Count | Should -Be 1
+        $r.Close()
     }
 
     It 'Draws every panel with ASCII when Unicode is off' {

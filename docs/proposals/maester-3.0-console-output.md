@@ -105,11 +105,13 @@ The sketch below is the opening screen.
   Prepare, Run tests, Results and Reports. The renderer takes the list from the caller (`SetPhases`, `StartPhase`), so a
   data collection phase can be added without changing the renderer. Outside the test phase, the line under the strip
   shows what the phase is doing ("Creating html report…").
-- **Lanes.** One per product, from the `Product` of each test, in the order of the schema's product list. A product
-  whose tests are all skipped gets a lane with the number skipped, so it is clear why nothing runs for it. When there
+- **Lanes.** One per product, from the `Product` of each test, in the order of the schema's product list. The
+  products whose tests were all skipped have no lane of their own: they share one line under the lanes, each by name
+  with its number of tests ("– Skipped  Azure (3) · GitHub (5)"). When there
   are more lanes than rows, the lanes with work left stay and the rest are counted in "… and n more".
 - **Running tests.** One line per running test with its elapsed time. With one worker it is one line; with parallel
-  lanes it is one per worker. Results are matched to their test by ID, so they can finish in any order.
+  lanes it is one per worker. In a run with insight panels the list stops where the rows of the panels start, and its
+  last line says how many more tests are running. Results are matched to their test by ID, so they can finish in any order.
 - **Size.** The banner is shown when the console is wide and tall enough for it next to everything else. Otherwise the
   header is one line. The width and height are read on every redraw, so resizing works.
 - **Redraw.** Every 100 ms and on every event: home the cursor, write each line followed by erase-to-end-of-line, then
@@ -144,8 +146,8 @@ Discord (discord.maester.dev), Issues and Sponsor (the Sponsor dialog of the rep
 has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit).
 
 Every panel of the right column is shown whenever the column has the rows for it. The Blog, Tips and Contributor
-panels are at the bottom of the column, and the others stack from its top. The Slowest panel shows five tests and
-takes the rows that are left over for more (twenty at most). In a column that is too short the Fix first panel gives
+panels are at the bottom of the column, and the others stack from its top. The Slowest panel shows two tests, and
+up to five when rows are left over. In a column that is too short the Fix first panel gives
 first (fewer tests, then none), then the Slowest panel, down to one test. In a column that is still too short the panels that can do with less take less (the Tips panel the
 height of the tip it shows instead of that of its longest tip, the Failed panel only the severities that have
 failures, the Blog panel one line); only then is a panel that does not fit left out. With the default panels that
@@ -159,7 +161,7 @@ default is all of them, and an empty list turns them off.
 | `Connections` | The services of the run in a grid: a green dot when connected, a hollow one when not, and how many are connected in the border. A name that is too long is cut at its end. With this panel on screen there is no connection line under the banner. | The tenant context of the run | none |
 | `Failed` | Failed tests by severity, as bars | Each result as it arrives | none |
 | `Drift` | How long ago the last run was ("4 days ago"), its date (a hyperlink that opens the HTML report of that run, when it is next to the results file) and its passed, failed and investigate counts, then the newly failing, fixed and new tests against it. Left out when there is no earlier run. | The newest earlier results JSON in the output folder, read on a background thread. A file from another tenant is ignored. | 30 to 75 ms once |
-| `Slowest` | The tests that took the longest: five, more (twenty at most) in the rows of the column that no other panel needs, and fewer (one at least) in a column that is short of rows. A test that was skipped did not run and is not listed. | The time each test took, kept as it finishes | none |
+| `Slowest` | The tests that took the longest: two, up to five in the rows of the column that no other panel needs, and one in a column that is short of rows. A test that was skipped did not run and is not listed. | The time each test took, kept as it finishes | none |
 | `FixFirst` | The quick wins: failed tests of severity Critical or High whose fix has a low user impact and a low implementation cost, Critical first, then by ID; six at most, with the number of them in the border. Not in a run of fewer than 25 tests. | The attributes of the tests, handed over once before the tests start | none |
 | `Pace` | At the top of the main column, to the right of the wordmark and in its rows: a graph of how long each test took (six rows), and a line under it with the tests per second and the longest test. On a console that is too small for that band the graph is between the product lanes and the result blocks, two to five rows tall as the console has room. The graph has one bar for each test that ran and moves from right to left, like a ticker: the bar of the test that just finished comes in at the right edge and the others move one place to the left (a quick test is a low green bar), so it fills up from the right and then shows the latest tests. Its height is on a logarithmic scale against the longest test of the whole run, exact to an eighth of a row, and each row has its colour, green at the bottom to red at the top. It is left out on a console that is too short for it. | The time each test took, kept as it finishes | none |
 | `Contributor` | Featured contributor, the last panel of the column and the one with an accent border: one of the people who built Maester, a different one every minute, starting with a different one each run. The name and the GitHub handle (in the same colour, both a hyperlink to the person's page on maester.dev/contributors), how many tests they wrote and how many they improved (a count of nothing is left out), and the year of their first contribution. | `assets/ConsoleContributors.json`, which ships with the module. `build/Update-ConsoleContributors.ps1` writes it from the contributor data of the website, and the module build runs it. People who are pinned last on the contributors page are left out. | none |
@@ -171,8 +173,9 @@ default is all of them, and an empty list turns them off.
 The insight panels are in the main column, under the list of tests, in rows of three; each is nine rows high. They count
 the results by the attributes of the tests ([MaesterTest]: Area, Severity, UserImpact, ImplementationCost, Mitre and
 Control), which the run hands to the renderer once, before the tests start (`SetTestInfo`); a result then adds to a few
-counters, and the panels are built again only when a test finishes. The list of tests keeps three finished tests above
-them, and has the rows that no panel takes. The second row needs a console of about 64 rows; on a shorter one it is left
+counters, and the panels are built again only when a test finishes. While the tests run, a row of panels and three finished tests
+have their rows set aside (both rows of panels on a console with the rows for them): the result squares take fewer
+rows and the list of running tests is cut short, so the panels stay when many tests run at once. The second row needs a console of about 64 rows; on a shorter one it is left
 out first, then the first row. A console that is too narrow for three panels in a row shows two or one. A panel with
 nothing to show is left out, and a run of fewer than 25 tests has no insight panels and counts nothing for them.
 
