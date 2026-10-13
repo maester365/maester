@@ -1502,6 +1502,31 @@ Describe 'MtConsoleRenderer insight panels' {
         $t.Renderer.Close()
     }
 
+    It 'Shows the Sponsor panel as one linked line under the Contributor panel' {
+        $t = New-InsightDashboard -NoColor -Panels 'Sponsor', 'Tenant', 'Contributor', 'Tips'
+        $t.Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://github.com/maester365/maester?sponsor=1')
+        Complete-InsightTest $t.Renderer
+        $screen = $t.Renderer.GetPlainScreen(165, 40)
+        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
+        $titles | Should -Be 'Tenant', 'Featured contributor', 'Tip', 'Sponsor'
+        $screen[37] | Should -Match '│ ♥ Sponsor us to keep building Maester +│$'
+        $screen[38] | Should -Match '╰─+╯$'
+        $t.Renderer.Close()
+
+        # The line is a hyperlink to the sponsor page.
+        $c = New-InsightDashboard -Panels 'Sponsor'
+        $c.Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://github.com/maester365/maester?sponsor=1')
+        $c.Writer.GetStringBuilder().Clear() > $null
+        $c.Renderer.ShowStatus($null)
+        $c.Writer.ToString() | Should -Match ([regex]::Escape("]8;;https://github.com/maester365/maester?sponsor=1"))
+        $c.Renderer.Close()
+
+        # Without a text there is no panel.
+        $none = New-InsightDashboard -NoColor -Panels 'Sponsor', 'Tenant'
+        ($none.Renderer.GetPlainScreen(165, 40) -join "`n") | Should -Not -Match '╭─ Sponsor '
+        $none.Renderer.Close()
+    }
+
     It 'Lists the lanes whose tests were all skipped on one line' {
         $t = New-TestRenderer -Width 120 -NoColor
         $r = $t.Renderer

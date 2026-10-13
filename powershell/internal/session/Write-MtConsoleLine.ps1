@@ -210,7 +210,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Pace', 'Results',
+    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Sponsor', 'Pace', 'Results',
     'WeakestAreas', 'AttackTactics', 'FailedTests', 'NistFamilies', 'PassRate', 'EveryTest'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
@@ -247,6 +247,7 @@ function Initialize-MtDashboard {
         'Issues'                = 'https://github.com/maester365/maester/issues'
         "${heart}Sponsor"       = 'https://github.com/maester365/maester?sponsor=1'
     }
+    if ($panels -contains 'Sponsor') { $Renderer.SetSponsor('Sponsor us to keep building Maester', $bar["${heart}Sponsor"]) }
     $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 4)
     # Terminals open a hyperlink on a click with a modifier key: say which.
     $modifier = if (-not $IsMacOS) { 'Ctrl' } elseif ($Console -and $Console.Unicode) { [string][char]0x2318 } else { 'Cmd' }

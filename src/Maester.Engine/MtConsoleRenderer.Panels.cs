@@ -380,6 +380,35 @@ namespace Maester.Engine
             }
         }
 
+        /// <summary>
+        /// The Sponsor panel: one line that asks for sponsors, a hyperlink to the sponsor page. It is the last
+        /// panel of the right column, under the Contributor panel.
+        /// </summary>
+        public void SetSponsor(string text, string url)
+        {
+            lock (_gate)
+            {
+                var plain = PlainText(new[] { text });
+                _sponsorText = plain != null && plain.Length > 0 ? plain[0] : null;
+                _sponsorUrl = url;
+                Redraw();
+            }
+        }
+
+        private string _sponsorText;
+        private string _sponsorUrl;
+
+        private PanelContent BuildSponsorPanel(int width, bool ansi)
+        {
+            if (string.IsNullOrEmpty(_sponsorText)) return null;
+            // The colour of the heart of the status bar's Sponsor link.
+            var panel = new PanelContent { Title = "Sponsor", Colour = "38;5;205" };
+            string heart = Unicode ? "♥ " : string.Empty;
+            string text = Fit(_sponsorText, Math.Max(1, width - heart.Length));
+            panel.Lines.Add(new LineBuilder(ansi).Add(heart, "38;5;205").AddLink(text, _sponsorUrl, "1").Build());
+            return panel;
+        }
+
         /// <summary>The tips of the Tips panel. One is shown at a time, for about twelve seconds each.</summary>
         public void SetTips(string[] tips)
         {
@@ -633,7 +662,8 @@ namespace Maester.Engine
         /// <summary>The panels that stay at the bottom of the right column, whatever is above them.</summary>
         private static bool AtBottom(string name)
         {
-            return string.Equals(name, "Blog", StringComparison.OrdinalIgnoreCase) || string.Equals(name, "Tips", StringComparison.OrdinalIgnoreCase) || string.Equals(name, "Contributor", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(name, "Blog", StringComparison.OrdinalIgnoreCase) || string.Equals(name, "Tips", StringComparison.OrdinalIgnoreCase) || string.Equals(name, "Contributor", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(name, "Sponsor", StringComparison.OrdinalIgnoreCase);
         }
 
         private bool PanelShown(string name)
@@ -717,11 +747,17 @@ namespace Maester.Engine
             }
 
             // The panels of the bottom have their rows first; the others take what is above them, in order.
+            // The Sponsor panel is the last of them, wherever it is in the list.
             var bottom = new List<Line>();
-            for (int i = 0; i < names.Count; i++)
+            for (int pass = 0; pass < 2; pass++)
             {
-                if (!AtBottom(names[i]) || BoxHeight(panels[i]) == 0 || bottom.Count + BoxHeight(panels[i]) > rows) continue;
-                bottom.AddRange(Box(panels[i], paneWidth, ansi));
+                for (int i = 0; i < names.Count; i++)
+                {
+                    bool sponsor = string.Equals(names[i], "Sponsor", StringComparison.OrdinalIgnoreCase);
+                    if (sponsor != (pass == 1)) continue;
+                    if (!AtBottom(names[i]) || BoxHeight(panels[i]) == 0 || bottom.Count + BoxHeight(panels[i]) > rows) continue;
+                    bottom.AddRange(Box(panels[i], paneWidth, ansi));
+                }
             }
             var pane = new List<Line>();
             for (int i = 0; i < names.Count; i++)
@@ -801,6 +837,8 @@ namespace Maester.Engine
                     return BuildTotalsPanel(width, ansi);
                 case "contributor":
                     return BuildContributorPanel(width, ansi);
+                case "sponsor":
+                    return BuildSponsorPanel(width, ansi);
                 case "blog":
                     return _blogPost != null ? BuildBlogPanel(width, ansi) : BuildTextPanel(name, ansi);
                 default:
