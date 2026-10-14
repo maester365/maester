@@ -40,6 +40,11 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "chore(deps): "
+    ignore:
+      # 1.x needs mermaid 12; @docusaurus/theme-mermaid still ships mermaid 11 and
+      # declares layout-elk ^0.1.9. Lift once Docusaurus moves to mermaid 12.
+      - dependency-name: "@mermaid-js/layout-elk"
+        update-types: ["version-update:semver-major"]
     groups:
       docusaurus:
         patterns:
