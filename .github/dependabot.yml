@@ -41,10 +41,11 @@ updates:
     commit-message:
       prefix: "chore(deps): "
     ignore:
-      # 1.x needs mermaid 12; @docusaurus/theme-mermaid still ships mermaid 11 and
-      # declares layout-elk ^0.1.9. Lift once Docusaurus moves to mermaid 12.
+      # @docusaurus/theme-mermaid declares layout-elk ^0.1.9 as a peer, which allows
+      # only 0.1.x, so 0.2.x (counted as a minor update) and 1.x break npm ci.
+      # Lift once Docusaurus widens the peer range.
       - dependency-name: "@mermaid-js/layout-elk"
-        update-types: ["version-update:semver-major"]
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     groups:
       docusaurus:
         patterns:
