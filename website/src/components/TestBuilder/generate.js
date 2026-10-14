@@ -115,14 +115,14 @@ export function validate(state, data) {
       if (suite && !suite.idPrefixes.some((p) => id.toLowerCase().startsWith(p.toLowerCase())))
         add("id", "error", "An ID in the " + suite.name + " suite starts with " + suite.idPrefixes.join(" or ") + ".");
     } else if (reserved) {
-      add("id", "error", "The prefix " + reserved + " belongs to the tests shipped with Maester. Use your own, for example CT.");
+      add("id", "error", "The prefix " + reserved + " is reserved for the tests shipped with Maester and for Maester Packs. Use your own, for example CT.");
     }
   }
   if (!builtin) {
     const prefix = state.customPrefix.trim();
     if (!/^[A-Za-z][A-Za-z0-9]*$/.test(prefix)) add("prefix", "error", "A prefix is letters and digits, starting with a letter, for example CT or CONTOSO.");
     else if (data.reservedPrefixes.some((p) => (prefix + ".").toLowerCase().startsWith(p.toLowerCase()) || (prefix + "-").toLowerCase().startsWith(p.toLowerCase())))
-      add("prefix", "error", prefix + " belongs to the tests shipped with Maester. Choose your own prefix.");
+      add("prefix", "error", prefix + " is reserved for the tests shipped with Maester and for Maester Packs. Choose your own prefix.");
   }
 
   // Title

@@ -444,7 +444,7 @@ export default function TestBuilder() {
                 </p>
               ) : (
                 <p>
-                  Set your prefix in the field above. The prefixes {data.reservedPrefixes.map((p) => <code key={p}>{p} </code>)} belong to the tests shipped with Maester.
+                  Set your prefix in the field above. The prefixes {data.reservedPrefixes.map((p) => <code key={p}>{p} </code>)} are reserved for the tests shipped with Maester and for Maester Packs.
                 </p>
               )
             }

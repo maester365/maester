@@ -486,7 +486,7 @@ families. Once converted, delete the Pester file: the native test runs and the P
 longer does.
 
 A user's custom native test lives in their `custom/` folder, uses their own ID prefix (not `MT.`, `CISA.`, `CIS.`,
-`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `MT1060.`), needs a `.md`, and needs only `Id` and `Title` in its attribute.
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `MT1060.`, or `MP.`, which is reserved for Maester Packs), needs a `.md`, and needs only `Id` and `Title` in its attribute.
 It may set `Product`, `Feature`, `Area` and `ResourceType` to values of its own (a value that matches the taxonomy
 is stored as the key), may tag freely and may use `Control`; the rubric applies to it only if its owner wants it
 to. It can call only Maester's exported commands; to reuse a built-in check it calls `Invoke-MtTest -Id <ID>`.
