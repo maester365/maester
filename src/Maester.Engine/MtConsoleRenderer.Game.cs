@@ -2595,7 +2595,8 @@ namespace Maester.Engine
             if (_gameBossRule == GameBossIsDue) return true;
             int done = FinishedCount();
             if (_total < Runner.BossFrom || done < 5) return false;
-            double seconds = CurrentPhaseClock().Elapsed.TotalSeconds + _keyClockAdvance / 1000.0;
+            // Without the timer (tests) time moves only when it is advanced, so a slow machine decides nothing.
+            double seconds = (RefreshIntervalMs > 0 ? CurrentPhaseClock().Elapsed.TotalSeconds : 0) + _keyClockAdvance / 1000.0;
             double left = seconds / done * (_total - done);
             if ((long)done * 10 < (long)_total * 9 && (done * 2 < _total || left > GameBossSeconds)) return false;
             _gameBossRule = seconds + left < GameBossRunSeconds ? GameBossShort : GameBossIsDue;
