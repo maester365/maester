@@ -5,7 +5,7 @@ id: Convert-MtTest
 title: Convert-MtTest
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/core/Convert-MtTest.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/Convert-MtTest.ps1
 ---
 
 ## SYNOPSIS
@@ -39,9 +39,13 @@ Other assertions, -ForEach and
   listed in the report.
 
 The It name gives the ID and title (an ID without a prefix such as CT0001 is kept; the report suggests a
-prefix), the Describe name gives the category, and the tags are kept.
-The Markdown comes from the
-function's .md file, else from -Description in the code or the function's help.
+prefix).
+The Describe name becomes Feature, so the Block of the test's result rows, and with it the name
+of its test case in CI, stays what it was.
+The tags are kept; a Severity:&lt;value&gt; tag also gives Severity,
+a Preview tag becomes Lifecycle = 'Preview' and a LongRunning tag the LongRunning flag.
+The Markdown
+comes from the function's .md file, else from -Description in the code or the function's help.
 
 The original Pester files are not changed.
 Once a test is converted, Invoke-Maester runs the native test

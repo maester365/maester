@@ -5,7 +5,7 @@ id: Invoke-Maester
 title: Invoke-Maester
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Invoke-Maester.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/Invoke-Maester.ps1
 ---
 
 ## SYNOPSIS
@@ -15,15 +15,16 @@ This is the main Maester command that runs the tests and generates a report of t
 ## SYNTAX
 
 ```powershell
-Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-IncludeLongRunning]
+Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-Product <String[]>]
+ [-Feature <String[]>] [-Area <String[]>] [-Severity <String[]>] [-Suite <String[]>] [-IncludeLongRunning]
  [-IncludePreview] [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-RedactUserIdentity <String>]
  [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
  [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <Object>]
  [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
  [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
- [-DriftRoot <String>] [-TestId <String[]>] [-ExcludeTestId <String[]>] [-Config <Object>] [-DryRun]
- [-SkipBuiltIn] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-OutputMode <String>] [-DriftRoot <String>] [-TestId <String[]>] [-ExcludeTestId <String[]>]
+ [-Config <Object>] [-DryRun] [-SkipBuiltIn] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,8 +33,13 @@ Using Invoke-Maester is the easiest way to run the Pester tests and generate a r
 
 For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively, except Active Directory tests and tests tagged as LongRunning or Preview.
+By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the current directory and all subdirectories recursively, except Active Directory tests, preview tests and long-running tests.
 Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
+
+-Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes.
+Each takes a list: the values of one selector are alternatives, and different selectors must all match.
+They combine the same way with -Tag and -TestId.
+The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
 
 ## EXAMPLES
 
@@ -43,7 +49,7 @@ Active Directory tests run only after an explicit Connect-Maester -Service Activ
 Invoke-Maester
 ```
 
-Runs all the test files under the current folder (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the ./test-results folder.
+Runs the built-in tests and the custom tests under the current folder (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the ./test-results folder.
 
 ### EXAMPLE 2
 
@@ -51,7 +57,7 @@ Runs all the test files under the current folder (except for Active Directory te
 Invoke-Maester ./maester-tests
 ```
 
-Runs all the tests in the folder ./tests/Maester (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the default ./test-results folder.
+Runs the built-in tests and the custom tests in the folder ./maester-tests (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 3
 
@@ -74,12 +80,30 @@ Generates a report of the results in the default ./test-results folder.
 ### EXAMPLE 5
 
 ```powershell
+Invoke-Maester -Product entra -Severity Critical, High
+```
+
+Runs the Entra ID tests whose severity is Critical or High.
+Values of one selector are alternatives; different selectors must all match.
+
+### EXAMPLE 6
+
+```powershell
+Invoke-Maester -Suite cisa -Area authentication
+```
+
+Runs the tests of the CISA suite that are about authentication.
+-Product, -Feature, -Area, -Severity and -Suite select by the typed attributes of the tests and combine with -Tag and -TestId.
+
+### EXAMPLE 7
+
+```powershell
 Invoke-Maester -OutputFolder './my-test-results'
 ```
 
 Runs tests and generates a report of the results in the ./my-test-results folder.
 
-### EXAMPLE 6
+### EXAMPLE 8
 
 ```powershell
 Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
@@ -87,7 +111,7 @@ Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
 
 Runs the tests and generates a report of the results in the specified file.
 
-### EXAMPLE 7
+### EXAMPLE 9
 
 ```powershell
 Invoke-Maester -Path ./tests/EIDSCA
@@ -95,7 +119,7 @@ Invoke-Maester -Path ./tests/EIDSCA
 
 Runs tests in the EIDSCA folder.
 
-### EXAMPLE 8
+### EXAMPLE 10
 
 ```powershell
 Invoke-Maester -MailRecipient john@contoso.com
@@ -103,7 +127,7 @@ Invoke-Maester -MailRecipient john@contoso.com
 
 Runs the tests and sends a report of the results to an email recipient.
 
-### EXAMPLE 9
+### EXAMPLE 11
 
 ```powershell
 Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
@@ -111,7 +135,7 @@ Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19
 
 Runs the tests and posts a summary of the results to a Teams channel.
 
-### EXAMPLE 10
+### EXAMPLE 12
 
 ```powershell
 Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
@@ -119,7 +143,7 @@ Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflow
 
 Runs the tests and posts a summary of the results to a Teams channel.
 
-### EXAMPLE 11
+### EXAMPLE 13
 
 ```powershell
 Invoke-Maester -Verbosity Normal
@@ -127,7 +151,7 @@ Invoke-Maester -Verbosity Normal
 
 Shows results of tests as they are run, including details on failed tests.
 
-### EXAMPLE 12
+### EXAMPLE 14
 
 ```powershell
 $configuration = New-PesterConfiguration
@@ -140,7 +164,7 @@ Invoke-Maester -PesterConfiguration $configuration
 
 Runs Pester tests in the ./tests/Maester folder that include the 'CA' tag and exclude the 'App' tag.
 
-### EXAMPLE 13
+### EXAMPLE 15
 
 ```powershell
 Connect-Maester -Service All
@@ -150,16 +174,16 @@ Invoke-Maester -IncludeLongRunning -IncludePreview
 Connect to all Microsoft 365 services and run their tests, including the long-running and preview tests.
 Active Directory tests remain excluded.
 
-### EXAMPLE 14
+### EXAMPLE 16
 
 ```powershell
 Connect-Maester -Service ActiveDirectory
-Invoke-Maester -Tag 'AD' -SkipGraphConnect
+Invoke-Maester -Product ad -SkipGraphConnect
 ```
 
 Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
-### EXAMPLE 15
+### EXAMPLE 17
 
 ```powershell
 Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
@@ -168,7 +192,7 @@ Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3.
 A test named by its exact ID runs even if it is a preview or long-running test.
 
-### EXAMPLE 16
+### EXAMPLE 18
 
 ```powershell
 Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
@@ -178,7 +202,7 @@ Shows what would run, and why every other test would not, without running any te
 Each test that would have run is reported as NotRun with reason DryRun.
 Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
 
-### EXAMPLE 17
+### EXAMPLE 19
 
 ```powershell
 Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
@@ -191,9 +215,8 @@ Several sources are merged left to right; here only tests enabled in TestSetting
 
 ### -Path
 
-Specifies path to files containing tests.
-The value is a path\file name or a name pattern.
-Wildcards are permitted.
+The folder that holds your tests and configuration, or the path of one test file.
+Wildcards are not expanded.
 
 ```yaml
 Type: String
@@ -226,6 +249,92 @@ Accept wildcard characters: False
 ### -ExcludeTag
 
 Exclude the tests that match this tag(s).
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Product
+
+Only run the tests of these products: keys such as entra or exchange, or an alias such as 'Entra ID'.
+Matches a test's Product or any of its RelatedProduct values.
+'*' wildcards are allowed.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Feature
+
+Only run the tests about these features of a product, for example conditional-access.
+'*' wildcards are allowed.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Area
+
+Only run the tests of these security areas, for example authentication or privileged-access.
+'*' wildcards are allowed.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Severity
+
+Only run the tests with these severities: Critical, High, Medium, Low or Info.
+A severity set for a test in the run configuration is the one that counts.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Suite
+
+Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD.
+'*' wildcards are allowed.
 
 ```yaml
 Type: String[]
@@ -702,6 +811,27 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputMode
+
+How the console output is written.
+Interactive draws a live status line with the result counts, a progress bar and the running test, on a terminal.
+Stream writes lines only, for CI and redirected output, with a progress line every 50 tests or 10 seconds and log groups and annotations on GitHub Actions and Azure Pipelines.
+Plain is Stream without colour or symbols.
+Auto, the default, picks Interactive on a terminal and Stream otherwise.
+The MAESTER_OUTPUT_MODE environment variable and Output.ConsoleMode in maester-config.json set it too.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Auto
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

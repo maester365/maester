@@ -5,7 +5,7 @@ id: Get-MtTest
 title: Get-MtTest
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/core/Get-MtTest.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/Get-MtTest.ps1
 ---
 
 ## SYNOPSIS
@@ -15,7 +15,8 @@ Lists Maester native tests and their metadata without connecting to a tenant.
 ## SYNTAX
 
 ```powershell
-Get-MtTest [[-Id] <String[]>] [-Tag <String[]>] [-Path <String>] [-ProgressAction <ActionPreference>]
+Get-MtTest [[-Id] <String[]>] [-Tag <String[]>] [-Product <String[]>] [-Feature <String[]>] [-Area <String[]>]
+ [-Severity <String[]>] [-Suite <String[]>] [-Path <String>] [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
@@ -32,10 +33,12 @@ No test code is run.
 ### EXAMPLE 1
 
 ```powershell
-Get-MtTest -Tag CA | Format-Table Id, Title, Severity
+Get-MtTest -Product entra -Severity High | Format-Table Id, Title, Feature, Area
 ```
 
-Lists the built-in Conditional Access tests.
+Lists the built-in Entra ID tests of high severity.
+The values of one selector are alternatives; different
+selectors must all match.
 
 ### EXAMPLE 2
 
@@ -65,7 +68,91 @@ Accept wildcard characters: False
 
 ### -Tag
 
-Only tests that carry any of these tags.
+Only tests that any of these tags select: a tag the test carries or, for a test that ships with Maester,
+its ID or one of the tags it carried in Maester 2.x.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Product
+
+Only tests of these products: keys such as entra, or an alias such as 'Entra ID'.
+Matches a test's
+Product or any of its RelatedProduct values.
+'*' wildcards are allowed.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Feature
+
+Only tests about these features of a product, for example conditional-access.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Area
+
+Only tests of these security areas, for example authentication.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Severity
+
+Only tests with these severities: Critical, High, Medium, Low or Info.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Suite
+
+Only tests of these suites, for example Maester, CISA or AD.
 
 ```yaml
 Type: String[]
