@@ -1,0 +1,1349 @@
+[
+  {
+    "Id": "CISA.MS.AAD.1.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaBlockLegacyAuth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaBlockLegacyAuth",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.1.1.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.2.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaBlockHighRiskUsers.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaBlockHighRiskUser",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.2.1.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.2.2",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaNotifyHighRiskUsers.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaNotifyHighRisk",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.2.2.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.2.3",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaBlockHighRiskSignIns.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaBlockHighRiskSignIn",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.2.3.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaPhishResistant.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaPhishResistant",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.1.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.2",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaMfa.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaMfa",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.2.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.3",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaAuthenticatorContext.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAuthenticatorContext",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.3.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.4",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaMethodsMigration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaMethodsMigration",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.4.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.5",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaWeakFactor.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaWeakFactor",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.5.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.6",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaPrivilegedPhishResistant.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaPrivilegedPhishResistant",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.6.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.7",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaManagedDevice.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaManagedDevice",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.7.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.3.8",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaManagedDeviceRegistration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaManagedDeviceRegistration",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.3.8.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.4.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaDiagnosticSettings.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDiagnosticSettings",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.4.1.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Azure",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.5.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaAppRegistration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAppRegistration",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.5.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.5.2",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaAppUserConsent.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAppUserConsent",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.5.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.5.3",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaAppAdminConsent.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAppAdminConsent",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.5.3.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.5.4",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaAppGroupOwnerConsent.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAppGroupOwnerConsent",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.5.4.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.6.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaPasswordExpiration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaPasswordExpiration",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.6.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaGlobalAdminCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaGlobalAdminCount",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.2",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaGlobalAdminRatio.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaGlobalAdminRatio",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.3",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaCloudGlobalAdmin.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaCloudGlobalAdmin",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.3.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.4",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaPermanentRoleAssignment.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaPermanentRoleAssignment",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.4.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.5",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaUnmanagedRoleAssignments.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaUnmanagedRoleAssignment",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.5.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.6",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaRequireActivationApproval.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaRequireActivationApproval",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.6.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.7",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaAssignmentNotification.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAssignmentNotification",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.7.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.8",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaActivationNotificationGlobalAdmin.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: wrapper file not found (already converted?) [line 382]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.9",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaActivationNotificationOther.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: wrapper file not found (already converted?) [line 382]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "CISA.MS.AAD.8.1",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaGuestUserAccess.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaGuestUserAccess",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.8.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.8.2",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaGuestInvitation.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaGuestInvitation",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.8.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.8.3",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaCrossTenantInboundDefault.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaCrossTenantInboundDefault",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.8.3.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.1.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAutoExternalForwarding.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAutoExternalForwarding",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.1.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.10.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaMalwareScan.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckCISAMSEXO101 -> Test-MtCisaAttachmentFilter",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.10.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.10.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaMalwareAction.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaMalwareAction",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.10.2.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.10.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaMalwareZap.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaMalwareZap",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.10.3.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.11.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaImpersonation.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaImpersonation",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.11.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.11.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaImpersonationTip.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaImpersonationTip",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.11.2.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.11.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaMailboxIntelligence.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaMailboxIntelligence",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.11.3.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.12.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAntiSpamAllowList.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAntiSpamAllowList",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.12.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.12.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAntiSpamSafeList.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAntiSpamSafeList",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.12.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.13.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaMailboxAuditing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaMailboxAuditing",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.13.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.14.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSpamFilter.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpamFilter",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.14.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.14.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSpamAction.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpamAction",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.14.2.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.14.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSpamBypass.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpamBypass",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.14.3.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.14.4",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSpamAlternative.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpamAlternative",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.14.4.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.15.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSafeLink.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSafeLink",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.15.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.15.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSafeLinkDownloadScan.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSafeLinkDownloadScan",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.15.2.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.15.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSafeLinkClickTracking.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSafeLinkClickTracking",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.15.3.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.16.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaExoAlert.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaExoAlert",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.16.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.16.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaExoAlertSiem.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaExoAlertSiem",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.16.2.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.17.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAuditLog.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAuditLog",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.17.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.17.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAuditLogPremium.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAuditLogPremium",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.17.2.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.17.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAuditLogRetention.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaAuditLogRetention",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.17.3.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.2.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSpfRestriction.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpfRestriction",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.2.1.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.2.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSpfDirective.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpfDirective",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.2.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.3.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDkim.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDkim",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.3.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.4.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDmarcRecordExist.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDmarcRecordExist",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.4.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.4.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDmarcRecordReject.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDmarcRecordReject",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.4.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.4.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDmarcAggregateCisa.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDmarcAggregateCisa",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.4.3.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.5.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaSmtpAuthentication.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSmtpAuthentication",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.5.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.6.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaContactSharing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaContactSharing",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.6.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.6.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaCalendarSharing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaCalendarSharing",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.6.2.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.7.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaExternalSenderWarning.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaExternalSenderWarning",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.7.1.ps1",
+    "Flags": [
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.8.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDlp.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDlp",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.8.1.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.8.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDlpPii.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDlpPii",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.8.2.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.8.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDlpAlternate.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDlpAlternate",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.8.3.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.8.4",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaDlpBaselineRule.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaDlpBaselineRule",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.8.4.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline, Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": [
+      "ExchangeOnline",
+      "Graph"
+    ],
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.9.1",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckCISAMSEXO91 -> Test-MtCisaAttachmentFilter",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.9.1.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.9.2",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaAttachmentFileType.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckCISAMSEXO92 -> Test-MtCisaAttachmentFileType",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.9.2.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.9.3",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckCISAMSEXO93 -> Test-MtCisaAttachmentFileType",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.9.3.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.9.4",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaEmailFilterAlternative.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaEmailFilterAlternative",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.9.4.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.EXO.9.5",
+    "Wrapper": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaBlockExecutable",
+    "Target": "tests/cisa/exchange/Test.CISA.MS.EXO.9.5.ps1",
+    "Flags": [
+      "InferredService: ExchangeOnline",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.1.1",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoSharing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoSharing",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.1.2",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoOneDriveSharing.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoOneDriveSharing",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.1.3",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoSharingAllowedDomain.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoSharingAllowedDomain",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.3.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.2.1",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoDefaultSharingScope.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoDefaultSharingScope",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.1.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.2.2",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoDefaultSharingPermission.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoDefaultSharingPermission",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.3.1",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoAnyoneLinkExpiration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoAnyoneLinkExpiration",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.1.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.3.2",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoAnyoneLinkPermission.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoAnyoneLinkPermission",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.SHAREPOINT.3.3",
+    "Wrapper": "tests/cisa/spo/Test-MtCisaSpoVerificationCodeReauth.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisaSpoVerificationCodeReauth",
+    "Target": "tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "SharePointOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  }
+]

@@ -10,3 +10,6 @@
 *.woff2 binary
 *.ttf binary
 *.eot binary
+
+# Files the unit tests require to stay LF on every platform.
+powershell/assets/Maester.LegacyIds.json text eol=lf

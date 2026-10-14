@@ -49,8 +49,8 @@ jobs:
             The Public Suffix List is maintained by Mozilla volunteers and registry submissions. Reviewer background: https://publicsuffix.org/learn/
 
             Why this matters in Maester:
-            - `powershell/public/Get-MtRegistrableDomain.ps1` uses this list to determine the registrable domain boundary.
-            - `powershell/public/maester/entra/Test-MtDomainsDmarcRecordMaturity.ps1` uses that registrable domain to decide which domain should be evaluated for DMARC.
+            - `powershell/public/services/exchange/Get-MtRegistrableDomain.ps1` uses this list to determine the registrable domain boundary.
+            - `tests/maester/entra/Test.MT.1182.ps1` (Test-MtDomainsDmarcRecordMaturity) uses that registrable domain to decide which domain should be evaluated for DMARC.
 
             Why some domains are excluded or skipped for DMARC checks:
             - The list helps Maester distinguish registry-controlled suffixes from customer-manageable registrable domains.

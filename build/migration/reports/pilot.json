@@ -1,0 +1,196 @@
+[
+  {
+    "Id": "AD-CFG-01",
+    "Wrapper": "tests/ad/config/Test-MtAdTombstoneLifetimeConfig.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTombstoneLifetimeConfig",
+    "Target": "tests/ad/config/Test.AD-CFG-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AZDO.1000",
+    "Wrapper": "tests/Maester/AzureDevOps/Test-Azdo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-AzdoThirdPartyAccessViaOauth",
+    "Target": "tests/Maester/AzureDevOps/Test.AZDO.1000.ps1",
+    "Flags": [
+      "InferredService: AzureDevOps",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "AzureDevOps",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CIS.M365.3.1.1",
+    "Wrapper": "tests/cis/Test-MtCisAuditLogSearch.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCisAuditLogSearch",
+    "Target": "tests/cis/Test.CIS.M365.3.1.1.ps1",
+    "Flags": [],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ExchangeOnline",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "CISA.MS.AAD.7.8",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaActivationNotificationGlobalAdmin.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckCISAMSAAD78 -> Test-MtCisaActivationNotification",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.8.ps1",
+    "Flags": [
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "CISA.MS.AAD.7.9",
+    "Wrapper": "tests/cisa/entra/Test-MtCisaActivationNotificationOther.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckCISAMSAAD79 -> Test-MtCisaActivationNotification",
+    "Target": "tests/cisa/entra/Test.CISA.MS.AAD.7.9.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptGuard: a non-canonical connection or licence check remains in the body",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1001",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaDeviceComplianceExists",
+    "Target": "tests/Maester/Entra/Test.MT.1001.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1003",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1003 -> Test-MtCaAllAppsExists",
+    "Target": "tests/Maester/Entra/Test.MT.1003.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1004",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1004 -> Test-MtCaAllAppsExists",
+    "Target": "tests/Maester/Entra/Test.MT.1004.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1005",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtCaEmergencyAccessExists",
+    "Target": "tests/Maester/Entra/Test.MT.1005.ps1",
+    "Flags": [
+      "InferredService: Graph"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": true
+  },
+  {
+    "Id": "MT.1049",
+    "Wrapper": "tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckMT1049 -> Test-MtCaMisconfiguredIDProtection",
+    "Target": "tests/Maester/Entra/Test.MT.1049.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [
+      "AAD_PREMIUM_P2"
+    ],
+    "RemovedGuards": 1,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1085",
+    "Wrapper": "tests/XSPM/Test-XspmCriticalAssetManagement.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmPendingApprovalCriticalAssetManagement",
+    "Target": "tests/XSPM/Test.MT.1085.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  }
+]

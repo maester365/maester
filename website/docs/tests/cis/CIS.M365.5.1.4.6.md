@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.5.1.4.6"
-  - "Unknown"
+  - "Medium"
   - "CIS"
   - "CIS E3 Level 2"
   - "CIS E3"
@@ -24,7 +24,7 @@ keywords:
 
 # CIS.M365.5.1.4.6 - (L2) Ensure users are restricted from recovering BitLocker keys
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -70,13 +70,14 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.5.1.4.6 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisEnsureBitLockerKeyRecoveryRestricted](/docs/commands/Test-MtCisEnsureBitLockerKeyRecoveryRestricted) |
+| PowerShell test | [Test-MtCisEnsureBitLockerKeyRecoveryRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.4.6.ps1) |
+| Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.5.1.4.6, L2, Security |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisEnsureBitLockerKeyRecoveryRestricted.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisEnsureBitLockerKeyRecoveryRestricted.ps1`
+- Test: [`tests/cis/Test.CIS.M365.5.1.4.6.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.4.6.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.5.1.4.6.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.4.6.md)

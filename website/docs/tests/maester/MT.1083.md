@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1083"
   - "Low"
+  - "Maester/Exchange"
   - "Exchange"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1083 - Ensure Delicensing Resiliency is enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/l-gosling" title="Lukas Gosling · Original author"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/l-gosling">Lukas Gosling</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/l-gosling" title="Lukas Gosling · Original author"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/l-gosling">Lukas Gosling</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -59,11 +60,12 @@ Set-OrganizationConfig -EndUserMailNotificationForDelayedDelicensingEnabled:$tru
 | Test ID | MT.1083 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Exchange |
-| PowerShell test | [Test-MtExoDelicensingResiliency](/docs/commands/Test-MtExoDelicensingResiliency) |
+| Category | Maester/Exchange |
+| PowerShell test | [Test-MtExoDelicensingResiliency](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.ps1) |
+| Services | ExchangeOnline, Graph |
 | Tags | Exchange, Maester, MT.1083 |
 
 ## Source
 
-- Pester test: `tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1`
-- PowerShell source: `powershell/public/maester/exchange/Test-MtExoDelicensingResiliency.ps1`
+- Test: [`tests/Maester/Exchange/Test.MT.1083.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.ps1)
+- Documentation: [`tests/Maester/Exchange/Test.MT.1083.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.md)

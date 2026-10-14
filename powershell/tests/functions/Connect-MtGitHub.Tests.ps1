@@ -1204,7 +1204,7 @@ Describe 'Connect-MtGitHub' {
     }
 
     Context 'Config fallback: pre-loaded MaesterConfig' {
-        It 'Resolves org from pre-loaded MaesterConfig without calling Get-MtMaesterConfig' {
+        It 'Resolves org from pre-loaded MaesterConfig without resolving the config again' {
             $env:MAESTER_GITHUB_TOKEN = 'valid-token'
             InModuleScope Maester {
                 $__MtSession.MaesterConfig = [PSCustomObject]@{
@@ -1213,7 +1213,7 @@ Describe 'Connect-MtGitHub' {
                     }
                 }
             }
-            Mock Get-MtMaesterConfig -ModuleName Maester { throw 'Get-MtMaesterConfig must not be called when config is pre-loaded' }
+            Mock Resolve-MtRunConfig -ModuleName Maester { throw 'Resolve-MtRunConfig must not be called when config is pre-loaded' }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
                 [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
             }
@@ -1250,7 +1250,7 @@ Describe 'Connect-MtGitHub' {
                     GitHubApiVersion   = '2024-06-01'
                 }
             }
-            Mock Get-MtMaesterConfig -ModuleName Maester { $fakeConfig }
+            Mock Resolve-MtRunConfig -ModuleName Maester { $fakeConfig }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
                 [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
             }
@@ -1271,7 +1271,7 @@ Describe 'Connect-MtGitHub' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection.Connected    | Should -BeTrue
                 $__MtSession.GitHubConnection.Organization | Should -Be 'lazy-org'
-                # $__MtSession.MaesterConfig is now set; real Get-MtMaesterConfigGlobalSetting reads it
+                # $__MtSession.MaesterConfig is now set; real Get-MtSetting reads it
                 $__MtSession.MaesterConfig.GlobalSettings.GitHubOrganization | Should -Be 'lazy-org'
             }
         }

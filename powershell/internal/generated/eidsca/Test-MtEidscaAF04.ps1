@@ -1,0 +1,42 @@
+function Test-MtEidscaAF04 {
+    <#
+    .SYNOPSIS
+    Checks if Authentication Method - FIDO2 security key - Enforce key restrictions is set to 'true'
+
+    .DESCRIPTION
+
+    Manages if registration of FIDO2 keys should be restricted.
+
+    Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced
+
+    The native test EIDSCA.AF04 passes when this value -eq 'true'.
+
+    .EXAMPLE
+    Test-MtEidscaAF04
+
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
+
+    $rawValue = $result.keyRestrictions.isEnforced
+    [string]$tenantValue = $rawValue
+    $testResult = $tenantValue -eq 'true'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
+
+    if($testResult){
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+    } else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Low'
+
+    return $tenantValue
+}

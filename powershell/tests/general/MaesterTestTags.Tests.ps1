@@ -1,6 +1,6 @@
 BeforeDiscovery {
     $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
-    $maesterTestsPath = Join-Path $repoRoot 'tests/Maester'
+    $maesterTestsPath = Join-Path $repoRoot 'tests/maester'
 
     function Get-PesterBlockTag {
         param(

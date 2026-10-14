@@ -19,7 +19,7 @@
 [CmdletBinding()]
 param (
     # Path to the generated classification source file.
-    [string] $ClassificationPath = "$PSScriptRoot/../powershell/internal/Get-MtEamClassification.ps1",
+    [string] $ClassificationPath = "$PSScriptRoot/../powershell/internal/services/entra/Get-MtEamClassification.ps1",
 
     # Source URL used only when updating the checked-in table.
     [string] $SourceUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json',

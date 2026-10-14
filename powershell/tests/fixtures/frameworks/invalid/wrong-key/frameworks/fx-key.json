@@ -1,0 +1,8 @@
+{
+  "Framework": "fx-other",
+  "Name": "Fixture",
+  "Version": "2.0",
+  "Requirements": [
+    { "Id": "R1" }
+  ]
+}

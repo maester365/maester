@@ -1,4 +1,7 @@
 BeforeAll {
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtCisaDkim, Test-MtCisDkim
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 

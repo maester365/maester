@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "@/lib/router";
 import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
 import { compareDefaultTestResults } from "@/lib/testSort";
 import { allSelectableStatus, defaultSelectedStatus } from "@/lib/testStatus";
+import { getAreaName, getFeatureLabel } from "@/lib/testAttributes";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
@@ -29,6 +30,8 @@ export default function TestResultsTable(props) {
   const setSelectedStatus = props.onStatusChange ?? setInternalSelectedStatus;
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedTag, setSelectedTag] = useState([]);
+  const [selectedArea, setSelectedArea] = useState([]);
+  const [selectedFeature, setSelectedFeature] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortColumn, setSortColumn] = useState(null);
@@ -38,6 +41,27 @@ export default function TestResultsTable(props) {
   const [linkedAnchorId, setLinkedAnchorId] = useState(null);
   const lastRelaxedLinkedAnchorId = useRef(null);
   const testResults = props.TestResults;
+  const taxonomy = testResults.Taxonomy;
+
+  // Area and Feature are typed attributes of Maester 3.0, whose built-in tests no longer carry tags.
+  // Each of these filters is offered only when at least one row has a value for it, so a result from
+  // Maester 2.x shows Category and Tag as before.
+  const uniqueTags = useMemo(
+    () => [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))].sort((a, b) => a > b ? 1 : -1),
+    [testResults.Tests]
+  );
+  const uniqueAreas = useMemo(
+    () => [...new Set(testResults.Tests.map((t) => getAreaName(taxonomy, t.Area)).filter(Boolean))].sort((a, b) => a > b ? 1 : -1),
+    [testResults.Tests, taxonomy]
+  );
+  const uniqueFeatures = useMemo(
+    () => [...new Set(testResults.Tests.map((t) => getFeatureLabel(taxonomy, t)).filter(Boolean))].sort((a, b) => a > b ? 1 : -1),
+    [testResults.Tests, taxonomy]
+  );
+  const hasTags = uniqueTags.length > 0;
+  const hasAreas = uniqueAreas.length > 0;
+  const hasFeatures = uniqueFeatures.length > 0;
+
   const linkedTestResultId = useMemo(() => getLinkedTestResultId(location), [location]);
   const linkedTestResult = useMemo(() => {
     if (!linkedTestResultId) return null;
@@ -78,10 +102,12 @@ export default function TestResultsTable(props) {
 
     return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) &&
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
-      (selectedTag.length === 0 || (item.Tag || []).some(tag => selectedTag.includes(tag))) &&
+      (!hasTags || selectedTag.length === 0 || (item.Tag || []).some(tag => selectedTag.includes(tag))) &&
+      (!hasAreas || selectedArea.length === 0 || selectedArea.includes(getAreaName(taxonomy, item.Area))) &&
+      (!hasFeatures || selectedFeature.length === 0 || selectedFeature.includes(getFeatureLabel(taxonomy, item))) &&
       matchesSeverity &&
       matchesSearch;
-  }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedSeverity]);
+  }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedArea, selectedFeature, selectedSeverity, hasTags, hasAreas, hasFeatures, taxonomy]);
 
   useEffect(() => {
     if (!linkedTestResult || props.isPrintView) return;
@@ -114,6 +140,14 @@ export default function TestResultsTable(props) {
       setSelectedTag([]);
     }
 
+    if (selectedArea.length > 0 && !selectedArea.includes(getAreaName(taxonomy, linkedTestResult.Area))) {
+      setSelectedArea([]);
+    }
+
+    if (selectedFeature.length > 0 && !selectedFeature.includes(getFeatureLabel(taxonomy, linkedTestResult))) {
+      setSelectedFeature([]);
+    }
+
     const linkedSeverity = linkedTestResult.Severity || "None";
     if (selectedSeverity.length > 0 && !selectedSeverity.includes(linkedSeverity)) {
       setSelectedSeverity([]);
@@ -128,11 +162,14 @@ export default function TestResultsTable(props) {
     navigate,
     props.isPrintView,
     searchQuery,
+    selectedArea,
     selectedBlock,
+    selectedFeature,
     selectedSeverity,
     selectedStatus,
     selectedTag,
     setSelectedStatus,
+    taxonomy,
   ]);
 
   const handleSort = (column) => {
@@ -247,7 +284,9 @@ export default function TestResultsTable(props) {
 
   const status = allSelectableStatus;
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
-  const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
+  // The second row of filters shares its width between the filters it shows. Four filters get a
+  // smaller minimum width, so that the row needs no more room than the three filters of the first row.
+  const filterWidth = ["w-full", "w-1/2", "w-1/3", "w-1/4 min-w-28"][[hasAreas, hasFeatures, hasTags].filter(Boolean).length];
 
   // Create a sortable header cell
   const SortableHeader = ({ column, label, className }) => {
@@ -301,13 +340,13 @@ export default function TestResultsTable(props) {
             </MultiSelect>
           </Flex>
 
-          {/* Second row: Category and Tag in one row */}
+          {/* Second row: Category, then Area, Feature and Tag when the results have them */}
           <Flex justifyContent="between" className="gap-2 mb-4">
             <MultiSelect
               value={selectedBlock}
               onValueChange={setSelectedBlock}
               placeholder="Category"
-              className="w-1/2"
+              className={filterWidth}
             >
               {testResults.Blocks
                 .sort((a, b) => a.Name > b.Name ? 1 : -1)
@@ -318,20 +357,50 @@ export default function TestResultsTable(props) {
                 ))}
             </MultiSelect>
 
-            <MultiSelect
-              value={selectedTag}
-              onValueChange={setSelectedTag}
-              placeholder="Tag"
-              className="w-1/2"
-            >
-              {uniqueTags
-                .sort((a, b) => a > b ? 1 : -1)
-                .map((tag) => (
+            {hasAreas && (
+              <MultiSelect
+                value={selectedArea}
+                onValueChange={setSelectedArea}
+                placeholder="Area"
+                className={filterWidth}
+              >
+                {uniqueAreas.map((area) => (
+                  <MultiSelectItem key={area} value={area}>
+                    {area}
+                  </MultiSelectItem>
+                ))}
+              </MultiSelect>
+            )}
+
+            {hasFeatures && (
+              <MultiSelect
+                value={selectedFeature}
+                onValueChange={setSelectedFeature}
+                placeholder="Feature"
+                className={filterWidth}
+              >
+                {uniqueFeatures.map((feature) => (
+                  <MultiSelectItem key={feature} value={feature}>
+                    {feature}
+                  </MultiSelectItem>
+                ))}
+              </MultiSelect>
+            )}
+
+            {hasTags && (
+              <MultiSelect
+                value={selectedTag}
+                onValueChange={setSelectedTag}
+                placeholder="Tag"
+                className={filterWidth}
+              >
+                {uniqueTags.map((tag) => (
                   <MultiSelectItem key={tag} value={tag}>
                     {tag}
                   </MultiSelectItem>
                 ))}
-            </MultiSelect>
+              </MultiSelect>
+            )}
           </Flex>
         </>
       )}

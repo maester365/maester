@@ -8,6 +8,8 @@ Maester can be set up to continuously monitor your tenant's configuration using 
 
 In this section we provide guidance for some popular services.
 
+With Maester 3.0 the built-in tests ship inside the Maester PowerShell module, so a pipeline only needs to install the module and run `Invoke-Maester`. There is no tests repository to clone or keep up to date: updating the module updates the tests, and your repository holds only your own custom tests and configuration. If you set up monitoring with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md).
+
 - <IIcon icon="mdi:github" height="18" /> [GitHub Actions](./github)
 - <IIcon icon="vscode-icons:file-type-azurepipelines" height="18" /> [Azure DevOps Pipeline](./azure-devops)
 - <IIcon icon="devicon:terraform" height="18" /> [Azure DevOps Terraform Module](./azure-devops-terraform)

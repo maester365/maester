@@ -1,0 +1,151 @@
+<#
+.SYNOPSIS
+    Writes the data file of the test builder page on maester.dev.
+
+.DESCRIPTION
+    The test builder (website/src/pages/test-builder.js) lets a contributor pick the values of a
+    [MaesterTest] attribute and shows the code. Its lists and its guidance are not typed by hand: this
+    script reads them from the files the engine and the reviewers use, so the page cannot drift from the rules.
+
+      powershell/assets/MaesterTestSchema.psd1        attributes, allowed values, patterns
+      powershell/assets/MaesterTaxonomy.psd1          products, features, areas, resource types
+      powershell/assets/MaesterAttackTechniques.json  the pinned MITRE ATT&CK release
+      powershell/assets/MaesterServiceRegistry.psd1   services
+      powershell/assets/MaesterLicenseTable.psd1      licence tokens
+      tests/*/suite.json                              suites and their ID patterns
+      tests/*/frameworks/*.json                       frameworks and their requirements
+      tests/**/Test.*.ps1                             which tests name each requirement in Control
+      powershell/assets/MaesterNistControls.json      the pinned NIST SP 800-53 control list
+      website/docs/writing-tests/attribute-rubric.md  the rubric, one section per attribute
+
+    Run it after changing any of those files and commit the result. A unit test
+    (powershell/tests/general/TestBuilderData.Tests.ps1) fails when the committed file is out of date.
+
+.EXAMPLE
+    ./build/website/Update-MtTestBuilderData.ps1
+#>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Build script output for the console')]
+[CmdletBinding()]
+param(
+    # Where the data file is written.
+    [string] $OutputPath = "$PSScriptRoot/../../website/src/data/test-builder.json"
+)
+
+$ErrorActionPreference = 'Stop'
+$root = (Resolve-Path "$PSScriptRoot/../..").Path
+$assets = Join-Path $root 'powershell/assets'
+
+$schema = Import-PowerShellDataFile (Join-Path $assets 'MaesterTestSchema.psd1')
+$taxonomy = Import-PowerShellDataFile (Join-Path $assets 'MaesterTaxonomy.psd1')
+$services = Import-PowerShellDataFile (Join-Path $assets 'MaesterServiceRegistry.psd1')
+$licenses = Import-PowerShellDataFile (Join-Path $assets 'MaesterLicenseTable.psd1')
+$attack = Get-Content (Join-Path $assets $taxonomy.Attack.File) -Raw | ConvertFrom-Json
+
+# The attribute properties in the order of the design. A property added to the schema later is appended.
+$order = 'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
+'ImplementationCost', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
+'Lifecycle', 'ReplacedBy', 'LongRunning', 'Exclusive', 'InstanceSource', 'Tag', 'Author', 'Contributor', 'HelpUrl'
+$names = @($order | Where-Object { $schema.Properties.ContainsKey($_) }) +
+@($schema.Properties.Keys | Where-Object { $_ -notin $order } | Sort-Object)
+
+$properties = [ordered]@{}
+foreach ($name in $names) {
+    $p = $schema.Properties[$name]
+    $entry = [ordered]@{ type = $p.Type; required = $p.Required; description = $p.Description }
+    if ($p.AllowedValues) { $entry.allowedValues = @($p.AllowedValues) }
+    if ($p.ValuesFrom) { $entry.valuesFrom = $p.ValuesFrom }
+    if ($p.Pattern) { $entry.pattern = $p.Pattern }
+    if ($p.MaxLength) { $entry.maxLength = $p.MaxLength }
+    if ($p.NotRequiredWhen) { $entry.notRequiredWhen = [ordered]@{}; foreach ($k in ($p.NotRequiredWhen.Keys | Sort-Object)) { $entry.notRequiredWhen[$k] = $p.NotRequiredWhen[$k] } }
+    $properties[$name] = $entry
+}
+
+# The rubric, split at its second-level headings.
+$rubric = [ordered]@{}
+$heading = $null
+$lines = [System.Collections.Generic.List[string]]::new()
+foreach ($line in (Get-Content (Join-Path $root 'website/docs/writing-tests/attribute-rubric.md'))) {
+    if ($line -match '^## (?<name>.+)$') {
+        if ($heading) { $rubric[$heading] = ($lines -join "`n").Trim() }
+        $heading = $Matches.name.Trim()
+        $lines.Clear()
+    }
+    elseif ($heading) { $lines.Add($line) }
+}
+if ($heading) { $rubric[$heading] = ($lines -join "`n").Trim() }
+
+$suites = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter suite.json -Recurse -Depth 1 | Sort-Object FullName)) {
+    $suite = Get-Content $file.FullName -Raw | ConvertFrom-Json
+    if (-not $suite.IdPattern) { continue }
+    $folder = [System.IO.Path]::GetRelativePath($root, $file.Directory.FullName).Replace('\', '/')
+    $productFolders = @(Get-ChildItem $file.Directory.FullName -Directory | Where-Object { $_.Name -in $taxonomy.Products.Key } | Sort-Object Name | ForEach-Object Name)
+    # The ID pattern of a suite is a list of prefixes: ^(MT\.|MT1060\.|AZDO\.) or ^AD-.
+    $prefixes = @(($suite.IdPattern -replace '^\^\(?' -replace '\)$') -split '\|' | ForEach-Object { $_ -replace '\\\.', '.' })
+    if ($prefixes | Where-Object { $_ -notmatch '^[A-Za-z0-9.\-]+$' }) { throw "The IdPattern '$($suite.IdPattern)' of $($file.FullName) is not a list of prefixes." }
+    [ordered]@{ id = $suite.Id; name = $suite.Name; idPattern = $suite.IdPattern; idPrefixes = $prefixes; folder = $folder; productFolders = $productFolders }
+}
+
+# Which tests name each framework requirement in their Control attribute.
+$testsByControl = @{}
+foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter 'Test.*.ps1' -Recurse | Sort-Object FullName)) {
+    $text = Get-Content $file.FullName -Raw
+    $id = [regex]::Match($text, "(?m)^\s*Id\s*=\s*'([^']+)'").Groups[1].Value
+    $line = [regex]::Match($text, "(?m)^\s*Control\s*=\s*(.+?),?\s*$").Groups[1].Value
+    foreach ($reference in [regex]::Matches($line, "'([^']+)'")) {
+        $key = $reference.Groups[1].Value
+        if (-not $testsByControl.ContainsKey($key)) { $testsByControl[$key] = [System.Collections.Generic.List[string]]::new() }
+        $testsByControl[$key].Add($id)
+    }
+}
+$nist = Get-Content (Join-Path $assets 'MaesterNistControls.json') -Raw | ConvertFrom-Json
+
+# Frameworks a suite declares, with their requirements and the tests mapped to each one.
+$frameworks = foreach ($file in (Get-ChildItem (Join-Path $root 'tests') -Filter '*.json' -Recurse -Depth 2 | Where-Object { $_.Directory.Name -eq 'frameworks' } | Sort-Object FullName)) {
+    $framework = Get-Content $file.FullName -Raw | ConvertFrom-Json
+    $suiteFolder = $file.Directory.Parent
+    $suiteJson = Get-Content (Join-Path $suiteFolder.FullName 'suite.json') -Raw | ConvertFrom-Json
+    [ordered]@{
+        key          = $framework.Framework
+        name         = $framework.Name
+        version      = $framework.Version
+        url          = $framework.Url
+        suite        = $suiteJson.Id
+        file         = [System.IO.Path]::GetRelativePath($root, $file.FullName).Replace('\', '/')
+        requirements = @($framework.Requirements | ForEach-Object {
+                $r = [ordered]@{ id = $_.Id; tests = @($testsByControl["$($framework.Framework):$($_.Id)"] | Where-Object { $_ }) }
+                if ($_.Level) { $r.level = $_.Level }
+                if ($_.Criticality) { $r.criticality = $_.Criticality }
+                if ($_.Related) { $r.related = @($_.Related) }
+                $r
+            })
+    }
+}
+
+$data = [ordered]@{
+    note             = 'Generated by build/website/Update-MtTestBuilderData.ps1. Do not edit.'
+    idPattern        = $schema.IdPattern
+    idMaxLength      = $schema.IdMaxLength
+    reservedPrefixes = @($schema.ReservedPrefixes)
+    properties       = $properties
+    products         = @($taxonomy.Products | ForEach-Object {
+            [ordered]@{ key = $_.Key; name = $_.Name; aliases = @($_.Aliases | Where-Object { $_ }); features = @($_.Features | ForEach-Object { [ordered]@{ key = $_.Key; name = $_.Name } }) }
+        })
+    areas            = @($taxonomy.Areas | ForEach-Object { [ordered]@{ key = $_.Key; name = $_.Name; description = $_.Description } })
+    resourceTypes    = @($taxonomy.ResourceTypes | ForEach-Object { [ordered]@{ key = $_.Key; description = $_.Description } })
+    services         = @($services.Services.Keys | Sort-Object | ForEach-Object { [ordered]@{ name = $_; aliases = @($services.Services[$_].Aliases | Where-Object { $_ }); optIn = [bool]$services.Services[$_].OptIn } })
+    licenses         = @($licenses.Tokens.Keys | Sort-Object)
+    suites           = @($suites)
+    frameworks       = @($frameworks)
+    nist             = [ordered]@{ key = $nist.Framework; name = $nist.Name; version = $nist.Version; controls = @($nist.Controls | ForEach-Object { [ordered]@{ id = $_.Id; title = $_.Title } }) }
+    attack           = [ordered]@{
+        version    = $taxonomy.Attack.Version
+        tactics    = @($attack.Tactics | ForEach-Object { [ordered]@{ id = $_.Id; name = $_.Name } })
+        techniques = @($attack.Techniques | ForEach-Object { [ordered]@{ id = $_.Id; name = $_.Name; tactics = @($_.Tactics) } })
+    }
+    rubric           = $rubric
+}
+
+$json = ($data | ConvertTo-Json -Depth 8 -Compress:$false) -replace "`r`n", "`n"
+$null = New-Item -ItemType Directory -Path (Split-Path $OutputPath) -Force
+[System.IO.File]::WriteAllText($OutputPath, $json + "`n", [System.Text.UTF8Encoding]::new($false))
+Write-Host "Wrote $OutputPath"

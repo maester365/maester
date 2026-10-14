@@ -19,7 +19,7 @@ keywords:
 
 # EIDSCA.AP14 - Default Authorization Settings - Default User Role Permissions - Allowed to read other users.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/remold" title="Remold · Co-contributor"><img src="https://github.com/remold.png" alt="Remold" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -67,10 +67,11 @@ mindmap
 | Severity | High |
 | Suite | Entra ID SCA |
 | Category | General |
-| PowerShell test | [Test-MtEidscaAP14](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaAP14.ps1) |
+| PowerShell test | [Test-MtCheckEidscaAP14](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP14.ps1) |
+| Services | Graph |
 | Tags | EIDSCA, EIDSCA.AP14 |
 
 ## Source
 
-- Pester test: `tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1`
-- PowerShell source: `powershell/internal/eidsca/Test-MtEidscaAP14.ps1`
+- Test: [`tests/EIDSCA/Test.EIDSCA.AP14.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP14.ps1)
+- Documentation: [`tests/EIDSCA/Test.EIDSCA.AP14.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP14.md)

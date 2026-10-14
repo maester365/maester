@@ -1,0 +1,8 @@
+{
+  "Id": "FxWrongKey",
+  "Name": "Another key and version in the file",
+  "Source": "Custom",
+  "Frameworks": [
+    { "Key": "fx-key", "Version": "1.0" }
+  ]
+}

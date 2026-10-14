@@ -1,0 +1,57 @@
+﻿function Test-MtCisCommunicateInitiateExternalTeamsUsers {
+    <#
+    .SYNOPSIS
+    Ensure external Teams users cannot initiate conversations
+
+    .DESCRIPTION
+    External Teams users cannot initiate conversations
+    CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.2.3)
+
+    .EXAMPLE
+    Test-MtCisCommunicateInitiateExternalTeamsUsers
+
+    Returns true if external Teams users cannot initiate conversations
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisCommunicateInitiateExternalTeamsUsers
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.8.2.3',
+        Title = 'Ensure external Teams users cannot initiate conversations',
+        Product = 'teams',
+        Feature = 'external-access',
+        Area = 'external-access',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1566', 'T1204.001', 'T1204.002'),
+        Control = ('cis-m365:8.2.3', 'nist-800-53-r5:AC-20'),
+        Service = 'Teams',
+        Author = 'Mynster9361',
+        Contributor = 'merill'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users.')]
+    param()
+
+    Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if external unmanaged Teams users cannot initiate conversations'
+
+    $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
+    if ($AllowTeamsConsumerInbound -eq $false) {
+        Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
+        return $true
+    }
+    else {
+        $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
+        if ($ExternalAccessPolicy.EnableTeamsConsumerInbound -eq $false) {
+            Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
+            return $true
+        }
+        else {
+            Add-MtTestResultDetail -Result 'External unmanaged Teams users can initiate conversations.'
+            return $false
+        }
+    }
+}

@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1037"
   - "High"
+  - "Maester/Teams"
   - "Teams"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1037 - Only users with Presenter role are allowed to present in Teams meetings
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -48,11 +49,12 @@ To prevent standard attendees from sharing content during Teams meetings:
 | Test ID | MT.1037 |
 | Severity | High |
 | Suite | Maester |
-| Category | Teams |
-| PowerShell test | [Test-MtTeamsRestrictParticipantGiveRequestControl](/docs/commands/Test-MtTeamsRestrictParticipantGiveRequestControl) |
+| Category | Maester/Teams |
+| PowerShell test | [Test-MtCheckMT1037](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1037.ps1) |
+| Services | Teams |
 | Tags | Maester, MT.1037, Teams |
 
 ## Source
 
-- Pester test: `tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1`
-- PowerShell source: `powershell/public/maester/teams/Test-MtTeamsRestrictParticipantGiveRequestControl.ps1`
+- Test: [`tests/Maester/Teams/Test.MT.1037.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1037.ps1)
+- Documentation: [`tests/Maester/Teams/Test.MT.1037.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Teams/Test.MT.1037.md)

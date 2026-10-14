@@ -28,7 +28,7 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
 The Exchange Online role-based access control (RBAC) implementation uses service-specific roles for applications. The configuration below establishes the authorization chain for the app registration you created in the previous steps.
 
-> The Exchange Online permissions are necessary to support tests that validate [Exchange Online configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/exo).
+> The Exchange Online permissions are necessary to support tests that validate [Exchange Online configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa).
 
 - Open the application you created in the previous step
 - Select **API permissions** > **Add a permission**
@@ -73,7 +73,7 @@ The Teams role-based access control (RBAC) implementation uses service-specific 
 
 The Azure Role-Based Access Control (RBAC) implementation uses Uniform Resource Names (URNs) with a "/" separator for hierarchical scoping. Some resources exist within the root (e.g., "/") scope, and Microsoft retains strict control over them by limiting supported interactions. As a Global Administrator, you can [elevate access](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
 
-> The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/entra#:~:text=Test%2DMtCisaDiagnosticSettings).
+> The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa#:~:text=Test%2DMtCisaDiagnosticSettings).
 
 The following PowerShell script will enable you, with a Global Administrator role assignment, to:
 
@@ -111,7 +111,7 @@ $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?a
 
 SharePoint Online tests require the **PnP.PowerShell** module and an Entra ID app registration configured for interactive login with SharePoint delegated permissions.
 
-> The SharePoint Online permissions are necessary to support tests that validate [SharePoint Online configurations](https://maester.dev/docs/tests/cisa/spo), such as the CISA SharePoint baseline controls.
+> The SharePoint Online permissions are necessary to support tests that validate [SharePoint Online configurations](https://maester.dev/docs/tests/cisa), such as the CISA SharePoint baseline controls.
 
 #### Install PnP.PowerShell
 

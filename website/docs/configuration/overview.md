@@ -5,20 +5,24 @@ sidebar_position: 1
 
 # Configure Maester
 
-Maester uses a configuration file called `maester-config.json` to customize how tests are run and to define global settings for your environment. This guide explains how the configuration system works and how to customize it for your organization.
+Maester uses a configuration file called `maester-config.json` to customize how tests are run and to define global settings for your environment. This guide explains the basics; the [run configuration reference](./run-configuration.md) lists every section and key.
 
 ## How Configuration Works
 
-Maester uses a two-tier configuration system:
+From Maester 3.0 the tests carry their own defaults (severity, parameters), and the module no longer ships a configuration file with a row per test. Your configuration only holds what you want to change.
 
-1. **Main Configuration** (`./tests/maester-config.json`) - Contains the default settings for all Maester tests. This file is maintained by the Maester team and is updated when you run `Update-MaesterTests`.
+Maester reads these files from the folder you pass with `-Path` (or the current folder), each one optional:
 
-2. **Custom Configuration** (`./tests/Custom/maester-config.json`) - Your organization-specific overrides. Settings in this file take precedence over the main configuration.
+1. **`maester-config.json`** - your main configuration. Maester looks in `-Path`, `-Path/tests` and up to five parent folders.
+2. **`custom/maester-config.json`** - an overlay on the main file, for example settings owned by a different team.
+3. **`maester-config.<tenantId>.json`** - settings for one tenant, merged over the other two once Maester knows which tenant you are connected to.
 
-:::warning Important
-Never edit the main `maester-config.json` file in the `./tests` folder directly. Your changes will be overwritten when you update Maester tests.
+Each file merges over the one before, so a tenant file only needs the values that differ for that tenant.
 
-Always use the `./tests/Custom/maester-config.json` file for your customizations.
+Instead of files next to your tests, you can pass a configuration with `Invoke-Maester -Config` (a path, an object, or several merged left to right) or the `MAESTER_CONFIG` environment variable. Then the files next to your tests are not read.
+
+:::note Upgrading from 2.x
+In 2.x the main `./tests/maester-config.json` was maintained by the Maester team and overwritten by `Update-MaesterTests`, so your changes had to go into `./tests/Custom/maester-config.json`. Both files keep working in 3.0. A copy of the old shipped file still overrides every test's severity; keep only the rows you changed. A tenant file is now merged over the main file instead of replacing it. See [Upgrading from 2.x](../upgrading-from-2x.md#configuration).
 :::
 
 ## Configuration File Structure
@@ -63,22 +67,27 @@ Omitted keys retain their built-in defaults. A mirror must preserve the original
 
 ### TestSettings
 
-The `TestSettings` section allows you to customize individual test behavior, such as overriding the default severity level. See [Severity Levels](./severity-levels) for more details.
+The `TestSettings` section changes individual tests by ID: severity, turning a test off, parameter values and timeouts.
 
-## Creating Your Custom Configuration
-
-To create your custom configuration file:
-
-1. Navigate to your Maester tests folder
-2. Create a file called `maester-config.json` in the `Custom` folder
-3. Add your custom settings
-
-```bash
-# Create the custom config file
-./tests/Custom/maester-config.json
+```json
+{
+  "TestSettings": [
+    { "Id": "MT.1005", "Severity": "Critical" },
+    { "Id": "MT.1089", "Enabled": false, "Reason": "Not relevant for this tenant" },
+    { "Id": "MT.1198", "Parameters": { "MaximumValidityDays": 180 } }
+  ]
+}
 ```
 
-Here's a complete example of a custom configuration file:
+A disabled test is not run and appears in the report as **Not run** with the reason you gave. See [Severity Levels](./severity-levels) and the [run configuration reference](./run-configuration.md#testsettings).
+
+### Other sections
+
+`Selection` (which tests run), `Environment` (facts about the tenant and which applicability checks are enforced), `Execution` (timeouts), `Output` (CI test result files) and `Metadata` (labels echoed in the results) are described in the [run configuration reference](./run-configuration.md).
+
+## Creating Your Configuration
+
+If you ran `Install-MaesterTests`, your folder already has a starter `maester-config.json`. Otherwise create one in the folder you run Maester from. Here's a complete example:
 
 ```json
 {
@@ -112,23 +121,26 @@ The following global settings are available for customization:
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
 | `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
 
+The GitHub and Dataverse settings are listed in the [run configuration reference](./run-configuration.md#globalsettings).
+
 ## How Settings Are Merged
 
-When Maester loads the configuration:
+When several files are found, each one merges over the one before:
 
-1. It first loads the main `maester-config.json` from the `./tests` folder
-2. Then it looks for `./tests/Custom/maester-config.json`
-3. Any settings in the custom file **override** the corresponding settings in the main file
-4. New settings in the custom file are **added** to the configuration
+- `TestSettings` rows are matched by `Id`, and each property you set replaces the same property in the lower file.
+- Other sections are merged key by key.
+- Lists replace lists: an empty list in a higher file clears the lower one.
 
-This means you only need to include the settings you want to change or add in your custom configuration file.
+This means you only need to include the settings you want to change or add.
 
 ## Validating Your Configuration
 
-After creating or modifying your configuration file, you can verify it's being loaded correctly by running Maester with verbose output:
+Run Maester without running any test to see which configuration it used and what it would do:
 
 ```powershell
-Invoke-Maester -Verbose
+$plan = Invoke-Maester -DryRun -PassThru
+$plan.MaesterConfig.ConfigSource      # the files that were read
+$plan.Tests | Group-Object Result, ReasonCode
 ```
 
-Look for messages indicating your custom configuration was found and merged.
+See [Applicability and reason codes](./applicability.md) for what each reason means.

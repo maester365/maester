@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Updates the specified folder with the latest ready-made Maester tests built by the Maester team."
+description: "Removes copies of the built-in Maester tests from a folder."
 id: Update-MaesterTests
 title: Update-MaesterTests
 hide_title: false
@@ -10,43 +10,52 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Updates the specified folder with the latest ready-made Maester tests built by the Maester team.
+Removes copies of the built-in Maester tests from a folder.
 
 ## SYNTAX
 
 ```powershell
-Update-MaesterTests [[-Path] <String>] [-Force] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Update-MaesterTests [[-Path] <String>] [-Force] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
+From Maester 3.0 the tests that ship with Maester run from the module itself.
+Copies of them that
+Install-MaesterTests wrote in Maester 2.x are not run any more.
+Update-MaesterTests removes those
+copies: every *.Tests.ps1 file outside a Custom folder whose tests all have the ID of a current,
+previous or retired built-in test.
+Files with any other test, and everything under Custom/, are kept.
 
-The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
+A maester-config.json that is a copy of the file Maester 2.x shipped is reduced to the settings
+that differ from the built-in defaults.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Update-MaesterTests -Path .\maester-tests
+Update-MaesterTests -Path ./maester-tests -WhatIf
 ```
 
-Installs or updates the latest Maester tests in the specified directory.
+Lists the files that would be removed.
 
 ### EXAMPLE 2
 
 ```powershell
-Update-MaesterTests -Path .\
+Update-MaesterTests -Path ./maester-tests -Force
 ```
 
-Install the latest set of Maester tests in the current directory.
+Removes the copies without asking.
 
 ## PARAMETERS
 
 ### -Path
 
-The path to install or update the Maester tests in.
+The folder to clean up.
+Defaults to the current directory.
 
 ```yaml
 Type: String
@@ -55,14 +64,14 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: .\
+Default value: .
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -Force
 
-Switch to control the toggling off of the "Are you sure?" prompt
+Does not ask for confirmation.
 
 ```yaml
 Type: SwitchParameter
@@ -72,6 +81,39 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

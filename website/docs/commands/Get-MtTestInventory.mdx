@@ -21,7 +21,8 @@ Get-MtTestInventory [-Path <String>] [-ExcludePath <String[]>] [-ExcludeTag <Str
 
 ## DESCRIPTION
 
-Uses Pester discovery to enumerate all tests under the provided path and returns a list of objects containing:
+Reads the native tests (Test.&lt;ID&gt;.ps1) and Pester-format tests (*.Tests.ps1) under the provided path
+without running them, and returns a list of objects containing:
 
     TestName     - Name of the It test.
     FilePath     - Full path to the test file.
@@ -86,7 +87,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: (Resolve-Path -LiteralPath (Join-Path -Path $PSScriptRoot '..\..' 'tests')).Path
+Default value: (Get-MtMaesterTestFolderPath)
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

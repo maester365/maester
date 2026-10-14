@@ -1,6 +1,6 @@
 ---
 title: "MT.1014 - At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins."
-description: "Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins. This is a good way to prevent AITM attacks. Learn more: https://aka.ms/CATemplatesAdminDevices"
+description: "Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins. This is a good way to prevent AITM attacks. Learn more: https://aka.ms/CATemplatesAdminDevices Remediation action Review the configuration described above."
 slug: /tests/MT.1014
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,7 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1014"
   - "High"
+  - "Maester/Entra"
   - "CA"
 ---
 
@@ -17,7 +18,7 @@ keywords:
 
 # MT.1014 - At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/retrodadson" title="Robin Dadswell · Co-contributor"><img src="https://github.com/RetroDadson.png" alt="Robin Dadswell" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/ptmohr" title="Pascal-Tobias Mohr · Co-contributor"><img src="https://github.com/PTMohr.png" alt="Pascal-Tobias Mohr" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/retrodadson" title="Robin Dadswell · Co-contributor"><img src="https://github.com/RetroDadson.png" alt="Robin Dadswell" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -27,6 +28,10 @@ This is a good way to prevent AITM attacks.
 Learn more:
 https://aka.ms/CATemplatesAdminDevices
 
+#### Remediation action
+
+Review the configuration described above.
+
 ## Test Metadata
 
 | Field | Value |
@@ -34,11 +39,13 @@ https://aka.ms/CATemplatesAdminDevices
 | Test ID | MT.1014 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaDeviceComplianceAdminsExists](/docs/commands/Test-MtCaDeviceComplianceAdminsExists) |
+| Category | Maester/Entra |
+| PowerShell test | [Test-MtCaDeviceComplianceAdminsExists](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 | Tags | CA, Maester, MT.1014 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaDeviceComplianceAdminsExists.ps1`
+- Test: [`tests/Maester/Entra/Test.MT.1014.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.ps1)
+- Documentation: [`tests/Maester/Entra/Test.MT.1014.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.md)

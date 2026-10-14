@@ -1,0 +1,11 @@
+{
+  "Id": "ORCA",
+  "Name": "Office 365 Recommended Configuration Analyzer",
+  "Source": "ORCA",
+  "IdPattern": "^ORCA\\.",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "Upstream": {
+    "Name": "ORCA",
+    "Url": "https://github.com/cammurray/orca"
+  }
+}

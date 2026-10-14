@@ -18,11 +18,12 @@ This is the main Maester command that runs the tests and generates a report of t
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-IncludeLongRunning]
  [-IncludePreview] [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-RedactUserIdentity <String>]
  [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
- [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>]
+ [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <Object>]
  [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
  [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
- [-DriftRoot <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-DriftRoot <String>] [-TestId <String[]>] [-ExcludeTestId <String[]>] [-Config <Object>] [-DryRun]
+ [-SkipBuiltIn] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -157,6 +158,34 @@ Invoke-Maester -Tag 'AD' -SkipGraphConnect
 ```
 
 Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
+
+### EXAMPLE 15
+
+```powershell
+Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
+```
+
+Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3.
+A test named by its exact ID runs even if it is a preview or long-running test.
+
+### EXAMPLE 16
+
+```powershell
+Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
+```
+
+Shows what would run, and why every other test would not, without running any test.
+Each test that would have run is reported as NotRun with reason DryRun.
+Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
+
+### EXAMPLE 17
+
+```powershell
+Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
+```
+
+Runs with an explicit configuration instead of the config files found next to the tests.
+Several sources are merged left to right; here only tests enabled in TestSettings are run.
 
 ## PARAMETERS
 
@@ -389,13 +418,14 @@ Accept wildcard characters: False
 
 ### -PesterConfiguration
 
-An optional [PesterConfiguration] object for advanced configuration.
-Default is New-PesterConfiguration
-For help on each option see New-PesterConfiguration, or inspect the object it returns.
+An optional Pester configuration for Pester-format custom tests: a [PesterConfiguration] object or a
+hashtable.
+Its Run.Path, Filter.Tag, Filter.ExcludeTag and TestResult options also apply to native tests.
+Pester is needed only when the run has Pester-format tests.
 See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
 
 ```yaml
-Type: PesterConfiguration
+Type: Object
 Parameter Sets: (All)
 Aliases:
 
@@ -688,6 +718,98 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TestId
+
+Only run the tests with these IDs.
+Exact IDs or '*' wildcards, case-insensitive.
+A test named by its exact ID runs even if it is a preview or long-running test.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExcludeTestId
+
+Do not run the tests with these IDs.
+Exact IDs or '*' wildcards, case-insensitive.
+Wins over -TestId.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Config
+
+The run configuration: a path to a maester-config.json file, a config object (hashtable or
+PSCustomObject), or an array of paths and objects merged left to right.
+When set, config files
+next to the tests are not read.
+Defaults to the MAESTER_CONFIG environment variable, then to the
+config files found from -Path.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DryRun
+
+Work out which tests would run, and why the others would not, without running any test.
+Each test that would have run is reported as NotRun with reason DryRun.
+Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipBuiltIn
+
+Run only the custom tests under -Path.
+The tests that ship with Maester always run otherwise.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

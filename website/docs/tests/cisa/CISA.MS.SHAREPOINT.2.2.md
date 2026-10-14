@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.2.2"
-  - "Unknown"
+  - "Medium"
   - "CISA"
   - "spo"
   - "MS.SHAREPOINT"
@@ -45,13 +45,14 @@ Rationale: Setting the default permission to View reduces the risk of accidental
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.2.2 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
 | Category | spo |
-| PowerShell test | [Test-MtCisaSpoDefaultSharingPermission](/docs/commands/Test-MtCisaSpoDefaultSharingPermission) |
+| PowerShell test | [Test-MtCisaSpoDefaultSharingPermission](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.ps1) |
+| Services | SharePointOnline |
 | Tags | CISA, CISA.MS.SHAREPOINT.2.2, MS.SHAREPOINT, MS.SHAREPOINT.2.2 |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoDefaultSharingPermission.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoDefaultSharingPermission.ps1`
+- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.ps1)
+- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.2.2.md)

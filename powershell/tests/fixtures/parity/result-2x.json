@@ -1,0 +1,371 @@
+{
+  "Result": "Failed",
+  "FailedCount": 4,
+  "PassedCount": 5,
+  "ErrorCount": 1,
+  "InvestigateCount": 0,
+  "SkippedCount": 1,
+  "NotRunCount": 1,
+  "TotalCount": 12,
+  "ExecutedAt": "2026-10-01T10:00:00+00:00",
+  "TotalDuration": "00:00:05",
+  "UserDuration": "00:00:04",
+  "DiscoveryDuration": "00:00:01",
+  "FrameworkDuration": "00:00:00",
+  "TenantId": "00000000-0000-0000-0000-000000000001",
+  "TenantName": "Fixture Tenant",
+  "TenantLogos": null,
+  "Account": "fixture@example.test",
+  "CurrentVersion": "2.4.0",
+  "LatestVersion": "Unknown",
+  "InvokeCommand": "Invoke-Maester",
+  "MgContext": null,
+  "PesterConfig": null,
+  "MaesterConfig": null,
+  "Tests": [
+    {
+      "Index": 1,
+      "Id": "MT.1001",
+      "Title": "At least one Conditional Access policy is configured with device compliance",
+      "Name": "MT.1001: At least one Conditional Access policy is configured with device compliance",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1001",
+      "Severity": "High",
+      "Tag": [
+        "Maester",
+        "CA",
+        "MT.1001"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Maester/Entra",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "MT.1001: At least one Conditional Access policy is configured with device compliance",
+        "TestDescription": "Description of At least one Conditional Access policy is configured with device compliance",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "High",
+        "Service": null
+      }
+    },
+    {
+      "Index": 2,
+      "Id": "MT.1005",
+      "Title": "All Conditional Access policies exclude an emergency access account",
+      "Name": "MT.1005: All Conditional Access policies exclude an emergency access account",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1005",
+      "Severity": "High",
+      "Tag": [
+        "Maester",
+        "CA",
+        "MT.1005"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Maester/Entra",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "MT.1005: All Conditional Access policies exclude an emergency access account",
+        "TestDescription": "Description of All Conditional Access policies exclude an emergency access account",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "High",
+        "Service": null
+      }
+    },
+    {
+      "Index": 3,
+      "Id": "MT.1022",
+      "Title": "All users utilizing a P1 license should be licensed",
+      "Name": "MT.1022: All users utilizing a P1 license should be licensed",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1022",
+      "Severity": "Medium",
+      "Tag": [
+        "MT.1022"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "License utilization",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "MT.1022: All users utilizing a P1 license should be licensed",
+        "TestDescription": "Description of All users utilizing a P1 license should be licensed",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "Medium",
+        "Service": null
+      }
+    },
+    {
+      "Index": 4,
+      "Id": "MT.1100",
+      "Title": "Fixture check that fails in 2.x",
+      "Name": "MT.1100: Fixture check that fails in 2.x",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1100",
+      "Severity": "Medium",
+      "Tag": [
+        "Maester",
+        "MT.1100"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Maester/Entra",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "MT.1100: Fixture check that fails in 2.x",
+        "TestDescription": "Description of Fixture check that fails in 2.x",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "Medium",
+        "Service": null
+      }
+    },
+    {
+      "Index": 5,
+      "Id": "MT.1187",
+      "Title": "The Microsoft 365 traffic forwarding profile should be enabled",
+      "Name": "MT.1187: The Microsoft 365 traffic forwarding profile should be enabled",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1187",
+      "Severity": "Medium",
+      "Tag": [
+        "Maester",
+        "Entra",
+        "MT.1187",
+        "Preview"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Maester/Entra",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "MT.1187: The Microsoft 365 traffic forwarding profile should be enabled",
+        "TestDescription": "Description of The Microsoft 365 traffic forwarding profile should be enabled",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "Medium",
+        "Service": null
+      }
+    },
+    {
+      "Index": 6,
+      "Id": "CISA.MS.EXO.1.1",
+      "Title": "Automatic forwarding to external domains SHALL be disabled",
+      "Name": "CISA.MS.EXO.1.1: Automatic forwarding to external domains SHALL be disabled",
+      "HelpUrl": "",
+      "Severity": "High",
+      "Tag": [
+        "CISA",
+        "CISA.MS.EXO.1.1",
+        "MS.EXO"
+      ],
+      "Result": "Skipped",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "CISA",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "CISA.MS.EXO.1.1: Automatic forwarding to external domains SHALL be disabled",
+        "TestDescription": "Description of Automatic forwarding to external domains SHALL be disabled",
+        "TestResult": "Result text",
+        "TestSkipped": "NotConnectedExchange",
+        "SkippedReason": "Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-exchange-online).",
+        "TestInvestigate": false,
+        "Severity": "High",
+        "Service": null
+      }
+    },
+    {
+      "Index": 7,
+      "Id": "ORCA.100",
+      "Title": "Bulk Complaint Level threshold is between 4 and 6",
+      "Name": "ORCA.100: Bulk Complaint Level threshold is between 4 and 6",
+      "HelpUrl": "",
+      "Severity": "Medium",
+      "Tag": [
+        "ORCA",
+        "ORCA.100",
+        "EXO"
+      ],
+      "Result": "Error",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "ORCA",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "ORCA.100: Bulk Complaint Level threshold is between 4 and 6",
+        "TestDescription": "Description of Bulk Complaint Level threshold is between 4 and 6",
+        "TestResult": "Result text",
+        "TestSkipped": "Error",
+        "SkippedReason": "An error occurred while running the test. ⚠️\n\n```Something broke```",
+        "TestInvestigate": false,
+        "Severity": "Medium",
+        "Service": null
+      }
+    },
+    {
+      "Index": 8,
+      "Id": "EIDSCA.AF01",
+      "Title": "Default Authorization Settings - Enabled Self service password reset for administrators",
+      "Name": "EIDSCA.AF01: Default Authorization Settings - Enabled Self service password reset for administrators",
+      "HelpUrl": "",
+      "Severity": "High",
+      "Tag": [
+        "EIDSCA",
+        "EIDSCA.AF01",
+        "Entra ID Free"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "EIDSCA",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "EIDSCA.AF01: Default Authorization Settings - Enabled Self service password reset for administrators",
+        "TestDescription": "Description of Default Authorization Settings - Enabled Self service password reset for administrators",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "High",
+        "Service": null
+      }
+    },
+    {
+      "Index": 9,
+      "Id": "CT.0001",
+      "Title": "First custom check sharing an ID",
+      "Name": "CT.0001: First custom check sharing an ID",
+      "HelpUrl": "",
+      "Severity": "Low",
+      "Tag": [
+        "Custom",
+        "CT.0001"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Custom",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "CT.0001: First custom check sharing an ID",
+        "TestDescription": "Description of First custom check sharing an ID",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "Low",
+        "Service": null
+      }
+    },
+    {
+      "Index": 10,
+      "Id": "CT.0001",
+      "Title": "Second custom check sharing an ID",
+      "Name": "CT.0001: Second custom check sharing an ID",
+      "HelpUrl": "",
+      "Severity": "Low",
+      "Tag": [
+        "Custom",
+        "CT.0001"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Custom",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "CT.0001: Second custom check sharing an ID",
+        "TestDescription": "Description of Second custom check sharing an ID",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "Low",
+        "Service": null
+      }
+    },
+    {
+      "Index": 11,
+      "Id": "",
+      "Title": "Custom check without an ID colon",
+      "Name": "Custom check without an ID colon",
+      "HelpUrl": "",
+      "Severity": "",
+      "Tag": [
+        "Custom"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Custom",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "Custom check without an ID colon",
+        "TestDescription": "Description of Custom check without an ID colon",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "",
+        "Service": null
+      }
+    },
+    {
+      "Index": 12,
+      "Id": "CT.0002",
+      "Title": "Deselected custom check",
+      "Name": "CT.0002: Deselected custom check",
+      "HelpUrl": "",
+      "Severity": "",
+      "Tag": [
+        "Custom",
+        "CT.0002",
+        "Space tag here"
+      ],
+      "Result": "NotRun",
+      "ScriptBlock": "",
+      "ScriptBlockFile": "/tests/x.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Custom",
+      "Duration": "00:00:00.010",
+      "ResultDetail": {
+        "TestTitle": "CT.0002: Deselected custom check",
+        "TestDescription": "Description of Deselected custom check",
+        "TestResult": "Result text",
+        "TestSkipped": null,
+        "SkippedReason": null,
+        "TestInvestigate": false,
+        "Severity": "",
+        "Service": null
+      }
+    }
+  ],
+  "Blocks": [],
+  "EndOfJson": "EndOfJson"
+}

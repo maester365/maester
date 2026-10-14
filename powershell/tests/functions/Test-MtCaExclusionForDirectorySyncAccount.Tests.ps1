@@ -1,5 +1,8 @@
 ﻿Describe 'Test-MtCaExclusionForDirectorySyncAccount' {
     BeforeAll {
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtCaExclusionForDirectorySyncAccount
         Mock -ModuleName Maester Get-MtLicenseInformation { return 'P1' }
         Mock -ModuleName Maester Add-MtTestResultDetail {}
 
@@ -296,15 +299,17 @@
         BeforeEach {
             Mock -ModuleName Maester Get-MtRoleMember { return $script:syncUser1 }
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
-                return @(
-                    New-CaPolicy -Id 'policy-pass' -DisplayName 'Policy With Exclusion' -ExcludeRoles @($script:DirSyncRoleId),
-                    New-CaPolicy -Id 'policy-fail' -DisplayName 'Policy Without Exclusion' -ExcludeUsers @() -ExcludeRoles @()
-                )
+                # Build each policy in its own statement: 'New-CaPolicy ... -ExcludeRoles @(...), New-CaPolicy ...'
+                # parses as one call whose -ExcludeRoles array swallows the second command and binds -Id twice.
+                $p1 = New-CaPolicy -Id 'policy-pass' -DisplayName 'Policy With Exclusion' -ExcludeRoles @('d29b2b05-8046-44ba-8758-1e26182fcf32')
+                $p2 = New-CaPolicy -Id 'policy-fail' -DisplayName 'Policy Without Exclusion' -ExcludeUsers @() -ExcludeRoles @()
+                return @($p1, $p2)
             }
         }
 
         It 'Should return false because at least one policy does not exclude sync accounts' {
-            Test-MtCaExclusionForDirectorySyncAccount | Should -BeFalse
+            # -Be $false, not -BeFalse: $null (an error swallowed into a skip) must not pass as a failing result.
+            Test-MtCaExclusionForDirectorySyncAccount | Should -Be $false
         }
     }
 
@@ -327,10 +332,15 @@
 
     Context 'Free Entra ID license' {
 
-        It 'Should return null and skip the test' {
-            Mock -ModuleName Maester Get-MtLicenseInformation { return 'Free' }
+        It 'Declares the Entra ID P1 licence so the engine skips it on a Free tenant' {
+            (Get-MtTest -Id 'MT.1020').License | Should -Contain 'AAD_PREMIUM'
 
-            Test-MtCaExclusionForDirectorySyncAccount | Should -BeNull
+            Mock -ModuleName Maester Test-MtConnection { return $true }
+            Mock -ModuleName Maester Get-MgContext { return $null }
+            $config = [pscustomobject]@{ Environment = [pscustomobject]@{ Licenses = @('EXCHANGE_S_STANDARD') } }
+            $row = Invoke-MtTest -Id 'MT.1020' -Config $config
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'LicenseNotFound'
         }
     }
 

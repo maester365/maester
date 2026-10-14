@@ -1,0 +1,8 @@
+{
+  "Id": "FxUnknownRequirement",
+  "Name": "A Control that names a requirement the file does not have",
+  "Source": "Custom",
+  "Frameworks": [
+    { "Key": "fx-unknown", "Version": "1.0" }
+  ]
+}

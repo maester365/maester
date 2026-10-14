@@ -21,7 +21,7 @@ keywords:
 
 # CIS.M365.2.1.13 - (L1) Ensure the connection filter safe list is off (Only Checks Default Policy)
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/knussbaumer">Kim Nussbaumer</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -72,10 +72,11 @@ Set-HostedConnectionFilterPolicy -Identity Default -EnableSafeList $false
 | Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisConnectionFilterSafeList](/docs/commands/Test-MtCisConnectionFilterSafeList) |
+| PowerShell test | [Test-MtCisConnectionFilterSafeList](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.13.ps1) |
+| Services | ExchangeOnline |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.13, L1 |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisConnectionFilterSafeList.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisConnectionFilterSafeList.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.13.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.13.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.13.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.13.md)

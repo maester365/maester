@@ -1,0 +1,35 @@
+function Test-MtCheckEidscaAP09 {
+    <#
+    .SYNOPSIS
+    Checks if Default Authorization Settings - Allow user consent on risk-based apps is 'false'
+
+    .DESCRIPTION
+    Indicates whether user consent for risky apps is allowed. For example, consent requests for newly registered multi-tenant apps that are not publisher verified and require non-basic permissions are considered risky.
+
+    Reads the tenant value of
+    https://graph.microsoft.com/beta/policies/authorizationPolicy
+    .allowUserConsentForRiskyApps with Test-MtEidscaAP09
+    and passes when it -eq 'false'.
+    #>
+    [MaesterTest(
+        Id = 'EIDSCA.AP09',
+        Title = 'Default Authorization Settings - Allow user consent on risk-based apps.',
+        Product = 'entra',
+        Feature = 'app-consent',
+        Area = 'applications',
+        ResourceType = 'Tenant',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1566.002'),
+        Control = ('nist-800-53-r5:AC-6(10)', 'nist-800-53-r5:CM-5'),
+        Service = 'Graph',
+        Author = 'Cloud-Architekt'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $tenantValue = Test-MtEidscaAP09
+    return ($tenantValue -eq 'false')
+}

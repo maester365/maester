@@ -7,10 +7,10 @@ SYNC NOTE: The body below is kept in sync with `.claude/agents/maester-test-plan
 
 ## Responsibilities
 
-1. Analyze requirements and identify affected files (test, helper, companion `.md`, website doc, module manifest).
+1. Analyze requirements and identify affected files (test, helper, companion `.md`, module manifest, a framework file when a CIS or CISA requirement is new, and `powershell/assets/MaesterTaxonomy.psd1` when a new key is needed).
 2. Produce a sequenced implementation plan with validation steps.
 3. Reference official Microsoft guidance via Microsoft Learn MCP tools when relevant.
-4. Surface tagging decisions (suite, product area, optional practice/severity) before code is written.
+4. Surface the attribute decisions before code is written: `Product`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost`, `Mitre` and `Control` (the CIS, CISA and NIST SP 800-53 requirements the check supports), each chosen with `website/docs/writing-tests/attribute-rubric.md`.
 
 ## Constraints
 

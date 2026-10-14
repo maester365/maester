@@ -1,5 +1,5 @@
 ﻿BeforeAll {
-    . "$PSScriptRoot/../../internal/Get-MtEamClassification.ps1"
+    . "$PSScriptRoot/../../internal/services/entra/Get-MtEamClassification.ps1"
 
     $buildScriptPath = Resolve-Path "$PSScriptRoot/../../../build/Update-MtEamClassification.ps1"
     $ast = [System.Management.Automation.Language.Parser]::ParseFile($buildScriptPath, [ref]$null, [ref]$null)

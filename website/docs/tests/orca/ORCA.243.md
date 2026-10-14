@@ -18,7 +18,7 @@ keywords:
 
 # ORCA.243 - Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -41,10 +41,11 @@ Enable Authenticated Receive Chain (ARC) trusted sealers for domains not pointed
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA243](/docs/commands/Test-ORCA243) |
+| PowerShell test | [Test-ORCA243](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.243.ps1) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.243 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA243.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA243.ps1`
+- Test: [`tests/orca/Test.ORCA.243.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.243.ps1)
+- Documentation: [`tests/orca/Test.ORCA.243.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.243.md)

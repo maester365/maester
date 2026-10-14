@@ -41,10 +41,10 @@ Alternatively, you can use the `Send-MtTeamsMessage` cmdlet to send the message 
 
 ```powershell
 # Get the results of the Maester tests using -PassThru
-$results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
+$results = Invoke-Maester -PassThru
 
 # Send the summary using the results
-Send-MtTeamsMessage -MaesterResults $MaesterResults TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+Send-MtTeamsMessage -MaesterResults $results -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
 ```
 
@@ -103,10 +103,10 @@ Update your GitHub/Azure DevOps daily monitoring workflow to send the alert usin
 
 ```powershell
 # Get the results of the Maester tests using -PassThru
-$results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
+$results = Invoke-Maester -PassThru
 
 # Send the summary using the results
-Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results'
+Send-MtTeamsMessage -MaesterResults $results -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results'
 
 ```
 

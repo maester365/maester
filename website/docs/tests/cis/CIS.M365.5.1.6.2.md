@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.5.1.6.2"
-  - "Unknown"
+  - "Medium"
   - "CIS"
   - "CIS E3 Level 1"
   - "CIS E3"
@@ -24,7 +24,7 @@ keywords:
 
 # CIS.M365.5.1.6.2 - (L1) Ensure that guest user access is restricted
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -88,13 +88,14 @@ Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.5.1.6.2 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
 | Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisEnsureGuestAccessRestricted](/docs/commands/Test-MtCisEnsureGuestAccessRestricted) |
+| PowerShell test | [Test-MtCisEnsureGuestAccessRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.6.2.ps1) |
+| Services | Graph |
 | Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.6.2, L1, Security |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisEnsureGuestAccessRestricted.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisEnsureGuestAccessRestricted.ps1`
+- Test: [`tests/cis/Test.CIS.M365.5.1.6.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.6.2.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.5.1.6.2.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.6.2.md)

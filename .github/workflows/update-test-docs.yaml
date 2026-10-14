@@ -13,6 +13,8 @@ on:
       - "website/contributors/contributors.yml"
       - "website/scripts/contributors.mjs"
       - "website/scripts/generate-test-docs.mjs"
+      - "website/scripts/tag-groups.mjs"
+      - "build/docs/Export-MtTestCatalogForDocs.ps1"
       - ".github/workflows/update-test-docs.yaml"
 
 permissions: {}
@@ -55,11 +57,21 @@ jobs:
         working-directory: website
         run: npm ci
 
+      - name: Install Microsoft.Graph.Authentication
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
+
+      - name: Export test catalog
+        shell: pwsh
+        run: ./build/docs/Export-MtTestCatalogForDocs.ps1 -OutputPath website/.generated/test-catalog.json
+
       - name: Generate test docs and contributor attribution
         working-directory: website
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: npm run generate-test-docs
+        run: node scripts/generate-test-docs.mjs --catalog .generated/test-catalog.json
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -72,7 +84,7 @@ jobs:
           body: |
             Automated refresh of generated test documentation and contributor attribution.
 
-            Source changes are derived from the full git history by `website/scripts/generate-test-docs.mjs`.
+            Test metadata is exported from the native tests by `build/docs/Export-MtTestCatalogForDocs.ps1` (Get-MtTest) and rendered by `website/scripts/generate-test-docs.mjs`.
           add-paths: |
             website/contributors/email-aliases.json
             website/docs/tests

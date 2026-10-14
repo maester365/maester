@@ -15,7 +15,7 @@ Describe "<module> Module Tests" -Tags ('Unit', 'Acceptance') {
         }
 
         It '<module> folder has functions' {
-            Join-Path -Path $moduleRoot -ChildPath "public/*.ps1" | Should -Exist
+            Get-ChildItem -Path (Join-Path -Path $moduleRoot -ChildPath 'public') -Filter '*.ps1' -Recurse | Should -Not -BeNullOrEmpty
         }
 
         It '<module> is valid PowerShell code' {

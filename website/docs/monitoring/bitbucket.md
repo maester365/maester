@@ -21,7 +21,9 @@ This guide will walk you through setting up Maester in BitBucket and automate th
 - If you are new to BitBucket, create an account at [BitBucket.com](https://www.atlassian.com/try/cloud/signup?bundle=bitbucket) for organizations
 - If you use BitBucket.com, you can run your CI/CD pipelines workflows on [BitBucket-hosted runners](https://www.atlassian.com/software/bitbucket/features/pipelines).
 
-### Create a blank new project to always use the latest available public Maester Tests
+### Create a blank new project to always use the latest available Maester tests
+
+The built-in Maester tests ship inside the Maester PowerShell module, and the pipeline below installs the latest module on every run. The repository only holds the pipeline and, optionally, your own custom tests (in a `Custom` folder) and `maester-config.json`.
 
 - On the top bar, at the top, select 'Create ' and select 'Repository' from the dropdown.
 
@@ -36,7 +38,7 @@ This guide will walk you through setting up Maester in BitBucket and automate th
 
 - Once the repository is created, navigate to the **Repository settings** --> **Settings** in left navigation bar. From **Settings** toggle **Enable Pipelines.**
     ![Enable Pipeline](assets/bitbucket-enable-pipeline.png)
-- Click on the **Configure bitbucket-pipelines.yml.** and Click on the **Starter Pipeline** to create a pipeline. This will add the `bitbuckets-pipelines.yml` file for **Bitbucket CI/CD Pipeline**. We need to edit the initial code for running public Maester tests.
+- Click on the **Configure bitbucket-pipelines.yml.** and Click on the **Starter Pipeline** to create a pipeline. This will add the `bitbuckets-pipelines.yml` file for **Bitbucket CI/CD Pipeline**. We need to edit the initial code for running the Maester tests.
     ![Configure Bitbucket Pipelines](assets/configure%20bitbucket-pipelines.png)
     ![Bitbucket Starter Pipeline](assets/bitbucket-starter-pipeline.png)
 
@@ -106,7 +108,6 @@ pipelines:
                   - powershell
                 script:
                   - mkdir test-results
-                  - mkdir public-tests
                   - pwsh -c 'Write-host "Running in project $BITBUCKET_REPO_SLUG with results at $BITBUCKET_BUILD_NUMBER."'
                   - |
                     pwsh -Command '
@@ -115,22 +116,13 @@ pipelines:
                       [pscredential] $clientSecretCredential = New-Object System.Management.Automation.PSCredential("$env:AZURE_CLIENT_ID", $clientSecret)
                       Connect-MgGraph -TenantId "$env:AZURE_TENANT_ID" -ClientSecretCredential $clientSecretCredential -NoWelcome
 
-                      # Install Maester
+                      # Install Maester (the built-in tests ship inside the module)
                       Install-Module Maester -Force
 
-                      # Latest public tests
-                      cd public-tests
-                      Install-MaesterTests
-                      cd ..
-
-                      # Configure test results
-                      $PesterConfiguration = New-PesterConfiguration
-                      $PesterConfiguration.Output.Verbosity = "None"
-                      Write-Host "Pester verbosity level set to: $($PesterConfiguration.Output.Verbosity.Value)"
-
+                      # Path adds the custom tests and maester-config.json in this repository, if any
                       $MaesterParameters = @{
-                        Path                 = "public-tests"
-                        PesterConfiguration  = $PesterConfiguration
+                        Path                 = "."
+                        Verbosity            = "None"
                         OutputFolder         = "test-results"
                         OutputFolderFileName = "test-results"
                         PassThru             = $true
@@ -139,7 +131,7 @@ pipelines:
 
                       # Add DisableTelemetry parameter
                       $MaesterParameters.Add("DisableTelemetry", $true)
-                      Write-Host "Pester telemetry set to: $($MaesterParameters.DisableTelemetry)"
+                      Write-Host "Maester telemetry disabled: $($MaesterParameters.DisableTelemetry)"
 
                       # Run Maester tests
                       $results = Invoke-Maester @MaesterParameters
@@ -161,6 +153,10 @@ pipelines:
 
   </TabItem>
   </Tabs>
+
+:::note
+Maester 3.0 requires PowerShell 7.4 or later, which the `mcr.microsoft.com/microsoftgraph/powershell` image provides. Pester is not needed for the built-in tests. If your custom tests include [Pester-format tests](../writing-tests/pester-format-tests.md) (`*.Tests.ps1`), add `Install-Module Pester -MinimumVersion 5.7.1 -Force` before running Maester.
+:::
 
 ## Manually running the Maester tests
 
@@ -192,6 +188,10 @@ To manually run the Maester tests workflow
 - Click **Pipelines** then Schedules (at the top right), and then click **New schedule**.
 - Choose the **Branch** (e.g. main) and **Pipeline** `custom:run-maester-tests`:
 - Select how often you would like the pipeline to run (e.g. weekly).
+
+## Keeping your Maester tests up to date
+
+The built-in tests are updated with the Maester module. Because the pipeline runs `Install-Module Maester -Force`, every run uses the latest release. To control when you upgrade, pin a version instead, for example `Install-Module Maester -RequiredVersion 3.0.0 -Force`. If you set up this pipeline with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md).
 
 ## FAQ / Troubleshooting
 

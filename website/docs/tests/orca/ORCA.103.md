@@ -18,13 +18,14 @@ keywords:
 
 # ORCA.103 - Outbound spam filter policy settings configured.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Configure the maximum number of recipients that a user can send to, per hour for internal (RecipientLimitInternalPerHour) and external recipients (RecipientLimitExternalPerHour) and maximum number per day for outbound email. It is common, after an account compromise incident, for an attacker to use the account to generate spam and phish. Configuring the recommended values can reduce the impact, but also allows you to receive notifications when these thresholds have been reached.
 
 #### Remediation action
+
 Set RecipientLimitExternalPerHour to 500, RecipientLimitInternalPerHour to 1000, and ActionWhenThresholdReached to block.
 
 #### Related Links
@@ -40,10 +41,11 @@ Set RecipientLimitExternalPerHour to 500, RecipientLimitInternalPerHour to 1000,
 | Severity | Medium |
 | Suite | ORCA |
 | Category | EXO |
-| PowerShell test | [Test-ORCA103](/docs/commands/Test-ORCA103) |
+| PowerShell test | [Test-ORCA103](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.103.ps1) |
+| Services | ExchangeOnline |
 | Tags | EXO, ORCA, ORCA.103 |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA103.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA103.ps1`
+- Test: [`tests/orca/Test.ORCA.103.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.103.ps1)
+- Documentation: [`tests/orca/Test.ORCA.103.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.103.md)

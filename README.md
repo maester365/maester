@@ -2,21 +2,19 @@
 
 **Monitor your Microsoft 365 tenant's security configuration using Maester!**
 
-> [!CAUTION]
-> **Maester 3.0 becomes the preview build on 8 October 2026 at 10:00 UTC (8 pm AEST)**
+> [!WARNING]
+> **Maester 3.0 is now the preview build**
 >
-> Maester 3.0 merges into `main` at that time, so the **preview** build on the PowerShell Gallery becomes 3.0. It has breaking changes: most notably, **PowerShell 7.4 or later is required** (Windows PowerShell 5.1 is no longer supported). Custom tests, including Pester tests, should keep working, but expect some rough edges.
+> The **preview** build on the PowerShell Gallery is now Maester 3.0. It has breaking changes: most notably, **PowerShell 7.4 or later is required** (Windows PowerShell 5.1 is no longer supported). Custom tests, including Pester tests, keep working; `Convert-MtTest` converts them to the new native format.
 >
-> **If your automation installs the preview build** (`-AllowPrerelease`, or `maester_version: preview` in the GitHub Action), **switch to the release build now**: drop `-AllowPrerelease` or pin `-RequiredVersion 2.3.0`, and use `maester_version: latest` in the action.
+> **If your automation installs the preview build** (`-AllowPrerelease`, or `maester_version: preview` in the GitHub Action) and isn't ready for 3.0, **switch to the release build**: drop `-AllowPrerelease` or pin `-RequiredVersion 2.3.0`, and use `maester_version: latest` in the action.
 >
-> Read the [Maester 3.0 announcement](https://maester.dev/blog/maester-3-0) for what's changing.
+> Read the [Maester 3.0 announcement](https://maester.dev/blog/maester-3-0) and [Upgrading from 2.x](https://maester.dev/docs/next/upgrading-from-2x).
 
-> [!IMPORTANT]
-> **Contributions paused for the Maester 3.0 rewrite (from October 6, 2026, for about a week)**
+> [!NOTE]
+> **Contributions are open again**
 >
-> We're rewriting the Maester engine and all of the tests for 3.0. To avoid merge conflicts, please **don't open new pull requests** (new tests, test updates or engine changes) until the rewrite lands. PRs that are already open won't be merged during the pause.
->
-> Bug reports and ideas are still welcome as issues. We'll remove this notice when contributions reopen. Thank you for your patience! 💖
+> The Maester 3.0 rewrite is in `main`. Checks are now native tests (`Test.<ID>.ps1` and `Test.<ID>.md`), and the repository has a new folder layout. Before you open a pull request, read [Writing tests](https://maester.dev/docs/next/writing-tests) and the [contributing guide](https://maester.dev/docs/next/contributing#repository-layout). If your pull request was opened before 3.0, rebase it on `main`; `Convert-MtTest` converts Pester-format checks to native tests.
 
 Maester is an open source **PowerShell-based test automation framework** designed to help you monitor and maintain the security configuration of your Microsoft 365 environment. To learn more about Maester and to get started, visit [Maester.dev](https://maester.dev).
 
@@ -36,7 +34,7 @@ Maester is an open source **PowerShell-based test automation framework** designe
 ## Key Features
 
 - **Automated Testing**: Maester provides a comprehensive set of automated tests to ensure the security of your Microsoft 365 setup.
-- **Customizable**: Tailor Maester to your specific needs by adding custom Pester tests.
+- **Customizable**: Tailor Maester to your specific needs with your own tests, per-tenant configuration and test parameters.
 - **Formatted Results**: Export results in CSV, Excel, HTML, JSON, or Markdown format.
 - **Notifications**: Send notification of results to email, Teams, or Slack.
 - **CI/CD Workflows**: Run Maester in a GitHub, Azure DevOps, or GitLab pipeline.
@@ -48,13 +46,13 @@ Maester is an open source **PowerShell-based test automation framework** designe
 
 ### Installation
 
+Maester needs PowerShell 7.4 or later on Windows, Linux or macOS.
+
 ```powershell
 Install-Module -Name Maester -Scope CurrentUser
 ```
 
-### Installing Maester Tests
-
-Run the following commands to install the Maester tests under your home directory. Pester will be installed if needed.
+The built-in tests ship inside the module. Optionally, prepare a folder for your configuration and your own tests:
 
 ```powershell
 md ~/maester-tests
@@ -64,13 +62,18 @@ Install-MaesterTests
 
 ## Running Maester
 
-To run the tests in this folder run the following PowerShell commands. To learn more see [maester.dev](https://maester.dev).
-
 ```powershell
-cd ~/maester-tests
 Connect-Maester
 Invoke-Maester
 ```
+
+To also run the custom tests and configuration in a folder, pass it with `-Path` (or run from that folder):
+
+```powershell
+Invoke-Maester -Path ~/maester-tests
+```
+
+To learn more see [maester.dev](https://maester.dev).
 
 ### Running Maester in a National Cloud Environment
 
@@ -89,16 +92,25 @@ Connect-Maester -Environment USGov
 
 ## Keeping your Maester tests up to date
 
-The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.
-
-- Update the `Maester` PowerShell module to the latest version and load it.
-- Use `Update-MaesterTests` to update the test files in the folder where you have installed them.
+The Maester team will add new tests over time. The tests ship inside the module, so updating the module updates the tests:
 
 ```powershell
 Update-Module Maester -Force
-Import-Module Maester
-Update-MaesterTests -Path ~/maester-tests
 ```
+
+Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrote in 2.x are no longer used. Remove them with `Update-MaesterTests -Path ~/maester-tests`, and see [Upgrading from 2.x](https://maester.dev/docs/upgrading-from-2x) for everything else that changed.
+
+## Writing your own tests
+
+A Maester test is two files: `Test.<ID>.ps1`, a PowerShell function with a `[MaesterTest(...)]` attribute, and `Test.<ID>.md` with its description and remediation steps.
+
+```powershell
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph   # scaffold custom/Test.CONTOSO.1001.*
+Get-MtTest -Path ./custom                                                            # validate, no tenant needed
+Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1                                   # run one test
+```
+
+Custom tests written for 2.x with Pester still run when Pester 5.7.1 or later is installed, and `Convert-MtTest` converts them. See [Writing native tests](https://maester.dev/docs/writing-tests).
 
 ## Use as GitHub action
 
@@ -122,8 +134,12 @@ Maester's source code lives in the `powershell/` and `tests/` folders. To produc
 ```
 
 This builds and validates the module, unloads any other Maester module, and
-imports the local build into the current PowerShell session. Run its packaged
-tests with `Invoke-Maester -Path ./module/maester-tests`.
+imports the local build into the current PowerShell session. Run `Invoke-Maester`
+to run the built-in tests from the local build.
+
+From a source checkout you can also import `./powershell/Maester.psd1` directly: it loads the native tests from
+`./tests` and the committed engine DLL, so no build and no .NET SDK are needed unless you change the engine in
+`src/Maester.Engine`.
 
 After changing the report, use `./build/Build-LocalMaester.ps1 -BuildReport` to
 build and embed the report template before building and importing the module.

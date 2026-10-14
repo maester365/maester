@@ -1,0 +1,673 @@
+{
+  "TestSettings": [
+    {
+      "Id": "EIDSCA.AF01",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(1)",
+        "nist-800-53-r5:IA-2(2)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AF02",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AF03",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AF04",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AF05",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AF06",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098.005"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AG01",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-7"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AG02",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621",
+        "T1078.004"
+      ],
+      "Control": [
+        "nist-800-53-r5:SI-4(5)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AG03",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621",
+        "T1078.004"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM01",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(1)",
+        "nist-800-53-r5:IA-2(2)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM02",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Medium",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1566.002"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM03",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(8)",
+        "nist-800-53-r5:IA-2(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM04",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(8)",
+        "nist-800-53-r5:IA-2(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM06",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM07",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM09",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AM10",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-2(13)",
+        "nist-800-53-r5:IA-2(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP01",
+      "Severity": "High",
+      "Feature": "user-settings",
+      "Area": "privileged-access",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP04",
+      "Severity": "Medium",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "ResourceType": "Tenant",
+      "UserImpact": "Medium",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1136.003"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP05",
+      "Severity": "Medium",
+      "Feature": "user-settings",
+      "Area": "access-control",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP06",
+      "Severity": "Medium",
+      "Feature": "user-settings",
+      "Area": "access-control",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1136.003"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-2"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP07",
+      "Severity": "Medium",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1087.004",
+        "T1069.003"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP08",
+      "Severity": "High",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Medium",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP09",
+      "Severity": "High",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP10",
+      "Severity": "Medium",
+      "Feature": "user-settings",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098.001",
+        "T1528"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP14",
+      "Severity": "Low",
+      "Feature": "user-settings",
+      "Area": "access-control",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-3"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AS04",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1111",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-7",
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AT01",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AT02",
+      "Severity": "Medium",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1078.004"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AV01",
+      "Severity": "High",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Medium",
+      "ImplementationCost": "Medium",
+      "Mitre": [
+        "T1621"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-7",
+        "nist-800-53-r5:IA-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CP01",
+      "Severity": "High",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CP03",
+      "Severity": "High",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)",
+        "nist-800-53-r5:CM-5"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CP04",
+      "Severity": "High",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-4"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CR01",
+      "Severity": "High",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "Control": [
+        "nist-800-53-r5:CM-4"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CR02",
+      "Severity": "Low",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CR03",
+      "Severity": "Low",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ]
+    },
+    {
+      "Id": "EIDSCA.CR04",
+      "Severity": "Low",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ]
+    },
+    {
+      "Id": "EIDSCA.PR01",
+      "Severity": "High",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.PR02",
+      "Severity": "High",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.PR03",
+      "Severity": "Medium",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:IA-5(1)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.PR05",
+      "Severity": "Medium",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-7"
+      ]
+    },
+    {
+      "Id": "EIDSCA.PR06",
+      "Severity": "Medium",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1110"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-7"
+      ]
+    },
+    {
+      "Id": "EIDSCA.ST08",
+      "Severity": "Medium",
+      "Feature": "groups",
+      "Area": "external-access",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "T1098"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6"
+      ]
+    },
+    {
+      "Id": "EIDSCA.ST09",
+      "Severity": "Low",
+      "Feature": "groups",
+      "Area": "external-access",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6",
+        "nist-800-53-r5:AC-21"
+      ]
+    }
+  ]
+}
