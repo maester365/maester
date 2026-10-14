@@ -521,7 +521,6 @@ Describe 'Read-MtTenantContext' {
     It 'Says what it found after each step: the account, the organization, then each service' {
         $steps = [System.Collections.Generic.List[string]]::new()
         $context = InModuleScope Maester -Parameters @{ steps = $steps } {
-            param($steps)
             Mock Test-MtConnection { $Service -in 'Graph', 'Azure' }
             Mock Get-MgContext { [pscustomobject]@{ TenantId = 'tid'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Environment = 'Global'; Scopes = @() } }
             Mock Invoke-MtGraphRequest {
