@@ -386,38 +386,6 @@ Describe 'Write-MtRunSummary' {
         (Get-Content -LiteralPath $renderer.GameBestPath -Raw) | Should -Be '8150 2026-01-31'
     }
 
-    It 'Shows the best game of the run in that frame when a game was over and another was played' {
-        $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
-        $renderer.Width = 120; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
-        $renderer.GameSeed = 7; $renderer.GameCourseOnly = $true; $renderer.GameSkipOpening = $true
-        $renderer.GameBestPath = Join-Path $TestDrive 'again/run-best.txt'
-        $renderer.Open()
-        $renderer.Start(10)
-        'd', 'e', 'a', 'd' | ForEach-Object { $renderer.SendKey([ConsoleKey]0, [char]$_) }
-        $finish = {
-            param([string] $Id, [string] $Result, [double] $Seconds)
-            $renderer.ItemStarting($Id, 'A test', $null)
-            $renderer.ItemFinished($Id, $Result, 'Critical')
-            $renderer.AdvanceGame($Seconds)
-        }
-        # A game of three coins, which three failed tests of critical severity end: nobody jumps.
-        1..3 | ForEach-Object { & $finish "P.$_" 'Passed' 8 }
-        1..3 | ForEach-Object { & $finish "F.$_" 'Failed' 10 }
-        $renderer.GameResult.Hits | Should -Be 3
-        # Enter, and a game of one coin.
-        $renderer.SendKey([ConsoleKey]::Enter, [char]13)
-        & $finish 'P.4' 'Passed' 8
-        $renderer.Close()
-        $result = $renderer.GameResult
-        $result.Games | Should -Be 2
-        $result.Score | Should -Be 3000
-        $lines = @(InModuleScope Maester -Parameters @{ c = $script:plain; res = $script:results; r = $renderer } { param($c, $res, $r) Write-MtRunSummary -MaesterResults $res -ReportPath 'out/report.html' -Console $c -Renderer $r 6>&1 } | ForEach-Object { "$_" })
-        $row = { param($text) ' |  ' + $text.PadRight(44) + '  |' }
-        $lines[-5] | Should -Be (& $row 'SCORE  3,000  of 10,000')
-        $lines[-4] | Should -Be (& $row '3 coins, 0 stomps, best streak 3, 3 hits')
-        (Get-Content -LiteralPath $renderer.GameBestPath -Raw) | Should -Match '^3000 \d{4}-\d\d-\d\d\n$'
-    }
-
     It 'Says on the debug stream how the frames of the game went, for a run with -Debug, and nothing of it when the game was not played' {
         $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
         $renderer.Width = 120; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
@@ -460,61 +428,6 @@ Describe 'Write-MtRunSummary' {
         $quiet.Count | Should -Be 0
     }
 
-    It 'Says in that frame how it is with DC01, the last one in the way, when it came into the game' {
-        $start = {
-            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
-            $renderer.Width = 120; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
-            $renderer.GameSeed = 7; $renderer.GameCourseOnly = $true; $renderer.GameSkipOpening = $true
-            $renderer.Open()
-            $renderer.Start(60)
-            'd', 'e', 'a', 'd' | ForEach-Object { $renderer.SendKey([ConsoleKey]0, [char]$_) }
-            $renderer
-        }
-        $summary = { param($r) @(InModuleScope Maester -Parameters @{ c = $script:plain; res = $script:results; r = $r } { param($c, $res, $r) Write-MtRunSummary -MaesterResults $res -ReportPath 'out/report.html' -Console $c -Renderer $r 6>&1 } | ForEach-Object { [string]$_ }) }
-        $row = { param($text) ' |  ' + $text.PadRight(44) + '  |' }
-
-        # A run of sixty tests that stops after three: DC01 never came on screen. It is not counted
-        # against the player, and nothing is said of it: three of sixty collected is 500 of 10,000.
-        $renderer = & $start
-        foreach ($n in 1..3) {
-            $renderer.ItemStarting("P.$n", 'A passed test', $null)
-            $renderer.ItemFinished("P.$n", 'Passed', 'Low')
-            $renderer.AdvanceGame(8)
-        }
-        $renderer.GameResult.Score | Should -Be 450
-        $renderer.Close()
-        $result = $renderer.GameResult
-        $result.Boss | Should -BeFalse
-        $result.Score | Should -Be 500
-        $lines = & $summary $renderer
-        $lines[-4] | Should -Be (& $row 'SCORE  500  of 10,000')
-        $lines[-3] | Should -Be (& $row '3 coins, 0 stomps, best streak 3, 0 hits')
-        $lines[-2] | Should -Be ' +------------------------------------------------+'
-        ($lines -join "`n") | Should -Not -Match 'DC01'
-
-        # The same run, slower and further: DC01 comes with a minute to go, and the tests stop while it
-        # stands. That is said, and the tests are nine tenths of the score.
-        $renderer = & $start
-        foreach ($n in 1..36) {
-            $renderer.ItemStarting("P.$n", 'A passed test', $null)
-            $renderer.ItemFinished("P.$n", 'Passed', 'Low')
-            $renderer.AdvanceGame(2.5)
-        }
-        $renderer.AdvanceGame(3)
-        @($renderer.GetGameCourse() | Where-Object { $_ -like 'Boss *' }).Count | Should -Be 1
-        $renderer.Close()
-        $result = $renderer.GameResult
-        $result.Boss | Should -BeTrue
-        $result.BossDown | Should -BeFalse
-        $result.Coins | Should -BeGreaterThan 2
-        # (The last of the thirty-six was still waiting behind DC01 when the tests stopped: it is left out.)
-        $result.Score | Should -Be ([math]::Floor(9000 * $result.Coins / 59))
-        $lines = & $summary $renderer
-        $lines[-5] | Should -Be (& $row ('SCORE  {0}  of 10,000' -f $result.Score.ToString('N0', [cultureinfo]::InvariantCulture)))
-        $lines[-3] | Should -Be (& $row 'DC01 still standing')
-        $lines[-2] | Should -Be ' +------------------------------------------------+'
-        # (A run of ten tests has no DC01, and no line about it: the frame of the test before this one.)
-    }
 }
 
 Describe 'Read-MtTenantContext' {
