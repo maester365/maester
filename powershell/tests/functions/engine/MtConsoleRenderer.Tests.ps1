@@ -476,7 +476,7 @@ Describe 'MtConsoleRenderer panels' {
     It 'Fills a console that is wider and taller than the standard layout' {
         $t = New-TestPanelDashboard -Width 200 -Panels 'Failed', 'Slowest', 'Results'
         $t.Renderer.Start(700)
-        1..40 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
+        1..60 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
         $screen = $t.Renderer.GetPlainScreen(200, 50)
         # The right column ends at the edge of the window, and is wider than on a 160-column console.
         $boxes = @($screen | Where-Object { $_ -match '╮$' })
@@ -486,8 +486,9 @@ Describe 'MtConsoleRenderer panels' {
         # One square per test: 700 squares over more rows than the standard six would hold.
         (($screen -join '') -replace '[^■□]').Length | Should -Be 700
         ($screen -join "`n") | Should -Not -Match 'each square is'
-        # The Slowest panel lists two tests, and up to five when the column has rows to spare.
-        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -Be 5
+        # The Slowest panel fills the rows that are free with more tests: the column has no gap.
+        @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count | Should -BeGreaterThan 20
+        @($screen | Where-Object { $_ -match '[│╮╯]$' }).Count | Should -Be 49
         $t.Renderer.Close()
 
         # It gives the rows back when another panel needs them: every panel is still there, and the column is full.
@@ -499,8 +500,10 @@ Describe 'MtConsoleRenderer panels' {
         $short = $t.Renderer.GetPlainScreen(200, 30)
         @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count | Should -Be 4
         $slow = @($short | Where-Object { $_ -match '│ W\.\d+ ' }).Count
-        $slow | Should -BeGreaterThan 1
-        $slow | Should -BeLessThan 6
+        $slow | Should -BeGreaterThan 3
+        $slow | Should -BeLessThan 40
+        # No gap: every row of the column is a row of a panel.
+        @($short | Where-Object { $_ -match '[│╮╯]$' }).Count | Should -Be 29
         $t.Renderer.Close()
     }
 
@@ -739,6 +742,46 @@ Describe 'MtConsoleRenderer panels' {
         $narrow.Renderer.Start(1)
         ($narrow.Renderer.GetPlainScreen(142, 44) -join "`n") | Should -Match '│ ● Security & Com… +● Graph +│'
         $narrow.Renderer.Close()
+    }
+
+    It 'Shows a service that is still being checked with a spinner, and says the count once every answer is in' {
+        $t = New-TestPanelDashboard -Panels 'Connections'
+        $t.Renderer.SetConnections(@('Graph', 'Azure', 'Teams'), [bool[]]@($true, $false, $false), [bool[]]@($false, $true, $true))
+        $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box[0] | Should -Match '^╭─ Connections ─+ checking… ─╮$'
+        $box[1] | Should -Match '^│ ● Graph +[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Azure +│$'
+        $box[2] | Should -Match '^│ [⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Teams +│$'
+        # A service that is being checked is not connected yet, whatever was said for it.
+        $t.Renderer.SetConnections(@('Graph', 'Azure'), [bool[]]@($true, $true), [bool[]]@($false, $true))
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match '● Azure'
+        # With every answer in, the panel is as it always was.
+        $t.Renderer.SetConnections(@('Graph', 'Azure', 'Teams'), [bool[]]@($true, $true, $false), [bool[]]@($false, $false, $false))
+        $box = @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match '[│╭╰]' } | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' })
+        $box[0] | Should -Match '^╭─ Connections ─+ 2 of 3 ─╮$'
+        $box[1] | Should -Match '^│ ● Graph +● Azure +│$'
+        $box[2] | Should -Match '^│ ○ Teams +│$'
+        $t.Renderer.Close()
+    }
+
+    It 'Shows the Results and Failed panels at zero before the tests start, when asked to' {
+        # As before: nothing until the tests start.
+        $t = New-TestPanelDashboard -Panels 'Totals', 'Failed'
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match '╭─ (Results|Failed so far) '
+        $t.Renderer.Close()
+
+        $t = New-TestPanelDashboard -Panels 'Totals', 'Failed'
+        $t.Renderer.PanelsBeforeStart = $true
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '╭─ Results ─+ starting… ─╮'
+        $screen | Should -Match '╭─ Failed so far ─+ 0 ─╮'
+        $screen | Should -Match '│ Critical +0 │'
+        # Once the tests start the panels count as they always did.
+        $t.Renderer.Start(4)
+        $t.Renderer.ItemStarting('A.1', 'A test', $null); $t.Renderer.ItemFinished('A.1', 'Failed', 'High')
+        $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '╭─ Results ─+ 1 of 4 ─╮'
+        $screen | Should -Match '╭─ Failed so far ─+ 1 ─╮'
+        $t.Renderer.Close()
     }
 
     It 'Writes the tagline of the banner, and mentions a newer version in it as a link' {
@@ -1441,13 +1484,14 @@ Describe 'MtConsoleRenderer insight panels' {
         $screen = $t.Renderer.GetPlainScreen(165, 64)
         $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
         $titles | Should -Be 'Tenant', 'Results', 'Connections', 'Failed so far', 'Slowest so far', 'Drift since last run', 'Fix first', 'From the blog', 'Tip', 'Featured contributor'
-        # The last three end on the last row above the status bar, with the spare rows above them.
+        # The last three end on the last row above the status bar.
         $screen[62] | Should -Match '╰─+╯$'
         $screen[61] | Should -Match '│ 3 tests +│$'
         $blog = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ From the blog ' })[0])
-        $screen[$blog - 1].Length | Should -BeLessThan 105
-        # Slowest takes rows that are left over, up to five tests.
-        @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count | Should -Be 5
+        # Slowest takes the rows that are left over between the panels of the top and of the bottom.
+        @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count | Should -BeGreaterThan 5
+        $fix = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ Fix first ' })[0])
+        @($screen[$fix..$blog] | Where-Object { $_.Length -lt 105 }).Count | Should -Be 0
         $t.Renderer.Close()
 
         # They are at the bottom wherever they are in the list of panels.

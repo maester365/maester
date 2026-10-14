@@ -252,6 +252,8 @@ function Initialize-MtDashboard {
     $modifier = if (-not $IsMacOS) { 'Ctrl' } elseif ($Console -and $Console.Unicode) { [string][char]0x2318 } else { 'Cmd' }
     $Renderer.SetStatusBarHint("$modifier-click to open")
 
+    # The panels of the results are in their place from the first frame, at zero, and fill in.
+    $Renderer.PanelsBeforeStart = $true
     $Renderer.Open()
     if (-not $Renderer.IsFullScreen) { return }
 
@@ -347,6 +349,111 @@ function Set-MtDashboardTestInfo {
     }
     $names = $script:__MtDashboardNames
     $Renderer.SetTestInfo($info, $names.Areas, $names.Tactics, $names.Families)
+}
+
+function Start-MtDashboardTenant {
+    <#
+    .SYNOPSIS
+    Shows the Tenant and Connections panels before the tenant context is read, and returns the step that fills them in.
+
+    .DESCRIPTION
+    Reading the tenant context takes a second or more: the organization and the licences are requests to
+    Microsoft Graph, and some services are asked whether their token still works. The panels are put on
+    screen first, the tenant as "Reading the tenant" and each service with a spinner, and the script block
+    this returns is the -OnStep of Read-MtTenantContext: it shows the account, then the tenant and its
+    domain, then each service as its answer arrives. The run calls it twice: when the dashboard opens,
+    without services, so that the tenant panel and the account are there while the tests are discovered,
+    and again with the services once the tests say which are needed. The run sets both panels again from the finished
+    context (Set-MtDashboardTenant and the Connections of Get-MtConnectionInfo), which is what stays.
+
+    Returns nothing for a dashboard that does not own the screen or has neither panel.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
+    [CmdletBinding()]
+    [OutputType([scriptblock])]
+    param(
+        [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
+        [Parameter()] [AllowNull()] [pscustomobject] $Console,
+        # The services the tests of the run need, by their registry names.
+        [Parameter()] [AllowEmptyCollection()] [string[]] $Service = @()
+    )
+    if (-not $Renderer.IsFullScreen) { return }
+    $showTenant = $Renderer.HasPanel('Tenant')
+    $showConnections = $Renderer.HasPanel('Connections')
+    if (-not ($showTenant -or $showConnections)) { return }
+
+    $ellipsis = if ($Console -and $Console.Unicode) { [string][char]0x2026 } else { '...' }
+    $reading = Format-MtConsoleText "Reading the tenant$ellipsis" -Style Dim -Console $Console
+    # The account is in the Graph session and needs no request, so it is there from the start. Without the
+    # module in the session there is no connection to ask about, and asking would only load the module.
+    $account = ''
+    if (Get-Module -Name Microsoft.Graph.Authentication) {
+        try { $mg = Get-MgContext; if ($mg) { $account = @($mg.Account, [string]$mg.AuthType | Where-Object { $_ }) -join ' · ' } } catch { Write-Debug "No Graph context: $_" }
+    }
+    if ($showTenant) {
+        $lines = @($reading); if ($account) { $lines += Format-MtConsoleText $account -Style Dim -Console $Console }
+        $Renderer.SetPanelText('Tenant', 'Tenant', [string[]]$lines)
+    }
+
+    # The services in the order they keep while the answers come in: Graph, then by name. A service that
+    # is only listed when it is connected (Active Directory) waits for the finished context.
+    $registry = Get-MtServiceRegistry
+    $services = [ordered]@{}
+    $names = @($Service | ForEach-Object { Resolve-MtServiceName -Name $_ -Registry $registry } | Where-Object { $_ -and -not $registry.Services[$_].OptIn } | Select-Object -Unique)
+    foreach ($name in @($names | Sort-Object -Property @{ Expression = { $_ -ne 'Graph' } }, @{ Expression = { Get-MtServiceDisplayName -Name $_ } })) { $services[$name] = $null }
+
+    # What the step needs is kept with the module, not in a closure: a closure would not see the
+    # functions of the module when it is called later.
+    $script:__MtDashboardTenant = @{
+        Renderer = $Renderer; Console = $Console; Reading = $reading; Account = $account
+        ShowTenant = $showTenant; ShowConnections = $showConnections; Services = $services
+    }
+    Update-MtDashboardConnection
+
+    {
+        param($Name, $Data)
+        $d = $script:__MtDashboardTenant
+        if (-not $d) { return }
+        switch ($Name) {
+            'Account' {
+                $d.Account = @($Data.Account, $Data.AuthType | Where-Object { $_ }) -join ' · '
+                if ($d.ShowTenant -and $Data.Graph -and $d.Account) {
+                    $d.Renderer.SetPanelText('Tenant', 'Tenant', [string[]]@($d.Reading, (Format-MtConsoleText $d.Account -Style Dim -Console $d.Console)))
+                }
+                # Whether Graph is connected is known with the account; the other services are asked next.
+                if ($d.Services.Contains('Graph')) {
+                    $d.Services['Graph'] = [bool]$Data.Graph
+                    Update-MtDashboardConnection
+                }
+            }
+            'Organization' {
+                if ($d.ShowTenant -and $Data.TenantName) { $d.Renderer.SetTenant([string]$Data.TenantName, [string]$Data.PrimaryDomain, [string]$d.Account) }
+            }
+            'Service' {
+                if ($d.Services.Contains([string]$Data.Name)) {
+                    $d.Services[[string]$Data.Name] = [bool]$Data.Connected
+                    Update-MtDashboardConnection
+                }
+            }
+        }
+    }
+}
+
+function Update-MtDashboardConnection {
+    <#
+    .SYNOPSIS
+    Sets the Connections panel from the services of Start-MtDashboardTenant: a dot for an answer, a spinner for a service that is still being checked.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
+    [CmdletBinding()]
+    param()
+    $d = $script:__MtDashboardTenant
+    if (-not $d -or -not $d.ShowConnections -or $d.Services.Count -eq 0) { return }
+    $keys = @($d.Services.Keys)
+    $d.Renderer.SetConnections(
+        [string[]]@($keys | ForEach-Object { Get-MtServiceDisplayName -Name $_ }),
+        [bool[]]@($keys | ForEach-Object { [bool]$d.Services[$_] }),
+        [bool[]]@($keys | ForEach-Object { $null -eq $d.Services[$_] }))
 }
 
 function Set-MtDashboardTenant {

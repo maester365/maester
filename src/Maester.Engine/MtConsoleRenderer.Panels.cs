@@ -25,7 +25,8 @@ namespace Maester.Engine
         private const int MinPaneWidth = 38;
         private const int StandardPaneWidth = 58;
         private const int MaxPaneWidth = 90;
-        private const int SlowestKept = 20;
+        // As many of the slowest tests as the tallest column can list.
+        private const int SlowestKept = 50;
         private const string ResultsPanel = "Results";
         private static readonly string[] SeverityOrder = { "Critical", "High", "Medium", "Low" };
         private static readonly string[] SeverityColor = { "31", "38;5;208", "33", "2" };
@@ -50,6 +51,7 @@ namespace Maester.Engine
         {
             public string Name;
             public bool Connected;
+            public bool Pending;
         }
 
         private sealed class Recent
@@ -154,16 +156,44 @@ namespace Maester.Engine
         /// </summary>
         public void SetConnections(string[] names, bool[] connected)
         {
+            SetConnections(names, connected, null);
+        }
+
+        /// <summary>
+        /// The same, with the services that are still being checked: such a service has the spinner in place
+        /// of its dot until the panel is set again with its answer, so the list is on screen while the
+        /// answers come in.
+        /// </summary>
+        public void SetConnections(string[] names, bool[] connected, bool[] pending)
+        {
             lock (_gate)
             {
                 _connections.Clear();
                 int count = names == null ? 0 : names.Length;
                 for (int i = 0; i < count; i++)
                 {
-                    _connections.Add(new Connection { Name = PlainText(names[i]) ?? string.Empty, Connected = connected != null && i < connected.Length && connected[i] });
+                    bool waits = pending != null && i < pending.Length && pending[i];
+                    _connections.Add(new Connection
+                    {
+                        Name = PlainText(names[i]) ?? string.Empty,
+                        Connected = !waits && connected != null && i < connected.Length && connected[i],
+                        Pending = waits
+                    });
                 }
                 Redraw();
             }
+        }
+
+        /// <summary>
+        /// Show the Results and Failed panels from the moment the dashboard opens, at zero, instead of when
+        /// the tests start: the column then has its panels while the run prepares, and they fill in.
+        /// </summary>
+        public bool PanelsBeforeStart { get; set; }
+
+        /// <summary>Whether the panels of the results are shown: once tests ran, or before the first start when asked for.</summary>
+        private bool ResultPanelsShown()
+        {
+            return _running || _sequence.Count > 0 || (PanelsBeforeStart && !_started);
         }
 
         /// <summary>
@@ -693,7 +723,8 @@ namespace Maester.Engine
         /// The Blog, Tips and Contributor panels are at the bottom of the column, the others stack from its top.
         ///
         /// Every panel is shown whenever the column has the rows for it. The Slowest panel lists two tests, and
-        /// up to five when rows are left over. In a column that is too short the
+        /// takes the rows that are left over between the panels of the top and those of the bottom, so that
+        /// the column has no gap (fifty tests at most). In a column that is too short the
         /// Fix first panel gives first (fewer tests, then none), then the Slowest panel, down to one test.
         /// In a column that is still too short, the panels that can do with less take less (the Tips panel the
         /// height of the tip it shows, the Failed panel the severities that have failures, the Blog panel one
@@ -742,7 +773,7 @@ namespace Maester.Engine
             }
             else if (total < rows && slowest >= 0 && panels[slowest] != null && _slowest.Count > _slowRows)
             {
-                _slowRows = Math.Min(SlowestMost, _slowRows + rows - total);
+                _slowRows = Math.Min(SlowestKept, _slowRows + rows - total);
                 panels[slowest] = BuildPanel(names[slowest], inner, ansi);
             }
 
@@ -881,11 +912,14 @@ namespace Maester.Engine
         {
             if (_connections.Count == 0) return null;
             int on = 0;
+            int waiting = 0;
             foreach (var c in _connections)
             {
                 if (c.Connected) on++;
+                if (c.Pending) waiting++;
             }
-            var panel = new PanelContent { Title = "Connections", Badge = N(on) + " of " + N(_connections.Count) };
+            // The count is not said while an answer is still out.
+            var panel = new PanelContent { Title = "Connections", Badge = waiting > 0 ? "checking" + Ellipsis() : N(on) + " of " + N(_connections.Count) };
             const int gap = 2;
             int columns = width >= 68 ? 3 : 2;
             int cell = (width - gap * (columns - 1)) / columns;
@@ -899,7 +933,8 @@ namespace Maester.Engine
                     var c = _connections[i];
                     int nameRoom = cell - 2;
                     string name = c.Name.Length <= nameRoom ? c.Name : c.Name.Substring(0, Math.Max(0, nameRoom - 1)).TrimEnd() + (Unicode ? "…" : ".");
-                    row.Add(c.Connected ? (Unicode ? "●" : "*") : (Unicode ? "○" : "o"), c.Connected ? "32" : "2").Add(" ");
+                    if (c.Pending) row.Add(Spinner(), "36").Add(" ");
+                    else row.Add(c.Connected ? (Unicode ? "●" : "*") : (Unicode ? "○" : "o"), c.Connected ? "32" : "2").Add(" ");
                     row.Add(name, c.Connected ? null : "2");
                     if (i < end - 1) row.Add(new string(' ', cell - 2 - name.Length + gap));
                 }
@@ -933,7 +968,7 @@ namespace Maester.Engine
 
         private PanelContent BuildFailedPanel(int width, bool ansi)
         {
-            if (!_running && _sequence.Count == 0) return null;
+            if (!ResultPanelsShown()) return null;
             int max = 1;
             foreach (var s in SeverityOrder)
             {
@@ -1020,7 +1055,7 @@ namespace Maester.Engine
 
         /// <summary>
         /// The Slowest panel: the tests that took the longest, two of them. The rows that the right column has
-        /// left over go to more tests (five at most), and a column that is short of rows gets one.
+        /// left over go to more tests (fifty at most), and a column that is short of rows gets one.
         /// </summary>
         private PanelContent BuildSlowestPanel(int width, bool ansi)
         {

@@ -302,6 +302,45 @@ Describe 'Write-MtRunSummary' {
     }
 }
 
+Describe 'Read-MtTenantContext' {
+    It 'Says what it found after each step: the account, the organization, then each service' {
+        $steps = [System.Collections.Generic.List[string]]::new()
+        $context = InModuleScope Maester -Parameters @{ steps = $steps } {
+            param($steps)
+            Mock Test-MtConnection { $Service -in 'Graph', 'Azure' }
+            Mock Get-MgContext { [pscustomobject]@{ TenantId = 'tid'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Environment = 'Global'; Scopes = @() } }
+            Mock Invoke-MtGraphRequest {
+                if ($RelativeUri -eq 'organization') { [pscustomobject]@{ displayName = 'Contoso'; tenantType = 'AAD'; verifiedDomains = @([pscustomobject]@{ name = 'contoso.com'; isDefault = $true }) } }
+            }
+            Read-MtTenantContext -Service 'Graph', 'Azure', 'Teams' -OnStep {
+                param($name, $data)
+                $steps.Add("$name $(($data.GetEnumerator() | Sort-Object Key | ForEach-Object { "$($_.Key)=$($_.Value)" }) -join ' ')")
+            }
+        }
+        $steps | Should -Be @(
+            'Account Account=merill@contoso.com AuthType=Delegated Graph=True TenantId=tid'
+            'Organization PrimaryDomain=contoso.com TenantName=Contoso'
+            'Service Connected=True Name=Graph'
+            'Service Connected=True Name=Azure'
+            'Service Connected=False Name=Teams'
+        )
+        # The context is what Get-MtTenantContext returns.
+        $context.TenantName | Should -Be 'Contoso'
+        $context.PrimaryDomain | Should -Be 'contoso.com'
+        $context.TenantType | Should -Be 'Workforce'
+        $context.Services.Azure | Should -BeTrue
+        $context.Services.Teams | Should -BeFalse
+    }
+
+    It 'Returns the context when a step throws, and without a step' {
+        InModuleScope Maester {
+            Mock Test-MtConnection { $false }
+            (Read-MtTenantContext -Service 'Graph' -OnStep { throw 'no display' }).Services.Graph | Should -BeFalse
+            (Get-MtTenantContext -Service 'Graph').Services.Graph | Should -BeFalse
+        }
+    }
+}
+
 Describe 'Connection info' {
     BeforeAll {
         $script:context = [pscustomobject]@{
@@ -572,6 +611,48 @@ Describe 'Dashboard panels' {
         $screen | Should -Match 'Fix first ─+ 13 quick wins ─'
         # A run of a few tests has no insight panels.
         & $run 24 | Should -Not -Match 'Weakest areas|ATT&CK tactics|NIST 800-53|Fix first|Pass rate so far'
+    }
+
+    It 'Shows the tenant and the services while the tenant context is read, and fills in each answer' {
+        $renderer = New-PanelRenderer
+        $right = { @($renderer.GetPlainScreen(160, 44) | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' }) -join "`n" }
+        $step = InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } {
+            param($r, $c)
+            Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck
+            Start-MtDashboardTenant -Renderer $r -Console $c -Service 'Graph', 'Teams', 'ExchangeOnline', 'ActiveDirectory'
+        }
+        # At once: the panels of the results at zero, the tenant being read, every service being checked.
+        $screen = & $right
+        $screen | Should -Match '╭─ Results ─+ starting… ─╮'
+        $screen | Should -Match '╭─ Failed so far ─+ 0 ─╮'
+        $screen | Should -Match '│ Reading the tenant… +│'
+        $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
+        # Graph first, the others by name; a service that is only listed when connected is not here yet.
+        $screen | Should -Match '│ \S Graph +\S Exchange Online +│\n│ \S Teams +│'
+        $screen | Should -Not -Match 'Active Directory'
+
+        & $step 'Account' @{ TenantId = 'id'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Graph = $true }
+        $screen = & $right
+        $screen | Should -Match '│ Reading the tenant… +│\n│ merill@contoso\.com · Delegated +│'
+        $screen | Should -Match '│ ● Graph '
+
+        & $step 'Organization' @{ TenantName = 'Contoso'; PrimaryDomain = 'contoso.com' }
+        & $step 'Service' @{ Name = 'Teams'; Connected = $false }
+        $screen = & $right
+        $screen | Should -Match '│ Contoso +contoso\.com │\n│ merill@contoso\.com · Delegated +│'
+        $screen | Should -Match '│ ○ Teams '
+        $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
+
+        & $step 'Service' @{ Name = 'ExchangeOnline'; Connected = $true }
+        (& $right) | Should -Match '╭─ Connections ─+ 2 of 3 ─╮'
+        # A step for a service that is not in the panel changes nothing and does not fail.
+        { & $step 'Service' @{ Name = 'ActiveDirectory'; Connected = $true } } | Should -Not -Throw
+        $renderer.Close()
+    }
+
+    It 'Has no step for a dashboard that does not own the screen' {
+        $plain = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+        InModuleScope Maester -Parameters @{ r = $plain; c = $script:wide } { param($r, $c) Start-MtDashboardTenant -Renderer $r -Console $c -Service 'Graph' } | Should -BeNullOrEmpty
     }
 
     It 'Puts the links of the project in the status bar' {

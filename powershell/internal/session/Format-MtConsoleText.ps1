@@ -123,6 +123,20 @@ function Write-MtCIAnnotation {
     }
 }
 
+function Get-MtServiceDisplayName {
+    <#
+    .SYNOPSIS
+    The name a service has in the console: the registry key, spelled out where it is two words.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)] [string] $Name
+    )
+    $display = @{ ExchangeOnline = 'Exchange Online'; SecurityCompliance = 'Security & Compliance'; SharePointOnline = 'SharePoint Online'; AzureDevOps = 'Azure DevOps'; ActiveDirectory = 'Active Directory' }
+    if ($display.ContainsKey($Name)) { $display[$Name] } else { $Name }
+}
+
 function Get-MtConnectionInfo {
     <#
     .SYNOPSIS
@@ -141,7 +155,6 @@ function Get-MtConnectionInfo {
         [Parameter()] [AllowEmptyCollection()] [object[]] $Plan = @()
     )
     if (-not $TenantContext -or -not $TenantContext.Services) { return }
-    $display = @{ ExchangeOnline = 'Exchange Online'; SecurityCompliance = 'Security & Compliance'; SharePointOnline = 'SharePoint Online'; AzureDevOps = 'Azure DevOps'; ActiveDirectory = 'Active Directory' }
     $registry = Get-MtServiceRegistry
     # Skipped tests per service, counted in one pass over the plan.
     $skippedFor = @{}
@@ -158,7 +171,7 @@ function Get-MtConnectionInfo {
         elseif ($name -eq 'Graph') { (@($TenantContext.TenantName, $TenantContext.Account) | Where-Object { $_ }) -join ' · ' }
         else { 'connected' }
         [pscustomobject]@{
-            Name      = if ($display.ContainsKey($name)) { $display[$name] } else { $name }
+            Name      = Get-MtServiceDisplayName -Name $name
             Connected = $connected
             Detail    = $detail
         }

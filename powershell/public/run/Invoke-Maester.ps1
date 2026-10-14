@@ -624,6 +624,8 @@
             $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
             Initialize-MtDashboard -Renderer $renderer -Console $console -RunConfig $runConfig -OutputJsonFile $out.OutputJsonFile -SkipVersionCheck:$SkipVersionCheck
             $renderer.StartPhase('Prepare')
+            # The tenant panel and the account, while the tests are discovered; the rest follows as it is read.
+            $null = Start-MtDashboardTenant -Renderer $renderer -Console $console
         }
         # While the full-screen dashboard owns the screen, a warning or error this command writes is drawn over
         # and lost when the screen is restored. Collect what Write-Warning and Write-Error write where it would
@@ -772,7 +774,10 @@
         $nativeTests = @($nativeBuiltIn) + @($nativeCustom)
         $neededServices = @($nativeTests | ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading the tenant context...' -Force
-        $tenantContext = Get-MtTenantContext -Service $(if ($neededServices) { $neededServices } else { @('Graph') }) -Environment $(if ($runConfig.PSObject.Properties['Environment']) { $runConfig.Environment } else { $null })
+        # The dashboard shows the tenant and the services while they are read, and fills in each answer as it comes.
+        $tenantStep = if ($console.Mode -eq 'Interactive') { Start-MtDashboardTenant -Renderer $renderer -Console $console -Service $(if ($neededServices) { $neededServices } else { @('Graph') }) }
+        $tenantContext = Read-MtTenantContext -Service $(if ($neededServices) { $neededServices } else { @('Graph') }) -Environment $(if ($runConfig.PSObject.Properties['Environment']) { $runConfig.Environment } else { $null }) -OnStep $tenantStep
+        $script:__MtDashboardTenant = $null
         $nativePlan = @()
         if ($nativeTests.Count -gt 0) {
             $nativePlan = @(Resolve-MtNativePlan -Test $nativeTests -Selection $selection -RunConfig $runConfig -TenantContext $tenantContext `

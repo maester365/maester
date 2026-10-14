@@ -83,6 +83,7 @@ namespace Maester.Engine
         private bool _open;
         private bool _fullScreen;
         private bool _running;
+        private bool _started;
         private int _pauseDepth;
         private int[] _drawnLengths = new int[0];
         private int _tick;
@@ -345,6 +346,7 @@ namespace Maester.Engine
                 _status = null;
                 ResetPanelState();
                 _insights = _facts != null && _total >= InsightLeastTests;
+                _started = true;
                 _running = true;
                 Draw();
                 if (!_fullScreen) StartTimer();

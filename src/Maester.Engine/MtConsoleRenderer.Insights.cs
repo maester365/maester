@@ -47,8 +47,6 @@ namespace Maester.Engine
         private const int FamilyLeastTests = 3;
         private const int FixFirstMost = 6;
         private const int SlowestLeast = 2;
-        // With rows to spare in the right column the Slowest panel lists up to this many.
-        private const int SlowestMost = 5;
         private const string AreasPanel = "WeakestAreas";
         private const string TacticsPanel = "AttackTactics";
         private const string MatrixPanel = "FailedTests";

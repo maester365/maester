@@ -130,11 +130,12 @@ namespace Maester.Engine
         /// </summary>
         private PanelContent BuildTotalsPanel(int width, bool ansi)
         {
-            if (!_running && _sequence.Count == 0) return null;
+            if (!ResultPanelsShown()) return null;
             int[] counts = { _passed, _failed, _error, _investigate, _skipped + _other };
             int total = 0;
             foreach (int count in counts) total += count;
-            var panel = new PanelContent { Title = "Results", Badge = N(total) + " of " + N(_total) };
+            // Before the tests start the number of tests is not known yet.
+            var panel = new PanelContent { Title = "Results", Badge = _started ? N(total) + " of " + N(_total) : "starting" + Ellipsis() };
             panel.Lines.Add(TotalsBar(counts, total, Math.Max(1, width), ansi));
             panel.Lines.Add(TotalsLegend(counts, total, width, ansi));
             return panel;
