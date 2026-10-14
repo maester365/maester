@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1018"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "CA"
 ---
 
@@ -38,13 +40,19 @@ Review the configuration described above.
 | Test ID | MT.1018 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaEnforceSignInFrequency](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1018.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1539 Steal Web Session Cookie, T1550.004 Web Session Cookie |
+| Supports controls | nist-800-53-r5:IA-11, nist-800-53-r5:AC-12 |
+| PowerShell test | [Test-MtCaEnforceSignInFrequency](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1018.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1018 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1018.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1018.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1018.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1018.md)
+- Test: [`tests/maester/entra/Test.MT.1018.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1018.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1018.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1018.md)

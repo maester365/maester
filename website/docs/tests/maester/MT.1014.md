@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1014"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Privileged access"
   - "CA"
 ---
 
@@ -39,13 +41,19 @@ Review the configuration described above.
 | Test ID | MT.1014 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaDeviceComplianceAdminsExists](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Privileged access |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1539 Steal Web Session Cookie, T1557 Adversary-in-the-Middle |
+| Supports controls | nist-800-53-r5:IA-3, nist-800-53-r5:AC-2(11) |
+| PowerShell test | [Test-MtCaDeviceComplianceAdminsExists](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1014.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1014 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1014.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1014.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1014.md)
+- Test: [`tests/maester/entra/Test.MT.1014.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1014.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1014.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1014.md)

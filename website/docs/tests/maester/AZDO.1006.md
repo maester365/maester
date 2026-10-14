@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1006"
-  - "High"
+  - "Medium"
   - "Azure DevOps"
+  - "Users and access"
+  - "External access and sharing"
   - "AZDO"
 ---
 
@@ -43,15 +45,21 @@ Disable the "External guest access" policy to prevent external guest access if t
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1006 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoExternalGuestAccess](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1006.ps1) |
+| Product | Azure DevOps |
+| Feature | Users and access |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-3, nist-800-53-r5:AC-21 |
+| PowerShell test | [Test-AzdoExternalGuestAccess](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1006.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access](https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access) |
-| Tags | AZDO, AZDO.1006 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1006.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1006.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1006.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1006.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1006.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1006.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1006.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1006.md)

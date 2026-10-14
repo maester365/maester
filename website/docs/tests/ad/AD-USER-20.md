@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-20"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Applications and workload identities"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects whose `SamAccountName` or `Name` matches common se
 | Test ID | AD-USER-20 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Applications and workload identities |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserKnownServiceAccountCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-20.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-20, AD.User |
 
 ## Source
 

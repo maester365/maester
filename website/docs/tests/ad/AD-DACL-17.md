@@ -11,7 +11,8 @@ keywords:
   - "AD-DACL-17"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DACL"
+  - "Permissions and delegation"
+  - "Access control"
   - "AD"
   - "AD.DACL"
 ---
@@ -57,10 +58,13 @@ This test reads `$adState.DaclEntries`, filters for `InheritedObjectType` GUIDs 
 | Test ID | AD-DACL-17 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DACL |
+| Product | Active Directory |
+| Feature | Permissions and delegation |
+| Area | Access control |
+| Resource type | Permission |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclInheritedObjectTypeCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-17.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DACL-17, AD.DACL |
 
 ## Source
 

@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.4.2"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.4.2"
 ---
@@ -46,10 +48,19 @@ Rationale: Of the three policy options (i.e., none, quarantine, and reject), rej
 | Test ID | CISA.MS.EXO.4.2 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Medium |
+| Implementation cost | High |
+| MITRE ATT&CK | T1566 Phishing, T1598 Phishing for Information, T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.4.2 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.4.2v1 |
+| Supports controls | cisa-scuba:MS.EXO.4.2, nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-MtCisaDmarcRecordReject](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.2.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.4.2, MS.EXO, MS.EXO.4.2 |
 
 ## Source
 

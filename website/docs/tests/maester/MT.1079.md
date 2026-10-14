@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1079"
   - "Medium"
+  - "Defender"
   - "Exposure Management"
+  - "Applications and workload identities"
   - "Entra"
   - "EntraOps"
   - "Graph"
@@ -40,13 +42,20 @@ Review the findings in the [Applications inventory](https://learn.microsoft.com/
 | Test ID | MT.1079 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmAppRegWithPrivilegedUnusedPermissions](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1079.ps1) |
+| Product | Defender |
+| Related products | Entra ID |
+| Feature | Exposure Management |
+| Area | Applications and workload identities |
+| Resource type | ServicePrincipal |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtXspmAppRegWithPrivilegedUnusedPermissions](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1079.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | Entra, EntraOps, Graph, LongRunning, MT.1079, Privileged, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1079.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1079.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1079.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1079.md)
+- Test: [`tests/maester/xspm/Test.MT.1079.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1079.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1079.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1079.md)

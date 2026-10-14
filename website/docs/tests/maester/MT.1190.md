@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1190"
-  - "Medium"
-  - "Maester/Entra"
+  - "Low"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Infrastructure hardening"
   - "Entra"
   - "Preview"
 ---
@@ -41,16 +43,21 @@ Newly installed Microsoft Entra private network connectors automatically join th
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1190 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1190.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Infrastructure hardening |
+| Resource type | ServicePrincipal |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1190.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | Entra, Maester, MT.1190, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1190.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1190.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1190.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1190.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1190.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1190.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1190.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1190.md)

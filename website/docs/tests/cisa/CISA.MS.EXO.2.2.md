@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.2.2"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.2.2"
 ---
@@ -54,10 +56,19 @@ If SPF is configured, you will see a response resembling `v=spf1 include:spf.pro
 | Test ID | CISA.MS.EXO.2.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.2.2 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.2.2v3 |
+| Supports controls | cisa-scuba:MS.EXO.2.2, nist-800-53-r5:AC-2d |
 | PowerShell test | [Test-MtCisaSpfDirective](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.2.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.2.2, MS.EXO, MS.EXO.2.2 |
 
 ## Source
 

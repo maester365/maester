@@ -16,72 +16,72 @@ These tests validate Exchange Online security configuration checks from ORCA.
 
 ## Tests
 
-| Test ID | Title | Severity | Category |
-| --- | --- | --- | --- |
-| [ORCA.100](./ORCA.100.md) | Bulk Complaint Level threshold is between 4 and 6. | Medium | EXO |
-| [ORCA.101](./ORCA.101.md) | Bulk is marked as spam. | Medium | EXO |
-| [ORCA.102](./ORCA.102.md) | Advanced Spam filter options are turned off. | Medium | EXO |
-| [ORCA.103](./ORCA.103.md) | Outbound spam filter policy settings configured. | Medium | EXO |
-| [ORCA.104](./ORCA.104.md) | High Confidence Phish action set to Quarantine message. | High | EXO |
-| [ORCA.105](./ORCA.105.md) | Safe Links Synchronous URL detonation is enabled. | Medium | EXO |
-| [ORCA.106](./ORCA.106.md) | Quarantine retention period is 30 days. | Medium | EXO |
-| [ORCA.107](./ORCA.107.md) | End-user spam notification is enabled. | Low | EXO |
-| [ORCA.108](./ORCA.108.md) | DKIM signing is set up for all your custom domains. | Medium | EXO |
-| [ORCA.108.1](./ORCA.108.1.md) | DNS Records have been set up to support DKIM. | Medium | EXO |
-| [ORCA.109](./ORCA.109.md) | Senders are not being allow listed in an unsafe manner. | Medium | EXO |
-| [ORCA.110](./ORCA.110.md) | Internal Sender notifications are disabled. | Medium | EXO |
-| [ORCA.111](./ORCA.111.md) | Anti-phishing policy exists and EnableUnauthenticatedSender is true. | High | EXO |
-| [ORCA.112](./ORCA.112.md) | Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy. | Medium | EXO |
-| [ORCA.113](./ORCA.113.md) | AllowClickThrough is disabled in Safe Links policies. | Medium | EXO |
-| [ORCA.114](./ORCA.114.md) | No IP Allow Lists have been configured. | High | EXO |
-| [ORCA.115](./ORCA.115.md) | Mailbox intelligence based impersonation protection is enabled in anti-phishing policies. | Medium | EXO |
-| [ORCA.116](./ORCA.116.md) | Mailbox intelligence based impersonation protection action set to move message to junk mail folder. | Medium | EXO |
-| [ORCA.118.1](./ORCA.118.1.md) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | High | EXO |
-| [ORCA.118.2](./ORCA.118.2.md) | Domains are not being allow listed in an unsafe manner in Transport Rules. | High | EXO |
-| [ORCA.118.3](./ORCA.118.3.md) | Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | Medium | EXO |
-| [ORCA.118.4](./ORCA.118.4.md) | Your own domains are not being allow listed in an unsafe manner in Transport Rules. | Medium | EXO |
-| [ORCA.119](./ORCA.119.md) | Similar Domains Safety Tips is enabled. | Info | EXO |
-| [ORCA.120.1](./ORCA.120.1.md) | Zero Hour Autopurge Enabled for Phish. | Medium | EXO |
-| [ORCA.120.2](./ORCA.120.2.md) | Zero Hour Autopurge Enabled for Malware. | Medium | EXO |
-| [ORCA.120.3](./ORCA.120.3.md) | Zero Hour Autopurge Enabled for Spam. | Medium | EXO |
-| [ORCA.121](./ORCA.121.md) | Supported filter policy action used. | Low | EXO |
-| [ORCA.123](./ORCA.123.md) | Unusual Characters Safety Tips is enabled. | Info | EXO |
-| [ORCA.124](./ORCA.124.md) | Safe attachments unknown malware response set to block messages. | High | EXO |
-| [ORCA.139](./ORCA.139.md) | Spam action set to move message to junk mail folder or quarantine. | Low | EXO |
-| [ORCA.140](./ORCA.140.md) | High Confidence Spam action set to Quarantine message. | High | EXO |
-| [ORCA.141](./ORCA.141.md) | Bulk action set to Move message to Junk Email Folder. | Medium | EXO |
-| [ORCA.142](./ORCA.142.md) | Phish action set to Quarantine message. | Medium | EXO |
-| [ORCA.143](./ORCA.143.md) | Safety Tips are enabled. | Info | EXO |
-| [ORCA.156](./ORCA.156.md) | Safe Links Policies are tracking when user clicks on safe links. | Medium | EXO |
-| [ORCA.158](./ORCA.158.md) | Safe Attachments is enabled for SharePoint and Teams. | Medium | EXO |
-| [ORCA.179](./ORCA.179.md) | Safe Links is enabled intra-organization. | Medium | EXO |
-| [ORCA.180](./ORCA.180.md) | Anti-phishing policy exists and EnableSpoofIntelligence is true. | Medium | EXO |
-| [ORCA.189](./ORCA.189.md) | Safe Attachments is not bypassed. | Medium | EXO |
-| [ORCA.189.2](./ORCA.189.2.md) | Safe Links is not bypassed. | High | EXO |
-| [ORCA.205](./ORCA.205.md) | Common attachment type filter is enabled. | Medium | EXO |
-| [ORCA.220](./ORCA.220.md) | Advanced Phish filter Threshold level is adequate. | Medium | EXO |
-| [ORCA.221](./ORCA.221.md) | Mailbox intelligence is enabled in anti-phishing policies. | Medium | EXO |
-| [ORCA.222](./ORCA.222.md) | Domain Impersonation action is set to move to Quarantine. | Medium | EXO |
-| [ORCA.223](./ORCA.223.md) | User impersonation action is set to move to Quarantine. | High | EXO |
-| [ORCA.224](./ORCA.224.md) | Similar Users Safety Tips is enabled. | Info | EXO |
-| [ORCA.225](./ORCA.225.md) | Safe Documents is enabled for Office clients. | Medium | EXO |
-| [ORCA.226](./ORCA.226.md) | Each domain has a Safe Link policy applied to it. | Medium | EXO |
-| [ORCA.227](./ORCA.227.md) | Each domain has a Safe Attachments policy applied to it. | Medium | EXO |
-| [ORCA.228](./ORCA.228.md) | No trusted senders in Anti-phishing policy. | High | EXO |
-| [ORCA.229](./ORCA.229.md) | No trusted domains in Anti-phishing policy. | Medium | EXO |
-| [ORCA.230](./ORCA.230.md) | Each domain has a Anti-phishing policy applied to it, or the default policy is being used. | Medium | EXO |
-| [ORCA.231](./ORCA.231.md) | Each domain has a anti-spam policy applied to it, or the default policy is being used. | Medium | EXO |
-| [ORCA.232](./ORCA.232.md) | Each domain has a malware filter policy applied to it, or the default policy is being used. | High | EXO |
-| [ORCA.233](./ORCA.233.md) | Domains are pointed directly at EOP or enhanced filtering is used. | Medium | EXO |
-| [ORCA.233.1](./ORCA.233.1.md) | Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors. | Medium | EXO |
-| [ORCA.234](./ORCA.234.md) | Click through is disabled for Safe Documents. | Medium | EXO |
-| [ORCA.235](./ORCA.235.md) | SPF records is set up for all your custom domains. | Medium | EXO |
-| [ORCA.236](./ORCA.236.md) | Safe Links is enabled for emails. | Medium | EXO |
-| [ORCA.237](./ORCA.237.md) | Safe Links is enabled for teams messages. | Medium | EXO |
-| [ORCA.238](./ORCA.238.md) | Safe Links is enabled for office documents. | Medium | EXO |
-| [ORCA.239](./ORCA.239.md) | No exclusions for the built-in protection policies. | High | EXO |
-| [ORCA.240](./ORCA.240.md) | Outlook is configured to display external tags for external emails. | Medium | EXO |
-| [ORCA.241](./ORCA.241.md) | Anti-phishing policy exists and EnableFirstContactSafetyTips is true. | Medium | EXO |
-| [ORCA.242](./ORCA.242.md) | Important protection alerts responsible for AIR activities are enabled. | High | EXO |
-| [ORCA.243](./ORCA.243.md) | Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO. | Medium | EXO |
-| [ORCA.244](./ORCA.244.md) | Policies are configured to honor sending domains DMARC. | Medium | EXO |
+| Test ID | Title | Severity | Product | Feature |
+| --- | --- | --- | --- | --- |
+| [ORCA.100](./ORCA.100.md) | Bulk Complaint Level threshold is between 4 and 6. | Low | Defender | Anti-spam |
+| [ORCA.101](./ORCA.101.md) | Bulk is marked as spam. | Low | Defender | Anti-spam |
+| [ORCA.102](./ORCA.102.md) | Advanced Spam filter options are turned off. | Low | Defender | Anti-spam |
+| [ORCA.103](./ORCA.103.md) | Outbound spam filter policy settings configured. | Medium | Defender | Anti-spam |
+| [ORCA.104](./ORCA.104.md) | High Confidence Phish action set to Quarantine message. | High | Defender | Anti-spam |
+| [ORCA.105](./ORCA.105.md) | Safe Links Synchronous URL detonation is enabled. | Medium | Defender | Safe Links |
+| [ORCA.106](./ORCA.106.md) | Quarantine retention period is 30 days. | Low | Defender | Anti-spam |
+| [ORCA.107](./ORCA.107.md) | End-user spam notification is enabled. | Low | Defender | Quarantine |
+| [ORCA.108](./ORCA.108.md) | DKIM signing is set up for all your custom domains. | Medium | Defender | Email authentication |
+| [ORCA.108.1](./ORCA.108.1.md) | DNS Records have been set up to support DKIM. | Medium | Defender | Email authentication |
+| [ORCA.109](./ORCA.109.md) | Senders are not being allow listed in an unsafe manner. | Medium | Defender | Anti-spam |
+| [ORCA.110](./ORCA.110.md) | Internal Sender notifications are disabled. | Low | Defender | Anti-malware |
+| [ORCA.111](./ORCA.111.md) | Anti-phishing policy exists and EnableUnauthenticatedSender is true. | Medium | Defender | Anti-phishing |
+| [ORCA.112](./ORCA.112.md) | Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy. | Medium | Defender | Anti-phishing |
+| [ORCA.113](./ORCA.113.md) | AllowClickThrough is disabled in Safe Links policies. | Medium | Defender | Safe Links |
+| [ORCA.114](./ORCA.114.md) | No IP Allow Lists have been configured. | Medium | Defender | Anti-spam |
+| [ORCA.115](./ORCA.115.md) | Mailbox intelligence based impersonation protection is enabled in anti-phishing policies. | Medium | Defender | Anti-phishing |
+| [ORCA.116](./ORCA.116.md) | Mailbox intelligence based impersonation protection action set to move message to junk mail folder. | Medium | Defender | Anti-phishing |
+| [ORCA.118.1](./ORCA.118.1.md) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | High | Defender | Anti-spam |
+| [ORCA.118.2](./ORCA.118.2.md) | Domains are not being allow listed in an unsafe manner in Transport Rules. | High | Defender | Mail flow |
+| [ORCA.118.3](./ORCA.118.3.md) | Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | High | Defender | Anti-spam |
+| [ORCA.118.4](./ORCA.118.4.md) | Your own domains are not being allow listed in an unsafe manner in Transport Rules. | High | Defender | Mail flow |
+| [ORCA.119](./ORCA.119.md) | Similar Domains Safety Tips is enabled. | Info | Defender | Anti-phishing |
+| [ORCA.120.1](./ORCA.120.1.md) | Zero Hour Autopurge Enabled for Phish. | Medium | Defender | Zero-hour auto purge |
+| [ORCA.120.2](./ORCA.120.2.md) | Zero Hour Autopurge Enabled for Malware. | Medium | Defender | Zero-hour auto purge |
+| [ORCA.120.3](./ORCA.120.3.md) | Zero Hour Autopurge Enabled for Spam. | Medium | Defender | Zero-hour auto purge |
+| [ORCA.121](./ORCA.121.md) | Supported filter policy action used. | Medium | Defender | Zero-hour auto purge |
+| [ORCA.123](./ORCA.123.md) | Unusual Characters Safety Tips is enabled. | Info | Defender | Anti-phishing |
+| [ORCA.124](./ORCA.124.md) | Safe attachments unknown malware response set to block messages. | High | Defender | Safe Attachments |
+| [ORCA.139](./ORCA.139.md) | Spam action set to move message to junk mail folder or quarantine. | Low | Defender | Anti-spam |
+| [ORCA.140](./ORCA.140.md) | High Confidence Spam action set to Quarantine message. | Medium | Defender | Anti-spam |
+| [ORCA.141](./ORCA.141.md) | Bulk action set to Move message to Junk Email Folder. | Low | Defender | Anti-spam |
+| [ORCA.142](./ORCA.142.md) | Phish action set to Quarantine message. | Medium | Defender | Anti-spam |
+| [ORCA.143](./ORCA.143.md) | Safety Tips are enabled. | Info | Defender | Anti-spam |
+| [ORCA.156](./ORCA.156.md) | Safe Links Policies are tracking when user clicks on safe links. | Medium | Defender | Safe Links |
+| [ORCA.158](./ORCA.158.md) | Safe Attachments is enabled for SharePoint and Teams. | Medium | Defender | Safe Attachments |
+| [ORCA.179](./ORCA.179.md) | Safe Links is enabled intra-organization. | Medium | Defender | Safe Links |
+| [ORCA.180](./ORCA.180.md) | Anti-phishing policy exists and EnableSpoofIntelligence is true. | Medium | Defender | Anti-phishing |
+| [ORCA.189](./ORCA.189.md) | Safe Attachments is not bypassed. | Medium | Defender | Mail flow |
+| [ORCA.189.2](./ORCA.189.2.md) | Safe Links is not bypassed. | High | Defender | Mail flow |
+| [ORCA.205](./ORCA.205.md) | Common attachment type filter is enabled. | Medium | Defender | Anti-malware |
+| [ORCA.220](./ORCA.220.md) | Advanced Phish filter Threshold level is adequate. | Medium | Defender | Anti-phishing |
+| [ORCA.221](./ORCA.221.md) | Mailbox intelligence is enabled in anti-phishing policies. | Medium | Defender | Anti-phishing |
+| [ORCA.222](./ORCA.222.md) | Domain Impersonation action is set to move to Quarantine. | Medium | Defender | Anti-phishing |
+| [ORCA.223](./ORCA.223.md) | User impersonation action is set to move to Quarantine. | Medium | Defender | Anti-phishing |
+| [ORCA.224](./ORCA.224.md) | Similar Users Safety Tips is enabled. | Info | Defender | Anti-phishing |
+| [ORCA.225](./ORCA.225.md) | Safe Documents is enabled for Office clients. | Medium | Defender | Safe Attachments |
+| [ORCA.226](./ORCA.226.md) | Each domain has a Safe Link policy applied to it. | Medium | Defender | Safe Links |
+| [ORCA.227](./ORCA.227.md) | Each domain has a Safe Attachments policy applied to it. | Medium | Defender | Safe Attachments |
+| [ORCA.228](./ORCA.228.md) | No trusted senders in Anti-phishing policy. | Medium | Defender | Anti-phishing |
+| [ORCA.229](./ORCA.229.md) | No trusted domains in Anti-phishing policy. | Medium | Defender | Anti-phishing |
+| [ORCA.230](./ORCA.230.md) | Each domain has a Anti-phishing policy applied to it, or the default policy is being used. | Low | Defender | Anti-phishing |
+| [ORCA.231](./ORCA.231.md) | Each domain has a anti-spam policy applied to it, or the default policy is being used. | Low | Defender | Anti-spam |
+| [ORCA.232](./ORCA.232.md) | Each domain has a malware filter policy applied to it, or the default policy is being used. | Low | Defender | Anti-malware |
+| [ORCA.233](./ORCA.233.md) | Domains are pointed directly at EOP or enhanced filtering is used. | Medium | Defender | Mail flow |
+| [ORCA.233.1](./ORCA.233.1.md) | Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors. | Medium | Defender | Mail flow |
+| [ORCA.234](./ORCA.234.md) | Click through is disabled for Safe Documents. | Medium | Defender | Safe Attachments |
+| [ORCA.235](./ORCA.235.md) | SPF records is set up for all your custom domains. | Medium | Defender | Email authentication |
+| [ORCA.236](./ORCA.236.md) | Safe Links is enabled for emails. | Medium | Defender | Safe Links |
+| [ORCA.237](./ORCA.237.md) | Safe Links is enabled for teams messages. | Medium | Defender | Safe Links |
+| [ORCA.238](./ORCA.238.md) | Safe Links is enabled for office documents. | Medium | Defender | Safe Links |
+| [ORCA.239](./ORCA.239.md) | No exclusions for the built-in protection policies. | High | Defender | Safe Links |
+| [ORCA.240](./ORCA.240.md) | Outlook is configured to display external tags for external emails. | Medium | Defender | Tenant settings |
+| [ORCA.241](./ORCA.241.md) | Anti-phishing policy exists and EnableFirstContactSafetyTips is true. | Medium | Defender | Anti-phishing |
+| [ORCA.242](./ORCA.242.md) | Important protection alerts responsible for AIR activities are enabled. | High | Defender | Tenant settings |
+| [ORCA.243](./ORCA.243.md) | Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO. | Medium | Defender | Email authentication |
+| [ORCA.244](./ORCA.244.md) | Policies are configured to honor sending domains DMARC. | Medium | Defender | Anti-phishing |

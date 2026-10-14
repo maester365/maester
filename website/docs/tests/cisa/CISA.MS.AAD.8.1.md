@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.8.1"
   - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "External identities"
+  - "External access and sharing"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.8.1"
@@ -47,10 +50,19 @@ Rationale: Limiting the amount of object information available to guest users in
 | Test ID | CISA.MS.AAD.8.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | External identities |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1087.003 Email Account, T1087.004 Cloud Account, T1526 Cloud Service Discovery, T1069.003 Cloud Groups |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.8.1 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.8.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.8.1, nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtCisaGuestUserAccess](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.1.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.8.1, Entra ID Free, MS.AAD, MS.AAD.8.1 |
 
 ## Source
 

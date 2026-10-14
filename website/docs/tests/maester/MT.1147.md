@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1147"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Hybrid identity"
+  - "Infrastructure hardening"
   - "Entra"
   - "Graph"
   - "Hybrid"
@@ -47,12 +49,19 @@ The krbtgt_AzureAD account is a sensitive identity used by Microsoft's cloud ser
 | Test ID | MT.1147 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtKrbtgtAzureADNotSynced](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1147.ps1) |
+| Product | Entra ID |
+| Related products | Active Directory |
+| Feature | Hybrid identity |
+| Area | Infrastructure hardening |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets |
+| Supports controls | nist-800-53-r5:IA-5, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtKrbtgtAzureADNotSynced](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1147.ps1) |
 | Services | Graph |
-| Tags | Entra, Graph, Hybrid, Maester, MT.1147 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1147.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1147.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1147.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1147.md)
+- Test: [`tests/maester/entra/Test.MT.1147.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1147.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1147.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1147.md)

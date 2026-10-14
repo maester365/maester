@@ -11,7 +11,8 @@ keywords:
   - "AD-REPL-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Replication"
+  - "Replication"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Replication"
 ---
@@ -61,10 +62,13 @@ This test retrieves all Active Directory replication connections and identifies:
 | Test ID | AD-REPL-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Replication |
+| Product | Active Directory |
+| Feature | Replication |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNonAutoReplicationConnectionCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-REPL-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-REPL-02, AD.Replication |
 
 ## Source
 

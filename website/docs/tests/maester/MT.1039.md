@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1039"
   - "Low"
-  - "Maester/Exchange"
+  - "Exchange Online"
+  - "Outlook"
+  - "Email and collaboration protection"
   - "Exchange"
 ---
 
@@ -60,12 +62,17 @@ The result should be `True`.
 | Test ID | MT.1039 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoMailTip](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1039.ps1) |
+| Product | Exchange Online |
+| Feature | Outlook |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtExoMailTip](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1039.ps1) |
 | Services | ExchangeOnline |
-| Tags | Exchange, Maester, MT.1039 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1039.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1039.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1039.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1039.md)
+- Test: [`tests/maester/exchange/Test.MT.1039.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1039.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1039.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1039.md)

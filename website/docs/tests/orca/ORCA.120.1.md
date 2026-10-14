@@ -11,6 +11,9 @@ keywords:
   - "ORCA.120.1"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Zero-hour auto purge"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,10 +44,17 @@ Enable Zero Hour Autopurge.
 | Test ID | ORCA.120.1 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Zero-hour auto purge |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA120_phish](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.120.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.120.1 |
 
 ## Source
 

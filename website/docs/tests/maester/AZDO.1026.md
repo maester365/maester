@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1026"
   - "Medium"
   - "Azure DevOps"
+  - "Repositories"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -51,13 +53,19 @@ Newly created projects have Advanced Security enabled upon creation.
 | Test ID | AZDO.1026 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1026.ps1) |
+| Product | Azure DevOps |
+| Feature | Repositories |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1552.001 Credentials In Files, T1195.001 Compromise Software Dependencies and Development Tools, T1190 Exploit Public-Facing Application |
+| Supports controls | nist-800-53-r5:SA-11, nist-800-53-r5:IA-5(7) |
+| PowerShell test | [Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1026.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding) |
-| Tags | AZDO, AZDO.1026 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1026.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1026.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1026.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1026.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1026.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1026.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1026.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1026.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-26"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Logging and detection"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts non-system user accounts whose names match attractive terms suc
 | Test ID | AD-USER-26 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Logging and detection |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserHoneyPotCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-26.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-26, AD.User |
 
 ## Source
 

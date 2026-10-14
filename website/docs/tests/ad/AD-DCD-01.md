@@ -11,7 +11,8 @@ keywords:
   - "AD-DCD-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain Controllers"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DomainController"
 ---
@@ -69,12 +70,15 @@ This test retrieves all domain controllers and checks their configured LDAP port
 | Test ID | AD-DCD-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcNonStandardLdapPortCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DCD-01.ps1) |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdDcNonStandardLdapPortCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DCD-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCD-01, AD.DomainController |
 
 ## Source
 
-- Test: [`tests/ad/domaincontroller/Test.AD-DCD-01.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DCD-01.ps1)
-- Documentation: [`tests/ad/domaincontroller/Test.AD-DCD-01.md`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DCD-01.md)
+- Test: [`tests/ad/domain-controller/Test.AD-DCD-01.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DCD-01.ps1)
+- Documentation: [`tests/ad/domain-controller/Test.AD-DCD-01.md`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DCD-01.md)

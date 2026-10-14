@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-11"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Privileged access"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects where the `AdminCount` attribute equals `1`.
 | Test ID | AD-USER-11 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Privileged access |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserAdminCountCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-11.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-11, AD.User |
 
 ## Source
 

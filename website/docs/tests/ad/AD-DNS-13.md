@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-13"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -57,10 +58,13 @@ This test counts DNSSEC trust anchor records configured in the TrustAnchors zone
 | Test ID | AD-DNS-13 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsDnssecRecordCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-13.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-13, AD.DNS |
 
 ## Source
 

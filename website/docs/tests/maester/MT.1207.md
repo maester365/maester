@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1207"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Agent identities"
+  - "Privileged access"
   - "Entra"
   - "Graph"
   - "LongRunning"
@@ -58,14 +60,20 @@ Foreign Blueprint Principals and their child Agent Identities must not be assign
 | Test ID | MT.1207 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentForeignPrivileged](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1207.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | Privileged access |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1199 Trusted Relationship |
+| Supports controls | nist-800-53-r5:AC-6, nist-800-53-r5:AC-20 |
+| PowerShell test | [Test-MtEntraAgentForeignPrivileged](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1207.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, Graph, LongRunning, Maester, MT.1207, Preview, Severity:High |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1207.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1207.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1207.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1207.md)
+- Test: [`tests/maester/entra/Test.MT.1207.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1207.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1207.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1207.md)

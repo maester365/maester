@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1034"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Privileged access"
   - "CA"
   - "CAWhatIf"
   - "LongRunning"
@@ -43,15 +45,20 @@ Exclude your emergency access accounts from the Conditional Access policies that
 | Test ID | MT.1034 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaWhatIfEmergencyAccessNotBlocked](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1034.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCaWhatIfEmergencyAccessNotBlocked](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1034.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Runs per instance | Yes, one result per instance from `Get-MtCaWhatIfEmergencyAccessInstance` |
 | Long running | Yes |
-| Tags | CA, CAWhatIf, LongRunning, Maester, MT.1034 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1034.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1034.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1034.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1034.md)
+- Test: [`tests/maester/entra/Test.MT.1034.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1034.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1034.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1034.md)

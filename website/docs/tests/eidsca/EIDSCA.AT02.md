@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AT02"
-  - "High"
+  - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -47,14 +49,20 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AT02 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAT02](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AT02.ps1) |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtCheckEidscaAT02](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AT02.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AT02 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AT02.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AT02.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AT02.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AT02.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AT02.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AT02.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AT02.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AT02.md)

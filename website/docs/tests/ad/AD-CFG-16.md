@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-16"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -52,10 +53,13 @@ Trusted root CAs act as the trust anchors for an entire PKI trust chain. If an a
 | Test ID | AD-CFG-16 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustedRootCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-16.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-16, AD.Config |
 
 ## Source
 

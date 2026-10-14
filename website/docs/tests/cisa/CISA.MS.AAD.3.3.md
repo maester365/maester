@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.3"
   - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.3"
@@ -51,11 +54,20 @@ If Microsoft Authenticator is in use, configure Authenticator to display context
 | Test ID | CISA.MS.AAD.3.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1110 Brute Force, T1621 Multi-Factor Authentication Request Generation |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.3 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.3.3v2 |
+| Supports controls | cisa-scuba:MS.AAD.3.3, nist-800-53-r5:IA-2(1), nist-800-53-r5:IA-2(2), nist-800-53-r5:IA-5c, nist-800-53-r5:IA-5g, nist-800-53-r5:IA-2(8), nist-800-53-r5:IA-2(13) |
 | PowerShell test | [Test-MtCisaAuthenticatorContext](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.3.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.3.3, Entra ID P1, MS.AAD, MS.AAD.3.3 |
 
 ## Source
 

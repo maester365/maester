@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-08"
-  - "High"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Domain Controllers"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DomainController"
 ---
@@ -75,14 +76,17 @@ This test retrieves the OperatingSystem attribute from all domain controllers an
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-08 |
-| Severity | High |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcOperatingSystemDetails](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-08.ps1) |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdDcOperatingSystemDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-08.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DC-08, AD.DomainController |
 
 ## Source
 
-- Test: [`tests/ad/domaincontroller/Test.AD-DC-08.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-08.ps1)
-- Documentation: [`tests/ad/domaincontroller/Test.AD-DC-08.md`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-08.md)
+- Test: [`tests/ad/domain-controller/Test.AD-DC-08.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-08.ps1)
+- Documentation: [`tests/ad/domain-controller/Test.AD-DC-08.md`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-08.md)

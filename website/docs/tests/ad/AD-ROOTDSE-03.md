@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-ROOTDSE-03"
-  - "High"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - Replication"
+  - "Replication"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Replication"
 ---
@@ -62,12 +63,17 @@ This test checks the Root DSE isSynchronized attribute and reports:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-ROOTDSE-03 |
-| Severity | High |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - Replication |
+| Product | Active Directory |
+| Feature | Replication |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdRootDseSynchronizedStatus](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-ROOTDSE-03, AD.Replication |
 
 ## Source
 

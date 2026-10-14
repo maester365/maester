@@ -11,7 +11,8 @@ keywords:
   - "AD-GPOREP-17"
   - "Critical"
   - "Active Directory"
-  - "Active Directory - GPO State"
+  - "Group Policy"
+  - "Authentication"
   - "AD"
   - "AD.GPOState"
 ---
@@ -55,12 +56,18 @@ keywords:
 | Test ID | AD-GPOREP-17 |
 | Severity | Critical |
 | Suite | Active Directory |
-| Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoCpasswordFoundCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-17.ps1) |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Authentication |
+| Resource type | GroupPolicy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1552.006 Group Policy Preferences |
+| Supports controls | nist-800-53-r5:IA-5(1), nist-800-53-r5:SC-28 |
+| PowerShell test | [Test-MtAdGpoCpasswordFoundCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-17.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOREP-17, AD.GPOState |
 
 ## Source
 
-- Test: [`tests/ad/gpostate/Test.AD-GPOREP-17.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-17.ps1)
-- Documentation: [`tests/ad/gpostate/Test.AD-GPOREP-17.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-17.md)
+- Test: [`tests/ad/gpo-state/Test.AD-GPOREP-17.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-17.ps1)
+- Documentation: [`tests/ad/gpo-state/Test.AD-GPOREP-17.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-17.md)

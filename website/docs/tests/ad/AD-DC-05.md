@@ -11,7 +11,8 @@ keywords:
   - "AD-DC-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain Controllers"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DomainController"
 ---
@@ -70,12 +71,15 @@ This test identifies which domain controllers hold FSMO roles and counts how man
 | Test ID | AD-DC-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcAllFsmoRolesCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-05.ps1) |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdDcAllFsmoRolesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DC-05, AD.DomainController |
 
 ## Source
 
-- Test: [`tests/ad/domaincontroller/Test.AD-DC-05.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-05.ps1)
-- Documentation: [`tests/ad/domaincontroller/Test.AD-DC-05.md`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-05.md)
+- Test: [`tests/ad/domain-controller/Test.AD-DC-05.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-05.ps1)
+- Documentation: [`tests/ad/domain-controller/Test.AD-DC-05.md`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-05.md)

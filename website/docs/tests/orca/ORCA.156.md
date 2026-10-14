@@ -11,6 +11,9 @@ keywords:
   - "ORCA.156"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Enable tracking of user clicks in Safe Links Policies.
 | Test ID | ORCA.156 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1204.001 Malicious Link |
+| Supports controls | nist-800-53-r5:SI-3, nist-800-53-r5:AU-12 |
 | PowerShell test | [Test-ORCA156](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.156.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.156 |
 
 ## Source
 

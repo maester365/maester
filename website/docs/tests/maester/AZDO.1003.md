@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1003"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "External access and sharing"
   - "AZDO"
 ---
 
@@ -50,13 +52,19 @@ External users are not able to access your project.
 | Test ID | AZDO.1003 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1003](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1003.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1213.003 Code Repositories, T1593.003 Code Repositories |
+| Supports controls | nist-800-53-r5:AC-22, nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCheckAZDO1003](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1003.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/vsts-anon-access](https://aka.ms/vsts-anon-access) |
-| Tags | AZDO, AZDO.1003 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1003.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1003.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1003.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1003.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1003.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1003.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1003.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1003.md)

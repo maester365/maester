@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1183"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Hybrid identity"
+  - "Infrastructure hardening"
   - "Entra"
   - "Graph"
   - "Hybrid"
@@ -66,12 +68,17 @@ Update-MgDirectoryOnPremiseSynchronization `
 | Test ID | MT.1183 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1183.ps1) |
+| Product | Entra ID |
+| Feature | Hybrid identity |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098 Account Manipulation |
+| PowerShell test | [Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1183.ps1) |
 | Services | Graph |
-| Tags | Entra, Graph, Hybrid, Maester, MT.1183 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1183.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1183.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1183.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1183.md)
+- Test: [`tests/maester/entra/Test.MT.1183.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1183.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1183.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1183.md)

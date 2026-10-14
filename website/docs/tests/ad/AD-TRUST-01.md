@@ -11,7 +11,8 @@ keywords:
   - "AD-TRUST-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Trusts"
+  - "Trusts"
+  - "External access and sharing"
   - "AD"
   - "AD.Trust"
 ---
@@ -66,10 +67,13 @@ This test retrieves all trust objects from Active Directory using `Get-ADTrust` 
 | Test ID | AD-TRUST-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Trusts |
+| Product | Active Directory |
+| Feature | Trusts |
+| Area | External access and sharing |
+| Resource type | Trust |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-TRUST-01, AD.Trust |
 
 ## Source
 

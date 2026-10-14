@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOL-03"
-  - "Medium"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -64,12 +65,17 @@ This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOL-03 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoUnlinkedTargetCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOL-03, AD.GPO |
 
 ## Source
 

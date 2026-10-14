@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1011"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "CA"
 ---
 
@@ -33,13 +35,19 @@ See [Securing security info registration - Microsoft Learn](https://learn.micros
 | Test ID | MT.1011 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaSecureSecurityInfoRegistration](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1011.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.005 Device Registration |
+| Supports controls | nist-800-53-r5:AC-17, nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtCaSecureSecurityInfoRegistration](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1011.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1011 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1011.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1011.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1011.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1011.md)
+- Test: [`tests/maester/entra/Test.MT.1011.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1011.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1011.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1011.md)

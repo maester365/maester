@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.2.1.9"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Defender"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -91,12 +94,22 @@ Set-DkimSigningConfig -Identity < domainName > -Enabled $True
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.2.1.9 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.9 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:2.1.9, nist-800-53-r5:SC-8 |
 | PowerShell test | [Test-MtCisDkim](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.9.ps1) |
 | Services | ExchangeOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.9, L1 |
 
 ## Source
 

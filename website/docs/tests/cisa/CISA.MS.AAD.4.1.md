@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.4.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Logs and monitoring"
+  - "Logging and detection"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.4.1"
@@ -48,11 +51,20 @@ Follow the configuration instructions unique to the products and integration pat
 | Test ID | CISA.MS.AAD.4.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Logs and monitoring |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.4.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.4.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.4.1, nist-800-53-r5:AU-4 |
 | PowerShell test | [Test-MtCisaDiagnosticSettings](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.4.1.ps1) |
 | Services | Graph, Azure |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.4.1, Entra ID P1, MS.AAD, MS.AAD.4.1 |
 
 ## Source
 

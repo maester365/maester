@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1197"
-  - "High"
-  - "Maester/Entra"
+  - "Medium"
+  - "Entra ID"
+  - "Groups"
+  - "Identity lifecycle and hygiene"
   - "Entra"
 ---
 
@@ -61,14 +63,19 @@ migration.
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1197 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtDynamicGroupMemberOfRule](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1197.ps1) |
+| Product | Entra ID |
+| Feature | Groups |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Group |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtDynamicGroupMemberOfRule](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1197.ps1) |
 | Services | Graph |
-| Tags | Entra, Maester, MT.1197 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1197.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1197.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1197.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1197.md)
+- Test: [`tests/maester/entra/Test.MT.1197.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1197.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1197.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1197.md)

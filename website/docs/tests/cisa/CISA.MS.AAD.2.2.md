@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.2.2"
-  - "High"
+  - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "Identity Protection"
+  - "Logging and detection"
   - "Entra ID P2"
   - "MS.AAD"
   - "MS.AAD.2.2"
@@ -44,13 +47,22 @@ Follow the guide below to configure Entra ID Protection to send a regularly moni
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.2.2 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID P2 |
+| Product | Entra ID |
+| Feature | Identity Protection |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.2.2 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.2.2v1 |
+| Supports controls | cisa-scuba:MS.AAD.2.2, nist-800-53-r5:AC-2(12) |
 | PowerShell test | [Test-MtCisaNotifyHighRisk](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.2.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2 |
-| Tags | CISA, CISA.MS.AAD.2.2, Entra ID P2, MS.AAD, MS.AAD.2.2 |
 
 ## Source
 

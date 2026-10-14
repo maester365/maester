@@ -10,8 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1059"
   - "Medium"
-  - "Defender for Identity health issues"
   - "Defender"
+  - "Defender for Identity"
+  - "Logging and detection"
   - "MDI"
 ---
 
@@ -43,13 +44,19 @@ Follow the recommendations of each open health issue in the Microsoft Defender p
 | Test ID | MT.1059 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Defender for Identity health issues |
-| PowerShell test | [Test-MtMdiHealthIssue](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1059.ps1) |
+| Product | Defender |
+| Related products | Active Directory |
+| Feature | Defender for Identity |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtMdiHealthIssue](https://github.com/maester365/maester/blob/main/tests/maester/defender/Test.MT.1059.ps1) |
 | Services | Graph |
 | Runs per instance | Yes, one result per instance from `Get-MtMdiHealthIssueInstance` |
-| Tags | Defender, Maester, MDI, MT.1059 |
 
 ## Source
 
-- Test: [`tests/Maester/Defender/Test.MT.1059.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1059.ps1)
-- Documentation: [`tests/Maester/Defender/Test.MT.1059.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Defender/Test.MT.1059.md)
+- Test: [`tests/maester/defender/Test.MT.1059.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/defender/Test.MT.1059.ps1)
+- Documentation: [`tests/maester/defender/Test.MT.1059.md`](https://github.com/maester365/maester/blob/main/tests/maester/defender/Test.MT.1059.md)

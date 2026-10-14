@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOREP-06"
-  - "Medium"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - GPO State"
+  - "Group Policy"
+  - "Access control"
   - "AD"
   - "AD.GPOState"
 ---
@@ -53,14 +54,19 @@ keywords:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOREP-06 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoNoDomainComputersCount](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-06.ps1) |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Access control |
+| Resource type | GroupPolicy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdGpoNoDomainComputersCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-06.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOREP-06, AD.GPOState |
 
 ## Source
 
-- Test: [`tests/ad/gpostate/Test.AD-GPOREP-06.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-06.ps1)
-- Documentation: [`tests/ad/gpostate/Test.AD-GPOREP-06.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-06.md)
+- Test: [`tests/ad/gpo-state/Test.AD-GPOREP-06.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-06.ps1)
+- Documentation: [`tests/ad/gpo-state/Test.AD-GPOREP-06.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-06.md)

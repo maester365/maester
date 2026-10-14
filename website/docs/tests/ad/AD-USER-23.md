@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-23"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Privileged access"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test returns enabled user accounts that match the built-in administrator RI
 | Test ID | AD-USER-23 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Privileged access |
+| Resource type | User |
+| MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdUserBuiltInAdminEnabledDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-23.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-23, AD.User |
 
 ## Source
 

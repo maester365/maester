@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-05"
-  - "High"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -54,12 +55,15 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-05 |
-| Severity | High |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdUserDelegationAllowedCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-05, AD.User |
 
 ## Source
 

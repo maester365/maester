@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-REPL-01"
-  - "High"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - Replication"
+  - "Replication"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Replication"
 ---
@@ -62,12 +63,17 @@ This test retrieves all Active Directory replication connections and counts:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-REPL-01 |
-| Severity | High |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - Replication |
+| Product | Active Directory |
+| Feature | Replication |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDisabledReplicationConnectionCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-REPL-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-REPL-01, AD.Replication |
 
 ## Source
 

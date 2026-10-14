@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.2"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.2"
@@ -48,11 +51,20 @@ If phishing-resistant MFA has not been enforced for all users yet, create a Cond
 | Test ID | CISA.MS.AAD.3.2 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1110 Brute Force, T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.2 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.3.2v2 |
+| Supports controls | cisa-scuba:MS.AAD.3.2, nist-800-53-r5:IA-2(1), nist-800-53-r5:IA-2(2) |
 | PowerShell test | [Test-MtCisaMfa](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.2.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.3.2, Entra ID P1, MS.AAD, MS.AAD.3.2 |
 
 ## Source
 

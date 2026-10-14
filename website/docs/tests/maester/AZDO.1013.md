@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1013"
   - "High"
   - "Azure DevOps"
+  - "Users and access"
+  - "Privileged access"
   - "AZDO"
 ---
 
@@ -48,13 +50,18 @@ Ensure that the owner is not a regular user.
 | Test ID | AZDO.1013 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationOwner](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1013.ps1) |
+| Product | Azure DevOps |
+| Feature | Users and access |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| PowerShell test | [Test-AzdoOrganizationOwner](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1013.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops) |
-| Tags | AZDO, AZDO.1013 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1013.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1013.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1013.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1013.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1013.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1013.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1013.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1013.md)

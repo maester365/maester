@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1121"
   - "Medium"
-  - "Copilot Studio Agent Security"
+  - "Copilot Studio"
+  - "Agents"
+  - "AI and agents"
+  - "AI"
   - "AIAgent"
   - "CopilotStudio"
 ---
@@ -40,12 +43,17 @@ Learn more: [Create and edit custom instructions](https://learn.microsoft.com/mi
 | Test ID | MT.1121 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentMissingInstructions](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1121.ps1) |
+| Product | Copilot Studio |
+| Feature | Agents |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAIAgentMissingInstructions](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1121.ps1) |
 | Services | Graph |
-| Tags | AIAgent, CopilotStudio, Maester, MT.1121 |
 
 ## Source
 
-- Test: [`tests/Maester/AIAgent/Test.MT.1121.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1121.ps1)
-- Documentation: [`tests/Maester/AIAgent/Test.MT.1121.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1121.md)
+- Test: [`tests/maester/copilot-studio/Test.MT.1121.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1121.ps1)
+- Documentation: [`tests/maester/copilot-studio/Test.MT.1121.md`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1121.md)

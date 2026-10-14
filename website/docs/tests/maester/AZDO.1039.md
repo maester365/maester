@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1039"
   - "Medium"
   - "Azure DevOps"
+  - "Repositories"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -52,13 +54,19 @@ This test only applies to organizations that use the separate GitHub Secret Prot
 | Test ID | AZDO.1039 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1039.ps1) |
+| Product | Azure DevOps |
+| Feature | Repositories |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1552.001 Credentials In Files |
+| Supports controls | nist-800-53-r5:IA-5(7) |
+| PowerShell test | [Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1039.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#organization-level-onboarding) |
-| Tags | AZDO, AZDO.1039 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1039.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1039.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1039.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1039.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1039.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1039.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1039.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1039.md)

@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1075"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -38,13 +40,19 @@ Open all app service principals below and set 'Assignment required?' to Yes. Ass
 | Test ID | MT.1075 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtServicePrincipalsForAllUsers](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1075.ps1) |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | ServicePrincipal |
+| User impact | Medium |
+| Implementation cost | High |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-3, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtServicePrincipalsForAllUsers](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1075.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1075 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1075.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1075.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1075.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1075.md)
+- Test: [`tests/maester/entra/Test.MT.1075.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1075.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1075.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1075.md)

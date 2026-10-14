@@ -11,7 +11,8 @@ keywords:
   - "AD-GPOL-05"
   - "Medium"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -64,10 +65,15 @@ This test retrieves Organizational Units (OUs) from Active Directory using:
 | Test ID | AD-GPOL-05 |
 | Severity | Medium |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoBlockedInheritanceCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOL-05, AD.GPO |
 
 ## Source
 

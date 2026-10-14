@@ -11,7 +11,8 @@ keywords:
   - "AD-OU-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Organizational Units"
+  - "Organizational units"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.OU"
 ---
@@ -69,10 +70,13 @@ This test retrieves all Organizational Units from Active Directory and:
 | Test ID | AD-OU-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Organizational Units |
+| Product | Active Directory |
+| Feature | Organizational units |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOuEmptyDetails](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-OU-05, AD.OU |
 
 ## Source
 

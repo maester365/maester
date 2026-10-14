@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1022"
   - "High"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -46,13 +48,18 @@ Enable the policy to stop building from GitHub repositories.
 | Test ID | AZDO.1022 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTriggerPullRequestGitHubRepository](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1022.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1677 Poisoned Pipeline Execution |
+| PowerShell test | [Test-AzdoOrganizationTriggerPullRequestGitHubRepository](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1022.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks](https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks) |
-| Tags | AZDO, AZDO.1022 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1022.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1022.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1022.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1022.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1022.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1022.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1022.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1022.md)

@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1023"
   - "High"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -49,13 +51,19 @@ With this enabled, pipelines will not use tasks installed from the Marketplace. 
 | Test ID | AZDO.1023 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1023.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | High |
+| MITRE ATT&CK | T1195.001 Compromise Software Dependencies and Development Tools |
+| Supports controls | nist-800-53-r5:CM-7, nist-800-53-r5:CM-11 |
+| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1023.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution](https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution) |
-| Tags | AZDO, AZDO.1023 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1023.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1023.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1023.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1023.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1023.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1023.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1023.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1023.md)

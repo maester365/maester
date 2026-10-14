@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.5.2"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.5.2"
@@ -49,10 +52,19 @@ Rationale: Limiting applications consent to only specific privileged users reduc
 | Test ID | CISA.MS.AAD.5.2 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials, T1098.003 Additional Cloud Roles, T1528 Steal Application Access Token, T1566.002 Spearphishing Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.5.2 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.5.2v1 |
+| Supports controls | cisa-scuba:MS.AAD.5.2, nist-800-53-r5:AC-6(10), nist-800-53-r5:CM-5 |
 | PowerShell test | [Test-MtCisaAppUserConsent](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.2.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.5.2, Entra ID Free, MS.AAD, MS.AAD.5.2 |
 
 ## Source
 

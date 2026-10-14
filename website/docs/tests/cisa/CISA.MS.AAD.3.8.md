@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.8"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.8"
@@ -53,11 +56,20 @@ Create a Conditional Access policy requiring a user to be on a managed device wh
 | Test ID | CISA.MS.AAD.3.8 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.005 Device Registration |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.8 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.3.8v1 |
+| Supports controls | cisa-scuba:MS.AAD.3.8, nist-800-53-r5:AC-20b, nist-800-53-r5:IA-3 |
 | PowerShell test | [Test-MtCisaManagedDeviceRegistration](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.8.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.3.8, Entra ID P1, MS.AAD, MS.AAD.3.8 |
 
 ## Source
 

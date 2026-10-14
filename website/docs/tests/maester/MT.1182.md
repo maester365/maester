@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1182"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Email and collaboration protection"
   - "Entra"
 ---
 
@@ -55,12 +57,19 @@ If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=
 | Test ID | MT.1182 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtDomainsDmarcRecordMaturity](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1182.ps1) |
+| Product | Entra ID |
+| Related products | Exchange Online |
+| Feature | User and directory settings |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Medium |
+| Implementation cost | High |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-MtDomainsDmarcRecordMaturity](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1182.ps1) |
 | Services | Graph |
-| Tags | Entra, Maester, MT.1182 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1182.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1182.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1182.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1182.md)
+- Test: [`tests/maester/entra/Test.MT.1182.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1182.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1182.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1182.md)

@@ -11,6 +11,9 @@ keywords:
   - "ORCA.139"
   - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,17 @@ Change Spam action to move message to Junk Email Folder.
 | Test ID | ORCA.139 |
 | Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA139](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.139.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.139 |
 
 ## Source
 

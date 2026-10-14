@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1031"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Authentication"
   - "AZDO"
 ---
 
@@ -50,13 +52,19 @@ When active, Azure DevOps enforces that keys with expired expiration dates immed
 | Test ID | AZDO.1031 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoValidateSshKeyExpiration](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1031.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1552.004 Private Keys |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-AzdoValidateSshKeyExpiration](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1031.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies](https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies) |
-| Tags | AZDO, AZDO.1031 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1031.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1031.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1031.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1031.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1031.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1031.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1031.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1031.md)

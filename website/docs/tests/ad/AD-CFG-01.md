@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -54,10 +55,13 @@ This test retrieves the environment’s configured tombstone lifetime value from
 | Test ID | AD-CFG-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTombstoneLifetimeConfig](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-01, AD.Config |
 
 ## Source
 

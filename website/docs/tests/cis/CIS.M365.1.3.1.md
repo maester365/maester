@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.1.3.1"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "Authentication"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -73,12 +76,22 @@ Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.1.3.1 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Microsoft 365 |
+| Related products | Entra ID |
+| Feature | Organization settings |
+| Area | Authentication |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:1.3.1, nist-800-53-r5:IA-5(1) |
 | PowerShell test | [Test-MtCisPasswordExpiry](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.1.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.1, L1 |
 
 ## Source
 

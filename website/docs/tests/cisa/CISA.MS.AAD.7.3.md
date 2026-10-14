@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.7.3"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Roles and administrators"
+  - "Privileged access"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.7.3"
@@ -47,10 +50,19 @@ Rationale: Many privileged administrative users do not need unfettered access to
 | Test ID | CISA.MS.AAD.7.3 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | Roles and administrators |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1556.007 Hybrid Identity, T1078.002 Domain Accounts, T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.7.3 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.7.3v1 |
+| Supports controls | cisa-scuba:MS.AAD.7.3, nist-800-53-r5:AC-6(5) |
 | PowerShell test | [Test-MtCisaCloudGlobalAdmin](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.3.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.7.3, Entra ID Free, MS.AAD, MS.AAD.7.3 |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-08"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Authentication"
   - "AD"
   - "AD.Config"
 ---
@@ -54,10 +55,13 @@ This test inspects AD authentication policy configuration and reports a count/vi
 | Test ID | AD-CFG-08 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Authentication |
+| Resource type | Policy |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdAuthNPolicyConfigCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-08.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-08, AD.Config |
 
 ## Source
 

@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.ST08"
   - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Groups"
+  - "External access and sharing"
   - "EIDSCA"
 ---
 
@@ -49,12 +51,18 @@ https://graph.microsoft.com/beta/settings
 | Test ID | EIDSCA.ST08 |
 | Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaST08](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.ST08.ps1) |
+| Product | Entra ID |
+| Feature | Groups |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098 Account Manipulation |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCheckEidscaST08](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.ST08.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.ST08 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.ST08.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.ST08.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.ST08.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.ST08.md)
+- Test: [`tests/eidsca/Test.EIDSCA.ST08.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.ST08.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.ST08.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.ST08.md)

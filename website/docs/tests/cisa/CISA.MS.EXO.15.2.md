@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.15.2"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.15.2"
 ---
@@ -54,11 +56,21 @@ Rationale: URLs in emails may direct users to download and run malware. Scanning
 | Test ID | CISA.MS.EXO.15.2 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1204.001 Malicious Link, T1566.002 Spearphishing Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.15.2 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.7.2v1 (was MS.EXO.15.2v1) |
+| Supports controls | cisa-scuba:MS.EXO.15.2, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCisaSafeLinkDownloadScan](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.15.2.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | CISA, CISA.MS.EXO.15.2, MS.EXO, MS.EXO.15.2 |
 
 ## Source
 

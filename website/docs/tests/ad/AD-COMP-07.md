@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Computer"
 ---
@@ -63,10 +64,13 @@ This test analyzes all enabled computer accounts and counts the distinct organiz
 | Test ID | AD-COMP-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerOUCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-07, AD.Computer |
 
 ## Source
 

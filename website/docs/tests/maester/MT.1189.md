@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1189"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Access control"
   - "Entra"
   - "Preview"
 ---
@@ -43,14 +45,19 @@ Global Secure Access traffic forwarding profiles (Microsoft 365, Internet, and P
 | Test ID | MT.1189 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaForwardingProfileAssignmentNotNested](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1189.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Access control |
+| Resource type | Group |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtGsaForwardingProfileAssignmentNotNested](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1189.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | Entra, Maester, MT.1189, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1189.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1189.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1189.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1189.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1189.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1189.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1189.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1189.md)

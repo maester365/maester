@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Access control"
   - "AD"
   - "AD.Computer"
 ---
@@ -63,10 +64,13 @@ Note: Not all computer accounts will have this attribute, depending on how they 
 | Test ID | AD-COMP-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Access control |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerCreatorSidCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-03, AD.Computer |
 
 ## Source
 

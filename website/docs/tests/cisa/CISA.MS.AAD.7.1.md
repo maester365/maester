@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.7.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Roles and administrators"
+  - "Privileged access"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.7.1"
@@ -53,10 +56,19 @@ When counting the number of users assigned to the Global Administrator role, **c
 | Test ID | CISA.MS.AAD.7.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | Roles and administrators |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1098.003 Additional Cloud Roles, T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.7.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.7.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.7.1, nist-800-53-r5:AC-6(5) |
 | PowerShell test | [Test-MtCisaGlobalAdminCount](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.1.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.7.1, Entra ID Free, MS.AAD, MS.AAD.7.1 |
 
 ## Source
 

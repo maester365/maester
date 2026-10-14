@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.8.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Data loss prevention"
+  - "Data protection"
   - "MS.EXO"
   - "MS.EXO.8.1"
 ---
@@ -73,11 +75,21 @@ Rationale: Users may inadvertently disclose sensitive information to unauthorize
 | Test ID | CISA.MS.EXO.8.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Purview |
+| Feature | Data loss prevention |
+| Area | Data protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213 Data from Information Repositories, T1530 Data from Cloud Storage, T1567 Exfiltration Over Web Service |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.8.1 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.3.1v1 (was MS.EXO.8.1v2) |
+| Supports controls | cisa-scuba:MS.EXO.8.1, nist-800-53-r5:SC-7(10) |
 | PowerShell test | [Test-MtCisaDlp](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.1.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | EXCHANGE_DLP |
-| Tags | CISA, CISA.MS.EXO.8.1, MS.EXO, MS.EXO.8.1 |
 
 ## Source
 

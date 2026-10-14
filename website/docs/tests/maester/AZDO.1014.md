@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1014"
   - "Medium"
   - "Azure DevOps"
+  - "Pipelines"
+  - "External access and sharing"
   - "AZDO"
 ---
 
@@ -49,13 +51,18 @@ Users outside of your organization cannot query information regarding your proje
 | Test ID | AZDO.1014 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationBadgesArePrivate](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1014.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1593.003 Code Repositories |
+| PowerShell test | [Test-AzdoOrganizationBadgesArePrivate](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1014.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository](https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository) |
-| Tags | AZDO, AZDO.1014 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1014.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1014.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1014.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1014.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1014.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1014.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1014.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1014.md)

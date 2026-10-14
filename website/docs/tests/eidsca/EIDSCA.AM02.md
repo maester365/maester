@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.AM02"
   - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -50,12 +52,17 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Test ID | EIDSCA.AM02 |
 | Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAM02](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AM02.ps1) |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.002 Spearphishing Link |
+| PowerShell test | [Test-MtCheckEidscaAM02](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AM02.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AM02 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AM02.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AM02.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AM02.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AM02.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AM02.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AM02.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AM02.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AM02.md)

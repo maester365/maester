@@ -11,7 +11,8 @@ keywords:
   - "AD-DOM-06"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Domain"
 ---
@@ -60,10 +61,13 @@ This test checks each domain name label against RFC 1123 standards and provides 
 | Test ID | AD-DOM-06 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDomainNameNonStandardDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-06.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DOM-06, AD.Domain |
 
 ## Source
 

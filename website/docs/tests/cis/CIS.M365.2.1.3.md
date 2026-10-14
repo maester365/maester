@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.2.1.3"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -76,10 +79,20 @@ Set-MalwareFilterPolicy -Identity '{Identity Name}' -EnableInternalSenderAdminNo
 | Test ID | CIS.M365.2.1.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1534 Internal Spearphishing |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:2.1.3, nist-800-53-r5:SI-4(5) |
 | PowerShell test | [Test-MtCisInternalMalwareNotification](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.3.ps1) |
 | Services | ExchangeOnline, SecurityCompliance |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.3, L1 |
 
 ## Source
 

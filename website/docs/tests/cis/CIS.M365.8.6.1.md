@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.8.6.1"
   - "Medium"
   - "CIS"
-  - "CIS E5 Level 1"
+  - "Teams"
+  - "Messaging"
+  - "Email and collaboration protection"
   - "CIS E5"
+  - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -105,10 +108,20 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 | Test ID | CIS.M365.8.6.1 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E5 Level 1 |
+| Product | Teams |
+| Related products | Defender |
+| Feature | Messaging |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 8.6.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E5 Level 1 |
+| Supports controls | cis-m365:8.6.1 |
 | PowerShell test | [Test-MtCisTeamsReportSecurityConcerns](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.6.1.ps1) |
 | Services | Teams |
-| Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.8.6.1, L1 |
 
 ## Source
 

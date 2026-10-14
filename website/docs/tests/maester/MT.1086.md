@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1086"
   - "Low"
+  - "Defender"
   - "Exposure Management"
+  - "Devices and endpoints"
   - "Device"
   - "LongRunning"
   - "XSPM"
@@ -37,13 +39,18 @@ Analyze the devices shown in the output, and investigate the accounts present on
 | Test ID | MT.1086 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1086.ps1) |
+| Product | Defender |
+| Feature | Exposure Management |
+| Area | Devices and endpoints |
+| Resource type | Device |
+| User impact | Low |
+| Implementation cost | High |
+| MITRE ATT&CK | T1003 OS Credential Dumping |
+| PowerShell test | [Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1086.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | Device, LongRunning, MT.1086, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1086.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1086.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1086.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1086.md)
+- Test: [`tests/maester/xspm/Test.MT.1086.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1086.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1086.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1086.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-OU-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Organizational Units"
+  - "Organizational units"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.OU"
 ---
@@ -60,10 +61,13 @@ keywords:
 | Test ID | AD-OU-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Organizational Units |
+| Product | Active Directory |
+| Feature | Organizational units |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOuOverlappingNameCount](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-OU-01, AD.OU |
 
 ## Source
 

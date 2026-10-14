@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.3.1"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.3.1"
 ---
@@ -60,10 +62,20 @@ We recommend doing this for **\*onmicrosoft.com** domains.
 | Test ID | CISA.MS.EXO.3.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1598 Phishing for Information, T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.3.1 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.EXO.3.1v1 |
+| Supports controls | cisa-scuba:MS.EXO.3.1, nist-800-53-r5:SC-8 |
 | PowerShell test | [Test-MtCisaDkim](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.3.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.3.1, MS.EXO, MS.EXO.3.1 |
 
 ## Source
 

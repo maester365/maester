@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Computer"
 ---
@@ -63,10 +64,13 @@ This test examines the `primaryGroupId` attribute of all enabled computer accoun
 | Test ID | AD-COMP-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerNonStandardGroup](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-04, AD.Computer |
 
 ## Source
 

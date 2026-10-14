@@ -11,6 +11,9 @@ keywords:
   - "ORCA.105"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,11 +44,18 @@ Enable Safe Links Synchronous URL detonation.
 | Test ID | ORCA.105 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.002 Spearphishing Link |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA105](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.105.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.105 |
 
 ## Source
 

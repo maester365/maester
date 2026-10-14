@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1021"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Authentication"
   - "CA"
 ---
 
@@ -44,12 +46,18 @@ Security Defaults provide a baseline of identity protection, including multifact
 | Test ID | MT.1021 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1021](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1021.ps1) |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1110 Brute Force |
+| Supports controls | nist-800-53-r5:IA-2(1), nist-800-53-r5:IA-2(2) |
+| PowerShell test | [Test-MtCheckMT1021](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1021.ps1) |
 | Services | Graph |
-| Tags | CA, Maester, MT.1021 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1021.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1021.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1021.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1021.md)
+- Test: [`tests/maester/entra/Test.MT.1021.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1021.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1021.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1021.md)

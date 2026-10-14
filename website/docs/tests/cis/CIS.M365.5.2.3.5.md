@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.5.2.3.5"
-  - "Medium"
+  - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -88,12 +91,21 @@ Update-MgPolicyAuthenticationMethodPolicy -AuthenticationMethodConfigurations $p
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.5.2.3.5 |
-| Severity | Medium |
+| Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1621 Multi-Factor Authentication Request Generation, T1111 Multi-Factor Authentication Interception |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.2.3.5 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:5.2.3.5, nist-800-53-r5:CM-7, nist-800-53-r5:IA-5 |
 | PowerShell test | [Test-MtCisWeakAuthenticationMethodsDisabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.2.3.5.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.2.3.5, L1, Security |
 
 ## Source
 

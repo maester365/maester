@@ -9,8 +9,9 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1067"
-  - "Medium"
-  - "Maester/Entra"
+  - "Low"
+  - "Entra ID"
+  - "Authentication methods"
   - "Authentication"
 ---
 
@@ -63,14 +64,19 @@ To fix the issue:
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1067 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtAuthenticationPolicyReferencedObjectsExist](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1067.ps1) |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAuthenticationPolicyReferencedObjectsExist](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1067.ps1) |
 | Services | Graph |
-| Tags | Authentication, Maester, MT.1067 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1067.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1067.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1067.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1067.md)
+- Test: [`tests/maester/entra/Test.MT.1067.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1067.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1067.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1067.md)

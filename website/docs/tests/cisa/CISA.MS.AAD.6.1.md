@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.6.1"
-  - "High"
+  - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "Password protection"
+  - "Authentication"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.6.1"
@@ -48,12 +51,22 @@ Configure password policies to set passwords to never expire.
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.6.1 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Related products | Microsoft 365 |
+| Feature | Password protection |
+| Area | Authentication |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.6.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.6.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.6.1, nist-800-53-r5:IA-5(1) |
 | PowerShell test | [Test-MtCisaPasswordExpiration](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.6.1.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.6.1, Entra ID Free, MS.AAD, MS.AAD.6.1 |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-FORS-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Forest"
+  - "Domain and forest"
+  - "External access and sharing"
   - "AD"
   - "AD.Forest"
 ---
@@ -62,10 +63,13 @@ This test retrieves cross-forest reference information from the forest configura
 | Test ID | AD-FORS-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Forest |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdCrossForestReferencesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FORS-04, AD.Forest |
 
 ## Source
 

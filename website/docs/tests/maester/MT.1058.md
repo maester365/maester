@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1058"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -105,13 +107,20 @@ Test-ApplicationAccessPolicy -Identity user@contoso.com -AppId $AppID
 | Test ID | MT.1058 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtSpExchangeAppAccessPolicy](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1058.ps1) |
+| Product | Entra ID |
+| Related products | Exchange Online |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | ServicePrincipal |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1114.002 Remote Email Collection |
+| Supports controls | nist-800-53-r5:AC-6, nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtSpExchangeAppAccessPolicy](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1058.ps1) |
 | Services | Graph, ExchangeOnline |
 | Long running | Yes |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1058 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1058.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1058.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1058.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1058.md)
+- Test: [`tests/maester/entra/Test.MT.1058.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1058.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1058.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1058.md)

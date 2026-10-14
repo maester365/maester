@@ -11,7 +11,8 @@ keywords:
   - "AD-DACL-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DACL"
+  - "Permissions and delegation"
+  - "Access control"
   - "AD"
   - "AD.DACL"
 ---
@@ -55,10 +56,13 @@ This test retrieves `$adState.DaclEntries`, extracts the `ObjectDN` value from e
 | Test ID | AD-DACL-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DACL |
+| Product | Active Directory |
+| Feature | Permissions and delegation |
+| Area | Access control |
+| Resource type | Permission |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclDistinctObjectCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DACL-01, AD.DACL |
 
 ## Source
 

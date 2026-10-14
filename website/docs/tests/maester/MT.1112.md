@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1112"
   - "Medium"
+  - "Defender"
   - "Exposure Management"
+  - "Privileged access"
   - "Entra"
   - "EntraOps"
   - "Graph"
@@ -40,14 +42,21 @@ Review the results from this check and verify whether it is legitimate for the p
 | Test ID | MT.1112 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1112.ps1) |
+| Product | Defender |
+| Related products | Entra ID |
+| Feature | Exposure Management |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-2 |
+| PowerShell test | [Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1112.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, EntraOps, Graph, LongRunning, MT.1112, Preview, Privileged, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1112.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1112.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1112.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1112.md)
+- Test: [`tests/maester/xspm/Test.MT.1112.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1112.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1112.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1112.md)

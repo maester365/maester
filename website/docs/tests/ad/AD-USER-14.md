@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-14"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Service principal names"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects where the `ServicePrincipalName` attribute contain
 | Test ID | AD-USER-14 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnSetCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-14.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-14, AD.User |
 
 ## Source
 

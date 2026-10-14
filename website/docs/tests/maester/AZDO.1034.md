@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1034"
-  - "High"
+  - "Medium"
   - "Azure DevOps"
+  - "Organization policies"
+  - "Access control"
   - "AZDO"
 ---
 
@@ -58,15 +60,20 @@ When enabled, only users on the allowlist (or Azure DevOps Administrators as per
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1034 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationCreationRestriction](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1034.ps1) |
+| Product | Azure DevOps |
+| Feature | Organization policies |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoOrganizationCreationRestriction](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1034.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy](https://learn.microsoft.com/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy) |
-| Tags | AZDO, AZDO.1034 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1034.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1034.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1034.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1034.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1034.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1034.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1034.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1034.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-06"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -54,10 +55,13 @@ This test reads LDAP query policy configuration from AD and produces a count/vis
 | Test ID | AD-CFG-06 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Policy |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdLdapQueryPolicyCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-06.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-06, AD.Config |
 
 ## Source
 

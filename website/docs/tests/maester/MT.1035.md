@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1035"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Privileged access"
   - "CA"
 ---
 
@@ -35,13 +37,19 @@ See [Restricted management administrative units in Microsoft Entra ID - Microsof
 | Test ID | MT.1035 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaGroupsRestricted](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1035.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Privileged access |
+| Resource type | Group |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1098 Account Manipulation, T1556.009 Conditional Access Policies |
+| Supports controls | nist-800-53-r5:AC-6, nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCaGroupsRestricted](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1035.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1035 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1035.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1035.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1035.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1035.md)
+- Test: [`tests/maester/entra/Test.MT.1035.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1035.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1035.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1035.md)

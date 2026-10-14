@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.CP04"
-  - "Medium"
+  - "High"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "EIDSCA"
 ---
 
@@ -65,14 +67,20 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.CP04 |
-| Severity | Medium |
+| Severity | High |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaCP04](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.CP04.ps1) |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1528 Steal Application Access Token, T1566.002 Spearphishing Link |
+| Supports controls | nist-800-53-r5:CM-4 |
+| PowerShell test | [Test-MtCheckEidscaCP04](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.CP04.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.CP04 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.CP04.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.CP04.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.CP04.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.CP04.md)
+- Test: [`tests/eidsca/Test.EIDSCA.CP04.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.CP04.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.CP04.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.CP04.md)

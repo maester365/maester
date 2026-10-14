@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1208"
-  - "High"
-  - "Maester/Entra"
+  - "Medium"
+  - "Entra ID"
+  - "Agent identities"
+  - "AI and agents"
   - "Entra"
   - "Graph"
   - "LongRunning"
@@ -56,16 +58,22 @@ This check inspects the credential metadata of all Agent Identity Blueprints in 
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1208 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintCredentialHygiene](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1208.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.001 Additional Cloud Credentials, T1552 Unsecured Credentials |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtEntraAgentBlueprintCredentialHygiene](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1208.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, Graph, LongRunning, Maester, MT.1208, Preview, Severity:High |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1208.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1208.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1208.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1208.md)
+- Test: [`tests/maester/entra/Test.MT.1208.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1208.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1208.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1208.md)

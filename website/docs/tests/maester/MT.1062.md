@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1062"
   - "Medium"
-  - "Maester/Exchange"
+  - "Exchange Online"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "Exchange"
 ---
 
@@ -60,12 +62,18 @@ The result should be `True`.
 | Test ID | MT.1062 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoRejectDirectSend](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1062.ps1) |
+| Product | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtExoRejectDirectSend](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1062.ps1) |
 | Services | ExchangeOnline |
-| Tags | Exchange, Maester, MT.1062 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1062.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1062.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1062.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1062.md)
+- Test: [`tests/maester/exchange/Test.MT.1062.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1062.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1062.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1062.md)

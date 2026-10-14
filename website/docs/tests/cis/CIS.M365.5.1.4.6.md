@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.5.1.4.6"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Entra ID"
+  - "Device identity"
+  - "Access control"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
@@ -72,10 +75,19 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 | Test ID | CIS.M365.5.1.4.6 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | Entra ID |
+| Feature | Device identity |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1552 Unsecured Credentials |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.1.4.6 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2, E5 Level 2 |
+| Supports controls | cis-m365:5.1.4.6, nist-800-53-r5:AC-6(10), nist-800-53-r5:SC-28(3) |
 | PowerShell test | [Test-MtCisEnsureBitLockerKeyRecoveryRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.4.6.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.5.1.4.6, L2, Security |
 
 ## Source
 

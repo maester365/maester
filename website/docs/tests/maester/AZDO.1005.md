@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1005"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Access control"
   - "AZDO"
 ---
 
@@ -53,13 +55,20 @@ When you sign in to the web portal of a Microsoft Entra ID-backed organization, 
 | Test ID | AZDO.1005 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoEnforceAADConditionalAccess](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1005.ps1) |
+| Product | Azure DevOps |
+| Related products | Entra ID |
+| Feature | Security policies |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1550.001 Application Access Token |
+| Supports controls | nist-800-53-r5:AC-17 |
+| PowerShell test | [Test-AzdoEnforceAADConditionalAccess](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1005.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops](https://learn.microsoft.com/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops) |
-| Tags | AZDO, AZDO.1005 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1005.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1005.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1005.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1005.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1005.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1005.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1005.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1005.md)

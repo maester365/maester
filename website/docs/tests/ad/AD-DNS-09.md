@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -61,10 +62,13 @@ This test provides detailed information about each zone delegation, including:
 | Test ID | AD-DNS-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsZoneDelegationDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-09, AD.DNS |
 
 ## Source
 

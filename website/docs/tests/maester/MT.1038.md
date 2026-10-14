@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1038"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -41,12 +43,17 @@ To fix this issue:
 | Test ID | MT.1038 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaReferencedGroupsExist](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| PowerShell test | [Test-MtCaReferencedGroupsExist](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1038.ps1) |
 | Services | Graph |
-| Tags | CA, Maester, MT.1038 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1038.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1038.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1038.md)
+- Test: [`tests/maester/entra/Test.MT.1038.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1038.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1038.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1038.md)

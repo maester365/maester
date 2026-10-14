@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1116"
   - "High"
-  - "Copilot Studio Agent Security"
+  - "Copilot Studio"
+  - "Agents"
+  - "AI and agents"
+  - "AI"
   - "AIAgent"
   - "CopilotStudio"
 ---
@@ -40,12 +43,18 @@ Learn more: [Configure data policies for agents](https://learn.microsoft.com/mic
 | Test ID | MT.1116 |
 | Severity | High |
 | Suite | Maester |
-| Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentEmailExfiltration](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1116.ps1) |
+| Product | Copilot Studio |
+| Feature | Agents |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1048 Exfiltration Over Alternative Protocol |
+| Supports controls | nist-800-53-r5:AC-4 |
+| PowerShell test | [Test-MtAIAgentEmailExfiltration](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1116.ps1) |
 | Services | Graph |
-| Tags | AIAgent, CopilotStudio, Maester, MT.1116 |
 
 ## Source
 
-- Test: [`tests/Maester/AIAgent/Test.MT.1116.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1116.ps1)
-- Documentation: [`tests/Maester/AIAgent/Test.MT.1116.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1116.md)
+- Test: [`tests/maester/copilot-studio/Test.MT.1116.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1116.ps1)
+- Documentation: [`tests/maester/copilot-studio/Test.MT.1116.md`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1116.md)

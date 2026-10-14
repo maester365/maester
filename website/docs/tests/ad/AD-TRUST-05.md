@@ -11,7 +11,8 @@ keywords:
   - "AD-TRUST-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Trusts"
+  - "Trusts"
+  - "External access and sharing"
   - "AD"
   - "AD.Trust"
 ---
@@ -87,10 +88,13 @@ This test retrieves all trust properties from LDAP and derives display values:
 | Test ID | AD-TRUST-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Trusts |
+| Product | Active Directory |
+| Feature | Trusts |
+| Area | External access and sharing |
+| Resource type | Trust |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-TRUST-05, AD.Trust |
 
 ## Source
 

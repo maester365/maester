@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-16"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects where the `HomeDirectory` attribute contains a non
 | Test ID | AD-USER-16 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Infrastructure hardening |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserHomeDirectoryCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-16.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-16, AD.User |
 
 ## Source
 

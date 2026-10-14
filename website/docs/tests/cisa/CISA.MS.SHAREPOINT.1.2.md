@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.SHAREPOINT.1.2"
   - "Medium"
   - "CISA"
-  - "spo"
+  - "SharePoint"
+  - "External sharing"
+  - "External access and sharing"
   - "MS.SHAREPOINT"
   - "MS.SHAREPOINT.1.2"
 ---
@@ -47,12 +49,21 @@ Rationale: Restricting OneDrive sharing reduces the risk of unauthorized data ex
 | Test ID | CISA.MS.SHAREPOINT.1.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | spo |
-| PowerShell test | [Test-MtCisaSpoOneDriveSharing](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1) |
+| Product | SharePoint |
+| Feature | External sharing |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | High |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1048 Exfiltration Over Alternative Protocol, T1213.002 Sharepoint, T1530 Data from Cloud Storage |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.SHAREPOINT.1.2 |
+| Criticality | SHALL |
+| Upstream requirement | MS.SHAREPOINT.1.2v1 |
+| Supports controls | cisa-scuba:MS.SHAREPOINT.1.2, nist-800-53-r5:AC-2, nist-800-53-r5:AC-3, nist-800-53-r5:IA-8 |
+| PowerShell test | [Test-MtCisaSpoOneDriveSharing](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.2.ps1) |
 | Services | SharePointOnline |
-| Tags | CISA, CISA.MS.SHAREPOINT.1.2, MS.SHAREPOINT, MS.SHAREPOINT.1.2 |
 
 ## Source
 
-- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.ps1)
-- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.1.2.md)
+- Test: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.2.ps1)
+- Documentation: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.2.md)

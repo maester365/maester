@@ -11,7 +11,8 @@ keywords:
   - "AD-GMC-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Members"
+  - "Groups"
+  - "External access and sharing"
   - "AD"
   - "AD.GMC"
   - "AD.Group"
@@ -61,10 +62,13 @@ This test examines all group memberships in Active Directory and identifies secu
 | Test ID | AD-GMC-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Members |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | External access and sharing |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupMemberForeignSidDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GMC-07, AD.GMC, AD.Group |
 
 ## Source
 

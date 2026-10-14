@@ -11,7 +11,8 @@ keywords:
   - "AD-TRUST-04"
   - "High"
   - "Active Directory"
-  - "Active Directory - Trusts"
+  - "Trusts"
+  - "External access and sharing"
   - "AD"
   - "AD.Trust"
 ---
@@ -98,10 +99,16 @@ The test displays:
 | Test ID | AD-TRUST-04 |
 | Severity | High |
 | Suite | Active Directory |
-| Category | Active Directory - Trusts |
+| Product | Active Directory |
+| Feature | Trusts |
+| Area | External access and sharing |
+| Resource type | Trust |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1134.005 SID-History Injection |
+| Supports controls | nist-800-53-r5:AC-4, nist-800-53-r5:SC-7 |
 | PowerShell test | [Test-MtAdTrustNonQuarantinedDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-TRUST-04, AD.Trust |
 
 ## Source
 

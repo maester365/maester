@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.User"
 ---
@@ -51,10 +52,13 @@ This test retrieves cached Active Directory user data from `Get-MtADDomainState`
 | Test ID | AD-USER-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Identity lifecycle and hygiene |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserDisabledCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-01, AD.User |
 
 ## Source
 

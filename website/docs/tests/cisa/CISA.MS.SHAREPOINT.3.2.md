@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.SHAREPOINT.3.2"
   - "Medium"
   - "CISA"
-  - "spo"
+  - "SharePoint"
+  - "Sharing links"
+  - "External access and sharing"
   - "MS.SHAREPOINT"
   - "MS.SHAREPOINT.3.2"
 ---
@@ -47,12 +49,21 @@ Rationale: Allowing edit permissions on Anyone links increases the risk of unaut
 | Test ID | CISA.MS.SHAREPOINT.3.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | spo |
-| PowerShell test | [Test-MtCisaSpoAnyoneLinkPermission](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1) |
+| Product | SharePoint |
+| Feature | Sharing links |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1080 Taint Shared Content, T1565.001 Stored Data Manipulation |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.SHAREPOINT.3.2 |
+| Criticality | SHALL |
+| Upstream requirement | MS.SHAREPOINT.3.2v1 |
+| Supports controls | cisa-scuba:MS.SHAREPOINT.3.2, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCisaSpoAnyoneLinkPermission](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.2.ps1) |
 | Services | SharePointOnline |
-| Tags | CISA, CISA.MS.SHAREPOINT.3.2, MS.SHAREPOINT, MS.SHAREPOINT.3.2 |
 
 ## Source
 
-- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.ps1)
-- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.2.md)
+- Test: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.2.ps1)
+- Documentation: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.2.md)

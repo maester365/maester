@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1071"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -73,13 +75,20 @@ Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" 
 | Test ID | MT.1071 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaAzureDevOps](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1071.ps1) |
+| Product | Entra ID |
+| Related products | Azure DevOps |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCaAzureDevOps](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1071.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1071 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1071.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1071.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1071.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1071.md)
+- Test: [`tests/maester/entra/Test.MT.1071.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1071.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1071.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1071.md)

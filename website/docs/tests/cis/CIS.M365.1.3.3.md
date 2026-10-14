@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.1.3.3"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -69,10 +72,20 @@ Set-SharingPolicy -Identity "Default Sharing Policy" -Enabled $False
 | Test ID | CIS.M365.1.3.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | Microsoft 365 |
+| Related products | Exchange Online |
+| Feature | Organization settings |
+| Area | External access and sharing |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1591 Gather Victim Org Information |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.3 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2 |
+| Supports controls | cis-m365:1.3.3, nist-800-53-r5:AC-3, nist-800-53-r5:SC-7(10) |
 | PowerShell test | [Test-MtCisCalendarSharing](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.3.ps1) |
 | Services | ExchangeOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.3, L2 |
 
 ## Source
 

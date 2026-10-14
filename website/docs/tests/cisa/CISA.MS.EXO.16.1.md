@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.16.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Alert policies"
+  - "Logging and detection"
   - "MS.EXO"
   - "MS.EXO.16.1"
 ---
@@ -64,11 +66,21 @@ Rationale: Potentially malicious or service impacting events may go undetected w
 | Test ID | CISA.MS.EXO.16.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Alert policies |
+| Area | Logging and detection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1114.003 Email Forwarding Rule, T1204.001 Malicious Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.16.1 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.4.1v1 (was MS.EXO.16.1v1) |
+| Supports controls | cisa-scuba:MS.EXO.16.1, nist-800-53-r5:SI-4(5) |
 | PowerShell test | [Test-MtCisaExoAlert](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.16.1.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | CISA, CISA.MS.EXO.16.1, MS.EXO, MS.EXO.16.1 |
 
 ## Source
 

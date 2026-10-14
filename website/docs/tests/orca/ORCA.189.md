@@ -11,6 +11,9 @@ keywords:
   - "ORCA.189"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -39,11 +42,18 @@ Remove mail flow rules which bypass Safe Attachments.
 | Test ID | ORCA.189 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | MailFlowRule |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1204.002 Malicious File |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA189](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.189.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.189 |
 
 ## Source
 

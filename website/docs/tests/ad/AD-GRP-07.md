@@ -11,7 +11,8 @@ keywords:
   - "AD-GRP-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Groups"
+  - "Groups"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Group"
 ---
@@ -68,10 +69,13 @@ The test provides counts and percentages to understand the proportion of securit
 | Test ID | AD-GRP-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Groups |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Infrastructure hardening |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupSecurityCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GRP-07, AD.Group |
 
 ## Source
 

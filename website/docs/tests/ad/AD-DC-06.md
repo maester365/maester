@@ -11,7 +11,8 @@ keywords:
   - "AD-DC-06"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain Controllers"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DomainController"
 ---
@@ -69,12 +70,15 @@ This test retrieves the current FSMO role holders from the domain and forest obj
 | Test ID | AD-DC-06 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcFsmoRoleHolderDetails](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-06.ps1) |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdDcFsmoRoleHolderDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-06.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DC-06, AD.DomainController |
 
 ## Source
 
-- Test: [`tests/ad/domaincontroller/Test.AD-DC-06.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-06.ps1)
-- Documentation: [`tests/ad/domaincontroller/Test.AD-DC-06.md`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-06.md)
+- Test: [`tests/ad/domain-controller/Test.AD-DC-06.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-06.ps1)
+- Documentation: [`tests/ad/domain-controller/Test.AD-DC-06.md`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-06.md)

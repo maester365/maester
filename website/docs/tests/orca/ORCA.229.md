@@ -11,6 +11,9 @@ keywords:
   - "ORCA.229"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Remove allow listing on domains in Anti-phishing policy.
 | Test ID | ORCA.229 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.001 Impersonation |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA229](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.229.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.229 |
 
 ## Source
 

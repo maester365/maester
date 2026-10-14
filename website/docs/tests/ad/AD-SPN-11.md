@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-11"
   - "Info"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Authentication"
   - "AD"
   - "AD.SPN"
 ---
@@ -61,10 +62,13 @@ This test parses all user SPNs and checks if the host portion contains a dot (in
 | Test ID | AD-SPN-11 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserSpnNonFqdnHosts](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-11.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-11, AD.SPN |
 
 ## Source
 

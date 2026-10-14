@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1044"
   - "Medium"
   - "Azure DevOps"
+  - "Repositories"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -57,13 +59,19 @@ This test only applies to organizations that use the separate GitHub Secret Prot
 | Test ID | AZDO.1044 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationCodeSecurityScanning](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1044.ps1) |
+| Product | Azure DevOps |
+| Feature | Repositories |
+| Area | Engineering systems |
+| Resource type | Repository |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1195.001 Compromise Software Dependencies and Development Tools, T1190 Exploit Public-Facing Application |
+| Supports controls | nist-800-53-r5:SA-11, nist-800-53-r5:SI-2 |
+| PowerShell test | [Test-AzdoOrganizationCodeSecurityScanning](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1044.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-code-scanning](https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops#set-up-code-scanning) |
-| Tags | AZDO, AZDO.1044 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1044.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1044.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1044.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1044.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1044.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1044.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1044.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1044.md)

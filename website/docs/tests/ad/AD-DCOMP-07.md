@@ -11,7 +11,8 @@ keywords:
   - "AD-DCOMP-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Security"
 ---
@@ -80,10 +81,13 @@ This test counts computers with and without the `dNSHostName` attribute populate
 | Test ID | AD-DCOMP-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Infrastructure hardening |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDnsHostNameCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-07, AD.Security |
 
 ## Source
 

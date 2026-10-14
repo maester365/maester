@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-15"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -59,10 +60,13 @@ This test identifies zones with names containing " CNF:" or "..InProgress-" pref
 | Test ID | AD-DNS-15 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsDuplicateZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-15.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-15, AD.DNS |
 
 ## Source
 

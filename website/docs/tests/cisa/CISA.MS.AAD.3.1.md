@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.1"
@@ -48,11 +51,20 @@ Create a Conditional Access policy enforcing phishing-resistant MFA for all user
 | Test ID | CISA.MS.AAD.3.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | High |
+| Implementation cost | High |
+| MITRE ATT&CK | T1566.002 Spearphishing Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.3.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.3.1, nist-800-53-r5:IA-2(1), nist-800-53-r5:IA-2(2), nist-800-53-r5:IA-5c, nist-800-53-r5:IA-5g, nist-800-53-r5:IA-2(8) |
 | PowerShell test | [Test-MtCisaPhishResistant](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.1.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.3.1, Entra ID P1, MS.AAD, MS.AAD.3.1 |
 
 ## Source
 

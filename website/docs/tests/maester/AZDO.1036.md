@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1036"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Authentication"
   - "AZDO"
 ---
 
@@ -71,13 +73,19 @@ will be blocked for users who are not on the allowlist.
 | Test ID | AZDO.1036 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoRestrictFullScopePersonalAccessToken](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1036.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1528 Steal Application Access Token, T1550.001 Application Access Token |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-AzdoRestrictFullScopePersonalAccessToken](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1036.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy) |
-| Tags | AZDO, AZDO.1036 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1036.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1036.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1036.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1036.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1036.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1036.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1036.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1036.md)

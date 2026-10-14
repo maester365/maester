@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.1.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.1.1"
@@ -46,11 +49,20 @@ Follow the guide below to create a Conditional Access policy that blocks legacy 
 | Test ID | CISA.MS.AAD.1.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1110 Brute Force, T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.1.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.1.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.1.1, nist-800-53-r5:CM-7 |
 | PowerShell test | [Test-MtCisaBlockLegacyAuth](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.1.1.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.1.1, Entra ID P1, MS.AAD, MS.AAD.1.1 |
 
 ## Source
 

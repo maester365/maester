@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-27"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Logging and detection"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test returns non-system users whose names match attacker-attractive terms a
 | Test ID | AD-USER-27 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Logging and detection |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserHoneyPotDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-27.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-27, AD.User |
 
 ## Source
 

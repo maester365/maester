@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.11.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.11.1"
 ---
@@ -53,11 +55,21 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Test ID | CISA.MS.EXO.11.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing, T1684.001 Impersonation |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.11.1 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.2.1v1 (was MS.EXO.11.1v1) |
+| Supports controls | cisa-scuba:MS.EXO.11.1, nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-MtCisaImpersonation](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.11.1.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | CISA, CISA.MS.EXO.11.1, MS.EXO, MS.EXO.11.1 |
 
 ## Source
 

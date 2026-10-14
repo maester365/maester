@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1188"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Access control"
   - "CA"
   - "Entra"
   - "Preview"
@@ -49,14 +51,20 @@ This check evaluates application coverage only; it does not evaluate whether the
 | Test ID | MT.1188 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppCompliantDevice](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1188.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Access control |
+| Resource type | ServicePrincipal |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1133 External Remote Services |
+| Supports controls | nist-800-53-r5:AC-17, nist-800-53-r5:IA-3 |
+| PowerShell test | [Test-MtGsaPrivateAccessAppCompliantDevice](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1188.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | CA, Entra, Maester, MT.1188, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1188.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1188.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1188.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1188.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1188.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1188.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1188.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1188.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-DACL-10"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DACL"
+  - "Permissions and delegation"
+  - "Privileged access"
   - "AD"
   - "AD.DACL"
 ---
@@ -55,10 +56,13 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs 
 | Test ID | AD-DACL-10 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DACL |
+| Product | Active Directory |
+| Feature | Permissions and delegation |
+| Area | Privileged access |
+| Resource type | Permission |
+| MITRE ATT&CK | T1098 Account Manipulation, T1222.001 Windows Permissions |
 | PowerShell test | [Test-MtAdDaclPrivilegedAllowAceDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-10.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DACL-10, AD.DACL |
 
 ## Source
 

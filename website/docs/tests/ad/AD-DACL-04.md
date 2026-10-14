@@ -11,7 +11,8 @@ keywords:
   - "AD-DACL-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DACL"
+  - "Permissions and delegation"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DACL"
 ---
@@ -55,10 +56,13 @@ This test retrieves `$adState.DaclEntries`, filters for entries whose `ObjectDN`
 | Test ID | AD-DACL-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DACL |
+| Product | Active Directory |
+| Feature | Permissions and delegation |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclConflictObjectDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DACL-04, AD.DACL |
 
 ## Source
 

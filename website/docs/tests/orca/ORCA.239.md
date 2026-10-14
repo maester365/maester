@@ -11,6 +11,9 @@ keywords:
   - "ORCA.239"
   - "High"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Remove exclusions from the built-in protection policies.
 | Test ID | ORCA.239 |
 | Severity | High |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1566.002 Spearphishing Link |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA239](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.239.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.239 |
 
 ## Source
 

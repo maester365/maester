@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-12"
   - "Critical"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Privileged access"
   - "AD"
   - "AD.SPN"
 ---
@@ -68,10 +69,16 @@ This test identifies domain administrator accounts (using the well-known RID 500
 | Test ID | AD-SPN-12 |
 | Severity | Critical |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1558.003 Kerberoasting |
+| Supports controls | nist-800-53-r5:AC-6(5), nist-800-53-r5:IA-5 |
 | PowerShell test | [Test-MtAdUserSpnDomainAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-12.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-12, AD.SPN |
 
 ## Source
 

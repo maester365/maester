@@ -11,7 +11,8 @@ keywords:
   - "AD-GRP-10"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Groups"
+  - "Groups"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Group"
 ---
@@ -71,10 +72,13 @@ The test provides counts and percentages to understand the distribution of group
 | Test ID | AD-GRP-10 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Groups |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Infrastructure hardening |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupUniversalCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-10.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GRP-10, AD.Group |
 
 ## Source
 

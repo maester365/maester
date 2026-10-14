@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.7.8"
-  - "High"
+  - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "Privileged Identity Management"
+  - "Privileged access"
   - "Entra ID P2"
   - "MS.AAD"
   - "MS.AAD.7.8"
@@ -60,12 +63,21 @@ Rationale: Closely monitor activation of high-risk roles for signs of compromise
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.7.8 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID P2 |
+| Product | Entra ID |
+| Feature | Privileged Identity Management |
+| Area | Privileged access |
+| Resource type | DirectoryRole |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.003 Additional Cloud Roles, T1548.005 Temporary Elevated Cloud Access |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.7.8 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.7.8v1 |
+| Supports controls | cisa-scuba:MS.AAD.7.8, nist-800-53-r5:AC-6(9) |
 | PowerShell test | [Test-MtCheckCISAMSAAD78](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.8.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.7.8, Entra ID P2, MS.AAD, MS.AAD.7.8 |
 
 ## Source
 

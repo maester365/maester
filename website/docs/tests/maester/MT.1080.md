@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1080"
   - "Medium"
+  - "Defender"
   - "Exposure Management"
+  - "Privileged access"
   - "Entra"
   - "EntraOps"
   - "Graph"
@@ -40,13 +42,18 @@ Review the details of risk and exposure score on the related [device page from t
 | Test ID | MT.1080 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmExposedCredentialsForPrivilegedUsers](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1080.ps1) |
+| Product | Defender |
+| Feature | Exposure Management |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1539 Steal Web Session Cookie, T1528 Steal Application Access Token |
+| PowerShell test | [Test-MtXspmExposedCredentialsForPrivilegedUsers](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1080.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | Entra, EntraOps, Graph, LongRunning, MT.1080, Privileged, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1080.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1080.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1080.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1080.md)
+- Test: [`tests/maester/xspm/Test.MT.1080.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1080.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1080.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1080.md)

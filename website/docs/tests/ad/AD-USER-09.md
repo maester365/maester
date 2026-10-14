@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -51,10 +52,13 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Test ID | AD-USER-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdUserPasswordNotRequiredCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-09, AD.User |
 
 ## Source
 

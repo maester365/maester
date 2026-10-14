@@ -11,6 +11,9 @@ keywords:
   - "ORCA.107"
   - "Low"
   - "ORCA"
+  - "Defender"
+  - "Quarantine"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,10 +44,16 @@ Enable End-user Spam notifications on a quarantine policy.
 | Test ID | ORCA.107 |
 | Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Quarantine |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-ORCA107](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.107.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.107 |
 
 ## Source
 

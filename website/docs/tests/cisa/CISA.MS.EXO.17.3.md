@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.17.3"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Audit logging"
+  - "Logging and detection"
   - "MS.EXO"
   - "MS.EXO.17.3"
 ---
@@ -45,11 +47,21 @@ To create one or more custom audit retention policies, if the default retention 
 | Test ID | CISA.MS.EXO.17.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Purview |
+| Feature | Audit logging |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1070 Indicator Removal |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.17.3 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.5.2v1 (was MS.EXO.17.3v1) |
+| Supports controls | cisa-scuba:MS.EXO.17.3, nist-800-53-r5:AU-11 |
 | PowerShell test | [Test-MtCisaAuditLogRetention](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.17.3.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | M365_ADVANCED_AUDITING |
-| Tags | CISA, CISA.MS.EXO.17.3, MS.EXO, MS.EXO.17.3 |
 
 ## Source
 

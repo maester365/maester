@@ -11,7 +11,8 @@ keywords:
   - "AD-ROOTDSE-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Replication"
+  - "Directory configuration"
+  - "Authentication"
   - "AD"
   - "AD.Replication"
 ---
@@ -67,10 +68,13 @@ This test retrieves detailed information about each supported SASL mechanism:
 | Test ID | AD-ROOTDSE-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Replication |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Authentication |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSupportedSaslMechanismDetails](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-ROOTDSE-02, AD.Replication |
 
 ## Source
 

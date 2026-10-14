@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1019"
   - "Medium"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -46,13 +48,18 @@ Enable the restriction to prevent users from skipping stages.
 | Test ID | AZDO.1019 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1019](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1019.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCheckAZDO1019](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1019.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops](https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops) |
-| Tags | AZDO, AZDO.1019 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1019.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1019.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1019.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1019.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1019.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1019.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1019.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1019.md)

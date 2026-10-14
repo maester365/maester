@@ -11,7 +11,8 @@ keywords:
   - "AD-GPO-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -59,10 +60,13 @@ It filters GPOs where `ModificationTime` is earlier than `2020-01-01` and calcul
 | Test ID | AD-GPO-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoChangedBefore2020Count](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPO-03, AD.GPO |
 
 ## Source
 

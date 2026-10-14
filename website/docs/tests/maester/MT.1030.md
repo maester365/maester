@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1030"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Privileged Identity Management"
+  - "Privileged access"
   - "PIM"
   - "Privileged"
 ---
@@ -43,13 +45,19 @@ This test reads the Privileged Identity Management security alert **Administrato
 | Test ID | MT.1030 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1030](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1030.ps1) |
+| Product | Entra ID |
+| Feature | Privileged Identity Management |
+| Area | Privileged access |
+| Resource type | DirectoryRole |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-6, nist-800-53-r5:AC-2(3) |
+| PowerShell test | [Test-MtCheckMT1030](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1030.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2 |
-| Tags | Maester, MT.1030, PIM, Privileged |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1030.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1030.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1030.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1030.md)
+- Test: [`tests/maester/entra/Test.MT.1030.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1030.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1030.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1030.md)

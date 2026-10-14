@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.9.5"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.9.5"
 ---
@@ -52,10 +54,20 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Test ID | CISA.MS.EXO.9.5 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1204.002 Malicious File, T1566.001 Spearphishing Attachment |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.9.5 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.1.1v1 (was MS.EXO.9.5v1) |
+| Supports controls | cisa-scuba:MS.EXO.9.5, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCisaBlockExecutable](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.9.5.ps1) |
 | Services | ExchangeOnline, SecurityCompliance |
-| Tags | CISA, CISA.MS.EXO.9.5, MS.EXO, MS.EXO.9.5 |
 
 ## Source
 

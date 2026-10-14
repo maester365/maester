@@ -11,7 +11,8 @@ keywords:
   - "AD-GRP-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Groups"
+  - "Groups"
+  - "Privileged access"
   - "AD"
   - "AD.Group"
 ---
@@ -62,10 +63,13 @@ This test retrieves all group objects from Active Directory and counts:
 | Test ID | AD-GRP-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Groups |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Privileged access |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GRP-01, AD.Group |
 
 ## Source
 

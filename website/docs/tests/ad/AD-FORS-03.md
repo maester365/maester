@@ -11,7 +11,8 @@ keywords:
   - "AD-FORS-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Forest"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Forest"
 ---
@@ -59,10 +60,13 @@ This test retrieves the SPN suffixes configured at the forest level using the `G
 | Test ID | AD-FORS-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Forest |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSpnSuffixesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FORS-03, AD.Forest |
 
 ## Source
 

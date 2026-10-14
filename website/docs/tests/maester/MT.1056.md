@@ -10,8 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1056"
   - "High"
-  - "AzureConfig"
   - "Azure"
+  - "Access management"
+  - "Privileged access"
   - "Privileged"
 ---
 
@@ -58,12 +59,19 @@ az role assignment delete --role "User Access Administrator" --assignee adminnam
 | Test ID | MT.1056 |
 | Severity | High |
 | Suite | Maester |
-| Category | AzureConfig |
-| PowerShell test | [Test-MtUserAccessAdmin](https://github.com/maester365/maester/blob/main/tests/Maester/Azure/Test.MT.1056.ps1) |
+| Product | Azure |
+| Related products | Entra ID |
+| Feature | Access management |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.003 Additional Cloud Roles |
+| Supports controls | nist-800-53-r5:AC-6(5), nist-800-53-r5:AC-2 |
+| PowerShell test | [Test-MtUserAccessAdmin](https://github.com/maester365/maester/blob/main/tests/maester/azure/Test.MT.1056.ps1) |
 | Services | Azure, Graph |
-| Tags | Azure, Maester, MT.1056, Privileged |
 
 ## Source
 
-- Test: [`tests/Maester/Azure/Test.MT.1056.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Azure/Test.MT.1056.ps1)
-- Documentation: [`tests/Maester/Azure/Test.MT.1056.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Azure/Test.MT.1056.md)
+- Test: [`tests/maester/azure/Test.MT.1056.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure/Test.MT.1056.ps1)
+- Documentation: [`tests/maester/azure/Test.MT.1056.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure/Test.MT.1056.md)

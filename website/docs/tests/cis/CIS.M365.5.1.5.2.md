@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.5.1.5.2"
-  - "Medium"
+  - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -60,12 +63,21 @@ To approve requests, a reviewer must be a Global Administrator, Cloud Applicatio
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.5.1.5.2 |
-| Severity | Medium |
+| Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1528 Steal Application Access Token |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.1.5.2 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:5.1.5.2, nist-800-53-r5:CM-4 |
 | PowerShell test | [Test-MtCisAdminConsentWorkflowEnabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.5.2.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.5.2, L1, Security |
 
 ## Source
 

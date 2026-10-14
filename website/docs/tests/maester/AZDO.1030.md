@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1030"
-  - "Critical"
+  - "High"
   - "Azure DevOps"
+  - "Users and access"
+  - "Privileged access"
   - "AZDO"
 ---
 
@@ -50,15 +52,21 @@ A small, well-managed PCA group reduces the risk of malicious or accidental chan
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1030 |
-| Severity | Critical |
+| Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoProjectCollectionAdministrator](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1030.ps1) |
+| Product | Azure DevOps |
+| Feature | Users and access |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.003 Additional Cloud Roles |
+| Supports controls | nist-800-53-r5:AC-6(5) |
+| PowerShell test | [Test-AzdoProjectCollectionAdministrator](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1030.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions](https://learn.microsoft.com/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions) |
-| Tags | AZDO, AZDO.1030 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1030.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1030.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1030.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1030.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1030.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1030.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1030.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1030.md)

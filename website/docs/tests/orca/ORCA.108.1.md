@@ -11,6 +11,9 @@ keywords:
   - "ORCA.108.1"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -39,10 +42,17 @@ Set up the required selector DNS records in order to support DKIM.
 | Test ID | ORCA.108.1 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:SC-8 |
 | PowerShell test | [Test-ORCA108_1](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.108.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.108.1 |
 
 ## Source
 

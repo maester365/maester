@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1072"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -39,12 +41,18 @@ After March 2026, Microsoft will stop enforcing require approved client app cont
 | Test ID | MT.1072 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaApprovedClientApp](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1072.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-2(11), nist-800-53-r5:IA-3 |
+| PowerShell test | [Test-MtCaApprovedClientApp](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1072.ps1) |
 | Services | Graph |
-| Tags | CA, Maester, MT.1072 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1072.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1072.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1072.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1072.md)
+- Test: [`tests/maester/entra/Test.MT.1072.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1072.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1072.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1072.md)

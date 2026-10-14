@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Computer"
 ---
@@ -60,10 +61,13 @@ The test returns informational results to help you assess the scope of disabled 
 | Test ID | AD-COMP-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDisabledCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-01, AD.Computer |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-GMC-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Members"
+  - "Groups"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Group"
 ---
@@ -63,10 +64,13 @@ For performance reasons, the test analyzes members from the first 50 groups and 
 | Test ID | AD-GMC-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Members |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupMemberAccountTypeDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GMC-03, AD.Group |
 
 ## Source
 

@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.15.3"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.15.3"
 ---
@@ -54,11 +56,21 @@ Rationale: Users may click on malicious links in emails, leading to compromise o
 | Test ID | CISA.MS.EXO.15.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1204.001 Malicious Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.15.3 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.7.3v1 (was MS.EXO.15.3v1) |
+| Supports controls | cisa-scuba:MS.EXO.15.3, nist-800-53-r5:SI-3, nist-800-53-r5:AU-12c |
 | PowerShell test | [Test-MtCisaSafeLinkClickTracking](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.15.3.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | CISA, CISA.MS.EXO.15.3, MS.EXO, MS.EXO.15.3 |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-21"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Applications and workload identities"
   - "AD"
   - "AD.User"
 ---
@@ -58,10 +59,13 @@ This test reviews AD user objects and flags accounts whose `SamAccountName` or `
 | Test ID | AD-USER-21 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Applications and workload identities |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserKnownServiceAccountDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-21.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-21, AD.User |
 
 ## Source
 

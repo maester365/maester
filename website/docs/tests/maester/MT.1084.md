@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1084"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Hybrid identity"
+  - "Authentication"
   - "Entra"
   - "Graph"
   - "Hybrid"
@@ -100,13 +102,20 @@ To verify that Seamless SSO has been successfully disabled in your environment, 
 | Test ID | MT.1084 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraIDConnectSsso](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1084.ps1) |
+| Product | Entra ID |
+| Related products | Active Directory |
+| Feature | Hybrid identity |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1110 Brute Force, T1558.002 Silver Ticket |
+| Supports controls | nist-800-53-r5:CM-7, nist-800-53-r5:IA-2 |
+| PowerShell test | [Test-MtEntraIDConnectSsso](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1084.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2 |
-| Tags | Entra, Graph, Hybrid, Maester, MT.1084 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1084.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1084.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1084.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1084.md)
+- Test: [`tests/maester/entra/Test.MT.1084.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1084.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1084.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1084.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-18"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -55,10 +56,13 @@ The test queries AD configuration for intermediate CA entries and returns the nu
 | Test ID | AD-CFG-18 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdIntermediateCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-18.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-18, AD.Config |
 
 ## Source
 

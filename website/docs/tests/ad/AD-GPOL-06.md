@@ -11,7 +11,8 @@ keywords:
   - "AD-GPOL-06"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Policy Links"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -66,10 +67,13 @@ The gPLink attribute is checked to determine if any GPOs are linked to each OU.
 | Test ID | AD-GPOL-06 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy Links |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoLinkedOUCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-06.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOL-06, AD.GPO |
 
 ## Source
 

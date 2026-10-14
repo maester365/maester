@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1044"
   - "High"
-  - "Maester/Exchange"
+  - "Exchange Online"
+  - "Client access"
+  - "Authentication"
   - "Exchange"
 ---
 
@@ -61,12 +63,17 @@ The result should be `True`.
 | Test ID | MT.1044 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoModernAuth](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1044.ps1) |
+| Product | Exchange Online |
+| Feature | Client access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1110 Brute Force |
+| PowerShell test | [Test-MtExoModernAuth](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1044.ps1) |
 | Services | ExchangeOnline |
-| Tags | Exchange, Maester, MT.1044 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1044.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1044.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1044.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1044.md)
+- Test: [`tests/maester/exchange/Test.MT.1044.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1044.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1044.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1044.md)

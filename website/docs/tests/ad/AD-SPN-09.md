@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Authentication"
   - "AD"
   - "AD.SPN"
 ---
@@ -63,10 +64,13 @@ This test compares discovered user SPN service classes against a database of kno
 | Test ID | AD-SPN-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnUnknownCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-09, AD.SPN |
 
 ## Source
 

@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1049"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -38,13 +40,19 @@ See [Sign-in risk-based multifactor authentication - Microsoft Learn](https://le
 | Test ID | MT.1049 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1049](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1049.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-2(12) |
+| PowerShell test | [Test-MtCheckMT1049](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1049.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2 |
-| Tags | CA, Maester, MT.1049 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1049.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1049.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1049.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1049.md)
+- Test: [`tests/maester/entra/Test.MT.1049.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1049.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1049.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1049.md)

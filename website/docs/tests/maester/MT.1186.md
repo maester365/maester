@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1186"
-  - "High"
-  - "Maester/Entra"
+  - "Medium"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -66,14 +68,20 @@ A first-party application can still be used even when its service principal is n
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1186 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtHighPrivilegeServicePrincipalsForAllUsers](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1186.ps1) |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | ServicePrincipal |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1059.009 Cloud API, T1087.004 Cloud Account, T1526 Cloud Service Discovery |
+| Supports controls | nist-800-53-r5:AC-3, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtHighPrivilegeServicePrincipalsForAllUsers](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1186.ps1) |
 | Services | Graph |
-| Tags | App, Entra, Graph, Maester, MT.1186 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1186.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1186.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1186.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1186.md)
+- Test: [`tests/maester/entra/Test.MT.1186.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1186.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1186.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1186.md)

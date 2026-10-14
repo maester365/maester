@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AP10"
-  - "High"
+  - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Applications and workload identities"
   - "EIDSCA"
 ---
 
@@ -73,14 +75,20 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AP10 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAP10](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP10.ps1) |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials, T1528 Steal Application Access Token |
+| Supports controls | nist-800-53-r5:AC-6(10), nist-800-53-r5:CM-5 |
+| PowerShell test | [Test-MtCheckEidscaAP10](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP10.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AP10 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AP10.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP10.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AP10.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP10.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AP10.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP10.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AP10.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP10.md)

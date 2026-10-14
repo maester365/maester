@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1037"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Authentication"
   - "AZDO"
 ---
 
@@ -48,13 +50,19 @@ With the policy enabled, users cannot create new Personal Access Tokens unless e
 | Test ID | AZDO.1037 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoDisablePATCreation](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1037.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1528 Steal Application Access Token, T1550.001 Application Access Token |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-AzdoDisablePATCreation](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1037.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops) |
-| Tags | AZDO, AZDO.1037 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1037.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1037.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1037.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1037.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1037.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1037.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1037.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1037.md)

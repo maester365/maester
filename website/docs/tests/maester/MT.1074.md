@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1074"
-  - "Medium"
-  - "Maester/Exchange"
+  - "Low"
+  - "Exchange Online"
+  - "Mailboxes"
+  - "Email and collaboration protection"
   - "Exchange"
 ---
 
@@ -66,14 +68,19 @@ Change primary usage of the .onmicrosoft.com domain for mailboxes.
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1074 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtLimitOnMicrosoftDomainUsage](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1074.ps1) |
+| Product | Exchange Online |
+| Feature | Mailboxes |
+| Area | Email and collaboration protection |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtLimitOnMicrosoftDomainUsage](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1074.ps1) |
 | Services | ExchangeOnline, Graph |
-| Tags | Exchange, Maester, MT.1074 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1074.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1074.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1074.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1074.md)
+- Test: [`tests/maester/exchange/Test.MT.1074.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1074.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1074.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1074.md)

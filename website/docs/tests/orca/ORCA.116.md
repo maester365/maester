@@ -11,6 +11,9 @@ keywords:
   - "ORCA.116"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,11 +44,18 @@ Change Mailbox intelligence based impersonation protection action to move messag
 | Test ID | ORCA.116 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing, T1684.001 Impersonation |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA116](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.116.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.116 |
 
 ## Source
 

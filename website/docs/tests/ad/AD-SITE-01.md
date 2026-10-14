@@ -11,7 +11,8 @@ keywords:
   - "AD-SITE-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Sites and Subnets"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Site"
 ---
@@ -62,10 +63,13 @@ This test retrieves all Active Directory sites using `Get-ADReplicationSite` and
 | Test ID | AD-SITE-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Sites and Subnets |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SITE-01, AD.Site |
 
 ## Source
 

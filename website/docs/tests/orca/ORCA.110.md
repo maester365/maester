@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.110"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,18 @@ Disable notifying internal senders of malware detection.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.110 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-ORCA110](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.110.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.110 |
 
 ## Source
 

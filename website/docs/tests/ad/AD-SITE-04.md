@@ -11,7 +11,8 @@ keywords:
   - "AD-SITE-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Sites and Subnets"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Site"
 ---
@@ -61,10 +62,13 @@ This test analyzes subnet-to-site associations to identify sites that have no su
 | Test ID | AD-SITE-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Sites and Subnets |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutSubnetCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SITE-04, AD.Site |
 
 ## Source
 

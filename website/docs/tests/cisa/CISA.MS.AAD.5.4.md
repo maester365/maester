@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.5.4"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "Deprecated"
   - "Entra ID Free"
   - "MS.AAD"
@@ -54,10 +57,19 @@ Rationale: In M365, group owners and team owners can consent to applications acc
 | Test ID | CISA.MS.AAD.5.4 |
 | Severity | High |
 | Suite | CISA |
-| Category | Deprecated |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1528 Steal Application Access Token, T1566.002 Spearphishing Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.5.4 |
+| Criticality | SHALL |
+| Supports controls | cisa-scuba:MS.AAD.5.4 |
 | PowerShell test | [Test-MtCisaAppGroupOwnerConsent](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.4.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.5.4, Deprecated, Entra ID Free, MS.AAD, MS.AAD.5.4 |
+| Lifecycle | Deprecated |
 
 ## Source
 

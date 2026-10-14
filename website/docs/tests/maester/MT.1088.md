@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1088"
   - "Medium"
+  - "Defender"
   - "Exposure Management"
+  - "Devices and endpoints"
   - "Device"
   - "LongRunning"
   - "XSPM"
@@ -36,13 +38,18 @@ Investigate the related devices and the steps that need to be taken in order to 
 | Test ID | MT.1088 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1088.ps1) |
+| Product | Defender |
+| Feature | Exposure Management |
+| Area | Devices and endpoints |
+| Resource type | Device |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1552.004 Private Keys |
+| PowerShell test | [Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1088.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | Device, LongRunning, MT.1088, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1088.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1088.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1088.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1088.md)
+- Test: [`tests/maester/xspm/Test.MT.1088.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1088.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1088.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1088.md)

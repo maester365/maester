@@ -11,7 +11,8 @@ keywords:
   - "AD-GMC-11"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Members"
+  - "Groups"
+  - "Privileged access"
   - "AD"
   - "AD.GMC"
   - "AD.Group"
@@ -77,10 +78,13 @@ This test lists all privileged groups (those with adminCount = 1 or well-known R
 | Test ID | AD-GMC-11 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Members |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Privileged access |
+| Resource type | Group |
+| MITRE ATT&CK | T1098.007 Additional Local or Domain Groups, T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdGroupPrivilegedWithMembersDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-11.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GMC-11, AD.GMC, AD.Group |
 
 ## Source
 

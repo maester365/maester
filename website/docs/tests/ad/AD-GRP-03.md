@@ -11,7 +11,8 @@ keywords:
   - "AD-GRP-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Groups"
+  - "Groups"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Group"
 ---
@@ -68,10 +69,13 @@ This test retrieves all group objects from Active Directory and:
 | Test ID | AD-GRP-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Groups |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupStaleCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GRP-03, AD.Group |
 
 ## Source
 

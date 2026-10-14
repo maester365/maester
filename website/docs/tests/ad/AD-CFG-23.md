@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-23"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -51,10 +52,13 @@ The test queries AD site link configuration entries that use SMTP as the replica
 | Test ID | AD-CFG-23 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSmtpSiteLinksCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-23.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-23, AD.Config |
 
 ## Source
 

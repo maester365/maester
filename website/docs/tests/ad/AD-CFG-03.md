@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -52,10 +53,13 @@ This test inspects the SPN mapping configuration exposed by AD, extracts the con
 | Test ID | AD-CFG-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSpnMappings](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-03, AD.Config |
 
 ## Source
 

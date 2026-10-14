@@ -11,7 +11,8 @@ keywords:
   - "AD-FGPP-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Password Policy"
+  - "Password policy"
+  - "Authentication"
   - "AD"
   - "AD.PasswordPolicy"
 ---
@@ -74,12 +75,15 @@ The test reports the variety of settings across all policies.
 | Test ID | AD-FGPP-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdFineGrainedPolicyValueCount](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-02.ps1) |
+| Product | Active Directory |
+| Feature | Password policy |
+| Area | Authentication |
+| Resource type | Policy |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdFineGrainedPolicyValueCount](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FGPP-02, AD.PasswordPolicy |
 
 ## Source
 
-- Test: [`tests/ad/passwordpolicy/Test.AD-FGPP-02.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-02.ps1)
-- Documentation: [`tests/ad/passwordpolicy/Test.AD-FGPP-02.md`](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-02.md)
+- Test: [`tests/ad/password-policy/Test.AD-FGPP-02.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-02.ps1)
+- Documentation: [`tests/ad/password-policy/Test.AD-FGPP-02.md`](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-02.md)

@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1002"
   - "High"
   - "Azure DevOps"
+  - "Auditing"
+  - "Logging and detection"
   - "AZDO"
 ---
 
@@ -50,13 +52,19 @@ Auditing is enabled for the organization. Refresh the page to see Auditing appea
 | Test ID | AZDO.1002 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoLogAuditEvent](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1002.ps1) |
+| Product | Azure DevOps |
+| Feature | Auditing |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log |
+| Supports controls | nist-800-53-r5:AU-12, nist-800-53-r5:AU-2 |
+| PowerShell test | [Test-AzdoLogAuditEvent](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1002.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing](https://learn.microsoft.com/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing) |
-| Tags | AZDO, AZDO.1002 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1002.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1002.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1002.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1002.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1002.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1002.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1002.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1002.md)

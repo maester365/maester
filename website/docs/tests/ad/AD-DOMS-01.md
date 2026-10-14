@@ -11,7 +11,8 @@ keywords:
   - "AD-DOMS-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Domain"
 ---
@@ -62,10 +63,13 @@ This test retrieves the allowed DNS suffixes configuration from the domain using
 | Test ID | AD-DOMS-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdAllowedDnsSuffixesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOMS-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DOMS-01, AD.Domain |
 
 ## Source
 

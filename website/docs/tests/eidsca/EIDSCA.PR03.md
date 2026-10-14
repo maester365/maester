@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.PR03"
   - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Password protection"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -65,13 +67,19 @@ mindmap
 | Test ID | EIDSCA.PR03 |
 | Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaPR03](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.PR03.ps1) |
+| Product | Entra ID |
+| Feature | Password protection |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1110 Brute Force |
+| Supports controls | nist-800-53-r5:IA-5(1) |
+| PowerShell test | [Test-MtCheckEidscaPR03](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.PR03.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | EIDSCA, EIDSCA.PR03 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.PR03.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.PR03.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.PR03.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.PR03.md)
+- Test: [`tests/eidsca/Test.EIDSCA.PR03.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.PR03.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.PR03.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.PR03.md)

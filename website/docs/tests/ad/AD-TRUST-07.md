@@ -11,7 +11,8 @@ keywords:
   - "AD-TRUST-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Trusts"
+  - "Trusts"
+  - "External access and sharing"
   - "AD"
   - "AD.Trust"
 ---
@@ -95,10 +96,13 @@ Results are sorted by last validation date (oldest first).
 | Test ID | AD-TRUST-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Trusts |
+| Product | Active Directory |
+| Feature | Trusts |
+| Area | External access and sharing |
+| Resource type | Trust |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustStaleDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-TRUST-07, AD.Trust |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-GCHG-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Changes"
+  - "Groups"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.GCHG"
   - "AD.Group"
@@ -70,10 +71,13 @@ The analysis helps identify trends and patterns in group management activity.
 | Test ID | AD-GCHG-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Changes |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupChangeAveragePerYear](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GCHG-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GCHG-01, AD.GCHG, AD.Group |
 
 ## Source
 

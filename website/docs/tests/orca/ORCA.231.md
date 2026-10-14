@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.231"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,19 @@ Check your anti-spam policies for duplicate rules. Some policies and settings ma
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.231 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA231](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.231.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.231 |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-SCH-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Schema"
+  - "Schema"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Schema"
 ---
@@ -68,10 +69,13 @@ This test retrieves all schema objects and analyzes their creation dates to iden
 | Test ID | AD-SCH-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Schema |
+| Product | Active Directory |
+| Feature | Schema |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSchemaModificationYearCount](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SCH-01, AD.Schema |
 
 ## Source
 

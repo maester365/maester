@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-29"
   - "High"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -57,10 +58,16 @@ This test lists each user with `TrustedForDelegation` or `TrustedToAuthForDelega
 | Test ID | AD-USER-29 |
 | Severity | High |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Authentication |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
+| Supports controls | nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtAdUserDelegationDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-29.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-29, AD.User |
 
 ## Source
 

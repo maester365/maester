@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-15"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -52,10 +53,13 @@ Enrollment-capable CA certificates include validity periods and other critical p
 | Test ID | AD-CFG-15 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdEnrollmentCaCertificateDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-15.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-15, AD.Config |
 
 ## Source
 

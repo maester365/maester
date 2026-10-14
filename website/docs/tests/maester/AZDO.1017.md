@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1017"
   - "High"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -46,13 +48,19 @@ Enable the policy to restrict the job authorization scope.
 | Test ID | AZDO.1017 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1017.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1550.001 Application Access Token, T1213.003 Code Repositories |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1017.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope](https://learn.microsoft.com/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope) |
-| Tags | AZDO, AZDO.1017 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1017.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1017.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1017.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1017.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1017.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1017.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1017.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1017.md)

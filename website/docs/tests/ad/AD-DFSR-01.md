@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DFSR-01"
-  - "High"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - Replication"
+  - "Replication"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Replication"
 ---
@@ -62,12 +63,17 @@ This test counts DFS-R subscription objects and reports:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DFSR-01 |
-| Severity | High |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - Replication |
+| Product | Active Directory |
+| Feature | Replication |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDfsrSubscriptionCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-DFSR-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DFSR-01, AD.Replication |
 
 ## Source
 

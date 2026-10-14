@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1024"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Entra recommendations"
+  - "Infrastructure hardening"
   - "Entra"
   - "Recommendation"
 ---
@@ -43,13 +45,18 @@ Open the recommendation in the Microsoft Entra admin center and follow its actio
 | Test ID | MT.1024 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraRecommendation](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1024.ps1) |
+| Product | Entra ID |
+| Feature | Entra recommendations |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtEntraRecommendation](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1024.ps1) |
 | Services | Graph |
 | Runs per instance | Yes, one result per instance from `Get-MtEntraRecommendationInstance` |
-| Tags | Entra, Maester, MT.1024, Recommendation |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1024.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1024.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1024.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1024.md)
+- Test: [`tests/maester/entra/Test.MT.1024.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1024.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1024.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1024.md)

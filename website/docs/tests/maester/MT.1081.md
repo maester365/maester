@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1081"
   - "Medium"
+  - "Defender"
   - "Exposure Management"
+  - "Privileged access"
   - "Entra"
   - "EntraOps"
   - "Graph"
@@ -40,13 +42,20 @@ Create [dedicated privileged users](https://learn.microsoft.com/microsoft-365/en
 | Test ID | MT.1081 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmHybridUsersWithAssignedEntraIdRoles](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1081.ps1) |
+| Product | Defender |
+| Related products | Entra ID |
+| Feature | Exposure Management |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.002 Domain Accounts, T1078.004 Cloud Accounts, T1556.007 Hybrid Identity |
+| Supports controls | nist-800-53-r5:AC-6(5) |
+| PowerShell test | [Test-MtXspmHybridUsersWithAssignedEntraIdRoles](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1081.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | Entra, EntraOps, Graph, LongRunning, MT.1081, Privileged, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1081.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1081.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1081.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1081.md)
+- Test: [`tests/maester/xspm/Test.MT.1081.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1081.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1081.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1081.md)

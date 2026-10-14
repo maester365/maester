@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.7.2.5"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "SharePoint"
+  - "External sharing"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
@@ -72,10 +75,19 @@ Set-SPOTenant -PreventExternalUsersFromResharing $True
 | Test ID | CIS.M365.7.2.5 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | SharePoint |
+| Feature | External sharing |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1213.002 Sharepoint, T1530 Data from Cloud Storage |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 7.2.5 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2, E5 Level 2 |
+| Supports controls | cis-m365:7.2.5, nist-800-53-r5:AC-3, nist-800-53-r5:AC-21 |
 | PowerShell test | [Test-MtCisSpoGuestCannotShareUnownedItem](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.7.2.5.ps1) |
 | Services | SharePointOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.7.2.5, L2, OneDrive, SharePoint Online |
 
 ## Source
 

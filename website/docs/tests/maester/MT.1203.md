@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1203"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Agent identities"
+  - "AI and agents"
   - "Entra"
   - "Graph"
   - "Preview"
@@ -67,13 +69,18 @@ permissions and access assignments.
 | Test ID | MT.1203 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintOrphaned](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1203.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| PowerShell test | [Test-MtEntraAgentBlueprintOrphaned](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1203.ps1) |
 | Services | Graph |
-| Preview | Yes |
-| Tags | Entra, Graph, Maester, MT.1203, Preview, Severity:Medium |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1203.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1203.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1203.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1203.md)
+- Test: [`tests/maester/entra/Test.MT.1203.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1203.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1203.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1203.md)

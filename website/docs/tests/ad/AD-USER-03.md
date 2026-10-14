@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-03"
-  - "High"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -53,12 +54,15 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-03 |
-| Severity | High |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdUserPasswordNeverExpiresCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-03, AD.User |
 
 ## Source
 

@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1192"
-  - "Medium"
-  - "Maester/Entra"
+  - "Low"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Access control"
   - "Entra"
   - "Preview"
 ---
@@ -43,16 +45,21 @@ This limitation applies only to app assignment. Conditional Access scoping does 
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1192 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppAssignmentNotNested](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1192.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Access control |
+| Resource type | Group |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtGsaPrivateAccessAppAssignmentNotNested](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1192.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | Entra, Maester, MT.1192, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1192.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1192.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1192.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1192.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1192.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1192.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1192.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1192.md)

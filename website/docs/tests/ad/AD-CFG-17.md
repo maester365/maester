@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-17"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -53,10 +54,13 @@ The test enumerates trusted root CA certificates configured for AD (or in the mo
 | Test ID | AD-CFG-17 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustedRootCaDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-17.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-17, AD.Config |
 
 ## Source
 

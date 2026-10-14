@@ -11,6 +11,9 @@ keywords:
   - "ORCA.225"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Attachments"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,11 +44,17 @@ Enable Safe Documents for Office clients.
 | Test ID | ORCA.225 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Feature | Safe Attachments |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1204.002 Malicious File |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA225](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.225.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.225 |
 
 ## Source
 

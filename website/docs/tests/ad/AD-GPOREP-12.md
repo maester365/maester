@@ -11,7 +11,8 @@ keywords:
   - "AD-GPOREP-12"
   - "Info"
   - "Active Directory"
-  - "Active Directory - GPO State"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPOState"
 ---
@@ -63,12 +64,15 @@ The gPLink attribute is parsed to determine the state of each link.
 | Test ID | AD-GPOREP-12 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtCheckADGPOREP12](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-12.ps1) |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCheckADGPOREP12](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-12.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOREP-12, AD.GPOState |
 
 ## Source
 
-- Test: [`tests/ad/gpostate/Test.AD-GPOREP-12.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-12.ps1)
-- Documentation: [`tests/ad/gpostate/Test.AD-GPOREP-12.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-12.md)
+- Test: [`tests/ad/gpo-state/Test.AD-GPOREP-12.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-12.ps1)
+- Documentation: [`tests/ad/gpo-state/Test.AD-GPOREP-12.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-12.md)

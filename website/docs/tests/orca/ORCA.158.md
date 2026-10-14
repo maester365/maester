@@ -11,6 +11,9 @@ keywords:
   - "ORCA.158"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Attachments"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Enable Safe Attachments for SharePoint and Teams.
 | Test ID | ORCA.158 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | SharePoint, Teams |
+| Feature | Safe Attachments |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1080 Taint Shared Content, T1204.002 Malicious File |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA158](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.158.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.158 |
 
 ## Source
 

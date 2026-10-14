@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-24"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -54,10 +55,13 @@ The test queries AD site link configuration entries using IP as the replication 
 | Test ID | AD-CFG-24 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdIpSiteLinksCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-24.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-24, AD.Config |
 
 ## Source
 

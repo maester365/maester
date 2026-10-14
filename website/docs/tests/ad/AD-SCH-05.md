@@ -11,7 +11,8 @@ keywords:
   - "AD-SCH-05"
   - "Medium"
   - "Active Directory"
-  - "Active Directory - Schema"
+  - "Schema"
+  - "Privileged access"
   - "AD"
   - "AD.Schema"
 ---
@@ -69,10 +70,16 @@ This test checks for the presence of LAPS schema attributes (ms-Mcs-AdmPwd) to d
 | Test ID | AD-SCH-05 |
 | Severity | Medium |
 | Suite | Active Directory |
-| Category | Active Directory - Schema |
+| Product | Active Directory |
+| Feature | Schema |
+| Area | Privileged access |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.003 Local Accounts, T1550.002 Pass the Hash |
+| Supports controls | nist-800-53-r5:IA-5, nist-800-53-r5:AC-6(2) |
 | PowerShell test | [Test-MtAdLapsInstalledStatus](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SCH-05, AD.Schema |
 
 ## Source
 
