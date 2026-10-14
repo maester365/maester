@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1085"
-  - "Medium"
+  - "Low"
+  - "Defender"
   - "Exposure Management"
+  - "Logging and detection"
   - "Entra"
   - "Graph"
   - "XSPM"
@@ -40,14 +42,19 @@ More details are available in the Microsoft Learn article: "[Add assets to prede
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1085 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmPendingApprovalCriticalAssetManagement](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1085.ps1) |
+| Product | Defender |
+| Feature | Exposure Management |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtXspmPendingApprovalCriticalAssetManagement](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1085.ps1) |
 | Services | Graph |
-| Tags | Entra, Graph, MT.1085, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1085.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1085.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1085.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1085.md)
+- Test: [`tests/maester/xspm/Test.MT.1085.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1085.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1085.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1085.md)

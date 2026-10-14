@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.5.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Client access"
+  - "Authentication"
   - "MS.EXO"
   - "MS.EXO.5.1"
 ---
@@ -48,10 +50,19 @@ Rationale: SMTP AUTH is not used or needed by modern email clients. Therefore, d
 | Test ID | CISA.MS.EXO.5.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Feature | Client access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.5.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.5.1v1 |
+| Supports controls | cisa-scuba:MS.EXO.5.1, nist-800-53-r5:CM-7 |
 | PowerShell test | [Test-MtCisaSmtpAuthentication](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.5.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.5.1, MS.EXO, MS.EXO.5.1 |
 
 ## Source
 

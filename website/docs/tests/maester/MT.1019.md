@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1019"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -38,13 +40,19 @@ Review the configuration described above.
 | Test ID | MT.1019 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaApplicationEnforcedRestriction](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1019.ps1) |
+| Product | Entra ID |
+| Related products | SharePoint, Exchange Online |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213.002 Sharepoint, T1530 Data from Cloud Storage |
+| PowerShell test | [Test-MtCaApplicationEnforcedRestriction](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1019.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1019 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1019.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1019.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1019.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1019.md)
+- Test: [`tests/maester/entra/Test.MT.1019.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1019.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1019.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1019.md)

@@ -11,6 +11,9 @@ keywords:
   - "ORCA.227"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Attachments"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,11 +44,18 @@ Apply a Safe Attachments policy to every domain.
 | Test ID | ORCA.227 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Attachments |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1204.002 Malicious File |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA227](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.227.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.227 |
 
 ## Source
 

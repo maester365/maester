@@ -11,7 +11,8 @@ keywords:
   - "AD-PWDPOL-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Password Policy"
+  - "Password policy"
+  - "Authentication"
   - "AD"
   - "AD.PasswordPolicy"
 ---
@@ -71,12 +72,15 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | Test ID | AD-PWDPOL-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdPasswordReversibleEncryption](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-PWDPOL-05.ps1) |
+| Product | Active Directory |
+| Feature | Password policy |
+| Area | Authentication |
+| Resource type | Tenant |
+| MITRE ATT&CK | T1556.005 Reversible Encryption |
+| PowerShell test | [Test-MtAdPasswordReversibleEncryption](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-PWDPOL-05, AD.PasswordPolicy |
 
 ## Source
 
-- Test: [`tests/ad/passwordpolicy/Test.AD-PWDPOL-05.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-PWDPOL-05.ps1)
-- Documentation: [`tests/ad/passwordpolicy/Test.AD-PWDPOL-05.md`](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-PWDPOL-05.md)
+- Test: [`tests/ad/password-policy/Test.AD-PWDPOL-05.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-05.ps1)
+- Documentation: [`tests/ad/password-policy/Test.AD-PWDPOL-05.md`](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-05.md)

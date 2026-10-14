@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.5.1"
-  - "High"
+  - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Applications and workload identities"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.5.1"
@@ -45,12 +48,21 @@ Rationale: Application access for the tenant presents a heightened security risk
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.5.1 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials, T1098.003 Additional Cloud Roles, T1528 Steal Application Access Token |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.5.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.5.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.5.1, nist-800-53-r5:AC-6(10), nist-800-53-r5:CM-5 |
 | PowerShell test | [Test-MtCisaAppRegistration](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.1.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.5.1, Entra ID Free, MS.AAD, MS.AAD.5.1 |
 
 ## Source
 

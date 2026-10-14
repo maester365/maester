@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.2.4.4"
   - "Medium"
   - "CIS"
-  - "CIS E5 Level 1"
+  - "Defender"
+  - "Zero-hour auto purge"
+  - "Email and collaboration protection"
   - "CIS E5"
+  - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -68,11 +71,21 @@ Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 | Test ID | CIS.M365.2.4.4 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E5 Level 1 |
+| Product | Defender |
+| Related products | Teams |
+| Feature | Zero-hour auto purge |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.4.4 |
+| Benchmark level | L1 |
+| Benchmark profiles | E5 Level 1 |
+| Supports controls | cis-m365:2.4.4, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCisZAP](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.4.4.ps1) |
 | Services | Teams |
 | Compatible licenses | THREAT_INTELLIGENCE |
-| Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.2.4.4, L1 |
 
 ## Source
 

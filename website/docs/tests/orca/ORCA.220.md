@@ -11,6 +11,9 @@ keywords:
   - "ORCA.220"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Set Advanced Phish filter Threshold to 3 or 4.
 | Test ID | ORCA.220 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA220](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.220.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.220 |
 
 ## Source
 

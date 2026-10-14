@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -55,10 +56,13 @@ This test retrieves the set of enabled AD optional feature flags and reports the
 | Test ID | AD-CFG-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOptionalFeaturesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-04, AD.Config |
 
 ## Source
 

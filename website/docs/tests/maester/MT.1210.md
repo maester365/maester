@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1210"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Agent identities"
+  - "Privileged access"
   - "Entra"
   - "Graph"
   - "LongRunning"
@@ -56,14 +58,20 @@ This check inspects all Agent Users in the tenant and verifies that they do not 
 | Test ID | MT.1210 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentUserExcessiveAccess](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1210.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | Privileged access |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.003 Additional Cloud Roles |
+| Supports controls | nist-800-53-r5:AC-6(5) |
+| PowerShell test | [Test-MtEntraAgentUserExcessiveAccess](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1210.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, Graph, LongRunning, Maester, MT.1210, Preview, Severity:High |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1210.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1210.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1210.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1210.md)
+- Test: [`tests/maester/entra/Test.MT.1210.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1210.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1210.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1210.md)

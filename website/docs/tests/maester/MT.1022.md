@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1022"
-  - "Medium"
-  - "Maester/Entra"
+  - "Low"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Infrastructure hardening"
   - "CA"
   - "Entra"
   - "License"
@@ -42,15 +44,20 @@ Assign Entra ID P1 licences to every user who is in scope of Conditional Access 
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1022 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1022](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1022.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCheckMT1022](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1022.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Entra, License, Maester, MT.1022 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1022.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1022.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1022.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1022.md)
+- Test: [`tests/maester/entra/Test.MT.1022.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1022.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1022.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1022.md)

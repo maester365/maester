@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-21"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -51,10 +52,13 @@ The test queries the AD NTAuth certificate container, counts the number of confi
 | Test ID | AD-CFG-21 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNtAuthCertificatesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-21.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-21, AD.Config |
 
 ## Source
 

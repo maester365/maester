@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.1.2.1"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Microsoft 365"
+  - "Teams and groups"
+  - "Access control"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -73,10 +76,20 @@ To enable only organizationally managed/approved public groups exist:
 | Test ID | CIS.M365.1.2.1 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | Microsoft 365 |
+| Related products | Entra ID |
+| Feature | Teams and groups |
+| Area | Access control |
+| Resource type | Group |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213.002 Sharepoint |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.2.1 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2 |
+| Supports controls | cis-m365:1.2.1, nist-800-53-r5:AC-3 |
 | PowerShell test | [Test-MtCis365PublicGroup](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.2.1.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.1.2.1, L2 |
 
 ## Source
 

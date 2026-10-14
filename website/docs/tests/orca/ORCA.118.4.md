@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.118.4"
-  - "Medium"
+  - "High"
   - "ORCA"
+  - "Defender"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,19 @@ Remove allow listing on domains belonging to your organisation.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.118.4 |
-| Severity | Medium |
+| Severity | High |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | MailFlowRule |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA118_4](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.4.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.118.4 |
 
 ## Source
 

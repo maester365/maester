@@ -11,6 +11,9 @@ keywords:
   - "ORCA.240"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Tenant settings"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,17 @@ Configure external tags to highlight emails which are sent from external.
 | Test ID | ORCA.240 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Tenant settings |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA240](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.240.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.240 |
 
 ## Source
 

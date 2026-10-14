@@ -11,7 +11,8 @@ keywords:
   - "AD-SUB-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Sites and Subnets"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Site"
 ---
@@ -63,10 +64,13 @@ This test retrieves all subnets, identifies those using public IP ranges, and li
 | Test ID | AD-SUB-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Sites and Subnets |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetNonInternalDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SUB-07, AD.Site |
 
 ## Source
 

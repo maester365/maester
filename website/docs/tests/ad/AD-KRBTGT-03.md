@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-KRBTGT-03"
-  - "High"
+  - "Medium"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Account security"
+  - "Authentication"
   - "AD"
   - "AD.Security"
 ---
@@ -73,12 +74,18 @@ This test retrieves the KRBTGT account and:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-KRBTGT-03 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Account security |
+| Area | Authentication |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098 Account Manipulation |
+| Supports controls | nist-800-53-r5:CM-6 |
 | PowerShell test | [Test-MtAdKrbtgtNonStandardUacCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-KRBTGT-03, AD.Security |
 
 ## Source
 

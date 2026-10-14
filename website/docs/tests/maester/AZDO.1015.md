@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1015"
   - "High"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -49,13 +51,19 @@ Only those variables explicitly marked as "Settable at queue time" can be set at
 | Test ID | AZDO.1015 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationLimitVariablesAtQueueTime](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1015.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1677 Poisoned Pipeline Execution |
+| Supports controls | nist-800-53-r5:SI-10 |
+| PowerShell test | [Test-AzdoOrganizationLimitVariablesAtQueueTime](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1015.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time](https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time) |
-| Tags | AZDO, AZDO.1015 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1015.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1015.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1015.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1015.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1015.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1015.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1015.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1015.md)

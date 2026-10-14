@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.EXO.17.2"
   - "Medium"
   - "CISA"
+  - "Exchange Online"
+  - "Audit logging"
+  - "Logging and detection"
   - "Deprecated"
   - "MS.EXO"
   - "MS.EXO.17.2"
@@ -47,10 +50,20 @@ To set up Microsoft Purview Audit (Premium), see [Set up Microsoft Purview Audit
 | Test ID | CISA.MS.EXO.17.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Deprecated |
+| Product | Exchange Online |
+| Related products | Purview |
+| Feature | Audit logging |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.17.2 |
+| Criticality | SHALL |
+| Supports controls | cisa-scuba:MS.EXO.17.2 |
 | PowerShell test | [Test-MtCisaAuditLogPremium](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.17.2.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.EXO.17.2, Deprecated, MS.EXO, MS.EXO.17.2 |
+| Lifecycle | Deprecated |
 
 ## Source
 

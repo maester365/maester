@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1061"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "CA"
 ---
 
@@ -45,12 +47,17 @@ When a Conditional Access policy is configured with the **Register or join devic
 | Test ID | MT.1061 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtDeviceRegistrationMfaConflict](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1061.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.005 Device Registration |
+| PowerShell test | [Test-MtDeviceRegistrationMfaConflict](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1061.ps1) |
 | Services | Graph |
-| Tags | CA, Maester, MT.1061 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1061.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1061.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1061.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1061.md)
+- Test: [`tests/maester/entra/Test.MT.1061.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1061.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1061.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1061.md)

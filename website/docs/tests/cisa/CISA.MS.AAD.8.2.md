@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.8.2"
-  - "High"
+  - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "External identities"
+  - "External access and sharing"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.8.2"
@@ -46,12 +49,21 @@ Rationale: By only allowing an authorized group of individuals to invite externa
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.8.2 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | External identities |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.003 Additional Cloud Roles, T1136.003 Cloud Account |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.8.2 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.8.2v1 |
+| Supports controls | cisa-scuba:MS.AAD.8.2, nist-800-53-r5:AC-6(10) |
 | PowerShell test | [Test-MtCisaGuestInvitation](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.2.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.8.2, Entra ID Free, MS.AAD, MS.AAD.8.2 |
 
 ## Source
 

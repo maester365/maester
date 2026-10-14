@@ -11,6 +11,9 @@ keywords:
   - "ORCA.179"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Enable Safe Links between internal users.
 | Test ID | ORCA.179 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1534 Internal Spearphishing, T1204.001 Malicious Link |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA179](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.179.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.179 |
 
 ## Source
 

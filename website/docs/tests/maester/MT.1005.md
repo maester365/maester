@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1005"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Privileged access"
   - "CA"
 ---
 
@@ -34,13 +36,18 @@ See [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](h
 | Test ID | MT.1005 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaEmergencyAccessExists](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1005.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Privileged access |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCaEmergencyAccessExists](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1005.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1005 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1005.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1005.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1005.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1005.md)
+- Test: [`tests/maester/entra/Test.MT.1005.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1005.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1005.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1005.md)

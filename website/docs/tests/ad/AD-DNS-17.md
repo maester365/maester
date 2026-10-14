@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-17"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -59,10 +60,13 @@ This test identifies zones with names that do not comply with RFC standards for 
 | Test ID | AD-DNS-17 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsNonStandardZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-17.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-17, AD.DNS |
 
 ## Source
 

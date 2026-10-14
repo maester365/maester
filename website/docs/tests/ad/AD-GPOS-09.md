@@ -11,7 +11,8 @@ keywords:
   - "AD-GPOS-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - GPO State"
+  - "Group Policy"
+  - "Access control"
   - "AD"
   - "AD.GPOState"
 ---
@@ -55,12 +56,15 @@ keywords:
 | Test ID | AD-GPOS-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoOwnerDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOS-09.ps1) |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Access control |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdGpoOwnerDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOS-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOS-09, AD.GPOState |
 
 ## Source
 
-- Test: [`tests/ad/gpostate/Test.AD-GPOS-09.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOS-09.ps1)
-- Documentation: [`tests/ad/gpostate/Test.AD-GPOS-09.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOS-09.md)
+- Test: [`tests/ad/gpo-state/Test.AD-GPOS-09.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOS-09.ps1)
+- Documentation: [`tests/ad/gpo-state/Test.AD-GPOS-09.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOS-09.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-FORS-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Forest"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Forest"
 ---
@@ -60,10 +61,13 @@ This test retrieves the complete list of UPN suffixes configured at the forest l
 | Test ID | AD-FORS-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Forest |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUpnSuffixesDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FORS-02, AD.Forest |
 
 ## Source
 

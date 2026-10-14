@@ -11,6 +11,9 @@ keywords:
   - "ORCA.233"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,16 @@ Send mail directly to EOP or configure enhanced filtering.
 | Test ID | ORCA.233 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing |
 | PowerShell test | [Test-ORCA233](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.233 |
 
 ## Source
 

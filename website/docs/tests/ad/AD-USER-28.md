@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-28"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -57,10 +58,13 @@ This test counts user accounts with either `TrustedForDelegation` or `TrustedToA
 | Test ID | AD-USER-28 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdUserDelegationConfiguredCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-28.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-28, AD.User |
 
 ## Source
 

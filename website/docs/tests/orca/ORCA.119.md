@@ -11,6 +11,9 @@ keywords:
   - "ORCA.119"
   - "Info"
   - "ORCA"
+  - "Defender"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,16 @@ Enable Similar Domains Safety Tips so that users can receive visible indication 
 | Test ID | ORCA.119 |
 | Severity | Info |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| MITRE ATT&CK | T1566 Phishing, T1684.001 Impersonation |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA119](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.119.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.119 |
 
 ## Source
 

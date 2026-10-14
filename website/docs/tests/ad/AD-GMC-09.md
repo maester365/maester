@@ -11,7 +11,8 @@ keywords:
   - "AD-GMC-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Members"
+  - "Groups"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.GMC"
   - "AD.Group"
@@ -72,10 +73,13 @@ It then lists these groups with their:
 | Test ID | AD-GMC-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Members |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Group |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupEmptyNonPrivilegedDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GMC-09, AD.GMC, AD.Group |
 
 ## Source
 

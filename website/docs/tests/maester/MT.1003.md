@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1003"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -39,13 +41,18 @@ Review the configuration described above.
 | Test ID | MT.1003 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1003](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1003.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| PowerShell test | [Test-MtCheckMT1003](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1003.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1003 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1003.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1003.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1003.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1003.md)
+- Test: [`tests/maester/entra/Test.MT.1003.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1003.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1003.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1003.md)

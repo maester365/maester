@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -52,10 +53,13 @@ AD-based activation objects are used by Windows for volume activation and relate
 | Test ID | AD-CFG-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdAdActivationObjectsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-09, AD.Config |
 
 ## Source
 

@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.AP01"
   - "High"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Privileged access"
   - "EIDSCA"
 ---
 
@@ -66,12 +68,18 @@ mindmap
 | Test ID | EIDSCA.AP01 |
 | Severity | High |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAP01](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP01.ps1) |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Privileged access |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098 Account Manipulation |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtCheckEidscaAP01](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP01.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AP01 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AP01.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP01.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AP01.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP01.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AP01.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP01.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AP01.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP01.md)

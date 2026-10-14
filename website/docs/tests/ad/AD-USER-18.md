@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-18"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects where the `ScriptPath` attribute contains a non-em
 | Test ID | AD-USER-18 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Infrastructure hardening |
+| Resource type | User |
+| MITRE ATT&CK | T1037.003 Network Logon Script |
 | PowerShell test | [Test-MtAdUserScriptPathCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-18.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-18, AD.User |
 
 ## Source
 

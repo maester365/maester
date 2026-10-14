@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AP07"
-  - "High"
+  - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "External identities"
+  - "External access and sharing"
   - "EIDSCA"
 ---
 
@@ -62,14 +64,20 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AP07 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAP07](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP07.ps1) |
+| Product | Entra ID |
+| Feature | External identities |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1087.004 Cloud Account, T1069.003 Cloud Groups |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCheckEidscaAP07](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP07.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AP07 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AP07.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP07.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AP07.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP07.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AP07.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP07.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AP07.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP07.md)

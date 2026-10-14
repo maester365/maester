@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-04"
-  - "Medium"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Authentication"
   - "AD"
   - "AD.User"
 ---
@@ -54,12 +55,15 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-04 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1556.005 Reversible Encryption |
 | PowerShell test | [Test-MtAdUserReversibleEncryptionCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-04, AD.User |
 
 ## Source
 

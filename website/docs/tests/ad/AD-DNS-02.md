@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -58,10 +59,13 @@ This test identifies DNS zones that contain only SOA and NS records, with no A, 
 | Test ID | AD-DNS-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsZonesWithOnlySoaNs](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-02, AD.DNS |
 
 ## Source
 

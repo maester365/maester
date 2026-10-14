@@ -11,7 +11,8 @@ keywords:
   - "AD-MSA-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Account security"
+  - "Applications and workload identities"
   - "AD"
   - "AD.Security"
 ---
@@ -84,10 +85,13 @@ This test counts managed service accounts in Active Directory and categorizes th
 | Test ID | AD-MSA-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Account security |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdManagedServiceAccountCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-MSA-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-MSA-01, AD.Security |
 
 ## Source
 

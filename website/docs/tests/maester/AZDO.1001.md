@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1001"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Authentication"
   - "AZDO"
 ---
 
@@ -50,13 +52,18 @@ Users can no longer use SSH to connect to Azure DevOps.
 | Test ID | AZDO.1001 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoSSHAuthentication](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1001.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1552.004 Private Keys, T1098.001 Additional Cloud Credentials |
+| PowerShell test | [Test-AzdoSSHAuthentication](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1001.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/vstspolicyssh](https://aka.ms/vstspolicyssh) |
-| Tags | AZDO, AZDO.1001 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1001.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1001.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1001.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1001.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1001.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1001.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1001.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1001.md)

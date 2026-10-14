@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1025"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Roles and administrators"
+  - "Privileged access"
   - "Privileged"
 ---
 
@@ -35,12 +37,18 @@ Review the configuration described above.
 | Test ID | MT.1025 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1025](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1025.ps1) |
+| Product | Entra ID |
+| Feature | Roles and administrators |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1199 Trusted Relationship |
+| Supports controls | nist-800-53-r5:AC-6(5), nist-800-53-r5:AC-2(7) |
+| PowerShell test | [Test-MtCheckMT1025](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1025.ps1) |
 | Services | Graph |
-| Tags | Maester, MT.1025, Privileged |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1025.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1025.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1025.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1025.md)
+- Test: [`tests/maester/entra/Test.MT.1025.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1025.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1025.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1025.md)

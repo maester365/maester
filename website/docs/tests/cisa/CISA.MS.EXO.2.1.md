@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.EXO.2.1"
   - "Medium"
   - "CISA"
+  - "Exchange Online"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "Deprecated"
   - "MS.EXO"
   - "MS.EXO.2.1"
@@ -51,10 +54,19 @@ Rationale: Failing to maintain an accurate list of authorized IP addresses may r
 | Test ID | CISA.MS.EXO.2.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Deprecated |
+| Product | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.2.1 |
+| Criticality | SHALL |
+| Supports controls | cisa-scuba:MS.EXO.2.1 |
 | PowerShell test | [Test-MtCisaSpfRestriction](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.1.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.EXO.2.1, Deprecated, MS.EXO, MS.EXO.2.1 |
+| Lifecycle | Deprecated |
 
 ## Source
 

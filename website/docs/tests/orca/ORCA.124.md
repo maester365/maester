@@ -11,6 +11,9 @@ keywords:
   - "ORCA.124"
   - "High"
   - "ORCA"
+  - "Defender"
+  - "Safe Attachments"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,11 +43,18 @@ Set Safe attachments unknown malware response to block messages.
 | Test ID | ORCA.124 |
 | Severity | High |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Attachments |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1204.002 Malicious File |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA124](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.124.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.124 |
 
 ## Source
 

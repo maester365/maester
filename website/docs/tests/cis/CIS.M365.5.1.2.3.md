@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.5.1.2.3"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Access control"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -70,10 +73,19 @@ Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $params
 | Test ID | CIS.M365.5.1.2.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.1.2.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:5.1.2.3, nist-800-53-r5:AC-6(10), nist-800-53-r5:CM-5 |
 | PowerShell test | [Test-MtCisCreateTenantDisallowed](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.2.3.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.2.3, L1, Security |
 
 ## Source
 

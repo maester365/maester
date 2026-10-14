@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.2.1.5"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E5 Level 2"
+  - "Defender"
+  - "Safe Attachments"
+  - "Email and collaboration protection"
   - "CIS E5"
+  - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -70,13 +73,23 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.2.1.5 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E5 Level 2 |
+| Product | Defender |
+| Related products | SharePoint, Teams |
+| Feature | Safe Attachments |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1080 Taint Shared Content, T1204.002 Malicious File |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.5 |
+| Benchmark level | L2 |
+| Benchmark profiles | E5 Level 2 |
+| Supports controls | cis-m365:2.1.5, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCisSafeAttachmentsAtpPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.5.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.5, L2 |
 
 ## Source
 

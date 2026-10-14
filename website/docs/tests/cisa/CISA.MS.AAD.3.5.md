@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.5"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.5"
@@ -48,11 +51,20 @@ If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator 
 | Test ID | CISA.MS.AAD.3.5 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1621 Multi-Factor Authentication Request Generation, T1111 Multi-Factor Authentication Interception |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.5 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.3.5v2 |
+| Supports controls | cisa-scuba:MS.AAD.3.5, nist-800-53-r5:CM-7b, nist-800-53-r5:IA-5c |
 | PowerShell test | [Test-MtCisaWeakFactor](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.5.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.3.5, Entra ID P1, MS.AAD, MS.AAD.3.5 |
 
 ## Source
 

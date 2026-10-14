@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -58,10 +59,13 @@ This test provides a detailed breakdown of record counts per zone, including the
 | Test ID | AD-DNS-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsZoneRecordDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-07, AD.DNS |
 
 ## Source
 

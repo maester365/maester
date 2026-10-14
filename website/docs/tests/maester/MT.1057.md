@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1057"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -38,13 +40,19 @@ Open all app registrations below and remove the secrets.
 | Test ID | MT.1057 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationsWithSecrets](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1057.ps1) |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | Application |
+| User impact | Low |
+| Implementation cost | High |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1552 Unsecured Credentials |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtAppRegistrationsWithSecrets](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1057.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1057 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1057.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1057.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1057.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1057.md)
+- Test: [`tests/maester/entra/Test.MT.1057.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1057.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1057.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1057.md)

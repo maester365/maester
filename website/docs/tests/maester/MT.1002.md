@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1002"
-  - "High"
-  - "Maester/Entra"
+  - "Medium"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
 ---
 
@@ -92,14 +94,19 @@ Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1002 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtAppManagementPolicyEnabled](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.ps1) |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.001 Additional Cloud Credentials, T1552 Unsecured Credentials |
+| PowerShell test | [Test-MtAppManagementPolicyEnabled](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1002.ps1) |
 | Services | Graph |
-| Tags | App, Maester, MT.1002 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1002.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1002.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1002.md)
+- Test: [`tests/maester/entra/Test.MT.1002.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1002.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1002.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1002.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-DCOMP-06"
   - "Medium"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Security"
 ---
@@ -85,10 +86,16 @@ Provides counts and lists affected computers.
 | Test ID | AD-DCOMP-06 |
 | Severity | Medium |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Computer |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.002 Domain Accounts |
+| Supports controls | nist-800-53-r5:AC-2(3) |
 | PowerShell test | [Test-MtAdComputerStaleEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-06.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-06, AD.Security |
 
 ## Source
 

@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.13.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Mailbox auditing"
+  - "Logging and detection"
   - "MS.EXO"
   - "MS.EXO.13.1"
 ---
@@ -50,10 +52,19 @@ Mailbox auditing can be managed from the [Exchange Online PowerShell module](htt
 | Test ID | CISA.MS.EXO.13.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Feature | Mailbox auditing |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1070.008 Clear Mailbox Data, T1098.002 Additional Email Delegate Permissions, T1564.008 Email Hiding Rules, T1586.002 Email Accounts, T1685.002 Disable or Modify Cloud Log |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.13.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.13.1v1 |
+| Supports controls | cisa-scuba:MS.EXO.13.1, nist-800-53-r5:AU-12c |
 | PowerShell test | [Test-MtCisaMailboxAuditing](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.13.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.13.1, MS.EXO, MS.EXO.13.1 |
 
 ## Source
 

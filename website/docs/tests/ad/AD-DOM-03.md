@@ -11,7 +11,8 @@ keywords:
   - "AD-DOM-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Domain"
 ---
@@ -58,10 +59,13 @@ This test retrieves all domain controllers from Active Directory and counts them
 | Test ID | AD-DOM-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDomainControllerCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DOM-03, AD.Domain |
 
 ## Source
 

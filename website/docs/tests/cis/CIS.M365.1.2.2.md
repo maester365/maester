@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.1.2.2"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Microsoft 365"
+  - "Teams and groups"
+  - "Access control"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -77,12 +80,22 @@ $MBX | ForEach-Object { Update-MgUser -UserId $_.ExternalDirectoryObjectId -Acco
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.1.2.2 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Microsoft 365 |
+| Related products | Exchange Online |
+| Feature | Teams and groups |
+| Area | Access control |
+| Resource type | Mailbox |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.2.2 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:1.2.2, nist-800-53-r5:AC-2 |
 | PowerShell test | [Test-MtCisSharedMailboxSignIn](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.2.2.ps1) |
 | Services | ExchangeOnline, Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.2.2, L1 |
 
 ## Source
 

@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1010"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "CA"
 ---
 
@@ -39,13 +41,20 @@ Review the configuration described above.
 | Test ID | MT.1010 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaBlockLegacyExchangeActiveSyncAuthentication](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1010.ps1) |
+| Product | Entra ID |
+| Related products | Exchange Online |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1110 Brute Force |
+| Supports controls | nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCaBlockLegacyExchangeActiveSyncAuthentication](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1010.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CA, Maester, MT.1010 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1010.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1010.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1010.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1010.md)
+- Test: [`tests/maester/entra/Test.MT.1010.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1010.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1010.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1010.md)

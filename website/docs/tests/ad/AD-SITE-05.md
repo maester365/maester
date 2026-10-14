@@ -11,7 +11,8 @@ keywords:
   - "AD-SITE-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Sites and Subnets"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Site"
 ---
@@ -63,10 +64,13 @@ This test retrieves all sites and subnets, identifies sites with no subnet assoc
 | Test ID | AD-SITE-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Sites and Subnets |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutSubnetDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SITE-05, AD.Site |
 
 ## Source
 

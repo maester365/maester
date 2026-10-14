@@ -11,7 +11,8 @@ keywords:
   - "AD-DACL-13"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DACL"
+  - "Permissions and delegation"
+  - "Privileged access"
   - "AD"
   - "AD.DACL"
 ---
@@ -57,10 +58,13 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 | Test ID | AD-DACL-13 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DACL |
+| Product | Active Directory |
+| Feature | Permissions and delegation |
+| Area | Privileged access |
+| Resource type | Permission |
+| MITRE ATT&CK | T1003.006 DCSync, T1098 Account Manipulation |
 | PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightIdentity](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-13.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DACL-13, AD.DACL |
 
 ## Source
 

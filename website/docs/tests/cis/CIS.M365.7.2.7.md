@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.7.2.7"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "SharePoint"
+  - "Sharing links"
+  - "Access control"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -77,10 +80,19 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 | Test ID | CIS.M365.7.2.7 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | SharePoint |
+| Feature | Sharing links |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1213.002 Sharepoint |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 7.2.7 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:7.2.7, nist-800-53-r5:AC-3, nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtCisSpoDefaultSharingLink](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.7.2.7.ps1) |
 | Services | SharePointOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.7.2.7, L1, OneDrive, SharePoint Online |
 
 ## Source
 

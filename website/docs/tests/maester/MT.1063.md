@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1063"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "App"
   - "Entra"
   - "LongRunning"
@@ -51,13 +53,19 @@ Register MFA for all app registration owners listed. Use Conditional Access poli
 | Test ID | MT.1063 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationOwnersWithoutMFA](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1063.ps1) |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.001 Additional Cloud Credentials, T1110.004 Credential Stuffing |
+| Supports controls | nist-800-53-r5:IA-2(1), nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtAppRegistrationOwnersWithoutMFA](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1063.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | App, Entra, LongRunning, Maester, MT.1063 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1063.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1063.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1063.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1063.md)
+- Test: [`tests/maester/entra/Test.MT.1063.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1063.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1063.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1063.md)

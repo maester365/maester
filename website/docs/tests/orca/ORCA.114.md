@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.114"
-  - "High"
+  - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,19 @@ Remove IP addresses from IP allow list.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.114 |
-| Severity | High |
+| Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:AC-4 |
 | PowerShell test | [Test-ORCA114](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.114.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.114 |
 
 ## Source
 

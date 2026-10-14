@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1038"
   - "Medium"
   - "Azure DevOps"
+  - "Security policies"
+  - "Applications and workload identities"
   - "AZDO"
 ---
 
@@ -48,13 +50,18 @@ With the policy disabled, extensions cannot make requests to loopback addresses 
 | Test ID | AZDO.1038 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1038](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1038.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1190 Exploit Public-Facing Application |
+| PowerShell test | [Test-MtCheckAZDO1038](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1038.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops](https://learn.microsoft.com/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops) |
-| Tags | AZDO, AZDO.1038 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1038.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1038.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1038.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1038.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1038.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1038.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1038.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1038.md)

@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1010"
   - "High"
   - "Azure DevOps"
+  - "Auditing"
+  - "Logging and detection"
   - "AZDO"
 ---
 
@@ -56,13 +58,19 @@ Audit streams represent a pipeline that flows audit events from your Azure DevOp
 | Test ID | AZDO.1010 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoAuditStream](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1010.ps1) |
+| Product | Azure DevOps |
+| Feature | Auditing |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log, T1070 Indicator Removal |
+| Supports controls | nist-800-53-r5:AU-6, nist-800-53-r5:SI-4 |
+| PowerShell test | [Test-AzdoAuditStream](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1010.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops) |
-| Tags | AZDO, AZDO.1010 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1010.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1010.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1010.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1010.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1010.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1010.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1010.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1010.md)

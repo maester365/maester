@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-24"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Privileged access"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test lists built-in administrator style accounts and returns their `LastLog
 | Test ID | AD-USER-24 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Privileged access |
+| Resource type | User |
+| MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdUserBuiltInAdminLastLogonDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-24.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-24, AD.User |
 
 ## Source
 

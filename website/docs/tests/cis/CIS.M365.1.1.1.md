@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.1.1.1"
   - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Microsoft 365"
+  - "Administrative accounts"
+  - "Privileged access"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -58,10 +61,20 @@ Remediation will require first identifying the privileged accounts that are sync
 | Test ID | CIS.M365.1.1.1 |
 | Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Microsoft 365 |
+| Related products | Entra ID |
+| Feature | Administrative accounts |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.002 Domain Accounts, T1078.004 Cloud Accounts, T1556.007 Hybrid Identity |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.1.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:1.1.1, nist-800-53-r5:AC-6(5) |
 | PowerShell test | [Test-MtCisCloudAdmin](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.1.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.1.1, L1 |
 
 ## Source
 

@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DC-02"
-  - "Critical"
+  - "High"
   - "Active Directory"
-  - "Active Directory - Domain Controllers"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DomainController"
 ---
@@ -70,14 +71,20 @@ This test queries the SMB server configuration on each domain controller to chec
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DC-02 |
-| Severity | Critical |
+| Severity | High |
 | Suite | Active Directory |
-| Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcSmbv1EnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-02.ps1) |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1210 Exploitation of Remote Services |
+| Supports controls | nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtAdDcSmbv1EnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DC-02, AD.DomainController |
 
 ## Source
 
-- Test: [`tests/ad/domaincontroller/Test.AD-DC-02.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-02.ps1)
-- Documentation: [`tests/ad/domaincontroller/Test.AD-DC-02.md`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-02.md)
+- Test: [`tests/ad/domain-controller/Test.AD-DC-02.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-02.ps1)
+- Documentation: [`tests/ad/domain-controller/Test.AD-DC-02.md`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-02.md)

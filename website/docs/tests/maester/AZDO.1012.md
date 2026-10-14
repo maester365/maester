@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1012"
   - "Info"
   - "Azure DevOps"
+  - "Resource usage and limits"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -44,13 +46,16 @@ Keeping the tag count below the limit ensures responsive work item searches and 
 | Test ID | AZDO.1012 |
 | Severity | Info |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoResourceUsageWorkItemTag](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1012.ps1) |
+| Product | Azure DevOps |
+| Feature | Resource usage and limits |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoResourceUsageWorkItemTag](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1012.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/settings/work/object-limits?view=azure-devops) |
-| Tags | AZDO, AZDO.1012 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1012.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1012.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1012.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1012.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1012.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1012.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1012.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1012.md)

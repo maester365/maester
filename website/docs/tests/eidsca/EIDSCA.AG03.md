@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.AG03"
   - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -50,12 +52,17 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 | Test ID | EIDSCA.AG03 |
 | Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAG03](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AG03.ps1) |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1621 Multi-Factor Authentication Request Generation, T1078.004 Cloud Accounts |
+| PowerShell test | [Test-MtCheckEidscaAG03](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AG03.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AG03 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AG03.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AG03.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AG03.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AG03.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AG03.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AG03.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AG03.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AG03.md)

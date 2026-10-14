@@ -11,7 +11,8 @@ keywords:
   - "AD-DOM-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Domain"
 ---
@@ -63,10 +64,13 @@ This test validates NetBIOS names against standard naming conventions, checking 
 | Test ID | AD-DOM-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNetbiosNameStandardCompliance](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DOM-07, AD.Domain |
 
 ## Source
 

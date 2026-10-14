@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1000"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Authentication"
   - "AZDO"
 ---
 
@@ -49,13 +51,18 @@ With the policy disabled, third-party applications can no longer access your Azu
 | Test ID | AZDO.1000 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoThirdPartyAccessViaOauth](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1000.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1528 Steal Application Access Token, T1671 Cloud Application Integration |
+| PowerShell test | [Test-AzdoThirdPartyAccessViaOauth](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1000.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/vstspolicyoauth](https://aka.ms/vstspolicyoauth) |
-| Tags | AZDO, AZDO.1000 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1000.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1000.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1000.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1000.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1000.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1000.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1000.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1000.md)

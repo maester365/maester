@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1073"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Hybrid identity"
+  - "Infrastructure hardening"
   - "Entra"
   - "Graph"
   - "Hybrid"
@@ -65,12 +67,18 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/direc
 | Test ID | MT.1073 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraIDConnectSyncSoftHardMatching](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1073.ps1) |
+| Product | Entra ID |
+| Feature | Hybrid identity |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098 Account Manipulation |
+| Supports controls | nist-800-53-r5:IA-4, nist-800-53-r5:CM-6 |
+| PowerShell test | [Test-MtEntraIDConnectSyncSoftHardMatching](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1073.ps1) |
 | Services | Graph |
-| Tags | Entra, Graph, Hybrid, Maester, MT.1073 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1073.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1073.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1073.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1073.md)
+- Test: [`tests/maester/entra/Test.MT.1073.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1073.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1073.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1073.md)

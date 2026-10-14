@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1076"
-  - "High"
-  - "Maester/Exchange"
+  - "Low"
+  - "Exchange Online"
+  - "Mailboxes"
+  - "Email and collaboration protection"
   - "Exchange"
 ---
 
@@ -57,14 +59,19 @@ Processes can vary depending on use of PowerShell, AD MMCs, or Exchange Manageme
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1076 |
-| Severity | High |
+| Severity | Low |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoMoeraMailActivity](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1076.ps1) |
+| Product | Exchange Online |
+| Feature | Mailboxes |
+| Area | Email and collaboration protection |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtExoMoeraMailActivity](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1076.ps1) |
 | Services | Graph |
-| Tags | Exchange, Maester, MT.1076 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1076.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1076.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1076.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1076.md)
+- Test: [`tests/maester/exchange/Test.MT.1076.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1076.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1076.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1076.md)

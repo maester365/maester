@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.AM07"
   - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -47,12 +49,18 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Test ID | EIDSCA.AM07 |
 | Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAM07](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AM07.ps1) |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1621 Multi-Factor Authentication Request Generation |
+| Supports controls | nist-800-53-r5:IA-2(13), nist-800-53-r5:IA-2(1) |
+| PowerShell test | [Test-MtCheckEidscaAM07](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AM07.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AM07 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AM07.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AM07.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AM07.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AM07.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AM07.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AM07.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AM07.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AM07.md)

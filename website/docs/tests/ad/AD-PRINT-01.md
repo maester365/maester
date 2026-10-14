@@ -11,7 +11,8 @@ keywords:
   - "AD-PRINT-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Printer"
+  - "Printers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Printer"
 ---
@@ -67,10 +68,13 @@ This test queries Active Directory for printQueue objects to count published pri
 | Test ID | AD-PRINT-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Printer |
+| Product | Active Directory |
+| Feature | Printers |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdPrinterTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/printer/Test.AD-PRINT-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-PRINT-01, AD.Printer |
 
 ## Source
 

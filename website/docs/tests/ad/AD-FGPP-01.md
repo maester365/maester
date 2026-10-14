@@ -11,7 +11,8 @@ keywords:
   - "AD-FGPP-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Password Policy"
+  - "Password policy"
+  - "Authentication"
   - "AD"
   - "AD.PasswordPolicy"
 ---
@@ -70,12 +71,15 @@ This test retrieves all fine-grained password policies using `Get-ADFineGrainedP
 | Test ID | AD-FGPP-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Password Policy |
-| PowerShell test | [Test-MtAdFineGrainedPolicyCount](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-01.ps1) |
+| Product | Active Directory |
+| Feature | Password policy |
+| Area | Authentication |
+| Resource type | Policy |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdFineGrainedPolicyCount](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FGPP-01, AD.PasswordPolicy |
 
 ## Source
 
-- Test: [`tests/ad/passwordpolicy/Test.AD-FGPP-01.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-01.ps1)
-- Documentation: [`tests/ad/passwordpolicy/Test.AD-FGPP-01.md`](https://github.com/maester365/maester/blob/main/tests/ad/passwordpolicy/Test.AD-FGPP-01.md)
+- Test: [`tests/ad/password-policy/Test.AD-FGPP-01.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-01.ps1)
+- Documentation: [`tests/ad/password-policy/Test.AD-FGPP-01.md`](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-01.md)

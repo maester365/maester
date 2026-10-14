@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-KRBTGT-01"
-  - "High"
+  - "Medium"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Account security"
+  - "Authentication"
   - "AD"
   - "AD.Security"
 ---
@@ -73,12 +74,18 @@ This test retrieves the KRBTGT account from Active Directory and checks:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-KRBTGT-01 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Account security |
+| Area | Authentication |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1558.001 Golden Ticket |
+| Supports controls | nist-800-53-r5:IA-5 |
 | PowerShell test | [Test-MtAdKrbtgtPasswordLastSet](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-KRBTGT-01, AD.Security |
 
 ## Source
 

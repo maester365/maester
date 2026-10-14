@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-02"
-  - "High"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.User"
 ---
@@ -54,12 +55,16 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-02 |
-| Severity | High |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Identity lifecycle and hygiene |
+| Resource type | User |
+| MITRE ATT&CK | T1078.002 Domain Accounts |
+| Supports controls | nist-800-53-r5:AC-2(3) |
 | PowerShell test | [Test-MtAdUserDormantEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-02, AD.User |
 
 ## Source
 

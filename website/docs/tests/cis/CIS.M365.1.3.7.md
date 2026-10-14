@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.1.3.7"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
@@ -73,10 +76,19 @@ Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
 | Test ID | CIS.M365.1.3.7 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | Microsoft 365 |
+| Feature | Organization settings |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1567.002 Exfiltration to Cloud Storage |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.7 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2, E5 Level 2 |
+| Supports controls | cis-m365:1.3.7, nist-800-53-r5:AC-20, nist-800-53-r5:CM-7 |
 | PowerShell test | [Test-MtCisThirdPartyStorageServicesRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.7.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.7, L2, Security |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-12"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -53,10 +54,13 @@ Enterprise Certification Authorities (CAs) issue certificates for domain authent
 | Test ID | AD-CFG-12 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdEnterpriseCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-12.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-12, AD.Config |
 
 ## Source
 

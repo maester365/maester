@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.14.4"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.14.4"
 ---
@@ -52,10 +54,19 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Test ID | CISA.MS.EXO.14.4 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.14.4 |
+| Criticality | SHOULD |
+| Supports controls | cisa-scuba:MS.EXO.14.4 |
 | PowerShell test | [Test-MtCisaSpamAlternative](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.14.4.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
-| Tags | CISA, CISA.MS.EXO.14.4, MS.EXO, MS.EXO.14.4 |
 
 ## Source
 

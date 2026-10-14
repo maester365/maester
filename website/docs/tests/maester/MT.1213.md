@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1213"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Agent identities"
+  - "AI and agents"
   - "Entra"
   - "Graph"
   - "Preview"
@@ -54,13 +56,19 @@ This test reports Agent Identity Blueprints with a wildcard redirect URI or a no
 | Test ID | MT.1213 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintRedirectUriHygiene](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1213.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1557 Adversary-in-the-Middle |
+| Supports controls | nist-800-53-r5:SC-23, nist-800-53-r5:SC-8 |
+| PowerShell test | [Test-MtEntraAgentBlueprintRedirectUriHygiene](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1213.ps1) |
 | Services | Graph |
-| Preview | Yes |
-| Tags | Entra, Graph, Maester, MT.1213, Preview, Severity:High |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1213.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1213.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1213.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1213.md)
+- Test: [`tests/maester/entra/Test.MT.1213.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1213.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1213.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1213.md)

@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.SHAREPOINT.3.3"
   - "Medium"
   - "CISA"
-  - "spo"
+  - "SharePoint"
+  - "External sharing"
+  - "Authentication"
   - "MS.SHAREPOINT"
   - "MS.SHAREPOINT.3.3"
 ---
@@ -48,12 +50,21 @@ Rationale: Requiring periodic reauthentication via verification codes ensures th
 | Test ID | CISA.MS.SHAREPOINT.3.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | spo |
-| PowerShell test | [Test-MtCisaSpoVerificationCodeReauth](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1) |
+| Product | SharePoint |
+| Feature | External sharing |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1213.002 Sharepoint, T1530 Data from Cloud Storage |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.SHAREPOINT.3.3 |
+| Criticality | SHALL |
+| Upstream requirement | MS.SHAREPOINT.3.3v2 |
+| Supports controls | cisa-scuba:MS.SHAREPOINT.3.3, nist-800-53-r5:IA-11 |
+| PowerShell test | [Test-MtCisaSpoVerificationCodeReauth](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.3.ps1) |
 | Services | SharePointOnline |
-| Tags | CISA, CISA.MS.SHAREPOINT.3.3, MS.SHAREPOINT, MS.SHAREPOINT.3.3 |
 
 ## Source
 
-- Test: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.ps1)
-- Documentation: [`tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.md`](https://github.com/maester365/maester/blob/main/tests/cisa/spo/Test.CISA.MS.SHAREPOINT.3.3.md)
+- Test: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.3.ps1)
+- Documentation: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.3.md`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.3.md)

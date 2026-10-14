@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-FOR-01"
-  - "Medium"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Forest"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Forest"
 ---
@@ -63,12 +64,15 @@ This test retrieves the current forest functional level from Active Directory al
 | Field | Value |
 | --- | --- |
 | Test ID | AD-FOR-01 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Forest |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdForestFunctionalLevel](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FOR-01, AD.Forest |
 
 ## Source
 

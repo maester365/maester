@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1041"
-  - "High"
-  - "Maester/Exchange"
+  - "Medium"
+  - "Exchange Online"
+  - "Outlook"
+  - "Applications and workload identities"
   - "Exchange"
 ---
 
@@ -71,14 +73,20 @@ The result should return no assignments.
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1041 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoOutlookAddin](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1041.ps1) |
+| Product | Exchange Online |
+| Feature | Outlook |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1137.006 Add-ins, T1114.002 Remote Email Collection |
+| Supports controls | nist-800-53-r5:CM-7, nist-800-53-r5:CM-11 |
+| PowerShell test | [Test-MtExoOutlookAddin](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1041.ps1) |
 | Services | ExchangeOnline |
-| Tags | Exchange, Maester, MT.1041 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1041.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1041.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1041.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1041.md)
+- Test: [`tests/maester/exchange/Test.MT.1041.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1041.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1041.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1041.md)

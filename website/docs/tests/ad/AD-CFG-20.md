@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-20"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Certificate Services"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -51,10 +52,13 @@ The test inspects AD configuration for CRL distribution point entries, counts th
 | Test ID | AD-CFG-20 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Certificate Services |
+| Area | Infrastructure hardening |
+| Resource type | CertificateAuthority |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdCrlDistributionPointsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-20.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-20, AD.Config |
 
 ## Source
 

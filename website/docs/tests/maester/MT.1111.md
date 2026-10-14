@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1111"
   - "Low"
+  - "Defender"
   - "Exposure Management"
+  - "Privileged access"
   - "Entra"
   - "EntraOps"
   - "Graph"
@@ -48,14 +50,20 @@ Review the accounts in the Identity inventory of Microsoft Defender portal and a
 | Test ID | MT.1111 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmPrivilegedUsersLinkedToIdentity](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1111.ps1) |
+| Product | Defender |
+| Feature | Exposure Management |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:AC-2 |
+| PowerShell test | [Test-MtXspmPrivilegedUsersLinkedToIdentity](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1111.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, EntraOps, Graph, LongRunning, MT.1111, Preview, Privileged, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1111.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1111.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1111.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1111.md)
+- Test: [`tests/maester/xspm/Test.MT.1111.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1111.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1111.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1111.md)

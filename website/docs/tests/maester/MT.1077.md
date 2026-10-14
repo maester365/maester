@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1077"
   - "Medium"
+  - "Defender"
   - "Exposure Management"
+  - "Applications and workload identities"
   - "Entra"
   - "EntraOps"
   - "Graph"
@@ -46,13 +48,20 @@ Remove ownership and replace it (if necessary) by using [object-level role assig
 | Test ID | MT.1077 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exposure Management |
-| PowerShell test | [Test-MtXspmAppRegWithPrivilegedApiAndOwners](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1077.ps1) |
+| Product | Defender |
+| Related products | Entra ID |
+| Feature | Exposure Management |
+| Area | Applications and workload identities |
+| Resource type | Application |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtXspmAppRegWithPrivilegedApiAndOwners](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1077.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | Entra, EntraOps, Graph, LongRunning, MT.1077, Privileged, XSPM |
 
 ## Source
 
-- Test: [`tests/XSPM/Test.MT.1077.ps1`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1077.ps1)
-- Documentation: [`tests/XSPM/Test.MT.1077.md`](https://github.com/maester365/maester/blob/main/tests/XSPM/Test.MT.1077.md)
+- Test: [`tests/maester/xspm/Test.MT.1077.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1077.ps1)
+- Documentation: [`tests/maester/xspm/Test.MT.1077.md`](https://github.com/maester365/maester/blob/main/tests/maester/xspm/Test.MT.1077.md)

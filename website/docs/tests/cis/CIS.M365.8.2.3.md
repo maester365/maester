@@ -11,6 +11,9 @@ keywords:
   - "CIS.M365.8.2.3"
   - "Medium"
   - "CIS"
+  - "Teams"
+  - "External access"
+  - "External access and sharing"
   - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
 ---
@@ -87,10 +90,19 @@ Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerInbound $false
 | Test ID | CIS.M365.8.2.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Teams |
+| Feature | External access |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing, T1204.001 Malicious Link, T1204.002 Malicious File |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 8.2.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:8.2.3, nist-800-53-r5:AC-20 |
 | PowerShell test | [Test-MtCisCommunicateInitiateExternalTeamsUsers](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.2.3.ps1) |
 | Services | Teams |
-| Tags | CIS, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.2.3 |
 
 ## Source
 

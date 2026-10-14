@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.7.1"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.7.1"
 ---
@@ -77,10 +79,19 @@ To create a mail flow rule to produce external sender warnings:
 | Test ID | CISA.MS.EXO.7.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.7.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.7.1v1 |
+| Supports controls | cisa-scuba:MS.EXO.7.1, nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-MtCisaExternalSenderWarning](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.7.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.7.1, MS.EXO, MS.EXO.7.1 |
 
 ## Source
 

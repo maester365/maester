@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.4.1"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Intune"
+  - "Device compliance"
+  - "Devices and endpoints"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -81,11 +84,20 @@ Invoke-MgGraphRequest -Uri $Uri -Method PATCH -Body $Body
 | Test ID | CIS.M365.4.1 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Intune |
+| Feature | Device compliance |
+| Area | Devices and endpoints |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 4.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:4.1, nist-800-53-r5:AC-19, nist-800-53-r5:CM-6 |
 | PowerShell test | [Test-MtCisDevicesWithoutCompliancePolicyMarked](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.4.1.ps1) |
 | Services | Graph |
 | Compatible licenses | INTUNE_A |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.4.1, L1, Security |
 
 ## Source
 

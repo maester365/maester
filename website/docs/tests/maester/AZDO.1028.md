@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1028"
   - "Medium"
   - "Azure DevOps"
+  - "Repositories"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -49,13 +51,18 @@ Disable creation of TFVC repositories. You can still see and work on TFVC reposi
 | Test ID | AZDO.1028 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1028.ps1) |
+| Product | Azure DevOps |
+| Feature | Repositories |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1028.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects](https://learn.microsoft.com/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects) |
-| Tags | AZDO, AZDO.1028 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1028.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1028.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1028.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1028.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1028.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1028.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1028.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1028.md)

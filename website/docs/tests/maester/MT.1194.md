@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1194"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Access control"
   - "Entra"
   - "Preview"
 ---
@@ -45,14 +47,19 @@ The baseline is the only place that protects **non-client / remote-network** tra
 | Test ID | MT.1194 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaBaselineThreatIntelligenceEnforced](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1194.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1204.001 Malicious Link, T1566.002 Spearphishing Link |
+| PowerShell test | [Test-MtGsaBaselineThreatIntelligenceEnforced](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1194.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | Entra, Maester, MT.1194, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1194.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1194.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1194.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1194.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1194.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1194.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1194.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1194.md)

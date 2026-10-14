@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1118"
   - "Medium"
-  - "Copilot Studio Agent Security"
+  - "Copilot Studio"
+  - "Agents"
+  - "AI and agents"
+  - "AI"
   - "AIAgent"
   - "CopilotStudio"
 ---
@@ -40,12 +43,18 @@ Learn more: [Configure user authentication in Copilot Studio](https://learn.micr
 | Test ID | MT.1118 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentAuthorAuthentication](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1118.ps1) |
+| Product | Copilot Studio |
+| Feature | Agents |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1550.001 Application Access Token, T1213 Data from Information Repositories |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtAIAgentAuthorAuthentication](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1118.ps1) |
 | Services | Graph |
-| Tags | AIAgent, CopilotStudio, Maester, MT.1118 |
 
 ## Source
 
-- Test: [`tests/Maester/AIAgent/Test.MT.1118.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1118.ps1)
-- Documentation: [`tests/Maester/AIAgent/Test.MT.1118.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1118.md)
+- Test: [`tests/maester/copilot-studio/Test.MT.1118.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1118.ps1)
+- Documentation: [`tests/maester/copilot-studio/Test.MT.1118.md`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1118.md)

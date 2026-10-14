@@ -11,7 +11,8 @@ keywords:
   - "AD-DCOMP-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Authentication"
   - "AD"
   - "AD.Security"
 ---
@@ -78,10 +79,13 @@ This test counts non-DC computers with the `TrustedToAuthForDelegation` flag ena
 | Test ID | AD-DCOMP-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Authentication |
+| Resource type | Computer |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdComputerNonDcConstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-03, AD.Security |
 
 ## Source
 

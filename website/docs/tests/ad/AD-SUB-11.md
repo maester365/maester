@@ -11,7 +11,8 @@ keywords:
   - "AD-SUB-11"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Sites and Subnets"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Site"
 ---
@@ -61,10 +62,13 @@ This test identifies subnets that have no site association (SiteObject is null).
 | Test ID | AD-SUB-11 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Sites and Subnets |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetWithoutSiteCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-11.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SUB-11, AD.Site |
 
 ## Source
 

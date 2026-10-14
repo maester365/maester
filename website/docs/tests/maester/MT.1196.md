@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1196"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Groups"
+  - "Access control"
   - "Entra"
 ---
 
@@ -92,12 +94,17 @@ population than an exact comparison.
 | Test ID | MT.1196 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtDynamicGroupUserControlledAttributes](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1196.ps1) |
+| Product | Entra ID |
+| Feature | Groups |
+| Area | Access control |
+| Resource type | Group |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1098 Account Manipulation |
+| PowerShell test | [Test-MtDynamicGroupUserControlledAttributes](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1196.ps1) |
 | Services | Graph |
-| Tags | Entra, Maester, MT.1196 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1196.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1196.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1196.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1196.md)
+- Test: [`tests/maester/entra/Test.MT.1196.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1196.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1196.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1196.md)

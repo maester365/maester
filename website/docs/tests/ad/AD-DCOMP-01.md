@@ -11,7 +11,8 @@ keywords:
   - "AD-DCOMP-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Authentication"
   - "AD"
   - "AD.Security"
 ---
@@ -77,10 +78,13 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 | Test ID | AD-DCOMP-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Authentication |
+| Resource type | Computer |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdComputerUnconstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-01, AD.Security |
 
 ## Source
 

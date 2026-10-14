@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1007"
-  - "High"
+  - "Medium"
   - "Azure DevOps"
+  - "Users and access"
+  - "Access control"
   - "AZDO"
 ---
 
@@ -45,15 +47,20 @@ Disable the policy to stop these invitations.
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1007 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1007](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1007.ps1) |
+| Product | Azure DevOps |
+| Feature | Users and access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1136.003 Cloud Account |
+| PowerShell test | [Test-MtCheckAZDO1007](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1007.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/azure-devops-invitations-policy](https://aka.ms/azure-devops-invitations-policy) |
-| Tags | AZDO, AZDO.1007 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1007.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1007.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1007.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1007.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1007.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1007.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1007.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1007.md)

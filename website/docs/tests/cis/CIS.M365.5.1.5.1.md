@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.5.1.5.1"
-  - "Medium"
+  - "High"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
@@ -59,12 +62,21 @@ If user consent is disabled, previous consent grants will still be honored but a
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.5.1.5.1 |
-| Severity | Medium |
+| Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1528 Steal Application Access Token, T1566.002 Spearphishing Link |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.1.5.1 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2, E5 Level 2 |
+| Supports controls | cis-m365:5.1.5.1, nist-800-53-r5:AC-6(10), nist-800-53-r5:CM-5 |
 | PowerShell test | [Test-MtCisEnsureUserConsentToAppsDisallowed](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.5.1.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.5.1.5.1, L2, Security |
 
 ## Source
 

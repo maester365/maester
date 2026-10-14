@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1043"
   - "Medium"
-  - "Maester/Exchange"
+  - "Exchange Online"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "Exchange"
 ---
 
@@ -67,12 +69,18 @@ The result should return no rules.
 | Test ID | MT.1043 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoSetScl](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.ps1) |
+| Product | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | MailFlowRule |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-MtExoSetScl](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1043.ps1) |
 | Services | ExchangeOnline |
-| Tags | Exchange, Maester, MT.1043 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1043.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1043.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1043.md)
+- Test: [`tests/maester/exchange/Test.MT.1043.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1043.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1043.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1043.md)

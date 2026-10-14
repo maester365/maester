@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1193"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Access control"
   - "Entra"
   - "Preview"
 ---
@@ -50,14 +52,20 @@ Entra Private Access application segments should target specific destinations. B
 | Test ID | MT.1193 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaPrivateAccessAppSegmentHygiene](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1193.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Access control |
+| Resource type | ServicePrincipal |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1021 Remote Services, T1046 Network Service Discovery |
+| Supports controls | nist-800-53-r5:SC-7, nist-800-53-r5:AC-17 |
+| PowerShell test | [Test-MtGsaPrivateAccessAppSegmentHygiene](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1193.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | Entra, Maester, MT.1193, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1193.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1193.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1193.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1193.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1193.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1193.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1193.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1193.md)

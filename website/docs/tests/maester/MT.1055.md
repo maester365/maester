@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1055"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Groups"
+  - "Access control"
   - "Group"
 ---
 
@@ -45,12 +47,19 @@ Follow the link below to restrict Microsoft 365 Group creation to approved users
 | Test ID | MT.1055 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGroupCreationRestricted](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1055.ps1) |
+| Product | Entra ID |
+| Related products | Teams |
+| Feature | Groups |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:AC-6, nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtGroupCreationRestricted](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1055.ps1) |
 | Services | Graph |
-| Tags | Group, Maester, MT.1055 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1055.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1055.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1055.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1055.md)
+- Test: [`tests/maester/entra/Test.MT.1055.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1055.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1055.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1055.md)

@@ -11,6 +11,9 @@ keywords:
   - "ORCA.143"
   - "Info"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,15 @@ Safety Tips should be enabled.
 | Test ID | ORCA.143 |
 | Severity | Info |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA143](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.143.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.143 |
 
 ## Source
 

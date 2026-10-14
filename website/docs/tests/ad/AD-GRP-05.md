@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GRP-05"
-  - "Medium"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Groups"
+  - "Groups"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Group"
 ---
@@ -67,12 +68,15 @@ keywords:
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GRP-05 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Groups |
+| Product | Active Directory |
+| Feature | Groups |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Group |
+| MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdGroupSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GRP-05, AD.Group |
 
 ## Source
 

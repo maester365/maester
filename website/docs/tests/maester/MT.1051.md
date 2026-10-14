@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1051"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -93,14 +95,20 @@ To check the applications permissions:
 | Test ID | MT.1051 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCheckMT1051](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1051.ps1) |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | ServicePrincipal |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.001 Additional Cloud Credentials, T1098.003 Additional Cloud Roles |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCheckMT1051](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1051.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1051, Preview |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1051.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1051.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1051.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1051.md)
+- Test: [`tests/maester/entra/Test.MT.1051.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1051.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1051.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1051.md)

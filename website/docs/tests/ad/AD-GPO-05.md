@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPO-05"
-  - "Medium"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -65,12 +66,17 @@ The table is intended to support quick review during GPO cleanup and maintenance
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPO-05 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoUnlinkedDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPO-05, AD.GPO |
 
 ## Source
 

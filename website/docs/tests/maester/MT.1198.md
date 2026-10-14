@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1198"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -56,13 +58,19 @@ Certificates that have already expired can no longer be used to authenticate and
 | Test ID | MT.1198 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtAppRegistrationCertificateLifetime](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1198.ps1) |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | Application |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1649 Steal or Forge Authentication Certificates |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtAppRegistrationCertificateLifetime](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1198.ps1) |
 | Services | Graph |
 | Long running | Yes |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1198 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1198.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1198.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1198.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1198.md)
+- Test: [`tests/maester/entra/Test.MT.1198.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1198.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1198.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1198.md)

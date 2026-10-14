@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Computer"
 ---
@@ -63,10 +64,13 @@ The 90-day threshold is a common security baseline, though your organization may
 | Test ID | AD-COMP-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Computer |
+| MITRE ATT&CK | T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdComputerDormantCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-02, AD.Computer |
 
 ## Source
 

@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.230"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,13 +43,20 @@ Check your anti-phishing policies for duplicate rules. Some policies and setting
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.230 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA230](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.230.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.230 |
 
 ## Source
 

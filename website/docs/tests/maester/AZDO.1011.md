@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1011"
   - "Info"
   - "Azure DevOps"
+  - "Resource usage and limits"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -44,13 +46,16 @@ Keeping your project count well below the limit prevents service errors and keep
 | Test ID | AZDO.1011 |
 | Severity | Info |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoResourceUsageProject](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1011.ps1) |
+| Product | Azure DevOps |
+| Feature | Resource usage and limits |
+| Area | Engineering systems |
+| Resource type | Project |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoResourceUsageProject](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1011.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops](https://learn.microsoft.com/azure/devops/organizations/projects/about-projects?view=azure-devops) |
-| Tags | AZDO, AZDO.1011 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1011.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1011.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1011.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1011.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1011.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1011.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1011.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1011.md)

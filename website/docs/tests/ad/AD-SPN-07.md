@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-07"
   - "Info"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Authentication"
   - "AD"
   - "AD.SPN"
 ---
@@ -62,10 +63,13 @@ This test retrieves all user objects with SPNs, extracts the service class from 
 | Test ID | AD-SPN-07 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnServiceClassCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-07.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-07, AD.SPN |
 
 ## Source
 

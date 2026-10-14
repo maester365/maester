@@ -11,7 +11,8 @@ keywords:
   - "AD-TRUST-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Trusts"
+  - "Trusts"
+  - "External access and sharing"
   - "AD"
   - "AD.Trust"
 ---
@@ -68,10 +69,13 @@ This test analyzes all trust objects and identifies those where `IntraForest` is
 | Test ID | AD-TRUST-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Trusts |
+| Product | Active Directory |
+| Feature | Trusts |
+| Area | External access and sharing |
+| Resource type | Trust |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustInterForestCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-TRUST-02, AD.Trust |
 
 ## Source
 

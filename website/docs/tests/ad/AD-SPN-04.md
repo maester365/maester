@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.SPN"
 ---
@@ -63,10 +64,13 @@ This test analyzes all computer SPNs, compares service classes against a known d
 | Test ID | AD-SPN-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Infrastructure hardening |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnUnknownDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-04, AD.SPN |
 
 ## Source
 

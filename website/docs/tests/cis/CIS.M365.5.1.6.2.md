@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.5.1.6.2"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Entra ID"
+  - "External identities"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -90,10 +93,19 @@ Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa
 | Test ID | CIS.M365.5.1.6.2 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Entra ID |
+| Feature | External identities |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1087.004 Cloud Account, T1069.003 Cloud Groups |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.1.6.2 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:5.1.6.2, nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtCisEnsureGuestAccessRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.1.6.2.ps1) |
 | Services | Graph |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.1.6.2, L1, Security |
 
 ## Source
 

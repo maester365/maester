@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-10"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Access control"
   - "AD"
   - "AD.User"
 ---
@@ -51,10 +52,13 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | Test ID | AD-USER-10 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Access control |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserWorkstationRestrictionCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-10.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-10, AD.User |
 
 ## Source
 

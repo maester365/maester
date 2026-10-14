@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-19"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects whose distinguished names indicate they are beneat
 | Test ID | AD-USER-19 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Infrastructure hardening |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserInContainerCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-19.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-19, AD.User |
 
 ## Source
 

@@ -11,6 +11,9 @@ keywords:
   - "ORCA.109"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,10 +44,17 @@ Remove allow listing on senders.
 | Test ID | ORCA.109 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA109](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.109.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.109 |
 
 ## Source
 

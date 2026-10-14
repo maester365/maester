@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1027"
-  - "Medium"
+  - "Low"
   - "Azure DevOps"
+  - "Repositories"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -45,15 +47,20 @@ With the setting disabled, user avatars use generic initials or local images onl
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1027 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1027](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1027.ps1) |
+| Product | Azure DevOps |
+| Feature | Repositories |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1589.002 Email Addresses |
+| PowerShell test | [Test-MtCheckAZDO1027](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1027.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images](https://learn.microsoft.com/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images) |
-| Tags | AZDO, AZDO.1027 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1027.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1027.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1027.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1027.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1027.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1027.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1027.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1027.md)

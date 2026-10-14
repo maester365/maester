@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.17.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Audit logging"
+  - "Logging and detection"
   - "MS.EXO"
   - "MS.EXO.17.1"
 ---
@@ -49,10 +51,20 @@ To enable auditing via the Microsoft Purview compliance portal:
 | Test ID | CISA.MS.EXO.17.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Purview |
+| Feature | Audit logging |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.17.1 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.5.1v1 (was MS.EXO.17.1v1) |
+| Supports controls | cisa-scuba:MS.EXO.17.1, nist-800-53-r5:AU-12 |
 | PowerShell test | [Test-MtCisaAuditLog](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.17.1.ps1) |
 | Services | ExchangeOnline, SecurityCompliance |
-| Tags | CISA, CISA.MS.EXO.17.1, MS.EXO, MS.EXO.17.1 |
 
 ## Source
 

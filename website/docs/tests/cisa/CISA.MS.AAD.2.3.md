@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.2.3"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "Entra ID P2"
   - "MS.AAD"
   - "MS.AAD.2.3"
@@ -51,11 +54,20 @@ Note: While CISA recommends blocking, the [Microsoft recommendation](https://lea
 | Test ID | CISA.MS.AAD.2.3 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P2 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.2.3 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.2.3v1 |
+| Supports controls | cisa-scuba:MS.AAD.2.3, nist-800-53-r5:AC-2(12), nist-800-53-r5:AC-2(13) |
 | PowerShell test | [Test-MtCisaBlockHighRiskSignIn](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.3.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2 |
-| Tags | CISA, CISA.MS.AAD.2.3, Entra ID P2, MS.AAD, MS.AAD.2.3 |
 
 ## Source
 

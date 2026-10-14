@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1025"
   - "High"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -56,13 +58,19 @@ This validation applies to the arguments parameter in the following specific tas
 | Test ID | AZDO.1025 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1025.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1059 Command and Scripting Interpreter, T1677 Poisoned Pipeline Execution |
+| Supports controls | nist-800-53-r5:SI-10 |
+| PowerShell test | [Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1025.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation](https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation) |
-| Tags | AZDO, AZDO.1025 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1025.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1025.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1025.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1025.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1025.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1025.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1025.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1025.md)

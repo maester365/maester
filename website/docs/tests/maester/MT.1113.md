@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1113"
   - "High"
-  - "Copilot Studio Agent Security"
+  - "Copilot Studio"
+  - "Agents"
+  - "AI and agents"
+  - "AI"
   - "AIAgent"
   - "CopilotStudio"
 ---
@@ -40,12 +43,18 @@ Learn more: [Control how agents are shared](https://learn.microsoft.com/microsof
 | Test ID | MT.1113 |
 | Severity | High |
 | Suite | Maester |
-| Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentBroadSharing](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1113.ps1) |
+| Product | Copilot Studio |
+| Feature | Agents |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213 Data from Information Repositories |
+| Supports controls | nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtAIAgentBroadSharing](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1113.ps1) |
 | Services | Graph |
-| Tags | AIAgent, CopilotStudio, Maester, MT.1113 |
 
 ## Source
 
-- Test: [`tests/Maester/AIAgent/Test.MT.1113.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1113.ps1)
-- Documentation: [`tests/Maester/AIAgent/Test.MT.1113.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1113.md)
+- Test: [`tests/maester/copilot-studio/Test.MT.1113.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1113.ps1)
+- Documentation: [`tests/maester/copilot-studio/Test.MT.1113.md`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1113.md)

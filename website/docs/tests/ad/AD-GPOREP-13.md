@@ -11,7 +11,8 @@ keywords:
   - "AD-GPOREP-13"
   - "Info"
   - "Active Directory"
-  - "Active Directory - GPO State"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPOState"
 ---
@@ -56,12 +57,15 @@ keywords:
 | Test ID | AD-GPOREP-13 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - GPO State |
-| PowerShell test | [Test-MtAdGpoDisabledLinkDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-13.ps1) |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtAdGpoDisabledLinkDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-13.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOREP-13, AD.GPOState |
 
 ## Source
 
-- Test: [`tests/ad/gpostate/Test.AD-GPOREP-13.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-13.ps1)
-- Documentation: [`tests/ad/gpostate/Test.AD-GPOREP-13.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpostate/Test.AD-GPOREP-13.md)
+- Test: [`tests/ad/gpo-state/Test.AD-GPOREP-13.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-13.ps1)
+- Documentation: [`tests/ad/gpo-state/Test.AD-GPOREP-13.md`](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-13.md)

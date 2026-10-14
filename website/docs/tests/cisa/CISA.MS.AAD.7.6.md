@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.7.6"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Privileged Identity Management"
+  - "Privileged access"
   - "Entra ID P2"
   - "MS.AAD"
   - "MS.AAD.7.6"
@@ -53,11 +56,20 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 | Test ID | CISA.MS.AAD.7.6 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P2 |
+| Product | Entra ID |
+| Feature | Privileged Identity Management |
+| Area | Privileged access |
+| Resource type | DirectoryRole |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.003 Additional Cloud Roles, T1548.005 Temporary Elevated Cloud Access |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.7.6 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.7.6v1 |
+| Supports controls | cisa-scuba:MS.AAD.7.6, nist-800-53-r5:AC-6(1) |
 | PowerShell test | [Test-MtCisaRequireActivationApproval](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.6.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
-| Tags | CISA, CISA.MS.AAD.7.6, Entra ID P2, MS.AAD, MS.AAD.7.6 |
 
 ## Source
 

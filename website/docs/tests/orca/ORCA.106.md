@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.106"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -39,12 +42,18 @@ Configure the Quarantine retention period to 30 days.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.106 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-ORCA106](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.106.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.106 |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -59,10 +60,13 @@ This test counts DNS records that have timestamps (dynamic) versus those without
 | Test ID | AD-DNS-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsDynamicRecordCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-05, AD.DNS |
 
 ## Source
 

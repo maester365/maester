@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DOM-02"
-  - "Low"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Domain"
+  - "Domain and forest"
+  - "Access control"
   - "AD"
   - "AD.Domain"
 ---
@@ -67,12 +68,15 @@ This test retrieves the current machine account quota value from Active Director
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DOM-02 |
-| Severity | Low |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Access control |
+| Resource type | Tenant |
+| MITRE ATT&CK | T1136.002 Domain Account |
 | PowerShell test | [Test-MtAdMachineAccountQuota](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DOM-02, AD.Domain |
 
 ## Source
 

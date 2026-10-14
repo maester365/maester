@@ -11,7 +11,8 @@ keywords:
   - "AD-DCOMP-05"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Devices and endpoints"
   - "AD"
   - "AD.Security"
 ---
@@ -79,10 +80,14 @@ This test provides detailed analysis including:
 | Test ID | AD-DCOMP-05 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Devices and endpoints |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:CM-8 |
 | PowerShell test | [Test-MtAdComputerOperatingSystemDetails](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-05, AD.Security |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-15"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.User"
 ---
@@ -56,10 +57,13 @@ This test counts user objects where the `Manager` attribute contains a non-empty
 | Test ID | AD-USER-15 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Identity lifecycle and hygiene |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserManagerSetCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-15.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-15, AD.User |
 
 ## Source
 

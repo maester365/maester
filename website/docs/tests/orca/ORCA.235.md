@@ -11,6 +11,9 @@ keywords:
   - "ORCA.235"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -39,10 +42,17 @@ Set up SPF records to prevent spoofing.
 | Test ID | ORCA.235 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA235](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.235.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.235 |
 
 ## Source
 

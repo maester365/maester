@@ -11,6 +11,9 @@ keywords:
   - "ORCA.233.1"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,16 @@ Configure enhanced filtering on connectors when email path is not direct to EOP.
 | Test ID | ORCA.233.1 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | Connector |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing |
 | PowerShell test | [Test-ORCA233_1](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.233.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.233.1 |
 
 ## Source
 

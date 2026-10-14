@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.8.3"
   - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "External identities"
+  - "External access and sharing"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.8.3"
@@ -52,10 +55,19 @@ Rationale: Limiting which domains can be invited to create guest accounts in the
 | Test ID | CISA.MS.AAD.8.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | External identities |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.8.3 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.8.3v1 |
+| Supports controls | cisa-scuba:MS.AAD.8.3, nist-800-53-r5:AC-3 |
 | PowerShell test | [Test-MtCisaCrossTenantInboundDefault](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.3.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.8.3, Entra ID Free, MS.AAD, MS.AAD.8.3 |
 
 ## Source
 

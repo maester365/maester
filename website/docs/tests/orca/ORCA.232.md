@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.232"
-  - "High"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,19 @@ Check your malware filter policies for duplicate rules. Some policies and settin
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.232 |
-| Severity | High |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA232](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.232.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.232 |
 
 ## Source
 

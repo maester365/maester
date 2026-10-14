@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.12.1"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.12.1"
 ---
@@ -52,10 +54,20 @@ To modify the connection filters, follow the instructions found in Use the Micro
 | Test ID | CISA.MS.EXO.12.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.12.1 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.8.1v1 (was MS.EXO.12.1v1) |
+| Supports controls | cisa-scuba:MS.EXO.12.1, nist-800-53-r5:AC-4 |
 | PowerShell test | [Test-MtCisaAntiSpamAllowList](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.12.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | CISA, CISA.MS.EXO.12.1, MS.EXO, MS.EXO.12.1 |
 
 ## Source
 

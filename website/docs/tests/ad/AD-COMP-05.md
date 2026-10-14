@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-COMP-05"
-  - "Medium"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.Computer"
 ---
@@ -61,12 +62,15 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 | Field | Value |
 | --- | --- |
 | Test ID | AD-COMP-05 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Identity lifecycle and hygiene |
+| Resource type | Computer |
+| MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdComputerSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-05.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-05, AD.Computer |
 
 ## Source
 

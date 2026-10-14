@@ -11,7 +11,8 @@ keywords:
   - "AD-SITE-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Sites and Subnets"
+  - "Sites and subnets"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Site"
 ---
@@ -62,10 +63,13 @@ This test retrieves all sites and domain controllers, then identifies and lists 
 | Test ID | AD-SITE-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Sites and Subnets |
+| Product | Active Directory |
+| Feature | Sites and subnets |
+| Area | Infrastructure hardening |
+| Resource type | AdSite |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutDcDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SITE-03, AD.Site |
 
 ## Source
 

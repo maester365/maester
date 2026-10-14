@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1009"
   - "Info"
   - "Azure DevOps"
+  - "Organization policies"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -46,13 +48,16 @@ Enable the policy to allow Microsoft to collect feedback.
 | Test ID | AZDO.1009 |
 | Severity | Info |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoFeedbackCollection](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1009.ps1) |
+| Product | Azure DevOps |
+| Feature | Organization policies |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoFeedbackCollection](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1009.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://aka.ms/ADOPrivacyPolicy](https://aka.ms/ADOPrivacyPolicy) |
-| Tags | AZDO, AZDO.1009 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1009.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1009.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1009.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1009.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1009.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1009.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1009.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1009.md)

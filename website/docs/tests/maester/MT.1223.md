@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1223"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Agent identities"
+  - "AI and agents"
+  - "AI"
   - "Entra"
   - "Graph"
   - "LongRunning"
@@ -89,14 +92,20 @@ escalation path. The check evaluates the following permissions:
 | Test ID | MT.1223 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentHighRiskGraphPermissions](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1223.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.001 Additional Cloud Credentials, T1098.003 Additional Cloud Roles |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtEntraAgentHighRiskGraphPermissions](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1223.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, Graph, LongRunning, Maester, MT.1223, Preview, Severity:High |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1223.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1223.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1223.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1223.md)
+- Test: [`tests/maester/entra/Test.MT.1223.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1223.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1223.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1223.md)

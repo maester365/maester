@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.8.5.3"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Teams"
+  - "Meetings"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -73,10 +76,19 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 | Test ID | CIS.M365.8.5.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Teams |
+| Feature | Meetings |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 8.5.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:8.5.3, nist-800-53-r5:AC-3 |
 | PowerShell test | [Test-MtCisTeamsLobbyBypass](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.5.3.ps1) |
 | Services | Teams |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.5.3, L1 |
 
 ## Source
 

@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1004"
   - "High"
   - "Azure DevOps"
+  - "Security policies"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -54,13 +56,19 @@ With the new behavior, any versions from the public registry will be blocked and
 | Test ID | AZDO.1004 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoArtifactsExternalPackageProtectionToken](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1004.ps1) |
+| Product | Azure DevOps |
+| Feature | Security policies |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1195.001 Compromise Software Dependencies and Development Tools, T1204.005 Malicious Library |
+| Supports controls | nist-800-53-r5:SR-3 |
+| PowerShell test | [Test-AzdoArtifactsExternalPackageProtectionToken](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1004.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/](https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/) |
-| Tags | AZDO, AZDO.1004 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1004.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1004.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1004.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1004.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1004.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1004.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1004.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1004.md)

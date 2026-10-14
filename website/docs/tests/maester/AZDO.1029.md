@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1029"
-  - "Medium"
+  - "Info"
   - "Azure DevOps"
+  - "Resource usage and limits"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -44,15 +46,18 @@ Rationale: The storage limit should not be reached; hitting it blocks artifact p
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1029 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationStorageUsage](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1029.ps1) |
+| Product | Azure DevOps |
+| Feature | Resource usage and limits |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoOrganizationStorageUsage](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1029.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops](https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops) |
-| Tags | AZDO, AZDO.1029 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1029.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1029.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1029.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1029.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1029.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1029.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1029.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1029.md)

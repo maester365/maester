@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-USER-13"
-  - "Medium"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.User"
 ---
@@ -59,12 +60,15 @@ This test counts user objects where the `SIDHistory` attribute contains one or m
 | Field | Value |
 | --- | --- |
 | Test ID | AD-USER-13 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Identity lifecycle and hygiene |
+| Resource type | User |
+| MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdUserSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-13.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-13, AD.User |
 
 ## Source
 

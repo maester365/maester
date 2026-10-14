@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.7.2.2"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "SharePoint"
+  - "External sharing"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -68,10 +71,20 @@ Set-SPOTenant -EnableAzureADB2BIntegration $true
 | Test ID | CIS.M365.7.2.2 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | SharePoint |
+| Related products | Entra ID |
+| Feature | External sharing |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1213.002 Sharepoint |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 7.2.2 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:7.2.2 |
 | PowerShell test | [Test-MtCisSpoB2BIntegration](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.7.2.2.ps1) |
 | Services | SharePointOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.7.2.2, L1, OneDrive, SharePoint Online |
 
 ## Source
 

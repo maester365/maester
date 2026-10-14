@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-08"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Computer"
 ---
@@ -67,10 +68,13 @@ This test groups all enabled computers by their parent container and calculates:
 | Test ID | AD-COMP-08 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Infrastructure hardening |
+| Resource type | OrganizationalUnit |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerPerOUAverage](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-08.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-08, AD.Computer |
 
 ## Source
 

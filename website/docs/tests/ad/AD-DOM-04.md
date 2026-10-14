@@ -11,7 +11,8 @@ keywords:
   - "AD-DOM-04"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Domain"
+  - "Domain and forest"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Domain"
 ---
@@ -66,10 +67,13 @@ This test retrieves the RID available pool from Active Directory and calculates 
 | Test ID | AD-DOM-04 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Domain |
+| Product | Active Directory |
+| Feature | Domain and forest |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdRidsRemaining](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DOM-04, AD.Domain |
 
 ## Source
 

@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.141"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,19 @@ Change bulk action to move messages to junk mail folder.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.141 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA141](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.141.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.141 |
 
 ## Source
 

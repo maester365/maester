@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.8.4.1"
-  - "High"
+  - "Medium"
   - "CIS"
+  - "Teams"
+  - "Apps"
+  - "Applications and workload identities"
   - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
 ---
@@ -65,12 +68,21 @@ Set-CsTeamsAppPermissionPolicy -Identity Global -GlobalCatalogAppsType AllowedAp
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.8.4.1 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Teams |
+| Feature | Apps |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1195 Supply Chain Compromise, T1671 Cloud Application Integration |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 8.4.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:8.4.1, nist-800-53-r5:CM-7 |
 | PowerShell test | [Test-MtCisThirdPartyAndCustomApps](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.4.1.ps1) |
 | Services | Teams |
-| Tags | CIS, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.4.1 |
 
 ## Source
 

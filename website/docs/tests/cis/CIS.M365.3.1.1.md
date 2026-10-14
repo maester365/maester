@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.3.1.1"
   - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Purview"
+  - "Audit"
+  - "Logging and detection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -64,10 +67,19 @@ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
 | Test ID | CIS.M365.3.1.1 |
 | Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
+| Product | Purview |
+| Feature | Audit |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 3.1.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:3.1.1, nist-800-53-r5:AU-12 |
 | PowerShell test | [Test-MtCisAuditLogSearch](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.3.1.1.ps1) |
 | Services | ExchangeOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.3.1.1, L1 |
 
 ## Source
 

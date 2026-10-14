@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.5.3"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.5.3"
@@ -51,10 +54,19 @@ Rationale: Configuring an admin consent workflow reduces the risk of the previou
 | Test ID | CISA.MS.AAD.5.3 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID Free |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials, T1098.003 Additional Cloud Roles, T1528 Steal Application Access Token |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.5.3 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.5.3v1 |
+| Supports controls | cisa-scuba:MS.AAD.5.3, nist-800-53-r5:CM-4 |
 | PowerShell test | [Test-MtCisaAppAdminConsent](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.5.3.ps1) |
 | Services | Graph |
-| Tags | CISA, CISA.MS.AAD.5.3, Entra ID Free, MS.AAD, MS.AAD.5.3 |
 
 ## Source
 

@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1021"
   - "Medium"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -53,13 +55,18 @@ If you have classic build pipelines, classic release pipelines, task groups, or 
 | Test ID | AZDO.1021 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1021](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1021.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCheckAZDO1021](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1021.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/](https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/) |
-| Tags | AZDO, AZDO.1021 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1021.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1021.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1021.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1021.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1021.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1021.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1021.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1021.md)

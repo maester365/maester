@@ -11,6 +11,9 @@ keywords:
   - "ORCA.104"
   - "High"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,17 @@ Change High Confidence Phish action to Quarantine message.
 | Test ID | ORCA.104 |
 | Severity | High |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA104](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.104.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.104 |
 
 ## Source
 

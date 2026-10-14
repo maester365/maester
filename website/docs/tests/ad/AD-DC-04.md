@@ -11,7 +11,8 @@ keywords:
   - "AD-DC-04"
   - "High"
   - "Active Directory"
-  - "Active Directory - Domain Controllers"
+  - "Domain controllers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DomainController"
 ---
@@ -72,12 +73,18 @@ This test queries the SMB server configuration on each domain controller to chec
 | Test ID | AD-DC-04 |
 | Severity | High |
 | Suite | Active Directory |
-| Category | Active Directory - Domain Controllers |
-| PowerShell test | [Test-MtAdDcSmbSigningEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-04.ps1) |
+| Product | Active Directory |
+| Feature | Domain controllers |
+| Area | Infrastructure hardening |
+| Resource type | DomainController |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1557 Adversary-in-the-Middle |
+| Supports controls | nist-800-53-r5:SC-8 |
+| PowerShell test | [Test-MtAdDcSmbSigningEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DC-04, AD.DomainController |
 
 ## Source
 
-- Test: [`tests/ad/domaincontroller/Test.AD-DC-04.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-04.ps1)
-- Documentation: [`tests/ad/domaincontroller/Test.AD-DC-04.md`](https://github.com/maester365/maester/blob/main/tests/ad/domaincontroller/Test.AD-DC-04.md)
+- Test: [`tests/ad/domain-controller/Test.AD-DC-04.ps1`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-04.ps1)
+- Documentation: [`tests/ad/domain-controller/Test.AD-DC-04.md`](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-04.md)

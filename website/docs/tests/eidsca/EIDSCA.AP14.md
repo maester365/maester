@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AP14"
-  - "High"
+  - "Low"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Access control"
   - "EIDSCA"
 ---
 
@@ -64,14 +66,20 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AP14 |
-| Severity | High |
+| Severity | Low |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaAP14](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP14.ps1) |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCheckEidscaAP14](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP14.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.AP14 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.AP14.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP14.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.AP14.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.AP14.md)
+- Test: [`tests/eidsca/Test.EIDSCA.AP14.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP14.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AP14.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP14.md)

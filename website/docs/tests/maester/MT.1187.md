@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1187"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Global Secure Access"
+  - "Access control"
   - "Entra"
   - "Preview"
 ---
@@ -52,14 +54,19 @@ Enabling the Microsoft 365 profile unlocks:
 | Test ID | MT.1187 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtGsaM365ProfileEnabled](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1187.ps1) |
+| Product | Entra ID |
+| Feature | Global Secure Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtGsaM365ProfileEnabled](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1187.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Preview | Yes |
-| Tags | Entra, Maester, MT.1187, Preview |
+| Lifecycle | Preview |
 
 ## Source
 
-- Test: [`tests/Maester/GlobalSecureAccess/Test.MT.1187.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1187.ps1)
-- Documentation: [`tests/Maester/GlobalSecureAccess/Test.MT.1187.md`](https://github.com/maester365/maester/blob/main/tests/Maester/GlobalSecureAccess/Test.MT.1187.md)
+- Test: [`tests/maester/global-secure-access/Test.MT.1187.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1187.ps1)
+- Documentation: [`tests/maester/global-secure-access/Test.MT.1187.md`](https://github.com/maester365/maester/blob/main/tests/maester/global-secure-access/Test.MT.1187.md)

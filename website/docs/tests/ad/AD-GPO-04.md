@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPO-04"
-  - "Medium"
+  - "Low"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -62,12 +63,17 @@ This test retrieves Active Directory Group Policy state data using `Get-MtADGpoS
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPO-04 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoUnlinkedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPO-04, AD.GPO |
 
 ## Source
 

@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1018"
   - "High"
   - "Azure DevOps"
+  - "Pipelines"
+  - "Engineering systems"
   - "AZDO"
 ---
 
@@ -49,13 +51,19 @@ Apply checks and approvals when accessing repositories from YAML pipelines. Also
 | Test ID | AZDO.1018 |
 | Severity | High |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationProtectAccessToRepository](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1018.ps1) |
+| Product | Azure DevOps |
+| Feature | Pipelines |
+| Area | Engineering systems |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1550.001 Application Access Token, T1213.003 Code Repositories |
+| Supports controls | nist-800-53-r5:AC-3, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-AzdoOrganizationProtectAccessToRepository](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1018.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access](https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access) |
-| Tags | AZDO, AZDO.1018 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1018.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1018.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1018.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1018.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1018.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1018.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1018.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1018.md)

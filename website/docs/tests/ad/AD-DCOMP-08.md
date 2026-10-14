@@ -11,7 +11,8 @@ keywords:
   - "AD-DCOMP-08"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Security"
 ---
@@ -79,10 +80,13 @@ This test extracts DNS zones from computer `dNSHostName` attributes and:
 | Test ID | AD-DCOMP-08 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDnsZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-08.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-08, AD.Security |
 
 ## Source
 

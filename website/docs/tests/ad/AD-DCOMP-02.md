@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-DCOMP-02"
-  - "Critical"
+  - "High"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Computers"
+  - "Authentication"
   - "AD"
   - "AD.Security"
 ---
@@ -80,12 +81,18 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 | Field | Value |
 | --- | --- |
 | Test ID | AD-DCOMP-02 |
-| Severity | Critical |
+| Severity | High |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Authentication |
+| Resource type | Computer |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
+| Supports controls | nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtAdComputerNonDcUnconstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DCOMP-02, AD.Security |
 
 ## Source
 

@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.SPN"
 ---
@@ -63,10 +64,13 @@ This test compares discovered SPN service classes against a database of known SP
 | Test ID | AD-SPN-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Infrastructure hardening |
+| Resource type | Computer |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnUnknownCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-03, AD.SPN |
 
 ## Source
 

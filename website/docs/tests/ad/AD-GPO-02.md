@@ -11,7 +11,8 @@ keywords:
   - "AD-GPO-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -57,10 +58,13 @@ It then filters all GPOs where the `CreationTime` is earlier than **January 1st,
 | Test ID | AD-GPO-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoCreatedBefore2020Count](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPO-02, AD.GPO |
 
 ## Source
 

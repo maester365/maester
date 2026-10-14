@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1120"
   - "Medium"
-  - "Copilot Studio Agent Security"
+  - "Copilot Studio"
+  - "Agents"
+  - "AI and agents"
+  - "AI"
   - "AIAgent"
   - "CopilotStudio"
 ---
@@ -40,12 +43,17 @@ Learn more: [Use MCP servers in Copilot Studio](https://learn.microsoft.com/micr
 | Test ID | MT.1120 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentMcpTools](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1120.ps1) |
+| Product | Copilot Studio |
+| Feature | Agents |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1195 Supply Chain Compromise, T1199 Trusted Relationship |
+| PowerShell test | [Test-MtAIAgentMcpTools](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1120.ps1) |
 | Services | Graph |
-| Tags | AIAgent, CopilotStudio, Maester, MT.1120 |
 
 ## Source
 
-- Test: [`tests/Maester/AIAgent/Test.MT.1120.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1120.ps1)
-- Documentation: [`tests/Maester/AIAgent/Test.MT.1120.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1120.md)
+- Test: [`tests/maester/copilot-studio/Test.MT.1120.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1120.ps1)
+- Documentation: [`tests/maester/copilot-studio/Test.MT.1120.md`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1120.md)

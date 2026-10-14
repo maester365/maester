@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-22"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -51,10 +52,13 @@ The test enumerates KDS root keys present in AD (or the module’s KDS configura
 | Test ID | AD-CFG-22 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdKdsRootKeysCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-22.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-22, AD.Config |
 
 ## Source
 

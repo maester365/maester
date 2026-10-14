@@ -11,7 +11,8 @@ keywords:
   - "AD-KRBTGT-02"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Security Accounts"
+  - "Account security"
+  - "Authentication"
   - "AD"
   - "AD.Security"
 ---
@@ -73,10 +74,13 @@ This test retrieves the KRBTGT account and checks:
 | Test ID | AD-KRBTGT-02 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Security Accounts |
+| Product | Active Directory |
+| Feature | Account security |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdKrbtgtLastLogon](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-02.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-KRBTGT-02, AD.Security |
 
 ## Source
 

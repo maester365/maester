@@ -9,9 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AD-GPOL-04"
-  - "Medium"
+  - "Info"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -58,12 +59,15 @@ This test retrieves Active Directory GPO state from `Get-MtADGpoState` (using `$
 | Field | Value |
 | --- | --- |
 | Test ID | AD-GPOL-04 |
-| Severity | Medium |
+| Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoEnforcedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-04.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPOL-04, AD.GPO |
 
 ## Source
 

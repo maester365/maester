@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1211"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Agent identities"
+  - "AI and agents"
   - "Entra"
   - "Graph"
   - "LongRunning"
@@ -56,14 +58,20 @@ This test reports Agent Identity Blueprints that allow all delegated scopes or a
 | Test ID | MT.1211 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraAgentBlueprintAllAllowedInheritance](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1211.ps1) |
+| Product | Entra ID |
+| Feature | Agent identities |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtEntraAgentBlueprintAllAllowedInheritance](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1211.ps1) |
 | Services | Graph |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Long running | Yes |
-| Tags | Entra, Graph, LongRunning, Maester, MT.1211, Preview, Severity:High |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1211.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1211.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1211.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1211.md)
+- Test: [`tests/maester/entra/Test.MT.1211.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1211.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1211.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1211.md)

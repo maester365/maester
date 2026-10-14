@@ -11,6 +11,9 @@ keywords:
   - "ORCA.103"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -40,10 +43,17 @@ Set RecipientLimitExternalPerHour to 500, RecipientLimitInternalPerHour to 1000,
 | Test ID | ORCA.103 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1534 Internal Spearphishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA103](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.103.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.103 |
 
 ## Source
 

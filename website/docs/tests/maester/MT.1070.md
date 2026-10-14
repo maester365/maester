@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1070"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Device identity"
+  - "Devices and endpoints"
   - "Device"
   - "Entra"
 ---
@@ -94,12 +96,18 @@ Update-MgPolicyDeviceRegistrationPolicy -BodyParameter $params
 | Test ID | MT.1070 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraDeviceJoinRestricted](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1070.ps1) |
+| Product | Entra ID |
+| Feature | Device identity |
+| Area | Devices and endpoints |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.005 Device Registration |
+| Supports controls | nist-800-53-r5:AC-6, nist-800-53-r5:IA-3 |
+| PowerShell test | [Test-MtEntraDeviceJoinRestricted](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1070.ps1) |
 | Services | Graph |
-| Tags | Device, Entra, Maester, MT.1070 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1070.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1070.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1070.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1070.md)
+- Test: [`tests/maester/entra/Test.MT.1070.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1070.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1070.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1070.md)

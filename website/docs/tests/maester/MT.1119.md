@@ -10,7 +10,10 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1119"
   - "High"
-  - "Copilot Studio Agent Security"
+  - "Copilot Studio"
+  - "Agents"
+  - "AI and agents"
+  - "AI"
   - "AIAgent"
   - "CopilotStudio"
 ---
@@ -40,12 +43,18 @@ Learn more: [Use environment variables in Power Platform](https://learn.microsof
 | Test ID | MT.1119 |
 | Severity | High |
 | Suite | Maester |
-| Category | Copilot Studio Agent Security |
-| PowerShell test | [Test-MtAIAgentHardCodedCredentials](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1119.ps1) |
+| Product | Copilot Studio |
+| Feature | Agents |
+| Area | AI and agents |
+| Resource type | Agent |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1552 Unsecured Credentials |
+| Supports controls | nist-800-53-r5:IA-5(7) |
+| PowerShell test | [Test-MtAIAgentHardCodedCredentials](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1119.ps1) |
 | Services | Graph |
-| Tags | AIAgent, CopilotStudio, Maester, MT.1119 |
 
 ## Source
 
-- Test: [`tests/Maester/AIAgent/Test.MT.1119.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1119.ps1)
-- Documentation: [`tests/Maester/AIAgent/Test.MT.1119.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AIAgent/Test.MT.1119.md)
+- Test: [`tests/maester/copilot-studio/Test.MT.1119.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1119.ps1)
+- Documentation: [`tests/maester/copilot-studio/Test.MT.1119.md`](https://github.com/maester365/maester/blob/main/tests/maester/copilot-studio/Test.MT.1119.md)

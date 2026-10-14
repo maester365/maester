@@ -11,7 +11,8 @@ keywords:
   - "AD-DNS-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - DNS Infrastructure"
+  - "DNS"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.DNS"
 ---
@@ -59,10 +60,13 @@ This test compares configured root server IP addresses against the official IANA
 | Test ID | AD-DNS-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - DNS Infrastructure |
+| Product | Active Directory |
+| Feature | DNS |
+| Area | Infrastructure hardening |
+| Resource type | DnsZone |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsRootServerIncorrectCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-DNS-03, AD.DNS |
 
 ## Source
 

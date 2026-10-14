@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1185"
-  - "High"
-  - "Maester/Entra"
+  - "Medium"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Access control"
   - "Entra"
 ---
 
@@ -62,14 +64,20 @@ Update-MgPolicyAuthorizationPolicy -BodyParameter $params
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1185 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtEntraMsolPowerShellBlocked](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1185.ps1) |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1059.009 Cloud API, T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtEntraMsolPowerShellBlocked](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1185.ps1) |
 | Services | Graph |
-| Tags | Entra, Maester, MT.1185 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1185.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1185.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1185.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1185.md)
+- Test: [`tests/maester/entra/Test.MT.1185.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1185.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1185.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1185.md)

@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.16.2"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Alert policies"
+  - "Logging and detection"
   - "MS.EXO"
   - "MS.EXO.16.2"
 ---
@@ -52,11 +54,21 @@ Rationale: Suspicious or malicious events, if not resolved promptly, may have a 
 | Test ID | CISA.MS.EXO.16.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Alert policies |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.16.2 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.4.2v1 (was MS.EXO.16.2v1) |
+| Supports controls | cisa-scuba:MS.EXO.16.2, nist-800-53-r5:SI-4(5) |
 | PowerShell test | [Test-MtCisaExoAlertSiem](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.16.2.ps1) |
 | Services | ExchangeOnline, Graph, SecurityCompliance |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | CISA, CISA.MS.EXO.16.2, MS.EXO, MS.EXO.16.2 |
 
 ## Source
 

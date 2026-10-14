@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.140"
-  - "High"
+  - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,19 @@ Change High Confidence Spam action to Quarantine message.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.140 |
-| Severity | High |
+| Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA140](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.140.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.140 |
 
 ## Source
 

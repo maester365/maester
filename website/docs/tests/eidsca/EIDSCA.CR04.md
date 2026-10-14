@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.CR04"
-  - "High"
+  - "Low"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "App consent and permissions"
+  - "Applications and workload identities"
   - "EIDSCA"
 ---
 
@@ -70,14 +72,19 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.CR04 |
-| Severity | High |
+| Severity | Low |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtCheckEidscaCR04](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.CR04.ps1) |
+| Product | Entra ID |
+| Feature | App consent and permissions |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCheckEidscaCR04](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.CR04.ps1) |
 | Services | Graph |
-| Tags | EIDSCA, EIDSCA.CR04 |
 
 ## Source
 
-- Test: [`tests/EIDSCA/Test.EIDSCA.CR04.ps1`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.CR04.ps1)
-- Documentation: [`tests/EIDSCA/Test.EIDSCA.CR04.md`](https://github.com/maester365/maester/blob/main/tests/EIDSCA/Test.EIDSCA.CR04.md)
+- Test: [`tests/eidsca/Test.EIDSCA.CR04.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.CR04.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.CR04.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.CR04.md)

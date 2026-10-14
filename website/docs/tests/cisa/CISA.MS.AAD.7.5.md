@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.7.5"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Privileged Identity Management"
+  - "Privileged access"
   - "Entra ID P2"
   - "MS.AAD"
   - "MS.AAD.7.5"
@@ -51,11 +54,20 @@ Rationale: Provisioning users to privileged roles within a PAM system enables en
 | Test ID | CISA.MS.AAD.7.5 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P2 |
+| Product | Entra ID |
+| Feature | Privileged Identity Management |
+| Area | Privileged access |
+| Resource type | DirectoryRole |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1098.003 Additional Cloud Roles |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.7.5 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.7.5v1 |
+| Supports controls | cisa-scuba:MS.AAD.7.5, nist-800-53-r5:AC-2 |
 | PowerShell test | [Test-MtCisaUnmanagedRoleAssignment](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.7.5.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM_P2, Entra_Identity_Governance |
-| Tags | CISA, CISA.MS.AAD.7.5, Entra ID P2, MS.AAD, MS.AAD.7.5 |
 
 ## Source
 

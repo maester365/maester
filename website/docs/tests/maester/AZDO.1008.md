@@ -9,8 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "AZDO.1008"
-  - "Medium"
+  - "Low"
   - "Azure DevOps"
+  - "Users and access"
+  - "Access control"
   - "AZDO"
 ---
 
@@ -45,15 +47,20 @@ When users try to access a project without the required permissions, the error m
 | Field | Value |
 | --- | --- |
 | Test ID | AZDO.1008 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-MtCheckAZDO1008](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1008.ps1) |
+| Product | Azure DevOps |
+| Feature | Users and access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtCheckAZDO1008](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1008.ps1) |
 | Services | AzureDevOps |
 | Learn more | [https://go.microsoft.com/fwlink/?linkid=2113172](https://go.microsoft.com/fwlink/?linkid=2113172) |
-| Tags | AZDO, AZDO.1008 |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1008.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1008.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1008.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1008.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1008.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1008.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1008.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1008.md)

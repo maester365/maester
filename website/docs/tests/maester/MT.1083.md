@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1083"
   - "Low"
-  - "Maester/Exchange"
+  - "Exchange Online"
+  - "Mailboxes"
+  - "Infrastructure hardening"
   - "Exchange"
 ---
 
@@ -60,12 +62,17 @@ Set-OrganizationConfig -EndUserMailNotificationForDelayedDelicensingEnabled:$tru
 | Test ID | MT.1083 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Maester/Exchange |
-| PowerShell test | [Test-MtExoDelicensingResiliency](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.ps1) |
+| Product | Exchange Online |
+| Feature | Mailboxes |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-MtExoDelicensingResiliency](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1083.ps1) |
 | Services | ExchangeOnline, Graph |
-| Tags | Exchange, Maester, MT.1083 |
 
 ## Source
 
-- Test: [`tests/Maester/Exchange/Test.MT.1083.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.ps1)
-- Documentation: [`tests/Maester/Exchange/Test.MT.1083.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Exchange/Test.MT.1083.md)
+- Test: [`tests/maester/exchange/Test.MT.1083.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1083.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1083.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1083.md)

@@ -11,7 +11,8 @@ keywords:
   - "AD-CFG-10"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Configuration"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Config"
 ---
@@ -52,10 +53,13 @@ Well-known security principals are built-in identities with special meaning in A
 | Test ID | AD-CFG-10 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Configuration |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdWellKnownSecurityPrincipalsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-10.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-CFG-10, AD.Config |
 
 ## Source
 

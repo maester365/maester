@@ -11,7 +11,8 @@ keywords:
   - "AD-GPO-01"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Group Policy"
+  - "Group Policy"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.GPO"
 ---
@@ -61,10 +62,13 @@ This test retrieves all Group Policy Objects from Active Directory and counts th
 | Test ID | AD-GPO-01 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Group Policy |
+| Product | Active Directory |
+| Feature | Group Policy |
+| Area | Infrastructure hardening |
+| Resource type | GroupPolicy |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-01.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-GPO-01, AD.GPO |
 
 ## Source
 

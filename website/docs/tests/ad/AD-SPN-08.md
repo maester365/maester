@@ -11,7 +11,8 @@ keywords:
   - "AD-SPN-08"
   - "Info"
   - "Active Directory"
-  - "Active Directory - SPN Analysis"
+  - "Service principal names"
+  - "Authentication"
   - "AD"
   - "AD.SPN"
 ---
@@ -62,10 +63,13 @@ This test analyzes all user SPNs, groups them by service class, and provides a c
 | Test ID | AD-SPN-08 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - SPN Analysis |
+| Product | Active Directory |
+| Feature | Service principal names |
+| Area | Authentication |
+| Resource type | User |
+| MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnServiceClassUsage](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-08.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-SPN-08, AD.SPN |
 
 ## Source
 

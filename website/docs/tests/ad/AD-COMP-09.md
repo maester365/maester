@@ -11,7 +11,8 @@ keywords:
   - "AD-COMP-09"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Computer Objects"
+  - "Computers"
+  - "Authentication"
   - "AD"
   - "AD.Computer"
 ---
@@ -62,10 +63,13 @@ This test counts computers with different delegation configurations:
 | Test ID | AD-COMP-09 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Computer Objects |
+| Product | Active Directory |
+| Feature | Computers |
+| Area | Authentication |
+| Resource type | Computer |
+| MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdComputerDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-09.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-COMP-09, AD.Computer |
 
 ## Source
 

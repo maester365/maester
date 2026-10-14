@@ -11,6 +11,9 @@ keywords:
   - "ORCA.189.2"
   - "High"
   - "ORCA"
+  - "Defender"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -39,11 +42,18 @@ Remove mail flow rules which bypass Safe Links.
 | Test ID | ORCA.189.2 |
 | Severity | High |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | MailFlowRule |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1204.001 Malicious Link |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA189_2](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.189.2.ps1) |
 | Services | ExchangeOnline |
 | Compatible licenses | ATP_ENTERPRISE |
-| Tags | EXO, ORCA, ORCA.189.2 |
 
 ## Source
 

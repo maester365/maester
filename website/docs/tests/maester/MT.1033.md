@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1033"
   - "High"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "CA"
   - "CAWhatIf"
   - "LongRunning"
@@ -41,15 +43,21 @@ Create a Conditional Access policy that blocks legacy authentication for all use
 | Test ID | MT.1033 |
 | Severity | High |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtCaWhatIfLegacyAuthenticationBlocked](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1033.ps1) |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | User |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1110 Brute Force |
+| Supports controls | nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCaWhatIfLegacyAuthenticationBlocked](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1033.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
 | Runs per instance | Yes, one result per instance from `Get-MtCaWhatIfRegularUserInstance` |
 | Long running | Yes |
-| Tags | CA, CAWhatIf, LongRunning, Maester, MT.1033 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1033.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1033.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1033.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1033.md)
+- Test: [`tests/maester/entra/Test.MT.1033.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1033.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1033.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1033.md)

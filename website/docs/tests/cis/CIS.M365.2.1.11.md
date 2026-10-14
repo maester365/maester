@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.2.1.11"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -107,12 +110,22 @@ New-MalwareFilterRule @Rule
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.2.1.11 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1204.002 Malicious File |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.11 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2 |
+| Supports controls | cis-m365:2.1.11, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCisAttachmentFilterComprehensive](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.ps1) |
 | Services | ExchangeOnline |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.11, L2 |
 
 ## Source
 

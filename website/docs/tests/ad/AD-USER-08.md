@@ -11,7 +11,8 @@ keywords:
   - "AD-USER-08"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Users"
+  - "Users"
+  - "Identity lifecycle and hygiene"
   - "AD"
   - "AD.User"
 ---
@@ -51,10 +52,13 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Test ID | AD-USER-08 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Users |
+| Product | Active Directory |
+| Feature | Users |
+| Area | Identity lifecycle and hygiene |
+| Resource type | User |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserNeverLoggedInCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-08.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-USER-08, AD.User |
 
 ## Source
 

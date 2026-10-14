@@ -11,6 +11,9 @@ keywords:
   - "ORCA.205"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -41,10 +44,17 @@ Enable common attachment type filter.
 | Test ID | ORCA.205 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1204.002 Malicious File |
+| Supports controls | nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-ORCA205](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.205.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.205 |
 
 ## Source
 

@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.7"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.7"
@@ -53,11 +56,20 @@ Create a Conditional Access policy requiring a user's device to be either Micros
 | Test ID | CISA.MS.AAD.3.7 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | High |
+| Implementation cost | High |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.7 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.3.7v1 |
+| Supports controls | cisa-scuba:MS.AAD.3.7, nist-800-53-r5:AC-20b, nist-800-53-r5:IA-3 |
 | PowerShell test | [Test-MtCisaManagedDevice](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.7.ps1) |
 | Services | Graph |
 | Compatible licenses | AAD_PREMIUM |
-| Tags | CISA, CISA.MS.AAD.3.7, Entra ID P1, MS.AAD, MS.AAD.3.7 |
 
 ## Source
 

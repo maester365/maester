@@ -11,7 +11,8 @@ keywords:
   - "AD-FOR-03"
   - "Info"
   - "Active Directory"
-  - "Active Directory - Forest"
+  - "Directory configuration"
+  - "Infrastructure hardening"
   - "AD"
   - "AD.Forest"
 ---
@@ -68,10 +69,13 @@ This test retrieves the tombstone lifetime from the Directory Service configurat
 | Test ID | AD-FOR-03 |
 | Severity | Info |
 | Suite | Active Directory |
-| Category | Active Directory - Forest |
+| Product | Active Directory |
+| Feature | Directory configuration |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTombstoneLifetime](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-03.ps1) |
 | Services | ActiveDirectory |
-| Tags | AD, AD-FOR-03, AD.Forest |
 
 ## Source
 

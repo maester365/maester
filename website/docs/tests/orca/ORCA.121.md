@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.121"
-  - "Low"
+  - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Zero-hour auto purge"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -38,12 +41,18 @@ Change filter policy action to support Zero Hour Auto Purge.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.121 |
-| Severity | Low |
+| Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Zero-hour auto purge |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
 | PowerShell test | [Test-ORCA121](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.121.ps1) |
 | Services | ExchangeOnline |
-| Tags | EXO, ORCA, ORCA.121 |
 
 ## Source
 

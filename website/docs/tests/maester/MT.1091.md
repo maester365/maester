@@ -10,7 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1091"
   - "Medium"
-  - "Maester/Entra"
+  - "Entra ID"
+  - "Device identity"
+  - "Privileged access"
   - "Device"
   - "Entra"
 ---
@@ -42,12 +44,18 @@ To remediate existing devices, you need to create an Intune account policy, over
 | Test ID | MT.1091 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Maester/Entra |
-| PowerShell test | [Test-MtDeviceRegistrationLocalAdminsRegisteringUser](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1091.ps1) |
+| Product | Entra ID |
+| Feature | Device identity |
+| Area | Privileged access |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtDeviceRegistrationLocalAdminsRegisteringUser](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1091.ps1) |
 | Services | Graph |
-| Tags | Device, Entra, Maester, MT.1091 |
 
 ## Source
 
-- Test: [`tests/Maester/Entra/Test.MT.1091.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1091.ps1)
-- Documentation: [`tests/Maester/Entra/Test.MT.1091.md`](https://github.com/maester365/maester/blob/main/tests/Maester/Entra/Test.MT.1091.md)
+- Test: [`tests/maester/entra/Test.MT.1091.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1091.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1091.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1091.md)

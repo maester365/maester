@@ -11,6 +11,8 @@ keywords:
   - "AZDO.1045"
   - "Info"
   - "Azure DevOps"
+  - "Repositories"
+  - "AI and agents"
   - "AZDO"
   - "Preview"
 ---
@@ -68,14 +70,17 @@ This check is tagged `Preview` because GitHub Copilot code review is in limited 
 | Test ID | AZDO.1045 |
 | Severity | Info |
 | Suite | Maester |
-| Category | Azure DevOps |
-| PowerShell test | [Test-AzdoOrganizationCopilotCodeReview](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1045.ps1) |
+| Product | Azure DevOps |
+| Feature | Repositories |
+| Area | AI and agents |
+| Resource type | Tenant |
+| MITRE ATT&CK | None |
+| PowerShell test | [Test-AzdoOrganizationCopilotCodeReview](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1045.ps1) |
 | Services | AzureDevOps |
-| Preview | Yes |
+| Lifecycle | Preview |
 | Learn more | [https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops](https://learn.microsoft.com/azure/devops/repos/git/copilot-code-reviews?view=azure-devops) |
-| Tags | AZDO, AZDO.1045, Preview |
 
 ## Source
 
-- Test: [`tests/Maester/AzureDevOps/Test.AZDO.1045.ps1`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1045.ps1)
-- Documentation: [`tests/Maester/AzureDevOps/Test.AZDO.1045.md`](https://github.com/maester365/maester/blob/main/tests/Maester/AzureDevOps/Test.AZDO.1045.md)
+- Test: [`tests/maester/azure-devops/Test.AZDO.1045.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1045.ps1)
+- Documentation: [`tests/maester/azure-devops/Test.AZDO.1045.md`](https://github.com/maester365/maester/blob/main/tests/maester/azure-devops/Test.AZDO.1045.md)
