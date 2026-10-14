@@ -115,6 +115,8 @@
             ExcludeTag                = 'testtag'
             NoLogo                    = $true
             OutputMarkdownSummaryFile = $summaryPath
+            # The smoke tests are enough for the summary; the built-in tests would all be skipped, slowly.
+            SkipBuiltIn               = $true
         }
 
         $result = Invoke-Maester @maesterParams
@@ -179,6 +181,8 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
                     NoLogo               = $true
                     SkipVersionCheck     = $true
                     DisableTelemetry     = $true
+                    # Only the tests above: the built-in tests would all be skipped, and take most of the time.
+                    SkipBuiltIn          = $true
                 }
                 $null = Invoke-Maester @params @Extra
                 $outputFolder
@@ -270,6 +274,8 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
                 NoLogo             = $true
                 SkipVersionCheck   = $true
                 DisableTelemetry   = $true
+                # No tests at all, so that the run stops before the tests.
+                SkipBuiltIn        = $true
             }
             Invoke-Maester @params -ErrorAction SilentlyContinue
 
