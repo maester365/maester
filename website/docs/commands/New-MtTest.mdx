@@ -5,7 +5,7 @@ id: New-MtTest
 title: New-MtTest
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/core/New-MtTest.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/New-MtTest.ps1
 ---
 
 ## SYNOPSIS
@@ -15,8 +15,10 @@ Creates a new Maester native test: Test.&lt;ID&gt;.ps1 and Test.&lt;ID&gt;.md.
 ## SYNTAX
 
 ```powershell
-New-MtTest [-Id] <String> -Title <String> [-Severity <String>] [-Service <String[]>] [-Category <String>]
- [-Path <String>] [-Force] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-MtTest [-Id] <String> -Title <String> [-Severity <String>] [-Service <String[]>] [-Product <String>]
+ [-Feature <String>] [-Area <String>] [-ResourceType <String>] [-UserImpact <String>]
+ [-ImplementationCost <String>] [-Mitre <String[]>] [-Path <String>] [-Force]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,6 +26,11 @@ New-MtTest [-Id] <String> -Title <String> [-Severity <String>] [-Service <String
 Writes a test function with its [MaesterTest] attribute and a Markdown file with the description,
 remediation and result sections.
 Run it with Invoke-MtTest -Path, and validate it with Get-MtTest -Path.
+
+A custom test needs only an ID and a title.
+-Product, -Feature, -Area, -ResourceType, -UserImpact,
+-ImplementationCost and -Mitre fill in the attributes that say what the test is about, what to fix first
+and which attack techniques it addresses; add or change them in the file later as you like.
 
 ## EXAMPLES
 
@@ -33,7 +40,17 @@ Run it with Invoke-MtTest -Path, and validate it with Get-MtTest -Path.
 New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
 ```
 
-Creates Custom/Test.CONTOSO.1001.ps1 and Custom/Test.CONTOSO.1001.md.
+Creates custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md.
+
+### EXAMPLE 2
+
+```powershell
+New-MtTest -Id CONTOSO.1002 -Title 'Legacy authentication is blocked' -Product entra -Feature conditional-access -Area authentication -ResourceType Tenant -Severity High -UserImpact Medium -ImplementationCost Low -Mitre T1110.003
+```
+
+Creates a test with the classification, priority and ATT&CK attributes filled in.
+The attribute rubric at
+https://maester.dev/docs/writing-tests/attribute-rubric explains how to choose each value.
 
 ## PARAMETERS
 
@@ -102,10 +119,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Category
+### -Product
 
-The report grouping.
-Defaults to Custom.
+The product where the fix is made: a key of the Maester taxonomy such as entra or exchange (an alias such as
+'Entra ID' is written as the key), or any name of your own.
+Groups the console progress and the run summary.
 
 ```yaml
 Type: String
@@ -114,7 +132,105 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: Custom
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Feature
+
+The part of the product the test is about, for example conditional-access.
+With a Maester product, one of
+its feature keys; otherwise any text.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Area
+
+The security theme, for example authentication or privileged-access.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ResourceType
+
+What a failing result points at, for example Tenant or User.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UserImpact
+
+How much the recommended fix disrupts end users: Low, Medium or High.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ImplementationCost
+
+How much administrator work the recommended fix takes: Low, Medium or High.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Mitre
+
+The MITRE ATT&CK technique IDs the checked control prevents or detects, for example T1110.003, or None.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -122,7 +238,7 @@ Accept wildcard characters: False
 ### -Path
 
 The folder to create the files in.
-Defaults to ./Custom.
+Defaults to ./custom (an existing ./Custom folder is reused).
 
 ```yaml
 Type: String
@@ -131,7 +247,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: ./Custom
+Default value: ./custom
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -5,7 +5,7 @@ id: Get-MtTestInventory
 title: Get-MtTestInventory
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtTestInventory.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/Get-MtTestInventory.ps1
 ---
 
 ## SYNOPSIS
@@ -24,11 +24,19 @@ Get-MtTestInventory [-Path <String>] [-ExcludePath <String[]>] [-ExcludeTag <Str
 Reads the native tests (Test.&lt;ID&gt;.ps1) and Pester-format tests (*.Tests.ps1) under the provided path
 without running them, and returns a list of objects containing:
 
-    TestName     - Name of the It test.
+    TestName     - Name of the It test, or '&lt;Id&gt;: &lt;Title&gt;' of a native test.
     FilePath     - Full path to the test file.
     Describe     - Name of the parent Describe block.
+For a native test, its Feature.
     Tags         - Tags explicitly set on the test.
+For a native test, the tags that -Tag matches: the
+                   tags it carries and, for a test that ships with Maester, its ID and the tags it
+                   carried in Maester 2.x.
     CombinedTags - Combination of Describe and Tags (unique, case-insensitive).
+
+This command is kept for one major version for scripts written for Maester 2.x.
+Get-MtTest lists the
+native tests with their typed attributes (Product, Feature, Area, Severity and the rest).
 
 ## EXAMPLES
 

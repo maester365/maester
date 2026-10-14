@@ -5,7 +5,7 @@ id: Install-MaesterTests
 title: Install-MaesterTests
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/core/Install-MaesterTests.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/Install-MaesterTests.ps1
 ---
 
 ## SYNOPSIS
@@ -24,7 +24,7 @@ Install-MaesterTests [[-Path] <String>] [-SkipPesterCheck] [-ProgressAction <Act
 From Maester 3.0 the tests that ship with Maester run from the module itself, so updating the module
 updates them and nothing needs to be copied.
 Install-MaesterTests prepares a folder for your custom
-tests and configuration: it writes Custom/README.md and a starter maester-config.json when they are
+tests and configuration: it writes custom/README.md and a starter maester-config.json when they are
 missing.
 It never writes a test file and never overwrites an existing file, so it is safe to call
 on every pipeline run.
@@ -39,7 +39,7 @@ Run Invoke-Maester -Path &lt;folder&gt; to run the built-in tests together with 
 Install-MaesterTests -Path ./maester-tests
 ```
 
-Creates ./maester-tests with Custom/README.md and maester-config.json.
+Creates ./maester-tests with custom/README.md and maester-config.json.
 
 ## PARAMETERS
 
