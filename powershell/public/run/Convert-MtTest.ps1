@@ -105,7 +105,7 @@ function Convert-MtTest {
                 continue
             }
             if ($id -notmatch '[.\-]') { $notes.Add("Consider a prefix for '$id', for example CONTOSO.$id.") }
-            if ($schema.ReservedPrefixes | Where-Object { $id.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) { $notes.Add("The prefix of '$id' belongs to the built-in tests; a native test with a built-in ID is not run.") }
+            if ($schema.ReservedPrefixes | Where-Object { $id.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) { $notes.Add("The prefix of '$id' is reserved for tests shipped with Maester and for Maester Packs; use your own prefix. A native test with a built-in ID is not run.") }
 
             # Describe (written to Feature, which gives the row's Block) and tags.
             $tags = [System.Collections.Generic.List[string]]::new()

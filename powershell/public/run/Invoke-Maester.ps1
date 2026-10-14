@@ -676,7 +676,7 @@
                 }
                 $reserved = @($nativeCustom | Where-Object { $id = $_.Id; $id -and ((Get-MtTestSchema).ReservedPrefixes | Where-Object { $id.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) })
                 if ($reserved.Count -gt 0) {
-                    Write-Warning "These custom tests use an ID prefix that belongs to the tests shipped with Maester: $(($reserved | ForEach-Object { $_.Id }) -join ', '). Use your own prefix, for example CONTOSO."
+                    Write-Warning "These custom tests use an ID prefix reserved for tests shipped with Maester and for Maester Packs: $(($reserved | ForEach-Object { $_.Id }) -join ', '). Use your own prefix, for example CONTOSO."
                 }
             }
         }

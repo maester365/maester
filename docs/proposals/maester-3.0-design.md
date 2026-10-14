@@ -1,7 +1,10 @@
 # Design: Maester 3.0 native test model and engine
 
-> **Status: DRAFT, nothing has been implemented.** Drafted 2026-10-02 against `main`
-> at `d88798d8`; owner rulings of 2026-10-03 applied. Implements the direction in
+> **Status: implemented on the 3.0 branch
+> ([PR #2334](https://github.com/maester365/maester/pull/2334)): milestones M0 to M9, apart
+> from the prerelease soak and the 3.0.0 release.** Drafted 2026-10-02 against `main`
+> at `d88798d8`; owner rulings of 2026-10-03 applied, and the rulings made during
+> implementation are recorded in section 16. Implements the direction in
 > [RFC #2050](https://github.com/maester365/maester/discussions/2050), with the engine
 > choice made on stability rather than on the RFC's wording.
 > Section 16 records the rulings and the one item still open. Section 17 lists what is
@@ -45,7 +48,8 @@ The design in one page:
   longer a dependency of the module; it is loaded only when Pester files are present.
 - **The result JSON keeps its 2.x shape.** Same fields, same six `Result` values; new
   fields are additive. Existing consumers of the JSON keep working unchanged. The HTML
-  report keeps working, with its Config page updated.
+  report keeps its 2.x layout; it adds a notice on dry runs and shows the typed test
+  attributes of native tests.
 - **PowerShell 7 only.** The manifest requires PowerShell 7.4 and the `Core` edition;
   the Windows PowerShell 5.1 leg of CI goes away. 7.4 is the floor because Azure
   Automation and hosted runners run it today; it leaves Microsoft support on 10 November
@@ -137,8 +141,9 @@ older `psnext` branch):
   written (the text before the first colon of the `It` name, or the whole name), and
   IDs in the run config are free text.
 - **Reserved prefixes.** `MT.`, `CISA.`, `CIS.`, `EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and
-  `MT1060.` belong to built-ins. A custom test whose ID uses one of these prefixes but
-  is not a built-in ID still runs, with one warning listing those IDs. An ID that
+  `MT1060.` belong to built-ins, and `MP.` is reserved for Maester Packs, whose test IDs
+  are `MP.<publisher code>.<number>` (section 12.2). A custom test whose ID uses one of
+  these prefixes but is not a built-in ID still runs, with one warning listing those IDs. An ID that
   equals a built-in ID follows the collision rules in section 8. Custom tests should
   use their own prefix (`CONTOSO.1001`).
 - One `[MaesterTest]` function per file. **The function keeps today's descriptive name**
@@ -368,8 +373,12 @@ Each suite folder has a small `suite.json` for what is true of every test in the
   same with a standard `#Requires -Modules` line, which the engine reads statically. If
   the running engine is older, the affected tests get one row each with reason
   `RequiresNewerMaester` instead of one schema error per unknown property.
+- `suite.json` may carry `"NoResultReason"`: the skip text for a test in the suite that
+  returns `$null` without saying why. The AD suite uses it to keep its 2.x wording
+  ("Active Directory data could not be retrieved"); without it the row says "The test
+  returned no result."
 - Unknown `suite.json` keys are ignored with a warning.
-- The marketplace package manifest plays this role for packages (section 12.2).
+- A Maester Pack's manifest plays this role for packs (section 12.2).
 
 ### 3.7 Custom tests
 
@@ -664,8 +673,12 @@ the release notes.
     is `Skipped`/`ServiceNotConnected`. 2.x reports `Failed` or `Error`.
 11. **Two selection fixes** (section 7.1). A caller's
     `PesterConfiguration.Filter.ExcludeTag` is honoured; 2.x discards it whenever a
-    default exclusion applies, so those tests ran. `-Tag All` and `-Tag Full` select
-    tests instead of none.
+    default exclusion applies, so those tests ran. `-Tag All` and `-Tag Full`, which
+    selected nothing in 2.x, are removed: passing either stops the run with an error
+    that names `-IncludePreview` and `-IncludeLongRunning` instead.
+12. **Pester's `Inconclusive` is `Skipped`.** `Set-ItResult -Inconclusive` has no
+    Maester result; 2.x passed it through as a value that no count, report page or XML
+    mapping recognised.
 
 ### 5.4 Console output
 
@@ -878,7 +891,9 @@ Preserved from 2.x:
 Fixed, from M2 (M1 keeps the 2.x behaviour):
 
 - `-Tag All` and `-Tag Full` run nothing today, because no test carries those tags. They
-  become aliases for the include switches, with a deprecation warning.
+  are removed: passing either to `-Tag` or `-ExcludeTag` stops the run with an error
+  that names `-IncludePreview` (for `All`) and `-IncludeLongRunning` (for `Full`), or
+  `Selection.IncludePreview` and `Selection.IncludeLongRunning` in the config.
 - A caller's `PesterConfiguration.Filter.ExcludeTag` is merged with the defaults instead
   of being overwritten.
 - A run needs no test folder. Today `Invoke-Maester` fails without `*.Tests.ps1` files.
@@ -1077,7 +1092,8 @@ Two things a host must handle when it moves to 3.0 run configs:
 - **Real Pester, not a re-implementation.** Custom tests in public repos use
   `BeforeAll`, `BeforeDiscovery`, `-ForEach`, `-Skip:(expr)`, `Context`, `Set-ItResult`
   and many `Should` operators. The provider calls `Invoke-Pester` once, from a module
-  function, after the native tests. It keeps the 2.x result mapping for those rows.
+  function, after the native tests. It keeps the 2.x result mapping for those rows,
+  except that Pester's `Inconclusive` becomes `Skipped` (section 5.3).
 - **Selection by ID for Pester tests.** The ID is the text before the first colon of
   the `It` name. Only 43% of public custom tests also carry their ID as a tag, so tags
   cannot be the mechanism. The engine scans the files statically, then appends
@@ -1187,12 +1203,13 @@ Two things a host must handle when it moves to 3.0 run configs:
   page populated after the shipped rows are deleted. `ConfigSource` stays a string and
   names every layer that contributed, lowest first, or `-Config`. Sensitive settings are redacted; keys that are not in the
   settings registry are echoed by name with the value replaced.
-- A JSON schema for the result ships in the module and generates the report app's
-  typed model. The report gains a reason column, a native/Pester badge and a
-  run-configuration section. Its Config page shows defaults plus overrides and exports
-  only the overrides.
-- The marketplace draft's larger envelope (catalog, coverage, provenance) is left for
-  that work; `SchemaVersion 3.0` is reserved for it.
+- **The HTML report keeps its 2.x layout.** A reason column, a native/Pester badge and a
+  run-configuration section were planned and dropped (2026-10-07), so the report looks
+  as it does in 2.x. What it adds: a notice when the run was a dry run, and, for native
+  rows, filters and cards for the typed test attributes (Product, Feature, Area and the
+  rest). The new fields are in the JSON for any consumer that wants them.
+- Maester Packs (section 12.2) adds its rows through the reserved `Package` field;
+  `SchemaVersion 3.0` stays reserved for a future envelope.
 
 ## 10. Tests that produce several results
 
@@ -1333,50 +1350,23 @@ promised:
 - IDs are kept as written. An ID without a prefix (`CT0001`) still converts; the
   report suggests a prefix.
 
-### 12.2 Packages and the marketplace
+### 12.2 Maester Packs
 
-The marketplace is a later release, but its package model is fixed now so that 3.0
-tests and 3.0 engine seams are already the package format. It follows the earlier
-marketplace draft and the skills.sh idea of publisher-owned Git repositories with a
-central index.
+Third-party test packs, and the marketplace where people find them, are designed
+separately in the Maester Packs design
+([PR #2358](https://github.com/maester365/maester/pull/2358)), planned for 3.1. It
+supersedes the package model this section first sketched (`maester-package.json`,
+`Install-MtPackage` and listing by pull request). What 3.0 ships so that packs are
+additive:
 
-- **A package is a Git repository** holding native tests plus one manifest:
-
-  ```text
-  maester-package.json
-  tests/
-    Test.CONTOSO.1001.ps1
-    Test.CONTOSO.1001.md
-  ```
-
-  The manifest is `suite.json` with package fields: `Id` (`<publisher>.<package>`),
-  `Version`, `Publisher`, `RequiresMaester`, `License`, `SupportUrl`, the tests folder,
-  and later `Services`, `ParameterKinds` and `Permissions` it contributes. Test IDs are
-  namespaced by the publisher's prefix and must not collide with built-ins.
-- **Installing** (`Install-MtPackage <id | owner/repo> [-Version]`): resolve a tag to
-  a commit, download the archive without running anything in it, validate it
-  statically (attributes, `.md` pairing, no top-level statements, ID namespace, a
-  secrets scan), show publisher, commit, digest, capabilities and requested
-  permissions, require approval, copy the immutable snapshot to the package store
-  (`~/.maester/packages/<id>/<version>`), and write `maester-packages.lock.json` with
-  source, commit and digest. `Get-`, `Update-`, `Uninstall-` and `Find-MtPackage`
-  complete the set; `Find-` queries a public registry repository where publishers list
-  packages by pull request and automation verifies repository control, manifest and
-  scans. Direct install from any repository stays possible without a listing.
-- **Running:** an installed package is loaded the way a custom folder is (section 5.1):
-  one private module per package, namespaced IDs, `Source = Custom` until consumers
-  understand packages, and the reserved `Package` field on each row. A run uses
-  the locked snapshot, never the repository's current branch.
-- **Trust:** running downloaded PowerShell with Graph and Exchange credentials is a
-  supply-chain boundary. In-process execution is an explicit trust decision at
-  install; a child-process host for connection providers and collectors, and a
-  separate marketplace result envelope (`SchemaVersion 3.0`), are later phases of the
-  draft and need nothing from 3.0 beyond what is listed next.
-- **What 3.0 ships so that this is additive:** the two-file format and static
-  discovery; the private-module loader; `RequiresMaester`; the reserved `Package`
-  field; the service registry and parameter-kind registry as the extension points;
-  `Source` on every row; and the catalog, which a registry can build a listing from
-  without executing anything.
+- the two-file format and static discovery, and the catalog, which an index can build a
+  listing from without running anything;
+- the private-module loader;
+- `RequiresMaester`;
+- the reserved `Package` field, with `Source = Custom` on pack rows (appendix A.6);
+- the service registry and the parameter-kind registry as the extension points;
+- the reserved `MP.` test ID prefix: every pack test ID is `MP.<publisher code>.<number>`
+  (section 3.1).
 
 ## 13. Parallel-readiness rules adopted now
 
@@ -1659,7 +1649,7 @@ from M2 on those prereleases are the 3.0 previews.
 | --- | --- | --- |
 | M0 | Contracts and safety net: owner rulings; schema table; golden fixtures for tags, `Block`, results, config layouts and selection; legacy-Pester and error-path fixtures; parity differ; previous-ID table; the C# project, its CI build and its load test on Windows and Linux; manifest raised to PowerShell 7.4 / `Core`; hygiene PRs on 2.x | differ shows no difference for 2.x against itself; the DLL loads on every matrix leg |
 | M1 | `Invoke-Maester` refactored onto the pipeline with only the Pester provider; config resolver with 2.x precedence; `-Config`, `-TestId`, `-ExcludeTestId`; additive result fields except `Source` and `Suite`; config `Selection`, `TestSettings[].Enabled` and `DefaultAction`; `-DryRun` | parity diff empty on the full suite; result JSON unchanged apart from the additive fields; Pester-written XML unchanged; releasable as a 2.x minor |
-| M2 | Built-ins run from the module; `suite.json` and `Source`/`Suite`; the `-Path` rules; stale-copy supersede; `Install-`/`Update-MaesterTests` behaviour; side-by-side detection; merged config layers; the section 7.1 fixes | compatibility scenarios automated and green; maester-action release (explicit Pester install step, `include_public_tests: false` mapped to `-SkipBuiltIn`) published before 3.0.0 |
+| M2 | Built-ins run from the module; `suite.json` and `Source`/`Suite`; the `-Path` rules; stale-copy supersede; `Install-`/`Update-MaesterTests` behaviour; side-by-side detection; merged config layers; the section 7.1 fixes | compatibility scenarios automated and green; maester-action release (explicit Pester install step, `include_public_tests: false` mapped to `-SkipBuiltIn`, and 3.0 only for workflows that set `maester_major_version: "3"`, so pipelines move when their owners choose) published before 3.0.0 |
 | M3 | **First end-to-end slice:** the attributes, static discovery, catalog, the C# core in single-threaded mode (engine `try`, stream capture, timeouts, Ctrl+C), custom native tests, tenant context with the service and platform gates, Maester-written XML, `Invoke-MtTest`, `Get-MtTest`, `New-MtTest`, `Get-MtTenantContext`, console levels, synthesised `MaesterConfig.TestSettings`, about 10 pilot checks converted with guards and `catch` removed; draft "Writing native tests" and "Upgrading from 2.x" pages | one run with native built-in, Pester built-in, native custom and Pester custom rows in one report; first 3.0 preview with native tests |
 | M4 | cis + cisa migrated; docs generator and contributor pages read the catalog for migrated suites and the 2.x sources for the rest | parity |
 | M5 | ad migrated | parity on an AD-connected run |
@@ -1694,6 +1684,23 @@ M4 to M8 move the remaining checks across.
   it and parallel later is a default change. The pure-PowerShell alternative (nested
   pipeline plus a watchdog runspace) and a separate engine product were considered and
   not chosen; the evidence is in section 5.5.
+
+### Ruled during implementation (2026-10-06 to 2026-10-14)
+
+- **`-Tag All` and `-Tag Full` are removed**, not aliased; using them is an error that
+  names the replacement (sections 5.3 and 7.1).
+- **Pester's `Inconclusive` maps to `Skipped`** (sections 5.3 and 8).
+- **The HTML report keeps its 2.x layout**, plus a dry-run notice and the typed test
+  attributes (section 9).
+- **No check function is exported**; custom tests call `Invoke-MtTest -Id`.
+- **Per-test severity stays configurable** through `TestSettings` overrides in the run
+  config.
+- **`suite.json` gains `NoResultReason`**, so the AD tests keep their 2.x skip wording
+  (section 3.6).
+- **maester-action moves to 3.0 only on opt-in**, with `maester_major_version: "3"`
+  (section 15.3).
+- **`MP.` is reserved for Maester Packs**, which are designed separately and supersede
+  this document's package sketch (sections 3.1 and 12.2).
 
 ### Still open
 
@@ -1853,8 +1860,8 @@ In order:
 
 1. A test in a suite folder (native, or a built-in Pester file) takes its manifest's
    `Source` and `Id`.
-2. Any other custom test, or a package test until consumers understand packages:
-   `Source = Custom`, `Suite = Custom` (a package also sets the reserved `Package`
+2. Any other custom test, or a test from a Maester Pack until consumers understand
+   packs: `Source = Custom`, `Suite = Custom` (a pack also sets the reserved `Package`
    field).
 3. When the engine cannot tell, it omits both, and consumers fall back to their own
    rule. M1 has no manifests, so it emits neither.

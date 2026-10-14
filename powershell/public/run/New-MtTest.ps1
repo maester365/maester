@@ -143,7 +143,7 @@ function New-MtTest {
         if ($s -ne 'None' -and -not (Resolve-MtServiceName -Name $s)) { Write-Warning "Service '$s' is not in the service registry; the test will be skipped as ServiceNotRegistered." }
     }
     if ($schema.ReservedPrefixes | Where-Object { $Id.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) {
-        Write-Warning "The prefix of '$Id' belongs to the tests shipped with Maester. Use your own prefix, for example CONTOSO."
+        Write-Warning "The prefix of '$Id' is reserved for tests shipped with Maester and for Maester Packs. Use your own prefix, for example CONTOSO."
     }
 
     $functionName = 'Test-' + (($Id -split '[.\-_]' | Where-Object { $_ } | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join '')

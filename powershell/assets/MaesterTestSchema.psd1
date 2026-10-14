@@ -27,8 +27,8 @@
     IdPattern        = '^(?=.*[0-9.\-])[A-Za-z][A-Za-z0-9]*([.\-][A-Za-z0-9_]+)*$'
     IdMaxLength      = 64
 
-    # ID prefixes that belong to tests shipped with Maester.
-    ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.')
+    # ID prefixes that belong to tests shipped with Maester, and MP. for Maester Packs.
+    ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.', 'MP.')
 
     # Names reserved for future properties. Adding one later does not break existing tests.
     ReservedNames    = @('OptionalService', 'TimeoutSeconds')

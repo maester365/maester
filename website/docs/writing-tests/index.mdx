@@ -87,7 +87,8 @@ with a letter, contains at least one digit or separator, and is at most 64 chara
 `CONTOSO-ID-07` and `CT0001` are all valid. IDs are compared case-insensitively.
 
 Use a prefix of your own. These prefixes belong to the tests that ship with Maester: `MT.`, `CISA.`, `CIS.`,
-`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and `MT1060.`. A custom test with one of these prefixes still runs, with a
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
+planned for a later release. A custom test with one of these prefixes still runs, with a
 warning. A custom test that uses the exact ID of a built-in test is not run at all, and the built-in runs
 instead. To change how a built-in test behaves, set its parameters or severity in the
 [run configuration](../configuration/run-configuration.md), or copy it under your own ID and disable the
