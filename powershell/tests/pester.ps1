@@ -52,6 +52,9 @@ if ($enableCoverage) {
         (Resolve-Path "$PSScriptRoot\..\internal").Path
     )
     $config.CodeCoverage.RecursePaths = $true
+    # Profiler-based coverage. With breakpoints on every line of the module the coverage run took ten
+    # times as long as the other runs, as the tests run the engine end to end many times.
+    $config.CodeCoverage.UseBreakpoints = $false
     Write-PSFMessage -Level Important -Message "Code coverage enabled. Output: $coverageOutputPath"
 }
 
