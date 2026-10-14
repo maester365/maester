@@ -155,9 +155,6 @@ namespace Maester.Engine
         private const byte GsBossAlarm = 32;
         private const byte GsSpring = 33;
         private const byte GsRunnerTrue = 34;
-        private const byte GsFlameRed = 35;
-        private const byte GsFlameOrange = 36;
-        private const byte GsFlameYellow = 37;
         // The colour behind the cells of the far skyline: a shade of the dark of the screen.
         private const string GameSkyline = "48;5;235";
         private static readonly string[] GameSgr =
@@ -165,17 +162,8 @@ namespace Maester.Engine
             null, "38;5;236", "38;5;240", "1;35", "38;5;208", "33", "38;5;245", "1;33", "2", "38;5;242",
             GameRed, "38;5;65", "38;5;239", "1;33", "38;5;238", "38;5;208", GameOrange, "1", "2",
             "38;5;73", "38;5;71", "38;5;130", "38;5;110", "38;5;203", "36", "1;31", "3;38;5;252", "1;3;38;5;196",
-            "2;32", "38;5;168", "38;5;111", "1;32", "1;31", "1;36", GameRedTrue, "38;5;196", "38;5;208", "38;5;220"
+            "2;32", "38;5;168", "38;5;111", "1;32", "1;31", "1;36", GameRedTrue
         };
-        // What is behind everything else: the flame of the runner is drawn over it, and over nothing else.
-        private static readonly bool[] GameSoft = SoftStyles();
-
-        private static bool[] SoftStyles()
-        {
-            var soft = new bool[GameSgr.Length];
-            soft[GsNone] = soft[GsBackdrop] = soft[GsCaption] = soft[GsScenery] = soft[GsDust] = true;
-            return soft;
-        }
         private static readonly byte[] GameSeverityStyle = { GsCritical, GsHigh, GsMedium, GsLow, GsLow };
 
         // The coin of one test as it turns, its face and its edge, and the coin of several tests.
@@ -262,10 +250,6 @@ namespace Maester.Engine
         // The runner: head, body, and the legs as it runs (two ways) and as it jumps; and the head it has while it stumbles.
         private static readonly string[] GameRunner = { " ▟█▙ ", "▐███▌", " ▛ ▜ ", " ▐ ▌ ", " ▘ ▝ ", " ▗▄▖ " };
         private static readonly string[] GameRunnerAscii = { " /^\\ ", "[###]", " / \\ ", " | | ", " ' ' ", " ._. " };
-        // The flame over the head of the runner, as it flickers: its tip and its body, which leans back
-        // as the runner runs. It is decoration: nothing touches it.
-        private static readonly string[][] GameFlame = { new[] { " ▗   ", " ▟▙  " }, new[] { "▗    ", " ▜▙  " }, new[] { " ▖   ", "▗█▖  " } };
-        private static readonly string[][] GameFlameAscii = { new[] { "     ", " ,)  " }, new[] { "     ", " ')  " }, new[] { "     ", " .)  " } };
         private static readonly string[] GameCloud = { "  ▁▃▅▃▁", "▁▃█████▃▁" };
         private static readonly string[] GameCloudAscii = { "  .--.", " (____)" };
 
@@ -411,13 +395,6 @@ namespace Maester.Engine
                 if (x < 0 || y < 0 || x >= Width || y >= Height) return;
                 Cells[y * Width + x] = c;
                 Styles[y * Width + x] = style;
-            }
-
-            /// <summary>Whether a cell has nothing in it, or only what is behind everything: the sky, the counter of the run, a cloud.</summary>
-            public bool Soft(int x, int y)
-            {
-                if (x < 0 || y < 0 || x >= Width || y >= Height) return false;
-                return Cells[y * Width + x] == ' ' || GameSoft[Styles[y * Width + x]];
             }
 
             /// <summary>Text from a cell on. Its spaces are not drawn: what is under them shows.</summary>
@@ -2210,28 +2187,6 @@ namespace Maester.Engine
                 canvas.Text(_runnerX, top, runner[down ? 5 : 0], red);
                 canvas.Text(_runnerX, top + 1, runner[1], red);
                 canvas.Text(_runnerX, top + 2, runner[!_supported ? 4 : (((int)(_distance / 3) & 1) == 0 ? 2 : 3)], red);
-                // The flame over its head, unless its head is down. Only where the sky is behind it: under
-                // a bridge, or behind a name, there is none.
-                if (down) return;
-                var flame = (unicode ? GameFlame : GameFlameAscii)[(int)(_time * 9) % 3];
-                for (int row = 0; row < 2; row++)
-                {
-                    for (int i = 0; i < flame[row].Length; i++)
-                    {
-                        if (flame[row][i] != ' ' && !canvas.Soft(_runnerX + i, top - 2 + row)) return;
-                    }
-                }
-                for (int row = 0; row < 2; row++)
-                {
-                    bool body = false;
-                    for (int i = 0; i < flame[row].Length; i++)
-                    {
-                        if (flame[row][i] == ' ') continue;
-                        // Yellow at its tip, orange where it leans back, red over the head.
-                        canvas.Put(_runnerX + i, top - 2 + row, flame[row][i], row == 0 ? GsFlameYellow : (body ? GsFlameRed : GsFlameOrange));
-                        body = true;
-                    }
-                }
             }
 
             /// <summary>
