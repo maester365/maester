@@ -618,17 +618,21 @@ Describe 'Dashboard panels' {
         $right = { @($renderer.GetPlainScreen(160, 44) | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' }) -join "`n" }
         $step = InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } {
             param($r, $c)
+            # Teams is loaded in this session, so whether it is connected needs asking; Exchange is not
+            # loaded, so it is not connected, and that is known at once. No Graph session yet.
+            Mock Test-MtModuleImported { $Name -eq 'MicrosoftTeams' }
+            Mock Get-MgContext { $null }
             Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck
             Start-MtDashboardTenant -Renderer $r -Console $c -Service 'Graph', 'Teams', 'ExchangeOnline', 'ActiveDirectory'
         }
-        # At once: the panels of the results at zero, the tenant being read, every service being checked.
+        # At once: the panels of the results at zero, the tenant being read, the services with what is known.
         $screen = & $right
         $screen | Should -Match '╭─ Results ─+ starting… ─╮'
         $screen | Should -Match '╭─ Failed so far ─+ 0 ─╮'
         $screen | Should -Match '│ Reading the tenant… +│'
         $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
         # Graph first, the others by name; a service that is only listed when connected is not here yet.
-        $screen | Should -Match '│ \S Graph +\S Exchange Online +│\n│ \S Teams +│'
+        $screen | Should -Match '│ ○ Graph +○ Exchange Online +│\n│ [⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Teams +│'
         $screen | Should -Not -Match 'Active Directory'
 
         & $step 'Account' @{ TenantId = 'id'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Graph = $true }
@@ -637,16 +641,58 @@ Describe 'Dashboard panels' {
         $screen | Should -Match '│ ● Graph '
 
         & $step 'Organization' @{ TenantName = 'Contoso'; PrimaryDomain = 'contoso.com' }
-        & $step 'Service' @{ Name = 'Teams'; Connected = $false }
         $screen = & $right
         $screen | Should -Match '│ Contoso +contoso\.com │\n│ merill@contoso\.com · Delegated +│'
-        $screen | Should -Match '│ ○ Teams '
         $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
 
+        & $step 'Service' @{ Name = 'Teams'; Connected = $false }
+        $screen = & $right
+        $screen | Should -Match '│ ○ Teams '
+        $screen | Should -Match '╭─ Connections ─+ 1 of 3 ─╮'
         & $step 'Service' @{ Name = 'ExchangeOnline'; Connected = $true }
         (& $right) | Should -Match '╭─ Connections ─+ 2 of 3 ─╮'
         # A step for a service that is not in the panel changes nothing and does not fail.
         { & $step 'Service' @{ Name = 'ActiveDirectory'; Connected = $true } } | Should -Not -Throw
+        $renderer.Close()
+    }
+
+    It 'Lists the services as soon as the dashboard opens, before the tests say which they need, and keeps the answers it had' {
+        $renderer = New-PanelRenderer
+        $right = { @($renderer.GetPlainScreen(160, 44) | ForEach-Object { $_ -replace '^.*?(?=[│╭╰])' }) -join "`n" }
+        $step = InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } {
+            param($r, $c)
+            Mock Test-MtModuleImported { $false }
+            Mock Get-MgContext { [pscustomobject]@{ Account = 'merill@contoso.com'; AuthType = 'Delegated' } }
+            Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck
+            Start-MtDashboardTenant -Renderer $r -Console $c
+        }
+        $screen = & $right
+        # Every service that is checked on its own: Dataverse is known through Graph, Active Directory only when connected.
+        foreach ($name in 'Graph', 'Azure', 'Azure DevOps', 'Exchange Online', 'GitHub', 'Security & Compliance', 'SharePoint Online', 'Teams') {
+            $screen | Should -Match ([regex]::Escape($name))
+        }
+        $screen | Should -Not -Match 'Dataverse|Active Directory'
+        # Known at once: Graph from its session, and the services whose module is not loaded.
+        $screen | Should -Match '● Graph'
+        $screen | Should -Match '○ Exchange Online'
+        $screen | Should -Match '○ Teams'
+        # Asked later: Azure, Azure DevOps and GitHub.
+        $screen | Should -Match '[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Azure '
+        $screen | Should -Match '│ Reading the tenant… +│\n│ merill@contoso\.com · Delegated +│'
+        & $step 'Service' @{ Name = 'Azure'; Connected = $true }
+
+        # Once the tests say which services they need, the list is those, with the answers it had.
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } {
+            param($r, $c)
+            Mock Test-MtModuleImported { $true }
+            $null = Start-MtDashboardTenant -Renderer $r -Console $c -Service 'Graph', 'Azure', 'Teams'
+        }
+        $panel = ((& $right) -split "`n" | Where-Object { $_ -match '^[│╭╰]' }) -join "`n"
+        $panel = [regex]::Match($panel, '╭─ Connections[^\n]*(\n│[^\n]*)*').Value
+        $panel | Should -Match '╭─ Connections ─+ 2 of 3 ─╮'
+        $panel | Should -Match '│ ● Graph +● Azure +│'
+        $panel | Should -Match '○ Teams'
+        $panel | Should -Not -Match 'Exchange Online|Azure DevOps|GitHub'
         $renderer.Close()
     }
 

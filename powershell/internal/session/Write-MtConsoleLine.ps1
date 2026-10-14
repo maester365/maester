@@ -362,8 +362,8 @@ function Start-MtDashboardTenant {
     screen first, the tenant as "Reading the tenant" and each service with a spinner, and the script block
     this returns is the -OnStep of Read-MtTenantContext: it shows the account, then the tenant and its
     domain, then each service as its answer arrives. The run calls it twice: when the dashboard opens,
-    without services, so that the tenant panel and the account are there while the tests are discovered,
-    and again with the services once the tests say which are needed. The run sets both panels again from the finished
+    without -Service, so that the tenant, the account and the services that can be told at once are there
+    while the tests are discovered, and again with the services once the tests say which are needed. The run sets both panels again from the finished
     context (Set-MtDashboardTenant and the Connections of Get-MtConnectionInfo), which is what stays.
 
     Returns nothing for a dashboard that does not own the screen or has neither panel.
@@ -387,8 +387,9 @@ function Start-MtDashboardTenant {
     # The account is in the Graph session and needs no request, so it is there from the start. Without the
     # module in the session there is no connection to ask about, and asking would only load the module.
     $account = ''
+    $graph = $false
     if (Get-Module -Name Microsoft.Graph.Authentication) {
-        try { $mg = Get-MgContext; if ($mg) { $account = @($mg.Account, [string]$mg.AuthType | Where-Object { $_ }) -join ' · ' } } catch { Write-Debug "No Graph context: $_" }
+        try { $mg = Get-MgContext; if ($mg) { $graph = $true; $account = @($mg.Account, [string]$mg.AuthType | Where-Object { $_ }) -join ' · ' } } catch { Write-Debug "No Graph context: $_" }
     }
     if ($showTenant) {
         $lines = @($reading); if ($account) { $lines += Format-MtConsoleText $account -Style Dim -Console $Console }
@@ -396,11 +397,28 @@ function Start-MtDashboardTenant {
     }
 
     # The services in the order they keep while the answers come in: Graph, then by name. A service that
-    # is only listed when it is connected (Active Directory) waits for the finished context.
+    # is only listed when it is connected (Active Directory) waits for the finished context. Before the
+    # tests say which services they need, the list is every service that is checked on its own (not one,
+    # like Dataverse, that is known through another).
     $registry = Get-MtServiceRegistry
+    $names = if ($PSBoundParameters.ContainsKey('Service')) {
+        @($Service | ForEach-Object { Resolve-MtServiceName -Name $_ -Registry $registry } | Where-Object { $_ -and -not $registry.Services[$_].OptIn } | Select-Object -Unique)
+    } else {
+        @($registry.Services.Keys | Where-Object { -not $registry.Services[$_].OptIn -and $registry.Services[$_].Probe -eq $_ })
+    }
+    # Some answers are there at once, without a request: Graph from its session, and the services whose
+    # connection lives in the session are not connected while their module is not even loaded. An answer
+    # that came before (the first call, at the opening of the dashboard) is kept. The others spin.
+    $sessionModule = @{ ExchangeOnline = 'ExchangeOnlineManagement'; SecurityCompliance = 'ExchangeOnlineManagement'; SharePointOnline = 'PnP.PowerShell'; Teams = 'MicrosoftTeams' }
+    # Only from this run: the first call starts fresh, whatever a run that was stopped left behind.
+    $before = if ($PSBoundParameters.ContainsKey('Service') -and $script:__MtDashboardTenant -and $script:__MtDashboardTenant.Services) { $script:__MtDashboardTenant.Services } else { @{} }
     $services = [ordered]@{}
-    $names = @($Service | ForEach-Object { Resolve-MtServiceName -Name $_ -Registry $registry } | Where-Object { $_ -and -not $registry.Services[$_].OptIn } | Select-Object -Unique)
-    foreach ($name in @($names | Sort-Object -Property @{ Expression = { $_ -ne 'Graph' } }, @{ Expression = { Get-MtServiceDisplayName -Name $_ } })) { $services[$name] = $null }
+    foreach ($name in @($names | Sort-Object -Property @{ Expression = { $_ -ne 'Graph' } }, @{ Expression = { Get-MtServiceDisplayName -Name $_ } })) {
+        $services[$name] = if ($before.Contains($name) -and $null -ne $before[$name]) { $before[$name] }
+        elseif ($name -eq 'Graph') { $graph }
+        elseif ($sessionModule.ContainsKey($name) -and -not (Test-MtModuleImported $sessionModule[$name])) { $false }
+        else { $null }
+    }
 
     # What the step needs is kept with the module, not in a closure: a closure would not see the
     # functions of the module when it is called later.
