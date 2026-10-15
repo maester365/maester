@@ -9,10 +9,12 @@
     it authenticates through it. The user who creates a blueprint becomes its owner and can manage its
     credentials and create agent identities from it without holding any Entra role.
 
-    Microsoft is adding the default user role setting "Users can create agent blueprints", which is on by
-    default. From 4 November 2026 (message center item MC1506733) users without a built-in or custom
-    Entra role can create blueprints unless an administrator turns the setting off. When it is off, only
-    administrators and users with the Agent ID Developer or Agent ID Administrator role can create them.
+    Microsoft is adding a default user role setting, shown in the Entra admin center as "Users can register
+    agent identity blueprints" (named "Users can create agent blueprints" in message center item MC1506733),
+    which is on by default. From 4 November 2026 (message center item MC1506733) users without a built-in or
+    custom Entra role can create blueprints unless an administrator turns the setting off. When it is off,
+    only administrators and users with the Agent ID Developer or Agent ID Administrator role can create
+    them.
 
     The setting is stored on the authorization policy as the property
     defaultUserRolePermissions.allowedToCreateAgentIdentityBlueprints, which is only returned by the Graph
@@ -55,7 +57,7 @@
         $permission = $authorizationPolicy.defaultUserRolePermissions
         if ($null -eq $permission -or $null -eq $permission.allowedToCreateAgentIdentityBlueprints) {
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason (
-                'The tenant does not return the setting "Users can create agent blueprints" yet. ' +
+                'The tenant does not return the setting "Users can register agent identity blueprints" yet. ' +
                 'Microsoft starts the rollout on 4 November 2026.')
             return $null
         }
@@ -67,7 +69,7 @@
         } else {
             $testResult = "Default users can create agent blueprints in this tenant.`n`n" +
                 'The user who creates a blueprint becomes its owner and can manage its credentials and create ' +
-                'agent identities from it without holding an Entra role. Set "Users can create agent blueprints" ' +
+                'agent identities from it without holding an Entra role. Set "Users can register agent identity blueprints" ' +
                 'to **No** and assign the Agent ID Developer role to the people who build agents.'
         }
         Add-MtTestResultDetail -Result $testResult

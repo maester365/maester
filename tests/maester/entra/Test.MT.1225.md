@@ -8,7 +8,7 @@ An agent identity blueprint is the template that agent identities get their cred
 
 The user who creates a blueprint becomes its owner. An owner can manage the credentials, change the configuration, add more owners and create agent identities from the blueprint, without holding any Agent ID role. Turning the setting off later does not take anything away from users who already created a blueprint.
 
-Microsoft is adding the default user role setting **Users can create agent blueprints**, announced in message center item MC1506733. It is on by default. From 4 November 2026, with the rollout expected to finish in late November, users without a built-in or custom Entra role can create blueprints unless an administrator turns the setting off. When it is off, only administrators and users with the **Agent ID Developer** or **Agent ID Administrator** role can create them.
+Microsoft is adding a default user role setting, shown in the Entra admin center as **Users can register agent identity blueprints**. The announcement, message center item MC1506733, calls it "Users can create agent blueprints". It is on by default. From 4 November 2026, with the rollout expected to finish in late November, users without a built-in or custom Entra role can create blueprints unless an administrator turns the setting off. When it is off, only administrators and users with the **Agent ID Developer** or **Agent ID Administrator** role can create them.
 
 Creating a blueprint does not grant access to company data by itself. What an agent can reach depends on the permissions that are consented to. Delegated permissions let the agent act as the signed-in user, and your user consent settings decide whether users can approve them themselves. Application permissions always need admin consent. The user consent configuration therefore decides how much risk a user-created agent carries.
 
@@ -20,17 +20,7 @@ This test reads `defaultUserRolePermissions.allowedToCreateAgentIdentityBlueprin
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Go to **Entra ID** > **Users** > **User settings**.
-3. Under **Default user role permissions**, set **Users can create agent blueprints** to **No**, then save. You can set it before the rollout reaches your tenant, and it takes effect when it does.
-4. Assign the **Agent ID Developer** role to the people who build agents. Use eligible assignments in Privileged Identity Management if you use it. Open **Entra ID** > **Roles & admins**, select **Agent ID Developer**, choose **Add assignments** and select the users.
-5. If users may still create agents, restrict user consent under **Entra ID** > **Enterprise apps** > **Consent and permissions**, and enable the admin consent workflow so users can request access instead of granting it themselves.
-
-To review the current value with PowerShell:
-
-```powershell
-Connect-MgGraph -Scopes "Policy.Read.All"
-$permissions = (Get-MgBetaPolicyAuthorizationPolicy).DefaultUserRolePermissions
-$permissions.AdditionalProperties['allowedToCreateAgentIdentityBlueprints']
-```
+3. Under **Default user role permissions**, set **Users can register agent identity blueprints** to **No**, then save. You can set it before the rollout reaches your tenant, and it takes effect when it does.
 
 ### Related links
 
