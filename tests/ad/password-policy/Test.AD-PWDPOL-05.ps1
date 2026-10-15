@@ -1,7 +1,7 @@
 ﻿function Test-MtAdPasswordReversibleEncryption {
     <#
     .SYNOPSIS
-    Checks whether reversible encryption is enabled for passwords in the default domain password policy.
+    Checks that reversible encryption is disabled for passwords in the default domain password policy.
 
     .DESCRIPTION
     This test retrieves the reversible encryption setting from the default domain password policy.
@@ -12,15 +12,14 @@
     .EXAMPLE
     Test-MtAdPasswordReversibleEncryption
 
-    Returns $true if the password policy is accessible, $false otherwise.
-    The test result includes whether reversible encryption is enabled.
+    Returns $true if reversible encryption is disabled, $false if it is enabled.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdPasswordReversibleEncryption
     #>
     [MaesterTest(
         Id = 'AD-PWDPOL-05',
-        Title = 'Password reversible encryption status should be retrievable',
+        Title = 'Password reversible encryption should be disabled',
         Product = 'ad',
         Feature = 'password-policy',
         Area = 'authentication',

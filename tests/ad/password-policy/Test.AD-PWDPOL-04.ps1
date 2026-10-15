@@ -1,7 +1,7 @@
 ﻿function Test-MtAdPasswordComplexityRequired {
     <#
     .SYNOPSIS
-    Checks whether password complexity is required in the default domain password policy.
+    Checks that password complexity is enabled in the default domain password policy.
 
     .DESCRIPTION
     This test retrieves the password complexity setting from the default domain password policy.
@@ -12,15 +12,14 @@
     .EXAMPLE
     Test-MtAdPasswordComplexityRequired
 
-    Returns $true if the password policy is accessible, $false otherwise.
-    The test result includes whether complexity is enabled.
+    Returns $true if password complexity is enabled, $false if it is disabled.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdPasswordComplexityRequired
     #>
     [MaesterTest(
         Id = 'AD-PWDPOL-04',
-        Title = 'Password complexity requirement should be retrievable',
+        Title = 'Password complexity should be enabled',
         Product = 'ad',
         Feature = 'password-policy',
         Area = 'authentication',
