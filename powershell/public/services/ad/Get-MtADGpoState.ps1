@@ -48,9 +48,10 @@ function Get-MtADGpoState {
         $protocolConnection = $null
         try {
             $protocolTargetParameters = @{
-                AuthMode = $__MtSession.ADConnection.RequestedAuthMode
-                TlsMode  = $__MtSession.ADConnection.RequestedTlsMode
-                PassThru = $true
+                AuthMode             = $__MtSession.ADConnection.RequestedAuthMode
+                TlsMode              = $__MtSession.ADConnection.RequestedTlsMode
+                SkipCertificateCheck = [bool]$__MtSession.ADConnection.SkipCertificateCheck
+                PassThru             = $true
             }
             if ($__MtSession.ADConnection.RequestedServer) {
                 $protocolTargetParameters['ActiveDirectoryServer'] = $__MtSession.ADConnection.RequestedServer

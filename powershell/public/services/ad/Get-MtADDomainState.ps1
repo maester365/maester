@@ -712,9 +712,10 @@ function Get-MtADDomainState {
         }
 
         $protocolTargetParameters = @{
-            AuthMode = $__MtSession.ADConnection.RequestedAuthMode
-            TlsMode  = $effectiveTlsMode
-            PassThru = $true
+            AuthMode             = $__MtSession.ADConnection.RequestedAuthMode
+            TlsMode              = $effectiveTlsMode
+            SkipCertificateCheck = [bool]$__MtSession.ADConnection.SkipCertificateCheck
+            PassThru             = $true
         }
         if ($ComputerName) {
             $protocolTargetParameters['ActiveDirectoryServer'] = $ComputerName
@@ -741,6 +742,7 @@ function Get-MtADDomainState {
             ResolvedForest       = $protocolConnectionState.ResolvedForest
             AuthenticationMode   = $protocolConnectionState.AuthenticationMode
             TlsMode              = $protocolConnectionState.TlsMode
+            SkipCertificateCheck = [bool]$protocolConnectionState.SkipCertificateCheck
             DefaultNamingContext = $protocolRootDse.DefaultNamingContext
             VerifiedAt           = Get-Date
         }
