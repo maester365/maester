@@ -53,29 +53,25 @@
     }
     $complexityEnabled = ($passwordPolicy.PwdProperties -band 1) -ne 0
 
-    # Test passes if we successfully retrieved the password policy
-    $testResult = $true
+    # Test passes when password complexity is enabled
+    $testResult = $complexityEnabled
 
     # Generate markdown results
-    if ($testResult) {
-        $complexityStatus = if ($complexityEnabled) { "Enabled" } else { "Disabled" }
+    $complexityStatus = if ($complexityEnabled) { "Enabled" } else { "Disabled" }
 
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Password Complexity | $complexityStatus |" + "`n"
-        $result += "| Recommended Setting | Enabled |" + "`n"
+    $result = "| Metric | Value |" + "`n"
+    $result += "| --- | --- |" + "`n"
+    $result += "| Password Complexity | $complexityStatus |" + "`n"
+    $result += "| Recommended Setting | Enabled |" + "`n"
 
-        $recommendation = if ($complexityEnabled) {
-            "✅ Password complexity is enabled. This helps prevent the use of common, easily guessable passwords."
-        } else {
-            "⚠️ Password complexity is disabled. This allows users to create simple passwords that are vulnerable to brute-force and dictionary attacks. Enable complexity requirements."
-        }
-
-        $testResultMarkdown = "$recommendation`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $recommendation = if ($complexityEnabled) {
+        "✅ Password complexity is enabled. This helps prevent the use of common, easily guessable passwords."
     } else {
-        $testResultMarkdown = "Unable to retrieve the default domain password policy. Ensure you have appropriate permissions and the Active Directory module is installed."
+        "⚠️ Password complexity is disabled. This allows users to create simple passwords that are vulnerable to brute-force and dictionary attacks. Enable complexity requirements."
     }
+
+    $testResultMarkdown = "$recommendation`n`n%TestResult%"
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

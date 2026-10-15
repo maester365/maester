@@ -53,29 +53,25 @@
     }
     $reversibleEncryption = ($passwordPolicy.PwdProperties -band 0x10) -ne 0
 
-    # Test passes if we successfully retrieved the password policy
-    $testResult = $true
+    # Test passes when reversible encryption is disabled (secure default)
+    $testResult = -not $reversibleEncryption
 
     # Generate markdown results
-    if ($testResult) {
-        $encryptionStatus = if ($reversibleEncryption) { "Enabled" } else { "Disabled" }
+    $encryptionStatus = if ($reversibleEncryption) { "Enabled" } else { "Disabled" }
 
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Reversible Encryption | $encryptionStatus |" + "`n"
-        $result += "| Recommended Setting | Disabled |" + "`n"
+    $result = "| Metric | Value |" + "`n"
+    $result += "| --- | --- |" + "`n"
+    $result += "| Reversible Encryption | $encryptionStatus |" + "`n"
+    $result += "| Recommended Setting | Disabled |" + "`n"
 
-        $recommendation = if ($reversibleEncryption) {
-            "❌ Reversible encryption is enabled. This is a critical security risk as passwords can be decrypted. Disable this setting immediately unless absolutely required for legacy applications."
-        } else {
-            "✅ Reversible encryption is disabled. This is the secure configuration as passwords are stored using one-way hashing."
-        }
-
-        $testResultMarkdown = "$recommendation`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $recommendation = if ($reversibleEncryption) {
+        "❌ Reversible encryption is enabled. This is a critical security risk as passwords can be decrypted. Disable this setting immediately unless absolutely required for legacy applications."
     } else {
-        $testResultMarkdown = "Unable to retrieve the default domain password policy. Ensure you have appropriate permissions and the Active Directory module is installed."
+        "✅ Reversible encryption is disabled. This is the secure configuration as passwords are stored using one-way hashing."
     }
+
+    $testResultMarkdown = "$recommendation`n`n%TestResult%"
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
