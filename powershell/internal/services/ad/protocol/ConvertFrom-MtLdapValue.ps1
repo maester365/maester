@@ -65,7 +65,7 @@
             $intervalValue = 0L
             if ([long]::TryParse($InputValue, [ref]$intervalValue)) {
                 if ($intervalValue -eq [long]::MinValue) {
-                    return $null
+                    return [timespan]::Zero
                 }
 
                 return [timespan]::FromTicks([Math]::Abs($intervalValue))
@@ -163,6 +163,9 @@
     if ($Value -is [byte[]]) {
         switch ($normalizedAttributeName) {
             { $_ -in @('objectsid', 'sidhistory', 'securityidentifier') } {
+                if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+                    return $null
+                }
                 try {
                     return New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $Value, 0
                 }
@@ -184,6 +187,9 @@
                 }
             }
             'ntsecuritydescriptor' {
+                if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+                    return $null
+                }
                 try {
                     return ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $Value
                 }
@@ -225,7 +231,7 @@
     if ($normalizedAttributeName -in @('maxpwdage', 'minpwdage', 'lockoutduration', 'msds-lockoutduration', 'msds-maximumpasswordage', 'msds-minimumpasswordage')) {
         $intervalValue = [long]$Value
         if ($intervalValue -eq [long]::MinValue) {
-            return $null
+            return [timespan]::Zero
         }
 
         return [timespan]::FromTicks([Math]::Abs($intervalValue))

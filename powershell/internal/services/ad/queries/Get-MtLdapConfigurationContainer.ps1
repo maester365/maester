@@ -45,7 +45,12 @@
 
     $siteLinks = @()
     try {
-        $siteLinks = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Inter-Site Transports,CN=Sites' -Scope Subtree -Filter '(objectClass=siteLink)' -Attributes ($commonAttributes + @('cost', 'replInterval', 'siteList', 'options'))
+        $rawSiteLinks = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Inter-Site Transports,CN=Sites' -Scope Subtree -Filter '(objectClass=siteLink)' -Attributes ($commonAttributes + @('cost', 'replInterval', 'siteList', 'options'))
+        $siteLinks = @($rawSiteLinks | ForEach-Object {
+            $replInterval = if ($null -ne $_.replInterval) { [int]$_.replInterval } else { $null }
+            $_ | Add-Member -NotePropertyName ReplicationFrequencyInMinutes -NotePropertyValue $replInterval -Force
+            $_
+        })
     }
     catch {
         Write-Verbose "Could not query Site Links: $($_.Exception.Message)"

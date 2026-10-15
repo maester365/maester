@@ -47,10 +47,14 @@
 
     # Get the default domain password policy
     $passwordPolicy = $adState.Domain
+    if ($null -eq $passwordPolicy -or $null -eq $passwordPolicy.PwdProperties) {
+        Add-MtTestResultDetail -Result 'Unable to retrieve the default domain password policy. Ensure you have appropriate permissions and the Active Directory module is installed.'
+        return $false
+    }
     $complexityEnabled = ($passwordPolicy.PwdProperties -band 1) -ne 0
 
     # Test passes if we successfully retrieved the password policy
-    $testResult = $null -ne $complexityEnabled
+    $testResult = $true
 
     # Generate markdown results
     if ($testResult) {

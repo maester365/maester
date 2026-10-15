@@ -27,12 +27,16 @@
 
             $server = Invoke-MtLdapSearch -Connection $Connection -SearchBase $serverDn -Scope Base -Filter '(objectClass=server)' -Attributes @('name', 'dNSHostName', 'serverReference') -PageSize 0 | Select-Object -First 1
 
-            # Query computer object for operatingSystem
+            # Query computer object for operatingSystem and RODC status
             $operatingSystem = $null
+            $isReadOnly = $false
             if (-not [string]::IsNullOrWhiteSpace($server.serverReference)) {
-                $computer = Invoke-MtLdapSearch -Connection $Connection -SearchBase $server.serverReference -Scope Base -Filter '(objectClass=computer)' -Attributes @('operatingSystem') -PageSize 0 | Select-Object -First 1
+                $computer = Invoke-MtLdapSearch -Connection $Connection -SearchBase $server.serverReference -Scope Base -Filter '(objectClass=computer)' -Attributes @('operatingSystem', 'msDS-IsRODC') -PageSize 0 | Select-Object -First 1
                 $operatingSystem = $computer.operatingSystem
+                $isReadOnly = if ($null -ne $computer.'msDS-IsRODC') { [bool]$computer.'msDS-IsRODC' } else { $false }
             }
+
+            $optionsValue = if ($null -ne $_.options) { [int]$_.options } else { 0 }
 
             [PSCustomObject]@{
                 Name = [string]$server.name
@@ -43,6 +47,10 @@
                 InvocationId = $_.invocationId
                 Site = $site
                 OperatingSystem = [string]$operatingSystem
+                IsGlobalCatalog = [bool]($optionsValue -band 0x1)
+                IsReadOnly = $isReadOnly
+                LdapPort = 389
+                SslPort = 636
             }
         })
     }

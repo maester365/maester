@@ -200,7 +200,7 @@ function ConvertFrom-MtSysvolGppXml {
         $reader.Dispose()
     }
 
-    $cpasswordNodes = @($document.SelectNodes('//@*[translate(local-name(), "CPASSWORD", "cpassword")="cpassword"]'))
+    $cpasswordNodes = @($document.SelectNodes('//@*[translate(local-name(), "CPASSWORD", "cpassword")="cpassword"]') | Where-Object { -not [string]::IsNullOrWhiteSpace($_.Value) })
     $weakPasswords = @('password', 'password1', 'p@ssw0rd', 'admin', 'administrator', 'changeme', 'welcome', 'default', 'letmein', '123456')
     $defaultPasswordFound = $false
     foreach ($attribute in @($document.SelectNodes('//@*'))) {

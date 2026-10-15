@@ -81,7 +81,14 @@ function Get-MtADGpoState {
                 $gpos = @(Get-MtLdapGpo -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 foreach ($gpo in $gpos) {
                     $flags = [int]$gpo.Flags
-                    $gpo | Add-Member -NotePropertyName GpoStatus -NotePropertyValue ($flags -band 3) -Force
+                    $rawFlags = $flags -band 3
+                    $mappedStatus = switch ($rawFlags) {
+                        0 { 3 }   # all enabled -> AllEnabled
+                        1 { 1 }   # user disabled -> UserDisabled
+                        2 { 2 }   # computer disabled -> ComputerDisabled
+                        3 { 0 }   # all disabled -> AllDisabled
+                    }
+                    $gpo | Add-Member -NotePropertyName GpoStatus -NotePropertyValue $mappedStatus -Force
                     $gpo | Add-Member -NotePropertyName CreationTime -NotePropertyValue $gpo.Created -Force
                     $gpo | Add-Member -NotePropertyName ModificationTime -NotePropertyValue $gpo.Modified -Force
                 }
@@ -167,7 +174,7 @@ function Get-MtADGpoState {
                     if ($descriptor -is [byte[]]) {
                         $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
                     }
-                    $access = @($descriptor.Access)
+                    $access = if ($null -ne $descriptor) { @($descriptor.Access) } else { @() }
                     $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
                     $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
                             $_.AccessControlType -eq 'Allow' -and

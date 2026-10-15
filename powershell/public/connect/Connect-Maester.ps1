@@ -192,11 +192,14 @@
       [ValidateSet('Negotiate', 'Kerberos', 'Ntlm', 'Basic')]
       [string]$ActiveDirectoryAuthMode = 'Negotiate',
 
-      # The TLS mode used for the Active Directory LDAP connection. Auto tries LDAPS before StartTLS.
-      [Alias('TlsMode')]
-      [ValidateSet('Auto', 'Ldaps', 'StartTls')]
-      [string]$ActiveDirectoryTlsMode = 'Auto'
-   )
+       # The TLS mode used for the Active Directory LDAP connection. Auto tries LDAPS before StartTLS.
+       [Alias('TlsMode')]
+       [ValidateSet('Auto', 'Ldaps', 'StartTls')]
+       [string]$ActiveDirectoryTlsMode = 'Auto',
+
+       # Skip certificate validation for the Active Directory LDAP connection. Intended for test environments only.
+       [switch]$ActiveDirectorySkipCertificateCheck
+    )
 
    $__MtSession.Connections = $Service
 
@@ -608,18 +611,22 @@
        Write-Verbose 'Connecting to Active Directory through the protocol-aware LDAP path'
        Add-Type -AssemblyName System.DirectoryServices.Protocols
        try {
-          $connectAdParameters = @{
-             AuthMode = $ActiveDirectoryAuthMode
-             TlsMode  = $ActiveDirectoryTlsMode
-          }
+           $connectAdParameters = @{
+              AuthMode = $ActiveDirectoryAuthMode
+              TlsMode  = $ActiveDirectoryTlsMode
+           }
 
-          foreach ($selectorName in 'ActiveDirectoryForest', 'ActiveDirectoryDomain', 'ActiveDirectoryServer', 'ActiveDirectoryCredential') {
-             if ($PSBoundParameters.ContainsKey($selectorName)) {
-                $connectAdParameters[$selectorName] = $PSBoundParameters[$selectorName]
-             }
-          }
+           foreach ($selectorName in 'ActiveDirectoryForest', 'ActiveDirectoryDomain', 'ActiveDirectoryServer', 'ActiveDirectoryCredential') {
+              if ($PSBoundParameters.ContainsKey($selectorName)) {
+                 $connectAdParameters[$selectorName] = $PSBoundParameters[$selectorName]
+              }
+           }
 
-          Connect-MtAdTarget @connectAdParameters
+           if ($ActiveDirectorySkipCertificateCheck.IsPresent) {
+              $connectAdParameters['SkipCertificateCheck'] = $true
+           }
+
+           Connect-MtAdTarget @connectAdParameters
           Write-Verbose ("Active Directory protocol evidence: resolved target '{0}', domain '{1}', forest '{2}', auth '{3}', TLS '{4}'." -f `
                 $__MtSession.ADConnection.ResolvedServer,
                 $__MtSession.ADConnection.ResolvedDomain,

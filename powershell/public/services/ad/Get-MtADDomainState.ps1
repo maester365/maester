@@ -531,6 +531,9 @@ function Get-MtADDomainState {
             Properties   = @('DaclEntries')
             Dependencies = @()
             Collector    = {
+                if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+                    throw 'DACL parsing requires Windows. Run this check from a Windows host.'
+                }
                 $result = [ordered]@{}
                 $result['DaclEntries'] = @(Get-MtLdapDacl -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 return $result
@@ -790,6 +793,11 @@ function Get-MtADDomainState {
             catch {
                 [void]$failedCategories.Add($cat)
                 Write-Verbose "Could not collect $cat data: $($_.Exception.Message)"
+
+                # Set properties to $null so downstream checks skip instead of passing against empty arrays
+                foreach ($prop in $descriptor.Properties) {
+                    $domainState[$prop] = $null
+                }
             }
         }
 

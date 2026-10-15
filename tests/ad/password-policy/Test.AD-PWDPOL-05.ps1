@@ -47,10 +47,14 @@
 
     # Get the default domain password policy
     $passwordPolicy = $adState.Domain
-    $reversibleEncryption = ($passwordPolicy.PwdProperties -band 2) -ne 0
+    if ($null -eq $passwordPolicy -or $null -eq $passwordPolicy.PwdProperties) {
+        Add-MtTestResultDetail -Result 'Unable to retrieve the default domain password policy. Ensure you have appropriate permissions and the Active Directory module is installed.'
+        return $false
+    }
+    $reversibleEncryption = ($passwordPolicy.PwdProperties -band 0x10) -ne 0
 
     # Test passes if we successfully retrieved the password policy
-    $testResult = $null -ne $reversibleEncryption
+    $testResult = $true
 
     # Generate markdown results
     if ($testResult) {

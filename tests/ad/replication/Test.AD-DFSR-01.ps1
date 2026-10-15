@@ -55,7 +55,11 @@
     }
 
     $dfsrSubscriptions = $adState.DfsrSubscriptions
-    $subscriptionCount = ($dfsrSubscriptions | Measure-Object).Count
+    # Scope to SYSVOL subscriptions only — ignore non-SYSVOL DFS-R replication groups
+    $sysvolSubscriptions = @($dfsrSubscriptions | Where-Object {
+        [string]$_.DistinguishedName -like '*CN=SYSVOL Subscription,CN=Domain System Volume*'
+    })
+    $subscriptionCount = ($sysvolSubscriptions | Measure-Object).Count
 
     # Get domain controllers for comparison
     $domainControllers = $adState.DomainControllers
@@ -83,7 +87,7 @@
         $result += "`n**DFS-R Subscription Details:**" + "`n" + "`n"
         $result += "| Subscription Name | Distinguished Name |" + "`n"
         $result += "| --- | --- |" + "`n"
-        foreach ($sub in $dfsrSubscriptions | Select-Object -First 10) {
+        foreach ($sub in $sysvolSubscriptions | Select-Object -First 10) {
             $name = $sub.Name
             $dn = $sub.DistinguishedName
             if ($dn.Length -gt 60) { $dn = $dn.Substring(0, 57) + "..." }

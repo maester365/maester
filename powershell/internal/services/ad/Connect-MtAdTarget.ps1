@@ -15,6 +15,8 @@ function Connect-MtAdTarget {
         [ValidateSet('Auto', 'Ldaps', 'StartTls')]
         [string]$TlsMode = 'Auto',
 
+        [switch]$SkipCertificateCheck,
+
         [switch]$PassThru
     )
 
@@ -310,7 +312,9 @@ function Connect-MtAdTarget {
             [string]$AuthenticationMode,
 
             [Parameter(Mandatory)]
-            [string]$RequestedTlsMode
+            [string]$RequestedTlsMode,
+
+            [switch]$SkipCertificateCheck
         )
 
     $lastException = $null
@@ -355,6 +359,10 @@ function Connect-MtAdTarget {
 
                 if ($null -ne $Credential) {
                     $connectionParameters['Credential'] = $Credential
+                }
+
+                if ($SkipCertificateCheck.IsPresent) {
+                    $connectionParameters['SkipCertificateCheck'] = $true
                 }
 
                 $connection = New-MtLdapConnection @connectionParameters
@@ -504,7 +512,7 @@ function Connect-MtAdTarget {
         }
 
         Write-Verbose "Resolved target server: '$targetServer'. Attempting AD connection with AuthMode '$authenticationMode' and TlsMode '$TlsMode'."
-        $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode
+        $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode -SkipCertificateCheck:$SkipCertificateCheck
         $adConnectionState = Get-MtAdSessionState -Connected $true `
             -ResolvedForest $resolvedConnection.Metadata.ResolvedForest `
             -ResolvedDomain $resolvedConnection.Metadata.ResolvedDomain `
