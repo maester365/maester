@@ -63,6 +63,35 @@ Describe 'Built-in families' {
         }
     }
 
+    Context 'MT.1024 (break-glass-aware recommendations)' {
+        BeforeAll {
+            $script:breakGlass = '00000000-0000-0000-0000-0000000000b1'
+            $bgResource = @{ status = 'active'; displayName = 'Break Glass 1'; subjectId = $script:breakGlass }
+            $userResource = @{ status = 'active'; displayName = 'Adele'; subjectId = 'u1' }
+            $script:recommendations = @(
+                @{ id = '11111111-2222-3333-4444-555555555555_adminMFAV2'; displayName = 'Require multifactor authentication for administrative roles'; priority = 'high'; status = 'active'; recommendationType = 'adminMFAV2'; impactedResources = @($bgResource); insights = 'x'; benefits = 'b'; actionSteps = @() }
+                @{ id = '11111111-2222-3333-4444-555555555555_signinRiskPolicy'; displayName = 'Protect all users with a sign-in risk policy'; priority = 'high'; status = 'active'; recommendationType = 'signinRiskPolicy'; impactedResources = @($bgResource, $userResource); insights = 'x'; benefits = 'b'; actionSteps = @() }
+                @{ id = '11111111-2222-3333-4444-555555555555_mfaRegistrationV2'; displayName = 'Require multifactor authentication'; priority = 'medium'; status = 'active'; recommendationType = 'mfaRegistrationV2'; impactedResources = @($bgResource); insights = 'y'; benefits = 'b'; actionSteps = @() }
+            )
+            Mock -ModuleName Maester Invoke-MtGraphRequest { @{ value = $script:recommendations } } -ParameterFilter { $RelativeUri -like 'directory/recommendations*' }
+            Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
+            Mock -ModuleName Maester Get-MtEmergencyAccessAccount { [pscustomobject]@{ ObjectId = '00000000-0000-0000-0000-0000000000b1' } }
+            $script:rows = Invoke-Family 'MT.1024'
+        }
+
+        It 'Passes adminMFAV2 when the only impacted resource is a configured break-glass account' {
+            ($script:rows | Where-Object Id -EQ 'MT.1024.adminMFAV2').Result | Should -Be 'Passed'
+        }
+
+        It 'Fails a break-glass-aware recommendation when a non break-glass account is still impacted' {
+            ($script:rows | Where-Object Id -EQ 'MT.1024.signinRiskPolicy').Result | Should -Be 'Failed'
+        }
+
+        It 'Does not apply the break-glass exclusion to other recommendation types' {
+            ($script:rows | Where-Object Id -EQ 'MT.1024.mfaRegistrationV2').Result | Should -Be 'Failed'
+        }
+    }
+
     Context 'MT.1033 and MT.1034 (Conditional Access What If, per user)' {
         BeforeAll {
             $script:members = @(
