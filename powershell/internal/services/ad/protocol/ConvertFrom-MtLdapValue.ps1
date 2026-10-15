@@ -107,7 +107,7 @@
             }
         }
 
-        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled')) {
+        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled', 'msds-isrodc')) {
             $convertedBoolean = $false
             if ([bool]::TryParse($InputValue, [ref]$convertedBoolean)) {
                 return $convertedBoolean

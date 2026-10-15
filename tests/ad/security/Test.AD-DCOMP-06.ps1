@@ -56,6 +56,10 @@
     Write-Verbose "Filtering/counting computer stale enabled count"
 
     $computers = $adState.Computers
+    if ($null -eq $computers) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
     $staleThreshold = (Get-Date).AddDays(-180)
 
     # Find enabled computers that haven't logged on in 180+ days

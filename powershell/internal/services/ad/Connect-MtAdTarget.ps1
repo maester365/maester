@@ -137,7 +137,8 @@ function Connect-MtAdTarget {
             [string]$ConfigurationNamingContext = $null,
             [string]$SchemaNamingContext = $null,
             [string]$SelectedTlsMode = $null,
-            [string]$AuthenticationMode = $null
+            [string]$AuthenticationMode = $null,
+            [switch]$SkipCertificateCheck
         )
 
         return [ordered]@{
@@ -158,6 +159,7 @@ function Connect-MtAdTarget {
             SchemaNamingContext        = $SchemaNamingContext
             TlsMode                    = $SelectedTlsMode
             AuthenticationMode         = $AuthenticationMode
+            SkipCertificateCheck       = $SkipCertificateCheck.IsPresent
             Capabilities               = [ordered]@{
                 SupportsPaging             = $true
                 SupportsRangeRetrieval     = $true
@@ -521,7 +523,8 @@ function Connect-MtAdTarget {
             -ConfigurationNamingContext $resolvedConnection.Metadata.ConfigurationNamingContext `
             -SchemaNamingContext $resolvedConnection.Metadata.SchemaNamingContext `
             -SelectedTlsMode $resolvedConnection.Metadata.TlsMode `
-            -AuthenticationMode $resolvedConnection.Metadata.AuthenticationMode
+            -AuthenticationMode $resolvedConnection.Metadata.AuthenticationMode `
+            -SkipCertificateCheck:$SkipCertificateCheck
 
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryForest) -and (ConvertTo-MtNormalizedDnsName -Value $resolvedConnection.Metadata.ResolvedForest) -ne (ConvertTo-MtNormalizedDnsName -Value $ActiveDirectoryForest)) {
             throw 'Explicit selector values must resolve to the same forest/domain/server.'
