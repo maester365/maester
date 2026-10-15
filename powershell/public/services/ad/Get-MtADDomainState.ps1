@@ -499,22 +499,10 @@ function Get-MtADDomainState {
             Dependencies = @()
             Collector    = {
                 $result = [ordered]@{}
-                $schemaObjects = @()
-                try {
-                    $schemaObjects = @(Get-MtLdapSchemaObject -Connection $protocolConnection -SchemaNamingContext $protocolRootDse.SchemaNamingContext)
-                    $result['SchemaObjects'] = $schemaObjects
-                    $result['SchemaContainer'] = $schemaObjects | Where-Object { $_.DistinguishedName -eq $protocolRootDse.SchemaNamingContext } | Select-Object -First 1
-                }
-                catch {
-                    Write-Verbose "Could not collect Schema data: $($_.Exception.Message)"
-                }
-
-                try {
-                    $result['LapsInstalled'] = [bool]($schemaObjects | Where-Object { $_.Name -eq 'ms-Mcs-AdmPwd' } | Select-Object -First 1)
-                }
-                catch {
-                    Write-Verbose "Could not check LAPS installation status: $($_.Exception.Message)"
-                }
+                $schemaObjects = @(Get-MtLdapSchemaObject -Connection $protocolConnection -SchemaNamingContext $protocolRootDse.SchemaNamingContext)
+                $result['SchemaObjects'] = $schemaObjects
+                $result['SchemaContainer'] = $schemaObjects | Where-Object { $_.DistinguishedName -eq $protocolRootDse.SchemaNamingContext } | Select-Object -First 1
+                $result['LapsInstalled'] = [bool]($schemaObjects | Where-Object { $_.Name -eq 'ms-Mcs-AdmPwd' } | Select-Object -First 1)
                 return $result
             }
         }
