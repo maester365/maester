@@ -170,11 +170,15 @@ function Get-MtADGpoState {
                 $gpoReports = foreach ($gpo in $gpoState.GPOs) {
                     $gpoGuid = ([string]$gpo.Id).Trim('{}')
                     $gpoLinks = @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
-                    $descriptor = $gpo.ntSecurityDescriptor
-                    if ($descriptor -is [byte[]]) {
-                        $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
-                    }
-                    $access = if ($null -ne $descriptor) { @($descriptor.Access) } else { @() }
+                $descriptor = $gpo.ntSecurityDescriptor
+                if ($descriptor -is [byte[]]) {
+                    $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
+                }
+
+                $hasDenyAce = $null
+                $hasApplyGroupPolicyAce = $null
+                if ($null -ne $descriptor) {
+                    $access = @($descriptor.Access)
                     $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
                     $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
                             $_.AccessControlType -eq 'Allow' -and
@@ -182,6 +186,7 @@ function Get-MtADGpoState {
                                 ([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
                                 (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
                         } | Select-Object -First 1)
+                }
 
                     $hasVersionMismatch = $null
                     $cpasswordFound = $null

@@ -53,6 +53,10 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.DfsrSubscriptions -or $null -eq $adState.DomainControllers) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
 
     $dfsrSubscriptions = $adState.DfsrSubscriptions
     # Scope to SYSVOL subscriptions only — ignore non-SYSVOL DFS-R replication groups

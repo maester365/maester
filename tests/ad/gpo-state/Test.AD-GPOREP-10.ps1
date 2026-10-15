@@ -51,7 +51,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
 
     $gpoCount = $gpoReportsArray.Count
-    $noApplyAceCount = @($gpoReportsArray | Where-Object { -not [bool]$_.HasApplyGroupPolicyAce }).Count
+    $noApplyAceCount = @($gpoReportsArray | Where-Object { $_.HasApplyGroupPolicyAce -eq $false }).Count
 
     $testResult = $true
 

@@ -43,6 +43,10 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.Domain) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
 
     $domain = $adState.Domain
     $functionalLevel = $domain.DomainMode

@@ -37,7 +37,8 @@
                 DistinguishedName = [string]$_.DistinguishedName
                 TrustPartner = [string]$_.trustPartner
                 Target = [string]$_.trustPartner
-                TrustType = $type
+                TrustType = $trustTypeValue
+                TrustTypeName = $type
                 TrustDirection = $_.trustDirection
                 Direction = $direction
                 TrustAttributes = $_.trustAttributes
