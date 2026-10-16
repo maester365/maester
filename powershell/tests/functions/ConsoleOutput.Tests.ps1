@@ -945,7 +945,7 @@ Describe 'Dashboard panels' {
             $savedConnection = $__MtSession.ADConnection
             $savedCredential = $__MtSession.ADCredential
             $__MtSession.ADConnection = [pscustomobject]@{ Connected = $true; ResolvedDomain = 'north.sevenkingdoms.local'; ResolvedServer = 'winterfell.north.sevenkingdoms.local'; AuthenticationMode = 'Ntlm' }
-            $__MtSession.ADCredential = [pscredential]::new('NORTH\eddard.stark', (ConvertTo-SecureString 'x' -AsPlainText -Force))
+            $__MtSession.ADCredential = [pscredential]::new('NORTH\eddard.stark', [securestring]::new())
             try { Set-MtDashboardDirectory -Renderer $r } finally { $__MtSession.ADConnection = $savedConnection; $__MtSession.ADCredential = $savedCredential }
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
