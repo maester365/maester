@@ -174,7 +174,8 @@ function Initialize-MtDashboard {
     them needs a console of about 64 rows.
 
       Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
-      ActiveDirectory  the domain, its domain controller and the account it is connected as; only after
+      ActiveDirectory
+                   the domain, its domain controller and the account it is connected as; only after
                    Connect-Maester -Service ActiveDirectory (set later, by Set-MtDashboardDirectory)
       Totals       the results so far: a bar split by result, and the count of each
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)

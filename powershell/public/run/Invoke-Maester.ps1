@@ -627,8 +627,9 @@
             $renderer.StartPhase('Prepare')
             # The tenant panel and the account, while the tests are discovered; the rest follows as it is read.
             $null = Start-MtDashboardTenant -Renderer $renderer -Console $console
-            # The directory is read from the session, not requested, so its panel is there from the start.
-            if ($renderer.IsFullScreen -and $renderer.HasPanel('ActiveDirectory')) { Set-MtDashboardDirectory -Renderer $renderer }
+            # The directory is read from the session, not requested, so its panel is there from the start. It is
+            # set whatever the width: the right column may only be on screen after the window is made wider.
+            if ($renderer.IsFullScreen) { Set-MtDashboardDirectory -Renderer $renderer }
         }
         # While the full-screen dashboard owns the screen, a warning or error this command writes is drawn over
         # and lost when the screen is restored. Collect what Write-Warning and Write-Error write where it would
