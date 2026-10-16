@@ -59,7 +59,7 @@
     $PendingPolicies = @($ManagedPolicies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' })
 
     if ($PendingPolicies.Count -eq 0) {
-        $Result = 'Well done. No Microsoft-managed Conditional Access policy is waiting in report-only mode.'
+        $Result = 'No Microsoft-managed Conditional Access policy is in report-only mode.'
         $Result += "`n`n| Policy | State |`n| --- | --- |"
         foreach ($Policy in $ManagedPolicies) {
             $State = switch ($Policy.state) {
@@ -67,7 +67,7 @@
                 'disabled' { 'Off' }
                 default { $Policy.state }
             }
-            $Result += "`n| $(Get-MtManagedPolicyLink -Policy $Policy) | $State |"
+            $Result += "`n| $(Get-GraphObjectMarkdown -GraphObjects $Policy -GraphObjectType ConditionalAccess -AsPlainTextLink) | $State |"
         }
         Add-MtTestResultDetail -Result $Result
         return $true
@@ -119,7 +119,7 @@
         }
         $GrantText = $GrantText -replace '\|', '\|'
 
-        $Result += "`n| $(Get-MtManagedPolicyLink -Policy $Policy) | $CreatedText | $EarliestOnText | $Status | $GrantText |"
+        $Result += "`n| $(Get-GraphObjectMarkdown -GraphObjects $Policy -GraphObjectType ConditionalAccess -AsPlainTextLink) | $CreatedText | $EarliestOnText | $Status | $GrantText |"
     }
 
     Add-MtTestResultDetail -Result $Result

@@ -38,7 +38,8 @@
     # This will work for now, will need to add switch as we add support for complex urls like Applications blade, etc..
     $result = ""
     foreach ($item in $GraphObjects) {
-        $displayName = Get-ObjectProperty $item 'displayName'
+        # Names come from the tenant: escape them so a '|' or ']' can't break the table or the link text.
+        $displayName = Get-MtSafeMarkdown (Get-ObjectProperty $item 'displayName')
         $currentGraphObjectType = $GraphObjectType
         if (-not $currentGraphObjectType) {
             $dataType = Get-ObjectProperty $item '@odata.type'
