@@ -137,7 +137,7 @@
         Write-Verbose "Could not query Directory Service: $($_.Exception.Message)"
     }
 
-    $kds = @()
+    $kds = $null
     try {
         $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
     }
@@ -168,6 +168,6 @@
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
         SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }
-        KdsRootKeys = @($kds); ActivationObjects = @($activation)
+        KdsRootKeys = $kds; ActivationObjects = @($activation)
     }
 }
