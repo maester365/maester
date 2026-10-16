@@ -289,7 +289,7 @@ Maester 2.3 includes contributions from 25 people:
 - [Haris Habib](/contributors/amlhive-tech) for handling missing DKIM signing configurations.
 - [Jan Bakker](/contributors/bakkerjan) for teaching the homepage how to say "Maester".
 - [Jan-Henrik Damaschke](https://github.com/itpropro) for responsibly disclosing the report vulnerability and rebuilding the report.
-- [John Flores](/contributors/buckeyeguyjflo) for branding and accessibility fixes across the docs.
+- [John Flores](https://github.com/BuckeyeGuyJFlo) for branding and accessibility fixes across the docs.
 - [Massimo Mazzariol](/contributors/massimomazzariol) for fixes to BitLocker, Azure DevOps, Entra recommendation links, and unit tests.
 - [Matthias](/contributors/blindzero) for the Graph client timeout, the CISA DKIM coexistence fix, and clearer Entra Connect guidance.
 - [Michael Morten Sonne](/contributors/michaelmsonne) for documenting the risks of client secret authentication.
