@@ -24,7 +24,9 @@
         Feature = 'password-policy',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
