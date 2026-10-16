@@ -34,4 +34,18 @@ Describe 'Get-MtLdapConfigurationContainer' {
             $Filter -eq '(objectClass=msKds-ProvRootKey)'
         }
     }
+
+    It 'does not request the root key secret' {
+        Mock Invoke-MtLdapSearch -ModuleName Maester -MockWith { }
+
+        $null = Get-ConfigurationContainer
+
+        Should -Invoke Invoke-MtLdapSearch -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $SearchBase -eq $script:kdsBase -and $Attributes -contains 'msKds-CreateTime' -and
+            $Attributes -contains 'msKds-DomainID'
+        }
+        Should -Invoke Invoke-MtLdapSearch -ModuleName Maester -Times 0 -Exactly -ParameterFilter {
+            $Attributes -contains 'msKds-RootKeyData'
+        }
+    }
 }
