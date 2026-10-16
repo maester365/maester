@@ -7,7 +7,8 @@
 > hosting on Cloudflare with GitHub Actions doing the indexing and scanning, compiled
 > code allowed behind a High risk level, packs running in-process in v1, no publisher
 > verification programme in v1, the recommendations of section 14, and every finding
-> of the design review of 2026-10-07. This document supersedes 3.0 section 12.2, which
+> of the design review of 2026-10-07, and the rulings of 2026-10-16 on packs in any
+language (section 4.8). This document supersedes 3.0 section 12.2, which
 > still names `maester-package.json` and a pull-request registry. Section 14 lists what
 > is still open; section 15 lists what is not yet verified. A readable overview for
 > pack builders is in [maester-packs-overview.html](maester-packs-overview.html), also
@@ -65,9 +66,17 @@ The design in one page:
   blocklist stops a malicious pack on every machine at its next run, and organisations
   can cap the risk level they allow. In v1 packs run in-process, like custom tests, and
   the prompt says so plainly; isolation in containers is a later phase. Section 9.
+- **Any language.** A pack can be written in PowerShell, Python, TypeScript or anything
+  compiled. A non-PowerShell pack runs as one child process that Maester talks to over
+  stdin and stdout with a published protocol; its tests are listed in a static
+  `catalog.json`, its Microsoft calls go back through Maester, and its dependencies are
+  installed from a hash-pinned lock by the language's own tool (uv, npm), never resolved
+  by Maester. Tools that cannot speak the protocol plug in through Import, Collect and
+  SARIF or JSON adapters. Section 4.8.
 - **Phased.** Phase 1 ships the pack format, GitHub install, the lock file, connectors
   and publisher tooling. Phase 2 launches Maester Packs on Cloudflare. Phase 3 adds
-  isolation and a publisher verification programme. Section 12.
+  isolation and a publisher verification programme. Python and Binary packs follow
+  phase 1 in Maester 3.2. Section 12.
 
 ## 2. Names and domain
 
@@ -268,8 +277,9 @@ fixed. Everything is static data; nothing in it runs.
   and they are imported by path. Saving runs nothing. The lock file pins the whole
   dependency closure, every module and version with its package hash, and restore
   checks them, because outside AllSigned PowerShell does not check a module's signature
-  when it loads it. A module is rated like any other content (section 9.6): one that
-  ships compiled code makes the pack High risk. Modules whose assemblies conflict with
+  when it loads it. A module is rated like any other dependency (section 9.6): it makes
+  the pack at least Medium, and compiled code in an exact-pinned, hash-checked module
+  from the Gallery does not by itself make it High. Modules whose assemblies conflict with
   the Microsoft Graph, Exchange Online or Az modules are flagged by the scans.
 - **`Requires`** names other packs this one needs, by source, `Id` and version range,
   most often a **connector pack**:
@@ -296,8 +306,9 @@ fixed. Everything is static data; nothing in it runs.
 - **`Listed: false`** keeps a public pack out of Maester Packs entirely; installing it
   directly still works (section 9.10).
 - **Unknown keys:** an unknown top-level key is ignored with a warning, as for
-  `suite.json`. An unknown key inside `Uses`, `Connectors`, `Requires` or `Permissions`
-  makes this Maester refuse the pack, because those keys describe what the pack can
+  `suite.json`, except `Runtime` and `Catalog` (section 4.8), which an older Maester
+  refuses. An unknown key inside `Uses`, `Connectors`, `Requires`, `Permissions` or
+  `Runtime` makes this Maester refuse the pack, because those keys describe what the pack can
   reach, and an older client that ignored one would leave it out of the install prompt.
 - **`RequiresMaester`** accepts a version range. An older Maester gives each test a
   `RequiresNewerMaester` row, as in 3.0; a Maester newer than the range warns, and the
@@ -325,7 +336,8 @@ be listed. Validation rules, which a listed pack must pass:
 
 **Compiled and unscannable content** (`.dll`, `.exe`, `.so`, `.dylib`, compiled
 Python, archives, encoded or obfuscated blobs) is allowed, because some publishers
-ship proprietary libraries. It makes the pack **High risk**: the listing and the
+ship proprietary libraries. It makes the pack **High risk**, unless it carries build provenance from the pack's own
+repository (section 4.8.5), which makes it Medium: the listing and the
 install prompt name every such file with its size, hash, Authenticode signer when it
 is signed, and the result of a malware check, and say plainly that it could not be
 reviewed. Malware checks look up hashes only; files are never uploaded to a
@@ -334,7 +346,8 @@ file is shown as "No licence".
 
 ### 4.4 How pack code loads and runs
 
-**One gate for all pack code.** Every path that loads a pack's code goes through one
+**One gate for all pack code.** Every path that loads a pack's code, or starts a
+non-Script pack's runner (section 4.8), goes through one
 loader: `Invoke-Maester`, `Invoke-MtTest`, `Connect-Maester`, `Disconnect-Maester`,
 `Test-MtConnection` and `Get-MtTenantContext`. Before any pack file runs, the loader
 checks the files against the digest in the lock file, the repository's numeric ID,
@@ -494,6 +507,262 @@ publisher.
   compatible with Maester 4.0" on its page and in `Find-MtPack`, and its publisher is
   told through the status page (section 7.7).
 
+### 4.8 Packs in any language
+
+A pack does not have to be PowerShell. Anyone can write checks in Python, TypeScript,
+Go, Rust, .NET or anything else that can read and write JSON, and Maester still owns
+discovery, selection, the gates, parameters, timeouts, result rows and the report.
+Ruled by the owner on 2026-10-16 (section 14).
+
+#### 4.8.1 One protocol, five runtime kinds
+
+PowerShell packs load into Maester's runspace (section 4.4). Nothing else can, so a
+pack in any other language runs as **one child process per pack**, started by Maester
+and spoken to over stdin and stdout with the **runner protocol** (4.8.3). The protocol
+is the contract; a language is only a convenience on top of it. Maester knows a small
+number of **runtime kinds**, and each answers two questions: how to start the runner,
+and how to get what it needs onto the machine without running publisher code and with
+every byte pinned.
+
+| Kind | For | Starts as | Gets onto the machine by |
+| --- | --- | --- | --- |
+| **Script** | PowerShell (sections 4.1 to 4.4) | One private module in Maester's runspace | The pack's files |
+| **Python** | Python | `<env>/python -I -m <Entry>` | `uv sync --frozen --no-build` from the pack's `uv.lock` (4.8.4) |
+| **Node** | TypeScript and JavaScript | `node <Entry>` from the publisher's compiled `dist/` | `npm ci --ignore-scripts` from `package-lock.json` (4.8.4) |
+| **Binary** | Anything compiled: Go, Rust, .NET, C++, a single-file Node or Python build, a vendor's executable | The executable for this OS and CPU | A GitHub release asset, checked against the SHA-256 in the manifest (4.8.5) |
+| **Container** | Anything, including tools with heavy system dependencies | `docker run -i --rm <image>@sha256:…` (or Podman) | Pulled by digest (4.8.5) |
+
+A new interpreted language later (Deno, Ruby, Java) is one more row: how to find the
+interpreter, how to restore its lock with install scripts off, and how to start the
+runner. The engine, the protocol, the catalog, the loader gate and the report do not
+change. Anything without a row ships as Binary or Container.
+
+The manifest gains two top-level keys:
+
+```json
+"Catalog": "catalog.json",
+"Runtime": {
+  "Kind": "Python",
+  "Protocol": 1,
+  "RequiresPython": ">=3.11,<3.15",
+  "Lock": "uv.lock",
+  "Entry": "gws_checks"
+}
+```
+
+`Runtime` and `Catalog` join the keys an older Maester must refuse rather than ignore
+(section 4.2, unknown keys): an older client that ignored `Runtime` would drop every
+test of the pack without saying why. Both are reserved in the phase 1 schema.
+
+#### 4.8.2 Discovery stays static: the catalog
+
+PowerShell cannot read a Python decorator from an AST, so a non-Script pack lists its
+tests in a committed **`catalog.json`**: one entry per test with the same fields as
+`[MaesterTest(...)]`, validated against the same schema table (published as JSON so
+every language shares it), plus the usual `Test.<ID>.md` files. Discovery, `-DryRun`,
+`Get-MtTest`, selection, the `MP.<code>` rule, reserved tags and the taxonomy checks
+read the catalog and need no interpreter. A Script pack may use a catalog too, for
+rule catalogs where many rules share one evaluator.
+
+- **Each SDK generates the catalog without running the pack.** The Python SDK reads
+  `@maester_test(...)` decorators with Python's `ast` module and never imports the
+  package; the TypeScript SDK reads decorators with the TypeScript compiler API.
+  Decorator arguments must be literals, as attribute values must be static in
+  PowerShell.
+- **Catalog and code must agree.** `Test-MtPack` and the index run the SDK's reader and
+  fail validation on any difference. For Binary and Container packs, whose source may
+  not be readable, the index runs the runner's `list` message in a sandboxed job with
+  no secrets and compares.
+- **At run time** the runner reports the IDs it registered. Results are accepted only
+  for IDs in the catalog; a catalog ID the runner did not register gets an `Error` row
+  with reason `CatalogMismatch`.
+
+#### 4.8.3 The runner protocol
+
+- **Transport.** JSON lines over stdin and stdout, with requests correlated by `id` in
+  both directions (the shape LSP and MCP use). stderr is kept as `Diagnostics` and
+  never parsed. SDKs redirect ordinary console output to the log channel so a stray
+  print cannot corrupt the stream. No ports, so no firewall prompts and no
+  authentication between processes.
+- **Lifetime.** One runner per pack per session, started on first use (by
+  `Connect-Maester` for a connector, by `Invoke-Maester` for tests) and kept until
+  `Disconnect-Maester`, the end of the run or module removal. Interpreter start-up and
+  library imports cost far more than most tests, so a process per test is not used.
+- **Nothing secret on the command line or in the environment.** Settings and secrets
+  travel only inside messages. The runner gets a cleaned environment: `PATH`, locale,
+  temp folders, proxy and CA settings, the variables the runtime needs, and the
+  variables named in the pack's connector `Environment` list; CI secrets and other
+  packs' `MAESTER_*` variables are left out.
+- **Tests run one at a time, in catalog order**, like every 3.0 test (3.0 section 13).
+
+Host to runner:
+
+| Message | When | Carries |
+| --- | --- | --- |
+| `initialize` | Once per runner | Protocol version, Maester version, the pack's config section, the output folder, the tenant context, the kept connection state |
+| `connector.connect`, `.test`, `.describe`, `.renew`, `.disconnect` | The section 6 hooks | Settings gathered from config, `MAESTER_*` variables and `-ServiceSetting` |
+| `collect` / `release` | Once before the first test and once at the end, when the pack uses Collect | Selected test IDs, a deadline |
+| `instances` | For a family, in the execute stage | Family ID and bound parameters |
+| `run` | Once per selected test or instance | Test ID, instance, bound parameters, deadline |
+| `list` / `shutdown` | Validation; end of use | |
+
+A `run` answer carries the outcome in the 3.0 test contract (3.0 section 5.2):
+`passed`, `failed`, `skipped` with a skip code and reason, `investigate`, `noresult` or
+`error`, plus the detail Markdown and affected objects that `Add-MtTestResultDetail`
+takes. The engine turns it into a row with the same code that builds native rows, so
+severity overrides, titles, `Source = Custom`, the `Package` field and the report's
+Packs section are shared with Script packs. `Format` stays `Native`;
+`Package.Runtime` names the kind.
+
+Runner to host, while a test runs:
+
+| Callback | Host does | Rules |
+| --- | --- | --- |
+| `graph.request` | `Invoke-MtGraphRequest` | Refused unless `Graph` is in `Uses.Services`; any method but `GET` refused unless declared in `Uses.TenantWrites` |
+| `azure.request` | `Invoke-MtAzureRequest` | The same rules for `Azure` |
+| `connection.get`, `connection.set` | `Get-` / `Set-MtConnectionState` | Only the pack's own services and those it declares from a required connector pack (section 4.2) |
+| `log` | Verbose, information or warning stream | Text cleaned as in section 5.3 |
+| `prompt` | Shows a device code or URL | Only during an interactive `connector.connect` |
+
+- **Microsoft calls go back through Maester.** No token leaves PowerShell, the Graph
+  cache and throttling budget are shared with the built-in checks, and the rule of
+  section 6.5 ("reach Microsoft services only through Maester's commands") holds
+  unchanged. Because the host sees every request, it can enforce `Uses` at the
+  boundary instead of only scanning for it.
+- **Only Graph and Azure REST are brokered.** Exchange Online, Security & Compliance,
+  Teams and SharePoint sessions are cmdlets bound to one runspace, and brokering
+  arbitrary cmdlets would be a remote-execution channel. A short allowlist of read-only
+  `Get-*` cmdlets can come later. A pack that needs its own Microsoft client wraps it in
+  its own connector and declares it.
+- **Connectors in any language.** A connector's settings are declared in its manifest
+  entry (`Settings`: `Name`, `Type`, `Secret`, `Mandatory`, `Help`), since Maester
+  cannot read a Python or Go parameter list statically. `Get-MtConnector`, tab
+  completion, the `MAESTER_<SERVICE>_<SETTING>` variables and the refusal of secrets in
+  the config file work from that list.
+- **Connection state survives a restart.** The runner returns its state (a token and
+  its expiry, a refresh token) as an opaque value the host keeps in memory with
+  `Set-MtConnectionState` and passes back in `initialize`. It is never written to disk
+  or into the result.
+- **Timeouts and crashes.** At a test's deadline the host kills the runner (on Windows
+  through a job object, so its children go too), records `Error`/`Timeout`, restarts
+  it with the kept state and carries on. An unexpected exit gives the current test
+  `Error`/`TestError` with the tail of stderr and the same restart; after a second
+  crash the pack's remaining tests get `Error` rows with reason `RuntimeFailed`, and
+  the run continues.
+
+#### 4.8.4 Dependencies
+
+Maester verifies dependencies; the language's own installer installs them. Maester never
+resolves versions and never runs pip or an npm install script.
+
+- **Python.** The pack ships `pyproject.toml` and a universal, hash-pinned `uv.lock`
+  (or a PEP 751 `pylock.toml`). `Install-MtPack` prints the command it would run, or
+  runs it when the user opts in with `-InstallDependencies` (or
+  `Packs.InstallDependencies: true` in config):
+  `uv sync --frozen --no-build --no-dev --compile-bytecode` into a virtual environment
+  inside the pack's folder in the store. `--frozen` installs exactly the lock without
+  resolving, uv checks every hash, and `--no-build` refuses source distributions, so
+  only wheels are installed and no package code runs. The command is generated by
+  Maester from the manifest, never taken from publisher text. uv can also install the
+  interpreter that `RequiresPython` asks for.
+- **Node.** The pack ships its compiled `dist/` and `package-lock.json`; Maester runs
+  `npm ci --ignore-scripts --omit=dev` on the same opt-in, so npm checks the lock's
+  `integrity` hashes and no install script runs. Maester never runs the TypeScript
+  compiler.
+- **Binary and Container.** Nothing to install beyond the asset or image itself, which
+  `Install-MtPack` fetches and checks.
+- **The lock stays honest.** The language lock is inside the pack, so the pack digest
+  covers it. The environment is written read-only after the install and marked with
+  the hash of the lock it was built from; the loader gate checks the marker before it
+  starts a runner. `maester-sdk` is itself a pinned dependency, and a runner whose
+  protocol version Maester does not speak is refused with a clear error.
+- **Restore and CI.** `Restore-MtPack` and maester-action run the same commands for
+  every non-Script pack in the lock file. Without uv, npm or Docker on the machine the
+  pack's tests are skipped with reason `RuntimeNotAvailable` and the command to install
+  the tool, and the run continues, as `PesterNotAvailable` does today.
+- **Bring your own environment.** `Packs[].Interpreter` (or `Packs[].Image`) points at an
+  environment the user built from a corporate mirror, conda or their own image. Maester
+  cannot vouch for it, so the pack is labelled **Externally managed environment** in
+  the prompt, `Get-MtPack` and the report, and `PackPolicy.AllowExternalEnvironments`
+  can forbid it. This answers the review finding that a lock no longer identifies code
+  installed outside Maester.
+- **Air-gapped.** `Save-MtPack` adds the locked wheels, npm tarballs, binary assets or
+  image archives to the bundle, and `Restore-MtPack -Source` installs from it offline.
+
+#### 4.8.5 Binary and Container packs
+
+```json
+"Runtime": {
+  "Kind": "Binary",
+  "Protocol": 1,
+  "Artifacts": {
+    "windows-x64": { "Asset": "contoso-gws-windows-x64.exe", "Sha256": "4f1c…" },
+    "linux-x64":   { "Asset": "contoso-gws-linux-x64",       "Sha256": "9a20…" },
+    "osx-arm64":   { "Asset": "contoso-gws-osx-arm64",       "Sha256": "c77e…" }
+  }
+}
+```
+
+- **Binaries come from the release, not the repository.** `Install-MtPack` downloads only
+  the asset for this platform (all of them for `Save-MtPack`) from the release of the
+  pinned commit and refuses any file whose hash differs from the manifest, which the
+  pack digest covers.
+- **Unsupported platforms** use the existing platform gate: a Binary pack's tests take
+  the platforms of its `Artifacts`, and the engine gives `Skipped`/`PlatformMismatch`
+  elsewhere.
+- **Container packs** name an image by digest
+  (`"Image": "ghcr.io/contoso/gws-checks@sha256:…"`) and run with `docker run -i
+  --rm`, the cleaned environment and no mounts beyond the run's output folder. They are
+  supported before phase 3 as a way to run tools with heavy system dependencies; the
+  same runner in the same container then becomes the phase 3 isolation boundary
+  (section 9.4).
+- **Build provenance lowers the risk of compiled code.** A binary or image with a valid
+  GitHub artifact attestation (Sigstore build provenance) showing it was built by a
+  workflow in the pack's own repository from the pinned commit is **Medium**, and the
+  listing says "Built from source at 3f9c2e1 by .github/workflows/release.yml"; its
+  source is scanned like any other pack. Without provenance it stays **High**
+  (section 9.6).
+- **Locked-down Windows:** App Control blocks unsigned executables, so an unsigned
+  Binary pack does not run there, and `Install-MtPack` says so (section 9.11).
+
+#### 4.8.6 Tools that will never speak the protocol
+
+Existing tools (a vendor CLI, ScubaGoggles, a scanner) are covered without any code from
+their authors, by **Import** (the tool runs as its own step and writes a file), **Collect**
+(Maester runs the tool once at the start of the run, with a command line the manifest
+declares as an array, never a shell string) and an **adapter** that maps the file to
+rows:
+
+- **`MaesterResults`**: a small published JSON schema
+  (`[{ "id": "MP.CNT.0001", "outcome": "failed", "detail": "…" }]`) that any tool in any
+  language can write.
+- **`SARIF`**: the OASIS format most security scanners write. Each `ruleId` maps to a
+  catalog ID, each `level` to an outcome, and locations become the detail table.
+- **`JUnit`**: for tools that write test results.
+
+Results are accepted only for catalog IDs, an ID the file does not mention is
+`Skipped`/`NotCollected`, and a file older than the pack's maximum age is rejected.
+
+#### 4.8.7 SDKs and conformance
+
+- The protocol is published as a versioned specification with JSON Schemas.
+- maester365 publishes and maintains SDKs for **Python** (`maester-sdk` on PyPI) and
+  **TypeScript** (on npm). Each mirrors the 3.0 test contract: return `True`/`False`,
+  `ctx.skip()`, `ctx.investigate()`, `ctx.detail(markdown)`, `ctx.graph.get()`, families
+  with an instance source. Other languages are left to the community.
+- **`Test-MtPack -Conformance`** starts a runner against a fake host and checks every
+  message, timeouts, crash handling and catalog agreement, so someone can write a runner
+  in a language nobody planned for.
+- Until the runtimes ship, a Script pack can shell out to a program and return its
+  answer; that works today, at the cost of a process per test and no shared session.
+
+#### 4.8.8 Where non-Script packs run
+
+Locally on Windows, macOS and Linux, in maester-action (which adds uv or Node when the
+lock file has such packs), Azure DevOps and the container hosting the docs describe.
+Azure Automation's PowerShell 7.4 sandbox very likely cannot start a Python or Node
+process, so those tests would be skipped with `RuntimeNotAvailable` there (section 15).
+
 ## 5. Installing, updating and running
 
 ### 5.1 Commands
@@ -501,13 +770,13 @@ publisher.
 | Command | What it does |
 | --- | --- |
 | `Find-MtPack [-Query] [-Service] [-MaximumRisk] [-Code]` | Searches the Maester Packs index; `-Code` shows whether a code is available, held or reserved. |
-| `Install-MtPack <source> [-Version] [-Scope Project\|User]` | Resolves, downloads, validates, shows the approval prompt, and records the pack in config and lock file. |
+| `Install-MtPack <source> [-Version] [-Scope Project\|User] [-InstallDependencies]` | Resolves, downloads, validates, shows the approval prompt, and records the pack in config and lock file. For a Python or Node pack it prints the dependency command, or runs it with `-InstallDependencies` (section 4.8.4). |
 | `Restore-MtPack [-Source <folder>]` | Installs exactly what the lock file says, checking every digest; no prompts. Used by CI and maester-action. A pack GitHub no longer serves is skipped with a warning (section 5.5); `-Source` reads a `Save-MtPack` bundle instead of GitHub. |
 | `Save-MtPack -Path <folder>` | Writes the locked packs, their Gallery modules, their listings and the current blocklist into a folder, for vendoring into a repository or carrying into an air-gapped network. |
 | `Update-MtPack [<id>] [-Version]` | Moves to a newer tag; shows what changed and asks again if the pack now uses more. |
 | `Uninstall-MtPack <id>` | Removes it from config and lock file. |
 | `Get-MtPack [<id>]` | Installed packs with version, risk level, badges, whether an update or a block applies. |
-| `New-MtPack` / `Test-MtPack -Path` | For publishers: scaffold a pack repository, and run the indexer's validation and scans locally. `Test-MtPack -Remote owner/repo` shows the index's result for a release, including why it is not listed (section 7.7). |
+| `New-MtPack` / `Test-MtPack -Path` | For publishers: scaffold a pack repository (`-Runtime Python\|Node\|Binary` for the other kinds), and run the indexer's validation and scans locally; `-Conformance` checks a runner against the protocol (section 4.8.7). `Test-MtPack -Remote owner/repo` shows the index's result for a release, including why it is not listed (section 7.7). |
 | `Get-MtConnector [<service>]` | Built-in services and installed connectors, with their settings and help. |
 
 `<source>` is `owner/repo`, `owner/repo/<folder>`, a GitHub URL, `owner/repo@v1.2.0`
@@ -649,7 +918,9 @@ maester-action restores from the committed lock file:
     MAESTER_CNT_GOOGLEWORKSPACE_CREDENTIAL: ${{ secrets.GWS_SERVICE_ACCOUNT_JSON }}
 ```
 
-Nothing is resolved in CI: the lock file decides what runs. A pack GitHub no longer
+Nothing is resolved in CI: the lock file decides what runs. When the lock file has
+Python or Node packs, the action installs uv or Node and restores their locked
+dependencies (section 4.8.4). A pack GitHub no longer
 serves, or whose files fail the digest check, is skipped with a warning in the report
 and the run continues (section 5.5); a blocked pack gives `NotRun` rows with the
 advisory (section 9.8).
@@ -682,7 +953,9 @@ on the pack's page and in `Get-MtPack`.
 
 A connector is four functions in the pack, plus an optional fifth, `Renew` (section 6.5), all named in the manifest. They are ordinary
 PowerShell functions with comment-based help; Maester reads their parameters
-statically, so `Get-MtConnector` can show the settings without running anything.
+statically, so `Get-MtConnector` can show the settings without running anything. A
+connector written in another language (section 4.8) maps the same functions to
+protocol messages and declares its settings in the manifest instead.
 
 ```powershell
 function Connect-GwsService {
@@ -1193,12 +1466,19 @@ limits what one bad pack can do.
 
 ### 9.4 Where pack code runs
 
-**v1: in-process, for every pack**, exactly like custom tests: one private module per
+**v1: in-process, for every Script pack**, exactly like custom tests: one private module per
 pack in Maester's runspace, with access to every connection in the session, the
 environment and the user's files. This keeps v1 simple and makes long runs behave like
 today (section 6.5). The defences in v1 are therefore the ones that act before code
 runs (validation, scans, risk levels, consent, cooldown, policy) and the blocklist that
 acts at every run.
+
+**Packs in other languages run as a child process** (section 4.8) under the same user.
+Brokered Microsoft calls, a cleaned environment and `Uses` enforced at the pipe stop
+mistakes and make undeclared reach visible, but a same-user process can still read the
+user's files, including on-disk token caches, so this is a guardrail and not a security
+boundary; the prompt says the same as for Script packs. Container packs run with no
+secrets and only the output folder mounted, which is closer to the phase 3 boundary.
 
 **The strongest control in v1 is the identity.** The docs recommend running Maester as
 a dedicated identity with read-only roles (read-only Graph permissions, Global Reader,
@@ -1239,13 +1519,29 @@ listed for phase 3.
 
 | Level | What it means | Install | Shown as |
 | --- | --- | --- | --- |
-| **Low** | Text files only (PowerShell, Markdown, JSON); every scan passed | The normal prompt | Green "Low risk" |
-| **Medium** | Text only, with findings worth reading: dynamic code (`Invoke-Expression`, `[scriptblock]::Create`, inline `Add-Type`), URLs built at run time, process start, PowerShell Gallery modules that are themselves script only | The prompt lists the findings; `-AcceptRisk Medium` without a console | Amber "Medium risk" |
-| **High** | Compiled code (in the pack or in any Gallery module it needs), archives, or content that cannot be scanned (encoded or obfuscated); any Graph write scope or declared tenant write (section 6.6); or a scan could not complete | Named file by file; typed confirmation; `-AcceptRisk High` without a console | Red "High risk: install only if you trust the publisher" |
+| **Low** | Text files only (PowerShell or another language's source, Markdown, JSON), no third-party dependencies; every scan passed | The normal prompt | Green "Low risk" |
+| **Medium** | Text only, with findings worth reading: dynamic code (`Invoke-Expression`, `[scriptblock]::Create`, inline `Add-Type`), URLs built at run time, process start; any third-party dependency (Gallery module, PyPI or npm package), exact-pinned and hash-checked, including dependencies with compiled code; compiled code or a container image with build provenance from the pack's own repository (section 4.8.5) | The prompt lists the findings; `-AcceptRisk Medium` without a console | Amber "Medium risk" |
+| **High** | Compiled code shipped by the pack without build provenance (section 4.8.5), a dependency from anything but the public registry (a Git or direct URL, a private index), archives, or content that cannot be scanned (encoded or obfuscated); any Graph write scope or declared tenant write (section 6.6); or a scan could not complete | Named file by file; typed confirmation; `-AcceptRisk High` without a console | Red "High risk: install only if you trust the publisher" |
 | **Blocked** | A malware match, or confirmed malicious by a maintainer | Never loads; install refused | Advisory |
 
 Code that reaches something it did not declare is not a risk level: it fails
 validation and is not listed (section 4.3).
+
+**Why pinned dependencies with compiled code are Medium, not High** (ruled
+2026-10-16). Almost every useful Python package and many Gallery modules ship compiled
+code (`cryptography`, `pydantic-core`, the gRPC libraries under Google's clients), so
+counting them as High would make nearly every pack High and the level would stop
+meaning anything. The prompt and the Security tab show a Dependencies line instead
+("31 packages from PyPI, 7 with compiled code, all hash-pinned, no known
+vulnerabilities"), and the scans check the closure against OSV, for near-copies of
+better-known names, and for Python `.pth` files, which run code when the interpreter
+starts.
+
+**Scanning other languages.** The pack rules of step 2 are written once per runtime:
+PSScriptAnalyzer for PowerShell; Python's `ast` with Bandit or Semgrep for Python;
+the TypeScript compiler API with Semgrep for TypeScript. Binary and Container packs are
+scanned through the source their provenance points at; without provenance the binary
+inventory of step 4 is all there is.
 
 **What the index workflow runs**, all in GitHub Actions on the public index repository:
 
@@ -1289,6 +1585,8 @@ repository.
   "AllowedPublishers": ["maester365", "contoso"],
   "RequireBadge": [],
   "AllowUnlisted": false,
+  "AllowedRuntimes": ["Script", "Python", "Node", "Binary", "Container"],
+  "AllowExternalEnvironments": false,
   "TrustedSources": ["github.com/contoso-internal/maester-checks"],
   "RequireFreshBlocklist": false,
   "Index": "https://packs.maester.dev/index.json"
@@ -1297,7 +1595,9 @@ repository.
 
 The policy is read from the run config, from `MAESTER_PACK_POLICY`, or from a
 machine-wide file that device management can deploy, and the strictest value wins. It
-applies at install, restore and run.
+applies at install, restore and run. `AllowedRuntimes` limits the runtime kinds of
+section 4.8, and `AllowExternalEnvironments` allows packs whose environment the user
+built outside Maester (section 4.8.4).
 
 - `AllowedPublishers` names are resolved to GitHub's numeric owner IDs when the policy
   is first applied and the IDs are what is checked, so someone who re-registers a
@@ -1457,6 +1757,10 @@ goes red; the pack's page shows the advisory and the install command is removed.
 | Report | A Packs section grouped by pack with publisher, badges, risk and its own pass rate; headline score without pack rows; remote images stripped for pack rows | 1 |
 | maester-action | `restore_packs` input; pack environment variables passed through | 1 |
 | Pack API | The published list of commands, schemas and contracts packs may rely on, and the deprecation policy | 1 |
+| Pack schema | `Runtime` and `Catalog` keys reserved and refused by older clients; catalog-based discovery for any pack; `Package.Runtime` on rows | 1 |
+| Runtimes | The runner protocol and its JSON Schemas; runner host with Graph and Azure callbacks, `Uses` enforcement, cleaned environment, kept connection state, kill-and-restart on timeout; Python and Binary runtimes; `-InstallDependencies`; `RuntimeNotAvailable`, `RuntimeFailed`, `CatalogMismatch` reasons; Externally managed environment label; `Test-MtPack -Conformance`; `maester-sdk` for Python | 1b (3.2) |
+| Adapters | Import and Collect with the `MaesterResults`, SARIF and JUnit adapters | 1b (3.2) |
+| More runtimes | Node runtime and the TypeScript SDK; Container runtime | after 1b |
 | Index client | `Find-MtPack`; signed index verification; install event | 2 |
 | Isolation | Container partitions per pack for hosts that can run containers | 3 |
 | Built-in connectors | GitHub and Active Directory on the connector contract | later |
@@ -1472,14 +1776,22 @@ listing.
 1. **Phase 1, packs without the marketplace (3.1).** The format, GitHub install with
    the lock file, connectors and `Connect-Maester` dispatch, the loader gate, the
    permissions work, `New-` and `Test-MtPack`, the template, maester-action restore,
-   and the published pack API. Packs run in-process. Every install is "unlisted" and
+   and the published pack API. Script packs run in-process. Every install is "unlisted" and
    gets the local scan and risk level. **The blocklist checker, the keys and an empty
    signed blocklist ship in this phase**, so packs installed now can still be stopped
    once the marketplace exists. The first official pack is Google Workspace (code
    `MAES`, service `GoogleWorkspace`), against the CISA SCuBA Google Workspace
    baselines that ScubaGoggles implements. It proves the connector contract with both a
    browser sign-in and a service account; the licence of any code reused needs
-   checking.
+   checking. Phase 1 also reserves `Runtime` and `Catalog` in the manifest schema and
+   ships catalog-based discovery, so a pack in another language written against 3.1 is
+   refused cleanly instead of losing its tests.
+
+   **Phase 1b (3.2), packs in any language.** The runner protocol, its specification and
+   conformance suite, the Python runtime and `maester-sdk`, the Binary runtime with
+   build provenance, and the Import and Collect adapters. Then the Node runtime with
+   the TypeScript SDK, and the Container runtime once Docker and Podman detection and
+   digest pinning are proven (section 4.8). None of this waits for phase 2.
 2. **Phase 2, Maester Packs.** The Worker and D1, the index workflows and scanners,
    risk levels and badges, the signed index, `Find-MtPack`,
    packs.maester.dev, the terms of listing and the privacy notice, and the claim window
@@ -1512,6 +1824,22 @@ listing.
   repository signals, not used for the risk level: section 9.6.
 - **A same-user pack host process.** Deferred in favour of in-process for v1 and
   containers later: section 9.4.
+- **Embedding Python in the PowerShell process** (pythonnet). One interpreter per
+  process, native library and version matching against the user's Python, a crash in
+  a C extension takes Maester down, and no path to isolation. Rejected for an out-of-process
+  runner (section 4.8).
+- **A process per test** for packs in other languages. Interpreter start-up and imports
+  cost more than most tests. Rejected for a runner per pack with restart on timeout.
+- **Handing a non-PowerShell runner a Microsoft token.** Graph PowerShell has no
+  supported way to hand out its token, and a broad token in pack code is what
+  section 6.5 avoids. Rejected for brokered callbacks.
+- **Language test frameworks as providers** (pytest the way Pester is a provider).
+  pytest imports test files to discover them, which runs code at discovery, and has
+  its own result model. Rejected for the catalog and the protocol.
+- **localhost HTTP or gRPC instead of stdio.** Ports, firewall prompts and
+  authentication between processes. Rejected.
+- **Maester installing dependencies with its own code.** It would duplicate uv and npm.
+  Rejected for calling them with locked, script-free options (section 4.8.4).
 - **Constrained Language Mode for packs.** Maester defines classes and cannot run under
   CLM (3.0 section 17), and CLM is enforced per session, not per module, so it cannot
   isolate a pack inside Maester's runspace.
@@ -1551,6 +1879,28 @@ listing.
   pack API (4.7); locked-down Windows (9.11); and terms and takedowns (9.10).
 - maester365's own code is **`MAES`**.
 
+### Ruled by the owner (2026-10-16): packs in any language
+
+- **Any language through one protocol.** Packs in languages other than PowerShell run as
+  a child process speaking the runner protocol, with Script, Python, Node, Binary and
+  Container runtime kinds (section 4.8).
+- **Dependencies:** Maester calls uv or npm with locked, script-free options only when
+  the user opts in with `-InstallDependencies`, and otherwise prints the generated
+  command; a bring-your-own environment is allowed and labelled Externally managed.
+- **Compiled code in exact-pinned, hash-checked registry dependencies** does not by
+  itself make a pack High; it is Medium with a Dependencies line. This applies to
+  Gallery modules too. Compiled code the pack ships itself stays High.
+- **Build provenance** from the pack's own repository makes a binary or image Medium
+  instead of High.
+- **Connectors** can be written in any runtime, not only PowerShell.
+- **Only Graph and Azure REST are brokered** to runners in the first release.
+- **Phasing:** 3.1 reserves `Runtime` and `Catalog` and ships catalog-based discovery;
+  3.2 ships the protocol, Python and Binary runtimes and the adapters; Node and
+  Container follow. Container packs are supported before phase 3 isolation.
+- **Rows:** `Format` stays `Native`; `Package.Runtime` names the runtime kind.
+- **Official SDKs** are Python and TypeScript; other languages are left to the community
+  with the conformance suite.
+
 ### Still open
 
 - **Setup you would own:** the GitHub App the publish job uses to write the
@@ -1584,6 +1934,15 @@ listing.
   holds them, and how the publish job's index key is protected.
 - **The `MissingScope` gate:** reading granted scopes and roles reliably from delegated
   and app-only tokens across clouds.
+- **Packs in any language** (section 4.8), to settle with a spike: per-test and
+  per-callback overhead of the runner protocol; UTF-8, unbuffered output, Ctrl+C and
+  job-object kills on Windows; `uv sync --frozen --no-build --compile-bytecode` into a
+  read-only store folder and the cost of checking it on each load; the uv and npm
+  commands for an offline bundle and for installing a publisher's `pylock.toml`;
+  whether a PowerShell 7.4 runbook in Azure Automation can start a child process;
+  verifying GitHub artifact attestations from PowerShell without the `gh` CLI;
+  Docker and Podman detection on Windows and macOS; and the exact uv and npm flags,
+  which are taken from their documentation and memory on 2026-10-16.
 - **The skills.sh mechanics** are taken from its public CLI source (commit `958f4b7`)
   and site on 2026-10-07 and may change; its server code is not public, so the
   deduplication and trending formulas are as documented, not as read. The facts about
