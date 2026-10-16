@@ -72,5 +72,27 @@ enum ORCAConfigLevel
         $once | Should -Match 'foreach\(\$r in @\(\$this\.Results \| Where-Object \{\$_\.Level -eq \$Level\}\)\)'
         $once | Should -Not -Match '\(\$this\.Results \| Where-Object \{\$_\.Level -eq \$Level\}\)\.Value'
         Add-OrcaConfigLevelInformational -Content $once | Should -Be $once
+
+        # A Windows clone of upstream ORCA has CRLF line endings.
+        $crlf = $upstream -replace '\r?\n', "`r`n"
+        $onceCrlf = Add-OrcaConfigLevelInformational -Content $crlf
+        $onceCrlf | Should -Match 'Informational = 20'
+        $onceCrlf | Should -Match 'foreach\(\$r in @\(\$this\.Results \| Where-Object \{\$_\.Level -eq \$Level\}\)\)'
+        $onceCrlf | Should -Not -Match '\(\$this\.Results \| Where-Object \{\$_\.Level -eq \$Level\}\)\.Value'
+        $onceCrlf | Should -Not -Match '(?<!\r)\n'
+        Add-OrcaConfigLevelInformational -Content $onceCrlf | Should -Be $onceCrlf
+    }
+
+    It 'fails when upstream SetResult no longer has the line it repairs' {
+        $changed = @'
+enum ORCAConfigLevel
+{
+    None = 0
+    Informational = 20
+    All = 100
+}
+            $this.SetLevelResult($Level, $InputResult)
+'@
+        { Add-OrcaConfigLevelInformational -Content $changed } | Should -Throw '*upstream ORCA may have changed*'
     }
 }

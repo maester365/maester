@@ -89,16 +89,20 @@ function Add-OrcaConfigLevelInformational {
         $Content = $Content.Remove($levelMatch.Index, $levelMatch.Length).Insert($levelMatch.Index, $insertion)
     }
 
-    $assignment = [regex]::Match($Content, '(?m)^(?<indent>[ \t]*)\(\$this\.Results \| Where-Object \{\$_\.Level -eq \$Level\}\)\.Value = \$InputResult[ \t]*$')
+    # In .NET, $ does not match before `r, so allow it explicitly: a Windows clone of upstream has CRLF.
+    $assignment = [regex]::Match($Content, '(?m)^(?<indent>[ \t]*)\(\$this\.Results \| Where-Object \{\$_\.Level -eq \$Level\}\)\.Value = \$InputResult[ \t]*(?=\r?$)')
     if ($assignment.Success) {
         $indent = $assignment.Groups['indent'].Value
+        $newline = if ($Content -match "`r`n") { "`r`n" } else { "`n" }
         $guard = (@(
             '{0}foreach($r in @($this.Results | Where-Object {{$_.Level -eq $Level}}))'
             '{0}{{'
             '{0}    $r.Value = $InputResult'
             '{0}}}'
-        ) -join "`n") -f $indent
+        ) -join $newline) -f $indent
         $Content = $Content.Remove($assignment.Index, $assignment.Length).Insert($assignment.Index, $guard)
+    } elseif ($Content -notmatch '(?m)^[ \t]*\$r\.Value = \$InputResult[ \t]*\r?$') {
+        throw 'SetResult has neither the upstream .Value assignment nor the Informational guard; upstream ORCA may have changed.'
     }
 
     return $Content
