@@ -174,6 +174,8 @@ function Initialize-MtDashboard {
     them needs a console of about 64 rows.
 
       Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
+      ActiveDirectory  the domain, its domain controller and the account it is connected as; only after
+                   Connect-Maester -Service ActiveDirectory (set later, by Set-MtDashboardDirectory)
       Totals       the results so far: a bar split by result, and the count of each
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Failed       failed tests by severity
@@ -210,7 +212,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Sponsor', 'Pace', 'Results',
+    $known = 'Tenant', 'ActiveDirectory', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Sponsor', 'Pace', 'Results',
     'WeakestAreas', 'AttackTactics', 'FailedTests', 'NistFamilies', 'PassRate', 'EveryTest'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
@@ -507,4 +509,34 @@ function Set-MtDashboardTenant {
     $domain = if ($TenantContext.PSObject.Properties['PrimaryDomain']) { [string]$TenantContext.PrimaryDomain } else { '' }
     $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
     $Renderer.SetTenant([string]$TenantContext.TenantName, $domain, $account)
+}
+
+function Set-MtDashboardDirectory {
+    <#
+    .SYNOPSIS
+    Fills the Active Directory panel of the dashboard: the domain, its domain controller and the account.
+
+    .DESCRIPTION
+    Everything comes from the session that Connect-Maester -Service ActiveDirectory made; nothing is requested.
+    The account is the credential the connection was made with, or on Windows without one the signed-in user.
+    Without a connection the panel is removed.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer
+    )
+    $connection = $__MtSession.ADConnection
+    if (-not $connection -or $connection.Connected -ne $true) {
+        $Renderer.SetDirectory($null, $null, $null)
+        return
+    }
+    $user = if ($__MtSession.ADCredential) { [string]$__MtSession.ADCredential.UserName }
+    elseif ($IsWindows) { [Security.Principal.WindowsIdentity]::GetCurrent().Name }
+    $detail = @($user, [string]$connection.AuthenticationMode | Where-Object { $_ }) -join ' · '
+    # The domain is on the left, so a domain controller of that domain is shown by its host name alone.
+    $domain = [string]$connection.ResolvedDomain
+    $server = [string]$connection.ResolvedServer
+    if ($domain -and $server.EndsWith(".$domain", [StringComparison]::OrdinalIgnoreCase)) { $server = $server.Substring(0, $server.Length - $domain.Length - 1) }
+    $Renderer.SetDirectory($domain, $server, $detail)
 }

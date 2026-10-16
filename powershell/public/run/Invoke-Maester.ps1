@@ -791,6 +791,7 @@
             # The tenant in its panel on a wide console, and the services as one line under the banner.
             $tenantPanel = $renderer.IsFullScreen -and $renderer.HasPanel('Tenant')
             Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Console $console
+            if ($renderer.IsFullScreen -and $renderer.HasPanel('ActiveDirectory')) { Set-MtDashboardDirectory -Renderer $renderer }
             if ($connections.Count -gt 0 -and $renderer.IsFullScreen -and $renderer.HasPanel('Connections')) {
                 # The services in their panel: which are connected, and which are not.
                 $renderer.SetConnections([string[]]@($connections.Name), [bool[]]@($connections.Connected))

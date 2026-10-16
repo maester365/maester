@@ -936,6 +936,38 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 
+    It 'Shows the Active Directory domain, domain controller and credential account in its panel' {
+        $renderer = New-PanelRenderer
+        InModuleScope Maester -Parameters @{ r = $renderer } {
+            param($r)
+            $r.SetPanels([string[]]@('ActiveDirectory'))
+            $r.Open()
+            $savedConnection = $__MtSession.ADConnection
+            $savedCredential = $__MtSession.ADCredential
+            $__MtSession.ADConnection = [pscustomobject]@{ Connected = $true; ResolvedDomain = 'north.sevenkingdoms.local'; ResolvedServer = 'winterfell.north.sevenkingdoms.local'; AuthenticationMode = 'Ntlm' }
+            $__MtSession.ADCredential = [pscredential]::new('NORTH\eddard.stark', (ConvertTo-SecureString 'x' -AsPlainText -Force))
+            try { Set-MtDashboardDirectory -Renderer $r } finally { $__MtSession.ADConnection = $savedConnection; $__MtSession.ADCredential = $savedCredential }
+        }
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '│ north\.sevenkingdoms\.local +winterfell │'
+        $screen | Should -Match 'NORTH\\eddard\.stark · Ntlm'
+        $renderer.Close()
+    }
+
+    It 'Leaves the Active Directory panel out when it is not connected' {
+        $renderer = New-PanelRenderer
+        InModuleScope Maester -Parameters @{ r = $renderer } {
+            param($r)
+            $r.SetPanels([string[]]@('ActiveDirectory'))
+            $r.Open()
+            $saved = $__MtSession.ADConnection
+            $__MtSession.ADConnection = [pscustomobject]@{ Connected = $false; ResolvedDomain = 'stale.local' }
+            try { Set-MtDashboardDirectory -Renderer $r } finally { $__MtSession.ADConnection = $saved }
+        }
+        $renderer.GetPlainScreen(160, 44) -join "`n" | Should -Not -Match 'Active Directory|stale\.local'
+        $renderer.Close()
+    }
+
     It 'Shows the tenant, its domain and the account in the Tenant panel, without the services' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{
