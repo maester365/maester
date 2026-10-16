@@ -86,6 +86,7 @@ namespace Maester.Engine
         private readonly List<string> _newlyFailing = new List<string>();
         private readonly System.Diagnostics.Stopwatch _runClock = new System.Diagnostics.Stopwatch();
         private TenantInfo _tenant;
+        private TenantInfo _directory;
         private MtBlogPost _blogPost;
         private readonly List<Connection> _connections = new List<Connection>();
         private string[] _tips = new string[0];
@@ -146,6 +147,22 @@ namespace Maester.Engine
             {
                 // Set by the administrators of the tenant that is being assessed, not by the person at this console.
                 _tenant = new TenantInfo { Name = PlainText(name), Domain = PlainText(domain), Detail = PlainText(detail) };
+                Redraw();
+            }
+        }
+
+        /// <summary>
+        /// The Active Directory panel, laid out like the Tenant panel: the domain on the left of the first line and
+        /// the domain controller on its right, and a line of detail (the account it is connected as). Null for
+        /// all three removes the panel.
+        /// </summary>
+        public void SetDirectory(string domain, string server, string detail)
+        {
+            lock (_gate)
+            {
+                // Read from the directory that is being assessed, not set by the person at this console.
+                if (string.IsNullOrEmpty(domain) && string.IsNullOrEmpty(server) && string.IsNullOrEmpty(detail)) _directory = null;
+                else _directory = new TenantInfo { Name = PlainText(domain), Domain = PlainText(server), Detail = PlainText(detail) };
                 Redraw();
             }
         }
@@ -863,6 +880,8 @@ namespace Maester.Engine
                     return BuildTipsPanel(width, ansi);
                 case "tenant":
                     return _tenant != null ? BuildTenantPanel(width, ansi) : BuildTextPanel(name, ansi);
+                case "activedirectory":
+                    return _directory != null ? BuildIdentityPanel("Active Directory", _directory, width, ansi) : BuildTextPanel(name, ansi);
                 case "connections":
                     return BuildConnectionsPanel(width, ansi);
                 case "totals":
@@ -893,10 +912,16 @@ namespace Maester.Engine
 
         private PanelContent BuildTenantPanel(int width, bool ansi)
         {
-            var panel = new PanelContent { Title = "Tenant" };
-            string name = _tenant.Name ?? string.Empty;
-            string domain = _tenant.Domain ?? string.Empty;
-            // The domain keeps its place on the right; the name is cut when the two do not fit.
+            return BuildIdentityPanel("Tenant", _tenant, width, ansi);
+        }
+
+        /// <summary>The Tenant and Active Directory panels: a name, what goes on its right, and a line of detail.</summary>
+        private PanelContent BuildIdentityPanel(string title, TenantInfo info, int width, bool ansi)
+        {
+            var panel = new PanelContent { Title = title };
+            string name = info.Name ?? string.Empty;
+            string domain = info.Domain ?? string.Empty;
+            // What is on the right keeps its place; the name is cut when the two do not fit.
             if (domain.Length > 0 && width - domain.Length - 2 < 8) domain = string.Empty;
             int nameRoom = domain.Length > 0 ? width - domain.Length - 2 : width;
             if (name.Length > nameRoom) name = name.Substring(0, Math.Max(0, nameRoom - 1)) + (Unicode ? "…" : ".");
@@ -904,7 +929,7 @@ namespace Maester.Engine
             {
                 panel.Lines.Add(new LineBuilder(ansi).Add(name, "1").Add(new string(' ', Math.Max(0, width - name.Length - domain.Length))).Add(domain).Build());
             }
-            if (!string.IsNullOrEmpty(_tenant.Detail)) panel.Lines.Add(Truncate(new LineBuilder(ansi).Add(_tenant.Detail, "2").Build(), width, ansi));
+            if (!string.IsNullOrEmpty(info.Detail)) panel.Lines.Add(Truncate(new LineBuilder(ansi).Add(info.Detail, "2").Build(), width, ansi));
 
             return panel.Lines.Count > 0 ? panel : null;
         }
