@@ -22,7 +22,8 @@ Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-IncludePreview] 
  [[-SharePointCertificateThumbprint] <String>] [[-GitHubOrganization] <String>]
  [[-ActiveDirectoryForest] <Object>] [[-ActiveDirectoryDomain] <Object>] [[-ActiveDirectoryServer] <Object>]
  [[-ActiveDirectoryCredential] <PSCredential>] [[-ActiveDirectoryAuthMode] <String>]
- [[-ActiveDirectoryTlsMode] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-ActiveDirectoryTlsMode] <String>] [-ActiveDirectorySkipCertificateCheck]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -586,6 +587,23 @@ Aliases: TlsMode
 Required: False
 Position: 18
 Default value: Auto
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ActiveDirectorySkipCertificateCheck
+
+Skip certificate validation for the Active Directory LDAP connection.
+Intended for test environments only.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
