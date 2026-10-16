@@ -5,9 +5,10 @@
 
     .DESCRIPTION
     Microsoft creates Microsoft-managed Conditional Access policies in report-only mode and turns them on
-    automatically no less than 30 days later, unless an administrator sets them to On or Off first. This check
-    lists every Microsoft-managed policy that is still in report-only mode, with the earliest date Microsoft can
-    turn it on, so an administrator can review its impact and decide before Microsoft does.
+    automatically, usually no less than 30 days later and sometimes sooner, unless an administrator sets them
+    to On or Off first. This check lists every Microsoft-managed policy that is still in report-only mode, with
+    the usual date from which Microsoft can turn it on, so an administrator can review its impact and decide
+    before Microsoft does.
 
     Microsoft-managed policies are identified by the name prefix "Microsoft-managed:". Microsoft assigns this
     name and administrators cannot rename a Microsoft-managed policy. This is a name match, so if a customer
@@ -76,8 +77,9 @@
     $Result = "$($PendingPolicies.Count) Microsoft-managed Conditional Access " +
         "$(if ($PendingPolicies.Count -eq 1) { 'policy is' } else { 'policies are' }) still in report-only mode. " +
         'Microsoft turns Microsoft-managed policies on automatically unless an administrator sets them to On or Off. ' +
-        'Review the impact of each policy, then choose.'
-    $Result += "`n`n| Policy | Created | Microsoft can turn it on from | Status | Grant controls |"
+        'Review the impact of each policy, then choose. The dates below assume the usual 30 days; ' +
+        'Microsoft can act sooner, so check the Message center post for each policy.'
+    $Result += "`n`n| Policy | Created | Usually turned on from | Status | Grant controls |"
     $Result += "`n| --- | --- | --- | --- | --- |"
     foreach ($Policy in $PendingPolicies) {
         $Created = $null
@@ -109,6 +111,12 @@
         $Controls = @($Grant.builtInControls | Where-Object { $_ })
         if ($Grant.authenticationStrength.displayName) {
             $Controls += "authentication strength: $($Grant.authenticationStrength.displayName)"
+        }
+        if (@($Grant.termsOfUse | Where-Object { $_ }).Count -gt 0) {
+            $Controls += 'terms of use'
+        }
+        if (@($Grant.customAuthenticationFactors | Where-Object { $_ }).Count -gt 0) {
+            $Controls += 'custom controls'
         }
         if ($Controls.Count -eq 0) {
             $GrantText = 'None'

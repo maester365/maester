@@ -80,5 +80,26 @@ Describe 'Test-MtCaMicrosoftManagedPolicyReportOnly' {
 
             Test-MtCaMicrosoftManagedPolicyReportOnly | Should -BeFalse
         }
+
+        It 'Should list terms of use and custom controls as grant controls' {
+            $policy = New-ManagedCaPolicy -DisplayName 'Microsoft-managed: Terms of use' -State 'enabledForReportingButNotEnforced'
+            $policy.grantControls = [PSCustomObject]@{
+                builtInControls             = @()
+                authenticationStrength      = $null
+                termsOfUse                  = @('11111111-1111-1111-1111-111111111111')
+                customAuthenticationFactors = @('ContosoMfa')
+                operator                    = 'AND'
+            }
+            $script:Result = $null
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @($policy) }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result)
+                $script:Result = $Result
+            }
+            Mock -ModuleName Maester Get-GraphObjectMarkdown { 'policy-link' }
+
+            Test-MtCaMicrosoftManagedPolicyReportOnly | Should -BeFalse
+            $script:Result | Should -BeLike '*| terms of use AND custom controls |*'
+        }
     }
 }

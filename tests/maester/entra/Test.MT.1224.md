@@ -4,7 +4,7 @@ Microsoft creates Microsoft-managed Conditional Access policies in your tenant t
 
 A policy that is turned on without review can block or prompt users you did not plan for. For example, a user who must remediate a high risk but never registered for MFA cannot complete remediation and is blocked until an administrator helps. Deciding yourself lets you check the policy's impact first, exclude your emergency access accounts and tell your users what to expect.
 
-This check finds Microsoft-managed policies by the `Microsoft-managed:` name prefix. Administrators cannot rename a Microsoft-managed policy, so the prefix is reliable for the policies Microsoft creates. A custom policy that used the same prefix would also be listed. It lists each one still in report-only mode with the date it was created, the earliest date Microsoft can turn it on and its grant controls. The emergency access exclusions of every policy are checked by MT.1005.
+This check finds Microsoft-managed policies by the `Microsoft-managed:` name prefix. Administrators cannot rename a Microsoft-managed policy, so the prefix is reliable for the policies Microsoft creates. A custom policy that used the same prefix would also be listed. It lists each one still in report-only mode with the date it was created, the date from which Microsoft usually turns it on (30 days after it was created; Microsoft can act sooner, so check the Message center post) and its grant controls. The emergency access exclusions of every policy are checked by MT.1005.
 
 #### Remediation action
 
