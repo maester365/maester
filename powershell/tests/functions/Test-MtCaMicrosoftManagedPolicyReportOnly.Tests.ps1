@@ -5,6 +5,7 @@ Describe 'Test-MtCaMicrosoftManagedPolicyReportOnly' {
         Use-MtModuleFunction -Name Test-MtCaMicrosoftManagedPolicyReportOnly
 
         function New-ManagedCaPolicy {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(
                 [string]$Id = [guid]::NewGuid().ToString(),
                 [string]$DisplayName,
