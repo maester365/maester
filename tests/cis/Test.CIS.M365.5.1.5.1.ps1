@@ -39,7 +39,14 @@
     $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache).defaultUserRolePermissions
 
     Write-Verbose 'Executing checks'
-    $testResult = $settings.permissionGrantPoliciesAssigned -notcontains "ManagePermissionGrantsForSelf.microsoft-user-default-low" -and $settings.permissionGrantPoliciesAssigned -notcontains "ManagePermissionGrantsForSelf.microsoft-user-default-legacy"
+    $grantPolicies = $settings.permissionGrantPoliciesAssigned
+    # An empty list means no grant policy is assigned, so user consent is disabled.
+    if ($null -eq $grantPolicies) {
+        $testResult = $false
+    }
+    else {
+        $testResult = @($grantPolicies).Count -eq 0
+    }
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"

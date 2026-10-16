@@ -55,12 +55,16 @@
         $applicableDomains += $domain
     }
 
+    if (@($applicableDomains | Where-Object { $null -eq $_.PasswordValidityPeriodInDays }).Count -gt 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "One or more managed and verified domains did not return PasswordValidityPeriodInDays, so the password expiry period cannot be evaluated."
+        return $null
+    }
+
     $result = $applicableDomains | Where-Object {
         $passwordValidityPeriodInDays = 0
         $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
-        # If null or a boolean, the password expiry period is not set, and passwords do not expire.
-        # Return false to indicate this domain does not fail the test.
-        if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
+        # A boolean value is not a valid expiry period; treat as not failing.
+        if ($domainPasswordValidityPeriodInDays -is [bool]) {
             return $false
         }
         if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
