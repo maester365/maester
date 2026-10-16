@@ -25,7 +25,7 @@
         Area = 'authentication',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Low',
+        UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
