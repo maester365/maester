@@ -40,6 +40,10 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.DaclEntries) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     Write-Verbose "Filtering/counting dacl privileged extended right identity"
 
     $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })

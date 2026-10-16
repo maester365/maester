@@ -407,9 +407,9 @@ function Connect-MtAdTarget {
     }
     if ($allCertErrors.Count -eq $allExceptions.Count -and $allExceptions.Count -gt 0) {
         if ($tlsAttempts.Count -ge 2) {
-            Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+            Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using Connect-Maester -ActiveDirectorySkipCertificateCheck for test environments only.'
         } else {
-            Write-Verbose 'LDAPS connection failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+            Write-Verbose 'LDAPS connection failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using Connect-Maester -ActiveDirectorySkipCertificateCheck for test environments only.'
         }
     }
 

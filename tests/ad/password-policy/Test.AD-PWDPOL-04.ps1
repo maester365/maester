@@ -24,7 +24,7 @@
         Feature = 'password-policy',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'High',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
