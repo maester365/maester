@@ -23,7 +23,7 @@ The test enumerates KDS root keys present in Active Directory and evaluates the 
 
 #### References
 
-- [Microsoft: gMSA authentication failures with multiple KDS root keys](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys)
+- [Microsoft: gMSA authentication failures with multiple KDS root keys](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys)
 
 <!--- Results --->
 %TestResult%

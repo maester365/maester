@@ -76,7 +76,7 @@
     if ($testResult) {
         $testResultMarkdown = "✅ Exactly one KDS root key exists. This is the recommended configuration for gMSA operations.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "⚠️ $kdsRootKeysCount KDS root keys exist. Having multiple KDS root keys can cause gMSA authentication failures. Consider reviewing the key creation process and removing unnecessary keys. See [Microsoft documentation](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys) for details.`n`n%TestResult%"
+        $testResultMarkdown = "⚠️ $kdsRootKeysCount KDS root keys exist. Having multiple KDS root keys can cause gMSA authentication failures. Consider reviewing the key creation process and removing unnecessary keys. See [Microsoft documentation](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys) for details.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
