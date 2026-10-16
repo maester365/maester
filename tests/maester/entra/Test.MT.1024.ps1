@@ -34,7 +34,8 @@ function Test-MtEntraRecommendation {
     .DESCRIPTION
     Runs once per Entra recommendation (directory/recommendations). Passes when Entra reports the
     recommendation as completedBySystem, or when the only impacted resources left are the configured
-    emergency access (break-glass) accounts for the sign-in risk and user risk recommendations. Dismissed
+    emergency access (break-glass) accounts for the sign-in risk, user risk and admin MFA (adminMFAV2)
+    recommendations. Dismissed
     recommendations are skipped, as are Entra ID P2 recommendations in tenants without Entra ID P2.
 
     .LINK
@@ -120,12 +121,14 @@ function Test-MtEntraRecommendation {
         return $null
     }
 
-    # Break-glass (emergency access) accounts are intentionally excluded from risk-based Conditional
-    # Access policies to avoid locking out the accounts needed to recover the tenant, so the sign-in
-    # risk and user risk recommendations always flag them as impacted resources that are never
-    # remediated. When the configured break-glass accounts are the only accounts still flagged, they
-    # are the sole reason the recommendation is not complete and must not fail the test. See #2103.
-    $breakGlassAwareRecommendationTypes = @('userRiskPolicy', 'signinRiskPolicy')
+    # Break-glass (emergency access) accounts are intentionally excluded from Conditional Access
+    # policies to avoid locking out the accounts needed to recover the tenant. The sign-in risk, user
+    # risk and admin MFA (adminMFAV2) recommendations evaluate Conditional Access coverage, so they
+    # always flag these accounts as impacted resources that are never remediated, even when the
+    # accounts have phishing-resistant credentials such as passkeys registered. When the configured
+    # break-glass accounts are the only accounts still flagged, they are the sole reason the
+    # recommendation is not complete and must not fail the test. See #2103.
+    $breakGlassAwareRecommendationTypes = @('userRiskPolicy', 'signinRiskPolicy', 'adminMFAV2')
     if ($recommendation.status -ne 'completedBySystem' -and $recommendation.recommendationType -in $breakGlassAwareRecommendationTypes) {
         try {
             # Pipe instead of using member access so that no configured accounts yields an empty list, not @($null).
@@ -140,7 +143,7 @@ function Test-MtEntraRecommendation {
         $onlyBreakGlassImpacted = Test-MtRecommendationBreakGlassOnly -ImpactedResources $recommendation.impactedResources -BreakGlassObjectId $breakGlassObjectId
         if ($onlyBreakGlassImpacted) {
             $breakGlassNames = @($recommendation.impactedResources | Where-Object { $_.status -ne 'completedBySystem' } | ForEach-Object { $_.displayName }) -join ', '
-            $breakGlassNote = "`n`n> ℹ️ The only impacted resources are configured emergency access (break-glass) accounts, which are intentionally excluded from risk-based policies and are reported here for information only: $breakGlassNames."
+            $breakGlassNote = "`n`n> ℹ️ The only impacted resources are configured emergency access (break-glass) accounts, which are intentionally excluded from Conditional Access policies and are reported here for information only: $breakGlassNames."
             Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result ($resultMd + $breakGlassNote)
             return $true
         }
