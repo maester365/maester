@@ -31,7 +31,7 @@
     #>
     [MaesterTest(
         Id = 'MT.1225',
-        Title = 'Users should not be able to create Agent Identity Blueprints (Preview).',
+        Title = 'Users should not be able to create Agent Identity Blueprints.',
         Product = 'entra',
         Feature = 'agent-identities',
         Area = 'ai',
@@ -50,36 +50,26 @@
     param()
 
     Write-Verbose 'Checking whether default users can create agent identity blueprints...'
-    try {
-        $AuthorizationPolicy = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'policies/authorizationPolicy' `
-            -Select 'defaultUserRolePermissions' -ErrorAction Stop
+    $AuthorizationPolicy = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'policies/authorizationPolicy' `
+        -Select 'defaultUserRolePermissions'
 
-        $Permission = $AuthorizationPolicy.defaultUserRolePermissions
-        if ($null -eq $Permission -or $null -eq $Permission.allowedToCreateAgentIdentityBlueprints) {
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason (
-                'The tenant does not return the setting "Users can register agent identity blueprints" yet. ' +
-                'Microsoft starts the rollout on 4 November 2026.')
-            return $null
-        }
-
-        $Restricted = $Permission.allowedToCreateAgentIdentityBlueprints -eq $false
-        if ($Restricted) {
-            $TestResult = 'Well done. Default users cannot create agent blueprints. ' +
-                'Only administrators and users with the Agent ID Developer or Agent ID Administrator role can.'
-        } else {
-            $TestResult = "Default users can create agent blueprints in this tenant.`n`n" +
-                'The user who creates a blueprint becomes its owner and can manage its credentials and create ' +
-                'agent identities from it without holding an Entra role. Set "Users can register agent identity blueprints" ' +
-                'to **No**.'
-        }
-        Add-MtTestResultDetail -Result $TestResult
-        return $Restricted
-    } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 403) {
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        }
+    $Permission = $AuthorizationPolicy.defaultUserRolePermissions
+    if ($null -eq $Permission -or $null -eq $Permission.allowedToCreateAgentIdentityBlueprints) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason (
+            'The tenant does not return this setting yet; Microsoft is rolling it out (MC1506733).')
         return $null
     }
+
+    $Restricted = $Permission.allowedToCreateAgentIdentityBlueprints -eq $false
+    if ($Restricted) {
+        $TestResult = 'Well done. Default users cannot create agent blueprints. ' +
+            'Only administrators and users with the Agent ID Developer or Agent ID Administrator role can.'
+    } else {
+        $TestResult = "Default users can create agent blueprints in this tenant.`n`n" +
+            'The user who creates a blueprint becomes its owner and can manage its credentials and create ' +
+            'agent identities from it without holding an Entra role. Set "Users can register agent identity blueprints" ' +
+            'to **No**.'
+    }
+    Add-MtTestResultDetail -Result $TestResult
+    return $Restricted
 }
