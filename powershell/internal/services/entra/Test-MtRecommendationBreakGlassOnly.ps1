@@ -4,11 +4,11 @@
         Determines whether the only unresolved impacted resources of an Entra recommendation are configured emergency access (break-glass) accounts.
 
     .DESCRIPTION
-        The sign-in risk and user risk recommendations (MT.1024.signinRiskPolicy / MT.1024.userRiskPolicy)
-        flag every account that is not protected by a risk-based policy. Emergency access (break-glass)
-        accounts are intentionally excluded from risk-based Conditional Access policies to avoid locking
-        out the accounts needed to recover the tenant, so they always surface as impacted resources that
-        will never be remediated.
+        The sign-in risk, user risk and admin MFA recommendations (MT.1024.signinRiskPolicy /
+        MT.1024.userRiskPolicy / MT.1024.adminMFAV2) flag every account that is not covered by the
+        corresponding Conditional Access policy. Emergency access (break-glass) accounts are
+        intentionally excluded from Conditional Access policies to avoid locking out the accounts needed
+        to recover the tenant, so they always surface as impacted resources that will never be remediated.
 
         This function returns $true only when there is at least one impacted resource still requiring
         action and every such resource maps to a configured break-glass account (matched by subjectId or
@@ -50,7 +50,7 @@
     $openResources = @($ImpactedResources | Where-Object { $_.status -ne 'completedBySystem' })
     if ($openResources.Count -eq 0) { return $false }
 
-    # subjectId maps to the affected object (a user object id for the risk recommendations); id is
+    # subjectId maps to the affected object (a user object id for the risk and admin MFA recommendations); id is
     # matched as a fallback. Both are GUIDs, so a coincidental match against a break-glass id is not
     # a practical concern.
     $nonBreakGlass = @($openResources | Where-Object {

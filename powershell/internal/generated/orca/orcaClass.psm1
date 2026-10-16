@@ -203,7 +203,10 @@ Class ORCACheckConfig
             ($this.Results | Where-Object {$_.Level -eq [ORCAConfigLevel]::Standard}).Value = [ORCAResult]::Pass
             ($this.Results | Where-Object {$_.Level -eq [ORCAConfigLevel]::Strict}).Value = [ORCAResult]::Pass
         } else {
-            ($this.Results | Where-Object {$_.Level -eq $Level}).Value = $InputResult
+            foreach($r in @($this.Results | Where-Object {$_.Level -eq $Level}))
+            {
+                $r.Value = $InputResult
+            }
         }
 
         # The level of this configuration should be its strongest result (e.g if its currently standard and we have a strict pass, we should make the level strict)
@@ -315,6 +318,7 @@ enum ORCAConfigLevel
     Standard = 5
     Strict = 10
     TooStrict = 15
+    Informational = 20
     All = 100
 }
 
