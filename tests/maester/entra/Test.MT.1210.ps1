@@ -60,7 +60,8 @@
         # Agent Users can be made PIM-eligible for privileged roles, so eligible assignments count
         # too. Agent identities and blueprint principals are service principals, which PIM does not
         # allow to be eligible, so this only matters for Agent Users.
-        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment
+        # Same properties as MT.1209 so the active assignments come from the Graph cache.
+        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
         $RoleAssignments = @($RoleAssignmentResult.Assignments)
         $EligibilityNote = ''
         if (!$RoleAssignmentResult.EligibleChecked) {

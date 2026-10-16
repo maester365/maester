@@ -100,4 +100,18 @@ Describe 'Get-MtDirectoryRoleAssignment' -Tag 'Unit' {
             $QueryParameters.expand -eq 'principal'
         }
     }
+
+    It 'uses the Graph cache unless asked not to' {
+        Mock -ModuleName Maester Get-MtLicenseInformation { 'P1' }
+
+        $null = Get-MtDirectoryRoleAssignment -Select 'id', 'principalId'
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $RelativeUri -eq 'roleManagement/directory/roleAssignments' -and -not $DisableCache -and ($Select -join ',') -eq 'id,principalId'
+        }
+
+        $null = Get-MtDirectoryRoleAssignment -DisableCache
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $RelativeUri -eq 'roleManagement/directory/roleAssignments' -and $DisableCache
+        }
+    }
 }

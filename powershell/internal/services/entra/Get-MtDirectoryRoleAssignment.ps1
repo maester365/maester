@@ -39,7 +39,13 @@ function Get-MtDirectoryRoleAssignment {
         [string]$MemberStatus = 'EligibleAndActive',
 
         # Expand the assigned principal on each assignment.
-        [switch]$ExpandPrincipal
+        [switch]$ExpandPrincipal,
+
+        # Only return these properties of each assignment.
+        [string[]]$Select,
+
+        # Skip the Graph cache and read the assignments from Graph.
+        [switch]$DisableCache
     )
 
     function Get-Assignment {
@@ -48,14 +54,17 @@ function Get-MtDirectoryRoleAssignment {
             [string[]]$Filter,
             [ValidateSet('Eligible', 'Active')]
             [string]$AssignmentType,
-            [bool]$Expand
+            [bool]$Expand,
+            [string[]]$Property,
+            [bool]$NoCache
         )
 
         $params = @{
             ApiVersion   = 'v1.0'
             RelativeUri  = $Uri
-            DisableCache = $true
+            DisableCache = $NoCache
         }
+        if ($Property) { $params.Select = $Property }
         $Filter = @($Filter | Where-Object { $_ })
         if ($Filter) { $params.Filter = $Filter -join ' and ' }
         if ($Expand) { $params.QueryParameters = @{ expand = 'principal' } }
@@ -79,12 +88,12 @@ function Get-MtDirectoryRoleAssignment {
             foreach ($roleFilter in $roleFilters) {
                 if ($active) {
                     # assignmentType eq 'Assigned' filters out eligible users that have temporarily activated the role
-                    foreach ($assignment in Get-Assignment -Uri 'roleManagement/directory/roleAssignmentScheduleInstances' -Filter $roleFilter, "assignmentType eq 'Assigned'" -AssignmentType Active -Expand $ExpandPrincipal) {
+                    foreach ($assignment in Get-Assignment -Uri 'roleManagement/directory/roleAssignmentScheduleInstances' -Filter $roleFilter, "assignmentType eq 'Assigned'" -AssignmentType Active -Expand $ExpandPrincipal -Property $Select -NoCache $DisableCache) {
                         $assignments.Add($assignment)
                     }
                 }
                 if ($eligible) {
-                    foreach ($assignment in Get-Assignment -Uri 'roleManagement/directory/roleEligibilityScheduleInstances' -Filter $roleFilter -AssignmentType Eligible -Expand $ExpandPrincipal) {
+                    foreach ($assignment in Get-Assignment -Uri 'roleManagement/directory/roleEligibilityScheduleInstances' -Filter $roleFilter -AssignmentType Eligible -Expand $ExpandPrincipal -Property $Select -NoCache $DisableCache) {
                         $assignments.Add($assignment)
                     }
                 }
@@ -104,7 +113,7 @@ function Get-MtDirectoryRoleAssignment {
     if (-not $pim -and $active) {
         # Free or P1 tenant (PIM APIs cannot be called on non-P2 tenants)
         foreach ($roleFilter in $roleFilters) {
-            foreach ($assignment in Get-Assignment -Uri 'roleManagement/directory/roleAssignments' -Filter $roleFilter -AssignmentType Active -Expand $ExpandPrincipal) {
+            foreach ($assignment in Get-Assignment -Uri 'roleManagement/directory/roleAssignments' -Filter $roleFilter -AssignmentType Active -Expand $ExpandPrincipal -Property $Select -NoCache $DisableCache) {
                 $assignments.Add($assignment)
             }
         }

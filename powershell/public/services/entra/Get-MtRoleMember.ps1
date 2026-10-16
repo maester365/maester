@@ -83,7 +83,7 @@ function Get-MtRoleMember {
         $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })
     }
 
-    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal).Assignments
+    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal -DisableCache).Assignments
 
     foreach ($directoryRoleId in $RoleId) {
         $assignments = @()

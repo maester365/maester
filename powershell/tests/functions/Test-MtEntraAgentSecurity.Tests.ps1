@@ -750,6 +750,11 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Not -Match 'Eligible Directory Role'
             $script:TestResult | Should -Match 'were not checked'
             Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly 0 -ParameterFilter { $RelativeUri -like '*ScheduleInstances' }
+            # Same request as MT.1209, so it is served from the Graph cache when MT.1209 has run.
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly 1 -ParameterFilter {
+                $RelativeUri -eq 'roleManagement/directory/roleAssignments' -and -not $DisableCache -and
+                ($Select -join ',') -eq 'id,principalId,roleDefinitionId,directoryScopeId'
+            }
         }
     }
 
