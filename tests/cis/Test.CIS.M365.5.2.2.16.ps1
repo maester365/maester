@@ -48,12 +48,12 @@
         $includedApps = @($policy.conditions.applications.includeApplications)
         $missingApps = @($requiredApps | Where-Object { $includedApps -notcontains $_ })
         $checks = [ordered]@{
-            'Users included' = [bool](@($policy.conditions.users.includeUsers) -notcontains 'None')
+            'Users included'                 = [bool](@($policy.conditions.users.includeUsers) -notcontains 'None')
             'Exchange, SharePoint and Teams' = $missingApps.Count -eq 0
-            'Windows platform' = @($policy.conditions.platforms.includePlatforms) -contains 'windows'
-            'Desktop clients' = (@($policy.conditions.clientAppTypes) | Sort-Object) -join ',' -eq 'mobileAppsAndDesktopClients'
-            'Token protection enabled' = $policy.sessionControls.secureSignInSession.isEnabled -eq $true
-            'Enabled' = $policy.state -eq 'enabled'
+            'Windows platform'               = @($policy.conditions.platforms.includePlatforms) -contains 'windows'
+            'Desktop clients'                = (@($policy.conditions.clientAppTypes) | Sort-Object) -join ',' -eq 'mobileAppsAndDesktopClients'
+            'Token protection enabled'       = $policy.sessionControls.secureSignInSession.isEnabled -eq $true
+            'Enabled'                        = $policy.state -eq 'enabled'
         }
         $failed = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
         [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; Failed = $failed -join ', '; Pass = $failed.Count -eq 0 }
@@ -70,7 +70,8 @@
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
