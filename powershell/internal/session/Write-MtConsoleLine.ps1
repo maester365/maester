@@ -173,7 +173,8 @@ function Initialize-MtDashboard {
     fewer than 25 tests has none of them, and a panel with nothing to show is left out. The second row of
     them needs a console of about 64 rows.
 
-      Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
+      Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant); left
+                   out when Graph is not connected (Invoke-Maester -SkipGraphConnect)
       ActiveDirectory
                    the domain, its domain controller and the account it is connected as; only after
                    Connect-Maester -Service ActiveDirectory (set later, by Set-MtDashboardDirectory)
@@ -402,7 +403,8 @@ function Start-MtDashboardTenant {
     if (Get-Module -Name Microsoft.Graph.Authentication) {
         try { $mg = Get-MgContext; if ($mg) { $graph = $true; $account = @($mg.Account, [string]$mg.AuthType | Where-Object { $_ }) -join ' · ' } } catch { Write-Debug "No Graph context: $_" }
     }
-    if ($showTenant) {
+    # Without Graph there is no tenant to read, and the panel is left out (Set-MtDashboardTenant).
+    if ($showTenant -and $graph) {
         $lines = @($reading); if ($account) { $lines += Format-MtConsoleText $account -Style Dim -Console $Console }
         $Renderer.SetPanelText('Tenant', 'Tenant', [string[]]$lines)
     }
@@ -492,19 +494,19 @@ function Set-MtDashboardTenant {
 
     .DESCRIPTION
     Everything comes from the tenant context the run already has; nothing is requested for the panel.
-    Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show, and the panel says so.
+    Without a Graph connection (a run with -SkipGraphConnect, such as one of Active Directory alone) there is
+    no tenant to show, and the panel is left out: the Connections panel already says that Graph is not connected.
     The connected services are not here: they are in the Connections panel.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
-        [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
-        [Parameter()] [AllowNull()] [pscustomobject] $Console
+        [Parameter()] [AllowNull()] [pscustomobject] $TenantContext
     )
     $graph = $TenantContext -and $TenantContext.Services -and $TenantContext.Services.PSObject.Properties['Graph'] -and $TenantContext.Services.Graph
     if (-not $graph) {
-        $Renderer.SetPanelText('Tenant', 'Tenant', [string[]]@(Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
+        $Renderer.SetPanelText('Tenant', 'Tenant', $null)
         return
     }
     $domain = if ($TenantContext.PSObject.Properties['PrimaryDomain']) { [string]$TenantContext.PrimaryDomain } else { '' }
