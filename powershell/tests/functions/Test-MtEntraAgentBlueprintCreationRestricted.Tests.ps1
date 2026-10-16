@@ -35,14 +35,15 @@
         $script:SkippedBecause | Should -BeNullOrEmpty
     }
 
-    It 'fails and names the fix when default users can create agent blueprints' {
+    It 'fails and names the setting to turn off when default users can create agent blueprints' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             Get-Policy @{ allowedToCreateAgentIdentityBlueprints = $true }
         }
 
         Test-MtEntraAgentBlueprintCreationRestricted | Should -BeFalse
         $script:Result | Should -Match 'can create agent blueprints'
-        $script:Result | Should -Match 'Agent ID Developer'
+        $script:Result | Should -Match 'Users can register agent identity blueprints'
+        $script:Result | Should -Not -Match 'Agent ID Developer'
     }
 
     It 'reads the setting from the beta authorization policy' {

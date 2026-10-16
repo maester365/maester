@@ -70,7 +70,7 @@
             $testResult = "Default users can create agent blueprints in this tenant.`n`n" +
                 'The user who creates a blueprint becomes its owner and can manage its credentials and create ' +
                 'agent identities from it without holding an Entra role. Set "Users can register agent identity blueprints" ' +
-                'to **No** and assign the Agent ID Developer role to the people who build agents.'
+                'to **No**.'
         }
         Add-MtTestResultDetail -Result $testResult
         return $restricted
