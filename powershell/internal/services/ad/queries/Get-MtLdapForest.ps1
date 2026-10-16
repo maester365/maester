@@ -42,8 +42,8 @@
         $fallbackRootDomain = (([regex]::Matches($rootDse.RootDomainNamingContext, '(?i)(?:^|,)DC=([^,]+)') | ForEach-Object { $_.Groups[1].Value }) -join '.')
 
         $crossForestReferences = @($partitions | Where-Object {
-            $flags = if ($null -ne $_.systemFlags) { [int]$_.systemFlags } else { 0 }
-            ($flags -band 0x1) -eq 0
+            $null -ne $_.systemFlags -and
+            ([int]$_.systemFlags -band 0x1) -eq 0
         } | ForEach-Object {
             [PSCustomObject]@{
                 DnsRoot    = [string]$_.dnsRoot

@@ -101,6 +101,7 @@ function Get-MtADGpoState {
             }
 
             $parsedGpoLinks = [System.Collections.Generic.List[object]]::new()
+            $domainLinksFailed = $false
             try {
                 $linkContainers = @(Get-MtLdapGpoLink -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 $gpoState['LinkContainers'] = $linkContainers
@@ -131,6 +132,9 @@ function Get-MtADGpoState {
             }
             catch {
                 Write-Verbose "Could not collect domain and OU GPO links: $($_.Exception.Message)"
+                $domainLinksFailed = $true
+                $gpoState['LinkContainers'] = $null
+                $gpoState['GPOLinks'] = $null
             }
 
             try {
@@ -163,8 +167,11 @@ function Get-MtADGpoState {
             }
             catch {
                 Write-Verbose "Could not collect site GPO links: $($_.Exception.Message)"
+                $gpoState['SiteContainers'] = $null
             }
-            $gpoState['GPOLinks'] = @($parsedGpoLinks)
+            if (-not $domainLinksFailed) {
+                $gpoState['GPOLinks'] = @($parsedGpoLinks)
+            }
 
             try {
                 $applyGroupPolicyGuid = 'edacfd8f-ffb3-11d1-b41d-00a0c968f939'

@@ -163,9 +163,6 @@
     if ($Value -is [byte[]]) {
         switch ($normalizedAttributeName) {
             { $_ -in @('objectsid', 'sidhistory', 'securityidentifier') } {
-                if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
-                    return $null
-                }
                 try {
                     return New-Object System.Security.Principal.SecurityIdentifier -ArgumentList $Value, 0
                 }

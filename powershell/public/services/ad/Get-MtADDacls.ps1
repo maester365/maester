@@ -49,6 +49,10 @@
         return $null
     }
 
+    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+        throw 'DACL parsing requires Windows. Run this check from a Windows host.'
+    }
+
     # Build target-scoped cache key matching the DomainState pattern
     $targetSuffix = if ($__MtSession.ADConnection.ResolvedDomain -and $__MtSession.ADConnection.ResolvedServer) {
         ":$($__MtSession.ADConnection.ResolvedDomain):$($__MtSession.ADConnection.ResolvedServer)"
