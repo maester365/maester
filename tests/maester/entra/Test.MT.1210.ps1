@@ -68,14 +68,47 @@
             $RoleDefLookup[[string]$Def.id] = $Def
         }
 
+        # Agent Users can be made PIM-eligible for privileged roles, which roleAssignments does
+        # not return. Agent identities and blueprint principals are service principals, which
+        # PIM does not allow to be eligible, so this read only matters for Agent Users.
+        $EligibilityNote = ''
+        $RoleEligibilities = @()
+        try {
+            Write-Verbose 'Reading PIM-eligible directory role assignments.'
+            $RoleEligibilities = @(
+                Invoke-MtGraphRequest -ApiVersion 'v1.0' `
+                    -RelativeUri 'roleManagement/directory/roleEligibilityScheduleInstances' `
+                    -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
+            )
+        } catch {
+            $EligibilityError = "$($_.Exception.Message) $($_.ErrorDetails.Message)"
+            if ($EligibilityError -match '(?i)AadPremiumLicenseRequired|403|forbidden|authorization') {
+                Write-Verbose 'PIM-eligible role assignments could not be read. Checking active assignments only.'
+                $EligibilityNote = "`n`nNote: PIM-eligible role assignments could not be read (this needs " +
+                    'Microsoft Entra ID P2 or Governance and the RoleEligibilitySchedule.Read.Directory ' +
+                    'permission), so only active role assignments were checked.'
+            } else {
+                throw
+            }
+        }
+
+        $RoleGrants = @(
+            foreach ($Assignment in $RoleAssignments) {
+                [pscustomobject]@{ Assignment = $Assignment; Eligible = $false }
+            }
+            foreach ($Eligibility in $RoleEligibilities) {
+                [pscustomobject]@{ Assignment = $Eligibility; Eligible = $true }
+            }
+        )
+
         $AssignmentsByUser = @{}
-        foreach ($Assignment in $RoleAssignments) {
-            $AssignedPrincipalId = [string]$Assignment.principalId
+        foreach ($Grant in $RoleGrants) {
+            $AssignedPrincipalId = [string]$Grant.Assignment.principalId
             if (![string]::IsNullOrWhiteSpace($AssignedPrincipalId)) {
                 if (!$AssignmentsByUser.ContainsKey($AssignedPrincipalId)) {
                     $AssignmentsByUser[$AssignedPrincipalId] = [System.Collections.Generic.List[object]]::new()
                 }
-                $AssignmentsByUser[$AssignedPrincipalId].Add($Assignment)
+                $AssignmentsByUser[$AssignedPrincipalId].Add($Grant)
             }
         }
 
@@ -86,21 +119,22 @@
             $UserId = [string]$User.id
             if ([string]::IsNullOrWhiteSpace($UserId)) { continue }
 
-            # 1. Direct privileged directory roles. A role Get-MtRoleInfo does not resolve, or
-            # has not classified as privileged, is an observation, not a confirmed finding.
+            # 1. Privileged directory roles, active or PIM-eligible. A role Get-MtRoleInfo does not
+            # resolve, or has not classified as privileged, is an observation, not a confirmed finding.
             # isPrivileged is not a Graph-queryable property on unifiedRoleDefinition --
             # confirmed live, Graph returns 400 Bad Request for it in $select. Resolve privilege
             # from Maester's own built-in-roles catalog instead.
             if ($AssignmentsByUser.ContainsKey($UserId)) {
-                foreach ($Assigned in $AssignmentsByUser[$UserId]) {
-                    $DefId = [string]$Assigned.roleDefinitionId
+                foreach ($Grant in $AssignmentsByUser[$UserId]) {
+                    $DefId = [string]$Grant.Assignment.roleDefinitionId
+                    $EligibleSuffix = if ($Grant.Eligible) { ' (eligible)' } else { '' }
                     $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
                     if ($null -eq $RoleDef) {
                         $RoleObservations.Add([pscustomobject]@{
                                 UserId = $UserId
                                 DisplayName = [string]$User.displayName
                                 UserPrincipalName = [string]$User.userPrincipalName
-                                RoleName = "Unresolved role definition ($DefId)"
+                                RoleName = "Unresolved role definition ($DefId)$EligibleSuffix"
                             })
                         continue
                     }
@@ -110,19 +144,26 @@
                                 UserId = $UserId
                                 DisplayName = [string]$User.displayName
                                 UserPrincipalName = [string]$User.userPrincipalName
-                                RoleName = [string]$RoleDef.displayName
+                                RoleName = "$([string]$RoleDef.displayName)$EligibleSuffix"
                             })
                         continue
                     }
                     if (!$RoleInfo.IsPrivileged) { continue }
 
+                    if ($Grant.Eligible) {
+                        $AccessType = 'Eligible Directory Role'
+                        $Reason = 'PIM-eligible for a privileged Entra directory role and can activate it.'
+                    } else {
+                        $AccessType = 'Directory Role'
+                        $Reason = 'Directly assigned a privileged Entra directory role.'
+                    }
                     $ExcessiveAccessFindings.Add([pscustomobject]@{
                         UserId            = $UserId
                         DisplayName       = [string]$User.displayName
                         UserPrincipalName = [string]$User.userPrincipalName
-                        AccessType        = 'Directory Role'
+                        AccessType        = $AccessType
                         PrivilegedItem    = [string]$RoleDef.displayName
-                        Reason            = 'Directly assigned a privileged Entra directory role.'
+                        Reason            = $Reason
                     })
                 }
             }
@@ -176,7 +217,7 @@
         if ($ExcessiveAccessFindings.Count -eq 0) {
             Add-MtTestResultDetail -Result (
                 'Well done. No Agent Users have confirmed privileged directory roles or ' +
-                "membership in role-assignable groups.$ObservationNote"
+                "membership in role-assignable groups.$ObservationNote$EligibilityNote"
             )
             return $true
         }
@@ -196,6 +237,7 @@
                 "$PrivItem | $Reason |"
         }
         $Result += $ObservationNote
+        $Result += $EligibilityNote
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'
         return $false

@@ -688,6 +688,67 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Not -Match "Custom`r`nAgent Role"
             $script:TestResult | Should -Match 'could not be classified'
         }
+
+        It 'reports an Agent User that is PIM-eligible for a privileged role' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
+                    return @([pscustomobject]@{ id = 'agent-user-1'; displayName = 'Agent User 1'; userPrincipalName = 'au1@contoso.com' })
+                }
+                if ($RelativeUri -like '*roleDefinitions') {
+                    return @([pscustomobject]@{ id = 'role-global-reader'; displayName = 'Global Reader' })
+                }
+                if ($RelativeUri -like '*roleEligibilityScheduleInstances') {
+                    return @([pscustomobject]@{ principalId = 'agent-user-1'; roleDefinitionId = 'role-global-reader' })
+                }
+                return @()
+            }
+
+            Test-MtEntraAgentUserExcessiveAccess | Should -BeFalse
+            $script:TestResult | Should -Match 'agent-user-1'
+            $script:TestResult | Should -Match 'Eligible Directory Role'
+            $script:TestResult | Should -Match 'Global Reader'
+        }
+
+        It 'passes when the only eligible role is not privileged' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
+                    return @([pscustomobject]@{ id = 'agent-user-1'; displayName = 'Agent User 1'; userPrincipalName = 'au1@contoso.com' })
+                }
+                if ($RelativeUri -like '*roleDefinitions') {
+                    return @([pscustomobject]@{ id = 'role-reader'; displayName = 'Reports Reader' })
+                }
+                if ($RelativeUri -like '*roleEligibilityScheduleInstances') {
+                    return @([pscustomobject]@{ principalId = 'agent-user-1'; roleDefinitionId = 'role-reader' })
+                }
+                return @()
+            }
+
+            Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
+            $script:TestResult | Should -Match 'Well done'
+        }
+
+        It 'still checks active roles and notes it when eligible assignments cannot be read' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
+                    return @([pscustomobject]@{ id = 'agent-user-1'; displayName = 'Agent User 1'; userPrincipalName = 'au1@contoso.com' })
+                }
+                if ($RelativeUri -like '*roleDefinitions') {
+                    return @([pscustomobject]@{ id = 'role-global-reader'; displayName = 'Global Reader' })
+                }
+                if ($RelativeUri -like '*roleAssignments') {
+                    return @([pscustomobject]@{ principalId = 'agent-user-1'; roleDefinitionId = 'role-global-reader' })
+                }
+                if ($RelativeUri -like '*roleEligibilityScheduleInstances') {
+                    throw 'Response status code does not indicate success: AadPremiumLicenseRequired'
+                }
+                return @()
+            }
+
+            Test-MtEntraAgentUserExcessiveAccess | Should -BeFalse
+            $script:TestResult | Should -Match 'Directly assigned'
+            $script:TestResult | Should -Not -Match 'Eligible Directory Role'
+            $script:TestResult | Should -Match 'could not be read'
+        }
     }
 
     Context 'MT.1211: Test-MtEntraAgentBlueprintAllAllowedInheritance' {
