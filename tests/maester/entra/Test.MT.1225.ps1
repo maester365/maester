@@ -51,29 +51,29 @@
 
     Write-Verbose 'Checking whether default users can create agent identity blueprints...'
     try {
-        $authorizationPolicy = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'policies/authorizationPolicy' `
+        $AuthorizationPolicy = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'policies/authorizationPolicy' `
             -Select 'defaultUserRolePermissions' -ErrorAction Stop
 
-        $permission = $authorizationPolicy.defaultUserRolePermissions
-        if ($null -eq $permission -or $null -eq $permission.allowedToCreateAgentIdentityBlueprints) {
+        $Permission = $AuthorizationPolicy.defaultUserRolePermissions
+        if ($null -eq $Permission -or $null -eq $Permission.allowedToCreateAgentIdentityBlueprints) {
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason (
                 'The tenant does not return the setting "Users can register agent identity blueprints" yet. ' +
                 'Microsoft starts the rollout on 4 November 2026.')
             return $null
         }
 
-        $restricted = $permission.allowedToCreateAgentIdentityBlueprints -eq $false
-        if ($restricted) {
-            $testResult = 'Well done. Default users cannot create agent blueprints. ' +
+        $Restricted = $Permission.allowedToCreateAgentIdentityBlueprints -eq $false
+        if ($Restricted) {
+            $TestResult = 'Well done. Default users cannot create agent blueprints. ' +
                 'Only administrators and users with the Agent ID Developer or Agent ID Administrator role can.'
         } else {
-            $testResult = "Default users can create agent blueprints in this tenant.`n`n" +
+            $TestResult = "Default users can create agent blueprints in this tenant.`n`n" +
                 'The user who creates a blueprint becomes its owner and can manage its credentials and create ' +
                 'agent identities from it without holding an Entra role. Set "Users can register agent identity blueprints" ' +
                 'to **No**.'
         }
-        Add-MtTestResultDetail -Result $testResult
-        return $restricted
+        Add-MtTestResultDetail -Result $TestResult
+        return $Restricted
     } catch {
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 403) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized

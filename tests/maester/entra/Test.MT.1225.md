@@ -16,10 +16,10 @@ The setting is independent of **Users can register applications**. Restricting a
 
 This test reads `defaultUserRolePermissions.allowedToCreateAgentIdentityBlueprints` from the authorization policy. The property is only returned by the Microsoft Graph beta endpoint and is not yet documented there, so its name may change before the rollout completes. The test is skipped when the tenant does not return it.
 
-### Remediation action
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
-2. Go to **Entra ID** > **Users** > **User settings**.
+2. Go to **Entra ID** > **Users** > [**User settings**](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/).
 3. Under **Default user role permissions**, set **Users can register agent identity blueprints** to **No**, then save. You can set it before the rollout reaches your tenant, and it takes effect when it does.
 
 ### Related links

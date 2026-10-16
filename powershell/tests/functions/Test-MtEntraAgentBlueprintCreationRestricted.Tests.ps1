@@ -73,10 +73,10 @@
 
     It 'is skipped as not authorized on a 403 response' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
-            $exception = [System.Exception]::new('Forbidden')
-            $response = [pscustomobject]@{ StatusCode = 403 }
-            $exception | Add-Member -NotePropertyName Response -NotePropertyValue $response
-            throw $exception
+            $Exception = [System.Exception]::new('Forbidden')
+            $Response = [pscustomobject]@{ StatusCode = 403 }
+            $Exception | Add-Member -NotePropertyName Response -NotePropertyValue $Response
+            throw $Exception
         }
 
         Test-MtEntraAgentBlueprintCreationRestricted | Should -BeNullOrEmpty
