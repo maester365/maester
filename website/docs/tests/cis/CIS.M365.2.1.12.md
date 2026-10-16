@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.2.1.12"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.2.1.12 - (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/ic3lotus" title="Patrick · Co-contributor"><img src="https://github.com/ic3lotus.png" alt="Patrick" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/knussbaumer">Kim Nussbaumer</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -74,11 +77,22 @@ Set-HostedConnectionFilterPolicy -Identity Default -IPAllowList @{}
 | Test ID | CIS.M365.2.1.12 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisHostedConnectionFilterPolicy](/docs/commands/Test-MtCisHostedConnectionFilterPolicy) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.12, L1 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.12 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:2.1.12, nist-800-53-r5:AC-4 |
+| PowerShell test | [Test-MtCisHostedConnectionFilterPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.12.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisHostedConnectionFilterPolicy.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisHostedConnectionFilterPolicy.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.12.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.12.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.12.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.12.md)

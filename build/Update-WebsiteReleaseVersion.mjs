@@ -13,7 +13,8 @@ if (!match) {
 
 const [, major, minor, patch] = match;
 const currentVersion = `${major}.${minor}.${patch}`;
-const previewVersion = `${major}.${minor}.${Number(patch) + 1}-preview`;
+// Previews after a release are prereleases of the next minor version: after 3.0.0 they are 3.1.0-preview1, 3.1.0-preview2.
+const previewVersion = `${major}.${Number(minor) + 1}.0-preview`;
 
 const repoRoot = process.cwd();
 const websiteRoot = join(repoRoot, "website");

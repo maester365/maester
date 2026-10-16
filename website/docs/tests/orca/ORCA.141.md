@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.141"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.141 - Bulk action set to Move message to Junk Email Folder.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 It is recommended to configure Bulk detection action to Move messages to Junk Email folder.
 
 #### Remediation action
+
 Change bulk action to move messages to junk mail folder.
 
 #### Related Links
@@ -37,13 +41,21 @@ Change bulk action to move messages to junk mail folder.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.141 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA141](/docs/commands/Test-ORCA141) |
-| Tags | EXO, ORCA, ORCA.141 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-ORCA141](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.141.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA141.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA141.ps1`
+- Test: [`tests/orca/Test.ORCA.141.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.141.ps1)
+- Documentation: [`tests/orca/Test.ORCA.141.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.141.md)

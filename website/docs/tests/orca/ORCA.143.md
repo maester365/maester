@@ -11,6 +11,9 @@ keywords:
   - "ORCA.143"
   - "Info"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.143 - Safety Tips are enabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 By default, safety tips can provide useful security information when reading an email.
 
 #### Remediation action
+
 Safety Tips should be enabled.
 
 #### Related Links
@@ -39,11 +43,17 @@ Safety Tips should be enabled.
 | Test ID | ORCA.143 |
 | Severity | Info |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA143](/docs/commands/Test-ORCA143) |
-| Tags | EXO, ORCA, ORCA.143 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports controls | nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-ORCA143](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.143.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA143.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA143.ps1`
+- Test: [`tests/orca/Test.ORCA.143.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.143.ps1)
+- Documentation: [`tests/orca/Test.ORCA.143.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.143.md)

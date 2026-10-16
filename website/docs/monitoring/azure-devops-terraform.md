@@ -74,6 +74,26 @@ Grab a coffee and come back in a few minutes to check the resources. ☕️
 
 - Select **Repos** > **Files** and switch to **Maester-tests** repository
 
+:::info Maester 3.0
+The module creates the **Maester-tests** repository by importing the Maester 2.x test repository, and its pipeline installs the latest Maester module from the PowerShell Gallery. With Maester 3.0 the built-in tests ship inside the module and run from it: the copied test files in the repository are recognised and skipped, so the pipeline keeps working. You can delete the copied test folders and keep only your own `Custom` folder and `maester-config.json`. See [Upgrading from 2.x](../upgrading-from-2x.md).
+
+The generated `azure-pipelines.yml` calls `New-PesterConfiguration`, which needs Pester. Microsoft-hosted agents include Pester; on other agents, or to drop the Pester dependency, replace the test result configuration in `azure-pipelines.yml` with a hashtable, which Maester 3.0 handles itself:
+
+```powershell
+# Configure test results (Maester writes the NUnit XML file, Pester is not required)
+$PesterConfiguration = @{
+  TestResult = @{
+    Enabled      = $true
+    OutputPath   = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+    OutputFormat = 'NUnitXml'
+  }
+}
+
+# Run Maester tests: the built-in tests run from the module, -Path adds any custom tests and maester-config.json in the repository
+Invoke-Maester -Path '$(System.DefaultWorkingDirectory)' -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+```
+:::
+
 ## Viewing test results
 
 - Select **Pipelines** > **Runs** to view the status of the pipeline
@@ -100,7 +120,7 @@ The **Tests** tab shows a detailed view of each test, including the test name, d
 
 ## Keeping your Maester tests up to date
 
-The Maester team will add new tests over time. To get the latest updates, just simply redeploy the Terraform Module!
+The Maester team will add new tests over time. The built-in tests ship inside the Maester PowerShell module, and the pipeline installs the latest module on every run, so new tests are picked up automatically. There is no need to redeploy the Terraform module or update the repository to get new tests.
 
 ## Contributors
 

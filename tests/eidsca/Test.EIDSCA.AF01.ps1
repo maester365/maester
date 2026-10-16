@@ -1,0 +1,35 @@
+function Test-MtCheckEidscaAF01 {
+    <#
+    .SYNOPSIS
+    Checks if Authentication Method - FIDO2 security key - State is 'enabled'
+
+    .DESCRIPTION
+    Whether the FIDO2 security keys is enabled in the tenant.
+
+    Reads the tenant value of
+    https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
+    .state with Test-MtEidscaAF01
+    and passes when it -eq 'enabled'.
+    #>
+    [MaesterTest(
+        Id = 'EIDSCA.AF01',
+        Title = 'Authentication Method - FIDO2 security key - State.',
+        Product = 'entra',
+        Feature = 'authentication-methods',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1566.002',
+        Control = ('nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-2(2)'),
+        Service = 'Graph',
+        Author = 'Cloud-Architekt'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $tenantValue = Test-MtEidscaAF01
+    return ($tenantValue -eq 'enabled')
+}

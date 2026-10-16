@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.2.1.11"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.2.1.11 - (L2) Ensure comprehensive attachment filtering is applied
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -107,13 +110,24 @@ New-MalwareFilterRule @Rule
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.2.1.11 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisAttachmentFilterComprehensive](/docs/commands/Test-MtCisAttachmentFilterComprehensive) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.2.1.11, L2 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1204.002 Malicious File |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.11 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2 |
+| Supports controls | cis-m365:2.1.11, nist-800-53-r5:SI-3 |
+| PowerShell test | [Test-MtCisAttachmentFilterComprehensive](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisAttachmentFilterComprehensive.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.11.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.11.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.11.md)

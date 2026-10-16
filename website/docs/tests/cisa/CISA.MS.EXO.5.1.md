@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.5.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Client access"
+  - "Authentication"
   - "MS.EXO"
   - "MS.EXO.5.1"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.5.1 - SMTP AUTH SHALL be disabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -48,11 +50,21 @@ Rationale: SMTP AUTH is not used or needed by modern email clients. Therefore, d
 | Test ID | CISA.MS.EXO.5.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaSmtpAuthentication](/docs/commands/Test-MtCisaSmtpAuthentication) |
-| Tags | CISA, CISA.MS.EXO.5.1, MS.EXO, MS.EXO.5.1 |
+| Product | Exchange Online |
+| Feature | Client access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | None |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.5.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.5.1v1 |
+| Supports controls | cisa-scuba:MS.EXO.5.1, nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCisaSmtpAuthentication](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.5.1.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaSmtpAuthentication.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaSmtpAuthentication.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.5.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.5.1.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.5.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.5.1.md)

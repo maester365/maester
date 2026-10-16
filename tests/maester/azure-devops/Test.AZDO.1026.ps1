@@ -1,0 +1,55 @@
+﻿<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks if GitHub advanced Security for Azure DevOps is automatically enabled for new projects.
+
+    https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding
+
+.EXAMPLE
+    ```
+    Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject
+#>
+
+function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
+    [MaesterTest(
+        Id = 'AZDO.1026',
+        Title = 'Enable automatic enrollment to Advanced Security for Azure DevOps.',
+        Product = 'azure-devops',
+        Feature = 'repositories',
+        Area = 'engineering-systems',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1552.001', 'T1195.001', 'T1190'),
+        Control = ('nist-800-53-r5:SA-11', 'nist-800-53-r5:IA-5(7)'),
+        Service = 'AzureDevOps',
+        Author = 'SebastianClaesson',
+        HelpUrl = 'https://learn.microsoft.com/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose "Running Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject"
+
+$result = (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate
+
+    if ($result) {
+        $resultMarkdown = "New projects will by default have Advanced Security enabled."
+    } else {
+        $resultMarkdown = "New projects must be manually enrolled in Advanced Security."
+    }
+
+    Add-MtTestResultDetail -Result $resultMarkdown
+
+    return $result
+}

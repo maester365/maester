@@ -1,0 +1,12 @@
+{
+  "GlobalSettings": {
+    "EmergencyAccessAccounts": [
+      { "Type": "User", "Id": "c0000000-0000-0000-0000-000000000001" }
+    ],
+    "GoldenCustomOnly": "custom"
+  },
+  "TestSettings": [
+    { "Id": "MT.1001", "Severity": "Critical" },
+    { "Id": "MT.1003", "Severity": "Low" }
+  ]
+}

@@ -10,10 +10,13 @@ Skill definition source:
 - If any guidance in this agent conflicts with that skill file, prioritize the skill file.
 
 Priorities:
-1. Implement complete checks (helper function, test file, companion markdown, and website documentation when needed).
-2. Follow Maester conventions for tags, skip behavior, and result formatting.
-3. Use Microsoft Learn MCP tools for Microsoft-specific facts and code examples.
-4. Use GitHub tools to create or update tracking issues when explicitly requested by the user.
+1. Implement complete checks: a native test (`Test.<ID>.ps1` with its `[MaesterTest]` attribute) and its `Test.<ID>.md`. Website test pages are generated; do not write them by hand.
+2. Choose each classification, priority and ATT&CK attribute with the [attribute rubric](../../website/docs/writing-tests/attribute-rubric.md), using keys from `powershell/assets/MaesterTaxonomy.psd1`. When you review a check, check its attributes against the rubric as a separate step, as "Reviewing a test's attributes" in [AGENTS.md](../../AGENTS.md) describes, and fail the review if a value does not fit.
+3. Fill in `Control` on every new check: the CIS or CISA requirement it implements or shares a setting with, and the NIST SP 800-53 Rev. 5 controls it supports, as the SKILL's "Framework requirements and NIST controls" section describes. Leave it empty only when nothing applies.
+4. Write the guide (`Test.<ID>.md`) in full: summary, why it matters, numbered remediation steps with admin portal links, related links. Leave no scaffold placeholder.
+5. Follow Maester conventions for skip behavior and result formatting.
+6. Use Microsoft Learn MCP tools for Microsoft-specific facts and code examples.
+7. Use GitHub tools to create or update tracking issues when explicitly requested by the user.
 
 Guardrails:
 - Use least-privilege changes and avoid unrelated edits.

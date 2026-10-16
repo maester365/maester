@@ -17,8 +17,8 @@
 .EXAMPLE
     ./build/Build-LocalMaester.ps1
 
-    Builds and imports the local Maester module. Invoke-Maester can then be run
-    against ./module/maester-tests.
+    Builds and imports the local Maester module. Invoke-Maester then runs the built-in tests from
+    the module; pass -Path to also run custom tests.
 
 .EXAMPLE
     ./build/Build-LocalMaester.ps1 -BuildReport

@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.118.3"
-  - "Medium"
+  - "High"
   - "ORCA"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.118.3 - Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/soulemike" title="Michael Soule · Co-contributor"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Original author"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Emails coming from allow listed domains bypass several layers of protection within Exchange Online Protection. When allow listing your own domains, an attacker can spoof any account in your organisation that has this domain. This is a significant phishing attack vector.
 
 #### Remediation action
+
 Remove allow listing on domains belonging to your organisation.
 
 #### Related Links
@@ -37,13 +41,21 @@ Remove allow listing on domains belonging to your organisation.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.118.3 |
-| Severity | Medium |
+| Severity | High |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA118_3](/docs/commands/Test-ORCA118_3) |
-| Tags | EXO, ORCA, ORCA.118.3 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-ORCA118_3](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.3.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA118_3.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA118_3.ps1`
+- Test: [`tests/orca/Test.ORCA.118.3.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.3.ps1)
+- Documentation: [`tests/orca/Test.ORCA.118.3.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.3.md)

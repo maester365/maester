@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.1.3.6"
-  - "High"
+  - "Medium"
   - "CIS"
-  - "CIS E5 Level 2"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "Access control"
   - "CIS E5"
+  - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.1.3.6 - (L2) Ensure the customer lockbox feature is enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -68,13 +71,25 @@ Set-OrganizationConfig -CustomerLockBoxEnabled $true
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.1.3.6 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E5 Level 2 |
-| PowerShell test | [Test-MtCisCustomerLockBox](/docs/commands/Test-MtCisCustomerLockBox) |
-| Tags | CIS, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.6, L2 |
+| Product | Microsoft 365 |
+| Related products | Purview |
+| Feature | Organization settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1199 Trusted Relationship |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.6 |
+| Benchmark level | L2 |
+| Benchmark profiles | E5 Level 2 |
+| Supports controls | cis-m365:1.3.6 |
+| PowerShell test | [Test-MtCisCustomerLockBox](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.6.ps1) |
+| Services | ExchangeOnline |
+| Compatible licenses | LOCKBOX_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisCustomerLockBox.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisCustomerLockBox.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.3.6.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.6.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.3.6.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.6.md)

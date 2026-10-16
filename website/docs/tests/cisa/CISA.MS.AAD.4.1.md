@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.4.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Logs and monitoring"
+  - "Logging and detection"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.4.1"
@@ -20,7 +23,7 @@ keywords:
 
 # CISA.MS.AAD.4.1 - Security logs SHALL be sent to the agency's security operations center for monitoring.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -48,11 +51,22 @@ Follow the configuration instructions unique to the products and integration pat
 | Test ID | CISA.MS.AAD.4.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaDiagnosticSettings](/docs/commands/Test-MtCisaDiagnosticSettings) |
-| Tags | CISA, CISA.MS.AAD.4.1, Entra ID P1, MS.AAD, MS.AAD.4.1 |
+| Product | Entra ID |
+| Feature | Logs and monitoring |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.4.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.4.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.4.1, nist-800-53-r5:AU-4 |
+| PowerShell test | [Test-MtCisaDiagnosticSettings](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.4.1.ps1) |
+| Services | Graph, Azure |
+| Compatible licenses | AAD_PREMIUM |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaDiagnosticSettings.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaDiagnosticSettings.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.4.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.4.1.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.4.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.4.1.md)

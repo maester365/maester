@@ -1,0 +1,217 @@
+{
+  "description": "Native-format error-path fixtures (design 3.1, 3.2, 5.2). Data only: the MaesterTest attribute type is not loaded here. Each entry maps a fixture ID to the expected 3.0 Result and ReasonCode from the 5.2 contract table. designSpecified=false marks a case the table does not cover; the expectation is a proposal to confirm.",
+  "fixtures": [
+    {
+      "id": "FIXTURE.0001",
+      "file": "Test.FIXTURE.0001.ps1",
+      "function": "Test-MtFixtureReturnsTrue",
+      "title": "Returns $true",
+      "expectedResult": "Passed",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "returns `$true`"
+    },
+    {
+      "id": "FIXTURE.0002",
+      "file": "Test.FIXTURE.0002.ps1",
+      "function": "Test-MtFixtureReturnsFalse",
+      "title": "Returns $false",
+      "expectedResult": "Failed",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "returns `$false`"
+    },
+    {
+      "id": "FIXTURE.0003",
+      "file": "Test.FIXTURE.0003.ps1",
+      "function": "Test-MtFixtureReturnsNull",
+      "title": "Returns $null with no skip and no -Investigate",
+      "expectedResult": "Skipped",
+      "expectedReasonCode": "NoResult",
+      "designSpecified": true,
+      "rule": "returns `$null` with no skip and no `-Investigate`"
+    },
+    {
+      "id": "FIXTURE.0004",
+      "file": "Test.FIXTURE.0004.ps1",
+      "function": "Test-MtFixtureReturnsString",
+      "title": "Returns a string instead of a boolean",
+      "expectedResult": "Error",
+      "expectedReasonCode": "InvalidReturn",
+      "designSpecified": true,
+      "rule": "returns a non-boolean"
+    },
+    {
+      "id": "FIXTURE.0005",
+      "file": "Test.FIXTURE.0005.ps1",
+      "function": "Test-MtFixtureReturnsTwoBooleans",
+      "title": "Returns two booleans",
+      "expectedResult": "Error",
+      "expectedReasonCode": "InvalidReturn",
+      "designSpecified": true,
+      "rule": "returns more than one object"
+    },
+    {
+      "id": "FIXTURE.0006",
+      "file": "Test.FIXTURE.0006.ps1",
+      "function": "Test-MtFixtureLeaksPipelineOutput",
+      "title": "Leaks ArrayList.Add output before returning $true",
+      "expectedResult": "Error",
+      "expectedReasonCode": "InvalidReturn",
+      "designSpecified": true,
+      "rule": "returns more than one object (an unassigned method result leaks into the output)"
+    },
+    {
+      "id": "FIXTURE.0007",
+      "file": "Test.FIXTURE.0007.ps1",
+      "function": "Test-MtFixtureThrows",
+      "title": "Throws a terminating error",
+      "expectedResult": "Error",
+      "expectedReasonCode": "TestError",
+      "designSpecified": true,
+      "rule": "any terminating error"
+    },
+    {
+      "id": "FIXTURE.0008",
+      "file": "Test.FIXTURE.0008.ps1",
+      "function": "Test-MtFixtureStatementTerminatingThenTrue",
+      "title": "Method call on $null, then returns $true",
+      "expectedResult": "Error",
+      "expectedReasonCode": "TestError",
+      "designSpecified": true,
+      "rule": "any terminating error: a statement-terminating error ends the test because the engine wraps the call in try/catch (5.2); must not be Passed",
+      "mustNotBe": "Passed"
+    },
+    {
+      "id": "FIXTURE.0009",
+      "file": "Test.FIXTURE.0009.ps1",
+      "function": "Test-MtFixtureNonTerminatingErrorThenTrue",
+      "title": "Write-Error (non-terminating), then returns $true",
+      "expectedResult": "Passed",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "returns `$true`; the non-terminating error is stored in Diagnostics and re-emitted on the error stream. The engine sets its own ErrorActionPreference, so a caller's Stop does not turn it into a terminating error",
+      "expectedDiagnostics": [
+        "One user could not be read; continuing."
+      ]
+    },
+    {
+      "id": "FIXTURE.0010",
+      "file": "Test.FIXTURE.0010.ps1",
+      "function": "Test-MtFixtureSkipNotApplicableNoReturn",
+      "title": "-SkippedBecause NotApplicable with no return after it",
+      "expectedResult": "Skipped",
+      "expectedReasonCode": "NotApplicable",
+      "designSpecified": true,
+      "rule": "`-SkippedBecause <code>`: the call ends the test. The line after it is the ORCA `return = $null` typo, which would error if reached",
+      "mustNotBe": "Error"
+    },
+    {
+      "id": "FIXTURE.0011",
+      "file": "Test.FIXTURE.0011.ps1",
+      "function": "Test-MtFixtureSkipBecauseError",
+      "title": "-SkippedBecause Error with the caught record",
+      "expectedResult": "Error",
+      "expectedReasonCode": "TestError",
+      "designSpecified": true,
+      "rule": "`-SkippedBecause Error`"
+    },
+    {
+      "id": "FIXTURE.0012",
+      "file": "Test.FIXTURE.0012.ps1",
+      "function": "Test-MtFixtureInvestigateReturnsFalse",
+      "title": "-Investigate, then returns $false",
+      "expectedResult": "Investigate",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "`-Investigate`, over any return value"
+    },
+    {
+      "id": "FIXTURE.0013",
+      "file": "Test.FIXTURE.0013.ps1",
+      "function": "Test-MtFixtureInvestigateReturnsNull",
+      "title": "-Investigate, then returns $null",
+      "expectedResult": "Investigate",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "`-Investigate`, over any return value including `$null`"
+    },
+    {
+      "id": "FIXTURE.0014",
+      "file": "Test.FIXTURE.0014.ps1",
+      "function": "Test-MtFixtureSkipInsideOwnTryCatch",
+      "title": "Skip raised inside the test's own try/catch",
+      "expectedResult": "Skipped",
+      "expectedReasonCode": "TestSkipped",
+      "designSpecified": true,
+      "rule": "`-SkippedBecause <code>`; the skip survives the test's own boilerplate catch through the helper's re-throw guard (5.2). ResultDetail.TestSkipped keeps the legacy code NotConnectedExchange",
+      "expectedResultDetailTestSkipped": "NotConnectedExchange",
+      "mustNotBe": "Error"
+    },
+    {
+      "id": "FIXTURE.0015",
+      "file": "Test.FIXTURE.0015.ps1",
+      "function": "Test-MtFixtureBreakAtTopLevel",
+      "title": "break at the top level of the function",
+      "expectedResult": "Error",
+      "expectedReasonCode": "TestError",
+      "designSpecified": false,
+      "rule": "not in the 5.2 table. A break outside a loop unwinds to the nearest enclosing loop, which would be the engine's run loop; the engine must contain it and report the test as an error. Proposed"
+    },
+    {
+      "id": "FIXTURE.0016",
+      "file": "Test.FIXTURE.0016.ps1",
+      "function": "Test-MtFixtureExit",
+      "title": "exit inside the test function",
+      "expectedResult": "Error",
+      "expectedReasonCode": "TestError",
+      "designSpecified": false,
+      "rule": "not in the 5.2 table. exit must not end the engine, the run or the host; the engine must contain it and report the test as an error. Proposed"
+    },
+    {
+      "id": "FIXTURE.0017",
+      "file": "Test.FIXTURE.0017.ps1",
+      "function": "Test-MtFixtureLongSleep",
+      "title": "Sleeps 30 seconds, then returns $true",
+      "expectedResult": "Error",
+      "expectedReasonCode": "Timeout",
+      "designSpecified": true,
+      "rule": "exceeds a configured timeout. Only when Execution.TestTimeoutSeconds is set below 30; with the 3.0.0 default (no timeout) the result is Passed. A deadline that fires is Timeout even though the test later returns $true",
+      "condition": "Execution.TestTimeoutSeconds < 30",
+      "expectedResultWithoutTimeout": "Passed",
+      "expectedReasonCodeWithoutTimeout": null
+    },
+    {
+      "id": "FIXTURE.0018",
+      "file": "Test.FIXTURE.0018.ps1",
+      "function": "Test-MtFixtureWritesStreams",
+      "title": "Writes warning, verbose, debug and information records, then returns $true",
+      "expectedResult": "Passed",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "returns `$true`; warning, verbose, debug and information records are merged into the nested output and re-emitted on Invoke-Maester's streams; the warning is also stored in Diagnostics (5.2 Streams)",
+      "expectedDiagnostics": [
+        "Fixture warning record"
+      ],
+      "expectedStreams": {
+        "Warning": "Fixture warning record",
+        "Verbose": "Fixture verbose record",
+        "Debug": "Fixture debug record",
+        "Information": [
+          "Fixture information record",
+          "Fixture host record"
+        ]
+      }
+    },
+    {
+      "id": "FIXTURE.0019",
+      "file": "Test.FIXTURE.0019.ps1",
+      "function": "Test-MtFixtureInvestigateThenThrows",
+      "title": "-Investigate, then throws",
+      "expectedResult": "Investigate",
+      "expectedReasonCode": null,
+      "designSpecified": true,
+      "rule": "order of evaluation (5.2): -SkippedBecause Error; -Investigate; any other skip; an uncaught error; the returned value. -Investigate outranks the uncaught error"
+    }
+  ]
+}

@@ -11,6 +11,9 @@ keywords:
   - "ORCA.236"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.236 - Safe Links is enabled for emails.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 When Safe Links for emails is enabled, URLs in emails will be checked when users click on links.
 
 #### Remediation action
+
 Enable Safe Links policy action for unknown potentially malicious URLs in emails.
 
 #### Related Links
@@ -39,11 +43,20 @@ Enable Safe Links policy action for unknown potentially malicious URLs in emails
 | Test ID | ORCA.236 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA236](/docs/commands/Test-ORCA236) |
-| Tags | EXO, ORCA, ORCA.236 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1204.001 Malicious Link |
+| Supports controls | nist-800-53-r5:SI-3 |
+| PowerShell test | [Test-ORCA236](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.236.ps1) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA236.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA236.ps1`
+- Test: [`tests/orca/Test.ORCA.236.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.236.ps1)
+- Documentation: [`tests/orca/Test.ORCA.236.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.236.md)

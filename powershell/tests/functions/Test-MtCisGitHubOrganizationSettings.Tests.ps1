@@ -1,5 +1,8 @@
 ﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtCisGitHubRepositoryCreationLimited, Test-MtCisGitHubRepositoryDeletionLimited, Test-MtCisGitHubIssueDeletionLimited, Test-MtCisGitHubStrictBasePermission, Test-MtCisGitHubTeamCreationLimited
 }
 
 Describe 'CIS GitHub organization setting tests' {
@@ -328,43 +331,54 @@ Describe 'CIS GitHub organization setting tests' {
     }
 
     Context 'Disconnected GitHub' {
-        $functions = @(
-            'Test-MtCisGitHubRepositoryCreationLimited'
-            'Test-MtCisGitHubRepositoryDeletionLimited'
-            'Test-MtCisGitHubIssueDeletionLimited'
-            'Test-MtCisGitHubTeamCreationLimited'
-            'Test-MtCisGitHubStrictBasePermission'
+        # Native tests: the engine gates on Service = 'GitHub'; the functions no longer guard themselves.
+        $nativeCases = @(
+            @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
+            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
+            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
+            @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
+            @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
 
-        It 'Skips <_> when GitHub is not connected' -ForEach $functions {
+        It 'Declares GitHub so the engine skips <Id> when GitHub is not connected' -ForEach $nativeCases {
+            (Get-MtTest -Id $Id).Service | Should -Contain 'GitHub'
+
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = $null
             }
 
-            & $_ | Should -BeNullOrEmpty
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $SkippedBecause -eq 'NotConnectedGitHub'
+            $row = Invoke-MtTest -Id $Id
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'ServiceNotConnected'
+            Should -Invoke Invoke-MtGitHubRequest -ModuleName Maester -Exactly -Times 0
+        }
+
+        It 'Throws from <Function> when called directly without a GitHub connection' -ForEach $nativeCases {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = $null
             }
+
+            { & $Function } | Should -Throw -ExpectedMessage 'Not connected to GitHub. Call Connect-MtGitHub first.'
             Should -Invoke Invoke-MtGitHubRequest -ModuleName Maester -Exactly -Times 0
         }
     }
 
     Context 'GitHub request errors' {
-        $functions = @(
-            'Test-MtCisGitHubRepositoryCreationLimited'
-            'Test-MtCisGitHubRepositoryDeletionLimited'
-            'Test-MtCisGitHubIssueDeletionLimited'
-            'Test-MtCisGitHubTeamCreationLimited'
-            'Test-MtCisGitHubStrictBasePermission'
+        $nativeCases = @(
+            @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
+            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
+            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
+            @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
+            @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
 
-        It 'Skips <_> when the GitHub organization request throws' -ForEach $functions {
+        It 'Records <Id> as an error when the GitHub organization request throws' -ForEach $nativeCases {
             Mock Invoke-MtGitHubRequest -ModuleName Maester { throw 'GitHub API boom' }
 
-            & $_ | Should -BeNullOrEmpty
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $SkippedBecause -eq 'Error' -and $null -ne $SkippedError
-            }
+            { & $Function } | Should -Throw -ExpectedMessage 'GitHub API boom'
+            $row = Invoke-MtTest -Id $Id
+            $row.Result | Should -Be 'Error'
+            $row.ReasonCode | Should -Be 'TestError'
         }
     }
 }

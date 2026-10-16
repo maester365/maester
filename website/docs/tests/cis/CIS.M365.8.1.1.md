@@ -11,6 +11,9 @@ keywords:
   - "CIS.M365.8.1.1"
   - "Medium"
   - "CIS"
+  - "Teams"
+  - "File sharing"
+  - "External access and sharing"
   - "CIS E3 Level 2"
   - "CIS M365 v7.0.0"
 ---
@@ -19,7 +22,7 @@ keywords:
 
 # CIS.M365.8.1.1 - (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -78,11 +81,21 @@ Set-CsTeamsClientConfiguration @Params
 | Test ID | CIS.M365.8.1.1 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisThirdPartyFileSharing](/docs/commands/Test-MtCisThirdPartyFileSharing) |
-| Tags | CIS, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.8.1.1 |
+| Product | Teams |
+| Feature | File sharing |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1567.002 Exfiltration to Cloud Storage |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 8.1.1 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2 |
+| Supports controls | cis-m365:8.1.1, nist-800-53-r5:AC-20, nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCisThirdPartyFileSharing](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.1.1.ps1) |
+| Services | Teams |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisThirdPartyFileSharing.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisThirdPartyFileSharing.ps1`
+- Test: [`tests/cis/Test.CIS.M365.8.1.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.1.1.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.8.1.1.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.1.1.md)

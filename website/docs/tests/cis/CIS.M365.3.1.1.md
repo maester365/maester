@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.3.1.1"
   - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Purview"
+  - "Audit"
+  - "Logging and detection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.3.1.1 - (L1) Ensure Microsoft 365 audit log search is Enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/ic3lotus" title="Patrick · Co-contributor"><img src="https://github.com/ic3lotus.png" alt="Patrick" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -64,11 +67,21 @@ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
 | Test ID | CIS.M365.3.1.1 |
 | Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisAuditLogSearch](/docs/commands/Test-MtCisAuditLogSearch) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.3.1.1, L1 |
+| Product | Purview |
+| Feature | Audit |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1685.002 Disable or Modify Cloud Log |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 3.1.1 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:3.1.1, nist-800-53-r5:AU-12 |
+| PowerShell test | [Test-MtCisAuditLogSearch](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.3.1.1.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisAuditLogSearch.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisAuditLogSearch.ps1`
+- Test: [`tests/cis/Test.CIS.M365.3.1.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.3.1.1.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.3.1.1.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.3.1.1.md)

@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AP10"
-  - "High"
+  - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Applications and workload identities"
   - "EIDSCA"
 ---
 
@@ -19,7 +21,7 @@ keywords:
 
 # EIDSCA.AP10 - Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -73,13 +75,20 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AP10 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtEidscaAP10](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaAP10.ps1) |
-| Tags | EIDSCA, EIDSCA.AP10 |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials, T1528 Steal Application Access Token |
+| Supports controls | nist-800-53-r5:AC-6(10), nist-800-53-r5:CM-5 |
+| PowerShell test | [Test-MtCheckEidscaAP10](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP10.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1`
-- PowerShell source: `powershell/internal/eidsca/Test-MtEidscaAP10.ps1`
+- Test: [`tests/eidsca/Test.EIDSCA.AP10.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP10.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AP10.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP10.md)

@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.1.3.5"
-  - "Unknown"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -24,7 +27,7 @@ keywords:
 
 # CIS.M365.1.3.5 - (L1) Ensure internal phishing protection for Forms is enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -71,13 +74,23 @@ Invoke-MgGraphRequest -Method PATCH -Uri $uri -Body $body
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.1.3.5 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisFormsPhishingProtectionEnabled](/docs/commands/Test-MtCisFormsPhishingProtectionEnabled) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.1.3.5, L1, Security |
+| Product | Microsoft 365 |
+| Feature | Organization settings |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1534 Internal Spearphishing, T1598 Phishing for Information |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.5 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:1.3.5, nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-MtCisFormsPhishingProtectionEnabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.5.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisFormsPhishingProtectionEnabled.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisFormsPhishingProtectionEnabled.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.3.5.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.5.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.3.5.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.5.md)

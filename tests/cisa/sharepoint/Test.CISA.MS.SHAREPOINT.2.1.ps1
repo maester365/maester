@@ -1,0 +1,50 @@
+﻿function Test-MtCisaSpoDefaultSharingScope {
+    <#
+    .SYNOPSIS
+    Checks state of default SharePoint Online sharing scope
+
+    .DESCRIPTION
+    Default sharing scope SHOULD be set to Specific People (Only the people the user specifies).
+
+    .EXAMPLE
+    Test-MtCisaSpoDefaultSharingScope
+
+    Returns true if default sharing scope is restricted to specific people
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisaSpoDefaultSharingScope
+    #>
+    [MaesterTest(
+        Id = 'CISA.MS.SHAREPOINT.2.1',
+        Title = 'File and folder default sharing scope SHALL be set to Specific People.',
+        Product = 'sharepoint',
+        Feature = 'sharing-links',
+        Area = 'access-control',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1048', 'T1213.002'),
+        Control = 'cisa-scuba:MS.SHAREPOINT.2.1',
+        Service = 'SharePointOnline',
+        Author = 'Mynster9361'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $spoTenant = Get-MtSpo
+
+    # DefaultSharingLinkType: None = default (not explicitly set), Direct = Specific People, Internal = Organization, AnonymousAccess = Anyone
+    $testResult = $spoTenant.DefaultSharingLinkType -eq "Direct"
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Your tenant default sharing scope is set to Specific People."
+    } else {
+        $testResultMarkdown = "Your tenant default sharing scope is not set to Specific People.`n`n* Current setting: ``$($spoTenant.DefaultSharingLinkType)``"
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity Medium
+
+    return $testResult
+}

@@ -1,0 +1,334 @@
+---
+sidebar_class_name: hidden
+description: "Creates a new Maester native test: Test.&lt;ID&gt;.ps1 and Test.&lt;ID&gt;.md."
+id: New-MtTest
+title: New-MtTest
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/New-MtTest.ps1
+---
+
+## SYNOPSIS
+
+Creates a new Maester native test: Test.&lt;ID&gt;.ps1 and Test.&lt;ID&gt;.md.
+
+## SYNTAX
+
+```powershell
+New-MtTest [-Id] <String> -Title <String> [-Severity <String>] [-Service <String[]>] [-Product <String>]
+ [-Feature <String>] [-Area <String>] [-ResourceType <String>] [-UserImpact <String>]
+ [-ImplementationCost <String>] [-Mitre <String[]>] [-Path <String>] [-Force]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Writes a test function with its [MaesterTest] attribute and a Markdown file with the description,
+remediation and result sections.
+Run it with Invoke-MtTest -Path, and validate it with Get-MtTest -Path.
+
+A custom test needs only an ID and a title.
+-Product, -Feature, -Area, -ResourceType, -UserImpact,
+-ImplementationCost and -Mitre fill in the attributes that say what the test is about, what to fix first
+and which attack techniques it addresses; add or change them in the file later as you like.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+New-MtTest -Id CONTOSO.1001 -Title 'Guest invitations are restricted' -Service Graph -Severity High
+```
+
+Creates custom/Test.CONTOSO.1001.ps1 and custom/Test.CONTOSO.1001.md.
+
+### EXAMPLE 2
+
+```powershell
+New-MtTest -Id CONTOSO.1002 -Title 'Legacy authentication is blocked' -Product entra -Feature conditional-access -Area authentication -ResourceType Tenant -Severity High -UserImpact Medium -ImplementationCost Low -Mitre T1110.003
+```
+
+Creates a test with the classification, priority and ATT&CK attributes filled in.
+The attribute rubric at
+https://maester.dev/docs/writing-tests/attribute-rubric explains how to choose each value.
+
+## PARAMETERS
+
+### -Id
+
+The test ID.
+Use your own prefix, for example CONTOSO.1001.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Title
+
+The one-line title shown in the report.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Severity
+
+Critical, High, Medium, Low or Info.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Medium
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Service
+
+The services the test needs, for example Graph or ExchangeOnline.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: @('Graph')
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Product
+
+The product where the fix is made: a key of the Maester taxonomy such as entra or exchange (an alias such as
+'Entra ID' is written as the key), or any name of your own.
+Groups the console progress and the run summary.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Feature
+
+The part of the product the test is about, for example conditional-access.
+With a Maester product, one of
+its feature keys; otherwise any text.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Area
+
+The security theme, for example authentication or privileged-access.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ResourceType
+
+What a failing result points at, for example Tenant or User.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UserImpact
+
+How much the recommended fix disrupts end users: Low, Medium or High.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ImplementationCost
+
+How much administrator work the recommended fix takes: Low, Medium or High.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Mitre
+
+The MITRE ATT&CK technique IDs the checked control prevents or detects, for example T1110.003, or None.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Path
+
+The folder to create the files in.
+Defaults to ./custom (an existing ./Custom folder is reused).
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: ./custom
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Overwrites existing files.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+Determines how PowerShell responds to progress updates generated by a script, cmdlet, or provider, such as the progress bars generated by Write-Progress.
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.IO.FileInfo
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/New-MtTest](https://maester.dev/docs/commands/New-MtTest)

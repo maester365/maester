@@ -1,6 +1,6 @@
 ---
 title: "MT.1019 - At least one Conditional Access policy is configured to enable application enforced restrictions."
-description: "A Conditional Access policy with application-enforced restrictions can help minimize the risk of data leakage from a shared device. Learn more: https://aka.ms/CATemplatesAppRestrictions"
+description: "A Conditional Access policy with application-enforced restrictions can help minimize the risk of data leakage from a shared device. Learn more: https://aka.ms/CATemplatesAppRestrictions Remediation action Review the configuration described above."
 slug: /tests/MT.1019
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1019"
   - "Medium"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -17,7 +20,7 @@ keywords:
 
 # MT.1019 - At least one Conditional Access policy is configured to enable application enforced restrictions.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -26,6 +29,10 @@ A Conditional Access policy with application-enforced restrictions can help mini
 Learn more:
 https://aka.ms/CATemplatesAppRestrictions
 
+#### Remediation action
+
+Review the configuration described above.
+
 ## Test Metadata
 
 | Field | Value |
@@ -33,11 +40,19 @@ https://aka.ms/CATemplatesAppRestrictions
 | Test ID | MT.1019 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaApplicationEnforcedRestriction](/docs/commands/Test-MtCaApplicationEnforcedRestriction) |
-| Tags | CA, Maester, MT.1019 |
+| Product | Entra ID |
+| Related products | SharePoint, Exchange Online |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213.002 Sharepoint, T1530 Data from Cloud Storage |
+| PowerShell test | [Test-MtCaApplicationEnforcedRestriction](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1019.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaApplicationEnforcedRestriction.ps1`
+- Test: [`tests/maester/entra/Test.MT.1019.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1019.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1019.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1019.md)

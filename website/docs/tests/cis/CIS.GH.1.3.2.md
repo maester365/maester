@@ -11,10 +11,12 @@ keywords:
   - "CIS.GH.1.3.2"
   - "Medium"
   - "CIS"
-  - "CIS GH Level 1"
-  - "CIS GH"
-  - "CIS GitHub v1.2.0"
   - "GitHub"
+  - "Organization settings"
+  - "Access control"
+  - "CIS GH"
+  - "CIS GH Level 1"
+  - "CIS GitHub v1.2.0"
   - "L1"
 ---
 
@@ -76,11 +78,21 @@ This test verifies the organization-level team creation setting. It does not rev
 | Test ID | CIS.GH.1.3.2 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubTeamCreationLimited](/docs/commands/Test-MtCisGitHubTeamCreationLimited) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.2, GitHub, L1 |
+| Product | GitHub |
+| Feature | Organization settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports benchmark | CIS GitHub Benchmark (version 1.2.0), requirement 1.3.2 |
+| Benchmark level | L1 |
+| Benchmark profiles | GH Level 1 |
+| Supports controls | cis-github:1.3.2, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCisGitHubTeamCreationLimited](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.2.ps1) |
+| Services | GitHub |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubTeamCreationLimited.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubTeamCreationLimited.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.3.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.2.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.3.2.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.2.md)

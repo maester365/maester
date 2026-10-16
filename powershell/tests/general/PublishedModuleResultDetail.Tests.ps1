@@ -48,7 +48,8 @@ Describe 'Published module result detail metadata' {
         Mock -ModuleName Maester Get-MtLicenseInformation { 'Licensed' }
         Mock -ModuleName Maester Get-MtExo { @() }
 
-        Test-MtCisaDlp | Should -BeFalse
+        # Check functions are internal in 3.0; run it in the module scope so the mocks apply.
+        InModuleScope Maester { Test-MtCisaDlp } | Should -BeFalse
 
         $detail = InModuleScope Maester {
             $__MtSession.TestResultDetail.Values | Select-Object -First 1

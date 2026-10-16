@@ -1,0 +1,70 @@
+﻿<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks if Personal Access Token lifespan restrictions are configured.
+
+    https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan
+
+.EXAMPLE
+    ```
+    Test-AzdoRestrictPersonalAccessTokenLifespan
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoRestrictPersonalAccessTokenLifespan
+#>
+
+function Test-AzdoRestrictPersonalAccessTokenLifespan {
+    [MaesterTest(
+        Id = 'AZDO.1035',
+        Title = '(Tenant) Restrict Personal Access Token lifespan.',
+        Product = 'azure-devops',
+        Feature = 'security-policies',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Low',
+        Mitre = ('T1528', 'T1550.001'),
+        Control = 'nist-800-53-r5:IA-5',
+        Service = 'AzureDevOps',
+        Author = 'SebastianClaesson',
+        HelpUrl = 'https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose "Running Test-AzdoRestrictPersonalAccessTokenLifespan"
+
+$Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictPersonalAccessTokenLifespan -Force
+    if ($null -eq $Policy) {
+        $Message = "Tenant Policy for RestrictPersonalAccessTokenLifespan not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
+        Please see [Manage Tenant Policies](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
+        Write-Verbose $Message
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
+    }
+    else {
+        $result = [bool]$Policy.value
+        if ($result) {
+            $MaxPatLifespanInDays = $Policy.properties.MaxPatLifespanInDays
+            if ($MaxPatLifespanInDays -gt 0) {
+                $resultMarkdown = "Your tenant has Personal Access Token lifespan restrictions enabled with a maximum lifespan of $MaxPatLifespanInDays days."
+            }
+            else {
+                $resultMarkdown = "Your tenant has Personal Access Token lifespan restrictions enabled."
+            }
+        }
+        else {
+            $resultMarkdown = "Your tenant does not have Personal Access Token lifespan restrictions enabled."
+        }
+
+        Add-MtTestResultDetail -Result $resultMarkdown
+
+        return $result
+    }
+}

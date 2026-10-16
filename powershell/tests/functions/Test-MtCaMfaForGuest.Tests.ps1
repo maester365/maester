@@ -1,6 +1,9 @@
 Describe 'Test-MtCaMfaForGuest' {
   BeforeAll {
     Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    # Check functions that became native tests are not exported.
+    Use-MtModuleFunction -Name Test-MtCaMfaForGuest
     Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
 
     function Get-AllUserMfaPolicyNoExcludeGuest {

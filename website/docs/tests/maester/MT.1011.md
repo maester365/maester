@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1011"
   - "High"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "CA"
 ---
 
@@ -17,7 +20,7 @@ keywords:
 
 # MT.1011 - At least one Conditional Access policy is configured to secure security info registration only from a trusted location.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><span className="test-byline-avatar test-byline-more">+2</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 7 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/earbona23" title="eduardarbona · Co-contributor"><img src="https://github.com/earbona23.png" alt="eduardarbona" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -32,11 +35,19 @@ See [Securing security info registration - Microsoft Learn](https://learn.micros
 | Test ID | MT.1011 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaSecureSecurityInfoRegistration](/docs/commands/Test-MtCaSecureSecurityInfoRegistration) |
-| Tags | CA, Maester, MT.1011 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.005 Device Registration |
+| Supports controls | nist-800-53-r5:AC-17, nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtCaSecureSecurityInfoRegistration](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1011.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaSecureSecurityInfoRegistration.ps1`
+- Test: [`tests/maester/entra/Test.MT.1011.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1011.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1011.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1011.md)

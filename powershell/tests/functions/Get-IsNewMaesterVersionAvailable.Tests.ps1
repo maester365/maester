@@ -1,8 +1,9 @@
 ﻿Describe 'Get-IsNewMaesterVersionAvailable' {
     BeforeAll {
-        . "$PSScriptRoot/../../internal/Get-MtLatestModuleVersion.ps1"
-        . "$PSScriptRoot/../../internal/Get-MtModuleVersion.ps1"
-        . "$PSScriptRoot/../../internal/Get-IsNewMaesterVersionAvailable.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-MtLatestModuleVersion.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-MtModuleVersion.ps1"
+        . "$PSScriptRoot/../../internal/session/Test-MtPrereleaseModule.ps1"
+        . "$PSScriptRoot/../../internal/session/Get-IsNewMaesterVersionAvailable.ps1"
     }
 
     Context 'When a newer version exists' {
@@ -23,11 +24,24 @@
         It 'returns false when installed is equal to latest' {
             Mock Get-MtModuleVersion { [version]'2.0.0' }
             Mock Get-MtLatestModuleVersion { [version]'2.0.0' }
+            Mock Test-MtPrereleaseModule { $false }
             Mock Write-Host {}
 
             $result = Get-IsNewMaesterVersionAvailable
 
             $result | Should -BeFalse
+        }
+
+        It 'returns true when a preview of the latest release is installed, and says to install with -Force' {
+            Mock Get-MtModuleVersion { [version]'3.0.0' }
+            Mock Get-MtLatestModuleVersion { [version]'3.0.0' }
+            Mock Test-MtPrereleaseModule { $true }
+            Mock Write-Host {}
+
+            $result = Get-IsNewMaesterVersionAvailable
+
+            $result | Should -BeTrue
+            Should -Invoke Write-Host -ParameterFilter { $Object -match 'Install-Module Maester -Force' } -Exactly 1
         }
 
         It 'returns false when current version is not comparable (for example, Next)' {

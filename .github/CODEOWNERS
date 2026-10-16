@@ -2,7 +2,7 @@
 # The persons added have no obligation to respond but will always try
 
 *                 @maester365/core-module
-tests/Maester/    @maester365/core-tests
-tests/EIDSCA/     @maester365/eidsca
-tests/CISA/       @maester365/cisa
+tests/maester/    @maester365/core-tests
+tests/eidsca/     @maester365/eidsca
+tests/cisa/       @maester365/cisa
 website/          @maester365/docs

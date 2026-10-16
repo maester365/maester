@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.3.1"
-  - "Unknown"
+  - "Medium"
   - "CISA"
-  - "spo"
+  - "SharePoint"
+  - "Sharing links"
+  - "External access and sharing"
   - "MS.SHAREPOINT"
   - "MS.SHAREPOINT.3.1"
 ---
@@ -45,13 +47,23 @@ Rationale: Anyone links that do not expire or have excessively long expiration p
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.3.1 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
-| Category | spo |
-| PowerShell test | [Test-MtCisaSpoAnyoneLinkExpiration](/docs/commands/Test-MtCisaSpoAnyoneLinkExpiration) |
-| Tags | CISA, CISA.MS.SHAREPOINT.3.1, MS.SHAREPOINT, MS.SHAREPOINT.3.1 |
+| Product | SharePoint |
+| Feature | Sharing links |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1048 Exfiltration Over Alternative Protocol, T1213.002 Sharepoint, T1530 Data from Cloud Storage |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.SHAREPOINT.3.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.SHAREPOINT.3.1v1 |
+| Supports controls | cisa-scuba:MS.SHAREPOINT.3.1, nist-800-53-r5:AC-3, nist-800-53-r5:AC-21b |
+| PowerShell test | [Test-MtCisaSpoAnyoneLinkExpiration](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.1.ps1) |
+| Services | SharePointOnline |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoAnyoneLinkExpiration.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoAnyoneLinkExpiration.ps1`
+- Test: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.1.ps1)
+- Documentation: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.3.1.md)

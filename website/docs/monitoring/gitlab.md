@@ -35,12 +35,14 @@ GitLab for personal projects (Free):
 - Option C: GitLab Dedicated (Self-Host)
 -->
 
-### Create a blank new project to always use the latest available public Maester Tests
+### Create a blank new project to always use the latest available Maester tests
 
 - On the left sidebar, at the top, select 'Create new ()' and 'New project/repository'.
 - Select [Create a blank project](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project)
   - **Repository name**: E.g. `maester-tests`
   - **Private**: Select this option to keep your tests private
+
+The built-in Maester tests ship inside the Maester PowerShell module, and the pipeline below installs the latest module on every run. The project only holds the pipeline and, optionally, your own custom tests (in a `Custom` folder) and `maester-config.json`.
 
 <!--
 ### 2. Create a new project and import the Maester Tests repository, to keep updated yourself
@@ -125,7 +127,6 @@ run_maester_tests_inline:
 
   before_script:
     - mkdir test-results
-    - mkdir public-tests
     - pwsh -c 'Write-host "Running in project $env:CI_PROJECT_NAME with results at $env:CI_JOB_URL ($env:CI_JOB_URL)."'
   script:
     - |
@@ -135,12 +136,6 @@ run_maester_tests_inline:
         #Install-Module Maester -AllowPrerelease -Force
         Install-Module Maester -Force
         Install-Module Az.Accounts -Force
-
-        # Latest public tests
-        Set-Location public-tests
-        Install-MaesterTests
-        Set-Location ..
-
 
         # Declare functions
         function Get-AccessToken {
@@ -158,21 +153,18 @@ run_maester_tests_inline:
             return $Response.access_token
         }
 
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.Output.Verbosity = "None"
-        Write-Host "Pester verbosity level set to: $($PesterConfiguration.Output.Verbosity.Value)"
-
+        # Configure the run. The built-in tests ship inside the Maester module;
+        # Path adds the custom tests and maester-config.json in this project, if any.
         $MaesterParameters = @{
-            Path                 = "public-tests"
-            PesterConfiguration  = $PesterConfiguration
+            Path                 = "."
+            Verbosity            = "None"
             OutputFolder         = "test-results"
             OutputFolderFileName = "test-results"
             PassThru             = $true
         }
 
         $MaesterParameters.Add("DisableTelemetry", $false )
-        Write-Host "Disable pester telemetry set to: $($MaesterParameters.DisableTelemetry)"
+        Write-Host "Disable Maester telemetry set to: $($MaesterParameters.DisableTelemetry)"
 
         $AdditionalConnections = @{
             Exchange      = [System.Convert]::ToBoolean($env:CONNECTION_EXCHANGE)
@@ -239,7 +231,6 @@ run_maester_tests_inline:
         #region run tests
 
         # Run Maester tests
-        #$results = Invoke-Maester -Path public-tests -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
         $results = Invoke-Maester @MaesterParameters
 
         #endregion run tests
@@ -315,7 +306,6 @@ run_maester_tests_inline:
 
   before_script:
     - mkdir test-results
-    - mkdir public-tests
     - pwsh -c 'Write-host "Running in project $env:CI_PROJECT_NAME with results at $env:CI_JOB_URL ($env:CI_JOB_URL)."'
   script:
     - |
@@ -324,11 +314,6 @@ run_maester_tests_inline:
         # Install Maester
         #Install-Module Maester -AllowPrerelease -Force
         Install-Module Maester -Force
-
-        # Latest public tests
-        Set-Location public-tests
-        Install-MaesterTests
-        Set-Location ..
 
         # Declare functions
         function Get-AccessToken {
@@ -344,21 +329,18 @@ run_maester_tests_inline:
             return $Response.access_token
         }
 
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.Output.Verbosity = "None"
-        Write-Host "Pester verbosity level set to: $($PesterConfiguration.Output.Verbosity.Value)"
-
+        # Configure the run. The built-in tests ship inside the Maester module;
+        # Path adds the custom tests and maester-config.json in this project, if any.
         $MaesterParameters = @{
-            Path                 = "public-tests"
-            PesterConfiguration  = $PesterConfiguration
+            Path                 = "."
+            Verbosity            = "None"
             OutputFolder         = "test-results"
             OutputFolderFileName = "test-results"
             PassThru             = $true
         }
 
         $MaesterParameters.Add("DisableTelemetry", $false )
-        Write-Host "Disable pester telemetry set to: $($MaesterParameters.DisableTelemetry)"
+        Write-Host "Disable Maester telemetry set to: $($MaesterParameters.DisableTelemetry)"
 
         $AdditionalConnections = @{
             Exchange      = [System.Convert]::ToBoolean($env:CONNECTION_EXCHANGE)
@@ -418,7 +400,6 @@ run_maester_tests_inline:
         #region run tests
 
         # Run Maester tests
-        #$results = Invoke-Maester -Path public-tests -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
         $results = Invoke-Maester @MaesterParameters
 
         #endregion run tests
@@ -447,6 +428,13 @@ run_maester_tests_inline:
 
   </TabItem>
   </Tabs>
+
+:::tip
+- Maester 3.0 requires PowerShell 7.4 or later, which the `mcr.microsoft.com/microsoftgraph/powershell` image provides.
+- If your custom tests include [Pester-format tests](../writing-tests/pester-format-tests.md) (`*.Tests.ps1`), add `Install-Module Pester -MinimumVersion 5.7.1 -Force` before running Maester. Pester is not needed for the built-in tests.
+- To show the results in GitLab's test report, add `PesterConfiguration = @{ TestResult = @{ Enabled = $true; OutputPath = "test-results/junit.xml"; OutputFormat = "JUnitXml" } }` to `$MaesterParameters` (Maester writes the file itself, Pester is not required) and add a `reports` entry with `junit: test-results/junit.xml` under `artifacts`.
+- To keep a fixed Maester version, replace `Install-Module Maester -Force` with `Install-Module Maester -RequiredVersion <version> -Force`. The built-in tests update with the module. If you set up this pipeline with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md).
+:::
 
 ## Manually running the Maester tests
 

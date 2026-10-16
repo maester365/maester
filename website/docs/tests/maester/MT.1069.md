@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1069"
   - "Low"
+  - "Entra ID"
+  - "User and directory settings"
+  - "Access control"
   - "Entra"
   - "Group"
 ---
@@ -18,7 +21,7 @@ keywords:
 
 # MT.1069 - Restrict non-admin users from creating security groups.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/marcel-ngn" title="Marcel N. · Original author"><img src="https://github.com/marcel-ngn.png" alt="Marcel N." /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/marcel-ngn">Marcel N.</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/marcel-ngn" title="Marcel N. · Original author"><img src="https://github.com/marcel-ngn.png" alt="Marcel N." /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/marcel-ngn">Marcel N.</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -72,11 +75,18 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 | Test ID | MT.1069 |
 | Severity | Low |
 | Suite | Maester |
-| Category | Entra |
-| PowerShell test | [Test-MtSecurityGroupCreationRestricted](/docs/commands/Test-MtSecurityGroupCreationRestricted) |
-| Tags | Entra, Group, Maester, MT.1069 |
+| Product | Entra ID |
+| Feature | User and directory settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtSecurityGroupCreationRestricted](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1069.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-MtSecurityGroupCreationRestricted.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtSecurityGroupCreationRestricted.ps1`
+- Test: [`tests/maester/entra/Test.MT.1069.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1069.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1069.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1069.md)

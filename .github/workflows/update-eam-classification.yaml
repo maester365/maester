@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  CLASSIFICATION_PATH: powershell/internal/Get-MtEamClassification.ps1
+  CLASSIFICATION_PATH: powershell/internal/services/entra/Get-MtEamClassification.ps1
   UPSTREAM_REPO: Cloud-Architekt/AzurePrivilegedIAM
   UPSTREAM_FILE: Classification/Classification_EntraIdDirectoryRoles.json
 
@@ -164,7 +164,7 @@ jobs:
           delete-branch: true
           title: 'chore: update EAM role classification'
           body: |
-            Refreshes `powershell/internal/Get-MtEamClassification.ps1` from the Enterprise Access Model
+            Refreshes `powershell/internal/services/entra/Get-MtEamClassification.ps1` from the Enterprise Access Model
             classification published by [Cloud-Architekt/AzurePrivilegedIAM](https://github.com/Cloud-Architekt/AzurePrivilegedIAM)
             (MIT licensed, maintained by Thomas Naunheim).
 

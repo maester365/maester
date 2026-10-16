@@ -1,6 +1,9 @@
 ﻿Describe 'Entra Agent ID orphan checks' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtEntraAgentIdentityOrphaned, Test-MtEntraAgentUserOrphaned
     }
 
     BeforeEach {
@@ -154,13 +157,17 @@
         }
     }
 
-    It 'skips both checks when Graph is disconnected' {
-        Mock -ModuleName Maester Test-MtConnection { return $false }
+    It 'is skipped by the engine for both checks when Graph is disconnected' {
+        # The engine gates on the [MaesterTest] Service declaration; the check no longer guards itself.
+        foreach ($id in @('MT.1200', 'MT.1201')) {
+            (Get-MtTest -Id $id).Service | Should -Contain 'Graph'
+        }
 
-        Test-MtEntraAgentIdentityOrphaned | Should -BeNull
-        $script:AgentSkippedBecause | Should -Be 'NotConnectedGraph'
-        Test-MtEntraAgentUserOrphaned | Should -BeNull
-        $script:AgentSkippedBecause | Should -Be 'NotConnectedGraph'
+        Mock -ModuleName Maester Test-MtConnection { return $false }
+        foreach ($row in @(Invoke-MtTest -Id @('MT.1200', 'MT.1201'))) {
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'ServiceNotConnected'
+        }
     }
 
     It 'passes both checks when the tenant has no Agent ID objects' {

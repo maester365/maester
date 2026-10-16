@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.AS04"
   - "High"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -19,7 +21,7 @@ keywords:
 
 # EIDSCA.AS04 - Authentication Method - SMS - Use for sign-in.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -49,11 +51,18 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Test ID | EIDSCA.AS04 |
 | Severity | High |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtEidscaAS04](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaAS04.ps1) |
-| Tags | EIDSCA, EIDSCA.AS04 |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1111 Multi-Factor Authentication Interception, T1566.002 Spearphishing Link |
+| Supports controls | nist-800-53-r5:CM-7, nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtCheckEidscaAS04](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AS04.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1`
-- PowerShell source: `powershell/internal/eidsca/Test-MtEidscaAS04.ps1`
+- Test: [`tests/eidsca/Test.EIDSCA.AS04.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AS04.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.AS04.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AS04.md)

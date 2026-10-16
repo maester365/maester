@@ -1,6 +1,6 @@
 Describe 'Get-MtHtmlReport' {
     BeforeAll {
-        # The function resolves the template relative to its own location (powershell/public/core/)
+        # The function resolves the template relative to its own location (powershell/public/report/)
         # From the test directory (powershell/tests/functions/) the template is at ../../assets/
         $templatePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
         $templateAvailable = Test-Path $templatePath

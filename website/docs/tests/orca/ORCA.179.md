@@ -11,6 +11,9 @@ keywords:
   - "ORCA.179"
   - "Medium"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.179 - Safe Links is enabled intra-organization.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Phishing attacks are not limited from external users. Commonly, when one user is compromised, that user can be used in a process of lateral movement between different accounts in your organization. Configuring Safe Links so that internal messages are also re-written can assist with lateral movement using phishing. The built-in policy is ignored in this check, as it only provides the minimum level of protection.
 
 #### Remediation action
+
 Enable Safe Links between internal users.
 
 #### Related Links
@@ -39,11 +43,20 @@ Enable Safe Links between internal users.
 | Test ID | ORCA.179 |
 | Severity | Medium |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA179](/docs/commands/Test-ORCA179) |
-| Tags | EXO, ORCA, ORCA.179 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1534 Internal Spearphishing, T1204.001 Malicious Link |
+| Supports controls | nist-800-53-r5:SI-3 |
+| PowerShell test | [Test-ORCA179](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.179.ps1) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA179.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA179.ps1`
+- Test: [`tests/orca/Test.ORCA.179.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.179.ps1)
+- Documentation: [`tests/orca/Test.ORCA.179.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.179.md)

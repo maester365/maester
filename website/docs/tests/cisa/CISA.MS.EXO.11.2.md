@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.11.2"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.11.2"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.11.2 - User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -53,11 +55,23 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Test ID | CISA.MS.EXO.11.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaImpersonationTip](/docs/commands/Test-MtCisaImpersonationTip) |
-| Tags | CISA, CISA.MS.EXO.11.2, MS.EXO, MS.EXO.11.2 |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing, T1684.001 Impersonation |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.11.2 |
+| Criticality | SHOULD |
+| Upstream requirement | Moved to MS.SECURITYSUITE.2.4v1 (was MS.EXO.11.2v1) |
+| Supports controls | cisa-scuba:MS.EXO.11.2, nist-800-53-r5:AT-2b, nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-MtCisaImpersonationTip](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.11.2.ps1) |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
+| Compatible licenses | ATP_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaImpersonationTip.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaImpersonationTip.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.11.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.11.2.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.11.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.11.2.md)

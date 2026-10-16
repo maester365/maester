@@ -1,5 +1,8 @@
 ﻿Describe 'Test-MtPimAlertsExists' {
     BeforeAll {
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtPimAlertsExists
         function New-PimAlert {
             [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(

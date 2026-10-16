@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.4.1"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.4.1"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.4.1 - A DMARC policy SHALL be published for every second-level domain.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/moorereason">Cameron Moore</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -53,11 +55,21 @@ If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=
 | Test ID | CISA.MS.EXO.4.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaDmarcRecordExist](/docs/commands/Test-MtCisaDmarcRecordExist) |
-| Tags | CISA, CISA.MS.EXO.4.1, MS.EXO, MS.EXO.4.1 |
+| Product | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing, T1598 Phishing for Information, T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.4.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.4.1v1 |
+| Supports controls | cisa-scuba:MS.EXO.4.1, nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-MtCisaDmarcRecordExist](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.1.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaDmarcRecordExist.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaDmarcRecordExist.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.4.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.1.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.4.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.4.1.md)

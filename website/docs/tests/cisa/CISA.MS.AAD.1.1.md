@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.1.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.1.1"
@@ -20,7 +23,7 @@ keywords:
 
 # CISA.MS.AAD.1.1 - Legacy authentication SHALL be blocked.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/andremieth" title="André Mieth · Co-contributor"><img src="https://github.com/andremieth.png" alt="André Mieth" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/andremieth" title="André Mieth · Co-contributor"><img src="https://github.com/andremieth.png" alt="André Mieth" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -46,11 +49,22 @@ Follow the guide below to create a Conditional Access policy that blocks legacy 
 | Test ID | CISA.MS.AAD.1.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaBlockLegacyAuth](/docs/commands/Test-MtCisaBlockLegacyAuth) |
-| Tags | CISA, CISA.MS.AAD.1.1, Entra ID P1, MS.AAD, MS.AAD.1.1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1110 Brute Force, T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.1.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.1.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.1.1, nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCisaBlockLegacyAuth](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.1.1.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaBlockLegacyAuth.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaBlockLegacyAuth.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.1.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.1.1.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.1.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.1.1.md)

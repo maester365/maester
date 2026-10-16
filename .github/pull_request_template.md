@@ -2,6 +2,11 @@
 Thank you; we really appreciate your contributions! 🤗 We will try to review your pull request as soon as possible. Please make sure that the pull request is limited to one type of change (docs, feature, fix, etc.) and keep it as focused as possible. You can always create multiple focused PRs instead of opening a huge one.
 -->
 
+<!--
+Maester 3.0: checks are native tests (Test.<ID>.ps1 + Test.<ID>.md) and files follow the repository layout in
+https://maester.dev/docs/next/contributing#repository-layout. ./powershell/tests/pester.ps1 checks both.
+-->
+
 ## 📑 Description
 <!-- Add a brief description of the PR, what it does, and how it works. If this pull request closes an issue, please mention the issue number below.
 -->

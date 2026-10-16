@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.230"
-  - "Medium"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-phishing"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.230 - Each domain has a Anti-phishing policy applied to it, or the default policy is being used.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Microsoft Defender for Office 365 Anti-phishing policies are applied using rules. The default anti-phishing policy applies in the absence of a custom policy. When creating custom policies, there may be duplication of settings and depending on the rules and priority, some policies or settings may not even apply. It's important in this circumstance to check that the desired settings are applied to the right users.
 
 #### Remediation action
+
 Check your anti-phishing policies for duplicate rules. Some policies and settings may not be applying.
 
 #### Related Links
@@ -39,13 +43,22 @@ Check your anti-phishing policies for duplicate rules. Some policies and setting
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.230 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA230](/docs/commands/Test-ORCA230) |
-| Tags | EXO, ORCA, ORCA.230 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-phishing |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-ORCA230](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.230.ps1) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA230.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA230.ps1`
+- Test: [`tests/orca/Test.ORCA.230.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.230.ps1)
+- Documentation: [`tests/orca/Test.ORCA.230.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.230.md)

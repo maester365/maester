@@ -11,10 +11,12 @@ keywords:
   - "CIS.GH.1.2.2"
   - "Medium"
   - "CIS"
-  - "CIS GH Level 1"
-  - "CIS GH"
-  - "CIS GitHub v1.2.0"
   - "GitHub"
+  - "Organization settings"
+  - "Access control"
+  - "CIS GH"
+  - "CIS GH Level 1"
+  - "CIS GitHub v1.2.0"
   - "L1"
 ---
 
@@ -83,11 +85,21 @@ This test uses the granular repository creation fields because GitHub is replaci
 | Test ID | CIS.GH.1.2.2 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubRepositoryCreationLimited](/docs/commands/Test-MtCisGitHubRepositoryCreationLimited) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.2, GitHub, L1 |
+| Product | GitHub |
+| Feature | Organization settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1567.001 Exfiltration to Code Repository |
+| Supports benchmark | CIS GitHub Benchmark (version 1.2.0), requirement 1.2.2 |
+| Benchmark level | L1 |
+| Benchmark profiles | GH Level 1 |
+| Supports controls | cis-github:1.2.2, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCisGitHubRepositoryCreationLimited](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.2.ps1) |
+| Services | GitHub |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubRepositoryCreationLimited.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubRepositoryCreationLimited.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.2.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.2.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.2.2.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.2.md)

@@ -1,0 +1,34 @@
+﻿function Test-MtCheckMT1032 {
+    <#
+    .SYNOPSIS
+    Limited number of Global Admins are assigned.
+
+    .DESCRIPTION
+    Runs the shared check Test-MtPimAlertsExists with -AlertId TooManyGlobalAdminsAssignedToTenantAlert.
+    #>
+    [MaesterTest(
+        Id = 'MT.1032',
+        Title = 'Limited number of Global Admins are assigned.',
+        Product = 'entra',
+        Feature = 'privileged-identity-management',
+        Area = 'privileged-access',
+        ResourceType = 'User',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1078.004', 'T1098.003'),
+        Control = 'nist-800-53-r5:AC-6(5)',
+        Service = 'Graph',
+        License = 'AAD_PREMIUM_P2',
+        Author = 'Cloud-Architekt',
+        Contributor = ('f-bader', 'merill', 'thomas-s-schmidt', 'nathanmcnulty')
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $check = Test-MtPimAlertsExists -AlertId 'TooManyGlobalAdminsAssignedToTenantAlert'
+    if ($null -eq $check) { return $null }
+    # Passed when the PIM alert is not active or has no affected items after filtering.
+    return ($check.isActive -eq $false -or $check.numberOfAffectedItems -eq '0')
+}

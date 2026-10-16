@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.2.1.6"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Defender"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.2.1.6 - (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/knussbaumer" title="Kim Nussbaumer · Co-contributor"><img src="https://github.com/knussbaumer.png" alt="Kim Nussbaumer" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -76,11 +79,22 @@ Set-HostedOutboundSpamFilterPolicy -Identity Default -BccSuspiciousOutboundAddit
 | Test ID | CIS.M365.2.1.6 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisOutboundSpamFilterPolicy](/docs/commands/Test-MtCisOutboundSpamFilterPolicy) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.2.1.6, L1 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.1.6 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:2.1.6, nist-800-53-r5:SI-4(5) |
+| PowerShell test | [Test-MtCisOutboundSpamFilterPolicy](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.6.ps1) |
+| Services | ExchangeOnline, SecurityCompliance |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisOutboundSpamFilterPolicy.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.1.6.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.6.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.1.6.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.1.6.md)

@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.1.1.3"
   - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Microsoft 365"
+  - "Administrative accounts"
+  - "Privileged access"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.1.1.3 - (L1) Ensure that between two and four global admins are designated
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/magnusjak" title="Magnus Jakobsen · Co-contributor"><img src="https://github.com/magnusjak.png" alt="Magnus Jakobsen" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mrdos010" title="Anas · Co-contributor"><img src="https://github.com/mrdos010.png" alt="Anas" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/mrdos010" title="Anas · Co-contributor"><img src="https://github.com/mrdos010.png" alt="Anas" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/mrdos010">Anas</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -82,11 +85,22 @@ Note: When tallying the number of Global Administrators, Partner relationships (
 | Test ID | CIS.M365.1.1.3 |
 | Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisGlobalAdminCount](/docs/commands/Test-MtCisGlobalAdminCount) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.1.1.3, L1 |
+| Product | Microsoft 365 |
+| Related products | Entra ID |
+| Feature | Administrative accounts |
+| Area | Privileged access |
+| Resource type | User |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098.003 Additional Cloud Roles |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.1.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:1.1.3, nist-800-53-r5:AC-6(5) |
+| PowerShell test | [Test-MtCisGlobalAdminCount](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.3.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGlobalAdminCount.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGlobalAdminCount.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.1.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.3.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.1.3.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.1.3.md)

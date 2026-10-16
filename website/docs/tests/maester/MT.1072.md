@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1072"
   - "High"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -17,7 +20,7 @@ keywords:
 
 # MT.1072 - Conditional Access policies should not use the deprecated Approved Client App grant.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -38,11 +41,18 @@ After March 2026, Microsoft will stop enforcing require approved client app cont
 | Test ID | MT.1072 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaApprovedClientApp](/docs/commands/Test-MtCaApprovedClientApp) |
-| Tags | CA, Maester, MT.1072 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-2(11), nist-800-53-r5:IA-3 |
+| PowerShell test | [Test-MtCaApprovedClientApp](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1072.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaApprovedClientApp.ps1`
+- Test: [`tests/maester/entra/Test.MT.1072.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1072.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1072.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1072.md)

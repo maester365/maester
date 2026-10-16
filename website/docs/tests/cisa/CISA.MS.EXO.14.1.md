@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.14.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Anti-spam"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.14.1"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.14.1 - A spam filter SHALL be enabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,11 +54,22 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Test ID | CISA.MS.EXO.14.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaSpamFilter](/docs/commands/Test-MtCisaSpamFilter) |
-| Tags | CISA, CISA.MS.EXO.14.1, MS.EXO, MS.EXO.14.1 |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Anti-spam |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.14.1 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.6.1v1 (was MS.EXO.14.1v2) |
+| Supports controls | cisa-scuba:MS.EXO.14.1, nist-800-53-r5:SI-8 |
+| PowerShell test | [Test-MtCisaSpamFilter](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.14.1.ps1) |
+| Services | ExchangeOnline, SecurityCompliance |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaSpamFilter.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaSpamFilter.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.14.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.14.1.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.14.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.14.1.md)

@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.2.2"
-  - "High"
+  - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "Identity Protection"
+  - "Logging and detection"
   - "Entra ID P2"
   - "MS.AAD"
   - "MS.AAD.2.2"
@@ -20,7 +23,7 @@ keywords:
 
 # CISA.MS.AAD.2.2 - A notification SHOULD be sent to the administrator when high-risk users are detected.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/blindzero" title="Matthias · Co-contributor"><img src="https://github.com/blindzero.png" alt="Matthias" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -44,13 +47,24 @@ Follow the guide below to configure Entra ID Protection to send a regularly moni
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.2.2 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID P2 |
-| PowerShell test | [Test-MtCisaNotifyHighRisk](/docs/commands/Test-MtCisaNotifyHighRisk) |
-| Tags | CISA, CISA.MS.AAD.2.2, Entra ID P2, MS.AAD, MS.AAD.2.2 |
+| Product | Entra ID |
+| Feature | Identity Protection |
+| Area | Logging and detection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.2.2 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.2.2v1 |
+| Supports controls | cisa-scuba:MS.AAD.2.2, nist-800-53-r5:AC-2(12) |
+| PowerShell test | [Test-MtCisaNotifyHighRisk](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.2.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2 |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaNotifyHighRiskUsers.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaNotifyHighRisk.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.2.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.2.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.2.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.2.2.md)

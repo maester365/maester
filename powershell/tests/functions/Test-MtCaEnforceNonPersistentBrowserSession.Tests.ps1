@@ -1,6 +1,9 @@
 ﻿
 Describe 'Test-MtCaEnforceNonPersistentBrowserSession' {
     BeforeAll {
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtCaEnforceNonPersistentBrowserSession
         Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
 
         function Get-BaselinePolicy {

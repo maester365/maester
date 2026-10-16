@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.3.1"
   - "High"
   - "CISA"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Authentication"
   - "Entra ID P1"
   - "MS.AAD"
   - "MS.AAD.3.1"
@@ -20,7 +23,7 @@ keywords:
 
 # CISA.MS.AAD.3.1 - Phishing-resistant MFA SHALL be enforced for all users.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/petterfauske" title="Petter Fauske · Co-contributor"><img src="https://github.com/PetterFauske.png" alt="Petter Fauske" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -48,11 +51,22 @@ Create a Conditional Access policy enforcing phishing-resistant MFA for all user
 | Test ID | CISA.MS.AAD.3.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | Entra ID P1 |
-| PowerShell test | [Test-MtCisaPhishResistant](/docs/commands/Test-MtCisaPhishResistant) |
-| Tags | CISA, CISA.MS.AAD.3.1, Entra ID P1, MS.AAD, MS.AAD.3.1 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | High |
+| Implementation cost | High |
+| MITRE ATT&CK | T1566.002 Spearphishing Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.3.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.AAD.3.1v1 |
+| Supports controls | cisa-scuba:MS.AAD.3.1, nist-800-53-r5:IA-2(1), nist-800-53-r5:IA-2(2), nist-800-53-r5:IA-5c, nist-800-53-r5:IA-5g, nist-800-53-r5:IA-2(8) |
+| PowerShell test | [Test-MtCisaPhishResistant](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.1.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaPhishResistant.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaPhishResistant.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.3.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.1.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.3.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.3.1.md)

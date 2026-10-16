@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 560" width="640" height="560" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<title id="title">Maester 2.3 report size compared with 2.2</title>
+<desc id="desc">Report app: 2.24 MB in Maester 2.2, 335 kB in 2.3, about 85% smaller. A real 764-test report file is 40% smaller in 2.3.</desc>
+<style>
+.h{font-size:24px;font-weight:700;fill:#18181b}
+.t{font-size:19px;font-weight:600;fill:#18181b}
+.s{font-size:15px;fill:#71717a}
+.l,.v{font-size:17px;fill:#3f3f46}
+.vb{font-size:17px;font-weight:700;fill:#18181b}
+.ax{stroke:#d4d4d8;stroke-width:1}
+</style>
+<rect x="0.5" y="0.5" width="639" height="559" rx="12" fill="#ffffff" stroke="#e4e4e7"/>
+<text x="32" y="52" class="h">A smaller report in Maester 2.3</text>
+<text x="32" y="104" class="t">Report app</text>
+<text x="32" y="128" class="s">The HTML report template</text>
+<text x="32" y="173" class="l">Maester 2.2</text>
+<path d="M150 152h296a4 4 0 0 1 4 4v22a4 4 0 0 1 -4 4h-296z" fill="#FB923C"/>
+<text x="460" y="173" class="v">2.24 MB</text>
+<text x="32" y="225" class="l">Maester 2.3</text>
+<path d="M150 204h41a4 4 0 0 1 4 4v22a4 4 0 0 1 -4 4h-41z" fill="#C2410C"/>
+<text x="205" y="225" class="vb">335 kB · 85% smaller</text>
+<line x1="150" y1="144" x2="150" y2="242" class="ax"/>
+<text x="32" y="322" class="t">A real 764-test report</text>
+<text x="32" y="346" class="s">Relative file size</text>
+<text x="32" y="391" class="l">Maester 2.2</text>
+<path d="M150 370h296a4 4 0 0 1 4 4v22a4 4 0 0 1 -4 4h-296z" fill="#FB923C"/>
+<text x="460" y="391" class="v">100%</text>
+<text x="32" y="443" class="l">Maester 2.3</text>
+<path d="M150 422h176a4 4 0 0 1 4 4v22a4 4 0 0 1 -4 4h-176z" fill="#C2410C"/>
+<text x="340" y="443" class="vb">60% · 40% smaller</text>
+<line x1="150" y1="362" x2="150" y2="460" class="ax"/>
+<text x="32" y="532" class="s">Same features, and a report opens with no network requests.</text>
+</svg>

@@ -9,7 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1199"
-  - "Medium"
+  - "Low"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -20,7 +23,7 @@ keywords:
 
 # MT.1199 - App registration credentials should not be expired or expiring soon.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/simon-vedder" title="Simon Vedder · Original author"><img src="https://github.com/simon-vedder.png" alt="Simon Vedder" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/simon-vedder">Simon Vedder</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/simon-vedder" title="Simon Vedder · Original author"><img src="https://github.com/simon-vedder.png" alt="Simon Vedder" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/simon-vedder">Simon Vedder</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,13 +55,20 @@ Both credential types are reported. Certificates are the recommended alternative
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1199 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
-| Category | App |
-| PowerShell test | [Test-MtAppRegistrationCredentialExpiry](/docs/commands/Test-MtAppRegistrationCredentialExpiry) |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1199 |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | Application |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1098.001 Additional Cloud Credentials |
+| PowerShell test | [Test-MtAppRegistrationCredentialExpiry](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1199.ps1) |
+| Services | Graph |
+| Long running | Yes |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-AppRegistrations.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtAppRegistrationCredentialExpiry.ps1`
+- Test: [`tests/maester/entra/Test.MT.1199.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1199.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1199.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1199.md)

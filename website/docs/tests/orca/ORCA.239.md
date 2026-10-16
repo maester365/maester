@@ -11,6 +11,9 @@ keywords:
   - "ORCA.239"
   - "High"
   - "ORCA"
+  - "Defender"
+  - "Safe Links"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.239 - No exclusions for the built-in protection policies.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Built-in protection policies provide catch-all protection against users not covered by higher order policies. Excluding users from the built-in protection policies may mean these users have reduced protections. It is important not to rely on the 'built-in' policies, as these policies only apply the minimum level of protections and should serve as a catch-all.
 
 #### Remediation action
+
 Remove exclusions from the built-in protection policies.
 
 #### Related Links
@@ -39,11 +43,20 @@ Remove exclusions from the built-in protection policies.
 | Test ID | ORCA.239 |
 | Severity | High |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA239](/docs/commands/Test-ORCA239) |
-| Tags | EXO, ORCA, ORCA.239 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Safe Links |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566.001 Spearphishing Attachment, T1566.002 Spearphishing Link |
+| Supports controls | nist-800-53-r5:SI-3 |
+| PowerShell test | [Test-ORCA239](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.239.ps1) |
+| Services | ExchangeOnline |
+| Compatible licenses | ATP_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA239.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA239.ps1`
+- Test: [`tests/orca/Test.ORCA.239.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.239.ps1)
+- Documentation: [`tests/orca/Test.ORCA.239.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.239.md)

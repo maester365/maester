@@ -9,7 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1041"
-  - "High"
+  - "Medium"
+  - "Exchange Online"
+  - "Outlook"
+  - "Applications and workload identities"
   - "Exchange"
 ---
 
@@ -17,7 +20,7 @@ keywords:
 
 # MT.1041 - Ensure users installing Outlook add-ins is not allowed
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/bastienperez" title="Bastien Perez · Co-contributor"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/bastienperez" title="Bastien Perez · Co-contributor"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with <a href="/contributors/bastienperez">Bastien Perez</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -70,13 +73,20 @@ The result should return no assignments.
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1041 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
-| Category | Exchange |
-| PowerShell test | [Test-MtExoOutlookAddin](/docs/commands/Test-MtExoOutlookAddin) |
-| Tags | Exchange, Maester, MT.1041 |
+| Product | Exchange Online |
+| Feature | Outlook |
+| Area | Applications and workload identities |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1137.006 Add-ins, T1114.002 Remote Email Collection |
+| Supports controls | nist-800-53-r5:CM-7, nist-800-53-r5:CM-11 |
+| PowerShell test | [Test-MtExoOutlookAddin](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1041.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1`
-- PowerShell source: `powershell/public/maester/exchange/Test-MtExoOutlookAddin.ps1`
+- Test: [`tests/maester/exchange/Test.MT.1041.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1041.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1041.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1041.md)

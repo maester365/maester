@@ -2,10 +2,6 @@
     It 'requests preview scopes when the selected tags can run preview tests: <Case>' -TestCases @(
         @{ Case = 'Preview switch'; Parameters = @{ IncludePreview = $true }; Expected = $true }
         @{ Case = 'specific tag'; Parameters = @{ Tag = 'Entra' }; Expected = $true }
-        @{
-            Case = 'All tag'; Parameters = @{ Tag = 'All'; ExcludeTag = 'Preview' }
-            Expected = $true
-        }
         @{ Case = 'default selection'; Parameters = @{}; Expected = $false }
         @{
             Case = 'explicit exclusion'; Parameters = @{ Tag = 'Entra'; ExcludeTag = 'Preview' }
@@ -25,6 +21,14 @@
         Should -Invoke -ModuleName Maester Test-MtContext -Times 1 -Exactly -ParameterFilter {
             [bool]$IncludePreview -eq $ExpectedIncludePreview
         }
+    }
+
+    It 'Stops with the replacement when the removed <_> tag is used' -ForEach @('All', 'Full') {
+        Mock -ModuleName Maester Test-MtContext { throw 'Tests should not start.' }
+
+        { Invoke-Maester -Tag $_ -DisableTelemetry -NoLogo -NonInteractive } | Should -Throw "*'$_' tag was removed in Maester 3.0*"
+        { Invoke-Maester -ExcludeTag $_ -DisableTelemetry -NoLogo -NonInteractive } | Should -Throw '*removed in Maester 3.0*'
+        Should -Invoke -ModuleName Maester Test-MtContext -Times 0 -Exactly
     }
 
     It 'Rejects a MailTestResultsUri that is not an absolute HTTP(S) URI before running tests: <_>' -ForEach @(
@@ -53,6 +57,7 @@
             OutputFolderFileName = "TestResults"
             ExcludeTag           = "testtag"
             NoLogo               = $true
+            SkipBuiltIn          = $true
         }
         $Result = Invoke-Maester @maesterParams
         # Dynamically calculate expected counts from smoke test files
@@ -110,6 +115,8 @@
             ExcludeTag                = 'testtag'
             NoLogo                    = $true
             OutputMarkdownSummaryFile = $summaryPath
+            # The smoke tests are enough for the summary; the built-in tests would all be skipped, slowly.
+            SkipBuiltIn               = $true
         }
 
         $result = Invoke-Maester @maesterParams
@@ -174,6 +181,8 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
                     NoLogo               = $true
                     SkipVersionCheck     = $true
                     DisableTelemetry     = $true
+                    # Only the tests above: the built-in tests would all be skipped, and take most of the time.
+                    SkipBuiltIn          = $true
                 }
                 $null = Invoke-Maester @params @Extra
                 $outputFolder
@@ -265,6 +274,8 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
                 NoLogo             = $true
                 SkipVersionCheck   = $true
                 DisableTelemetry   = $true
+                # No tests at all, so that the run stops before the tests.
+                SkipBuiltIn        = $true
             }
             Invoke-Maester @params -ErrorAction SilentlyContinue
 

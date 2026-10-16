@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.8.3"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Data loss prevention"
+  - "Data protection"
   - "MS.EXO"
   - "MS.EXO.8.3"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.8.3 - The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -43,11 +45,22 @@ Rationale: Any alternative DLP solution should be able to detect sensitive infor
 | Test ID | CISA.MS.EXO.8.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaDlpAlternate](/docs/commands/Test-MtCisaDlpAlternate) |
-| Tags | CISA, CISA.MS.EXO.8.3, MS.EXO, MS.EXO.8.3 |
+| Product | Exchange Online |
+| Related products | Purview |
+| Feature | Data loss prevention |
+| Area | Data protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213 Data from Information Repositories, T1530 Data from Cloud Storage, T1567 Exfiltration Over Web Service |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.8.3 |
+| Criticality | SHOULD |
+| Upstream requirement | Removed (was MS.EXO.8.3v1) |
+| Supports controls | cisa-scuba:MS.EXO.8.3 |
+| PowerShell test | [Test-MtCisaDlpAlternate](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.3.ps1) |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaDlpAlternate.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaDlpAlternate.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.8.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.3.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.8.3.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.3.md)

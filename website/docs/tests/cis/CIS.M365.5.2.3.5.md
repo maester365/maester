@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.5.2.3.5"
-  - "Unknown"
+  - "High"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Entra ID"
+  - "Authentication methods"
+  - "Authentication"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS E5"
   - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
@@ -24,7 +27,7 @@ keywords:
 
 # CIS.M365.5.2.3.5 - (L1) Ensure weak authentication methods are disabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -88,13 +91,23 @@ Update-MgPolicyAuthenticationMethodPolicy -AuthenticationMethodConfigurations $p
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.5.2.3.5 |
-| Severity | Unknown |
+| Severity | High |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisWeakAuthenticationMethodsDisabled](/docs/commands/Test-MtCisWeakAuthenticationMethodsDisabled) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.5.2.3.5, L1, Security |
+| Product | Entra ID |
+| Feature | Authentication methods |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566.002 Spearphishing Link, T1621 Multi-Factor Authentication Request Generation, T1111 Multi-Factor Authentication Interception |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 5.2.3.5 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1, E5 Level 1 |
+| Supports controls | cis-m365:5.2.3.5, nist-800-53-r5:CM-7, nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtCisWeakAuthenticationMethodsDisabled](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.2.3.5.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisWeakAuthenticationMethodsDisabled.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisWeakAuthenticationMethodsDisabled.ps1`
+- Test: [`tests/cis/Test.CIS.M365.5.2.3.5.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.2.3.5.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.5.2.3.5.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.5.2.3.5.md)

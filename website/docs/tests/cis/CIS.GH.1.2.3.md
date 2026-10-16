@@ -11,10 +11,12 @@ keywords:
   - "CIS.GH.1.2.3"
   - "High"
   - "CIS"
-  - "CIS GH Level 1"
-  - "CIS GH"
-  - "CIS GitHub v1.2.0"
   - "GitHub"
+  - "Organization settings"
+  - "Access control"
+  - "CIS GH"
+  - "CIS GH Level 1"
+  - "CIS GitHub v1.2.0"
   - "L1"
 ---
 
@@ -78,11 +80,21 @@ This test verifies the organization setting only. It does not enumerate reposito
 | Test ID | CIS.GH.1.2.3 |
 | Severity | High |
 | Suite | CIS |
-| Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubRepositoryDeletionLimited](/docs/commands/Test-MtCisGitHubRepositoryDeletionLimited) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.3, GitHub, L1 |
+| Product | GitHub |
+| Feature | Organization settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1485 Data Destruction, T1070 Indicator Removal |
+| Supports benchmark | CIS GitHub Benchmark (version 1.2.0), requirement 1.2.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | GH Level 1 |
+| Supports controls | cis-github:1.2.3, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCisGitHubRepositoryDeletionLimited](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.3.ps1) |
+| Services | GitHub |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubRepositoryDeletionLimited.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubRepositoryDeletionLimited.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.2.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.3.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.2.3.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.2.3.md)

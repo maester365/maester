@@ -18,7 +18,7 @@ const knownTypes: Record<string, [name: string, icon: string]> = {
   AccessPackage: ["Access package", "identity-governance"],
   AccessPackageCatalog: ["Access package catalog", "identity-governance"],
   SharingPolicy: ["Sharing policy", "exchange"],
-  TransportRule: ["Mail flow rule", "mail"],
+  TransportRule: ["Mail flow rule", "mail-alert"],
 }
 
 const systemNames: Record<string, string> = {

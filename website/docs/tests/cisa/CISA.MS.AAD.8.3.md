@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.AAD.8.3"
   - "Medium"
   - "CISA"
+  - "Entra ID"
+  - "External identities"
+  - "External access and sharing"
   - "Entra ID Free"
   - "MS.AAD"
   - "MS.AAD.8.3"
@@ -20,7 +23,7 @@ keywords:
 
 # CISA.MS.AAD.8.3 - Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,11 +55,21 @@ Rationale: Limiting which domains can be invited to create guest accounts in the
 | Test ID | CISA.MS.AAD.8.3 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Entra ID Free |
-| PowerShell test | [Test-MtCisaCrossTenantInboundDefault](/docs/commands/Test-MtCisaCrossTenantInboundDefault) |
-| Tags | CISA, CISA.MS.AAD.8.3, Entra ID Free, MS.AAD, MS.AAD.8.3 |
+| Product | Entra ID |
+| Feature | External identities |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.AAD.8.3 |
+| Criticality | SHOULD |
+| Upstream requirement | MS.AAD.8.3v1 |
+| Supports controls | cisa-scuba:MS.AAD.8.3, nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCisaCrossTenantInboundDefault](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.3.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/cisa/entra/Test-MtCisaCrossTenantInboundDefault.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/entra/Test-MtCisaCrossTenantInboundDefault.ps1`
+- Test: [`tests/cisa/entra/Test.CISA.MS.AAD.8.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.3.ps1)
+- Documentation: [`tests/cisa/entra/Test.CISA.MS.AAD.8.3.md`](https://github.com/maester365/maester/blob/main/tests/cisa/entra/Test.CISA.MS.AAD.8.3.md)

@@ -1,0 +1,36 @@
+function Test-MtCheckEidscaPR03 {
+    <#
+    .SYNOPSIS
+    Checks if Default Settings - Password Rule Settings - Enforce custom list is 'True'
+
+    .DESCRIPTION
+    When enabled, the words in the list below are used in the banned password system to prevent easy-to-guess passwords.
+
+    Reads the tenant value of
+    https://graph.microsoft.com/beta/settings
+    .values with Test-MtEidscaPR03
+    and passes when it -eq 'True'.
+    #>
+    [MaesterTest(
+        Id = 'EIDSCA.PR03',
+        Title = 'Default Settings - Password Rule Settings - Enforce custom list.',
+        Product = 'entra',
+        Feature = 'password-protection',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = 'T1110',
+        Control = 'nist-800-53-r5:IA-5(1)',
+        Service = 'Graph',
+        License = 'AAD_PREMIUM',
+        Author = 'Cloud-Architekt'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $tenantValue = Test-MtEidscaPR03
+    return ($tenantValue -eq 'True')
+}

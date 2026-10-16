@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.8.5.3"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 1"
+  - "Teams"
+  - "Meetings"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.8.5.3 - (L1) Ensure only people in my org can bypass the lobby
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -73,11 +76,21 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 | Test ID | CIS.M365.8.5.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 1 |
-| PowerShell test | [Test-MtCisTeamsLobbyBypass](/docs/commands/Test-MtCisTeamsLobbyBypass) |
-| Tags | CIS, CIS E3, CIS E3 Level 1, CIS M365 v7.0.0, CIS.M365.8.5.3, L1 |
+| Product | Teams |
+| Feature | Meetings |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 8.5.3 |
+| Benchmark level | L1 |
+| Benchmark profiles | E3 Level 1 |
+| Supports controls | cis-m365:8.5.3, nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCisTeamsLobbyBypass](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.5.3.ps1) |
+| Services | Teams |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisTeamsLobbyBypass.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisTeamsLobbyBypass.ps1`
+- Test: [`tests/cis/Test.CIS.M365.8.5.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.5.3.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.8.5.3.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.5.3.md)

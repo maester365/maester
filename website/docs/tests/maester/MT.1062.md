@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1062"
   - "Medium"
+  - "Exchange Online"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "Exchange"
 ---
 
@@ -17,7 +20,7 @@ keywords:
 
 # MT.1062 - Ensure Direct Send is set to be rejected
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -59,11 +62,18 @@ The result should be `True`.
 | Test ID | MT.1062 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Exchange |
-| PowerShell test | [Test-MtExoRejectDirectSend](/docs/commands/Test-MtExoRejectDirectSend) |
-| Tags | Exchange, Maester, MT.1062 |
+| Product | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
+| Supports controls | nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtExoRejectDirectSend](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1062.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1`
-- PowerShell source: `powershell/public/maester/exchange/Test-MtExoRejectDirectSend.ps1`
+- Test: [`tests/maester/exchange/Test.MT.1062.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1062.ps1)
+- Documentation: [`tests/maester/exchange/Test.MT.1062.md`](https://github.com/maester365/maester/blob/main/tests/maester/exchange/Test.MT.1062.md)

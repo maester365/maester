@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1198"
   - "Medium"
+  - "Entra ID"
+  - "Applications"
+  - "Applications and workload identities"
   - "App"
   - "Entra"
   - "Graph"
@@ -20,7 +23,7 @@ keywords:
 
 # MT.1198 - App registration certificates should not have excessive validity periods.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/simon-vedder" title="Simon Vedder · Original author"><img src="https://github.com/simon-vedder.png" alt="Simon Vedder" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/simon-vedder">Simon Vedder</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/simon-vedder" title="Simon Vedder · Original author"><img src="https://github.com/simon-vedder.png" alt="Simon Vedder" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/simon-vedder">Simon Vedder</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -55,11 +58,19 @@ Certificates that have already expired can no longer be used to authenticate and
 | Test ID | MT.1198 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | App |
-| PowerShell test | [Test-MtAppRegistrationCertificateLifetime](/docs/commands/Test-MtAppRegistrationCertificateLifetime) |
-| Tags | App, Entra, Graph, LongRunning, Maester, MT.1198 |
+| Product | Entra ID |
+| Feature | Applications |
+| Area | Applications and workload identities |
+| Resource type | Application |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1649 Steal or Forge Authentication Certificates |
+| Supports controls | nist-800-53-r5:IA-5 |
+| PowerShell test | [Test-MtAppRegistrationCertificateLifetime](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1198.ps1) |
+| Services | Graph |
+| Long running | Yes |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-AppRegistrations.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtAppRegistrationCertificateLifetime.ps1`
+- Test: [`tests/maester/entra/Test.MT.1198.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1198.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1198.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1198.md)

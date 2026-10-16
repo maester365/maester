@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1049"
   - "High"
+  - "Entra ID"
+  - "Conditional Access"
+  - "Access control"
   - "CA"
 ---
 
@@ -17,7 +20,7 @@ keywords:
 
 # MT.1049 - Conditional Access policies for User Risk and Sign-in Risk should be configured separately.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -37,11 +40,19 @@ See [Sign-in risk-based multifactor authentication - Microsoft Learn](https://le
 | Test ID | MT.1049 |
 | Severity | High |
 | Suite | Maester |
-| Category | CA |
-| PowerShell test | [Test-MtCaMisconfiguredIDProtection](/docs/commands/Test-MtCaMisconfiguredIDProtection) |
-| Tags | CA, Maester, MT.1049 |
+| Product | Entra ID |
+| Feature | Conditional Access |
+| Area | Access control |
+| Resource type | ConditionalAccessPolicy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Supports controls | nist-800-53-r5:AC-2(12) |
+| PowerShell test | [Test-MtCheckMT1049](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1049.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM_P2 |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-ConditionalAccessBaseline.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtCaMisconfiguredIDProtection.ps1`
+- Test: [`tests/maester/entra/Test.MT.1049.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1049.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1049.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1049.md)

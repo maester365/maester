@@ -11,7 +11,9 @@ keywords:
   - "EIDSCA.PR03"
   - "Medium"
   - "Entra ID SCA"
-  - "General"
+  - "Entra ID"
+  - "Password protection"
+  - "Authentication"
   - "EIDSCA"
 ---
 
@@ -19,7 +21,7 @@ keywords:
 
 # EIDSCA.PR03 - Default Settings - Password Rule Settings - Enforce custom list.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/f-bader" title="Fabian Bader · Co-contributor"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -65,11 +67,19 @@ mindmap
 | Test ID | EIDSCA.PR03 |
 | Severity | Medium |
 | Suite | Entra ID SCA |
-| Category | General |
-| PowerShell test | [Test-MtEidscaPR03](https://github.com/maester365/maester/blob/main/powershell/internal/eidsca/Test-MtEidscaPR03.ps1) |
-| Tags | EIDSCA, EIDSCA.PR03 |
+| Product | Entra ID |
+| Feature | Password protection |
+| Area | Authentication |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1110 Brute Force |
+| Supports controls | nist-800-53-r5:IA-5(1) |
+| PowerShell test | [Test-MtCheckEidscaPR03](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.PR03.ps1) |
+| Services | Graph |
+| Compatible licenses | AAD_PREMIUM |
 
 ## Source
 
-- Pester test: `tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1`
-- PowerShell source: `powershell/internal/eidsca/Test-MtEidscaPR03.ps1`
+- Test: [`tests/eidsca/Test.EIDSCA.PR03.ps1`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.PR03.ps1)
+- Documentation: [`tests/eidsca/Test.EIDSCA.PR03.md`](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.PR03.md)

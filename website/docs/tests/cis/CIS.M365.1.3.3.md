@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.1.3.3"
   - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS M365 v7.0.0"
   - "L2"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.1.3.3 - (L2) Ensure 'External sharing' of calendars is not available
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><span className="test-byline-avatar test-byline-more">+1</span></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 6 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/nzlostboy" title="Ben Miles · Co-contributor"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -69,11 +72,22 @@ Set-SharingPolicy -Identity "Default Sharing Policy" -Enabled $False
 | Test ID | CIS.M365.1.3.3 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisCalendarSharing](/docs/commands/Test-MtCisCalendarSharing) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.3, L2 |
+| Product | Microsoft 365 |
+| Related products | Exchange Online |
+| Feature | Organization settings |
+| Area | External access and sharing |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1591 Gather Victim Org Information |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.3 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2 |
+| Supports controls | cis-m365:1.3.3, nist-800-53-r5:AC-3, nist-800-53-r5:SC-7(10) |
+| PowerShell test | [Test-MtCisCalendarSharing](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.3.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisCalendarSharing.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisCalendarSharing.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.3.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.3.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.3.3.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.3.md)

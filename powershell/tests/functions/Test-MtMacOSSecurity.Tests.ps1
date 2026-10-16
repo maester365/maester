@@ -1,6 +1,9 @@
 ﻿Describe 'macOS Intune security checks' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+        # Check functions that became native tests are not exported.
+        Use-MtModuleFunction -Name Test-MtMacOSDefenderRiskScore, Test-MtMacOSGatekeeper, Test-MtMacOSLAPSConfiguration, Test-MtMacOSSystemIntegrityProtection
 
         function Get-TestCompliancePolicy {
             param(
@@ -396,7 +399,8 @@
 
         It 'documents the re-enrollment scope limitation in the companion markdown' {
             # Static explanation belongs in the description, not repeated in every result.
-            $md = Get-Content "$PSScriptRoot/../../public/maester/intune/Test-MtMacOSLAPSConfiguration.md" -Raw
+            # The companion markdown moved next to the native test (tests/maester/intune/Test.MT.1217.md).
+            $md = Get-Content (Get-MtTest -Id 'MT.1217').MarkdownPath -Raw
             $md | Should -Match 'after a factory reset'
             $md | Should -Match '(?i)Scope limitation'
         }

@@ -55,7 +55,7 @@ Describe 'Add-MtTestResultDetail skip handling inside try/catch' {
             @([pscustomobject]@{ displayName = 'Require MFA'; state = 'enabled'; conditions = [pscustomobject]@{ userRiskLevels = @(); signInRiskLevels = @() } })
         }
 
-        { Test-MtCaMisconfiguredIDProtection } | Should -Throw -ErrorId 'PesterTestSkipped'
+        { InModuleScope Maester { Test-MtCaMisconfiguredIDProtection } } | Should -Throw -ErrorId 'PesterTestSkipped'
 
         $detail = InModuleScope Maester { $__MtSession.TestResultDetail.Values | Select-Object -First 1 }
         $detail.TestSkipped | Should -Be 'Custom'

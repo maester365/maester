@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.SHAREPOINT.1.1"
   - "Medium"
   - "CISA"
-  - "spo"
+  - "SharePoint"
+  - "External sharing"
+  - "External access and sharing"
   - "MS.SHAREPOINT"
   - "MS.SHAREPOINT.1.1"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.SHAREPOINT.1.1 - External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -50,11 +52,21 @@ Rationale: Sharing information outside the organization via SharePoint increases
 | Test ID | CISA.MS.SHAREPOINT.1.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | spo |
-| PowerShell test | [Test-MtCisaSpoSharing](/docs/commands/Test-MtCisaSpoSharing) |
-| Tags | CISA, CISA.MS.SHAREPOINT.1.1, MS.SHAREPOINT, MS.SHAREPOINT.1.1 |
+| Product | SharePoint |
+| Feature | External sharing |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | High |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1048 Exfiltration Over Alternative Protocol, T1213.002 Sharepoint |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.SHAREPOINT.1.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.SHAREPOINT.1.1v1 |
+| Supports controls | cisa-scuba:MS.SHAREPOINT.1.1, nist-800-53-r5:AC-2, nist-800-53-r5:AC-3, nist-800-53-r5:IA-8 |
+| PowerShell test | [Test-MtCisaSpoSharing](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.1.ps1) |
+| Services | SharePointOnline |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoSharing.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoSharing.ps1`
+- Test: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.1.ps1)
+- Documentation: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.1.1.md)

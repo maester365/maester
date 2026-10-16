@@ -1,0 +1,4637 @@
+[
+  {
+    "Id": "AD-CFG-01",
+    "Wrapper": "tests/ad/config/Test-MtAdTombstoneLifetimeConfig.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: wrapper file not found (already converted?) [line 382]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "AD-CFG-02",
+    "Wrapper": "tests/ad/config/Test-MtAdDsHeuristicsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDsHeuristicsCount",
+    "Target": "tests/ad/config/Test.AD-CFG-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-03",
+    "Wrapper": "tests/ad/config/Test-MtAdSpnMappings.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSpnMappings",
+    "Target": "tests/ad/config/Test.AD-CFG-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-04",
+    "Wrapper": "tests/ad/config/Test-MtAdOptionalFeaturesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOptionalFeaturesCount",
+    "Target": "tests/ad/config/Test.AD-CFG-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-05",
+    "Wrapper": "tests/ad/config/Test-MtAdRecycleBinEnabledPaths.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdRecycleBinEnabledPaths",
+    "Target": "tests/ad/config/Test.AD-CFG-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-06",
+    "Wrapper": "tests/ad/config/Test-MtAdLdapQueryPolicyCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdLdapQueryPolicyCount",
+    "Target": "tests/ad/config/Test.AD-CFG-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-07",
+    "Wrapper": "tests/ad/config/Test-MtAdDefaultQueryPolicy.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDefaultQueryPolicy",
+    "Target": "tests/ad/config/Test.AD-CFG-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-08",
+    "Wrapper": "tests/ad/config/Test-MtAdAuthNPolicyConfigCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdAuthNPolicyConfigCount",
+    "Target": "tests/ad/config/Test.AD-CFG-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-09",
+    "Wrapper": "tests/ad/config/Test-MtAdAdActivationObjectsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdAdActivationObjectsCount",
+    "Target": "tests/ad/config/Test.AD-CFG-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-10",
+    "Wrapper": "tests/ad/config/Test-MtAdWellKnownSecurityPrincipalsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdWellKnownSecurityPrincipalsCount",
+    "Target": "tests/ad/config/Test.AD-CFG-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-11",
+    "Wrapper": "tests/ad/config/Test-MtAdRegisteredDhcpServersCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdRegisteredDhcpServersCount",
+    "Target": "tests/ad/config/Test.AD-CFG-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-12",
+    "Wrapper": "tests/ad/config/Test-MtAdEnterpriseCaCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdEnterpriseCaCount",
+    "Target": "tests/ad/config/Test.AD-CFG-12.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-13",
+    "Wrapper": "tests/ad/config/Test-MtAdCertificateTemplatesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdCertificateTemplatesCount",
+    "Target": "tests/ad/config/Test.AD-CFG-13.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-14",
+    "Wrapper": "tests/ad/config/Test-MtAdEnrollmentTemplatesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdEnrollmentTemplatesCount",
+    "Target": "tests/ad/config/Test.AD-CFG-14.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-15",
+    "Wrapper": "tests/ad/config/Test-MtAdEnrollmentCaCertificateDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdEnrollmentCaCertificateDetails",
+    "Target": "tests/ad/config/Test.AD-CFG-15.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-16",
+    "Wrapper": "tests/ad/config/Test-MtAdTrustedRootCaCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustedRootCaCount",
+    "Target": "tests/ad/config/Test.AD-CFG-16.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-17",
+    "Wrapper": "tests/ad/config/Test-MtAdTrustedRootCaDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustedRootCaDetails",
+    "Target": "tests/ad/config/Test.AD-CFG-17.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-18",
+    "Wrapper": "tests/ad/config/Test-MtAdIntermediateCaCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdIntermediateCaCount",
+    "Target": "tests/ad/config/Test.AD-CFG-18.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-19",
+    "Wrapper": "tests/ad/config/Test-MtAdIntermediateCaDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdIntermediateCaDetails",
+    "Target": "tests/ad/config/Test.AD-CFG-19.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-20",
+    "Wrapper": "tests/ad/config/Test-MtAdCrlDistributionPointsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdCrlDistributionPointsCount",
+    "Target": "tests/ad/config/Test.AD-CFG-20.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-21",
+    "Wrapper": "tests/ad/config/Test-MtAdNtAuthCertificatesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdNtAuthCertificatesCount",
+    "Target": "tests/ad/config/Test.AD-CFG-21.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-22",
+    "Wrapper": "tests/ad/config/Test-MtAdKdsRootKeysCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdKdsRootKeysCount",
+    "Target": "tests/ad/config/Test.AD-CFG-22.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-23",
+    "Wrapper": "tests/ad/config/Test-MtAdSmtpSiteLinksCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSmtpSiteLinksCount",
+    "Target": "tests/ad/config/Test.AD-CFG-23.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-CFG-24",
+    "Wrapper": "tests/ad/config/Test-MtAdIpSiteLinksCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdIpSiteLinksCount",
+    "Target": "tests/ad/config/Test.AD-CFG-24.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-01",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerDisabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDisabledCount",
+    "Target": "tests/ad/computer/Test.AD-COMP-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-02",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerDormantCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDormantCount",
+    "Target": "tests/ad/computer/Test.AD-COMP-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-03",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerCreatorSidCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerCreatorSidCount",
+    "Target": "tests/ad/computer/Test.AD-COMP-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-04",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerNonStandardGroup.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerNonStandardGroup",
+    "Target": "tests/ad/computer/Test.AD-COMP-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-05",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerSidHistoryCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerSidHistoryCount",
+    "Target": "tests/ad/computer/Test.AD-COMP-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-06",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerInDefaultContainer.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerInDefaultContainer",
+    "Target": "tests/ad/computer/Test.AD-COMP-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-07",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerOUCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerOUCount",
+    "Target": "tests/ad/computer/Test.AD-COMP-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-08",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerPerOUAverage.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerPerOUAverage",
+    "Target": "tests/ad/computer/Test.AD-COMP-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-09",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerDelegationCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDelegationCount",
+    "Target": "tests/ad/computer/Test.AD-COMP-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-COMP-10",
+    "Wrapper": "tests/ad/computer/Test-MtAdComputerDelegationDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDelegationDetails",
+    "Target": "tests/ad/computer/Test.AD-COMP-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-01",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclDistinctObjectCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclDistinctObjectCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-02",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclOuObjectCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclOuObjectCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-03",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclConflictObjectCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclConflictObjectCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-04",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclConflictObjectDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclConflictObjectDetails",
+    "Target": "tests/ad/dacl/Test.AD-DACL-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-05",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclDenyAceCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclDenyAceCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-06",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclDenyAceDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclDenyAceDetails",
+    "Target": "tests/ad/dacl/Test.AD-DACL-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-07",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclDistinctIdentityCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclDistinctIdentityCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-08",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclIdentityAceDistribution.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclIdentityAceDistribution",
+    "Target": "tests/ad/dacl/Test.AD-DACL-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-09",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclPrivilegedAllowAceCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclPrivilegedAllowAceCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-10",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclPrivilegedAllowAceDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclPrivilegedAllowAceDetails",
+    "Target": "tests/ad/dacl/Test.AD-DACL-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-11",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclPrivilegedExtendedRightCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclPrivilegedExtendedRightCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-12",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclPrivilegedExtendedRightDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclPrivilegedExtendedRightDetails",
+    "Target": "tests/ad/dacl/Test.AD-DACL-12.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-13",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclPrivilegedExtendedRightIdentity.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclPrivilegedExtendedRightIdentity",
+    "Target": "tests/ad/dacl/Test.AD-DACL-13.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-14",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclNonInheritedAceCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclNonInheritedAceCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-14.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-15",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclUnresolvedSidCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclUnresolvedSidCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-15.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-16",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclUnresolvedSidDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclUnresolvedSidDetails",
+    "Target": "tests/ad/dacl/Test.AD-DACL-16.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-17",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclInheritedObjectTypeCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclInheritedObjectTypeCount",
+    "Target": "tests/ad/dacl/Test.AD-DACL-17.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DACL-18",
+    "Wrapper": "tests/ad/dacl/Test-MtAdDaclInheritedObjectTypeDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDaclInheritedObjectTypeDetails",
+    "Target": "tests/ad/dacl/Test.AD-DACL-18.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-01",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcSiteCoverageCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcSiteCoverageCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-02",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcSmbv1EnabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcSmbv1EnabledCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-02.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-03",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcSmbv311EnabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcSmbv311EnabledCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-04",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcSmbSigningEnabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcSmbSigningEnabledCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-04.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-05",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcAllFsmoRolesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcAllFsmoRolesCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-06",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcFsmoRoleHolderDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcFsmoRoleHolderDetails",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-07",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcOperatingSystemCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcOperatingSystemCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DC-08",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcOperatingSystemDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcOperatingSystemDetails",
+    "Target": "tests/ad/domaincontroller/Test.AD-DC-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCD-01",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcNonStandardLdapPortCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcNonStandardLdapPortCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DCD-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCD-02",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcNonStandardLdapsPortCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcNonStandardLdapsPortCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DCD-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCD-03",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcReadOnlyCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcReadOnlyCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DCD-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCD-04",
+    "Wrapper": "tests/ad/domaincontroller/Test-MtAdDcNonGlobalCatalogCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDcNonGlobalCatalogCount",
+    "Target": "tests/ad/domaincontroller/Test.AD-DCD-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-01",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerUnconstrainedDelegationCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerUnconstrainedDelegationCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-02",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerNonDcUnconstrainedDelegationCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerNonDcUnconstrainedDelegationCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-03",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerNonDcConstrainedDelegationCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerNonDcConstrainedDelegationCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-04",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerOperatingSystemCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerOperatingSystemCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-05",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerOperatingSystemDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerOperatingSystemDetails",
+    "Target": "tests/ad/security/Test.AD-DCOMP-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-06",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerStaleEnabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerStaleEnabledCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-07",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerDnsHostNameCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDnsHostNameCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-08",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerDnsZoneCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDnsZoneCount",
+    "Target": "tests/ad/security/Test.AD-DCOMP-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DCOMP-09",
+    "Wrapper": "tests/ad/security/Test-MtAdComputerDnsZoneDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerDnsZoneDetails",
+    "Target": "tests/ad/security/Test.AD-DCOMP-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DFSR-01",
+    "Wrapper": "tests/ad/replication/Test-MtAdDfsrSubscriptionCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDfsrSubscriptionCount",
+    "Target": "tests/ad/replication/Test.AD-DFSR-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-01",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsZoneCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsZoneCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-02",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsZonesWithOnlySoaNs.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsZonesWithOnlySoaNs",
+    "Target": "tests/ad/dns/Test.AD-DNS-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-03",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsRootServerIncorrectCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsRootServerIncorrectCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-04",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsRootServerIncorrectDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsRootServerIncorrectDetails",
+    "Target": "tests/ad/dns/Test.AD-DNS-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-05",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsDynamicRecordCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsDynamicRecordCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-06",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsZonesWithRecordsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsZonesWithRecordsCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-07",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsZoneRecordDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsZoneRecordDetails",
+    "Target": "tests/ad/dns/Test.AD-DNS-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-08",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsZoneDelegationCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsZoneDelegationCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-09",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsZoneDelegationDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsZoneDelegationDetails",
+    "Target": "tests/ad/dns/Test.AD-DNS-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-10",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsSoaDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsSoaDetails",
+    "Target": "tests/ad/dns/Test.AD-DNS-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-11",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsAdSrvRecordCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsAdSrvRecordCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-12",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsAdSrvRecordDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsAdSrvRecordDetails",
+    "Target": "tests/ad/dns/Test.AD-DNS-12.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-13",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsDnssecRecordCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsDnssecRecordCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-13.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-14",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsEmptyZoneCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsEmptyZoneCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-14.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-15",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsDuplicateZoneCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsDuplicateZoneCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-15.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-16",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsReverseZoneCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsReverseZoneCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-16.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-17",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsNonStandardZoneCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsNonStandardZoneCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-17.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-18",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsReverseZoneNetworkCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsReverseZoneNetworkCount",
+    "Target": "tests/ad/dns/Test.AD-DNS-18.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DNS-19",
+    "Wrapper": "tests/ad/dns/Test-MtAdDnsReverseZoneNetworkDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDnsReverseZoneNetworkDetails",
+    "Target": "tests/ad/dns/Test.AD-DNS-19.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-01",
+    "Wrapper": "tests/ad/domain/Test-MtAdDomainFunctionalLevel.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDomainFunctionalLevel",
+    "Target": "tests/ad/domain/Test.AD-DOM-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-02",
+    "Wrapper": "tests/ad/domain/Test-MtAdMachineAccountQuota.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdMachineAccountQuota",
+    "Target": "tests/ad/domain/Test.AD-DOM-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-03",
+    "Wrapper": "tests/ad/domain/Test-MtAdDomainControllerCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDomainControllerCount",
+    "Target": "tests/ad/domain/Test.AD-DOM-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-04",
+    "Wrapper": "tests/ad/domain/Test-MtAdRidsRemaining.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdRidsRemaining",
+    "Target": "tests/ad/domain/Test.AD-DOM-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-05",
+    "Wrapper": "tests/ad/domain/Test-MtAdDomainNameStandardCompliance.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDomainNameStandardCompliance",
+    "Target": "tests/ad/domain/Test.AD-DOM-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-06",
+    "Wrapper": "tests/ad/domain/Test-MtAdDomainNameNonStandardDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDomainNameNonStandardDetails",
+    "Target": "tests/ad/domain/Test.AD-DOM-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-07",
+    "Wrapper": "tests/ad/domain/Test-MtAdNetbiosNameStandardCompliance.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdNetbiosNameStandardCompliance",
+    "Target": "tests/ad/domain/Test.AD-DOM-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOM-08",
+    "Wrapper": "tests/ad/domain/Test-MtAdNetbiosNameNonStandardDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdNetbiosNameNonStandardDetails",
+    "Target": "tests/ad/domain/Test.AD-DOM-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-DOMS-01",
+    "Wrapper": "tests/ad/domain/Test-MtAdAllowedDnsSuffixesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdAllowedDnsSuffixesCount",
+    "Target": "tests/ad/domain/Test.AD-DOMS-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FEAT-01",
+    "Wrapper": "tests/ad/replication/Test-MtAdOptionalFeatureCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOptionalFeatureCount",
+    "Target": "tests/ad/replication/Test.AD-FEAT-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FEAT-02",
+    "Wrapper": "tests/ad/replication/Test-MtAdOptionalFeatureEnabledDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOptionalFeatureEnabledDetails",
+    "Target": "tests/ad/replication/Test.AD-FEAT-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FGPP-01",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdFineGrainedPolicyCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdFineGrainedPolicyCount",
+    "Target": "tests/ad/passwordpolicy/Test.AD-FGPP-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FGPP-02",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdFineGrainedPolicyValueCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdFineGrainedPolicyValueCount",
+    "Target": "tests/ad/passwordpolicy/Test.AD-FGPP-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FGPP-03",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdFineGrainedPolicySettingCounts.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdFineGrainedPolicySettingCounts",
+    "Target": "tests/ad/passwordpolicy/Test.AD-FGPP-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FGPP-04",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdFineGrainedPolicyAppliesTo.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdFineGrainedPolicyAppliesTo",
+    "Target": "tests/ad/passwordpolicy/Test.AD-FGPP-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FOR-01",
+    "Wrapper": "tests/ad/domain/Test-MtAdForestFunctionalLevel.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdForestFunctionalLevel",
+    "Target": "tests/ad/domain/Test.AD-FOR-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FOR-02",
+    "Wrapper": "tests/ad/domain/Test-MtAdForestDomainCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdForestDomainCount",
+    "Target": "tests/ad/domain/Test.AD-FOR-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FOR-03",
+    "Wrapper": "tests/ad/domain/Test-MtAdTombstoneLifetime.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTombstoneLifetime",
+    "Target": "tests/ad/domain/Test.AD-FOR-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FOR-04",
+    "Wrapper": "tests/ad/domain/Test-MtAdRecycleBinStatus.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdRecycleBinStatus",
+    "Target": "tests/ad/domain/Test.AD-FOR-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FORS-01",
+    "Wrapper": "tests/ad/domain/Test-MtAdUpnSuffixesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUpnSuffixesCount",
+    "Target": "tests/ad/domain/Test.AD-FORS-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FORS-02",
+    "Wrapper": "tests/ad/domain/Test-MtAdUpnSuffixesDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUpnSuffixesDetails",
+    "Target": "tests/ad/domain/Test.AD-FORS-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FORS-03",
+    "Wrapper": "tests/ad/domain/Test-MtAdSpnSuffixesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSpnSuffixesCount",
+    "Target": "tests/ad/domain/Test.AD-FORS-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-FORS-04",
+    "Wrapper": "tests/ad/domain/Test-MtAdCrossForestReferencesCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdCrossForestReferencesCount",
+    "Target": "tests/ad/domain/Test.AD-FORS-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GCHG-01",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupChangeAveragePerYear.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupChangeAveragePerYear",
+    "Target": "tests/ad/group/Test.AD-GCHG-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-01",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberDistinctGroupCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberDistinctGroupCount",
+    "Target": "tests/ad/group/Test.AD-GMC-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-02",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberAccountTypeCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberAccountTypeCount",
+    "Target": "tests/ad/group/Test.AD-GMC-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-03",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberAccountTypeDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberAccountTypeDetails",
+    "Target": "tests/ad/group/Test.AD-GMC-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-04",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberTrustCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberTrustCount",
+    "Target": "tests/ad/group/Test.AD-GMC-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-05",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberTrustDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberTrustDetails",
+    "Target": "tests/ad/group/Test.AD-GMC-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-06",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberForeignSidCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberForeignSidCount",
+    "Target": "tests/ad/group/Test.AD-GMC-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-07",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupMemberForeignSidDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupMemberForeignSidDetails",
+    "Target": "tests/ad/group/Test.AD-GMC-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-08",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupEmptyNonPrivilegedCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupEmptyNonPrivilegedCount",
+    "Target": "tests/ad/group/Test.AD-GMC-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-09",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupEmptyNonPrivilegedDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupEmptyNonPrivilegedDetails",
+    "Target": "tests/ad/group/Test.AD-GMC-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-10",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupPrivilegedWithMembersCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupPrivilegedWithMembersCount",
+    "Target": "tests/ad/group/Test.AD-GMC-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GMC-11",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupPrivilegedWithMembersDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupPrivilegedWithMembersDetails",
+    "Target": "tests/ad/group/Test.AD-GMC-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPO-01",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoTotalCount",
+    "Target": "tests/ad/gpo/Test.AD-GPO-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPO-02",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoCreatedBefore2020Count.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoCreatedBefore2020Count",
+    "Target": "tests/ad/gpo/Test.AD-GPO-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPO-03",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoChangedBefore2020Count.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoChangedBefore2020Count",
+    "Target": "tests/ad/gpo/Test.AD-GPO-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPO-04",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoUnlinkedCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoUnlinkedCount",
+    "Target": "tests/ad/gpo/Test.AD-GPO-04.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPO-05",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoUnlinkedDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoUnlinkedDetails",
+    "Target": "tests/ad/gpo/Test.AD-GPO-05.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOL-01",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoLinkedCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoLinkedCount",
+    "Target": "tests/ad/gpo/Test.AD-GPOL-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOL-02",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoDisabledLinkCount.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckADGPOL02 -> Test-MtAdGpoDisabledLinkCount",
+    "Target": "tests/ad/gpo/Test.AD-GPOL-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOL-03",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoUnlinkedTargetCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoUnlinkedTargetCount",
+    "Target": "tests/ad/gpo/Test.AD-GPOL-03.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOL-04",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoEnforcedCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoEnforcedCount",
+    "Target": "tests/ad/gpo/Test.AD-GPOL-04.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOL-05",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoBlockedInheritanceCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoBlockedInheritanceCount",
+    "Target": "tests/ad/gpo/Test.AD-GPOL-05.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOL-06",
+    "Wrapper": "tests/ad/gpo/Test-MtAdGpoLinkedOUCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoLinkedOUCount",
+    "Target": "tests/ad/gpo/Test.AD-GPOL-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-01",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoPermissionsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoPermissionsCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-01.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-02",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoPermissionsDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoPermissionsDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-02.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-03",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoAuthenticatedUsersCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoAuthenticatedUsersCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-03.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-04",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoAuthenticatedUsersDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoAuthenticatedUsersDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-04.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-05",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoEnterpriseDcCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoEnterpriseDcCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-05.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-06",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoDomainComputersCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoDomainComputersCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-06.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-07",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoDenyAceCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoDenyAceCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-07.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-08",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoDenyAceDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoDenyAceDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-08.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-09",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoInheritedPermissionsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoInheritedPermissionsCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-09.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-10",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoApplyGroupPolicyAceCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoApplyGroupPolicyAceCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-11",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoNoApplyGroupPolicyAceDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoNoApplyGroupPolicyAceDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-12",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoDisabledLinkCount.Tests.ps1",
+    "Mode": "Thin",
+    "Function": "Test-MtCheckADGPOREP12 -> Test-MtAdGpoDisabledLinkCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-12.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-13",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoDisabledLinkDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoDisabledLinkDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-13.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-14",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoEnforcementCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoEnforcementCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-14.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-15",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoVersionMismatchCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoVersionMismatchCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-15.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-16",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoVersionMismatchDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoVersionMismatchDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-16.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-17",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoCpasswordFoundCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoCpasswordFoundCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-17.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-18",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoCpasswordFoundDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoCpasswordFoundDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-18.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-19",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoDefaultPasswordFoundCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoDefaultPasswordFoundCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-19.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOREP-20",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoDefaultPasswordFoundDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoDefaultPasswordFoundDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOREP-20.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-01",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoStateTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoStateTotalCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-02",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoWmiFilterCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoWmiFilterCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-03",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoWmiFilterDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoWmiFilterDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-04",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoSettingsDisabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoSettingsDisabledCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-05",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoComputerSettingsDisabledDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoComputerSettingsDisabledDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-06",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoUserSettingsDisabledDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoUserSettingsDisabledDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-07",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoAllSettingsDisabledDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoAllSettingsDisabledDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-08",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoOwnerDistinctCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoOwnerDistinctCount",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GPOS-09",
+    "Wrapper": "tests/ad/gpostate/Test-MtAdGpoOwnerDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGpoOwnerDetails",
+    "Target": "tests/ad/gpostate/Test.AD-GPOS-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove",
+      "GeneratedMarkdown: no .md file; generated from the function help"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-01",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupAdminCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupAdminCount",
+    "Target": "tests/ad/group/Test.AD-GRP-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-02",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupInContainerCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupInContainerCount",
+    "Target": "tests/ad/group/Test.AD-GRP-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-03",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupStaleCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupStaleCount",
+    "Target": "tests/ad/group/Test.AD-GRP-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-04",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupWithManagerCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupWithManagerCount",
+    "Target": "tests/ad/group/Test.AD-GRP-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-05",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupSidHistoryCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupSidHistoryCount",
+    "Target": "tests/ad/group/Test.AD-GRP-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-06",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupDistributionCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupDistributionCount",
+    "Target": "tests/ad/group/Test.AD-GRP-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-07",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupSecurityCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupSecurityCount",
+    "Target": "tests/ad/group/Test.AD-GRP-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-08",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupDomainLocalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupDomainLocalCount",
+    "Target": "tests/ad/group/Test.AD-GRP-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-09",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupGlobalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupGlobalCount",
+    "Target": "tests/ad/group/Test.AD-GRP-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-GRP-10",
+    "Wrapper": "tests/ad/group/Test-MtAdGroupUniversalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdGroupUniversalCount",
+    "Target": "tests/ad/group/Test.AD-GRP-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-KRBTGT-01",
+    "Wrapper": "tests/ad/security/Test-MtAdKrbtgtPasswordLastSet.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdKrbtgtPasswordLastSet",
+    "Target": "tests/ad/security/Test.AD-KRBTGT-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-KRBTGT-02",
+    "Wrapper": "tests/ad/security/Test-MtAdKrbtgtLastLogon.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdKrbtgtLastLogon",
+    "Target": "tests/ad/security/Test.AD-KRBTGT-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-KRBTGT-03",
+    "Wrapper": "tests/ad/security/Test-MtAdKrbtgtNonStandardUacCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdKrbtgtNonStandardUacCount",
+    "Target": "tests/ad/security/Test.AD-KRBTGT-03.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-MSA-01",
+    "Wrapper": "tests/ad/security/Test-MtAdManagedServiceAccountCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdManagedServiceAccountCount",
+    "Target": "tests/ad/security/Test.AD-MSA-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-OU-01",
+    "Wrapper": "tests/ad/ou/Test-MtAdOuOverlappingNameCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOuOverlappingNameCount",
+    "Target": "tests/ad/ou/Test.AD-OU-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-OU-02",
+    "Wrapper": "tests/ad/ou/Test-MtAdOuAtDomainRootCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOuAtDomainRootCount",
+    "Target": "tests/ad/ou/Test.AD-OU-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-OU-03",
+    "Wrapper": "tests/ad/ou/Test-MtAdOuStaleCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOuStaleCount",
+    "Target": "tests/ad/ou/Test.AD-OU-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-OU-04",
+    "Wrapper": "tests/ad/ou/Test-MtAdOuEmptyCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOuEmptyCount",
+    "Target": "tests/ad/ou/Test.AD-OU-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-OU-05",
+    "Wrapper": "tests/ad/ou/Test-MtAdOuEmptyDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdOuEmptyDetails",
+    "Target": "tests/ad/ou/Test.AD-OU-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PRINT-01",
+    "Wrapper": "tests/ad/printer/Test-MtAdPrinterTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdPrinterTotalCount",
+    "Target": "tests/ad/printer/Test.AD-PRINT-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-01",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdPasswordHistoryCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdPasswordHistoryCount",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-02",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdPasswordMaxAge.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdPasswordMaxAge",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-03",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdPasswordMinLength.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdPasswordMinLength",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-04",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdPasswordComplexityRequired.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdPasswordComplexityRequired",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-05",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdPasswordReversibleEncryption.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdPasswordReversibleEncryption",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-06",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdAccountLockoutDuration.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdAccountLockoutDuration",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-PWDPOL-07",
+    "Wrapper": "tests/ad/passwordpolicy/Test-MtAdAccountLockoutThreshold.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdAccountLockoutThreshold",
+    "Target": "tests/ad/passwordpolicy/Test.AD-PWDPOL-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-REPL-01",
+    "Wrapper": "tests/ad/replication/Test-MtAdDisabledReplicationConnectionCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdDisabledReplicationConnectionCount",
+    "Target": "tests/ad/replication/Test.AD-REPL-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-REPL-02",
+    "Wrapper": "tests/ad/replication/Test-MtAdNonAutoReplicationConnectionCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdNonAutoReplicationConnectionCount",
+    "Target": "tests/ad/replication/Test.AD-REPL-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-ROOTDSE-01",
+    "Wrapper": "tests/ad/replication/Test-MtAdSupportedSaslMechanismCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSupportedSaslMechanismCount",
+    "Target": "tests/ad/replication/Test.AD-ROOTDSE-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-ROOTDSE-02",
+    "Wrapper": "tests/ad/replication/Test-MtAdSupportedSaslMechanismDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSupportedSaslMechanismDetails",
+    "Target": "tests/ad/replication/Test.AD-ROOTDSE-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-ROOTDSE-03",
+    "Wrapper": "tests/ad/replication/Test-MtAdRootDseSynchronizedStatus.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdRootDseSynchronizedStatus",
+    "Target": "tests/ad/replication/Test.AD-ROOTDSE-03.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SCH-01",
+    "Wrapper": "tests/ad/schema/Test-MtAdSchemaModificationYearCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSchemaModificationYearCount",
+    "Target": "tests/ad/schema/Test.AD-SCH-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SCH-02",
+    "Wrapper": "tests/ad/schema/Test-MtAdSchemaModificationYearDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSchemaModificationYearDetails",
+    "Target": "tests/ad/schema/Test.AD-SCH-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SCH-03",
+    "Wrapper": "tests/ad/schema/Test-MtAdSchemaVersionEntryCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSchemaVersionEntryCount",
+    "Target": "tests/ad/schema/Test.AD-SCH-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SCH-04",
+    "Wrapper": "tests/ad/schema/Test-MtAdSchemaVersionDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSchemaVersionDetails",
+    "Target": "tests/ad/schema/Test.AD-SCH-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SCH-05",
+    "Wrapper": "tests/ad/schema/Test-MtAdLapsInstalledStatus.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdLapsInstalledStatus",
+    "Target": "tests/ad/schema/Test.AD-SCH-05.ps1",
+    "Flags": [
+      "NoSeverity: no severity in config or tags; set to Medium for review",
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SITE-01",
+    "Wrapper": "tests/ad/site/Test-MtAdSiteTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSiteTotalCount",
+    "Target": "tests/ad/site/Test.AD-SITE-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SITE-02",
+    "Wrapper": "tests/ad/site/Test-MtAdSiteWithoutDcCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSiteWithoutDcCount",
+    "Target": "tests/ad/site/Test.AD-SITE-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SITE-03",
+    "Wrapper": "tests/ad/site/Test-MtAdSiteWithoutDcDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSiteWithoutDcDetails",
+    "Target": "tests/ad/site/Test.AD-SITE-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SITE-04",
+    "Wrapper": "tests/ad/site/Test-MtAdSiteWithoutSubnetCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSiteWithoutSubnetCount",
+    "Target": "tests/ad/site/Test.AD-SITE-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SITE-05",
+    "Wrapper": "tests/ad/site/Test-MtAdSiteWithoutSubnetDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSiteWithoutSubnetDetails",
+    "Target": "tests/ad/site/Test.AD-SITE-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-01",
+    "Wrapper": "tests/ad/spn/Test-MtAdComputerSpnServiceClassCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerSpnServiceClassCount",
+    "Target": "tests/ad/spn/Test.AD-SPN-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-02",
+    "Wrapper": "tests/ad/spn/Test-MtAdComputerSpnServiceClassUsage.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerSpnServiceClassUsage",
+    "Target": "tests/ad/spn/Test.AD-SPN-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-03",
+    "Wrapper": "tests/ad/spn/Test-MtAdComputerSpnUnknownCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerSpnUnknownCount",
+    "Target": "tests/ad/spn/Test.AD-SPN-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-04",
+    "Wrapper": "tests/ad/spn/Test-MtAdComputerSpnUnknownDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerSpnUnknownDetails",
+    "Target": "tests/ad/spn/Test.AD-SPN-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-05",
+    "Wrapper": "tests/ad/spn/Test-MtAdComputerSpnNonFqdnHosts.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdComputerSpnNonFqdnHosts",
+    "Target": "tests/ad/spn/Test.AD-SPN-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-06",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnTotalCount",
+    "Target": "tests/ad/spn/Test.AD-SPN-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-07",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnServiceClassCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnServiceClassCount",
+    "Target": "tests/ad/spn/Test.AD-SPN-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-08",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnServiceClassUsage.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnServiceClassUsage",
+    "Target": "tests/ad/spn/Test.AD-SPN-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-09",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnUnknownCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnUnknownCount",
+    "Target": "tests/ad/spn/Test.AD-SPN-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-10",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnUnknownDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnUnknownDetails",
+    "Target": "tests/ad/spn/Test.AD-SPN-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-11",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnNonFqdnHosts.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnNonFqdnHosts",
+    "Target": "tests/ad/spn/Test.AD-SPN-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-12",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnDomainAdminCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnDomainAdminCount",
+    "Target": "tests/ad/spn/Test.AD-SPN-12.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SPN-13",
+    "Wrapper": "tests/ad/spn/Test-MtAdUserSpnDomainAdminDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnDomainAdminDetails",
+    "Target": "tests/ad/spn/Test.AD-SPN-13.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Critical",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-01",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetTotalCount",
+    "Target": "tests/ad/site/Test.AD-SUB-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-02",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetSiteAssociationCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetSiteAssociationCount",
+    "Target": "tests/ad/site/Test.AD-SUB-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-03",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetCatchAllCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetCatchAllCount",
+    "Target": "tests/ad/site/Test.AD-SUB-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-04",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetIpv6Count.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetIpv6Count",
+    "Target": "tests/ad/site/Test.AD-SUB-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-05",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetIpv6CatchAllCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetIpv6CatchAllCount",
+    "Target": "tests/ad/site/Test.AD-SUB-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-06",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetNonInternalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetNonInternalCount",
+    "Target": "tests/ad/site/Test.AD-SUB-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-07",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetNonInternalDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetNonInternalDetails",
+    "Target": "tests/ad/site/Test.AD-SUB-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-08",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetFirstOctetCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetFirstOctetCount",
+    "Target": "tests/ad/site/Test.AD-SUB-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-09",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetFirstTwoOctetsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetFirstTwoOctetsCount",
+    "Target": "tests/ad/site/Test.AD-SUB-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-10",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetFirstThreeOctetsCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetFirstThreeOctetsCount",
+    "Target": "tests/ad/site/Test.AD-SUB-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-SUB-11",
+    "Wrapper": "tests/ad/site/Test-MtAdSubnetWithoutSiteCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdSubnetWithoutSiteCount",
+    "Target": "tests/ad/site/Test.AD-SUB-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-01",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustTotalCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustTotalCount",
+    "Target": "tests/ad/trust/Test.AD-TRUST-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-02",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustInterForestCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustInterForestCount",
+    "Target": "tests/ad/trust/Test.AD-TRUST-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-03",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustQuarantinedCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustQuarantinedCount",
+    "Target": "tests/ad/trust/Test.AD-TRUST-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-04",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustNonQuarantinedDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustNonQuarantinedDetails",
+    "Target": "tests/ad/trust/Test.AD-TRUST-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-05",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustDetails",
+    "Target": "tests/ad/trust/Test.AD-TRUST-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-06",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustStaleCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustStaleCount",
+    "Target": "tests/ad/trust/Test.AD-TRUST-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-TRUST-07",
+    "Wrapper": "tests/ad/trust/Test-MtAdTrustStaleDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdTrustStaleDetails",
+    "Target": "tests/ad/trust/Test.AD-TRUST-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-01",
+    "Wrapper": "tests/ad/user/Test-MtAdUserDisabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserDisabledCount",
+    "Target": "tests/ad/user/Test.AD-USER-01.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-02",
+    "Wrapper": "tests/ad/user/Test-MtAdUserDormantEnabledCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserDormantEnabledCount",
+    "Target": "tests/ad/user/Test.AD-USER-02.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-03",
+    "Wrapper": "tests/ad/user/Test-MtAdUserPasswordNeverExpiresCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserPasswordNeverExpiresCount",
+    "Target": "tests/ad/user/Test.AD-USER-03.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-04",
+    "Wrapper": "tests/ad/user/Test-MtAdUserReversibleEncryptionCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserReversibleEncryptionCount",
+    "Target": "tests/ad/user/Test.AD-USER-04.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-05",
+    "Wrapper": "tests/ad/user/Test-MtAdUserDelegationAllowedCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserDelegationAllowedCount",
+    "Target": "tests/ad/user/Test.AD-USER-05.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-06",
+    "Wrapper": "tests/ad/user/Test-MtAdUserKerberosDesOnlyCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserKerberosDesOnlyCount",
+    "Target": "tests/ad/user/Test.AD-USER-06.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-07",
+    "Wrapper": "tests/ad/user/Test-MtAdUserNoPreAuthCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserNoPreAuthCount",
+    "Target": "tests/ad/user/Test.AD-USER-07.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-08",
+    "Wrapper": "tests/ad/user/Test-MtAdUserNeverLoggedInCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserNeverLoggedInCount",
+    "Target": "tests/ad/user/Test.AD-USER-08.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-09",
+    "Wrapper": "tests/ad/user/Test-MtAdUserPasswordNotRequiredCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserPasswordNotRequiredCount",
+    "Target": "tests/ad/user/Test.AD-USER-09.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-10",
+    "Wrapper": "tests/ad/user/Test-MtAdUserWorkstationRestrictionCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserWorkstationRestrictionCount",
+    "Target": "tests/ad/user/Test.AD-USER-10.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-11",
+    "Wrapper": "tests/ad/user/Test-MtAdUserAdminCountCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserAdminCountCount",
+    "Target": "tests/ad/user/Test.AD-USER-11.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-12",
+    "Wrapper": "tests/ad/user/Test-MtAdUserNonStandardPrimaryGroupCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserNonStandardPrimaryGroupCount",
+    "Target": "tests/ad/user/Test.AD-USER-12.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-13",
+    "Wrapper": "tests/ad/user/Test-MtAdUserSidHistoryCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSidHistoryCount",
+    "Target": "tests/ad/user/Test.AD-USER-13.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-14",
+    "Wrapper": "tests/ad/user/Test-MtAdUserSpnSetCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserSpnSetCount",
+    "Target": "tests/ad/user/Test.AD-USER-14.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-15",
+    "Wrapper": "tests/ad/user/Test-MtAdUserManagerSetCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserManagerSetCount",
+    "Target": "tests/ad/user/Test.AD-USER-15.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-16",
+    "Wrapper": "tests/ad/user/Test-MtAdUserHomeDirectoryCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserHomeDirectoryCount",
+    "Target": "tests/ad/user/Test.AD-USER-16.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-17",
+    "Wrapper": "tests/ad/user/Test-MtAdUserProfilePathCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserProfilePathCount",
+    "Target": "tests/ad/user/Test.AD-USER-17.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-18",
+    "Wrapper": "tests/ad/user/Test-MtAdUserScriptPathCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserScriptPathCount",
+    "Target": "tests/ad/user/Test.AD-USER-18.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-19",
+    "Wrapper": "tests/ad/user/Test-MtAdUserInContainerCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserInContainerCount",
+    "Target": "tests/ad/user/Test.AD-USER-19.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-20",
+    "Wrapper": "tests/ad/user/Test-MtAdUserKnownServiceAccountCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserKnownServiceAccountCount",
+    "Target": "tests/ad/user/Test.AD-USER-20.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-21",
+    "Wrapper": "tests/ad/user/Test-MtAdUserKnownServiceAccountDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserKnownServiceAccountDetails",
+    "Target": "tests/ad/user/Test.AD-USER-21.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-22",
+    "Wrapper": "tests/ad/user/Test-MtAdUserBuiltInAdminCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserBuiltInAdminCount",
+    "Target": "tests/ad/user/Test.AD-USER-22.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-23",
+    "Wrapper": "tests/ad/user/Test-MtAdUserBuiltInAdminEnabledDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserBuiltInAdminEnabledDetails",
+    "Target": "tests/ad/user/Test.AD-USER-23.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-24",
+    "Wrapper": "tests/ad/user/Test-MtAdUserBuiltInAdminLastLogonDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserBuiltInAdminLastLogonDetails",
+    "Target": "tests/ad/user/Test.AD-USER-24.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-25",
+    "Wrapper": "tests/ad/user/Test-MtAdUserBuiltInAdminPasswordAgeDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserBuiltInAdminPasswordAgeDetails",
+    "Target": "tests/ad/user/Test.AD-USER-25.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-26",
+    "Wrapper": "tests/ad/user/Test-MtAdUserHoneyPotCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserHoneyPotCount",
+    "Target": "tests/ad/user/Test.AD-USER-26.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-27",
+    "Wrapper": "tests/ad/user/Test-MtAdUserHoneyPotDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserHoneyPotDetails",
+    "Target": "tests/ad/user/Test.AD-USER-27.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-28",
+    "Wrapper": "tests/ad/user/Test-MtAdUserDelegationConfiguredCount.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserDelegationConfiguredCount",
+    "Target": "tests/ad/user/Test.AD-USER-28.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "AD-USER-29",
+    "Wrapper": "tests/ad/user/Test-MtAdUserDelegationDetails.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtAdUserDelegationDetails",
+    "Target": "tests/ad/user/Test.AD-USER-29.ps1",
+    "Flags": [
+      "InferredService: ActiveDirectory",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Info",
+    "Service": "ActiveDirectory",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  }
+]

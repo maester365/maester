@@ -1,0 +1,200 @@
+[
+  {
+    "Id": "MT.1077",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmAppRegWithPrivilegedApiAndOwners",
+    "Target": "tests/XSPM/Test.MT.1077.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1078",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmAppRegWithPrivilegedRolesAndOwners",
+    "Target": "tests/XSPM/Test.MT.1078.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1079",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmAppRegWithPrivilegedUnusedPermissions",
+    "Target": "tests/XSPM/Test.MT.1079.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1080",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmExposedCredentialsForPrivilegedUsers",
+    "Target": "tests/XSPM/Test.MT.1080.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1081",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmHybridUsersWithAssignedEntraIdRoles",
+    "Target": "tests/XSPM/Test.MT.1081.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1085",
+    "Wrapper": "tests/XSPM/Test-XspmCriticalAssetManagement.Tests.ps1",
+    "Mode": null,
+    "Function": null,
+    "Target": null,
+    "Flags": [
+      "Manual: wrapper file not found (already converted?) [line 382]"
+    ],
+    "Converted": false
+  },
+  {
+    "Id": "MT.1086",
+    "Wrapper": "tests/XSPM/Test-XspmDevices.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts",
+    "Target": "tests/XSPM/Test.MT.1086.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1087",
+    "Wrapper": "tests/XSPM/Test-XspmDevices.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmPublicRemotelyExploitableHighExposureDevices",
+    "Target": "tests/XSPM/Test.MT.1087.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "High",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1088",
+    "Wrapper": "tests/XSPM/Test-XspmDevices.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices",
+    "Target": "tests/XSPM/Test.MT.1088.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1089",
+    "Wrapper": "tests/XSPM/Test-XspmDevices.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices",
+    "Target": "tests/XSPM/Test.MT.1089.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1111",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmPrivilegedUsersLinkedToIdentity",
+    "Target": "tests/XSPM/Test.MT.1111.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Low",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  },
+  {
+    "Id": "MT.1112",
+    "Wrapper": "tests/XSPM/Test-XspmPrivilegedIdentities.Tests.ps1",
+    "Mode": "Move",
+    "Function": "Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity",
+    "Target": "tests/XSPM/Test.MT.1112.ps1",
+    "Flags": [
+      "InferredService: Graph",
+      "KeptTry: no canonical outer try/catch to remove"
+    ],
+    "Converted": true,
+    "Severity": "Medium",
+    "Service": "Graph",
+    "CompatibleLicense": [],
+    "RemovedGuards": 0,
+    "RemovedTry": false
+  }
+]

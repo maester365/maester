@@ -11,10 +11,12 @@ keywords:
   - "CIS.GH.1.3.8"
   - "High"
   - "CIS"
-  - "CIS GH Level 1"
-  - "CIS GH"
-  - "CIS GitHub v1.2.0"
   - "GitHub"
+  - "Organization settings"
+  - "Access control"
+  - "CIS GH"
+  - "CIS GH Level 1"
+  - "CIS GitHub v1.2.0"
   - "L1"
 ---
 
@@ -76,11 +78,21 @@ This test verifies the organization default repository permission only. It does 
 | Test ID | CIS.GH.1.3.8 |
 | Severity | High |
 | Suite | CIS |
-| Category | CIS GH Level 1 |
-| PowerShell test | [Test-MtCisGitHubStrictBasePermission](/docs/commands/Test-MtCisGitHubStrictBasePermission) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.8, GitHub, L1 |
+| Product | GitHub |
+| Feature | Organization settings |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1677 Poisoned Pipeline Execution, T1195.002 Compromise Software Supply Chain |
+| Supports benchmark | CIS GitHub Benchmark (version 1.2.0), requirement 1.3.8 |
+| Benchmark level | L1 |
+| Benchmark profiles | GH Level 1 |
+| Supports controls | cis-github:1.3.8, nist-800-53-r5:AC-6, nist-800-53-r5:AC-3 |
+| PowerShell test | [Test-MtCisGitHubStrictBasePermission](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.8.ps1) |
+| Services | GitHub |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisGitHubStrictBasePermission.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisGitHubStrictBasePermission.ps1`
+- Test: [`tests/cis/Test.CIS.GH.1.3.8.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.8.ps1)
+- Documentation: [`tests/cis/Test.CIS.GH.1.3.8.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.GH.1.3.8.md)

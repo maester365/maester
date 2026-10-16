@@ -11,8 +11,11 @@ keywords:
   - "CIS.M365.2.4.4"
   - "Medium"
   - "CIS"
-  - "CIS E5 Level 1"
+  - "Defender"
+  - "Zero-hour auto purge"
+  - "Email and collaboration protection"
   - "CIS E5"
+  - "CIS E5 Level 1"
   - "CIS M365 v7.0.0"
   - "L1"
 ---
@@ -21,7 +24,7 @@ keywords:
 
 # CIS.M365.2.4.4 - (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/korthal-maiyn" title="Christopher Edwards · Co-contributor"><img src="https://github.com/Korthal-Maiyn.png" alt="Christopher Edwards" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nzlostboy" title="Ben Miles · Original author"><img src="https://github.com/NZLostboy.png" alt="Ben Miles" /></a><a className="test-byline-avatar" href="/contributors/korthal-maiyn" title="Christopher Edwards · Co-contributor"><img src="https://github.com/Korthal-Maiyn.png" alt="Christopher Edwards" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nzlostboy">Ben Miles</a> with <a href="/contributors/korthal-maiyn">Christopher Edwards</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -68,11 +71,23 @@ Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 | Test ID | CIS.M365.2.4.4 |
 | Severity | Medium |
 | Suite | CIS |
-| Category | CIS E5 Level 1 |
-| PowerShell test | [Test-MtCisZAP](/docs/commands/Test-MtCisZAP) |
-| Tags | CIS, CIS E5, CIS E5 Level 1, CIS M365 v7.0.0, CIS.M365.2.4.4, L1 |
+| Product | Defender |
+| Related products | Teams |
+| Feature | Zero-hour auto purge |
+| Area | Email and collaboration protection |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1566 Phishing |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 2.4.4 |
+| Benchmark level | L1 |
+| Benchmark profiles | E5 Level 1 |
+| Supports controls | cis-m365:2.4.4, nist-800-53-r5:SI-3 |
+| PowerShell test | [Test-MtCisZAP](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.4.4.ps1) |
+| Services | Teams |
+| Compatible licenses | THREAT_INTELLIGENCE |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisZAP.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisZAP.ps1`
+- Test: [`tests/cis/Test.CIS.M365.2.4.4.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.4.4.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.2.4.4.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.4.4.md)

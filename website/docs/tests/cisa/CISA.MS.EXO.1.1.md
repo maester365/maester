@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.1.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Mail flow"
+  - "Email and collaboration protection"
   - "MS.EXO"
   - "MS.EXO.1.1"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.1.1 - Automatic forwarding to external domains SHALL be disabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -52,11 +54,21 @@ To disable automatic forwarding to external domains:
 | Test ID | CISA.MS.EXO.1.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaAutoExternalForwarding](/docs/commands/Test-MtCisaAutoExternalForwarding) |
-| Tags | CISA, CISA.MS.EXO.1.1, MS.EXO, MS.EXO.1.1 |
+| Product | Exchange Online |
+| Feature | Mail flow |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Medium |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1114.003 Email Forwarding Rule, T1048 Exfiltration Over Alternative Protocol, T1567 Exfiltration Over Web Service |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.1.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.EXO.1.1v2 |
+| Supports controls | cisa-scuba:MS.EXO.1.1, nist-800-53-r5:AC-4 |
+| PowerShell test | [Test-MtCisaAutoExternalForwarding](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.1.1.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaAutoExternalForwarding.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaAutoExternalForwarding.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.1.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.1.1.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.1.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.1.1.md)

@@ -9,8 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.232"
-  - "High"
+  - "Low"
   - "ORCA"
+  - "Defender"
+  - "Anti-malware"
+  - "Email and collaboration protection"
   - "EXO"
 ---
 
@@ -18,13 +21,14 @@ keywords:
 
 # ORCA.232 - Each domain has a malware filter policy applied to it, or the default policy is being used.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/moorereason" title="Cameron Moore · Co-contributor"><img src="https://github.com/moorereason.png" alt="Cameron Moore" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 Exchange Online Protection malware filter policies are applied using rules. The default policy applies in the absence of a custom policy. When creating custom policies, there may be duplication of settings and depending on the rules and priority, some policies or settings may not even apply. It's important in this circumstance to check that the desired settings are applied to the right users.
 
 #### Remediation action
+
 Check your malware filter policies for duplicate rules. Some policies and settings may not be applying.
 
 #### Related Links
@@ -37,13 +41,21 @@ Check your malware filter policies for duplicate rules. Some policies and settin
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.232 |
-| Severity | High |
+| Severity | Low |
 | Suite | ORCA |
-| Category | EXO |
-| PowerShell test | [Test-ORCA232](/docs/commands/Test-ORCA232) |
-| Tags | EXO, ORCA, ORCA.232 |
+| Product | Defender |
+| Related products | Exchange Online |
+| Feature | Anti-malware |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | None |
+| Supports controls | nist-800-53-r5:SI-3 |
+| PowerShell test | [Test-ORCA232](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.232.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/orca/Test-ORCA232.Tests.ps1`
-- PowerShell source: `powershell/public/orca/Test-ORCA232.ps1`
+- Test: [`tests/orca/Test.ORCA.232.ps1`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.232.ps1)
+- Documentation: [`tests/orca/Test.ORCA.232.md`](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.232.md)

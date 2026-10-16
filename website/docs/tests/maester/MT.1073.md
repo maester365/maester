@@ -10,6 +10,9 @@ keywords:
   - "Microsoft 365 security"
   - "MT.1073"
   - "Medium"
+  - "Entra ID"
+  - "Hybrid identity"
+  - "Infrastructure hardening"
   - "Entra"
   - "Graph"
   - "Hybrid"
@@ -19,7 +22,7 @@ keywords:
 
 # MT.1073 - Soft- and hard-matching of synchronized objects should be blocked.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -64,11 +67,18 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/direc
 | Test ID | MT.1073 |
 | Severity | Medium |
 | Suite | Maester |
-| Category | Entra |
-| PowerShell test | [Test-MtEntraIDConnectSyncSoftHardMatching](/docs/commands/Test-MtEntraIDConnectSyncSoftHardMatching) |
-| Tags | Entra, Graph, Hybrid, Maester, MT.1073 |
+| Product | Entra ID |
+| Feature | Hybrid identity |
+| Area | Infrastructure hardening |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1078.004 Cloud Accounts, T1098 Account Manipulation |
+| Supports controls | nist-800-53-r5:IA-4, nist-800-53-r5:CM-6 |
+| PowerShell test | [Test-MtEntraIDConnectSyncSoftHardMatching](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1073.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/Maester/Entra/Test-MtOnPremisesSynchronization.Tests.ps1`
-- PowerShell source: `powershell/public/maester/entra/Test-MtEntraIDConnectSyncSoftHardMatching.ps1`
+- Test: [`tests/maester/entra/Test.MT.1073.ps1`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1073.ps1)
+- Documentation: [`tests/maester/entra/Test.MT.1073.md`](https://github.com/maester365/maester/blob/main/tests/maester/entra/Test.MT.1073.md)

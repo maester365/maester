@@ -2,6 +2,11 @@
 
 Thank you for your interest in contributing to Maester.
 
+> [!NOTE]
+> **Contributions are open again**
+>
+> The Maester 3.0 rewrite is in `main`. Checks are now native tests (`Test.<ID>.ps1` and `Test.<ID>.md`), and the repository has a new folder layout. Read [Writing tests](https://maester.dev/docs/next/writing-tests) and the [contributing guide](https://maester.dev/docs/next/contributing#repository-layout) before you start. If your pull request was opened before 3.0, rebase it on `main`; `Convert-MtTest` converts Pester-format checks to native tests.
+
 The Maester team strives to maintain code that is resilient, safe, easy to understand, and easy to maintain. We welcome contributions that support these goals.
 
 ## Start Here

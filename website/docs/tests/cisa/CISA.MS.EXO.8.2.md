@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.8.2"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Data loss prevention"
+  - "Data protection"
   - "MS.EXO"
   - "MS.EXO.8.2"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.8.2 - The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -75,11 +77,23 @@ Rationale: Users may inadvertently share sensitive information with others who s
 | Test ID | CISA.MS.EXO.8.2 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaDlpPii](/docs/commands/Test-MtCisaDlpPii) |
-| Tags | CISA, CISA.MS.EXO.8.2, MS.EXO, MS.EXO.8.2 |
+| Product | Exchange Online |
+| Related products | Purview |
+| Feature | Data loss prevention |
+| Area | Data protection |
+| Resource type | Tenant |
+| User impact | Medium |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1213 Data from Information Repositories, T1530 Data from Cloud Storage, T1567 Exfiltration Over Web Service |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.8.2 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.3.1v1 (was MS.EXO.8.2v2) |
+| Supports controls | cisa-scuba:MS.EXO.8.2, nist-800-53-r5:SC-7(10) |
+| PowerShell test | [Test-MtCisaDlpPii](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.2.ps1) |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
+| Compatible licenses | EXCHANGE_DLP |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaDlpPii.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaDlpPii.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.8.2.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.2.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.8.2.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.8.2.md)

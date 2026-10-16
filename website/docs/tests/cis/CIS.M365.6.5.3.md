@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.6.5.3"
-  - "Unknown"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Exchange Online"
+  - "Outlook"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
@@ -24,7 +27,7 @@ keywords:
 
 # CIS.M365.6.5.3 - (L2) Ensure additional storage providers are restricted in Outlook on the web
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/bastienperez" title="Bastien Perez · Co-contributor"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/weycc81" title="Stefan Wey · Original author"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/bastienperez" title="Bastien Perez · Co-contributor"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/weycc81">Stefan Wey</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -71,13 +74,23 @@ AdditionalStorageProvidersAvailable : True
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.6.5.3 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisExoAdditionalStorageProvider](/docs/commands/Test-MtCisExoAdditionalStorageProvider) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.6.5.3, L2, Security |
+| Product | Exchange Online |
+| Feature | Outlook |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1567.002 Exfiltration to Cloud Storage, T1204.002 Malicious File |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 6.5.3 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2, E5 Level 2 |
+| Supports controls | cis-m365:6.5.3, nist-800-53-r5:AC-20, nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCisExoAdditionalStorageProvider](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.6.5.3.ps1) |
+| Services | ExchangeOnline |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisExoAdditionalStorageProvider.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisExoAdditionalStorageProvider.ps1`
+- Test: [`tests/cis/Test.CIS.M365.6.5.3.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.6.5.3.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.6.5.3.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.6.5.3.md)

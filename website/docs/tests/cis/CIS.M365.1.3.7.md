@@ -9,10 +9,13 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.1.3.7"
-  - "Unknown"
+  - "Medium"
   - "CIS"
-  - "CIS E3 Level 2"
+  - "Microsoft 365"
+  - "Organization settings"
+  - "External access and sharing"
   - "CIS E3"
+  - "CIS E3 Level 2"
   - "CIS E5"
   - "CIS E5 Level 2"
   - "CIS M365 v7.0.0"
@@ -24,7 +27,7 @@ keywords:
 
 # CIS.M365.1.3.7 - (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oed-metzb" title="Benjamin Metz · Original author"><img src="https://github.com/oed-metzb.png" alt="Benjamin Metz" /></a><a className="test-byline-avatar" href="/contributors/mynster9361" title="-Mynster · Co-contributor"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oed-metzb">Benjamin Metz</a> with <a href="/contributors/mynster9361">-Mynster</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -71,13 +74,23 @@ Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.1.3.7 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CIS |
-| Category | CIS E3 Level 2 |
-| PowerShell test | [Test-MtCisThirdPartyStorageServicesRestricted](/docs/commands/Test-MtCisThirdPartyStorageServicesRestricted) |
-| Tags | CIS, CIS E3, CIS E3 Level 2, CIS E5, CIS E5 Level 2, CIS M365 v7.0.0, CIS.M365.1.3.7, L2, Security |
+| Product | Microsoft 365 |
+| Feature | Organization settings |
+| Area | External access and sharing |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1567.002 Exfiltration to Cloud Storage |
+| Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 1.3.7 |
+| Benchmark level | L2 |
+| Benchmark profiles | E3 Level 2, E5 Level 2 |
+| Supports controls | cis-m365:1.3.7, nist-800-53-r5:AC-20, nist-800-53-r5:CM-7 |
+| PowerShell test | [Test-MtCisThirdPartyStorageServicesRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.7.ps1) |
+| Services | Graph |
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisThirdPartyStorageServicesRestricted.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisThirdPartyStorageServicesRestricted.ps1`
+- Test: [`tests/cis/Test.CIS.M365.1.3.7.ps1`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.7.ps1)
+- Documentation: [`tests/cis/Test.CIS.M365.1.3.7.md`](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.1.3.7.md)

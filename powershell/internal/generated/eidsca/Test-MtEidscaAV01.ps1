@@ -1,0 +1,42 @@
+function Test-MtEidscaAV01 {
+    <#
+    .SYNOPSIS
+    Checks if Authentication Method - Voice call - State is set to 'disabled'
+
+    .DESCRIPTION
+
+    Whether the Voice call is enabled in the tenant.
+
+    Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')
+    and returns the tenant value of
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state
+
+    The native test EIDSCA.AV01 passes when this value -eq 'disabled'.
+
+    .EXAMPLE
+    Test-MtEidscaAV01
+
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
+
+    $rawValue = $result.state
+    [string]$tenantValue = $rawValue
+    $testResult = $tenantValue -eq 'disabled'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'disabled' -notlike '*$null*'
+
+    if($testResult){
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+    } else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
+
+    return $tenantValue
+}

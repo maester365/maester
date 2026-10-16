@@ -1,0 +1,11 @@
+{
+  "GlobalSettings": {
+    "EmergencyAccessAccounts": [
+      { "Type": "User", "Id": "e0000000-0000-0000-0000-000000000001" }
+    ],
+    "GoldenTenantOnly": "tenant"
+  },
+  "TestSettings": [
+    { "Id": "MT.1005", "Severity": "Low" }
+  ]
+}

@@ -1,6 +1,6 @@
 Describe 'Write-Telemetry' {
     BeforeAll {
-        . "$PSScriptRoot/../../internal/Write-Telemetry.ps1"
+        . "$PSScriptRoot/../../internal/session/Write-Telemetry.ps1"
     }
 
     BeforeEach {

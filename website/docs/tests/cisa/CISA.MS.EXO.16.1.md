@@ -11,7 +11,9 @@ keywords:
   - "CISA.MS.EXO.16.1"
   - "High"
   - "CISA"
-  - "exchange"
+  - "Exchange Online"
+  - "Alert policies"
+  - "Logging and detection"
   - "MS.EXO"
   - "MS.EXO.16.1"
 ---
@@ -20,7 +22,7 @@ keywords:
 
 # CISA.MS.EXO.16.1 - Alerts SHALL be enabled.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/thomas-s-schmidt">Thomas Schmidt</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -64,11 +66,23 @@ Rationale: Potentially malicious or service impacting events may go undetected w
 | Test ID | CISA.MS.EXO.16.1 |
 | Severity | High |
 | Suite | CISA |
-| Category | exchange |
-| PowerShell test | [Test-MtCisaExoAlert](/docs/commands/Test-MtCisaExoAlert) |
-| Tags | CISA, CISA.MS.EXO.16.1, MS.EXO, MS.EXO.16.1 |
+| Product | Exchange Online |
+| Related products | Defender |
+| Feature | Alert policies |
+| Area | Logging and detection |
+| Resource type | Policy |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1114.003 Email Forwarding Rule, T1204.001 Malicious Link |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.16.1 |
+| Criticality | SHALL |
+| Upstream requirement | Moved to MS.SECURITYSUITE.4.1v1 (was MS.EXO.16.1v1) |
+| Supports controls | cisa-scuba:MS.EXO.16.1, nist-800-53-r5:SI-4(5) |
+| PowerShell test | [Test-MtCisaExoAlert](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.16.1.ps1) |
+| Services | ExchangeOnline, Graph, SecurityCompliance |
+| Compatible licenses | ATP_ENTERPRISE |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaExoAlert.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaExoAlert.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.16.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.16.1.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.16.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.16.1.md)

@@ -2,11 +2,12 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const rawVersion = process.argv[2];
-const match = rawVersion?.match(/^v?(\d+\.\d+\.\d+)(?:-preview)?$/);
+// The site shows the release a preview leads to, without the preview counter: 3.0.0-preview3 is shown as 3.0.0-preview.
+const match = rawVersion?.match(/^v?(\d+\.\d+\.\d+)(?:-preview\d*)?$/);
 
 if (!match) {
   console.error("Usage: node build/Update-WebsitePreviewVersion.mjs <version>");
-  console.error("Example: node build/Update-WebsitePreviewVersion.mjs 2.1.3-preview");
+  console.error("Example: node build/Update-WebsitePreviewVersion.mjs 3.0.0-preview2");
   process.exit(1);
 }
 

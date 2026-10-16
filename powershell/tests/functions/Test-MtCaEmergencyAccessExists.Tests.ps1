@@ -212,18 +212,18 @@
             $policy = Get-PolicyWithUserExclusion -UserIds @($emergencyUserId1)
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+            Mock -ModuleName Maester Get-MtSetting { return $null }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
 
         It 'Should pass when a group is excluded from all policies (auto-detected)' {
             $policy = Get-PolicyWithGroupExclusion -GroupIds @($emergencyGroupId1)
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+            Mock -ModuleName Maester Get-MtSetting { return $null }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
     }
 
@@ -243,9 +243,9 @@
             $config = @(@{ Id = $emergencyUserId1; Type = "User" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
 
         It 'Should fail when configured user is NOT excluded from policy' {
@@ -253,9 +253,9 @@
             $config = @(@{ Id = $emergencyUserId1; Type = "User" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
 
         It 'Should fail when a different user is excluded but not the configured one' {
@@ -263,9 +263,9 @@
             $config = @(@{ Id = $emergencyUserId1; Type = "User" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
     }
 
@@ -285,9 +285,9 @@
             $config = @(@{ Id = $emergencyGroupId1; Type = "Group" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
 
         It 'Should fail when configured group is NOT excluded from policy' {
@@ -295,9 +295,9 @@
             $config = @(@{ Id = $emergencyGroupId1; Type = "Group" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
 
         It 'Should fail when a different group is excluded but not the configured one' {
@@ -305,9 +305,9 @@
             $config = @(@{ Id = $emergencyGroupId1; Type = "Group" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
     }
 
@@ -333,9 +333,9 @@
             )
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
 
         It 'Should fail when only the user is excluded but not the group' {
@@ -346,9 +346,9 @@
             )
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
 
         It 'Should fail when only the group is excluded but not the user' {
@@ -359,9 +359,9 @@
             )
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
 
         It 'Should fail when neither user nor group is excluded' {
@@ -372,9 +372,9 @@
             )
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
     }
 
@@ -400,9 +400,9 @@
             )
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
     }
 
@@ -422,9 +422,9 @@
             $config = @(@{ UserPrincipalName = "emergency@contoso.com"; Type = "User" })
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
 
         It 'Should pass when duplicate configured UPN entries resolve to one excluded user' {
@@ -435,9 +435,9 @@
             )
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
 
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
 
         It 'Should use configured-account result text when emergency access config is present' {
@@ -446,13 +446,13 @@
             $script:capturedResult = $null
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
             Mock -ModuleName Maester Add-MtTestResultDetail {
                 param($Result)
                 $script:capturedResult = $Result
             }
 
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
             $script:capturedResult | Should -BeLike '*Configured emergency access accounts or groups*'
             $script:capturedResult | Should -Not -BeLike '*Automatically detected emergency access*'
         }
@@ -463,13 +463,13 @@
             $script:capturedResult = $null
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Get-MtSetting { return $config }
             Mock -ModuleName Maester Add-MtTestResultDetail {
                 param($Result)
                 $script:capturedResult = $Result
             }
 
-            Test-MtCaEmergencyAccessExists -WarningAction SilentlyContinue | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists -WarningAction SilentlyContinue } | Should -BeFalse
             $script:capturedResult | Should -BeLike '*none could be resolved*'
         }
     }
@@ -480,22 +480,22 @@
             $policy = Get-PolicyAgentIdentity
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+            Mock -ModuleName Maester Get-MtSetting { return $null }
 
             # Returns $false because Agent Identity policies don't apply to users and are filtered out
             # When all policies are filtered out, there are no policies to check, so no emergency access is detected
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
 
         It 'Should return false (no emergency access detected) when only a Service Principal policy exists (which should be ignored)' {
             $policy = Get-PolicyServicePrincipal
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+            Mock -ModuleName Maester Get-MtSetting { return $null }
 
             # Returns $false because Service Principal policies don't apply to users and are filtered out
             # When all policies are filtered out, there are no policies to check, so no emergency access is detected
-            Test-MtCaEmergencyAccessExists | Should -BeFalse
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeFalse
         }
 
         It 'Should only check user-targeted policies when both Agent Identity and user policies exist' {
@@ -505,10 +505,10 @@
             $policies = @($agentPolicy[0], $userPolicy[0])
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
-            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+            Mock -ModuleName Maester Get-MtSetting { return $null }
 
             # Should pass because the Agent Identity policy is ignored and the user policy has exclusions
-            Test-MtCaEmergencyAccessExists | Should -BeTrue
+            InModuleScope Maester { Test-MtCaEmergencyAccessExists } | Should -BeTrue
         }
     }
 }

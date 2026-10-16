@@ -11,6 +11,9 @@ keywords:
   - "CISA.MS.EXO.2.1"
   - "Medium"
   - "CISA"
+  - "Exchange Online"
+  - "Email authentication"
+  - "Email and collaboration protection"
   - "Deprecated"
   - "MS.EXO"
   - "MS.EXO.2.1"
@@ -20,7 +23,7 @@ keywords:
 
 # CISA.MS.EXO.2.1 - A list of approved IP addresses for sending mail SHALL be maintained.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/fflaten" title="Frode Flaten · Co-contributor"><img src="https://github.com/fflaten.png" alt="Frode Flaten" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 4 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -51,11 +54,21 @@ Rationale: Failing to maintain an accurate list of authorized IP addresses may r
 | Test ID | CISA.MS.EXO.2.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | Deprecated |
-| PowerShell test | [Test-MtCisaSpfRestriction](/docs/commands/Test-MtCisaSpfRestriction) |
-| Tags | CISA, CISA.MS.EXO.2.1, Deprecated, MS.EXO, MS.EXO.2.1 |
+| Product | Exchange Online |
+| Feature | Email authentication |
+| Area | Email and collaboration protection |
+| Resource type | Domain |
+| User impact | Low |
+| Implementation cost | Medium |
+| MITRE ATT&CK | T1684.002 Email Spoofing |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.EXO.2.1 |
+| Criticality | SHALL |
+| Supports controls | cisa-scuba:MS.EXO.2.1 |
+| PowerShell test | [Test-MtCisaSpfRestriction](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.1.ps1) |
+| Services | Graph |
+| Lifecycle | Deprecated |
 
 ## Source
 
-- Pester test: `tests/cisa/exchange/Test-MtCisaSpfRestriction.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/exchange/Test-MtCisaSpfRestriction.ps1`
+- Test: [`tests/cisa/exchange/Test.CISA.MS.EXO.2.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.1.ps1)
+- Documentation: [`tests/cisa/exchange/Test.CISA.MS.EXO.2.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.2.1.md)

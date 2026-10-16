@@ -21,6 +21,18 @@ updates:
     commit-message:
       prefix: "chore(deps): "
 
+  - package-ecosystem: "nuget"
+    directory: "/src/Maester.Engine"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps): "
+    ignore:
+      # Pinned to the oldest supported PowerShell: the engine compiles against it and the
+      # runtime supplies the assembly, so a newer reference stops the DLL loading on 7.4.0.
+      - dependency-name: "System.Management.Automation"
+
   - package-ecosystem: "npm"
     directory: "/website"
     schedule:
@@ -28,6 +40,12 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "chore(deps): "
+    ignore:
+      # @docusaurus/theme-mermaid declares layout-elk ^0.1.9 as a peer, which allows
+      # only 0.1.x, so 0.2.x (counted as a minor update) and 1.x break npm ci.
+      # Lift once Docusaurus widens the peer range.
+      - dependency-name: "@mermaid-js/layout-elk"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     groups:
       docusaurus:
         patterns:

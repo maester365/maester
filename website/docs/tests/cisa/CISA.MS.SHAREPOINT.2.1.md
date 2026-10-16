@@ -9,9 +9,11 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.2.1"
-  - "Unknown"
+  - "Medium"
   - "CISA"
-  - "spo"
+  - "SharePoint"
+  - "Sharing links"
+  - "Access control"
   - "MS.SHAREPOINT"
   - "MS.SHAREPOINT.2.1"
 ---
@@ -45,13 +47,23 @@ Rationale: Overly permissive default sharing settings increase the risk of unint
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.2.1 |
-| Severity | Unknown |
+| Severity | Medium |
 | Suite | CISA |
-| Category | spo |
-| PowerShell test | [Test-MtCisaSpoDefaultSharingScope](/docs/commands/Test-MtCisaSpoDefaultSharingScope) |
-| Tags | CISA, CISA.MS.SHAREPOINT.2.1, MS.SHAREPOINT, MS.SHAREPOINT.2.1 |
+| Product | SharePoint |
+| Feature | Sharing links |
+| Area | Access control |
+| Resource type | Tenant |
+| User impact | Low |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1048 Exfiltration Over Alternative Protocol, T1213.002 Sharepoint |
+| Supports benchmark | CISA SCuBA Secure Configuration Baselines for Microsoft 365 (version ScubaGear main, 2026-10-11), requirement MS.SHAREPOINT.2.1 |
+| Criticality | SHALL |
+| Upstream requirement | MS.SHAREPOINT.2.1v1 |
+| Supports controls | cisa-scuba:MS.SHAREPOINT.2.1, nist-800-53-r5:AC-6 |
+| PowerShell test | [Test-MtCisaSpoDefaultSharingScope](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.2.1.ps1) |
+| Services | SharePointOnline |
 
 ## Source
 
-- Pester test: `tests/cisa/spo/Test-MtCisaSpoDefaultSharingScope.Tests.ps1`
-- PowerShell source: `powershell/public/cisa/spo/Test-MtCisaSpoDefaultSharingScope.ps1`
+- Test: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.2.1.ps1`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.2.1.ps1)
+- Documentation: [`tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.2.1.md`](https://github.com/maester365/maester/blob/main/tests/cisa/sharepoint/Test.CISA.MS.SHAREPOINT.2.1.md)
