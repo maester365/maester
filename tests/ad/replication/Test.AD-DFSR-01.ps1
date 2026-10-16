@@ -53,48 +53,93 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.DfsrSubscriptions -or $null -eq $adState.DomainControllers) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
 
     $dfsrSubscriptions = $adState.DfsrSubscriptions
-    $subscriptionCount = ($dfsrSubscriptions | Measure-Object).Count
+    # Scope to SYSVOL subscriptions only — ignore non-SYSVOL DFS-R replication groups
+    $sysvolSubscriptions = @($dfsrSubscriptions | Where-Object {
+        [string]$_.DistinguishedName -like '*CN=SYSVOL Subscription,CN=Domain System Volume*'
+    })
+    $subscriptionCount = ($sysvolSubscriptions | Measure-Object).Count
 
-    # Get domain controllers for comparison
+    # Get domain controllers for per-DC comparison
     $domainControllers = $adState.DomainControllers
     $dcCount = ($domainControllers | Measure-Object).Count
 
-    $testResult = $subscriptionCount -eq $dcCount
+    # Build a map of DC names to subscriptions
+    $dcSubscriptionMap = @{}
+    foreach ($sub in $sysvolSubscriptions) {
+        $dn = [string]$sub.DistinguishedName
+        # Extract DC name from DN: CN=SYSVOL Subscription...,CN=<DCName>,...
+        if ($dn -match 'CN=([^,]+),OU=Domain Controllers') {
+            $dcName = $Matches[1]
+            $dcSubscriptionMap[$dcName] = $sub
+        }
+    }
+
+    $missingDcSubscriptions = @()
+    $disabledSubscriptions = @()
+    foreach ($dc in $domainControllers) {
+        $dcName = if ($dc.Name) { $dc.Name } else { $dc.DnsHostName }
+        if (-not $dcSubscriptionMap.ContainsKey($dcName)) {
+            $missingDcSubscriptions += $dcName
+        } else {
+            $sub = $dcSubscriptionMap[$dcName]
+            $enabled = if ($sub.'msDFSR-Enabled' -is [bool]) { $sub.'msDFSR-Enabled' } else { [string]$sub.'msDFSR-Enabled' -eq 'TRUE' }
+            if (-not $enabled) {
+                $disabledSubscriptions += $dcName
+            }
+        }
+    }
+
+    $testResult = ($dcCount -gt 0) -and ($missingDcSubscriptions.Count -eq 0) -and ($disabledSubscriptions.Count -eq 0)
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
-    $result += "| DFS-R Subscription Count | $subscriptionCount |" + "`n"
     $result += "| Domain Controller Count | $dcCount |" + "`n"
+    $result += "| DFS-R SYSVOL Subscription Count | $subscriptionCount |" + "`n"
+    $result += "| DCs Missing Subscription | $($missingDcSubscriptions.Count) |" + "`n"
+    $result += "| DCs with Disabled Subscription | $($disabledSubscriptions.Count) |" + "`n"
 
-    if ($dcCount -gt 0) {
-        if ($subscriptionCount -eq $dcCount) {
-            $result += "| DFS-R Coverage | Complete (all DCs have subscriptions) |" + "`n"
-        } elseif ($subscriptionCount -eq 0) {
-            $result += "| DFS-R Coverage | None (may be using FRS) |" + "`n"
-        } else {
-            $coverage = [Math]::Round(($subscriptionCount / $dcCount) * 100, 2)
-            $result += "| DFS-R Coverage | $coverage% (partial) |" + "`n"
+    if ($missingDcSubscriptions.Count -gt 0) {
+        $result += "`n**DCs Missing DFS-R Subscription:**" + "`n" + "`n"
+        $result += "| DC Name |" + "`n"
+        $result += "| --- |" + "`n"
+        foreach ($dcName in $missingDcSubscriptions | Select-Object -First 10) {
+            $result += "| $dcName |" + "`n"
         }
     }
 
-    if ($subscriptionCount -gt 0) {
+    if ($disabledSubscriptions.Count -gt 0) {
+        $result += "`n**DCs with Disabled DFS-R Subscription:**" + "`n" + "`n"
+        $result += "| DC Name |" + "`n"
+        $result += "| --- |" + "`n"
+        foreach ($dcName in $disabledSubscriptions | Select-Object -First 10) {
+            $result += "| $dcName |" + "`n"
+        }
+    }
+
+    if ($subscriptionCount -gt 0 -and $missingDcSubscriptions.Count -eq 0 -and $disabledSubscriptions.Count -eq 0) {
         $result += "`n**DFS-R Subscription Details:**" + "`n" + "`n"
-        $result += "| Subscription Name | Distinguished Name |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        foreach ($sub in $dfsrSubscriptions | Select-Object -First 10) {
+        $result += "| Subscription Name | Distinguished Name | Enabled |" + "`n"
+        $result += "| --- | --- | --- |" + "`n"
+        foreach ($sub in $sysvolSubscriptions | Select-Object -First 10) {
             $name = $sub.Name
             $dn = $sub.DistinguishedName
+            $enabled = if ($sub.'msDFSR-Enabled' -is [bool]) { $sub.'msDFSR-Enabled' } else { [string]$sub.'msDFSR-Enabled' -eq 'TRUE' }
+            $enabledStr = if ($enabled) { 'Yes' } else { 'No' }
             if ($dn.Length -gt 60) { $dn = $dn.Substring(0, 57) + "..." }
-            $result += "| $name | $dn |" + "`n"
+            $result += "| $name | $dn | $enabledStr |" + "`n"
         }
         if ($subscriptionCount -gt 10) {
-            $result += "| ... | ... ($($subscriptionCount - 10) more) |" + "`n"
+            $result += "| ... | ... ($($subscriptionCount - 10) more) | |" + "`n"
         }
     }
 
-    $testResultMarkdown = "DFS-R subscription count has been retrieved. DFS-R is the recommended technology for SYSVOL replication.`n`n%TestResult%"
+    $testResultMarkdown = "DFS-R subscription analysis has been performed. DFS-R is the recommended technology for SYSVOL replication.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown

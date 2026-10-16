@@ -948,4 +948,68 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
             }
         }
     }
+
+    Describe 'Failed category collection sets property to $null' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+                Clear-MtADCache
+            }
+
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                return [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls')
+                    PlatformProfile      = 'WindowsPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+            Mock New-MtLdapConnection -ModuleName Maester {
+                $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 636, $false, $false)
+                return New-Object System.DirectoryServices.Protocols.LdapConnection @($id)
+            }
+            Mock Get-MtLdapRootDse -ModuleName Maester {
+                return [PSCustomObject]@{
+                    DistinguishedName          = ''
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
+                    ForestFunctionality        = 7
+                    DomainFunctionality        = 7
+                    NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
+                    SupportedLdapVersion       = @(3)
+                    SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
+                }
+            }
+            $script:invokeMtLdapSearchShouldThrow = $false
+            Mock Invoke-MtLdapSearch -ModuleName Maester {
+                if ($script:invokeMtLdapSearchShouldThrow) {
+                    throw 'Simulated LDAP query failure'
+                }
+                return @()
+            }
+        }
+
+        AfterEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+                Clear-MtADCache
+            }
+        }
+
+        It 'When Invoke-MtLdapSearch throws during category collection, the property is $null in domain state' {
+            InModuleScope Maester {
+                Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' | Out-Null
+
+                $script:invokeMtLdapSearchShouldThrow = $true
+
+                $result = Get-MtADDomainState -Categories @('Computers') -Refresh
+
+                $result | Should -Not -BeNullOrEmpty
+                $result.Computers | Should -Be $null
+            }
+        }
+    }
 }

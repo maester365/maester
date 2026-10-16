@@ -1,7 +1,7 @@
 ﻿function Test-MtAdPasswordReversibleEncryption {
     <#
     .SYNOPSIS
-    Checks whether reversible encryption is enabled for passwords in the default domain password policy.
+    Checks that reversible encryption is disabled for passwords in the default domain password policy.
 
     .DESCRIPTION
     This test retrieves the reversible encryption setting from the default domain password policy.
@@ -12,20 +12,21 @@
     .EXAMPLE
     Test-MtAdPasswordReversibleEncryption
 
-    Returns $true if the password policy is accessible, $false otherwise.
-    The test result includes whether reversible encryption is enabled.
+    Returns $true if reversible encryption is disabled, $false if it is enabled.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdPasswordReversibleEncryption
     #>
     [MaesterTest(
         Id = 'AD-PWDPOL-05',
-        Title = 'Password reversible encryption status should be retrievable',
+        Title = 'Password reversible encryption should be disabled',
         Product = 'ad',
         Feature = 'password-policy',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
         Mitre = 'T1556.005',
         Service = 'ActiveDirectory',
         Author = 'soulemike'
@@ -47,31 +48,31 @@
 
     # Get the default domain password policy
     $passwordPolicy = $adState.Domain
-    $reversibleEncryption = ($passwordPolicy.PwdProperties -band 2) -ne 0
+    if ($null -eq $passwordPolicy -or $null -eq $passwordPolicy.PwdProperties) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
+    $reversibleEncryption = ($passwordPolicy.PwdProperties -band 0x10) -ne 0
 
-    # Test passes if we successfully retrieved the password policy
-    $testResult = $null -ne $reversibleEncryption
+    # Test passes when reversible encryption is disabled (secure default)
+    $testResult = -not $reversibleEncryption
 
     # Generate markdown results
-    if ($testResult) {
-        $encryptionStatus = if ($reversibleEncryption) { "Enabled" } else { "Disabled" }
+    $encryptionStatus = if ($reversibleEncryption) { "Enabled" } else { "Disabled" }
 
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Reversible Encryption | $encryptionStatus |" + "`n"
-        $result += "| Recommended Setting | Disabled |" + "`n"
+    $result = "| Metric | Value |" + "`n"
+    $result += "| --- | --- |" + "`n"
+    $result += "| Reversible Encryption | $encryptionStatus |" + "`n"
+    $result += "| Recommended Setting | Disabled |" + "`n"
 
-        $recommendation = if ($reversibleEncryption) {
-            "❌ Reversible encryption is enabled. This is a critical security risk as passwords can be decrypted. Disable this setting immediately unless absolutely required for legacy applications."
-        } else {
-            "✅ Reversible encryption is disabled. This is the secure configuration as passwords are stored using one-way hashing."
-        }
-
-        $testResultMarkdown = "$recommendation`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $recommendation = if ($reversibleEncryption) {
+        "❌ Reversible encryption is enabled. This is a critical security risk as passwords can be decrypted. Disable this setting immediately unless absolutely required for legacy applications."
     } else {
-        $testResultMarkdown = "Unable to retrieve the default domain password policy. Ensure you have appropriate permissions and the Active Directory module is installed."
+        "✅ Reversible encryption is disabled. This is the secure configuration as passwords are stored using one-way hashing."
     }
+
+    $testResultMarkdown = "$recommendation`n`n%TestResult%"
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

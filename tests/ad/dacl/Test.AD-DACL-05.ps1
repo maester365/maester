@@ -40,6 +40,10 @@
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
+    if ($null -eq $adState.DaclEntries) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     Write-Verbose "Filtering/counting dacl deny ace count"
 
     $daclEntries = @($adState.DaclEntries)
