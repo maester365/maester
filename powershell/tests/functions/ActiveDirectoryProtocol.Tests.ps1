@@ -1008,7 +1008,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 $result = Get-MtADDomainState -Categories @('Computers') -Refresh
 
                 $result | Should -Not -BeNullOrEmpty
-                $result.Computers | Should -BeNullOrEmpty
+                $result.Computers | Should -Be $null
             }
         }
     }

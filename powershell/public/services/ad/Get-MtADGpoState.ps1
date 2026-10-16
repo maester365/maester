@@ -102,6 +102,7 @@ function Get-MtADGpoState {
 
             $parsedGpoLinks = [System.Collections.Generic.List[object]]::new()
             $domainLinksFailed = $false
+            $siteLinksFailed = $false
             try {
                 $linkContainers = @(Get-MtLdapGpoLink -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 $gpoState['LinkContainers'] = $linkContainers
@@ -167,9 +168,10 @@ function Get-MtADGpoState {
             }
             catch {
                 Write-Verbose "Could not collect site GPO links: $($_.Exception.Message)"
+                $siteLinksFailed = $true
                 $gpoState['SiteContainers'] = $null
             }
-            if (-not $domainLinksFailed) {
+            if (-not $domainLinksFailed -and -not $siteLinksFailed) {
                 $gpoState['GPOLinks'] = @($parsedGpoLinks)
             }
 
@@ -177,7 +179,9 @@ function Get-MtADGpoState {
                 $applyGroupPolicyGuid = 'edacfd8f-ffb3-11d1-b41d-00a0c968f939'
                 $gpoReports = foreach ($gpo in $gpoState.GPOs) {
                     $gpoGuid = ([string]$gpo.Id).Trim('{}')
-                    $gpoLinks = @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
+                    $gpoLinks = if ($null -ne $gpoState.GPOLinks) {
+                        @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
+                    } else { $null }
                 $descriptor = $gpo.ntSecurityDescriptor
                 if ($descriptor -is [byte[]]) {
                     $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
@@ -217,12 +221,14 @@ function Get-MtADGpoState {
                         Write-Verbose "Could not collect SYSVOL content for GPO '$gpoGuid': $($_.Exception.Message)"
                     }
 
-                    $enforcementEnabled = [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                    $enforcementEnabled = if ($null -ne $gpoLinks) {
+                        [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                    } else { $null }
                     [PSCustomObject][ordered]@{
                         GPOId                  = $gpo.Id
                         GPOName                = $gpo.DisplayName
                         Name                   = $gpo.DisplayName
-                        DisabledLinks          = @($gpoLinks | Where-Object { $_.IsDisabled }).Count
+                        DisabledLinks          = if ($null -ne $gpoLinks) { @($gpoLinks | Where-Object { $_.IsDisabled }).Count } else { $null }
                         HasVersionMismatch     = $hasVersionMismatch
                         CpasswordFound         = $cpasswordFound
                         DefaultPasswordFound   = $defaultPasswordFound

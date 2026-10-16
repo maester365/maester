@@ -95,7 +95,7 @@
         }
     }
 
-    $testResult = ($missingDcSubscriptions.Count -eq 0) -and ($disabledSubscriptions.Count -eq 0)
+    $testResult = ($dcCount -gt 0) -and ($missingDcSubscriptions.Count -eq 0) -and ($disabledSubscriptions.Count -eq 0)
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

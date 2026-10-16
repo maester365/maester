@@ -49,7 +49,7 @@
 
 # If unable to retrieve AD data, skip the test
     if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError "Active Directory data is not available."
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
 

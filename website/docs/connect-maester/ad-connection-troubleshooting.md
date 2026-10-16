@@ -22,7 +22,7 @@ title: Active Directory Connection Troubleshooting
   2. Verify the certificate SAN includes the DC's FQDN.
   3. Verify the certificate is not expired.
   4. On the client, verify the DC's certificate chain is trusted.
-  5. For test environments only: use `Connect-Maester -ActiveDirectorySkipCertificateCheck` to bypass certificate validation.
+  5. For test environments only: use `Connect-Maester -Service ActiveDirectory -ActiveDirectorySkipCertificateCheck` to bypass certificate validation.
 - If LDAPS fails but StartTLS succeeds, the DC's LDAPS certificate (port 636) is misconfigured — check the certificate on the DC.
 
 ## Linux and macOS StartTLS Limitation
