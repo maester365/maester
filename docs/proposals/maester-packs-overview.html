@@ -421,6 +421,7 @@ figcaption { font-size: 14px; color: var(--muted); max-width: 72ch; }
         <li class="sub"><a href="#anatomy">Anatomy</a></li>
         <li class="sub"><a href="#ids">Your code and test IDs</a></li>
         <li class="sub"><a href="#connectors">Connectors</a></li>
+        <li class="sub"><a href="#languages">Any language</a></li>
         <li class="sub"><a href="#permissions">Microsoft permissions</a></li>
         <li class="sub"><a href="#risk">What you can ship</a></li>
         <li class="sub"><a href="#publish">Publish in four steps</a></li>
@@ -805,6 +806,37 @@ Invoke-Maester                                      <span class="c"># built-ins 
           </ul>
         </div>
 
+        <div class="sub-block" id="languages">
+          <h3>Write it in any language</h3>
+          <p class="prose">PowerShell is the default, but a pack can be written in Python, TypeScript or anything compiled. Maester starts your code as one child process per pack and talks to it in JSON over stdin and stdout, using a published protocol. Maester still finds, selects, gates, times and reports every test; your code only answers "run this test".</p>
+          <div class="table"><table>
+            <thead><tr><th>Runtime</th><th>For</th><th>How your dependencies get installed</th></tr></thead>
+            <tbody>
+              <tr><td>Script</td><td>PowerShell</td><td>Loaded into the Maester session, as described above</td></tr>
+              <tr><td>Python</td><td>Python, with the official <code>maester-sdk</code></td><td><code>uv sync --frozen --no-build</code> from your hash-pinned <code>uv.lock</code>: locked wheels only, no code runs</td></tr>
+              <tr><td>Node</td><td>TypeScript or JavaScript, with the official SDK</td><td><code>npm ci --ignore-scripts</code> from your <code>package-lock.json</code>; you ship compiled JavaScript</td></tr>
+              <tr><td>Binary</td><td>Go, Rust, .NET, C++ or any executable</td><td>One release asset per OS and CPU, each checked against the SHA-256 in your manifest</td></tr>
+              <tr><td>Container</td><td>Anything else</td><td>An image pulled by digest</td></tr>
+            </tbody>
+          </table></div>
+          <div class="code"><div class="code-label">A Python test</div>
+<pre><span class="o">@maester_test</span>(id=<span class="s">"MP.CNT.0201"</span>, title=<span class="s">"No guest has a directory role"</span>,
+              severity=<span class="s">"High"</span>, service=[<span class="s">"Graph"</span>], product=<span class="s">"entra"</span>)
+<span class="o">def</span> no_guest_admins(ctx):
+    roles = ctx.graph.get(<span class="s">"directoryRoles"</span>, query={<span class="s">"$expand"</span>: <span class="s">"members"</span>})
+    guests = [m <span class="o">for</span> r <span class="o">in</span> roles <span class="o">for</span> m <span class="o">in</span> r[<span class="s">"members"</span>] <span class="o">if</span> <span class="s">"#EXT#"</span> <span class="o">in</span> m.get(<span class="s">"userPrincipalName"</span>, <span class="s">""</span>)]
+    ctx.detail(table(guests))
+    <span class="o">return not</span> guests</pre></div>
+          <ul>
+            <li><strong>Your tests are listed in <code>catalog.json</code>.</strong> The SDK writes it from your decorators without running your code, so admins can list and select your tests without Python or Node installed.</li>
+            <li><strong>Microsoft calls go through Maester.</strong> <code>ctx.graph.get()</code> asks Maester to make the call with its own session and cache. No token reaches your code, and calls you didn't declare in <code>Uses</code> are refused.</li>
+            <li><strong>Maester never resolves your dependencies.</strong> Admins see the install command before anything happens, and Maester runs it only when they pass <code>-InstallDependencies</code>. An environment they built themselves is allowed and labelled "Externally managed".</li>
+            <li><strong>Connectors work in any runtime.</strong> Declare the connector's settings in the manifest, since Maester can't read them from your code.</li>
+            <li><strong>Existing tools need no code at all.</strong> A tool that writes SARIF, JUnit or a small Maester results JSON plugs in through Import or Collect with an adapter.</li>
+            <li><strong>Check your runner</strong> with <code>Test-MtPack -Conformance</code>, which drives it against a fake Maester. Any language that passes is supported.</li>
+          </ul>
+        </div>
+
         <div class="sub-block" id="permissions">
           <h3>Microsoft permissions your pack needs</h3>
           <p class="prose">Maester connects to Microsoft Graph with read-only scopes. If your pack needs more, list them in <code>Uses.GraphScopes</code>. They are shown before install and only requested when an admin asks for them with <code>Connect-Maester -IncludePackScopes</code>. When a token lacks a scope, your tests are skipped with reason <code>MissingScope</code> rather than failing. Anything that changes a tenant goes in <code>Uses.TenantWrites</code>; a write scope or a declared write makes your pack High risk. A check pack shouldn't need to write.</p>
@@ -816,9 +848,9 @@ Invoke-Maester                                      <span class="c"># built-ins 
           <div class="table"><table>
             <thead><tr><th>Risk</th><th>What sets it</th><th>What installers see</th></tr></thead>
             <tbody>
-              <tr><td><span class="risk low">Low</span></td><td>Text files only (PowerShell, Markdown, JSON), and every scan passed</td><td>The normal install prompt</td></tr>
-              <tr><td><span class="risk med">Medium</span></td><td>Readable code with findings to check: <code>Invoke-Expression</code>, script blocks built from strings, URLs built at run time, starting processes, script-only Gallery modules</td><td>The findings, before they confirm</td></tr>
-              <tr><td><span class="risk high">High</span></td><td>Compiled code (DLLs, executables, compiled Python) in the pack or its modules, archives or encoded content we can't scan, or any tenant write</td><td>Every such file named with its hash and signer; they type the pack ID to confirm</td></tr>
+              <tr><td><span class="risk low">Low</span></td><td>Text files only (PowerShell or other source code, Markdown, JSON), no third-party dependencies, and every scan passed</td><td>The normal install prompt</td></tr>
+              <tr><td><span class="risk med">Medium</span></td><td>Readable code with findings to check: <code>Invoke-Expression</code>, script blocks built from strings, URLs built at run time, starting processes; any pinned dependency from the Gallery, PyPI or npm, including ones with compiled code; a binary or image built by your own repository's workflow with GitHub build provenance</td><td>The findings, before they confirm</td></tr>
+              <tr><td><span class="risk high">High</span></td><td>Compiled code you ship without build provenance (DLLs, executables, compiled Python), dependencies from outside the public registries, archives or encoded content we can't scan, or any tenant write</td><td>Every such file named with its hash and signer; they type the pack ID to confirm</td></tr>
               <tr><td><span class="risk blocked">Blocked</span></td><td>A malware match, or confirmed malicious by a maintainer</td><td>Install refused; already installed copies stop running</td></tr>
             </tbody>
           </table></div>
@@ -1163,6 +1195,7 @@ Install-MtPack contoso/maester-google-workspace -AllowUnlisted</pre></div></div>
           <thead><tr><th>Phase</th><th>What ships</th></tr></thead>
           <tbody>
             <tr><td><strong>1. Packs</strong> (Maester 3.1)</td><td>The pack format, install from GitHub with a lock file, connectors in <code>Connect-Maester</code>, <code>New-MtPack</code> and <code>Test-MtPack</code>, maester-action support, and the blocklist checker. The first official pack is Google Workspace, against the CISA SCuBA baselines.</td></tr>
+            <tr><td><strong>1b. Any language</strong> (Maester 3.2)</td><td>The runner protocol and conformance suite, Python packs with <code>maester-sdk</code>, Binary packs, and adapters for tools that write SARIF, JUnit or Maester results. Then TypeScript and Container packs. Maester 3.1 already reserves the manifest keys these need.</td></tr>
             <tr><td><strong>2. Maester Packs</strong></td><td>packs.maester.dev, the index and scanners, risk levels and badges, code claiming and the terms of listing.</td></tr>
             <tr><td><strong>3. Isolation and verification</strong></td><td>Containers for untrusted packs, and a verified publisher programme.</td></tr>
           </tbody>
