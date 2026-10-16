@@ -690,6 +690,7 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
         }
 
         It 'reports an Agent User that is PIM-eligible for a privileged role' {
+            Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
                     return @([pscustomobject]@{ id = 'agent-user-1'; displayName = 'Agent User 1'; userPrincipalName = 'au1@contoso.com' })
@@ -707,9 +708,11 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'agent-user-1'
             $script:TestResult | Should -Match 'Eligible Directory Role'
             $script:TestResult | Should -Match 'Global Reader'
+            $script:TestResult | Should -Not -Match 'were not checked'
         }
 
         It 'passes when the only eligible role is not privileged' {
+            Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
                     return @([pscustomobject]@{ id = 'agent-user-1'; displayName = 'Agent User 1'; userPrincipalName = 'au1@contoso.com' })
@@ -727,7 +730,8 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'Well done'
         }
 
-        It 'still checks active roles and notes it when eligible assignments cannot be read' {
+        It 'checks only active roles and says so when the tenant has no Entra ID P2 or Governance' {
+            Mock -ModuleName Maester Get-MtLicenseInformation { 'P1' }
             Mock -ModuleName Maester Invoke-MtGraphRequest {
                 if ($RelativeUri -like 'users/microsoft.graph.agentUser') {
                     return @([pscustomobject]@{ id = 'agent-user-1'; displayName = 'Agent User 1'; userPrincipalName = 'au1@contoso.com' })
@@ -738,16 +742,14 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
                 if ($RelativeUri -like '*roleAssignments') {
                     return @([pscustomobject]@{ principalId = 'agent-user-1'; roleDefinitionId = 'role-global-reader' })
                 }
-                if ($RelativeUri -like '*roleEligibilityScheduleInstances') {
-                    throw 'Response status code does not indicate success: AadPremiumLicenseRequired'
-                }
                 return @()
             }
 
             Test-MtEntraAgentUserExcessiveAccess | Should -BeFalse
             $script:TestResult | Should -Match 'Directly assigned'
             $script:TestResult | Should -Not -Match 'Eligible Directory Role'
-            $script:TestResult | Should -Match 'could not be read'
+            $script:TestResult | Should -Match 'were not checked'
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly 0 -ParameterFilter { $RelativeUri -like '*ScheduleInstances' }
         }
     }
 

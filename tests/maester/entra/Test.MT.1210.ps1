@@ -57,58 +57,31 @@
                 -RelativeUri 'roleManagement/directory/roleDefinitions' `
                 -Select @('id', 'displayName')
         )
-        $RoleAssignments = @(
-            Invoke-MtGraphRequest -ApiVersion 'v1.0' `
-                -RelativeUri 'roleManagement/directory/roleAssignments' `
-                -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
-        )
+        # Agent Users can be made PIM-eligible for privileged roles, so eligible assignments count
+        # too. Agent identities and blueprint principals are service principals, which PIM does not
+        # allow to be eligible, so this only matters for Agent Users.
+        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment
+        $RoleAssignments = @($RoleAssignmentResult.Assignments)
+        $EligibilityNote = ''
+        if (!$RoleAssignmentResult.EligibleChecked) {
+            Write-Verbose 'PIM-eligible role assignments were not read. Checking active assignments only.'
+            $EligibilityNote = "`n`nNote: PIM-eligible role assignments were not checked because they need " +
+                'Microsoft Entra ID P2 or Governance. Only active role assignments were checked.'
+        }
 
         $RoleDefLookup = @{}
         foreach ($Def in $RoleDefinitions) {
             $RoleDefLookup[[string]$Def.id] = $Def
         }
 
-        # Agent Users can be made PIM-eligible for privileged roles, which roleAssignments does
-        # not return. Agent identities and blueprint principals are service principals, which
-        # PIM does not allow to be eligible, so this read only matters for Agent Users.
-        $EligibilityNote = ''
-        $RoleEligibilities = @()
-        try {
-            Write-Verbose 'Reading PIM-eligible directory role assignments.'
-            $RoleEligibilities = @(
-                Invoke-MtGraphRequest -ApiVersion 'v1.0' `
-                    -RelativeUri 'roleManagement/directory/roleEligibilityScheduleInstances' `
-                    -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
-            )
-        } catch {
-            $EligibilityError = "$($_.Exception.Message) $($_.ErrorDetails.Message)"
-            if ($EligibilityError -match '(?i)AadPremiumLicenseRequired|403|forbidden|authorization') {
-                Write-Verbose 'PIM-eligible role assignments could not be read. Checking active assignments only.'
-                $EligibilityNote = "`n`nNote: PIM-eligible role assignments could not be read (this needs " +
-                    'Microsoft Entra ID P2 or Governance and the RoleEligibilitySchedule.Read.Directory ' +
-                    'permission), so only active role assignments were checked.'
-            } else {
-                throw
-            }
-        }
-
-        $RoleGrants = @(
-            foreach ($Assignment in $RoleAssignments) {
-                [pscustomobject]@{ Assignment = $Assignment; Eligible = $false }
-            }
-            foreach ($Eligibility in $RoleEligibilities) {
-                [pscustomobject]@{ Assignment = $Eligibility; Eligible = $true }
-            }
-        )
-
         $AssignmentsByUser = @{}
-        foreach ($Grant in $RoleGrants) {
-            $AssignedPrincipalId = [string]$Grant.Assignment.principalId
+        foreach ($Assignment in $RoleAssignments) {
+            $AssignedPrincipalId = [string]$Assignment.principalId
             if (![string]::IsNullOrWhiteSpace($AssignedPrincipalId)) {
                 if (!$AssignmentsByUser.ContainsKey($AssignedPrincipalId)) {
                     $AssignmentsByUser[$AssignedPrincipalId] = [System.Collections.Generic.List[object]]::new()
                 }
-                $AssignmentsByUser[$AssignedPrincipalId].Add($Grant)
+                $AssignmentsByUser[$AssignedPrincipalId].Add($Assignment)
             }
         }
 
@@ -125,9 +98,10 @@
             # confirmed live, Graph returns 400 Bad Request for it in $select. Resolve privilege
             # from Maester's own built-in-roles catalog instead.
             if ($AssignmentsByUser.ContainsKey($UserId)) {
-                foreach ($Grant in $AssignmentsByUser[$UserId]) {
-                    $DefId = [string]$Grant.Assignment.roleDefinitionId
-                    $EligibleSuffix = if ($Grant.Eligible) { ' (eligible)' } else { '' }
+                foreach ($Assigned in $AssignmentsByUser[$UserId]) {
+                    $IsEligible = $Assigned.AssignmentType -eq 'Eligible'
+                    $DefId = [string]$Assigned.roleDefinitionId
+                    $EligibleSuffix = if ($IsEligible) { ' (eligible)' } else { '' }
                     $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
                     if ($null -eq $RoleDef) {
                         $RoleObservations.Add([pscustomobject]@{
@@ -150,7 +124,7 @@
                     }
                     if (!$RoleInfo.IsPrivileged) { continue }
 
-                    if ($Grant.Eligible) {
+                    if ($IsEligible) {
                         $AccessType = 'Eligible Directory Role'
                         $Reason = 'PIM-eligible for a privileged Entra directory role and can activate it.'
                     } else {

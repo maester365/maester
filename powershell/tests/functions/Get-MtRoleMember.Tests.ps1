@@ -19,9 +19,11 @@ Describe 'Get-MtRoleMember' -Tag 'Unit' {
     BeforeEach {
         Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
         Mock -ModuleName Maester Invoke-MtGraphRequest {
+            $null = $Filter -match "roleDefinitionId eq '([^']+)'"
             [pscustomobject]@{
-                id        = 'assignment-1'
-                principal = [pscustomobject]@{ id = 'user-1'; '@odata.type' = '#microsoft.graph.user' }
+                id               = 'assignment-1'
+                roleDefinitionId = $Matches[1]
+                principal        = [pscustomobject]@{ id = 'user-1'; '@odata.type' = '#microsoft.graph.user' }
             }
         } -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleAssignments' }
     }
