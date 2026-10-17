@@ -24,7 +24,7 @@
         ResourceType = 'Policy',
         Severity = 'Medium',
         UserImpact = 'Low',
-        ImplementationCost = 'Medium',
+        ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.002'),
         Control = ('cis-m365:2.1.14', 'nist-800-53-r5:SI-8'),
         Service = 'ExchangeOnline',
