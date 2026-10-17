@@ -23,10 +23,10 @@
         Feature = 'external-sharing',
         Area = 'external-access',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
-        Mitre = ('T1048', 'T1213.002', 'T1530'),
+        Mitre = ('T1213.002', 'T1530', 'T1537'),
         Control = ('cis-m365:7.2.6', 'nist-800-53-r5:AC-21'),
         Service = 'SharePointOnline',
         Author = 'JeremyFinney-lgtm'
