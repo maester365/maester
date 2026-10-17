@@ -408,7 +408,9 @@ Describe 'Benchmark and Control on result rows' {
         # A custom folder: the fixture suite and one Pester-format test.
         $script:runFolder = Join-Path $TestDrive 'run'
         Copy-Item -LiteralPath (Join-Path $script:valid 'contoso') -Destination $script:runFolder -Recurse
-        "Describe 'Pester block' { It 'PES.1: pester test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:runFolder 'Pester.Tests.ps1')
+        # Pester-format tests run only from a Custom folder.
+        $null = New-Item -ItemType Directory -Path (Join-Path $script:runFolder 'Custom') -Force
+        "Describe 'Pester block' { It 'PES.1: pester test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:runFolder 'Custom/Pester.Tests.ps1')
 
         # Invoke-Maester calls Invoke-Pester, so the runs happen in a child process: all of them in one, for speed.
         # The built-in suites are read without a tenant: -DryRun runs no test, and a row says why its test would

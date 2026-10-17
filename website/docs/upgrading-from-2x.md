@@ -57,9 +57,13 @@ own tests and your configuration.
   built-in test plus the custom tests under that path. To run only your custom tests, add `-SkipBuiltIn` (or set
   `Selection.BuiltIn` to `None`). To run only some built-in tests, use `-Product`, `-Suite` and the other
   selectors below, or `-TestId`.
-- **A run needs no test folder.** Without `-Path`, Maester looks for custom tests in the current folder only when
-  it looks like a Maester folder (a `maester-config*.json` file, a `Custom` folder, a 2.x suite folder, or a test
-  file). Otherwise it runs the built-in tests and tells you to pass `-Path` for custom tests.
+- **Pester-format custom tests must be in a `Custom` folder.** `*.Tests.ps1` files elsewhere under `-Path`, such
+  as the `Maester`, `cis` or `EIDSCA` folders `Install-MaesterTests` created, are not run; Maester warns with their
+  number. Move your own tests into `Custom` and run `Update-MaesterTests` to delete the copies of built-in tests.
+- **A run needs no test folder.** Without `-Path`, Maester looks for custom tests only in the `Custom` folder of
+  the current folder. Without one it runs the built-in tests and tells you to pass `-Path` for custom tests.
+- **Folders are searched three levels deep.** Test files deeper than three folders below `-Path` (or below a
+  `Custom` folder, for Pester-format tests) are not found.
 - **A `-Path` that does not exist** is a warning, not an error: the built-in tests still run and the config is
   looked up from the nearest existing parent folder. With `-SkipBuiltIn` it stays an error.
 - **Deleting a test file no longer disables a test.** The built-in tests come back. Disable a test in the
