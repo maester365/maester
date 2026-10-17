@@ -19,7 +19,7 @@
         Id = 'CIS.M365.6.2.3',
         Title = 'Ensure email from external senders is identified',
         Product = 'exchange',
-        Feature = 'mail-flow',
+        Feature = 'outlook',
         Area = 'email-protection',
         ResourceType = 'Tenant',
         Severity = 'Medium',
