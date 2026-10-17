@@ -23,7 +23,7 @@
         Area = 'data-protection',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Low',
+        UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1213', 'T1530', 'T1567'),
         Control = ('cis-m365:3.2.2', 'nist-800-53-r5:AC-4'),

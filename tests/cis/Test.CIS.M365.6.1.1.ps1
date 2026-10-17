@@ -22,7 +22,7 @@
         Feature = 'mailbox-auditing',
         Area = 'logging-and-detection',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1685.002',

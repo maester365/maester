@@ -2,7 +2,7 @@
 
 Chat and channel messages are a quick way to paste a customer list or credentials, and files that users share in Teams end up in SharePoint and OneDrive. A DLP policy that covers Teams can block or warn about sensitive information in chat messages and channel conversations, in addition to the files. The policy covers the Teams content that an attacker collects from (T1213), the files stored behind it in SharePoint and OneDrive (T1530), and it stops sensitive content from leaving through a web service such as a message or an upload (T1567).
 
-The policy must be in the **Enable** mode. DLP for Teams chat and channel messages needs Microsoft 365 E5 or the Microsoft Purview suite licence.
+The policy must be in the **Enable** mode. Once it is on, a user who posts sensitive content in a chat or channel meets a policy tip or a block. DLP for Teams chat and channel messages needs Microsoft 365 E5 or the Microsoft Purview suite licence.
 
 #### Remediation action
 

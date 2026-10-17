@@ -19,6 +19,7 @@
         Id = 'CIS.M365.6.2.1',
         Title = 'Ensure all forms of mail forwarding are blocked and/or disabled',
         Product = 'exchange',
+        RelatedProduct = 'defender',
         Feature = 'mail-flow',
         Area = 'external-access',
         ResourceType = 'Tenant',
