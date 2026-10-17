@@ -41,7 +41,7 @@ holds no custom tests and you never changed its `maester-config.json`, you can d
 remove the copies once:
 
 ```powershell
-cd <your 2.x tests folder>
+cd ./maester-tests            # the folder Install-MaesterTests created in 2.x
 Update-MaesterTests -WhatIf   # list what would be removed
 Update-MaesterTests           # remove the copies (asks for confirmation; add -Force to skip it)
 ```

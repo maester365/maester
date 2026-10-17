@@ -92,7 +92,7 @@ The Maester team will add new tests over time. The tests ship inside the module,
 Update-Module Maester -Force
 ```
 
-Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrote in 2.x are no longer used. Remove them with `Update-MaesterTests -Path <folder>`, or delete the folder if it holds no custom tests, and see [Upgrading from 2.x](https://maester.dev/docs/upgrading-from-2x) for everything else that changed.
+Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrote in 2.x are no longer used. Remove them with `Update-MaesterTests -Path ./maester-tests` (use the path of your 2.x tests folder). If the folder holds no custom tests and no `maester-config.json` changes you want to keep, you can delete it instead. See [Upgrading from 2.x](https://maester.dev/docs/upgrading-from-2x) for everything else that changed.
 
 ## Writing your own tests
 
