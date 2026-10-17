@@ -52,13 +52,7 @@ Maester needs PowerShell 7.4 or later on Windows, Linux or macOS.
 Install-Module -Name Maester -Scope CurrentUser
 ```
 
-The built-in tests ship inside the module. Optionally, prepare a folder for your configuration and your own tests:
-
-```powershell
-md ~/maester-tests
-cd ~/maester-tests
-Install-MaesterTests
-```
+The tests ship inside the module, so there is nothing else to install or download.
 
 ## Running Maester
 
@@ -67,10 +61,10 @@ Connect-Maester
 Invoke-Maester
 ```
 
-To also run the custom tests and configuration in a folder, pass it with `-Path` (or run from that folder):
+To also run your own tests, or to change settings with a `maester-config.json`, keep them in a folder and pass it with `-Path` (or run from that folder):
 
 ```powershell
-Invoke-Maester -Path ~/maester-tests
+Invoke-Maester -Path ~/maester
 ```
 
 To learn more see [maester.dev](https://maester.dev).
@@ -98,7 +92,7 @@ The Maester team will add new tests over time. The tests ship inside the module,
 Update-Module Maester -Force
 ```
 
-Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrote in 2.x are no longer used. Remove them with `Update-MaesterTests -Path ~/maester-tests`, and see [Upgrading from 2.x](https://maester.dev/docs/upgrading-from-2x) for everything else that changed.
+Upgrading from Maester 2.x? Copies of the tests that `Install-MaesterTests` wrote in 2.x are no longer used. Remove them with `Update-MaesterTests -Path <folder>`, or delete the folder if it holds no custom tests, and see [Upgrading from 2.x](https://maester.dev/docs/upgrading-from-2x) for everything else that changed.
 
 ## Writing your own tests
 

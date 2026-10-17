@@ -87,7 +87,7 @@ A disabled test is not run and appears in the report as **Not run** with the rea
 
 ## Creating Your Configuration
 
-If you ran `Install-MaesterTests`, your folder already has a starter `maester-config.json`. Otherwise create one in the folder you run Maester from. Here's a complete example:
+Maester runs with its default settings when there is no config file, so you only need one to change something. Create `maester-config.json` in a folder and run `Invoke-Maester -Path <folder>` (or run Maester from that folder), or pass the file with `Invoke-Maester -Config <file>` or the `MAESTER_CONFIG` environment variable. Only include the settings you want to change. Here's a complete example:
 
 ```json
 {

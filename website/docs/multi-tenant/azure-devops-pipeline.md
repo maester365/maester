@@ -241,7 +241,6 @@ jobs:
           $runFolder = Join-Path "$(Agent.TempDirectory)" '${{ tenant.name }}-tests'
           New-Item -ItemType Directory -Force -Path "$runFolder"
           Push-Location $runFolder
-          Install-MaesterTests .\tests
 
           $jsonFile = Join-Path '$(ResultsDir)' '${{ tenant.name }}.json'
           Invoke-Maester -OutputJsonFile $jsonFile -PassThru -Verbosity Normal
