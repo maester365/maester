@@ -7,13 +7,18 @@ function Resolve-MtTestSource {
     Built-in tests always run from the module unless -SkipBuiltIn (or Selection.BuiltIn = None) is set.
     -Path is where the user's custom tests and config live:
 
-    - An explicit -Path is scanned recursively. If it does not exist, that is a warning and built-ins
-      still run (an error with -SkipBuiltIn); config discovery starts from the nearest existing parent.
-    - Without -Path, the current folder is scanned only when it is recognisably a Maester folder: it has
-      a maester-config file, a Custom folder, a 2.x suite folder, or a *.Tests.ps1 or Test.*.ps1 file.
-      In a Maester source checkout the custom root is ./tests/Custom.
+    - An explicit -Path is scanned for native tests (Test.*.ps1) in any folder under it. Pester-format
+      tests (*.Tests.ps1) are found only inside a folder named Custom: -Path itself, or the Custom folders
+      under it. If -Path does not exist, that is a warning and built-ins still run (an error with
+      -SkipBuiltIn); config discovery starts from the nearest existing parent.
+    - Without -Path, only the Custom folder of the current folder is scanned (or the current folder, when
+      it is a Custom folder); config files are looked for in the current folder. In a Maester source
+      checkout the custom root is ./tests/Custom.
+    - Folders are scanned at most three levels deep (Get-MtCustomTestFile), so a -Path that holds
+      unrelated content, such as a repository, is not walked to the bottom.
 
-    Returns BuiltInRoot, CustomRoot, ConfigSearchPath, BuiltInFiles, CustomFiles, Error and Messages.
+    Returns BuiltInRoot, CustomRoot, ConfigSearchPath, BuiltInFiles, CustomFiles (Pester-format),
+    CustomNativeFiles, Error and Messages.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -53,16 +58,21 @@ function Resolve-MtTestSource {
     } else {
         $cwd = (Get-Location).Path
         $configSearchPath = $cwd
+        $customParent = $cwd
         if (Test-Path -LiteralPath (Join-Path $cwd 'powershell/tests/pester.ps1')) {
             # Maester source checkout: the built-in tests are ./tests; custom tests are ./tests/custom.
-            $devCustom = Get-ChildItem -LiteralPath (Join-Path $cwd 'tests') -Directory -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -ieq 'custom' } | Select-Object -First 1
-            if ($devCustom) { $customRoot = $devCustom.FullName }
-            $configSearchPath = Join-Path $cwd 'tests'
-        } elseif (Test-MtMaesterFolder -Path $cwd) {
-            $customRoot = $cwd
+            $customParent = Join-Path $cwd 'tests'
+            $configSearchPath = $customParent
+        }
+        $customFolder = if ((Split-Path -Path $cwd -Leaf) -ieq 'custom') {
+            Get-Item -LiteralPath $cwd
         } else {
-            $messages.Add([pscustomobject]@{ Level = 'Information'; Text = 'Running the built-in tests. To also run custom tests, pass the folder that holds them with -Path.' })
+            Get-ChildItem -LiteralPath $customParent -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -ieq 'custom' } | Select-Object -First 1
+        }
+        if ($customFolder) {
+            $customRoot = $customFolder.FullName
+        } else {
+            $messages.Add([pscustomobject]@{ Level = 'Information'; Text = 'Running the built-in tests. To also run custom tests, put them in a Custom folder here or pass the folder that holds them with -Path.' })
         }
     }
 
@@ -73,24 +83,35 @@ function Resolve-MtTestSource {
     $builtInFiles = if ($SkipBuiltIn) { @() } else { $builtInAll }
 
     $customFiles = @()
+    $customNativeFiles = @()
     if ($customRoot) {
-        $customFiles = @(Get-ChildItem -LiteralPath $customRoot -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
-                ForEach-Object { $_.FullName } | Where-Object { -not $allBuiltIn.Contains($_) } | Sort-Object)
+        $customFiles = @(Get-MtCustomTestFile -Root $customRoot -Format Pester | Where-Object { -not $allBuiltIn.Contains($_) })
+        # Native tests under the built-in root are built-ins (they come from the catalog), except in its Custom folder.
+        $builtInPrefix = [System.IO.Path]::GetFullPath($builtInRoot).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+        $customNativeFiles = @(Get-MtCustomTestFile -Root $customRoot -Format Native |
+                Where-Object { -not $_.StartsWith($builtInPrefix, [System.StringComparison]::OrdinalIgnoreCase) -or $_ -like '*[\/]Custom[\/]*' })
+
+        # Pester-format files outside a Custom folder are not run; most are 2.x copies of built-in tests.
+        $outsideCustom = @(Get-MtCustomTestFile -Root $customRoot -Format Pester -OutsideCustom | Where-Object { -not $allBuiltIn.Contains($_) })
+        if ($outsideCustom.Count -gt 0) {
+            $messages.Add([pscustomobject]@{ Level = 'Warning'; Text = ("$($outsideCustom.Count) Pester-format test file(s) under '$customRoot' are not in a Custom folder and were not run. " +
+                    "Move your own Pester-format tests into a Custom folder, and run Update-MaesterTests -Path '$customRoot' to remove copies of tests that now ship with Maester.") })
+        }
     }
 
-    $customNativeCount = if ($customRoot) { @(Get-ChildItem -LiteralPath $customRoot -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue).Count } else { 0 }
-    if ($SkipBuiltIn -and -not $errorMessage -and $customFiles.Count -eq 0 -and $customNativeCount -eq 0) {
-        $errorMessage = if ($customRoot) { "No test files found in '$customRoot'." } else { 'No custom tests to run. Pass the folder that holds them with -Path.' }
+    if ($SkipBuiltIn -and -not $errorMessage -and $customFiles.Count -eq 0 -and $customNativeFiles.Count -eq 0) {
+        $errorMessage = if ($customRoot) { "No test files found in '$customRoot'." } else { 'No custom tests to run. Put them in a Custom folder here or pass the folder that holds them with -Path.' }
     }
 
     [pscustomobject]@{
-        BuiltInRoot      = $builtInRoot
-        CustomRoot       = $customRoot
-        ConfigSearchPath = $configSearchPath
-        BuiltInFiles     = $builtInFiles
-        CustomFiles      = $customFiles
-        Error            = $errorMessage
-        Messages         = $messages.ToArray()
+        BuiltInRoot       = $builtInRoot
+        CustomRoot        = $customRoot
+        ConfigSearchPath  = $configSearchPath
+        BuiltInFiles      = $builtInFiles
+        CustomFiles       = $customFiles
+        CustomNativeFiles = $customNativeFiles
+        Error             = $errorMessage
+        Messages          = $messages.ToArray()
     }
 }
 
@@ -113,27 +134,60 @@ function Get-MtBuiltInPesterFile {
         Sort-Object
 }
 
-function Test-MtMaesterFolder {
+function Get-MtCustomTestFile {
     <#
     .SYNOPSIS
-    Returns $true when a folder is recognisably a Maester test folder (design section 7.2).
+    Lists the custom test files of one format under a custom root (design section 7.2).
+
+    .DESCRIPTION
+    Native tests (Test.*.ps1) are found in any folder under the root. Pester-format tests (*.Tests.ps1) are
+    found only inside a folder named Custom: the root itself when it is in one, or the Custom folders under
+    it. A root that is a file is returned as it is when it has the format's file name. Folders are scanned
+    at most -Depth levels below the root, and below each Custom folder.
+
+    -OutsideCustom returns instead the Pester-format files that are left out because they are not in a
+    Custom folder.
     #>
     [CmdletBinding()]
-    [OutputType([bool])]
+    [OutputType([string])]
     param(
-        [Parameter(Mandatory)]
-        [string] $Path
+        [Parameter(Mandatory)] [string] $Root,
+        [Parameter(Mandatory)] [ValidateSet('Native', 'Pester')] [string] $Format,
+        [Parameter()] [switch] $OutsideCustom,
+        # How many folder levels below a scanned folder are looked at: Custom/a/b/c/Test.X.ps1 with the default.
+        [Parameter()] [int] $Depth = 3
     )
 
-    $suiteFolders = 'Custom', 'Maester', 'cis', 'cisa', 'EIDSCA', 'orca', 'XSPM', 'ad'
-    foreach ($candidate in @($Path, (Join-Path $Path 'tests'))) {
-        if (-not (Test-Path -LiteralPath $candidate -PathType Container)) { continue }
-        if (Get-ChildItem -LiteralPath $candidate -File -Filter 'maester-config*.json' -ErrorAction SilentlyContinue) { return $true }
+    $filter = if ($Format -eq 'Native') { 'Test.*.ps1' } else { '*.Tests.ps1' }
+    if (Test-Path -LiteralPath $Root -PathType Leaf) {
+        # An explicit file is run whatever folder it is in.
+        $item = Get-Item -LiteralPath $Root
+        if (-not $OutsideCustom -and $item.Name -like $filter) { $item.FullName }
+        return
     }
-    $children = Get-ChildItem -LiteralPath $Path -ErrorAction SilentlyContinue
-    if ($children | Where-Object { $_.PSIsContainer -and $_.Name -in $suiteFolders }) { return $true }
-    if ($children | Where-Object { -not $_.PSIsContainer -and ($_.Name -like '*.Tests.ps1' -or $_.Name -like 'Test.*.ps1') }) { return $true }
-    $false
+
+    $sep = [System.IO.Path]::DirectorySeparatorChar
+    $rootFull = [System.IO.Path]::GetFullPath($Root).TrimEnd($sep)
+    $rootInCustom = @($rootFull -split '[\\/]' | Where-Object { $_ -ieq 'custom' }).Count -gt 0
+    if ($Format -eq 'Native' -or $rootInCustom) {
+        if ($OutsideCustom) { return }
+        $folders = @($rootFull)
+    } else {
+        $folders = @(Get-MtOutermostPath -Path @(Get-ChildItem -LiteralPath $rootFull -Directory -Recurse -Depth $Depth -ErrorAction SilentlyContinue |
+                    Where-Object { $_.Name -ieq 'custom' } | ForEach-Object { $_.FullName }))
+    }
+
+    if ($OutsideCustom) {
+        $prefixes = @($folders | ForEach-Object { $_ + $sep })
+        Get-ChildItem -LiteralPath $rootFull -Recurse -Depth $Depth -File -Filter $filter -ErrorAction SilentlyContinue |
+            ForEach-Object { $_.FullName } |
+            Where-Object { $file = $_; -not ($prefixes | Where-Object { $file.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }) } |
+            Sort-Object
+        return
+    }
+    @(foreach ($folder in $folders) {
+            Get-ChildItem -LiteralPath $folder -Recurse -Depth $Depth -File -Filter $filter -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+        }) | Sort-Object -Unique
 }
 
 function Get-MtSupersededTest {

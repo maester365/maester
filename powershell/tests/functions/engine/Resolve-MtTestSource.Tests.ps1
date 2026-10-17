@@ -8,7 +8,7 @@ Describe 'Resolve-MtTestSource' {
     AfterEach { Pop-Location }
 
     It 'Runs the built-in tests from the module and scans an explicit -Path for custom tests' {
-        $folder = Join-Path $TestDrive 'explicit'
+        $folder = Join-Path $TestDrive 'explicit/Custom'
         $null = New-Item -ItemType Directory -Path $folder -Force
         "Describe 'C' { It 'C.1: c' { } }" | Set-Content (Join-Path $folder 'C.Tests.ps1')
         $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder }
@@ -33,7 +33,7 @@ Describe 'Resolve-MtTestSource' {
     }
 
     It 'Runs no built-in tests with -SkipBuiltIn' {
-        $folder = Join-Path $TestDrive 'skip'
+        $folder = Join-Path $TestDrive 'skip/Custom'
         $null = New-Item -ItemType Directory -Path $folder -Force
         "Describe 'C' { It 'C.1: c' { } }" | Set-Content (Join-Path $folder 'C.Tests.ps1')
         $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder -SkipBuiltIn }
@@ -41,32 +41,91 @@ Describe 'Resolve-MtTestSource' {
         $source.CustomFiles | Should -HaveCount 1
     }
 
-    It 'Does not scan an unrelated current folder when -Path is omitted' {
-        $folder = Join-Path $TestDrive 'unrelated'
+    It 'Scans only the Custom folder of the current folder when -Path is omitted' {
+        $folder = Join-Path $TestDrive 'cwd-custom'
+        $null = New-Item -ItemType Directory -Path (Join-Path $folder 'custom/entra'), (Join-Path $folder 'Maester'), (Join-Path $folder 'src') -Force
+        "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'custom/entra/X.Tests.ps1')
+        '' | Set-Content (Join-Path $folder 'custom/Test.CONTOSO.1.ps1')
+        "Describe 'S' { It 'S.1: s' { } }" | Set-Content (Join-Path $folder 'Maester/Stale.Tests.ps1')
+        '' | Set-Content (Join-Path $folder 'src/Test.OTHER.1.ps1')
+        '' | Set-Content (Join-Path $folder 'Test.ROOT.1.ps1')
+        Push-Location $folder
+        try { $source = InModuleScope Maester { Resolve-MtTestSource } } finally { Pop-Location }
+        $source.CustomRoot | Should -Be (Join-Path (Resolve-Path $folder).Path 'custom')
+        $source.ConfigSearchPath | Should -Be (Resolve-Path $folder).Path
+        $source.CustomFiles | Should -HaveCount 1
+        $source.CustomNativeFiles | Should -HaveCount 1
+        $source.CustomNativeFiles[0] | Should -BeLike '*Test.CONTOSO.1.ps1'
+    }
+
+    It 'Scans no folder when -Path is omitted and the current folder has no Custom folder (<Marker>)' -ForEach @(
+        @{ Marker = 'unrelated' }
+        @{ Marker = 'maester-config.json' }
+        @{ Marker = 'test file' }
+    ) {
+        $folder = Join-Path $TestDrive ("nocustom-" + ($Marker -replace '\W', ''))
         $null = New-Item -ItemType Directory -Path (Join-Path $folder 'src') -Force
         "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'src/Other.Tests.ps1')
+        switch ($Marker) {
+            'maester-config.json' { '{}' | Set-Content (Join-Path $folder 'maester-config.json') }
+            'test file' { "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'X.Tests.ps1'); '' | Set-Content (Join-Path $folder 'Test.X.1.ps1') }
+        }
         Push-Location $folder
         try { $source = InModuleScope Maester { Resolve-MtTestSource } } finally { Pop-Location }
         $source.CustomRoot | Should -BeNullOrEmpty
         $source.CustomFiles | Should -HaveCount 0
+        $source.CustomNativeFiles | Should -HaveCount 0
         ($source.Messages | Where-Object Level -EQ 'Information') | Should -Not -BeNullOrEmpty
     }
 
-    It 'Scans the current folder when it is recognisably a Maester folder (<Marker>)' -ForEach @(
-        @{ Marker = 'Custom folder' }
-        @{ Marker = 'maester-config.json' }
-        @{ Marker = 'test file' }
-    ) {
-        $folder = Join-Path $TestDrive ("maester-" + ($Marker -replace '\W', ''))
+    It 'Scans the current folder when it is itself a Custom folder' {
+        $folder = Join-Path $TestDrive 'self/Custom'
         $null = New-Item -ItemType Directory -Path $folder -Force
-        switch ($Marker) {
-            'Custom folder' { $null = New-Item -ItemType Directory -Path (Join-Path $folder 'Custom') -Force; "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'Custom/X.Tests.ps1') }
-            'maester-config.json' { '{}' | Set-Content (Join-Path $folder 'maester-config.json'); "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'X.Tests.ps1') }
-            'test file' { "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'X.Tests.ps1') }
-        }
+        '' | Set-Content (Join-Path $folder 'Test.CONTOSO.1.ps1')
         Push-Location $folder
         try { $source = InModuleScope Maester { Resolve-MtTestSource } } finally { Pop-Location }
+        $source.CustomNativeFiles | Should -HaveCount 1
+    }
+
+    It 'Finds native tests anywhere under -Path, but Pester-format tests only in a Custom folder' {
+        $folder = Join-Path $TestDrive 'mixed'
+        $null = New-Item -ItemType Directory -Path (Join-Path $folder 'entra'), (Join-Path $folder 'Maester'), (Join-Path $folder 'tests/Custom') -Force
+        '' | Set-Content (Join-Path $folder 'entra/Test.CONTOSO.1.ps1')
+        '' | Set-Content (Join-Path $folder 'Test.CONTOSO.2.ps1')
+        "Describe 'S' { It 'S.1: s' { } }" | Set-Content (Join-Path $folder 'Maester/Stale.Tests.ps1')
+        "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'tests/Custom/X.Tests.ps1')
+        $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder }
+        $source.CustomNativeFiles | Should -HaveCount 2
         $source.CustomFiles | Should -HaveCount 1
+        $source.CustomFiles[0] | Should -BeLike '*Custom*X.Tests.ps1'
+        ($source.Messages | Where-Object Level -EQ 'Warning').Text | Should -BeLike '*1 Pester-format test file(s)*not in a Custom folder*'
+    }
+
+    It 'Runs every Pester-format test under a -Path that is a Custom folder or inside one' {
+        $folder = Join-Path $TestDrive 'inside/Custom/entra'
+        $null = New-Item -ItemType Directory -Path $folder -Force
+        "Describe 'X' { It 'X.1: x' { } }" | Set-Content (Join-Path $folder 'X.Tests.ps1')
+        $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder -SkipBuiltIn }
+        $source.CustomFiles | Should -HaveCount 1
+        $source.Messages | Should -HaveCount 0
+    }
+
+    It 'Runs a Pester-format test file given as -Path wherever it is' {
+        $file = Join-Path $TestDrive 'single/X.Tests.ps1'
+        $null = New-Item -ItemType Directory -Path (Split-Path $file) -Force
+        "Describe 'X' { It 'X.1: x' { } }" | Set-Content $file
+        $source = InModuleScope Maester -Parameters @{ File = $file } { Resolve-MtTestSource -Path $File -SkipBuiltIn }
+        $source.CustomFiles | Should -HaveCount 1
+    }
+
+    It 'Looks at most three folder levels deep' {
+        $folder = Join-Path $TestDrive 'deep'
+        $null = New-Item -ItemType Directory -Path (Join-Path $folder 'a/b/c/d') -Force
+        '' | Set-Content (Join-Path $folder 'a/b/c/Test.CONTOSO.3.ps1')
+        '' | Set-Content (Join-Path $folder 'a/b/c/d/Test.CONTOSO.4.ps1')
+        $source = InModuleScope Maester -Parameters @{ Folder = $folder } { Resolve-MtTestSource -Path $Folder -SkipBuiltIn }
+        $source.CustomNativeFiles | Should -HaveCount 1
+        $source.CustomNativeFiles[0] | Should -BeLike '*Test.CONTOSO.3.ps1'
     }
 
     It 'Treats files under the built-in root as built-in, never as custom' {
