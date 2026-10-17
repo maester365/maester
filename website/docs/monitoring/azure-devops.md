@@ -32,16 +32,16 @@ Azure DevOps has native integration with Microsoft Entra including single sign o
     :::tip
     To enable the free tier, to use a Microsoft-hosted agent, for Azure Pipelines you will need to submit this form https://aka.ms/azpipelines-parallelism-request (it can take a few days before you can use the pipeline.) In the interim you can use a [self-hosted agent](https://learn.microsoft.com/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=yaml%2Cbrowser#self-hosted-agents) to get started.
     :::
-- Create a new project to host your Maester tests and Azure Pipeline.
+- Create a new project to host your Maester pipeline, or use a project you already have.
   - [Azure DevOps - Create a project](https://learn.microsoft.com/azure/devops/organizations/projects/create-project)
 
 ### Create the repository for your pipeline
 
-The built-in Maester tests ship inside the Maester PowerShell module, so you don't need to import or copy any tests. The repository only holds your pipeline definition and, optionally, your own custom tests and `maester-config.json`.
+The Maester tests ship inside the Maester PowerShell module, so the repository doesn't hold any tests. Azure Pipelines needs a repository for the pipeline definition, and that is all it has to hold.
 
 - Select **Repos** from the left-hand menu
 - In the **Initialize main branch with a README or gitignore** section, select **Initialize** to create the default repository for your project.
-- Optionally, to add your own tests and configuration, clone the repository and run `Install-MaesterTests` in it. This creates a `custom` folder and a starter `maester-config.json` that you can commit. See [Writing custom tests](../writing-tests/index.mdx) and [Run configuration](../configuration/run-configuration.md).
+- Later, you can commit a `maester-config.json` to change settings (see [Configuration](../configuration/overview.md)) and a `custom` folder for your own tests (see [Writing custom tests](../writing-tests/index.mdx)). The pipelines below pick them up when they are there.
 
 ## Set up the Azure Pipeline
 
@@ -479,12 +479,12 @@ In the **Summary** tab select on any of the errors to view the raw logs from Mae
 
 ## Keeping your Maester tests up to date
 
-The Maester team adds new tests over time. The built-in tests ship inside the Maester PowerShell module, and the pipelines above run `Install-Module Maester -Force`, so every run uses the latest release and its tests. There is nothing to update in your repository, which only holds your own custom tests.
+The Maester team adds new tests over time. The built-in tests ship inside the Maester PowerShell module, and the pipelines above run `Install-Module Maester -Force`, so every run uses the latest release and its tests. There is nothing to update in your repository, which holds only the pipeline and, if you added them, your configuration and custom tests.
 
 To control when you move to a new release, pin the version instead, for example `Install-Module Maester -RequiredVersion 3.0.0 -Force`, and raise it when you are ready.
 
 :::tip
-If you set up this pipeline with Maester 2.x by importing the `maester-tests` repository, see [Upgrading from 2.x](../upgrading-from-2x.md). The old pipeline keeps working, but you can remove the copied test folders from your repository and keep only your `Custom` folder and `maester-config.json`.
+If you set up this pipeline with Maester 2.x by importing the `maester-tests` repository, see [Upgrading from 2.x](../upgrading-from-2x.md). The old pipeline keeps working, but you can remove the copied test folders from your repository and keep only your custom tests and `maester-config.json`, if you have them.
 :::
 
 :::note
