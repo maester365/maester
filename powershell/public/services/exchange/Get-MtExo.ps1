@@ -75,6 +75,12 @@
         "RoleAssignmentPolicy"           = "Get-RoleAssignmentPolicy"
         "ManagementRoleAssignment"       = "Get-ManagementRoleAssignment"
         "ConnectionInformation"          = "Get-ConnectionInformation"
+        "EXOMailboxAudit"                = "Get-EXOMailbox -RecipientTypeDetails 'UserMailbox' -PropertySets 'Audit','Minimum' -ResultSize 'Unlimited'"
+        "MailboxAuditBypassAssociation"  = "Get-MailboxAuditBypassAssociation -ResultSize 'Unlimited' -WarningAction 'SilentlyContinue'"
+        "EmailTenantSettings"            = "Get-EmailTenantSettings"
+        "VipUser"                        = "`$exo = Get-Module -Name 'tmpEXO_*' | Where-Object { `$_.ExportedCommands.ContainsKey('Get-User') -and `$_.ExportedCommands['Get-User'].Parameters.ContainsKey('IsVIP') } | Select-Object -First 1; if (-not `$exo) { throw 'Get-User -IsVIP is not available. Connect to Exchange Online with Connect-ExchangeOnline.' }; & `$exo { Get-User -IsVIP -ResultSize 'Unlimited' }"
+        "LabelPolicy"                    = "Get-LabelPolicy -WarningAction 'SilentlyContinue'"
+        "EXOMailboxRoleAssignmentPolicy" = "Get-EXOMailbox -RecipientTypeDetails 'UserMailbox' -Properties 'RoleAssignmentPolicy' -ResultSize 'Unlimited'"
     }
 
 
