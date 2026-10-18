@@ -11,12 +11,19 @@ Monitoring the *count* of KDS root keys helps identify:
 **Operational**
 
 #### Security Recommendation
-- Ensure KDS root keys are deployed according to your Microsoft recommended procedures.
-- Validate the expected number of keys for your environment (e.g., per forest/role) and alert on deviations.
+- Ensure exactly one KDS root key exists per forest. Multiple keys can cause gMSA authentication failures.
+- Validate the expected number of keys for your environment and alert on deviations.
 - Restrict administrative access to actions that can modify KDS root keys.
 
 #### How the Test Works
-The test enumerates KDS root keys present in AD (or the module’s KDS configuration view), then reports how many keys are currently configured.
+The test enumerates KDS root keys present in Active Directory and evaluates the count:
+- **0 keys**: gMSAs are not in use; the test is skipped.
+- **1 key**: The recommended configuration; the test passes.
+- **More than 1 key**: Can cause gMSA authentication failures; the test fails.
+
+#### References
+
+- [Microsoft: gMSA authentication failures with multiple KDS root keys](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys)
 
 <!--- Results --->
 %TestResult%

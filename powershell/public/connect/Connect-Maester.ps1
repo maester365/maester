@@ -195,8 +195,11 @@
       # The TLS mode used for the Active Directory LDAP connection. Auto tries LDAPS before StartTLS.
       [Alias('TlsMode')]
       [ValidateSet('Auto', 'Ldaps', 'StartTls')]
-      [string]$ActiveDirectoryTlsMode = 'Auto'
-   )
+      [string]$ActiveDirectoryTlsMode = 'Auto',
+
+      # Skip certificate validation for the Active Directory LDAP connection. Intended for test environments only.
+      [switch]$ActiveDirectorySkipCertificateCheck
+    )
 
    $__MtSession.Connections = $Service
 
@@ -617,6 +620,10 @@
              if ($PSBoundParameters.ContainsKey($selectorName)) {
                 $connectAdParameters[$selectorName] = $PSBoundParameters[$selectorName]
              }
+          }
+
+          if ($ActiveDirectorySkipCertificateCheck.IsPresent) {
+             $connectAdParameters['SkipCertificateCheck'] = $true
           }
 
           Connect-MtAdTarget @connectAdParameters

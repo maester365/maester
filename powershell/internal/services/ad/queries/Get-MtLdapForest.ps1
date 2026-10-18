@@ -29,15 +29,21 @@
         $rootDse = Get-MtLdapRootDse -Connection $Connection
         $attributes = @('distinguishedName', 'dnsRoot', 'nCName', 'nETBIOSName', 'systemFlags', 'trustParent')
         $partitions = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $ConfigurationNamingContext -Scope Subtree -Filter '(objectClass=crossRef)' -Attributes $attributes)
-        $domainPartitions = @($partitions | Where-Object { $_.dnsRoot -and $_.nCName -like 'DC=*' })
+        $domainPartitions = @($partitions | Where-Object {
+            $_.dnsRoot -and
+            $_.nCName -like 'DC=*' -and
+            $_.nCName -notlike '*CN=Configuration,*' -and
+            $_.nCName -notmatch 'DC=DomainDnsZones|DC=ForestDnsZones' -and
+            ($_.systemFlags -band 0x2) -ne 0
+        })
         $rootPartition = $domainPartitions | Where-Object { $_.nCName -eq $rootDse.RootDomainNamingContext } | Select-Object -First 1
         $forestModeNames = @('Windows2000Forest', 'Windows2003InterimForest', 'Windows2003Forest', 'Windows2008Forest', 'Windows2008R2Forest', 'Windows2012Forest', 'Windows2012R2Forest', 'Windows2016Forest')
         $forestModeValue = [int]$rootDse.ForestFunctionality
         $fallbackRootDomain = (([regex]::Matches($rootDse.RootDomainNamingContext, '(?i)(?:^|,)DC=([^,]+)') | ForEach-Object { $_.Groups[1].Value }) -join '.')
 
         $crossForestReferences = @($partitions | Where-Object {
-            $flags = if ($null -ne $_.systemFlags) { [int]$_.systemFlags } else { 0 }
-            ($flags -band 0x2) -ne 0
+            $null -ne $_.systemFlags -and
+            ([int]$_.systemFlags -band 0x1) -eq 0
         } | ForEach-Object {
             [PSCustomObject]@{
                 DnsRoot    = [string]$_.dnsRoot
