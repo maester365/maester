@@ -48,6 +48,21 @@
         @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 0
     }
 
+    It 'Reports an authentication strength joined with a compliant device by OR' {
+        $policy = New-GrantPolicy @{ builtInControls = @('compliantDevice'); operator = 'OR'; authenticationStrength = @{ id = '00000000-0000-0000-0000-000000000004' } }
+        @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 1
+    }
+
+    It 'Passes an authentication strength joined with a compliant device by AND' {
+        $policy = New-GrantPolicy @{ builtInControls = @('compliantDevice'); operator = 'AND'; authenticationStrength = @{ id = '00000000-0000-0000-0000-000000000004' } }
+        @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 0
+    }
+
+    It 'Reports a block combined with an authentication strength' {
+        $policy = New-GrantPolicy @{ builtInControls = @('block'); operator = 'AND'; authenticationStrength = @{ id = '00000000-0000-0000-0000-000000000004' } }
+        @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 1
+    }
+
     It 'Passes a policy without grant controls' {
         $policy = @{ displayName = 'Session policy'; state = 'enabled' } | ConvertTo-Json | ConvertFrom-Json
         @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 0

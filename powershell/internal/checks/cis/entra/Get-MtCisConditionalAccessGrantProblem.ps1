@@ -5,7 +5,7 @@
 
     .DESCRIPTION
         A block cannot be combined with other grant controls. When a policy requires multifactor authentication or an
-        authentication strength together with other built-in controls, the grant operator must be AND, because with OR
+        authentication strength together with another grant control, the grant operator must be AND, because with OR
         one control alone would satisfy the policy.
 
     .PARAMETER Policy
@@ -28,12 +28,14 @@
 
     $grant = $Policy.grantControls
     $builtIn = @($grant.builtInControls | Where-Object { $_ })
+    $strength = [bool]$grant.authenticationStrength.id
+    $controlCount = $builtIn.Count + [int]$strength
     $problems = [System.Collections.Generic.List[string]]::new()
-    if ($builtIn -contains 'block' -and $builtIn.Count -gt 1) {
+    if ($builtIn -contains 'block' -and $controlCount -gt 1) {
         $problems.Add('block is combined with other grant controls')
     }
-    $requiresMfa = ($builtIn -contains 'mfa') -or [bool]$grant.authenticationStrength.id
-    if ($requiresMfa -and $builtIn.Count -gt 1 -and $grant.operator -ne 'AND') {
+    $requiresMfa = ($builtIn -contains 'mfa') -or $strength
+    if ($requiresMfa -and $controlCount -gt 1 -and $grant.operator -ne 'AND') {
         $problems.Add('grant operator is OR')
     }
 
