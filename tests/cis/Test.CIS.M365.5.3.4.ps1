@@ -37,7 +37,7 @@
 
     Write-Verbose 'Getting the Global Administrator role management policy...'
     $roleId = '62e90394-69f5-4237-9190-012177145e10'
-    $assignment = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -Filter "scopeId eq '/' and scopeType eq 'Directory' and roleDefinitionId eq '$roleId'" -QueryParameters @{ expand = 'policy(expand=rules)' }
+    $assignment = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -Filter "scopeId eq '/' and scopeType eq 'DirectoryRole' and roleDefinitionId eq '$roleId'" -QueryParameters @{ expand = 'policy(expand=rules)' }
     $rule = @(@($assignment).policy.rules) | Where-Object { $_.id -eq 'Approval_EndUser_Assignment' } | Select-Object -First 1
     $isApprovalRequired = $rule.setting.isApprovalRequired
     $approvers = @($rule.setting.approvalStages.primaryApprovers | Where-Object { $_ } | ForEach-Object { if ($_.description) { $_.description } else { 'Unknown approver' } })

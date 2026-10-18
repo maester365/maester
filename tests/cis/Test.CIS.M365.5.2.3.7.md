@@ -18,7 +18,6 @@ To disable the method with PowerShell, connect with `Connect-MgGraph -Scopes 'Po
 $params = @{
     '@odata.type' = '#microsoft.graph.emailAuthenticationMethodConfiguration'
     state = 'disabled'
-    allowExternalIdToUseEmailOtp = 'disabled'
 }
 Update-MgPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration -AuthenticationMethodConfigurationId 'Email' -BodyParameter $params
 ```

@@ -37,7 +37,7 @@
 
     Write-Verbose 'Getting the Privileged Role Administrator role management policy...'
     $roleId = 'e8611ab8-c189-46e8-94e1-60213ab1f814'
-    $assignment = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -Filter "scopeId eq '/' and scopeType eq 'Directory' and roleDefinitionId eq '$roleId'" -QueryParameters @{ expand = 'policy(expand=rules)' }
+    $assignment = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -Filter "scopeId eq '/' and scopeType eq 'DirectoryRole' and roleDefinitionId eq '$roleId'" -QueryParameters @{ expand = 'policy(expand=rules)' }
     $rule = @(@($assignment).policy.rules) | Where-Object { $_.id -eq 'Approval_EndUser_Assignment' } | Select-Object -First 1
     $isApprovalRequired = $rule.setting.isApprovalRequired
     $approvers = @($rule.setting.approvalStages.primaryApprovers | Where-Object { $_ } | ForEach-Object { if ($_.description) { $_.description } else { 'Unknown approver' } })

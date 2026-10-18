@@ -51,9 +51,9 @@
         $isEmergencyCandidate = $false
         if ($principalType -eq '#microsoft.graph.user' -or $principalType -eq '#microsoft.graph.group') {
             $compliant = $instance.assignmentType -eq 'Activated'
-            # Only a permanent Global Administrator assignment can be an emergency access account.
+            # Only a permanent Global Administrator assignment to a user account can be an emergency access account.
             $looksLikeEmergencyAccount = if ($emergencyIds.Count -gt 0) { $emergencyIds -contains $instance.principalId } else { $instance.principal.userPrincipalName -match 'onmicrosoft\.com$' }
-            if ($role.id -eq $globalAdminId -and $instance.assignmentType -eq 'Assigned' -and $looksLikeEmergencyAccount) {
+            if ($principalType -eq '#microsoft.graph.user' -and $role.id -eq $globalAdminId -and $instance.assignmentType -eq 'Assigned' -and $looksLikeEmergencyAccount) {
                 $isEmergencyCandidate = $true
                 $emergencyCandidates++
                 $compliant = $true

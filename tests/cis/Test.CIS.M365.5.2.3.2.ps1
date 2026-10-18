@@ -28,6 +28,7 @@
         Mitre = 'T1110.003',
         Control = ('cis-m365:5.2.3.2', 'nist-800-53-r5:IA-5(1)'),
         Service = 'Graph',
+        License = 'AAD_PREMIUM',
         Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
