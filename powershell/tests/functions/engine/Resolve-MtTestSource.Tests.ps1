@@ -132,6 +132,27 @@ Describe 'Resolve-MtTestSource' {
         $source = InModuleScope Maester { Resolve-MtTestSource -Path (Get-MtMaesterTestFolderPath) }
         $source.CustomFiles | Should -HaveCount 0
     }
+
+    It 'Treats only the Custom folder directly under the built-in root as custom, even when the root is inside a Custom folder' {
+        $root = Join-Path $TestDrive 'Custom/builtin'
+        $null = New-Item -ItemType Directory -Path (Join-Path $root 'custom'), (Join-Path $root 'entra/Custom') -Force
+        '' | Set-Content (Join-Path $root 'custom/Test.CONTOSO.5.ps1')
+        '' | Set-Content (Join-Path $root 'entra/Test.MT.9998.ps1')
+        '' | Set-Content (Join-Path $root 'entra/Custom/Test.MT.9999.ps1')
+        Mock -ModuleName Maester Get-MtMaesterTestFolderPath { Join-Path $TestDrive 'Custom/builtin' }
+        $source = InModuleScope Maester -Parameters @{ Folder = $root } { Resolve-MtTestSource -Path $Folder -SkipBuiltIn }
+        $source.CustomNativeFiles | Should -HaveCount 1
+        $source.CustomNativeFiles[0] | Should -BeLike '*Test.CONTOSO.5.ps1'
+    }
+}
+
+Describe 'Get-MtCustomTestFile' {
+    It 'Scans a filesystem root as itself, not as an empty or drive-relative path' {
+        Mock -ModuleName Maester Get-ChildItem { }
+        $root = [System.IO.Path]::GetPathRoot($TestDrive)
+        $null = InModuleScope Maester -Parameters @{ Root = $root } { Get-MtCustomTestFile -Root $Root -Format Native }
+        Should -Invoke -ModuleName Maester Get-ChildItem -Times 1 -Exactly -ParameterFilter { $LiteralPath -contains [System.IO.Path]::GetPathRoot($TestDrive) }
+    }
 }
 
 Describe 'Get-MtSupersededTest' {

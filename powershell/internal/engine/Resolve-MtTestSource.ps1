@@ -88,8 +88,9 @@ function Resolve-MtTestSource {
         $customFiles = @(Get-MtCustomTestFile -Root $customRoot -Format Pester | Where-Object { -not $allBuiltIn.Contains($_) })
         # Native tests under the built-in root are built-ins (they come from the catalog), except in its Custom folder.
         $builtInPrefix = [System.IO.Path]::GetFullPath($builtInRoot).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+        $builtInCustomPrefix = $builtInPrefix + 'custom' + [System.IO.Path]::DirectorySeparatorChar
         $customNativeFiles = @(Get-MtCustomTestFile -Root $customRoot -Format Native |
-                Where-Object { -not $_.StartsWith($builtInPrefix, [System.StringComparison]::OrdinalIgnoreCase) -or $_ -like '*[\/]Custom[\/]*' })
+                Where-Object { -not $_.StartsWith($builtInPrefix, [System.StringComparison]::OrdinalIgnoreCase) -or $_.StartsWith($builtInCustomPrefix, [System.StringComparison]::OrdinalIgnoreCase) })
 
         # Pester-format files outside a Custom folder are not run; most are 2.x copies of built-in tests.
         $outsideCustom = @(Get-MtCustomTestFile -Root $customRoot -Format Pester -OutsideCustom | Where-Object { -not $allBuiltIn.Contains($_) })
@@ -167,7 +168,9 @@ function Get-MtCustomTestFile {
     }
 
     $sep = [System.IO.Path]::DirectorySeparatorChar
-    $rootFull = [System.IO.Path]::GetFullPath($Root).TrimEnd($sep)
+    $rootFull = [System.IO.Path]::GetFullPath($Root)
+    # A filesystem root keeps its separator: trimmed, '/' is empty and 'C:\' is the drive-relative 'C:'.
+    if ($rootFull -ne [System.IO.Path]::GetPathRoot($rootFull)) { $rootFull = $rootFull.TrimEnd($sep) }
     $rootInCustom = @($rootFull -split '[\\/]' | Where-Object { $_ -ieq 'custom' }).Count -gt 0
     if ($Format -eq 'Native' -or $rootInCustom) {
         if ($OutsideCustom) { return }

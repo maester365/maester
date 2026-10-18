@@ -552,21 +552,15 @@
             Write-Verbose 'Excluding LongRunning tests. Use -IncludeLongRunning to include them.'
         }
 
-        $pesterRunPath = @()
-        if ($testSource.BuiltInFiles.Count -gt 0) { $pesterRunPath += $testSource.BuiltInRoot }
-        if ($testSource.CustomFiles.Count -gt 0) { $pesterRunPath += $testSource.CustomRoot }
-        $pesterRunPath = @(Get-MtOutermostPath -Path $pesterRunPath)
-        $wantedFiles = [System.Collections.Generic.HashSet[string]]::new([string[]]@($testSource.BuiltInFiles + $testSource.CustomFiles), [System.StringComparer]::OrdinalIgnoreCase)
-        $pesterExcludePath = @(foreach ($root in $pesterRunPath) {
-                Get-ChildItem -LiteralPath $root -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
-                    ForEach-Object { $_.FullName } | Where-Object { -not $wantedFiles.Contains($_) }
-            })
+        # The selected files, not their folders: Pester would walk a folder past the scan's depth limit and the
+        # Custom folder rule, and every file it should skip would have to be listed in Run.ExcludePath.
+        $pesterRunPath = @(@($testSource.BuiltInFiles) + @($testSource.CustomFiles))
 
         # What the engine decides for the Pester provider. A PesterConfiguration is built from it (and the
         # caller's -PesterConfiguration) only when the plan has Pester-format tests.
         $pesterFilter = [PSCustomObject]@{
             RunPath           = @($pesterRunPath)
-            ExcludePath       = @($pesterExcludePath)
+            ExcludePath       = @()
             Tag               = @($Tag | Where-Object { $_ })
             ExcludeTag        = @($ExcludeTag | Where-Object { $_ })
             ExcludeLine       = @()
