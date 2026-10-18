@@ -26,7 +26,7 @@
         ResourceType = 'Tenant',
         Severity = 'Medium',
         UserImpact = 'Medium',
-        ImplementationCost = 'Medium',
+        ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1111'),
         Control = ('cis-m365:5.2.3.7', 'nist-800-53-r5:CM-7', 'nist-800-53-r5:IA-5'),
         Service = 'Graph',
