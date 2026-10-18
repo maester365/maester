@@ -33,9 +33,9 @@
     Runs the built-in tests and the custom tests in the ./Custom folder (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the ./test-results folder.
 
     .EXAMPLE
-    Invoke-Maester ./maester-tests
+    Invoke-Maester ./maester
 
-    Runs the built-in tests and the custom tests in the folder ./maester-tests (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
+    Runs the built-in tests and the custom tests and maester-config.json in the folder ./maester (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester -Tag 'CA' -IncludeLongRunning
@@ -68,9 +68,9 @@
     Runs the tests and generates a report of the results in the specified file.
 
     .EXAMPLE
-    Invoke-Maester -Path ./maester-tests/Custom -SkipBuiltIn
+    Invoke-Maester -Path ./maester/Custom -SkipBuiltIn
 
-    Runs only the custom tests in the ./maester-tests/Custom folder.
+    Runs only the custom tests in the ./maester/Custom folder.
 
     .EXAMPLE
     Invoke-Maester -MailRecipient john@contoso.com

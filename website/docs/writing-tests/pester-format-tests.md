@@ -96,7 +96,7 @@ a copy, so you can reuse the same object for several runs:
 
 ```powershell
 Invoke-Maester -PesterConfiguration @{
-    Run    = @{ Path = './maester-tests' }
+    Run    = @{ Path = './maester' }
     Filter = @{ Tag = 'CA'; ExcludeTag = 'App' }
 }
 ```
