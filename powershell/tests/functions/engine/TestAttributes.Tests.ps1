@@ -633,7 +633,7 @@ Describe 'Selecting with Maester 2.x tags' {
 
 Describe 'Rows, Taxonomy and warnings of a run' {
     BeforeAll {
-        $script:runFolder = Join-Path $TestDrive 'run'
+        $script:runFolder = Join-Path $TestDrive 'run/Custom'
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.1' -Attribute "Product = 'Entra ID', RelatedProduct = 'EXO', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Policy.Read.All', Lifecycle = 'Deprecated', ReplacedBy = 'ROW.2', Tag = ('baseline', 'ROW.1')"
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.2' -Attribute "Product = 'Contoso CRM', Feature = 'Billing', Area = 'finance', ResourceType = 'Invoice', Severity = 'Low', Mitre = 'None'"
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.3' -Attribute "Severity = 'Low', Lifecycle = 'Preview'"

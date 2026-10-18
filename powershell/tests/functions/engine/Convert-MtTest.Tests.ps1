@@ -9,8 +9,8 @@ BeforeAll {
 
 Describe 'Convert-MtTest' {
     BeforeEach {
-        $script:folder = Join-Path $TestDrive ([guid]::NewGuid().ToString('n'))
-        $null = New-Item -ItemType Directory -Path $script:folder
+        $script:folder = Join-Path $TestDrive "$([guid]::NewGuid().ToString('n'))/Custom"
+        $null = New-Item -ItemType Directory -Path $script:folder -Force
     }
 
     It 'Converts the split-file pattern and removes the connection guard and outer try/catch' {

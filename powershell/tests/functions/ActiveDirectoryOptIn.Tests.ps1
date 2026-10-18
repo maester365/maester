@@ -70,7 +70,8 @@ Describe 'Active Directory collectors require an explicit connection' {
 
 Describe 'Active Directory Pester tests remain opt-in' {
     BeforeEach {
-        $script:adTestPath = Join-Path $TestDrive ([guid]::NewGuid().ToString())
+        # Pester-format custom tests run only from a Custom folder.
+        $script:adTestPath = Join-Path $TestDrive "$([guid]::NewGuid())/Custom"
         $script:adResultPath = Join-Path $TestDrive "$([guid]::NewGuid()).json"
         $script:adMarkerPath = Join-Path $TestDrive "$([guid]::NewGuid()).marker"
         New-Item -Path $script:adTestPath -ItemType Directory | Out-Null
