@@ -64,6 +64,10 @@ BeforeAll {
             'DenyOnly' { New-TestAce -Sid 'S-1-5-11' -AccessControlType 'Deny' }
             # Allow and Deny for the same principal: access is unknown, not present.
             'AllowAndDeny' { $authenticatedUsers, $applyGroupPolicy, (New-TestAce -Sid 'S-1-5-11' -AccessControlType 'Deny' -ActiveDirectoryRights 'GenericAll'), $enterpriseDomainControllers, $domainAdmins }
+            # ContainerInherit without InheritOnly grants on the GPO itself, so it must be counted (soulemike).
+            'ContainerInheritOnly' { (New-TestAce -Sid 'S-1-5-11' -AceFlags 'ContainerInherit'), $domainAdmins }
+            # Duplicate ACEs for the same principal: membership check must still say present (soulemike).
+            'DuplicateAuthUsers' { $authenticatedUsers, $authenticatedUsers, $enterpriseDomainControllers, $domainAdmins }
             'InheritOnly' { (New-TestAce -Sid 'S-1-5-11' -AceFlags 'ContainerInherit, InheritOnly'), $domainAdmins }
             'EmptyDacl' { }
         }
@@ -132,6 +136,8 @@ Describe 'Active Directory GPO permissions' {
             @{ PermissionProfile = 'DenyOnly'; PermissionsPresent = $true; HasAuthenticatedUsers = $false; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
             # A principal that is both allowed and denied: unknown, because the masks are not compared.
             @{ PermissionProfile = 'AllowAndDeny'; PermissionsPresent = $true; HasAuthenticatedUsers = $null; HasEnterpriseDomainControllers = $true; HasDomainComputers = $false; HasInheritedPermissions = $false }
+            @{ PermissionProfile = 'ContainerInheritOnly'; PermissionsPresent = $true; HasAuthenticatedUsers = $true; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
+            @{ PermissionProfile = 'DuplicateAuthUsers'; PermissionsPresent = $true; HasAuthenticatedUsers = $true; HasEnterpriseDomainControllers = $true; HasDomainComputers = $false; HasInheritedPermissions = $false }
             @{ PermissionProfile = 'InheritOnly'; PermissionsPresent = $true; HasAuthenticatedUsers = $false; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
             @{ PermissionProfile = 'EmptyDacl'; PermissionsPresent = $false; HasAuthenticatedUsers = $false; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
             # Unknown is not the same as absent.
@@ -232,6 +238,13 @@ Describe 'Active Directory GPO permissions' {
 
             Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
             $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers \| 1 \|'
+            $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers And Without Authenticated Users \| 0 \|'
+        }
+
+        It 'Passes when one GPO has Default permissions and another has DomainComputers' {
+            $script:testGpos = @((New-TestGpo -PermissionProfile 'Default'), (New-TestGpo -PermissionProfile 'DomainComputers'))
+
+            Test-MtAdGpoNoDomainComputersCount | Should -BeTrue
             $script:resultDetail.Result | Should -Match 'GPO Reports Without Domain Computers And Without Authenticated Users \| 0 \|'
         }
     }
