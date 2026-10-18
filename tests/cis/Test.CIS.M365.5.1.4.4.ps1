@@ -25,7 +25,7 @@
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
-        Mitre = 'T1078.004',
+        Mitre = ('T1685', 'T1003'),
         Control = ('cis-m365:5.1.4.4', 'nist-800-53-r5:AC-6'),
         Service = 'Graph',
         Author = 'JeremyFinney-lgtm'

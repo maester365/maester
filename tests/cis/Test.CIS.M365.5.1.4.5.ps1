@@ -19,6 +19,7 @@
         Id = 'CIS.M365.5.1.4.5',
         Title = 'Ensure Local Administrator Password Solution is enabled',
         Product = 'entra',
+        RelatedProduct = 'intune',
         Feature = 'devices',
         Area = 'privileged-access',
         ResourceType = 'Tenant',
